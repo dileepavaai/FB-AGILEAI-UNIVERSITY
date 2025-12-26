@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Portal Bot — Agile AI University</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    /* Minimal styles for chat widget */
+    .chat-toggle { position: fixed; right: 20px; bottom: 20px; z-index: 9999; }
+    .chat-btn { background:#2772ff;color:#fff;padding:12px 14px;border-radius:999px;border:0;cursor:pointer;box-shadow:0 8px 24px rgba(39,114,255,.18) }
+    .chat-box { position: fixed; right: 20px; bottom: 80px; width: 340px; max-height: 70vh; background:#fff;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.12); overflow:hidden; display:none; flex-direction:column; }
+    .chat-header { padding:12px 14px; background:#f5f7fb; font-weight:600; }
+    .chat-body { padding:12px; overflow:auto; flex:1; }
+    .chat-input { padding:10px; border-top:1px solid #eee; display:flex; gap:8px; }
+    .bubble { padding:8px 10px; border-radius:12px; margin:6px 0; max-width:78%; display:inline-block; }
+    .from-user { background:#eef2ff; margin-left:auto; }
+    .from-bot { background:#f3f4f6; }
+    .small { font-size:12px;color:#666 }
+  </style>
+</head>
+<body>
+  <div class="chat-toggle">
+    <button id="toggleChat" class="chat-btn">Chat</button>
+  </div>
+
+  <div id="chatBox" class="chat-box" role="region" aria-label="Portal help chat">
+    <div class="chat-header">Agile AI Assistant <span class="small" style="font-weight:400; margin-left:8px;">(FAQ bot)</span></div>
+    <div id="chatBody" class="chat-body"></div>
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Ask a question (eg. certificate download)" style="flex:1;padding:8px;border-radius:8px;border:1px solid #eee" />
+      <button id="sendBtn" class="chat-btn" style="padding:8px 10px">Send</button>
+    </div>
+  </div>
+
+  <!-- Firebase (compat) for quick integration -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+  // ====== CONFIG: use your canonical firebaseConfig ======
+  const firebaseConfig = {
+    apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
+    authDomain: "fb-agileai-university.firebaseapp.com",
+    projectId: "fb-agileai-university",
+    storageBucket: "fb-agileai-university.appspot.com",
+    messagingSenderId: "458881040066",
+    appId: "1:458881040066:web:c832c420f9b4282e76c55b",
+    measurementId: "G-1RMK7HMMLY"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // ---------- small UI hooks ----------
+  const toggleChat = document.getElementById('toggleChat');
+  const chatBox = document.getElementById('chatBox');
+  const chatBody = document.getElementById('chatBody');
+  const chatInput = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+
+  toggleChat.addEventListener('click', () => {
+    chatBox.style.display = chatBox.style.display === 'flex' ? 'none' : 'flex';
+    chatBox.style.flexDirection = 'column';
+    if (chatBox.style.display === 'flex') {
+      chatInput.focus();
+      if (!chatBody.innerHTML) welcomeMessage();
+    }
+  });
+
+  // Welcome
+  function welcomeMessage(){
+    appendBot('Hello! Ask me about the portal, certificates, or assessments. I will try to help — or notify admin.');
+  }
+
+  function appendUser(text){
+    const d = document.createElement('div');
+    d.className = 'bubble from-user';
+    d.textContent = text;
+    chatBody.appendChild(d);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+  function appendBot(text){
+    const d = document.createElement('div');
+    d.className = 'bubble from-bot';
+    d.textContent = text;
+    chatBody.appendChild(d);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  // Simple text normalization & keyword matching
+  function normalize(s){ return (s||'').toLowerCase().trim(); }
+
+  // Load FAQs once (cached)
+  let faqs = [];
+  async function loadFaqs(){
+    try{
+      const snap = await db.collection('faqs').get();
+      faqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    }catch(e){
+      console.error('Could not load faqs', e);
+    }
+  }
+  loadFaqs();
+
+  // Basic matcher: count keyword overlaps, fallback to substring search
+  function findBestFaq(query){
+    const q = normalize(query);
+    if(!q) return null;
+    let best = null;
+    let bestScore = 0;
+    for(const f of faqs){
+      const text = normalize((f.title||'') + ' ' + (f.body||''));
+      // score by number of query tokens present
+      const tokens = q.split(/\s+/).filter(Boolean);
+      let score = 0;
+      for(const t of tokens) if(text.includes(t)) score++;
+      if(text.includes(q)) score += 1.5;
+      if(score > bestScore){ bestScore = score; best = f; }
+    }
+    return bestScore >= 1 ? best : null;
+  }
+
+  // Log query
+  async function logQuery(user, question, matchedFaqId){
+    try{
+      await db.collection('botLogs').add({
+        uid: user ? user.uid : null,
+        email: user ? user.email : null,
+        question,
+        matchedFaqId: matchedFaqId || null,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }catch(e){ console.error('logQuery failed', e); }
+  }
+
+  // Main send handler
+  async function handleSend(){
+    const text = chatInput.value.trim();
+    if(!text) return;
+    appendUser(text);
+    chatInput.value = '';
+    // try find match
+    const match = findBestFaq(text);
+    const user = auth.currentUser;
+    if(match){
+      appendBot(match.answer || match.body || match.title || 'Here is what we have.');
+      await logQuery(user, text, match.id);
+    } else {
+      appendBot("Sorry I don't have a direct answer. We'll notify the admin and get back to you. Meanwhile you can use the 'AI + Agile Assessment' link.");
+      await logQuery(user, text, null);
+      // optional: ping an admin by writing to a special collection or sending a Cloud Function trigger
+    }
+  }
+
+  sendBtn.addEventListener('click', handleSend);
+  chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleSend(); });
+
+  // Optional: show signed in user (if present)
+  auth.onAuthStateChanged(u => {
+    if(u) {
+      toggleChat.textContent = 'Chat (signed in)';
+    } else {
+      toggleChat.textContent = 'Chat';
+    }
+  });
+
+  // Pre-create a few sample FAQs if none exist (safe bootstrap)
+  async function bootstrapFaqs(){
+    try{
+      const s = await db.collection('faqs').limit(1).get();
+      if(!s.empty) return;
+      const samples = [
+        { title: 'How to download my certificate', body: 'Go to Certificates → enter your email → click download. If you face issues, contact support@agileai.university.' , answer: 'Open the Certificates page from the portal menu and enter your email to retrieve downloadable certificates.'},
+        { title: 'How to take the AI + Agile Assessment', body: 'Sign in on the portal and click Assessment. If you cannot sign in, use the fallback Google Form.' , answer: 'Sign in and click the Assessment button, or use the Google Form fallback on the assessment page.'},
+        { title: 'Who can issue certificates', body: 'Certificates are issued by Agile AI University after course completion and verification.', answer: 'Certificates are issued after completion and verification; contact the admin if there is a delay.'}
+      ];
+      for(const f of samples) await db.collection('faqs').add(f);
+      await loadFaqs();
+    }catch(e){ console.error('bootstrap faqs error', e); }
+  }
+  bootstrapFaqs();
+
+  </script>
+</body>
+</html>

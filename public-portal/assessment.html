@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI + Agile Assessment — Agile AI University</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width:980px; margin:36px auto; padding:0 20px; }
+    header h1{font-size:36px;margin:0 0 8px}
+    .card{background:#fff;padding:18px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin:14px 0}
+    label{display:block;margin:10px 0 6px;font-weight:600}
+    input[type="text"], input[type="email"], textarea, select{
+      width:100%; padding:8px; border:1px solid #ddd; border-radius:6px;
+    }
+    button{padding:10px 16px;border-radius:8px;border:0;background:#2772ff;color:#fff;cursor:pointer}
+    .btn-ghost{background:#eee;color:#222}
+    .row{display:flex;gap:10px}
+    .small{font-size:13px;color:#666}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI + Agile Quick Assessment</h1>
+    <p class="small">Fast. Short. Useful. Choose how you want to respond.</p>
+  </header>
+
+  <section class="card">
+    <div id="authArea">
+      <p><strong>Submit using Portal account</strong> (recommended — stores to your portal)</p>
+      <div id="userInfo" style="display:none">
+        <img id="avatar" src="" style="width:72px;height:72px;border-radius:999px;vertical-align:middle;margin-right:10px;box-shadow:0 6px 18px rgba(0,0,0,.08)">
+        <strong id="displayName"></strong>
+        <div style="margin-top:8px">
+          <button id="signOutBtn" class="btn-ghost">Sign out</button>
+        </div>
+      </div>
+
+      <div id="signedOutArea">
+        <button id="googleSignIn">Sign in with Google</button>
+        <button id="emailSignup" class="btn-ghost">Sign up / Sign in with Email</button>
+        <p class="small">If you prefer not to sign in, use the quick Google Form below (works anywhere).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="formCard" style="display:none">
+    <h2>Assessment — quick</h2>
+    <form id="assessmentForm">
+      <label>Your name</label>
+      <input id="name" type="text" required />
+
+      <label>Email</label>
+      <input id="email" type="email" required />
+
+      <label>1) How confident are you with AI basics?</label>
+      <select id="q1">
+        <option value="1">1 - Not confident</option>
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="5">5 - Very confident</option>
+      </select>
+
+      <label>2) How comfortable are you with Agile practices?</label>
+      <select id="q2">
+        <option value="1">1 - Not comfortable</option>
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="5">5 - Very comfortable</option>
+      </select>
+
+      <label>Short comment (optional)</label>
+      <textarea id="comment" rows="3"></textarea>
+
+      <div style="margin-top:12px">
+        <button type="submit">Submit assessment</button>
+        <span id="status" style="margin-left:12px;color:#0a0"></span>
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    <h3>Quick fallback (no sign-in required)</h3>
+    <p class="small">If signing in isn't possible from your location/device, use the embedded Google Form below — it collects answers to the same questions and logs the email you provide.</p>
+    <!-- Replace the src below with your published Google Form embed link -->
+    <iframe id="gform" src="https://docs.google.com/forms/d/e/YOUR_GOOGLE_FORM_ID/viewform?embedded=true" width="100%" height="750" frameborder="0">Loading…</iframe>
+  </section>
+
+  <!-- Firebase SDKs (modular) -->
+  <script type="module">
+    // ---------- PASTE YOUR PROJECT CONFIG from firebaseConfig (we already saved canonical config earlier) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
+      authDomain: "fb-agileai-university.firebaseapp.com",
+      projectId: "fb-agileai-university",
+      storageBucket: "fb-agileai-university.appspot.com",
+      messagingSenderId: "458881040066",
+      appId: "1:458881040066:web:c832c420f9b4282e76c55b",
+      measurementId: "G-1RMK7HMMLY"
+    };
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // elements
+    const googleSignIn = document.getElementById('googleSignIn');
+    const emailSignup = document.getElementById('emailSignup');
+    const signedOutArea = document.getElementById('signedOutArea');
+    const userInfo = document.getElementById('userInfo');
+    const displayName = document.getElementById('displayName');
+    const avatar = document.getElementById('avatar');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const formCard = document.getElementById('formCard');
+    const assessmentForm = document.getElementById('assessmentForm');
+    const statusEl = document.getElementById('status');
+
+    // Google sign-in
+    googleSignIn.addEventListener('click', async () => {
+      const provider = new GoogleAuthProvider();
+      try { await signInWithPopup(auth, provider); }
+      catch(e){ alert('Sign-in error: ' + e.message); }
+    });
+
+    // Sample simple email sign-in flow (popupless): opens browser prompt for password — quick MVP
+    emailSignup.addEventListener('click', async () => {
+      const email = prompt('Enter your email to sign in or create account:');
+      if (!email) return;
+      // we use a magic link option for speed? For now: instruct user to use Google Form if they can't get email flow.
+      alert('For quick sign-in we currently recommend Google sign-in. If you must use email/password, tell us and we will enable a password flow with email creation.');
+      // (We left the quick email creation out of the MVP to reduce friction/time.)
+    });
+
+    signOutBtn.addEventListener('click', ()=> signOut(auth));
+
+    // observe auth state
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        signedOutArea.style.display = 'none';
+        userInfo.style.display = 'block';
+        displayName.textContent = user.displayName || user.email;
+        avatar.src = user.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+        formCard.style.display = 'block';
+      } else {
+        signedOutArea.style.display = '';
+        userInfo.style.display = 'none';
+        formCard.style.display = 'none'; // only allow Firestore submit if signed in
+      }
+    });
+
+    // submit behaviour (writes to Firestore only if signed in)
+    assessmentForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      statusEl.textContent = 'Submitting…';
+      const user = auth.currentUser;
+      if (!user) {
+        alert('To submit to the portal database please sign in first. Otherwise use the Google Form below.');
+        statusEl.textContent = '';
+        return;
+      }
+
+      const payload = {
+        uid: user.uid,
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        q1: document.getElementById('q1').value,
+        q2: document.getElementById('q2').value,
+        comment: document.getElementById('comment').value.trim(),
+        createdAt: serverTimestamp()
+      };
+
+      try {
+        await addDoc(collection(db, 'assessments'), payload);
+        statusEl.style.color = '#0a0';
+        statusEl.textContent = 'Submitted — thank you!';
+        assessmentForm.reset();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to save: ' + err.message);
+        statusEl.textContent = '';
+      }
+    });
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!doctype html>
+<!-- GOVERNANCE NOTICE: This is an assessment insight surface — explanatory headers/footers are intentional and must not be simplified or unified with executive instruments. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Agile + AI Capability Insight Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="./assets/css/assessment.css" />
+
+  <!-- Executive upgrade UI styles (display only, no logic) -->
+  <style>
+    .paid-section {
+      position: relative;
+      margin-top: 32px;
+    }
+
+    .paid-blur {
+      filter: blur(6px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .paid-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 32px;
+      border-radius: 12px;
+    }
+
+    .upgrade-box {
+      max-width: 560px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 28px;
+      background: #ffffff;
+    }
+
+    .upgrade-box h3 {
+      margin-top: 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .upgrade-box p {
+      color: #374151;
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    .upgrade-btn {
+      margin-top: 18px;
+      padding: 14px 22px;
+      border-radius: 10px;
+      border: none;
+      background: #111827;
+      color: #ffffff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .upgrade-note {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 12px;
+    }
+
+    .next-actions {
+      margin-top: 36px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .next-actions h3 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .next-actions p {
+      font-size: 14px;
+      color: #374151;
+      margin-bottom: 16px;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .action-btn {
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      color: #111827;
+    }
+
+    .action-btn.primary {
+      border-color: #9ca3af;
+    }
+  </style>
+</head>
+
+<body class="report-page">
+
+<main class="report-container">
+
+  <!-- ================= HEADER ================= -->
+  <section class="report-header">
+    <h1>Agile + AI Capability Insight Report</h1>
+
+    <p class="report-subtitle">
+      An insight-based reflection on Agile execution, Artificial Intelligence,
+      systems thinking, ethics, trust, and learning orientation.
+    </p>
+
+    <p class="report-disclaimer">
+      Issued by <strong>Agile AI University</strong><br />
+      Prepared for <strong><span id="report-name">—</span></strong>
+    </p>
+  </section>
+
+  <!-- ================= CONTEXT ================= -->
+  <section class="report-card">
+    <h2>Your Context</h2>
+
+    <ul class="context-list">
+      <li><strong>Name:</strong> <span id="report-name-context">—</span></li>
+      <li><strong>Role:</strong> <span id="report-role">—</span></li>
+      <li><strong>Industry:</strong> <span id="report-industry">—</span></li>
+      <li><strong>Career Aspiration:</strong> <span id="report-aspiration">—</span></li>
+    </ul>
+  </section>
+
+  <!-- ================= SNAPSHOT (FREE) ================= -->
+  <section class="report-card">
+    <h2>Capability Snapshot</h2>
+
+    <div class="chart-row">
+      <span>Agile Execution</span>
+      <div class="bar"><div id="bar-agile" class="fill"></div></div>
+      <span id="label-agile" class="level">—</span>
+    </div>
+
+    <div class="chart-row">
+      <span>AI Conceptual Fluency</span>
+      <div class="bar"><div id="bar-ai" class="fill"></div></div>
+      <span id="label-ai" class="level">—</span>
+    </div>
+
+    <div class="chart-row">
+      <span>Systems Thinking</span>
+      <div class="bar"><div id="bar-systems" class="fill"></div></div>
+      <span id="label-systems" class="level">—</span>
+    </div>
+
+    <div class="chart-row">
+      <span>Ethics & Trust</span>
+      <div class="bar"><div id="bar-humics" class="fill"></div></div>
+      <span id="label-humics" class="level">—</span>
+    </div>
+
+    <div class="chart-row">
+      <span>Change & Learning</span>
+      <div class="bar"><div id="bar-change" class="fill"></div></div>
+      <span id="label-change" class="level">—</span>
+    </div>
+  </section>
+
+  <!-- ================= SIGNALS (FREE) ================= -->
+  <section class="report-card">
+    <h2>Capability Signals</h2>
+
+    <div class="signal-block"><h3>Agile Execution Orientation</h3><p id="agile-signal">—</p></div>
+    <div class="signal-block"><h3>AI Conceptual Fluency</h3><p id="ai-signal">—</p></div>
+    <div class="signal-block"><h3>Systems Thinking & Integration</h3><p id="systems-signal">—</p></div>
+    <div class="signal-block"><h3>Ethics, Trust & Human Impact</h3><p id="governance-signal">—</p></div>
+    <div class="signal-block"><h3>Change & Learning Orientation</h3><p id="change-signal">—</p></div>
+  </section>
+
+  <!-- ================= REFLECTION (FREE) ================= -->
+  <section class="report-card">
+    <h2>Overall Reflection</h2>
+    <p id="overall-signal">—</p>
+  </section>
+
+  <!-- ================= EXECUTIVE CTA (NO CLIENT LOGIC) ================= -->
+  <section class="report-card paid-section">
+
+    <div class="paid-blur">
+      <h2>Advanced Insight & Leadership Decision Support</h2>
+      <p>Executive-level interpretation is available in the next report.</p>
+    </div>
+
+    <div class="paid-overlay">
+      <div class="upgrade-box">
+        <h3>Advance to the Executive Insight Report</h3>
+
+        <p>
+          The <strong>Executive Insight Report</strong> provides decision-grade
+          interpretation for leadership readiness, role scope, and governance confidence.
+        </p>
+
+        <button
+          class="upgrade-btn"
+          onclick="window.location.href='./executive-insight.html';"
+        >
+          View Executive Insight Report
+        </button>
+
+        <div class="upgrade-note">
+          Executive insight is advisory and does not constitute certification,
+          promotion approval, or hiring endorsement.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ================= NEXT ACTIONS ================= -->
+  <section class="next-actions">
+    <h3>Your Next Actions</h3>
+    <p>These actions are available at any time and do not affect eligibility.</p>
+
+    <div class="action-buttons">
+      <button class="action-btn primary" id="downloadPdf">
+        Download Insight Report (PDF)
+      </button>
+
+      <button
+        class="action-btn"
+        onclick="window.location.href='./assessment.html';"
+      >
+        Retake Assessment (optional)
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <section class="report-footer-card">
+    <p>
+      <strong>Agile AI University — Official Website & Student Portal</strong><br />
+      <a href="https://agileai.university" target="_blank">agileai.university</a> ·
+      <a href="https://portal.agileai.university" target="_blank">portal.agileai.university</a><br />
+      Credential verification:
+      <a href="https://verify.agileai.university" target="_blank">verify.agileai.university</a>
+    </p>
+
+    <p>
+      <strong>Report Reference ID:</strong>
+      <span id="report-reference-id">—</span><br />
+      <strong>Issue Date:</strong>
+      <span id="report-issue-date">—</span>
+    </p>
+
+    <p class="auth-note">
+      <strong>Governing Framework:</strong>
+      Agile + AI Capability Assessment Framework (v1.0)
+    </p>
+  </section>
+
+</main>
+
+<script src="./assets/js/assessment.js"></script>
+</body>
+</html>

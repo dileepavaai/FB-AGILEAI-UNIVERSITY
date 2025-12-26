@@ -1,0 +1,339 @@
+/* =========================================================
+   Agile + AI Capability Assessment
+   Visual System — Institutional Grade
+   v1.9 FINAL (HEADER-AWARE, REPORT SAFE — LOCKED)
+   ========================================================= */
+
+/* ---------- Design Tokens ---------- */
+:root {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border: #e5e7eb;
+  --accent: #0f172a;
+  --error: #c62828;
+
+  --radius-lg: 14px;
+  --radius-md: 10px;
+
+  --max-width: 900px;
+
+  /* ✅ GLOBAL HEADER OFFSET (CANONICAL) */
+  --site-header-height: 84px;
+}
+
+/* ---------- Base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  line-height: 1.65;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   ASSESSMENT SHELL (UNCHANGED)
+   ========================================================= */
+
+.assessment-shell {
+  position: sticky;
+  top: var(--site-header-height);
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+}
+
+.assessment-shell-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.assessment-shell .org-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.assessment-shell .instrument-name {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.assessment-shell .exit-link {
+  font-size: 13px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.assessment-shell .exit-link:hover {
+  background: #f1f5f9;
+}
+
+/* =========================================================
+   CONTAINERS (HEADER-AWARE)
+   ========================================================= */
+
+.assessment-container,
+.report-container {
+  max-width: var(--max-width);
+  margin: calc(var(--site-header-height) + 40px) auto 96px;
+  padding: 0 20px;
+}
+
+/* =========================================================
+   PROGRESS INDICATOR
+   ========================================================= */
+
+.assessment-progress {
+  margin: 0 0 16px;
+}
+
+.progress-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+/* =========================================================
+   HEADINGS & TEXT
+   ========================================================= */
+
+h1 { font-size: 34px; font-weight: 800; margin: 0 0 14px; }
+h2 { font-size: 24px; font-weight: 700; margin: 0 0 12px; }
+h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+
+p {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.assessment-intro,
+.assessment-context,
+.assessment-section,
+.assessment-lead,
+.assessment-submit,
+.report-card,
+.report-footer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-top: 28px;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.primary-btn,
+.secondary-btn {
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+}
+
+.secondary-btn {
+  background: #ffffff;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  text-decoration: none;
+}
+
+/* =========================================================
+   REPORT HEADER
+   ========================================================= */
+
+.report-header h1 {
+  font-size: 36px;
+}
+
+.report-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.report-disclaimer {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   CONTEXT
+   ========================================================= */
+
+.context-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.context-list li {
+  margin-bottom: 10px;
+}
+
+/* =========================================================
+   CAPABILITY SNAPSHOT
+   ========================================================= */
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 110px;
+  gap: 14px;
+  align-items: center;
+  margin: 16px 0;
+}
+
+.bar {
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.level {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* =========================================================
+   FOOTER — TRUST & VERIFICATION
+   ========================================================= */
+
+.report-footer-card {
+  font-size: 14px;
+}
+
+.report-footer-card p:first-of-type {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.report-footer-card a {
+  color: #020617;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.report-footer-card a:hover {
+  color: #1e293b;
+}
+
+.report-footer-card a[href*="certs"] {
+  font-weight: 900;
+}
+
+.auth-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+  h1 { font-size: 26px; }
+  h2 { font-size: 20px; }
+
+  .chart-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .level {
+    text-align: left;
+  }
+}
+
+/* =========================================================
+   PRINT / PDF (LOCKED)
+   ========================================================= */
+
+@media print {
+
+  body {
+    background: #ffffff !important;
+    color: #000000;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .assessment-progress,
+  .assessment-shell,
+  #site-header,
+  #site-footer {
+    display: none !important;
+  }
+
+  .report-card,
+  .report-footer-card {
+    page-break-inside: avoid;
+  }
+
+  h1 { font-size: 26px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 16px; }
+
+  p,
+  li,
+  span {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}

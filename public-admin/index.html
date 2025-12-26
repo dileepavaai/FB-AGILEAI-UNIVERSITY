@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin – Agile AI University</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="/admin.css" />
+
+  <!-- ===== DETAIL MODAL (Step 1 + Step 3.x) – Scoped Styles ===== -->
+  <style>
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      padding: 24px;
+      width: 460px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .modal-field {
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    /* STEP-3.5 NOTICE */
+    .modal-notice {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 13px;
+      border-radius: 6px;
+      background: #fff4e5;
+      border: 1px solid #f3c98b;
+      color: #7a4b00;
+    }
+
+    .modal-notice.hidden {
+      display: none;
+    }
+
+    .modal-actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .modal-actions button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .modal-actions button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="topbar">
+    <h1>Agile AI University – Admin</h1>
+    <div class="user">
+      <span id="status">Please sign in.</span>
+      <button id="logoutBtn" style="display:none;">Logout</button>
+    </div>
+  </header>
+
+  <!-- ================= ADMIN WARNING ================= -->
+  <div id="adminWarning" class="admin-warning hidden">
+    ⚠️ Restricted Admin Area — All actions are logged and audited.
+    Unauthorized access or misuse will result in immediate revocation.
+  </div>
+
+  <!-- ================= LAYOUT ================= -->
+  <div class="layout">
+
+    <!-- ========== SIDEBAR ========== -->
+    <nav class="sidebar" id="adminNav" style="display:none;">
+      <ul>
+        <li data-view="dashboard" class="active">Dashboard</li>
+        <li data-view="batches">Batch Management</li>
+        <li data-view="credentials">Credential Issuance</li>
+        <li data-view="csv">CSV Import</li>
+        <li data-view="verifications">Verification Requests</li>
+        <li data-view="logs">Audit Logs</li>
+      </ul>
+    </nav>
+
+    <!-- ========== CONTENT ========== -->
+    <main class="content">
+
+      <!-- LOGIN -->
+      <section id="loginView">
+        <button id="loginBtn">Sign in with Google</button>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="view hidden">
+        <h2>Dashboard</h2>
+        <p>Admin access granted.</p>
+      </section>
+
+      <!-- BATCH MANAGEMENT -->
+      <section id="batches" class="view hidden">
+        <h2>Batch Management</h2>
+
+        <form id="batchForm">
+          <label>
+            Batch Name
+            <input type="text" id="batchName" required />
+          </label>
+
+          <label>
+            Program Code
+            <select id="programCode">
+              <option value="AOP">AOP – Agile Outcome Practitioner</option>
+            </select>
+          </label>
+
+          <label>
+            Status
+            <select id="batchStatus">
+              <option value="draft">Draft</option>
+              <option value="active">Active</option>
+              <option value="closed">Closed</option>
+            </select>
+          </label>
+
+          <button type="submit">Create Batch</button>
+        </form>
+
+        <hr />
+
+        <h3>Existing Batches</h3>
+        <table id="batchTable">
+          <thead>
+            <tr>
+              <th>Batch Name</th>
+              <th>Program</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- CREDENTIAL ISSUANCE -->
+      <section id="credentials" class="view hidden">
+        <h2>Credential Issuance</h2>
+        <p>Manual and automated credential issuance.</p>
+      </section>
+
+      <!-- CSV IMPORT -->
+      <section id="csv" class="view hidden">
+        <h2>CSV Import</h2>
+
+        <label>
+          Select Batch
+          <select id="csvBatchSelect">
+            <option value="">-- Select Batch --</option>
+          </select>
+        </label>
+      </section>
+
+      <!-- VERIFICATION REQUESTS -->
+      <section id="verifications" class="view hidden">
+        <h2>Verification Requests</h2>
+
+        <table id="verificationTable">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Requested At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- AUDIT LOGS -->
+      <section id="logs" class="view hidden">
+        <h2>Audit Logs</h2>
+        <p>Issuance and admin actions.</p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= VERIFICATION MODAL ================= -->
+  <div id="verificationModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Verification Request</h2>
+
+      <div class="modal-field">
+        <strong>Email:</strong>
+        <span id="modalEmail"></span>
+      </div>
+
+      <div class="modal-field">
+        <strong>Requested At:</strong>
+        <span id="modalCreatedAt"></span>
+      </div>
+
+      <div class="modal-field">
+        <strong>Source:</strong>
+        <span id="modalSource"></span>
+      </div>
+
+      <div class="modal-field">
+        <strong>Status:</strong>
+        <span id="modalStatus"></span>
+      </div>
+
+      <!-- 🔒 STEP-3.5 ADMIN NOTICE (NEW) -->
+      <div id="verificationNotice" class="modal-notice hidden"></div>
+
+      <div class="modal-actions">
+        <button id="markReviewedBtn">Mark Reviewed</button>
+
+        <button id="approveBtn">
+          ✅ Approve
+        </button>
+
+        <button id="rejectBtn" disabled>
+          ❌ Reject
+        </button>
+
+        <button id="clarifyBtn" disabled>
+          🔁 Needs Clarification
+        </button>
+
+        <button onclick="closeVerificationModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPT ================= -->
+  <script type="module" src="/admin.js"></script>
+</body>
+</html>

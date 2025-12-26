@@ -1,0 +1,27 @@
+{
+  "projects": {
+    "default": "fb-agileai-university"
+  },
+  "targets": {
+    "fb-agileai-university": {
+      "hosting": {
+        "site": [
+          "agileai-site"
+        ],
+        "admin": [
+          "admin-agileai-university"
+        ],
+        "portal": [
+          "portal-agileai-university"
+        ],
+        "certs": [
+          "certs-agileai"
+        ],
+        "assessment": [
+          "agileai-assessment"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

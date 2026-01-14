@@ -1,228 +1,184 @@
 /**
  * =========================================================
  * Agile AI University — Phase-3A Entitlement Service
- * Firebase Cloud Functions (Canonical Authority)
- *
- * PURPOSE
- * - Grant Executive Insight entitlement
- * - Manual (admin) + Razorpay webhook based
- * - Server-authoritative entitlement verification
- *
- * SECURITY MODEL
- * - Frontend NEVER touches Firestore
- * - Frontend calls checkExecutiveEntitlement only
- *
- * STATUS
- * - Production safe
- * - CORS-safe
- * - Canonical
+ * Firebase Cloud Functions (Gen-1, Node 20 Compatible)
  * =========================================================
  */
+"use strict";
 
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const crypto = require("crypto");
+const Razorpay = require("razorpay");
 
-admin.initializeApp();
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
 
-/**
- * =========================================================
- * Firestore Structure (LOCKED)
- *
- * executiveEntitlements/{email}
- * {
- *   email: string,
- *   entitled: true,
- *   source: "manual" | "razorpay",
- *   paymentId: string | null,
- *   amount: number | null,
- *   currency: string | null,
- *   createdAt: serverTimestamp
- * }
- * =========================================================
- */
+const REGION = "asia-south1";
+const ALLOWED_ORIGIN = "https://agileai.university";
 
 /**
- * =========================================================
- * STEP 3A-1 — MANUAL / ADMIN GRANT
- *
- * METHOD: POST
- * BODY: { email }
- * =========================================================
+ * 🔒 PAYMENT MODE LOCK
+ * true  = ₹1 / $1 SAFE TEST MODE
+ * false = LIVE PRICING
  */
-exports.grantExecutiveEntitlement = functions.https.onRequest(
-  async (req, res) => {
+const TEST_MODE = true;
+
+/* ===================== CORS ===================== */
+function applyCors(req, res) {
+  res.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    res.status(204).send("");
+    return false;
+  }
+  return true;
+}
+
+/* ===================== CREATE ORDER ===================== */
+exports.createExecutiveOrder = functions
+  .region(REGION)
+  .https.onRequest(async (req, res) => {
+    if (!applyCors(req, res)) return;
+
     try {
       if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
       }
 
-      const { email } = req.body;
-
-      if (!email) {
-        return res.status(400).json({ error: "Email is required" });
+      const { currency, email, name } = req.body || {};
+      if (!currency || !email) {
+        return res.status(400).json({ error: "Missing fields" });
       }
 
-      await admin
-        .firestore()
-        .collection("executiveEntitlements")
-        .doc(email.toLowerCase())
-        .set({
-          email: email.toLowerCase(),
-          entitled: true,
-          source: "manual",
-          paymentId: null,
-          amount: null,
-          currency: null,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
+      const cfg = functions.config().razorpay || {};
+      if (!cfg.key_id || !cfg.key_secret) {
+        return res.status(500).json({ error: "Razorpay not configured" });
+      }
 
-      return res.status(200).json({
-        status: "ENTITLEMENT_GRANTED_MANUAL",
-        email,
+      const razorpay = new Razorpay({
+        key_id: cfg.key_id,
+        key_secret: cfg.key_secret,
       });
 
+      const amount = TEST_MODE ? 100 : req.body.amount;
+
+      const order = await razorpay.orders.create({
+        amount,
+        currency,
+        receipt: `exec_${Date.now()}`,
+        payment_capture: 1,
+        notes: {
+          email,
+          name: name || "Participant",
+          mode: TEST_MODE ? "test" : "live",
+        },
+      });
+
+      return res.json({
+        id: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        key_id: cfg.key_id,
+      });
     } catch (err) {
-      console.error("Manual entitlement error:", err);
-      return res.status(500).json({ error: "Internal server error" });
+      console.error(err);
+      return res.status(500).json({ error: "Order failed" });
     }
-  }
-);
+  });
 
-/**
- * =========================================================
- * STEP 3A-2 — RAZORPAY WEBHOOK (AUTOMATED)
- *
- * METHOD: POST
- * SOURCE: Razorpay Webhook
- *
- * CRITICAL:
- * - Signature verified using RAW BODY (req.rawBody)
- * =========================================================
- */
-exports.razorpayWebhook = functions.https.onRequest(
-  async (req, res) => {
+/* ===================== PENDING BRIDGE ===================== */
+exports.markExecutivePending = functions
+  .region(REGION)
+  .https.onRequest(async (req, res) => {
+    applyCors(req, res);
+
+    const { email } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ ok: false });
+    }
+
+    await admin.firestore()
+      .collection("executiveEntitlements")
+      .doc(email.toLowerCase())
+      .set(
+        {
+          email: email.toLowerCase(),
+          status: "pending",
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+    return res.json({ ok: true });
+  });
+
+/* ===================== WEBHOOK ===================== */
+exports.razorpayWebhook = functions
+  .region(REGION)
+  .https.onRequest(async (req, res) => {
     try {
-      if (req.method !== "POST") {
-        return res.status(405).send("Method not allowed");
-      }
+      const secret = functions.config().razorpay?.webhook_secret;
+      const signature = req.headers["x-razorpay-signature"];
 
-      const WEBHOOK_SECRET = "AAIU_RZP_EXEC_5603_I9FhQx7@KpZ_1EABAB";
-
-      const receivedSignature = req.headers["x-razorpay-signature"];
-      if (!receivedSignature) {
-        return res.status(400).send("Signature missing");
-      }
-
-      const expectedSignature = crypto
-        .createHmac("sha256", WEBHOOK_SECRET)
+      const expected = crypto
+        .createHmac("sha256", secret)
         .update(req.rawBody)
         .digest("hex");
 
-      if (receivedSignature !== expectedSignature) {
+      if (signature !== expected) {
         return res.status(401).send("Invalid signature");
       }
 
-      if (req.body.event !== "payment.captured") {
-        return res.status(200).send("Event ignored");
+      const event = JSON.parse(req.rawBody.toString("utf8"));
+      if (event.event !== "payment.captured") {
+        return res.status(200).send("Ignored");
       }
 
-      const payment = req.body.payload?.payment?.entity;
-      if (!payment) {
-        return res.status(400).send("Invalid payload");
-      }
+      const payment = event.payload.payment.entity;
+      const email = payment.email || payment.notes?.email;
 
-      const email =
-        payment.email ||
-        payment.notes?.email ||
-        null;
+      if (!email) return res.status(200).send("No email");
 
-      if (!email) {
-        return res.status(400).send("Email not found");
-      }
-
-      await admin
-        .firestore()
+      await admin.firestore()
         .collection("executiveEntitlements")
         .doc(email.toLowerCase())
-        .set({
-          email: email.toLowerCase(),
-          entitled: true,
-          source: "razorpay",
-          paymentId: payment.id,
-          amount: payment.amount / 100,
-          currency: payment.currency,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
+        .set(
+          {
+            email: email.toLowerCase(),
+            status: "entitled",
+            entitled: true,
+            paymentId: payment.id,
+            capturedAt: admin.firestore.FieldValue.serverTimestamp(),
+          },
+          { merge: true }
+        );
 
-      return res.status(200).json({
-        status: "ENTITLEMENT_GRANTED_RAZORPAY",
-        email,
-        paymentId: payment.id,
-      });
-
+      return res.status(200).send("Entitled");
     } catch (err) {
-      console.error("Razorpay webhook error:", err);
-      return res.status(500).send("Internal server error");
+      console.error(err);
+      return res.status(500).send("Webhook error");
     }
-  }
-);
+  });
 
-/**
- * =========================================================
- * STEP C1 — EXECUTIVE ENTITLEMENT CHECK (READ-ONLY)
- *
- * METHOD: POST
- * BODY: { email }
- *
- * PURPOSE
- * - Frontend-safe entitlement verification
- * - No Firestore exposure
- * - No auth required
- *
- * RETURNS
- * { entitled: true | false }
- * =========================================================
- */
-exports.checkExecutiveEntitlement = functions.https.onRequest(
-  async (req, res) => {
-    try {
-      // ----- CORS (explicit & safe) -----
-      res.set("Access-Control-Allow-Origin", "*");
-      res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-      res.set("Access-Control-Allow-Headers", "Content-Type");
+/* ===================== ENTITLEMENT CHECK ===================== */
+exports.checkExecutiveEntitlement = functions
+  .region(REGION)
+  .https.onRequest(async (req, res) => {
+    applyCors(req, res);
 
-      if (req.method === "OPTIONS") {
-        return res.status(204).send("");
-      }
+    const email = req.query.email;
+    if (!email) return res.json({ entitled: false });
 
-      if (req.method !== "POST") {
-        return res.status(405).json({ entitled: false });
-      }
+    const doc = await admin.firestore()
+      .collection("executiveEntitlements")
+      .doc(email.toLowerCase())
+      .get();
 
-      const { email } = req.body;
-
-      if (!email) {
-        return res.status(200).json({ entitled: false });
-      }
-
-      const snap = await admin
-        .firestore()
-        .collection("executiveEntitlements")
-        .doc(email.toLowerCase())
-        .get();
-
-      if (!snap.exists) {
-        return res.status(200).json({ entitled: false });
-      }
-
-      return res.status(200).json({
-        entitled: snap.data().entitled === true,
-      });
-
-    } catch (err) {
-      console.error("Entitlement check failed:", err);
-      return res.status(200).json({ entitled: false });
-    }
-  }
-);
+    return res.json({
+      entitled: doc.exists && doc.data()?.status === "entitled",
+    });
+  });

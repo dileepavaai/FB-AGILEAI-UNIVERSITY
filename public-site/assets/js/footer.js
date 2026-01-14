@@ -1,6 +1,7 @@
 /* =====================================================
    Agile AI University — Canonical Footer
    CENTRALIZED — LOCKED
+   POLICY-COMPLIANT (Razorpay Ready)
    ===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <p>
       <strong>Agile AI University</strong><br />
-      An independent Academic &amp; Professional Body for Agile AI
+      An Independent Academic &amp; Professional Body for Agile AI
       and Agentic AI.
     </p>
 
@@ -35,10 +36,25 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>
     </p>
 
+    <p>
+      <a href="/governance/terms-and-conditions.html">
+        Terms &amp; Conditions
+      </a>
+      ·
+      <a href="/governance/privacy-policy.html">
+        Privacy Policy
+      </a>
+      ·
+      <a href="/governance/refund-policy.html">
+        Refund Policy
+      </a>
+    </p>
+
     <p style="max-width: 720px;">
       This website presents academic frameworks, capability assessments,
       governance references, and professional standards.
-      It does not constitute a training advertisement or certification offer.
+      It does not constitute a training advertisement, certification offer,
+      hiring endorsement, or promotional claim.
     </p>
 
   </div>

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Executive Insight Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- =========================================================
+       CONTENT SECURITY POLICY — PAYMENT SAFE (LOCKED)
+       ========================================================= -->
+  <meta http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+
+      script-src
+        'self'
+        'unsafe-inline'
+        https://checkout.razorpay.com
+        https://*.razorpay.com
+        https://www.gstatic.com
+        https://www.googleapis.com;
+
+      connect-src
+        'self'
+        https://api.razorpay.com
+        https://checkout.razorpay.com
+        https://lumberjack.razorpay.com
+        https://*.razorpay.com
+        https://asia-south1-fb-agileai-university.cloudfunctions.net
+        https://firebaselogging.googleapis.com
+        https://firebaseinstallations.googleapis.com
+        https://firebase.googleapis.com
+        https://www.googleapis.com;
+
+      frame-src
+        https://checkout.razorpay.com
+        https://*.razorpay.com;
+
+      img-src
+        'self'
+        data:
+        https://*.razorpay.com
+        https://*.gstatic.com
+        https://*.googleapis.com;
+
+      style-src
+        'self'
+        'unsafe-inline';
+    ">
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 40px 16px;
+    }
+    .card {
+      max-width: 520px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+    p {
+      color: #374151;
+      line-height: 1.6;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 14px;
+      border-radius: 10px;
+      border: none;
+      background: #111827;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #d1d5db;
+    }
+    button.primary {
+      background: #2563eb;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .status {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #374151;
+      min-height: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Executive Insight Report</h1>
+
+    <p>
+      This is a one-time payment to unlock the
+      <strong>Executive Insight Report</strong>.
+    </p>
+
+    <button id="pay-inr">Pay ₹4,999 (India)</button>
+    <button id="pay-usd" class="secondary">Pay $59 (International)</button>
+
+    <!-- Explicit continuation control (LOCKED UX) -->
+    <button
+      id="continue-btn"
+      class="primary"
+      style="display:none"
+      disabled>
+      Continue to Report →
+    </button>
+
+    <div class="note">
+      Advisory only. No certification or endorsement.
+    </div>
+
+    <!-- Status text is controlled by payments.js -->
+    <div id="status" class="status"></div>
+  </div>
+
+  <!-- =========================================================
+       SCRIPT ORDER — DO NOT CHANGE
+       ========================================================= -->
+
+  <!-- Razorpay -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
+  <script src="/assets/js/firebase-init.js"></script>
+
+  <!-- Payment Logic (LOCKED EXTERNAL) -->
+  <script src="/assets/js/payments.js"></script>
+
+</body>
+</html>

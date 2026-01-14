@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>System Health Check</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+  <!-- Razorpay -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f9fafb;
+      padding: 40px;
+    }
+    .card {
+      max-width: 720px;
+      margin: auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+    pre {
+      background: #111827;
+      color: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>System Health Check</h1>
+    <div id="status"></div>
+    <h3>Debug Info</h3>
+    <pre id="debug">Loading…</pre>
+  </div>
+
+  <!-- External JS ONLY -->
+    <script src="/assets/js/firebase-init.js"></script>
+    <script src="/assets/js/health-check.js"></script>
+</body>
+</html>

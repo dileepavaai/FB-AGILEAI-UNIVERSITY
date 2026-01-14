@@ -6,14 +6,26 @@
    * Agile AI University — Executive Insight Payment (Client)
    * MODE: EXPLICIT CONTINUATION + WEBHOOK AUTHORITATIVE (LOCKED)
    * =========================================================
+   * Principles:
+   * - Frontend NEVER grants entitlement
+   * - Webhook is the only source of truth
+   * - No automatic redirect (avoids race conditions)
+   * - User explicitly continues once payment is confirmed
+   * - Deterministic, auditable UX
    */
 
+  // ---------------------------------------------------------
+  // ENDPOINTS (LOCKED)
+  // ---------------------------------------------------------
   const ORDER_ENDPOINT =
     "https://asia-south1-fb-agileai-university.cloudfunctions.net/createExecutiveOrder";
 
   const ENTITLEMENT_ENDPOINT =
     "https://asia-south1-fb-agileai-university.cloudfunctions.net/checkExecutiveEntitlement";
 
+  // ---------------------------------------------------------
+  // DOM
+  // ---------------------------------------------------------
   const payInrBtn = document.getElementById("pay-inr");
   const payUsdBtn = document.getElementById("pay-usd");
   const continueBtn = document.getElementById("continue-btn");
@@ -27,10 +39,44 @@
   continueBtn.style.display = "none";
   continueBtn.disabled = true;
 
+  // ---------------------------------------------------------
+  // VISUAL LOADING INDICATOR (SAFE)
+  // ---------------------------------------------------------
+  let loadingTimer = null;
+  let loadingStep = 0;
+  const loadingFrames = [
+    "Verifying access…",
+    "Verifying access… ⏳",
+    "Verifying access… ⏳⏳",
+  ];
+
+  function startLoading() {
+    stopLoading();
+    loadingStep = 0;
+    setStatus(loadingFrames[0]);
+    loadingTimer = setInterval(() => {
+      loadingStep = (loadingStep + 1) % loadingFrames.length;
+      setStatus(loadingFrames[loadingStep]);
+    }, 600);
+  }
+
+  function stopLoading() {
+    if (loadingTimer) {
+      clearInterval(loadingTimer);
+      loadingTimer = null;
+    }
+  }
+
+  // ---------------------------------------------------------
+  // EVENTS
+  // ---------------------------------------------------------
   payInrBtn.addEventListener("click", () => startPayment("INR"));
   payUsdBtn.addEventListener("click", () => startPayment("USD"));
   continueBtn.addEventListener("click", handleContinue);
 
+  // ---------------------------------------------------------
+  // PAYMENT FLOW
+  // ---------------------------------------------------------
   async function startPayment(currency) {
     try {
       if (typeof window.Razorpay !== "function") {
@@ -96,6 +142,9 @@
     }
   }
 
+  // ---------------------------------------------------------
+  // CONTINUE FLOW
+  // ---------------------------------------------------------
   async function handleContinue() {
     const email = sessionStorage.getItem("exec_email");
     if (!email) {
@@ -104,7 +153,7 @@
     }
 
     continueBtn.disabled = true;
-    setStatus("Verifying access…");
+    startLoading();
 
     try {
       const res = await fetch(
@@ -113,23 +162,29 @@
       const result = await res.json();
 
       if (result && result.entitled === true) {
+        stopLoading();
         sessionStorage.removeItem("exec_email");
         window.location.href =
           "/public-assessment/executive-insight.html";
         return;
       }
 
+      stopLoading();
       continueBtn.disabled = false;
       setStatus(
         "Payment received. Access is being unlocked. Please try again in a moment."
       );
     } catch (err) {
+      stopLoading();
       console.error("[Entitlement] ❌ Error:", err);
       continueBtn.disabled = false;
       setStatus("Unable to verify access. Please try again.");
     }
   }
 
+  // ---------------------------------------------------------
+  // SELF-HEAL ON PAGE LOAD
+  // ---------------------------------------------------------
   (async function checkOnLoad() {
     const email = sessionStorage.getItem("exec_email");
     if (!email) return;
@@ -142,13 +197,16 @@
 
       if (result && result.entitled === true) {
         revealContinueButton();
-        setStatus(
-          "Access unlocked. You may now continue to your Executive Insight Report."
-        );
+        setStatus("Access unlocked. You may continue.");
       }
-    } catch (_) {}
+    } catch (_) {
+      // silent
+    }
   })();
 
+  // ---------------------------------------------------------
+  // UI HELPERS
+  // ---------------------------------------------------------
   function disablePayButtons(state) {
     payInrBtn.disabled = state;
     payUsdBtn.disabled = state;

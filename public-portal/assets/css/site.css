@@ -1,0 +1,518 @@
+/* =========================================================
+   Agile AI University — Portal Site Styles
+   INSTITUTIONAL · GOVERNANCE-ALIGNED · SAFE
+   SINGLE SOURCE OF TRUTH (FINAL)
+   ========================================================= */
+
+/* =====================
+   GLOBAL THEME VARIABLES
+   ===================== */
+
+:root {
+  --bg: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --card: #ffffff;
+  --card-muted: #f9fafb;
+  --border: #e5e7eb;
+
+  --primary: #111827;
+  --secondary: #6b7280;
+  --accent: #0a66c2;
+  --success: #065f46;
+
+  /* Action colors (light) */
+  --action-primary-bg: #111827;
+  --action-primary-text: #ffffff;
+  --action-secondary-bg: #f3f4f6;
+  --action-secondary-text: #1f2937;
+}
+
+/* =====================
+   DARK THEME (CALIBRATED)
+   ===================== */
+
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --text: #e5e7eb;
+  --muted: #a1a1aa;
+  --card: #111827;
+  --card-muted: #0f172a;
+  --border: #1f2937;
+
+  --primary: #e5e7eb;
+  --secondary: #9ca3af;
+  --accent: #60a5fa;
+  --success: #34d399;
+
+  /* Action colors (dark) */
+  --action-primary-bg: #ffffff;
+  --action-primary-text: #0b1220;
+  --action-secondary-bg: #1f2937;
+  --action-secondary-text: #e5e7eb;
+}
+
+/* =====================
+   BASE
+   ===================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =====================
+   LAYOUT
+   ===================== */
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+main {
+  padding: 40px 20px;
+}
+
+/* =====================
+   HEADER
+   ===================== */
+
+.site-header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 16px 0;
+  margin: 0;
+}
+
+.nav-list li {
+  position: relative;
+}
+
+.nav-list > li > a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* =====================
+   SUBMENUS
+   ===================== */
+
+.has-submenu > .submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  min-width: 240px;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.has-submenu:hover > .submenu {
+  display: block;
+}
+
+.submenu a {
+  display: block;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.submenu a:hover {
+  background: var(--card-muted);
+}
+
+/* =====================
+   MOBILE NAV
+   ===================== */
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-list {
+    display: none;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-list.mobile-open {
+    display: flex;
+  }
+
+  .has-submenu > .submenu {
+    position: static;
+    border: none;
+  }
+}
+
+/* =====================
+   TYPOGRAPHY
+   ===================== */
+
+h1, h2, h3, h4, h5 {
+  color: var(--text);
+}
+
+/* =====================
+   BUTTONS (GLOBAL)
+   ===================== */
+
+.btn {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+/* Primary */
+.btn.primary {
+  background: var(--action-primary-bg);
+  color: var(--action-primary-text);
+  border-color: var(--action-primary-bg);
+}
+
+/* Secondary */
+.btn.secondary {
+  background: var(--action-secondary-bg);
+  color: var(--action-secondary-text);
+  border: 1px solid var(--border);
+}
+
+/* =====================
+   PORTAL ASSERTIONS
+   ===================== */
+
+.portal-assertion {
+  background: var(--card-muted);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-top: 20px;
+}
+
+/* =====================
+   SECTIONS
+   ===================== */
+
+.section {
+  margin-top: 32px;
+  max-width: 760px;
+}
+
+/* =====================
+   CREDENTIAL GRID
+   ===================== */
+
+.credentials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+/* =====================
+   CREDENTIAL CARD (FINAL FIX)
+   ===================== */
+
+.credential-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+
+  /* 🔒 OPTION-1: Equal-height card normalization */
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme="dark"] .credential-card {
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+}
+
+/* Badge */
+.credential-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+/* Meta text */
+.credential-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.credential-validity strong {
+  color: var(--success);
+}
+
+/* =====================
+   🔒 HARD BUTTON FIX (MARKUP-AGNOSTIC)
+   ===================== */
+
+/* Force buttons onto their own row */
+.credential-card .btn {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 14px;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+/* Anchor actions to bottom for equal-height cards */
+.credential-actions {
+  margin-top: auto;
+}
+
+/* Prevent text collision */
+.credential-card p {
+  clear: both;
+}
+
+/* =====================
+   FOOTER
+   ===================== */
+
+footer {
+  margin-top: 60px;
+  padding: 30px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg);
+}
+
+/* =====================
+   THEME TOGGLE
+   ===================== */
+
+.theme-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--text);
+}
+
+.theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* =====================
+   VISIBILITY
+   ===================== */
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   CREDENTIAL BADGE — CONTEXT-CORRECT UX ENHANCEMENT
+   SAFE ADDITIVE EXTENSION (PORTAL ONLY)
+   ========================================================= */
+
+/* Tooltip on hover (screen only) */
+.credential-badge[title] {
+  position: relative;
+  cursor: help;
+}
+
+@media (hover: hover) {
+  .credential-badge[title]::after {
+    content: attr(title);
+    position: absolute;
+    left: 0;
+    top: 120%;
+    white-space: nowrap;
+    background: var(--text);
+    color: var(--bg);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 20;
+  }
+
+  .credential-badge[title]:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Print / PDF: expand badge meaning explicitly */
+@media print {
+  .credential-badge[title]::after {
+    content: " — " attr(title);
+    position: static;
+    opacity: 1;
+    background: none;
+    color: var(--text);
+    padding: 0;
+    font-size: 13px;
+  }
+}
+
+/* =========================================================
+   🧾 PRINT / PDF AUDIT — CREDENTIAL CARD INTEGRITY
+   GOVERNANCE-SAFE · NON-INTERACTIVE · AUTHORITATIVE
+   ========================================================= */
+
+@media print {
+
+  /* -----------------------------------------
+     Force neutral light theme for print
+     ----------------------------------------- */
+  :root,
+  [data-theme="dark"] {
+    --bg: #ffffff;
+    --text: #000000;
+    --muted: #333333;
+    --card: #ffffff;
+    --card-muted: #ffffff;
+    --border: #cccccc;
+
+    --primary: #000000;
+    --secondary: #000000;
+    --accent: #000000;
+    --success: #000000;
+
+    --action-primary-bg: transparent;
+    --action-primary-text: #000000;
+    --action-secondary-bg: transparent;
+    --action-secondary-text: #000000;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* -----------------------------------------
+     Expand badge meaning explicitly
+     (no hover dependency)
+     ----------------------------------------- */
+  .credential-badge[title]::after {
+    content: " — " attr(title);
+    position: static;
+    display: inline;
+    opacity: 1;
+    background: none;
+    color: #000000;
+    padding: 0;
+    margin-left: 4px;
+    font-size: 12px;
+    font-weight: normal;
+  }
+
+  /* -----------------------------------------
+     Remove visual interactivity from buttons
+     ----------------------------------------- */
+  .credential-card .btn {
+    background: none !important;
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    cursor: default !important;
+    pointer-events: none !important;
+    text-decoration: none !important;
+  }
+
+  /* -----------------------------------------
+     Show verification URL explicitly
+     ----------------------------------------- */
+  .credential-card a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 11px;
+    word-break: break-all;
+  }
+
+  /* -----------------------------------------
+     Preserve card structure & spacing
+     ----------------------------------------- */
+  .credential-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  .credentials-grid {
+    display: block;
+  }
+
+  .credential-card + .credential-card {
+    margin-top: 20px;
+  }
+
+  /* -----------------------------------------
+     Hide non-essential UI chrome
+     ----------------------------------------- */
+  header,
+  footer,
+  .theme-toggle,
+  .hamburger,
+  nav {
+    display: none !important;
+  }
+}

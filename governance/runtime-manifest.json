@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "status": "FINAL",
+    "governance": "LOCKED",
+    "lastReviewed": "2026-01-XX",
+    "changeAuthority": "NONE",
+    "notes": "All versions frozen unless explicitly unlocked via governance process."
+  },
+
+  "backend": {
+    "cloudFunctions": {
+      "nodeRuntime": "20.x",
+      "firebaseFunctions": "4.4.1",
+      "firebaseAdmin": "12.5.0",
+      "region": "asia-south1"
+    },
+    "dependencies": {
+      "razorpay": "2.9.6",
+      "nodemailer": "6.9.12",
+      "@sendgrid/mail": "8.1.6"
+    }
+  },
+
+  "frontend": {
+    "firebaseSDK": {
+      "generation": "v8 / v9-compat",
+      "apiStyle": "namespaced",
+      "modular": false,
+      "migrationAllowed": false
+    }
+  },
+
+  "tooling": {
+    "firebaseCLI": {
+      "minVersion": "13.0.0",
+      "governed": false
+    },
+    "nodeLocal": {
+      "minVersion": "18.0.0",
+      "governed": false
+    },
+    "npm": {
+      "minVersion": "9.0.0",
+      "governed": false
+    }
+  }
+}

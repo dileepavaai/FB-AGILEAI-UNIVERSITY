@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* =====================================================
+       PUBLIC READ
+       ===================================================== */
+
+    match /faqs/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+        request.auth.token.email in [
+          "dileep@agileai.university",
+          "dileepav@gmail.com"
+        ];
+    }
+
+    /* =====================================================
+       CREDENTIALS — PUBLIC VERIFICATION (GATED)
+       ===================================================== */
+
+    match /credentials/{docId} {
+      allow read: if
+        resource.data.issued_status == "finalized" &&
+        (
+          !("approval_status" in resource.data) ||
+          resource.data.approval_status == "approved"
+        );
+      allow write: if false;
+    }
+
+    /* =====================================================
+       VERIFICATION REQUESTS — PUBLIC INTAKE
+       ===================================================== */
+
+    match /verification_requests/{docId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null &&
+        request.auth.token.email in [
+          "dileep@agileai.university",
+          "dileepav@gmail.com"
+        ];
+    }
+
+    /* =====================================================
+       PHASE-3 — EXECUTIVE ENTITLEMENTS
+       ===================================================== */
+
+    match /executiveEntitlements/{email} {
+      allow read: if request.auth != null &&
+                  request.auth.token.email == email;
+      allow create, update, delete: if false;
+    }
+
+    /* =====================================================
+       PHASE-5 — USER ENTITLEMENTS (AUTO TRIAL)
+       ===================================================== */
+
+    match /user_entitlements/{uid} {
+      allow read: if request.auth != null &&
+                  request.auth.uid == uid;
+      allow create, update, delete: if false;
+    }
+
+    /* =====================================================
+       DEFAULT DENY — ADMIN ONLY
+       ===================================================== */
+
+    match /{document=**} {
+      allow read, write: if request.auth != null &&
+        request.auth.token.email in [
+          "dileep@agileai.university",
+          "dileepav@gmail.com"
+        ];
+    }
+  }
+}

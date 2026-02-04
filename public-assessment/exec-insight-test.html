@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Executive Insight – Test Launcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Minimal styling just to avoid flash -->
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 28px 32px;
+      max-width: 420px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    p {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Executive Insight – Test Mode</h1>
+    <p>
+      This page exists only for internal testing.<br>
+      You will be redirected to the Executive Insight Report.
+    </p>
+    <p>
+      (Payment gate is temporarily bypassed using sessionStorage.)
+    </p>
+  </div>
+
+  <script>
+    /*
+      TEST MODE ONLY
+      ----------------
+      This simulates a successful payment by setting
+      the same sessionStorage flag used in production.
+    */
+
+    sessionStorage.setItem("execInsightUnlocked", "true");
+
+    // Small delay so message is visible
+    setTimeout(() => {
+      window.location.href = "/executive-insight.html";
+    }, 600);
+  </script>
+
+</body>
+</html>

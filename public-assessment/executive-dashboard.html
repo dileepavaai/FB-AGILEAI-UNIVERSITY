@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Executive Dashboard – Agile AI University</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Canonical Site Styles -->
+  <link rel="stylesheet" href="/assets/css/site.css" />
+
+  <style>
+    body {
+      background: #f3f4f6;
+    }
+
+    .exec-dashboard {
+      max-width: 1100px;
+      margin: 48px auto;
+      padding: 0 16px;
+    }
+
+    .exec-hero {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    .exec-hero h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .exec-hero > p {
+      font-size: 15px;
+      color: #444;
+      max-width: 760px;
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    .exec-context-badge {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      font-size: 12px;
+      color: #374151;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .exec-meta {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    .exec-value {
+      background: #f9fafb;
+      border-left: 4px solid #111827;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      max-width: 820px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #333;
+    }
+
+    .exec-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .exec-card {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    .exec-card h3 {
+      margin-bottom: 10px;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+    }
+
+    /* BASELINE ORIENTATION COPY — MUST ALWAYS REMAIN */
+    .exec-baseline {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.55;
+      margin: 0 0 10px 0;
+    }
+
+    /* DYNAMIC INTERPRETATION */
+    .exec-dynamic {
+      font-size: 14px;
+      color: #111827;
+      font-weight: 500;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .exec-actions {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .exec-actions a {
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      text-decoration: none;
+      border: 1px solid #ccc;
+      background: #ffffff;
+      color: #111;
+    }
+
+    .exec-actions a.primary {
+      background: #111827;
+      color: #ffffff;
+      border-color: #111827;
+    }
+
+    .exec-note {
+      margin-top: 24px;
+      font-size: 13px;
+      color: #666;
+      max-width: 760px;
+    }
+
+    .exec-print-hint {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #9ca3af;
+      max-width: 760px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ACCESS GUARD -->
+<script>
+  if (sessionStorage.getItem("execInsightUnlocked") !== "true") {
+    window.location.href = "/report.html";
+  }
+</script>
+
+<div id="site-header"></div>
+
+<main class="exec-dashboard">
+  <section class="exec-hero">
+
+    <div class="exec-context-badge">
+      Orientation View · Advisory
+    </div>
+
+    <h1 id="execTitle">Executive Dashboard</h1>
+
+    <!-- SINGLE METADATA ANCHOR (ED-3 → ED-7) -->
+    <div id="participantLine" class="exec-meta hidden"></div>
+
+    <p>
+      This dashboard provides a decision-grade overview of your leadership
+      capability profile under Agile and AI-influenced conditions.
+      It is designed to frame interpretation before deep analysis.
+    </p>
+
+    <div class="exec-meta" id="execMeta">
+      Generated from your most recent assessment session
+    </div>
+
+    <div class="exec-value">
+      This dashboard exists to help you orient before detail. It highlights how
+      leadership capability patterns interact under uncertainty—where execution,
+      AI reasoning, systems awareness, ethics, and adaptability reinforce or
+      constrain one another. Use this view to anchor judgment, not to score or
+      evaluate.
+    </div>
+
+    <div class="exec-cards">
+
+      <div class="exec-card">
+        <h3>Capability Posture</h3>
+        <p class="exec-baseline">
+          Interpreting execution strength, AI fluency, systems awareness,
+          ethics, and adaptability patterns…
+        </p>
+        <p id="capabilityPosture" class="exec-dynamic"></p>
+      </div>
+
+      <div class="exec-card">
+        <h3>Governance Readiness</h3>
+        <p class="exec-baseline">
+          Interpreting decision authority clarity, accountability boundaries,
+          and system readiness…
+        </p>
+        <p id="governanceReadiness" class="exec-dynamic"></p>
+      </div>
+
+      <div class="exec-card">
+        <h3>Adaptive Load</h3>
+        <p class="exec-baseline">
+          Interpreting leadership strain versus system absorption of change…
+        </p>
+        <p id="adaptiveLoad" class="exec-dynamic"></p>
+      </div>
+
+    </div>
+
+    <div class="exec-actions">
+      <a href="/executive-insight.html" class="primary">
+        View Full Executive Insight Report (25 Pages)
+      </a>
+      <a href="/report.html">
+        Return to Orientation Report
+      </a>
+    </div>
+
+    <div class="exec-note">
+      Executive Insight is advisory and interpretive. It does not constitute
+      certification, hiring endorsement, or performance evaluation.
+    </div>
+
+    <div class="exec-print-hint">
+      For orientation only. Not intended for standalone distribution.
+    </div>
+
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="/assets/js/header.js"></script>
+<script src="/assets/js/footer.js"></script>
+<script src="/assets/js/executive-dashboard.js"></script>
+
+</body>
+</html>

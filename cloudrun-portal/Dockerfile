@@ -1,21 +1,27 @@
-# Use official Node.js 20 image
+# Use official Node.js 20 LTS (slim)
 FROM node:20-slim
 
 # Create app directory
 WORKDIR /app
 
-# Copy package files first (better caching)
-COPY package*.json ./
+# Copy dependency definitions first (for caching)
+COPY package.json package-lock.json ./
 
-# Install only production dependencies
-RUN npm install --omit=dev
+# Install production dependencies deterministically
+RUN npm ci --omit=dev
 
-# Copy rest of the app
+# Copy application source
 COPY . .
+
+# Create and use non-root user
+RUN useradd --system --uid 1001 appuser \
+  && chown -R appuser:appuser /app
+
+USER appuser
 
 # Cloud Run uses port 8080
 ENV PORT=8080
 EXPOSE 8080
 
-# Start the app
-CMD ["npm", "start"]
+# Start the app directly (Cloud Run best practice)
+CMD ["node", "index.js"]

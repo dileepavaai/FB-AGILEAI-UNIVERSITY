@@ -62,3 +62,91 @@ a {
 a:hover {
   text-decoration: none;
 }
+
+/* =========================================================
+   PRINT / PDF STYLES — Academic Friendly
+   ========================================================= */
+@media print {
+
+  /* Reset */
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html, body {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 2.5cm;
+  }
+
+  /* Headings */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1 {
+    font-size: 18pt;
+    margin-bottom: 0.5em;
+  }
+
+  h2 {
+    font-size: 14pt;
+    margin-top: 2em;
+  }
+
+  h3 {
+    font-size: 12pt;
+    margin-top: 1.5em;
+  }
+
+  /* Sections */
+  section, article {
+    page-break-inside: avoid;
+  }
+
+  /* Links */
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 3em;
+    font-size: 9pt;
+    border-top: 1px solid #999;
+    padding-top: 0.5em;
+  }
+
+  /* Hide non-essential elements */
+  nav,
+  .no-print {
+    display: none !important;
+  }
+}
+
+.language-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.language-list li {
+  margin: 0.25em 0;
+  color: #555;
+}
+

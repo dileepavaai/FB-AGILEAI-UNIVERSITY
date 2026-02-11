@@ -1,77 +1,72 @@
 /* =========================================================
    Global Header Injection
-   AgileAI Public Surface — Stabilized Version
+   (Theme-Aware + Icon Sync v2)
 ========================================================= */
 
-(function () {
-  "use strict";
+document.getElementById("header").innerHTML = `
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <a href="index.html">AgileAI Foundation & Agile AI University</a>
+      </div>
 
-  document.addEventListener("DOMContentLoaded", function () {
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="start-here.html">Start Here</a>
+        <a href="core-concepts.html">Core Concepts</a>
+        <a href="myths-and-misconceptions.html">Myths</a>
+        <a href="sitemap.html">Sitemap</a>
+      </nav>
 
-    const headerContainer = document.getElementById("header");
-    if (!headerContainer) return;
+      <div class="theme-control">
+        <button id="theme-toggle" aria-label="Toggle theme"></button>
+      </div>
+    </div>
+  </header>
+`;
 
-    /* =====================================================
-       Inject Header Markup
-    ===================================================== */
 
-    headerContainer.innerHTML = `
-      <header>
-        <div class="header-inner">
+/* =========================================================
+   Active Link Detection
+========================================================= */
 
-          <div class="brand">
-            <a href="index.html">
-              AgileAI Foundation & Agile AI University
-            </a>
-          </div>
+const currentPage =
+  window.location.pathname.split("/").pop() || "index.html";
 
-          <nav class="main-nav">
-            <a href="index.html">Home</a>
-            <a href="start-here.html">Start Here</a>
-            <a href="core-concepts.html">Core Concepts</a>
-            <a href="myths-and-misconceptions.html">Myths</a>
-            <a href="sitemap.html">Sitemap</a>
-          </nav>
+document.querySelectorAll("header nav a").forEach(link => {
+  const linkPage = link.getAttribute("href");
+  if (linkPage === currentPage) {
+    link.classList.add("active");
+  }
+});
 
-          <div class="theme-control">
-            <button id="theme-toggle"
-                    aria-label="Toggle theme"
-                    title="Toggle theme">
-              ◐
-            </button>
-          </div>
 
-        </div>
-      </header>
-    `;
+/* =========================================================
+   THEME ICON CONTROL
+========================================================= */
 
-    /* =====================================================
-       Active Link Detection
-    ===================================================== */
+const themeButton = document.getElementById("theme-toggle");
+const STORAGE_KEY = "aa_theme";
 
-    const currentPage =
-      window.location.pathname.split("/").pop() || "index.html";
+function updateThemeIcon() {
+  const saved = localStorage.getItem(STORAGE_KEY) || "system";
 
-    document.querySelectorAll("header nav a").forEach(function (link) {
-      const linkPage = link.getAttribute("href");
-      if (linkPage === currentPage) {
-        link.classList.add("active");
-      }
-    });
+  if (saved === "light") {
+    themeButton.textContent = "🌞";
+  } else if (saved === "dark") {
+    themeButton.textContent = "🌙";
+  } else {
+    themeButton.textContent = "🖥️";
+  }
+}
 
-    /* =====================================================
-       Theme Toggle Wiring
-       Requires assets/js/theme.js loaded in <head>
-    ===================================================== */
+/* Initial icon set */
+updateThemeIcon();
 
-    const themeButton = document.getElementById("theme-toggle");
-
-    if (themeButton && window.AATheme && typeof window.AATheme.toggle === "function") {
-      themeButton.addEventListener("click", function () {
-        window.AATheme.toggle();
-      });
-    }
-
+/* Click handler */
+if (themeButton && window.AATheme) {
+  themeButton.addEventListener("click", function () {
+    window.AATheme.toggle();
+    updateThemeIcon();
   });
-
-})();
+}

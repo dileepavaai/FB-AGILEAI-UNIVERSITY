@@ -1,40 +1,40 @@
 /* =========================================
-   AgileAI Public Knowledge Surface
-   Institutional Academic Styling
+   AgileAI Public Surface — Institutional CSS v2
    ========================================= */
 
-html, body {
+:root {
+  --text-primary: #111;
+  --text-secondary: #555;
+  --border-subtle: #e6e6e6;
+  --background: #ffffff;
+  --max-width: 880px;
+}
+
+/* ===== Base Reset ===== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
   margin: 0;
   padding: 0;
-  background-color: #ffffff;
-  color: #111111;
+  background: var(--background);
+  color: var(--text-primary);
   font-family: Georgia, "Times New Roman", serif;
-  line-height: 1.68;
-  font-size: 17px;
+  line-height: 1.75;
 }
 
-/* -----------------------------------------
-   Layout Container
------------------------------------------ */
-
-main {
-  max-width: 860px;
-  margin: 64px auto 80px auto;
-  padding: 0 28px;
-}
-
-/* -----------------------------------------
-   Header
------------------------------------------ */
+/* ===== Header ===== */
 
 header {
-  border-bottom: 1px solid #e5e5e5;
-  padding: 18px 28px;
-  background-color: #ffffff;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 18px 32px;
+  background: #fff;
 }
 
 .header-inner {
-  max-width: 960px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -43,38 +43,40 @@ header {
 
 .site-title a {
   text-decoration: none;
-  color: #111111;
-  font-size: 0.95em;
+  color: var(--text-primary);
+  font-size: 0.95rem;
   letter-spacing: 0.3px;
 }
 
-.site-title a:hover {
-  text-decoration: underline;
-}
-
 nav a {
-  margin-left: 24px;
+  margin-left: 28px;
   text-decoration: none;
-  color: #222222;
-  font-size: 0.9em;
+  color: var(--text-primary);
+  font-size: 0.9rem;
 }
 
 nav a:hover {
   text-decoration: underline;
 }
 
-/* -----------------------------------------
-   Breadcrumb
------------------------------------------ */
+/* ===== Main Layout ===== */
+
+main {
+  max-width: var(--max-width);
+  margin: 70px auto 100px auto;
+  padding: 0 28px;
+}
+
+/* ===== Breadcrumb ===== */
 
 .breadcrumb {
-  font-size: 0.85em;
-  margin-bottom: 2em;
-  color: #666666;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
 }
 
 .breadcrumb a {
-  color: #444444;
+  color: var(--text-secondary);
   text-decoration: none;
 }
 
@@ -82,82 +84,69 @@ nav a:hover {
   text-decoration: underline;
 }
 
-/* -----------------------------------------
-   Typography
------------------------------------------ */
+/* ===== Typography ===== */
 
 h1 {
-  font-size: 2.4em;
-  font-weight: normal;
-  margin-bottom: 0.6em;
+  font-size: 2.6rem;
+  font-weight: 600;
+  margin-bottom: 1.4rem;
+  line-height: 1.25;
 }
 
 h2 {
-  font-size: 1.45em;
-  font-weight: normal;
-  margin-top: 2.6em;
-  margin-bottom: 0.6em;
+  font-size: 1.5rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1.1rem;
 }
 
 h3 {
-  font-size: 1.1em;
-  font-weight: normal;
-  margin-top: 1.8em;
-  margin-bottom: 0.4em;
+  font-size: 1.15rem;
+  margin-top: 2.2rem;
+  margin-bottom: 0.6rem;
 }
 
 p {
-  margin-bottom: 1.25em;
+  margin-bottom: 1.6rem;
+  font-size: 1.05rem;
 }
 
 ul {
-  padding-left: 22px;
-  margin-bottom: 1.5em;
+  padding-left: 24px;
+  margin-bottom: 1.6rem;
 }
 
 li {
-  margin-bottom: 0.4em;
+  margin-bottom: 0.5rem;
 }
 
-/* -----------------------------------------
-   Links (Institutional Tone)
------------------------------------------ */
+/* ===== Blockquote ===== */
+
+blockquote {
+  margin: 2.5rem 0;
+  padding-left: 20px;
+  border-left: 3px solid var(--border-subtle);
+  font-style: italic;
+  color: #333;
+}
+
+/* ===== Links ===== */
 
 a {
   color: #1a1a1a;
   text-decoration: underline;
-  text-underline-offset: 2px;
 }
 
 a:hover {
-  color: #000000;
+  opacity: 0.75;
 }
 
-/* -----------------------------------------
-   Blockquote
------------------------------------------ */
-
-blockquote {
-  margin: 2em 0;
-  padding-left: 18px;
-  border-left: 3px solid #d0d0d0;
-  font-style: italic;
-  color: #444444;
-}
-
-/* -----------------------------------------
-   Footer
------------------------------------------ */
+/* ===== Footer ===== */
 
 footer {
-  border-top: 1px solid #e5e5e5;
-  margin-top: 90px;
-  padding: 30px 28px;
-  font-size: 0.9em;
-  color: #555555;
-}
-
-#footer {
-  max-width: 960px;
+  border-top: 1px solid var(--border-subtle);
+  padding: 32px 28px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  max-width: var(--max-width);
   margin: 0 auto;
 }

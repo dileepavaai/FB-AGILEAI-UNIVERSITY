@@ -1,5 +1,6 @@
 (function () {
   const STORAGE_KEY = "aa_theme";
+  const root = document.documentElement;
 
   function getSystemPreference() {
     return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -8,13 +9,13 @@
   }
 
   function applyTheme(theme) {
-    if (theme === "system") {
-      document.documentElement.setAttribute(
-        "data-theme",
-        getSystemPreference()
-      );
+    if (theme === "light") {
+      root.setAttribute("data-theme", "light");
+    } else if (theme === "dark") {
+      root.setAttribute("data-theme", "dark");
     } else {
-      document.documentElement.setAttribute("data-theme", theme);
+      // system mode → REMOVE attribute completely
+      root.removeAttribute("data-theme");
     }
   }
 
@@ -33,7 +34,7 @@
   }
 
   function toggleTheme() {
-    const current = localStorage.getItem(STORAGE_KEY) || "system";
+    const current = getSavedTheme() || "system";
 
     let next;
     if (current === "light") next = "dark";
@@ -44,7 +45,6 @@
     applyTheme(next);
   }
 
-  // expose for header button
   window.AATheme = {
     toggle: toggleTheme,
     init: initTheme

@@ -1,6 +1,7 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v4.2
-   UI v4 Stabilized + Mobile Hardened
+   AgileAI Public Surface — Institutional CSS v4.3.2
+   UI v4 Stabilized + Mobile Hardened + Nav Rhythm Stabilized
+   SAFE FULL REPLACEMENT
    ========================================= */
 
 /* =========================
@@ -63,11 +64,11 @@ header {
 header.scrolled {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  background: rgba(255,255,255,0.82);
+  background: rgba(255,255,255,0.85);
 }
 
 [data-theme="dark"] header.scrolled {
-  background: rgba(17,17,17,0.82);
+  background: rgba(17,17,17,0.85);
 }
 
 .header-inner {
@@ -77,6 +78,7 @@ header.scrolled {
   justify-content: space-between;
   align-items: center;
   gap: 24px;
+  flex-wrap: wrap;
 }
 
 .brand a {
@@ -84,41 +86,56 @@ header.scrolled {
   color: var(--text-primary);
   font-size: 0.95rem;
   letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 /* =========================
-   Navigation
+   Navigation (Rhythm Stabilized)
 ========================= */
+
+nav {
+  display: flex;
+}
 
 nav ul {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 36px;                 /* ✅ increased spacing for clarity */
   list-style: none;
   margin: 0;
   padding: 0;
+  flex-wrap: wrap;
+}
+
+nav li {
+  display: flex;
 }
 
 nav a {
   text-decoration: none;
   color: var(--text-primary);
   font-size: 0.9rem;
+  letter-spacing: 0.3px;
   position: relative;
-  padding-bottom: 4px;
-  transition: transform 0.2s ease;
+  padding: 6px 0;
+  white-space: nowrap;
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease;
 }
 
 nav a:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+  opacity: 0.85;
 }
 
 nav a::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -2px;
+  bottom: 0;
   width: 0%;
-  height: 2px;
+  height: 1.5px;
   background-color: var(--text-primary);
   transition: width 0.25s ease;
 }
@@ -223,7 +240,7 @@ footer {
 ========================= */
 
 .theme-control {
-  margin-left: 16px;
+  margin-left: 12px;
 }
 
 #theme-toggle {
@@ -369,7 +386,6 @@ footer {
   .header-inner {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
   }
 
   nav ul {

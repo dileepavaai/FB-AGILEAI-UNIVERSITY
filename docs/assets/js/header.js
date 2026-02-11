@@ -1,6 +1,6 @@
 /* =========================================================
    Global Header Injection
-   (Structured Nav + Theme-Aware + Icon Sync v3)
+   (Theme-Aware + Icon Sync v3 — Structure Aligned)
 ========================================================= */
 
 document.getElementById("header").innerHTML = `
@@ -40,27 +40,3 @@ document.querySelectorAll("header nav a").forEach(link => {
     link.classList.add("active");
   }
 });
-
-
-/* =========================================================
-   THEME ICON CONTROL
-========================================================= */
-
-const themeButton = document.getElementById("theme-toggle");
-const STORAGE_KEY = "aa_theme";
-
-function updateThemeIcon() {
-  const saved = localStorage.getItem(STORAGE_KEY) || "system";
-
-  themeButton.classList.remove("theme-icon-fade");
-  void themeButton.offsetWidth; // force reflow
-  themeButton.classList.add("theme-icon-fade");
-
-  if (saved === "light") {
-    themeButton.textContent = "🌞";
-  } else if (saved === "dark") {
-    themeButton.textContent = "🌙";
-  } else {
-    themeButton.textContent = "🖥️";
-  }
-}

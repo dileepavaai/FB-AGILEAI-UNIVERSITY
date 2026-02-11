@@ -509,3 +509,22 @@ sup.cite {
 .references li {
   margin-bottom: 0.8rem;
 }
+
+.theme-control {
+  margin-left: 16px;
+}
+
+#theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+#theme-toggle:hover {
+  background: var(--border);
+}

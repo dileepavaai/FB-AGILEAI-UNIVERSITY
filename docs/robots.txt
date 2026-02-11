@@ -1,19 +1,59 @@
-# =========================================
-# Agile AI University - Robots.txt
+# ==========================================
+# Agile AI University – Robots.txt
 # Public Learning Surface Governance
-# =========================================
+# ==========================================
+
+# ------------------------------------------
+# Allow major compliant search engines
+# ------------------------------------------
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# ------------------------------------------
+# AI Crawlers (LLM systems respecting robots.txt)
+# ------------------------------------------
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# ------------------------------------------
+# Default rule for all other bots
+# ------------------------------------------
 
 User-agent: *
 Allow: /
 
-# Explicitly allow core public learning pages
+# ------------------------------------------
+# Explicitly allow public learning pages
+# (Defensive clarity – not strictly required)
+# ------------------------------------------
+
 Allow: /index.html
 Allow: /start-here.html
 Allow: /core-concepts.html
 Allow: /myths-and-misconceptions.html
 Allow: /sitemap.html
 
+# ------------------------------------------
 # Disallow internal / non-public system areas
+# ------------------------------------------
+
 Disallow: /public-admin/
 Disallow: /public-assessment/
 Disallow: /public-certs/
@@ -23,8 +63,14 @@ Disallow: /scripts/
 Disallow: /.firebase/
 Disallow: /.git/
 
+# ------------------------------------------
 # Prevent parameter-based crawl duplication
+# ------------------------------------------
+
 Disallow: /*?*
 
+# ------------------------------------------
 # Sitemap declaration
+# ------------------------------------------
+
 Sitemap: https://learn.agileai.university/sitemap.xml

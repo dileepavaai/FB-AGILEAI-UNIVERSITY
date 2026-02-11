@@ -1,84 +1,165 @@
 /* =========================================================
-   AgileAI Learning Portal — Theme Controller (Stable v3)
-   Deterministic • GitHub Pages Safe • Header Injection Safe
-   ========================================================= */
+   AgileAI Public Surface — Theme Controller v5 (Robust)
+   Fully resilient across injected headers & all pages
+========================================================= */
 
 (function () {
-  "use strict";
 
   const STORAGE_KEY = "aa_theme";
   const root = document.documentElement;
-  const MODES = ["light", "dark", "system"];
+  const prefersDarkQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-  function getSystemPreference() {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  }
-
-  function applyTheme(mode) {
-    if (mode === "dark") {
-      root.setAttribute("data-theme", "dark");
-    } else if (mode === "light") {
-      root.setAttribute("data-theme", "light");
-    } else {
-      // system mode
-      root.removeAttribute("data-theme");
-    }
-  }
-
-  function updateButton(mode) {
-    const btn = document.getElementById("theme-toggle");
-    if (!btn) return;
-
-    if (mode === "light") {
-      btn.textContent = "🌞";
-      btn.title = "Theme: Light";
-    } else if (mode === "dark") {
-      btn.textContent = "🌙";
-      btn.title = "Theme: Dark";
-    } else {
-      btn.textContent = "🖥️";
-      btn.title = "Theme: System";
-    }
-  }
+  /* =========================
+     Helpers
+  ========================= */
 
   function getSavedTheme() {
-    return localStorage.getItem(STORAGE_KEY);
+    return localStorage.getItem(STORAGE_KEY) || "system";
   }
 
   function saveTheme(mode) {
     localStorage.setItem(STORAGE_KEY, mode);
   }
 
-  function initTheme() {
-    let saved = getSavedTheme();
-    if (!MODES.includes(saved)) saved = "light";
-
-    applyTheme(saved);
-    updateButton(saved);
+  function applyTheme(mode) {
+    root.setAttribute("data-theme", mode);
+    updateButton(mode);
   }
 
-  function cycleTheme() {
-    let current = getSavedTheme();
-    if (!MODES.includes(current)) current = "light";
+  /* =========================
+     Icon + Tooltip
+  ========================= */
 
-    const index = MODES.indexOf(current);
-    const next = MODES[(index + 1) % MODES.length];
+  function updateButton(mode) {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+
+    btn.classList.add("theme-icon-fade");
+
+    setTimeout(() => {
+      if (mode === "light") {
+        btn.textContent = "🌞";
+        btn.title = "Theme: Light";
+      } else if (mode === "dark") {
+        btn.textContent = "🌙";
+        btn.title = "Theme: Dark";
+      } else {
+        btn.textContent = "🖥️";
+        btn.title = "Theme: System";
+      }
+
+      btn.classList.remove("theme-icon-fade");
+    }, 120);
+  }
+
+  /* =========================
+     Rotation Logic
+  ========================= */
+
+  function nextMode(current) {
+    if (current === "light") return "dark";
+    if (current === "dark") return "system";
+    return "light";
+  }
+
+  function toggleTheme(e) {
+    const current = getSavedTheme();
+    const next = nextMode(current);
 
     saveTheme(next);
     applyTheme(next);
-    updateButton(next);
+
+    triggerRipple(e);
   }
 
-  // Wait for full DOM (including injected header)
-  window.addEventListener("load", function () {
-    initTheme();
+  /* =========================
+     Ripple
+  ========================= */
 
+  function triggerRipple(event) {
+    const btn = event.currentTarget;
+    const circle = document.createElement("span");
+    circle.className = "ripple";
+
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+
+    circle.style.width = circle.style.height = size + "px";
+    circle.style.left = event.clientX - rect.left - size / 2 + "px";
+    circle.style.top = event.clientY - rect.top - size / 2 + "px";
+
+    btn.appendChild(circle);
+    setTimeout(() => circle.remove(), 600);
+  }
+
+  /* =========================
+     Attach Button Safely
+  ========================= */
+
+  function attachButtonListener() {
     const btn = document.getElementById("theme-toggle");
-    if (btn) {
-      btn.addEventListener("click", cycleTheme);
+    if (!btn) return false;
+
+    btn.addEventListener("click", toggleTheme);
+    return true;
+  }
+
+  /* =========================
+     Live System Detection
+  ========================= */
+
+  prefersDarkQuery.addEventListener("change", () => {
+    if (getSavedTheme() === "system") {
+      applyTheme("system");
     }
   });
+
+  /* =========================
+     Reading Progress
+  ========================= */
+
+  function initReadingProgress() {
+    if (document.getElementById("reading-progress")) return;
+
+    const bar = document.createElement("div");
+    bar.id = "reading-progress";
+    document.body.appendChild(bar);
+
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = progress + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+  }
+
+  /* =========================
+     Init
+  ========================= */
+
+  function init() {
+
+    // Apply saved theme immediately
+    applyTheme(getSavedTheme());
+
+    // Try attaching button
+    if (!attachButtonListener()) {
+
+      // Retry if header is injected later
+      const observer = new MutationObserver(() => {
+        if (attachButtonListener()) {
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    initReadingProgress();
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
 
 })();

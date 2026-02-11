@@ -1,6 +1,10 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v2
+   AgileAI Public Surface — Institutional CSS v3 (Deterministic Theme)
    ========================================= */
+
+/* =========================
+   ROOT VARIABLES (Default = Light)
+========================= */
 
 :root {
   --text-primary: #111;
@@ -10,7 +14,9 @@
   --max-width: 880px;
 }
 
-/* ===== Base Reset ===== */
+/* =========================
+   Base Reset
+========================= */
 
 * {
   box-sizing: border-box;
@@ -23,14 +29,21 @@ body {
   color: var(--text-primary);
   font-family: Georgia, "Times New Roman", serif;
   line-height: 1.75;
+  font-size: 18px;
+  font-kerning: normal;
+  font-feature-settings: "liga", "kern";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* ===== Header ===== */
+/* =========================
+   Header
+========================= */
 
 header {
   border-bottom: 1px solid var(--border-subtle);
   padding: 18px 32px;
-  background: #fff;
+  background: var(--background);
 }
 
 .header-inner {
@@ -53,170 +66,43 @@ nav a {
   text-decoration: none;
   color: var(--text-primary);
   font-size: 0.9rem;
-}
-
-nav a:hover {
-  text-decoration: underline;
-}
-
-/* ===== Main Layout ===== */
-
-main {
-  max-width: var(--max-width);
-  margin: 70px auto 100px auto;
-  padding: 0 28px;
-}
-
-/* ===== Breadcrumb ===== */
-
-.breadcrumb {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: 40px;
-}
-
-.breadcrumb a {
-  color: var(--text-secondary);
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  text-decoration: underline;
-}
-
-/* ===== Typography ===== */
-
-h1 {
-  font-size: 2.6rem;
-  font-weight: 600;
-  margin-bottom: 1.4rem;
-  line-height: 1.25;
-}
-
-h2 {
-  font-size: 1.5rem;
-  margin-top: 3.5rem;
-  margin-bottom: 1.1rem;
-}
-
-h3 {
-  font-size: 1.15rem;
-  margin-top: 2.2rem;
-  margin-bottom: 0.6rem;
-}
-
-p {
-  margin-bottom: 1.6rem;
-  font-size: 1.05rem;
-}
-
-ul {
-  padding-left: 24px;
-  margin-bottom: 1.6rem;
-}
-
-li {
-  margin-bottom: 0.5rem;
-}
-
-/* ===== Blockquote ===== */
-
-blockquote {
-  margin: 2.5rem 0;
-  padding-left: 20px;
-  border-left: 3px solid var(--border-subtle);
-  font-style: italic;
-  color: #333;
-}
-
-/* ===== Links ===== */
-
-a {
-  color: #1a1a1a;
-  text-decoration: underline;
-}
-
-a:hover {
-  opacity: 0.75;
-}
-
-/* ===== Footer ===== */
-
-footer {
-  border-top: 1px solid var(--border-subtle);
-  padding: 32px 28px;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-
-/* =========================
-   Active Navigation State
-========================= */
-
-header nav a {
-  position: relative;
-  padding-bottom: 4px;
-}
-
-header nav a.active {
-  font-weight: 600;
-}
-
-header nav a.active::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 100%;
-  height: 2px;
-  background-color: #111;
-}
-
-/* =========================
-   Navigation Micro Interaction
-========================= */
-
-header nav a {
   position: relative;
   padding-bottom: 4px;
   transition: color 0.25s ease, transform 0.2s ease;
 }
 
-header nav a:hover {
+nav a:hover {
   transform: translateY(-1px);
 }
 
-header nav a::after {
+nav a::after {
   content: "";
   position: absolute;
   left: 0;
   bottom: -2px;
   width: 0%;
   height: 2px;
-  background-color: #111;
+  background-color: var(--text-primary);
   transition: width 0.25s ease;
 }
 
-header nav a:hover::after {
+nav a:hover::after,
+nav a.active::after {
   width: 100%;
 }
 
-/* Active State */
-header nav a.active {
+nav a.active {
   font-weight: 600;
 }
 
-header nav a.active::after {
-  width: 100%;
-}
-
 /* =========================
-   Page Fade Transition
+   Main Layout
 ========================= */
 
 main {
+  max-width: 720px;
+  margin: 70px auto 100px auto;
+  padding: 0 28px;
   opacity: 0;
   transform: translateY(8px);
   animation: fadeInPage 0.5s ease forwards;
@@ -230,17 +116,28 @@ main {
 }
 
 /* =========================
-   Typography System
+   Breadcrumb
 ========================= */
 
-body {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 18px;
-  line-height: 1.75;
-  color: #1a1a1a;
+.breadcrumb {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
 }
 
-/* Headings */
+.breadcrumb a {
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Typography
+========================= */
+
 h1, h2, h3 {
   font-weight: 600;
   line-height: 1.25;
@@ -264,12 +161,10 @@ h3 {
   margin-top: 2rem;
 }
 
-/* Paragraph spacing */
 p {
   margin-bottom: 1.4rem;
 }
 
-/* Lists */
 ul, ol {
   margin-bottom: 1.6rem;
   padding-left: 1.5rem;
@@ -279,94 +174,127 @@ li {
   margin-bottom: 0.6rem;
 }
 
-/* Breadcrumb refinement */
-.breadcrumb {
-  font-size: 0.85rem;
-  margin-bottom: 2rem;
-  color: #666;
-}
-
-.breadcrumb a {
-  text-decoration: none;
-  color: #444;
-}
-
-.breadcrumb a:hover {
-  text-decoration: underline;
-}
-
 /* =========================
-   Blockquote System
+   Blockquote
 ========================= */
 
 blockquote {
   margin: 2.5rem 0;
   padding: 1.5rem 2rem;
-  border-left: 4px solid #111;
+  border-left: 4px solid var(--text-primary);
   background: #f7f7f7;
   font-style: italic;
   font-size: 1.05rem;
   line-height: 1.6;
 }
 
-blockquote strong {
-  font-style: normal;
+/* =========================
+   Links
+========================= */
+
+a {
+  color: var(--text-primary);
+  text-decoration: underline;
 }
 
-blockquote p:last-child {
-  margin-bottom: 0;
+a:hover {
+  opacity: 0.75;
 }
 
 /* =========================
-   Section Spacing System
+   Footer
 ========================= */
 
-main > h2 {
-  padding-top: 1rem;
-  border-top: 1px solid #eaeaea;
-}
-
-main > h2:first-of-type {
-  border-top: none;
-  padding-top: 0;
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 32px 28px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 /* =========================
-   Ideal Line Length Control
+   Theme Toggle Button
 ========================= */
 
-main {
-  max-width: 720px;   /* ~65–75 characters per line */
-  margin: 70px auto 100px auto;
-  padding: 0 28px;
+.theme-control {
+  margin-left: 16px;
 }
 
-/* =========================
-   Lead Paragraph Styling
-========================= */
-
-h1 + p {
-  font-size: 1.2rem;
-  line-height: 1.7;
-  color: #333;
-  margin-bottom: 2rem;
+#theme-toggle {
+  background: none;
+  border: 1px solid var(--border-subtle);
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
 }
 
-/* =========================
-   Typographic Polish
-========================= */
-
-body {
-  font-kerning: normal;
-  font-feature-settings: "liga", "kern";
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+#theme-toggle:hover {
+  background: var(--border-subtle);
 }
 
-/* Improve quotes & dashes appearance */
-blockquote,
-p {
-  hyphens: auto;
+/* =====================================================
+   DETERMINISTIC THEME STATES
+   ===================================================== */
+
+/* ---------- LIGHT MODE ---------- */
+
+[data-theme="light"] {
+  --text-primary: #111;
+  --text-secondary: #555;
+  --border-subtle: #e6e6e6;
+  --background: #ffffff;
+}
+
+/* ---------- DARK MODE ---------- */
+
+[data-theme="dark"] {
+  --text-primary: #e6e6e6;
+  --text-secondary: #aaa;
+  --border-subtle: #333;
+  --background: #111;
+}
+
+[data-theme="dark"] blockquote {
+  background: #1a1a1a;
+  border-left: 4px solid #e6e6e6;
+}
+
+[data-theme="dark"] footer {
+  border-top: 1px solid #333;
+  color: #aaa;
+}
+
+/* ---------- SYSTEM MODE ---------- */
+
+[data-theme="system"] {
+  --text-primary: #111;
+  --text-secondary: #555;
+  --border-subtle: #e6e6e6;
+  --background: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    --text-primary: #e6e6e6;
+    --text-secondary: #aaa;
+    --border-subtle: #333;
+    --background: #111;
+  }
+
+  [data-theme="system"] blockquote {
+    background: #1a1a1a;
+    border-left: 4px solid #e6e6e6;
+  }
+
+  [data-theme="system"] footer {
+    border-top: 1px solid #333;
+    color: #aaa;
+  }
 }
 
 /* =========================
@@ -376,8 +304,8 @@ p {
 @media print {
 
   body {
-    background: #ffffff;
-    color: #000;
+    background: #ffffff !important;
+    color: #000 !important;
     font-size: 12pt;
   }
 
@@ -395,151 +323,8 @@ p {
     padding: 0;
   }
 
-  h1 {
-    font-size: 20pt;
-  }
-
-  h2 {
-    font-size: 16pt;
-  }
-
-  h3 {
-    font-size: 14pt;
-  }
-
-  a {
-    text-decoration: none;
-    color: #000;
-  }
-
   blockquote {
     border-left: 3px solid #000;
     background: none;
   }
-}
-
-/* =========================
-   Dark Mode Variant
-========================= */
-
-@media (prefers-color-scheme: dark) {
-
-  body {
-    background: #111;
-    color: #e6e6e6;
-  }
-
-  header {
-    border-bottom: 1px solid #333;
-  }
-
-  nav a {
-    color: #e6e6e6;
-  }
-
-  nav a::after {
-    background-color: #e6e6e6;
-  }
-
-  blockquote {
-    background: #1a1a1a;
-    border-left: 4px solid #e6e6e6;
-  }
-
-  .breadcrumb {
-    color: #aaa;
-  }
-
-  footer {
-    border-top: 1px solid #333;
-    color: #aaa;
-  }
-
-  .references,
-  .footnotes {
-    border-top: 1px solid #333;
-  }
-}
-
-/* =========================
-   Footnotes
-========================= */
-
-.footnotes {
-  margin-top: 3rem;
-  font-size: 0.85rem;
-  color: #444;
-  border-top: 1px solid #eaeaea;
-  padding-top: 1.5rem;
-}
-
-.footnotes p {
-  margin-bottom: 0.8rem;
-}
-
-a.footnote-ref {
-  text-decoration: none;
-  font-size: 0.75rem;
-}
-
-/* =========================
-   Citation System
-========================= */
-
-.citation {
-  font-size: 0.9rem;
-  color: #555;
-  display: block;
-  margin-top: 0.5rem;
-}
-
-sup.cite {
-  font-size: 0.75rem;
-  vertical-align: super;
-}
-
-.references {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid #eaeaea;
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.references li {
-  margin-bottom: 0.8rem;
-}
-
-.theme-control {
-  margin-left: 16px;
-}
-
-#theme-toggle {
-  background: none;
-  border: 1px solid var(--border);
-  padding: 6px 10px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  border-radius: 4px;
-  color: var(--text);
-  transition: all 0.2s ease;
-}
-
-#theme-toggle:hover {
-  background: var(--border);
-}
-
-/* =========================
-   Manual Dark Mode (data-theme support)
-========================= */
-
-[data-theme="dark"] {
-  --text-primary: #e6e6e6;
-  --text-secondary: #aaa;
-  --border-subtle: #333;
-  --background: #111;
-}
-
-[data-theme="dark"] blockquote {
-  background: #1a1a1a;
 }

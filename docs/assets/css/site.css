@@ -1,5 +1,6 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v4.1 (Final Locked)
+   AgileAI Public Surface — Institutional CSS v4.2
+   UI v4 Stabilized + Mobile Hardened
    ========================================= */
 
 /* =========================
@@ -11,7 +12,7 @@
   --text-secondary: #555;
   --border-subtle: #e6e6e6;
   --background: #ffffff;
-  --max-width: 880px;
+  --max-width: 720px;
   --transition-speed: 240ms;
 }
 
@@ -75,6 +76,7 @@ header.scrolled {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
 }
 
 .brand a {
@@ -88,8 +90,16 @@ header.scrolled {
    Navigation
 ========================= */
 
+nav ul {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 nav a {
-  margin-left: 28px;
   text-decoration: none;
   color: var(--text-primary);
   font-size: 0.9rem;
@@ -123,8 +133,8 @@ nav a.active::after {
 ========================= */
 
 main {
-  max-width: 720px;
-  margin: 70px auto 100px auto;
+  max-width: var(--max-width);
+  margin: 60px auto 100px auto;
   padding: 0 28px;
   opacity: 0;
   transform: translateY(8px);
@@ -201,7 +211,7 @@ footer {
   padding: 32px 28px;
   font-size: 0.85rem;
   color: var(--text-secondary);
-  max-width: 720px;
+  max-width: var(--max-width);
   margin: 0 auto;
   transition:
     border-color var(--transition-speed) ease,
@@ -327,6 +337,60 @@ footer {
 
 :focus:not(:focus-visible) {
   outline: none;
+}
+
+/* =========================
+   Mobile Optimization
+========================= */
+
+@media (max-width: 1024px) {
+
+  body {
+    font-size: 16px;
+  }
+
+  main {
+    margin-top: 50px;
+    padding: 0 20px;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.2rem; }
+
+}
+
+@media (max-width: 768px) {
+
+  header {
+    padding: 14px 18px;
+  }
+
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  main {
+    margin-top: 40px;
+    padding: 0 16px;
+  }
+
+  a, button {
+    min-height: 44px;
+  }
+
+  footer {
+    padding: 24px 16px;
+  }
+
 }
 
 /* =========================

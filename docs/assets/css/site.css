@@ -1,22 +1,42 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v3 (Deterministic Theme)
+   AgileAI Public Surface — Institutional CSS v4
+   Deterministic • Stable • GitHub Pages Safe
    ========================================= */
 
-/* =========================
+/* =====================================================
    ROOT VARIABLES (Default = Light)
-========================= */
+   ===================================================== */
 
 :root {
   --text-primary: #111;
   --text-secondary: #555;
   --border-subtle: #e6e6e6;
   --background: #ffffff;
+  --blockquote-bg: #f7f7f7;
   --max-width: 880px;
 }
 
-/* =========================
-   Base Reset
-========================= */
+/* =====================================================
+   SMOOTH THEME TRANSITIONS
+   ===================================================== */
+
+html,
+body,
+header,
+footer,
+main,
+blockquote,
+nav a,
+#theme-toggle {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+/* =====================================================
+   BASE RESET
+   ===================================================== */
 
 * {
   box-sizing: border-box;
@@ -30,15 +50,13 @@ body {
   font-family: Georgia, "Times New Roman", serif;
   line-height: 1.75;
   font-size: 18px;
-  font-kerning: normal;
-  font-feature-settings: "liga", "kern";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* =========================
-   Header
-========================= */
+/* =====================================================
+   HEADER
+   ===================================================== */
 
 header {
   border-bottom: 1px solid var(--border-subtle);
@@ -54,7 +72,7 @@ header {
   align-items: center;
 }
 
-.site-title a {
+.brand a {
   text-decoration: none;
   color: var(--text-primary);
   font-size: 0.95rem;
@@ -68,7 +86,6 @@ nav a {
   font-size: 0.9rem;
   position: relative;
   padding-bottom: 4px;
-  transition: color 0.25s ease, transform 0.2s ease;
 }
 
 nav a:hover {
@@ -95,9 +112,9 @@ nav a.active {
   font-weight: 600;
 }
 
-/* =========================
-   Main Layout
-========================= */
+/* =====================================================
+   MAIN LAYOUT
+   ===================================================== */
 
 main {
   max-width: 720px;
@@ -115,9 +132,9 @@ main {
   }
 }
 
-/* =========================
-   Breadcrumb
-========================= */
+/* =====================================================
+   BREADCRUMB
+   ===================================================== */
 
 .breadcrumb {
   font-size: 0.85rem;
@@ -134,9 +151,9 @@ main {
   text-decoration: underline;
 }
 
-/* =========================
-   Typography
-========================= */
+/* =====================================================
+   TYPOGRAPHY
+   ===================================================== */
 
 h1, h2, h3 {
   font-weight: 600;
@@ -174,23 +191,23 @@ li {
   margin-bottom: 0.6rem;
 }
 
-/* =========================
-   Blockquote
-========================= */
+/* =====================================================
+   BLOCKQUOTE
+   ===================================================== */
 
 blockquote {
   margin: 2.5rem 0;
   padding: 1.5rem 2rem;
   border-left: 4px solid var(--text-primary);
-  background: #f7f7f7;
+  background: var(--blockquote-bg);
   font-style: italic;
   font-size: 1.05rem;
   line-height: 1.6;
 }
 
-/* =========================
-   Links
-========================= */
+/* =====================================================
+   LINKS
+   ===================================================== */
 
 a {
   color: var(--text-primary);
@@ -201,9 +218,9 @@ a:hover {
   opacity: 0.75;
 }
 
-/* =========================
-   Footer
-========================= */
+/* =====================================================
+   FOOTER
+   ===================================================== */
 
 footer {
   border-top: 1px solid var(--border-subtle);
@@ -214,9 +231,9 @@ footer {
   margin: 0 auto;
 }
 
-/* =========================
-   Theme Toggle Button
-========================= */
+/* =====================================================
+   THEME TOGGLE
+   ===================================================== */
 
 .theme-control {
   margin-left: 16px;
@@ -230,7 +247,6 @@ footer {
   cursor: pointer;
   border-radius: 4px;
   color: var(--text-primary);
-  transition: all 0.2s ease;
 }
 
 #theme-toggle:hover {
@@ -241,15 +257,6 @@ footer {
    DETERMINISTIC THEME STATES
    ===================================================== */
 
-/* ---------- LIGHT MODE ---------- */
-
-[data-theme="light"] {
-  --text-primary: #111;
-  --text-secondary: #555;
-  --border-subtle: #e6e6e6;
-  --background: #ffffff;
-}
-
 /* ---------- DARK MODE ---------- */
 
 [data-theme="dark"] {
@@ -257,49 +264,28 @@ footer {
   --text-secondary: #aaa;
   --border-subtle: #333;
   --background: #111;
+  --blockquote-bg: #1a1a1a;
 }
 
-[data-theme="dark"] blockquote {
-  background: #1a1a1a;
-  border-left: 4px solid #e6e6e6;
-}
+/* ---------- SYSTEM MODE ----------
+   (No forced override — handled by JS by removing attribute)
+----------------------------------------------------------- */
 
-[data-theme="dark"] footer {
-  border-top: 1px solid #333;
-  color: #aaa;
-}
-
-/* ---------- SYSTEM MODE ---------- */
-
-[data-theme="system"] {
-  --text-primary: #111;
-  --text-secondary: #555;
-  --border-subtle: #e6e6e6;
-  --background: #ffffff;
-}
+/* When no data-theme attribute exists AND system is dark */
 
 @media (prefers-color-scheme: dark) {
-  [data-theme="system"] {
+  html:not([data-theme]) {
     --text-primary: #e6e6e6;
     --text-secondary: #aaa;
     --border-subtle: #333;
     --background: #111;
-  }
-
-  [data-theme="system"] blockquote {
-    background: #1a1a1a;
-    border-left: 4px solid #e6e6e6;
-  }
-
-  [data-theme="system"] footer {
-    border-top: 1px solid #333;
-    color: #aaa;
+    --blockquote-bg: #1a1a1a;
   }
 }
 
-/* =========================
-   Print Styles
-========================= */
+/* =====================================================
+   PRINT
+   ===================================================== */
 
 @media print {
 

@@ -150,3 +150,362 @@ footer {
   max-width: var(--max-width);
   margin: 0 auto;
 }
+
+/* =========================
+   Active Navigation State
+========================= */
+
+header nav a {
+  position: relative;
+  padding-bottom: 4px;
+}
+
+header nav a.active {
+  font-weight: 600;
+}
+
+header nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background-color: #111;
+}
+
+/* =========================
+   Navigation Micro Interaction
+========================= */
+
+header nav a {
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+header nav a:hover {
+  transform: translateY(-1px);
+}
+
+header nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0%;
+  height: 2px;
+  background-color: #111;
+  transition: width 0.25s ease;
+}
+
+header nav a:hover::after {
+  width: 100%;
+}
+
+/* Active State */
+header nav a.active {
+  font-weight: 600;
+}
+
+header nav a.active::after {
+  width: 100%;
+}
+
+/* =========================
+   Page Fade Transition
+========================= */
+
+main {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInPage 0.5s ease forwards;
+}
+
+@keyframes fadeInPage {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   Typography System
+========================= */
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.75;
+  color: #1a1a1a;
+}
+
+/* Headings */
+h1, h2, h3 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 2.8rem;
+  margin-bottom: 1.2rem;
+}
+
+h1 {
+  font-size: 2.4rem;
+  margin-top: 0;
+  margin-bottom: 1.6rem;
+}
+
+h2 {
+  font-size: 1.6rem;
+  margin-top: 3rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+/* Paragraph spacing */
+p {
+  margin-bottom: 1.4rem;
+}
+
+/* Lists */
+ul, ol {
+  margin-bottom: 1.6rem;
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.6rem;
+}
+
+/* Breadcrumb refinement */
+.breadcrumb {
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+.breadcrumb a {
+  text-decoration: none;
+  color: #444;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Blockquote System
+========================= */
+
+blockquote {
+  margin: 2.5rem 0;
+  padding: 1.5rem 2rem;
+  border-left: 4px solid #111;
+  background: #f7f7f7;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+blockquote strong {
+  font-style: normal;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================
+   Section Spacing System
+========================= */
+
+main > h2 {
+  padding-top: 1rem;
+  border-top: 1px solid #eaeaea;
+}
+
+main > h2:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* =========================
+   Ideal Line Length Control
+========================= */
+
+main {
+  max-width: 720px;   /* ~65–75 characters per line */
+  margin: 70px auto 100px auto;
+  padding: 0 28px;
+}
+
+/* =========================
+   Lead Paragraph Styling
+========================= */
+
+h1 + p {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+/* =========================
+   Typographic Polish
+========================= */
+
+body {
+  font-kerning: normal;
+  font-feature-settings: "liga", "kern";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Improve quotes & dashes appearance */
+blockquote,
+p {
+  hyphens: auto;
+}
+
+/* =========================
+   Print Styles
+========================= */
+
+@media print {
+
+  body {
+    background: #ffffff;
+    color: #000;
+    font-size: 12pt;
+  }
+
+  header,
+  nav,
+  .breadcrumb,
+  #header,
+  #footer {
+    display: none;
+  }
+
+  main {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 20pt;
+  }
+
+  h2 {
+    font-size: 16pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+  }
+
+  a {
+    text-decoration: none;
+    color: #000;
+  }
+
+  blockquote {
+    border-left: 3px solid #000;
+    background: none;
+  }
+}
+
+/* =========================
+   Dark Mode Variant
+========================= */
+
+@media (prefers-color-scheme: dark) {
+
+  body {
+    background: #111;
+    color: #e6e6e6;
+  }
+
+  header {
+    border-bottom: 1px solid #333;
+  }
+
+  nav a {
+    color: #e6e6e6;
+  }
+
+  nav a::after {
+    background-color: #e6e6e6;
+  }
+
+  blockquote {
+    background: #1a1a1a;
+    border-left: 4px solid #e6e6e6;
+  }
+
+  .breadcrumb {
+    color: #aaa;
+  }
+
+  footer {
+    border-top: 1px solid #333;
+    color: #aaa;
+  }
+
+  .references,
+  .footnotes {
+    border-top: 1px solid #333;
+  }
+}
+
+/* =========================
+   Footnotes
+========================= */
+
+.footnotes {
+  margin-top: 3rem;
+  font-size: 0.85rem;
+  color: #444;
+  border-top: 1px solid #eaeaea;
+  padding-top: 1.5rem;
+}
+
+.footnotes p {
+  margin-bottom: 0.8rem;
+}
+
+a.footnote-ref {
+  text-decoration: none;
+  font-size: 0.75rem;
+}
+
+/* =========================
+   Citation System
+========================= */
+
+.citation {
+  font-size: 0.9rem;
+  color: #555;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+sup.cite {
+  font-size: 0.75rem;
+  vertical-align: super;
+}
+
+.references {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eaeaea;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.references li {
+  margin-bottom: 0.8rem;
+}

@@ -1,4 +1,30 @@
+# =========================================
+# Agile AI University - Robots.txt
+# Public Learning Surface Governance
+# =========================================
+
 User-agent: *
 Allow: /
 
+# Explicitly allow core public learning pages
+Allow: /index.html
+Allow: /start-here.html
+Allow: /core-concepts.html
+Allow: /myths-and-misconceptions.html
+Allow: /sitemap.html
+
+# Disallow internal / non-public system areas
+Disallow: /public-admin/
+Disallow: /public-assessment/
+Disallow: /public-certs/
+Disallow: /public-portal/
+Disallow: /governance/
+Disallow: /scripts/
+Disallow: /.firebase/
+Disallow: /.git/
+
+# Prevent parameter-based crawl duplication
+Disallow: /*?*
+
+# Sitemap declaration
 Sitemap: https://learn.agileai.university/sitemap.xml

@@ -1,42 +1,43 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v4
-   Deterministic • Stable • GitHub Pages Safe
+   AgileAI Public Surface — Institutional CSS v4 (Polished UX)
    ========================================= */
 
-/* =====================================================
+/* =========================
    ROOT VARIABLES (Default = Light)
-   ===================================================== */
+========================= */
 
 :root {
   --text-primary: #111;
   --text-secondary: #555;
   --border-subtle: #e6e6e6;
   --background: #ffffff;
-  --blockquote-bg: #f7f7f7;
   --max-width: 880px;
+  --transition-speed: 220ms;
 }
 
-/* =====================================================
-   SMOOTH THEME TRANSITIONS
-   ===================================================== */
+/* =========================
+   GLOBAL TRANSITION LAYER
+========================= */
 
 html,
 body,
 header,
-footer,
+nav,
 main,
+footer,
 blockquote,
-nav a,
+a,
 #theme-toggle {
   transition:
-    background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease;
+    background-color var(--transition-speed) ease,
+    color var(--transition-speed) ease,
+    border-color var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease;
 }
 
-/* =====================================================
-   BASE RESET
-   ===================================================== */
+/* =========================
+   Base Reset
+========================= */
 
 * {
   box-sizing: border-box;
@@ -54,9 +55,9 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* =====================================================
-   HEADER
-   ===================================================== */
+/* =========================
+   Header
+========================= */
 
 header {
   border-bottom: 1px solid var(--border-subtle);
@@ -79,6 +80,10 @@ header {
   letter-spacing: 0.3px;
 }
 
+/* =========================
+   Navigation
+========================= */
+
 nav a {
   margin-left: 28px;
   text-decoration: none;
@@ -86,10 +91,11 @@ nav a {
   font-size: 0.9rem;
   position: relative;
   padding-bottom: 4px;
+  transition: transform 0.2s ease;
 }
 
 nav a:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 nav a::after {
@@ -108,13 +114,9 @@ nav a.active::after {
   width: 100%;
 }
 
-nav a.active {
-  font-weight: 600;
-}
-
-/* =====================================================
-   MAIN LAYOUT
-   ===================================================== */
+/* =========================
+   Layout
+========================= */
 
 main {
   max-width: 720px;
@@ -132,28 +134,9 @@ main {
   }
 }
 
-/* =====================================================
-   BREADCRUMB
-   ===================================================== */
-
-.breadcrumb {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: 2rem;
-}
-
-.breadcrumb a {
-  text-decoration: none;
-  color: var(--text-secondary);
-}
-
-.breadcrumb a:hover {
-  text-decoration: underline;
-}
-
-/* =====================================================
-   TYPOGRAPHY
-   ===================================================== */
+/* =========================
+   Typography
+========================= */
 
 h1, h2, h3 {
   font-weight: 600;
@@ -162,52 +145,29 @@ h1, h2, h3 {
   margin-bottom: 1.2rem;
 }
 
-h1 {
-  font-size: 2.4rem;
-  margin-top: 0;
-  margin-bottom: 1.6rem;
-}
+h1 { font-size: 2.4rem; margin-top: 0; }
+h2 { font-size: 1.6rem; margin-top: 3rem; }
+h3 { font-size: 1.2rem; margin-top: 2rem; }
 
-h2 {
-  font-size: 1.6rem;
-  margin-top: 3rem;
-}
+p { margin-bottom: 1.4rem; }
+ul, ol { margin-bottom: 1.6rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.6rem; }
 
-h3 {
-  font-size: 1.2rem;
-  margin-top: 2rem;
-}
-
-p {
-  margin-bottom: 1.4rem;
-}
-
-ul, ol {
-  margin-bottom: 1.6rem;
-  padding-left: 1.5rem;
-}
-
-li {
-  margin-bottom: 0.6rem;
-}
-
-/* =====================================================
-   BLOCKQUOTE
-   ===================================================== */
+/* =========================
+   Blockquote
+========================= */
 
 blockquote {
   margin: 2.5rem 0;
   padding: 1.5rem 2rem;
   border-left: 4px solid var(--text-primary);
-  background: var(--blockquote-bg);
+  background: rgba(0,0,0,0.04);
   font-style: italic;
-  font-size: 1.05rem;
-  line-height: 1.6;
 }
 
-/* =====================================================
-   LINKS
-   ===================================================== */
+/* =========================
+   Links
+========================= */
 
 a {
   color: var(--text-primary);
@@ -218,9 +178,9 @@ a:hover {
   opacity: 0.75;
 }
 
-/* =====================================================
-   FOOTER
-   ===================================================== */
+/* =========================
+   Footer
+========================= */
 
 footer {
   border-top: 1px solid var(--border-subtle);
@@ -231,9 +191,9 @@ footer {
   margin: 0 auto;
 }
 
-/* =====================================================
-   THEME TOGGLE
-   ===================================================== */
+/* =========================
+   THEME TOGGLE (POLISHED)
+========================= */
 
 .theme-control {
   margin-left: 16px;
@@ -242,75 +202,78 @@ footer {
 #theme-toggle {
   background: none;
   border: 1px solid var(--border-subtle);
-  padding: 6px 10px;
-  font-size: 0.9rem;
+  padding: 6px 12px;
+  font-size: 1rem;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    opacity 0.2s ease;
 }
 
+/* Hover lift */
 #theme-toggle:hover {
+  transform: translateY(-2px);
   background: var(--border-subtle);
 }
 
-/* =====================================================
-   DETERMINISTIC THEME STATES
-   ===================================================== */
+/* Press effect */
+#theme-toggle:active {
+  transform: scale(0.92);
+}
 
-/* ---------- DARK MODE ---------- */
+/* Icon Fade Animation */
+.theme-icon-fade {
+  animation: iconFade 180ms ease;
+}
+
+@keyframes iconFade {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* =========================
+   THEME STATES
+========================= */
+
+[data-theme="light"] {
+  --text-primary: #111;
+  --text-secondary: #555;
+  --border-subtle: #e6e6e6;
+  --background: #ffffff;
+}
 
 [data-theme="dark"] {
   --text-primary: #e6e6e6;
   --text-secondary: #aaa;
   --border-subtle: #333;
   --background: #111;
-  --blockquote-bg: #1a1a1a;
 }
 
-/* ---------- SYSTEM MODE ----------
-   (No forced override — handled by JS by removing attribute)
------------------------------------------------------------ */
+[data-theme="dark"] blockquote {
+  background: rgba(255,255,255,0.05);
+}
 
-/* When no data-theme attribute exists AND system is dark */
+/* SYSTEM MODE */
+
+[data-theme="system"] {
+  --text-primary: #111;
+  --text-secondary: #555;
+  --border-subtle: #e6e6e6;
+  --background: #ffffff;
+}
 
 @media (prefers-color-scheme: dark) {
-  html:not([data-theme]) {
+  [data-theme="system"] {
     --text-primary: #e6e6e6;
     --text-secondary: #aaa;
     --border-subtle: #333;
     --background: #111;
-    --blockquote-bg: #1a1a1a;
-  }
-}
-
-/* =====================================================
-   PRINT
-   ===================================================== */
-
-@media print {
-
-  body {
-    background: #ffffff !important;
-    color: #000 !important;
-    font-size: 12pt;
-  }
-
-  header,
-  nav,
-  .breadcrumb,
-  #header,
-  #footer {
-    display: none;
-  }
-
-  main {
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  blockquote {
-    border-left: 3px solid #000;
-    background: none;
   }
 }

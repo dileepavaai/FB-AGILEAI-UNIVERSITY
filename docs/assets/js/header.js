@@ -61,12 +61,18 @@ function updateThemeIcon() {
 }
 
 /* Initial icon set */
-updateThemeIcon();
+function updateThemeIcon() {
+  const saved = localStorage.getItem(STORAGE_KEY) || "system";
 
-/* Click handler */
-if (themeButton && window.AATheme) {
-  themeButton.addEventListener("click", function () {
-    window.AATheme.toggle();
-    updateThemeIcon();
-  });
+  themeButton.classList.remove("theme-icon-fade");
+  void themeButton.offsetWidth; // force reflow
+  themeButton.classList.add("theme-icon-fade");
+
+  if (saved === "light") {
+    themeButton.textContent = "🌞";
+  } else if (saved === "dark") {
+    themeButton.textContent = "🌙";
+  } else {
+    themeButton.textContent = "🖥️";
+  }
 }

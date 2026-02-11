@@ -528,3 +528,18 @@ sup.cite {
 #theme-toggle:hover {
   background: var(--border);
 }
+
+/* =========================
+   Manual Dark Mode (data-theme support)
+========================= */
+
+[data-theme="dark"] {
+  --text-primary: #e6e6e6;
+  --text-secondary: #aaa;
+  --border-subtle: #333;
+  --background: #111;
+}
+
+[data-theme="dark"] blockquote {
+  background: #1a1a1a;
+}

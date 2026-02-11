@@ -199,3 +199,9 @@ Any future work must:
 
 ## 📁 RECOMMENDED REPO LOCATION
 
+
+Linked from:
+
+
+---
+governance: freeze Phase-C certificate & authorization artifacts (v1.0)

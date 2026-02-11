@@ -2,13 +2,33 @@ import express from "express";
 import admin from "firebase-admin";
 import fetch from "node-fetch";
 import rateLimit from "express-rate-limit";
+import cors from "cors";
 
 const app = express();
+
+/* -------------------------------------------------
+   Cloud Run proxy awareness (REQUIRED)
+------------------------------------------------- */
+app.set("trust proxy", 1);
 
 /* -------------------------------------------------
    Global middleware
 ------------------------------------------------- */
 app.use(express.json());
+
+/* -------------------------------------------------
+   CORS (PUBLIC endpoints only – LOCKED)
+------------------------------------------------- */
+app.use(
+  cors({
+    origin: "https://assessment.agileai.university",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
+
+// Explicit preflight handling
+app.options("*", cors());
 
 /* -------------------------------------------------
    Structured logging (Cloud Run native)
@@ -59,7 +79,17 @@ function isCountryAllowed(req) {
 }
 
 /* -------------------------------------------------
-   Root health check (DO NOT CHANGE)
+   READY check (container warm, zero cost)
+------------------------------------------------- */
+app.get("/ready", (req, res) => {
+  res.status(200).json({
+    ready: true,
+    status: "ok",
+  });
+});
+
+/* -------------------------------------------------
+   Root health check (CANONICAL – DO NOT CHANGE)
 ------------------------------------------------- */
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -69,15 +99,25 @@ app.get("/", (req, res) => {
 });
 
 /* -------------------------------------------------
-   Metadata (Canonical – Backend v1.1)
+   /health alias (compatibility, no contract break)
+------------------------------------------------- */
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    service: "aaiu-portal-resolver",
+    status: "ok",
+  });
+});
+
+/* -------------------------------------------------
+   Metadata (Canonical – Backend v1.2)
 ------------------------------------------------- */
 app.get("/_meta", (req, res) => {
   res.status(200).json({
     service: "aaiu-cloudrun-backend",
-    version: "v1.1",
+    version: "v1.2",
     runtime: "cloud-run",
     auth: "firebase",
-    contract: "firestore-contract.v1.1",
+    contract: "firestore-contract.v1.2",
     status: "active",
   });
 });
@@ -213,6 +253,51 @@ app.get(
 );
 
 /* -------------------------------------------------
+   PUBLIC: Executive Insight access verification (LOCKED)
+------------------------------------------------- */
+app.post(
+  "/public/verify-executive-insight",
+  publicLimiter,
+  verifyRecaptcha,
+  async (req, res) => {
+    try {
+      const email = req.body?.email?.toLowerCase();
+      if (!email) {
+        return res.status(400).json({ allowed: false, error: "EMAIL_REQUIRED" });
+      }
+
+      const snapshot = await db
+        .collection("advisory_entitlements")
+        .where("buyer.email", "==", email)
+        .where("artifact_code", "==", "EXEC_INSIGHT_V1")
+        .where("access.status", "==", "active")
+        .limit(1)
+        .get();
+
+      if (snapshot.empty) {
+        return res.status(200).json({ allowed: false });
+      }
+
+      const entitlement = snapshot.docs[0].data();
+
+      if (entitlement.payment?.status !== "paid") {
+        return res.status(200).json({ allowed: false });
+      }
+
+      return res.status(200).json({
+        allowed: true,
+        source: "advisory_entitlements",
+      });
+    } catch (error) {
+      log("ERROR", "Executive Insight verification failed", {
+        error: error.message,
+      });
+      return res.status(500).json({ allowed: false });
+    }
+  }
+);
+
+/* -------------------------------------------------
    ADMIN routes (AUTH + IP allowlist)
 ------------------------------------------------- */
 app.use("/admin", requireAuth, (req, res, next) => {
@@ -241,9 +326,10 @@ app.use((req, res) => {
 });
 
 /* -------------------------------------------------
-   Server bootstrap (Cloud Run)
+   Server bootstrap (Cloud Run – REQUIRED)
 ------------------------------------------------- */
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+
+app.listen(PORT, "0.0.0.0", () => {
   log("INFO", "Cloud Run backend started", { port: PORT });
 });

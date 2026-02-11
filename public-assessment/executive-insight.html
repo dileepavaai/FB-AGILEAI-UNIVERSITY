@@ -301,7 +301,7 @@
   </div>
 </footer>
 
-<!-- ================= ENTITLEMENT CHECK (LOCKED) ================= -->
+<!-- ================= EXECUTIVE ACCESS GATE (CLOUD RUN · LOCKED) ================= -->
 <script>
 (async function () {
   try {
@@ -309,33 +309,32 @@
       JSON.parse(sessionStorage.getItem("assessmentContext") || "null");
 
     if (!context || !context.email) {
-      window.location.href = "./report.html";
-      return;
-    }
-
-    if (sessionStorage.getItem("executiveEntitled") === "true") {
-      showExecutive(context);
+      window.location.replace("./report.html");
       return;
     }
 
     const response = await fetch(
-      "https://us-central1-fb-agileai-university.cloudfunctions.net/checkExecutiveEntitlement?email=" +
-      encodeURIComponent(context.email)
+      "https://aaiu-cloudrun-backend-458881040066.asia-south1.run.app/public/verify-executive-insight",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: context.email })
+      }
     );
 
     const result = await response.json();
 
-    if (!result.entitled) {
+    if (!result || result.allowed !== true) {
       document.getElementById("exec-loading").style.display = "none";
       document.getElementById("exec-blocked").style.display = "block";
       return;
     }
 
-    sessionStorage.setItem("executiveEntitled", "true");
+    // Access granted (backend-verified)
     showExecutive(context);
 
   } catch (err) {
-    console.error("Executive entitlement check failed:", err);
+    console.error("Executive access verification failed:", err);
     document.getElementById("exec-loading").style.display = "none";
     document.getElementById("exec-blocked").style.display = "block";
   }

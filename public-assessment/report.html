@@ -207,11 +207,11 @@
 
     <div class="paid-overlay">
       <div class="upgrade-box">
-        <h3>Advance to the Executive Insight Report</h3>
+        <h3>Unlock Your Executive Insight Report</h3>
 
         <p>
-          The <strong>Executive Insight Report</strong> provides decision-grade
-          interpretation for leadership readiness, role scope, and governance confidence.
+          The <strong>Executive Insight Report</strong> provides decision-grade interpretation of your 
+          readiness for senior leadership, AI-driven roles, and organizational trust.
         </p>
 
         <button
@@ -222,8 +222,8 @@
         </button>
 
         <div class="upgrade-note">
-          Executive insight is advisory and does not constitute certification,
-          promotion approval, or hiring endorsement.
+          Used by senior professionals to reflect on leadership readiness, role alignment, and career 
+          progression in AI-enabled organizations.
         </div>
       </div>
     </div>
@@ -275,5 +275,22 @@
 </main>
 
 <script src="./assets/js/assessment.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("viewExecutiveInsightBtn");
+
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+      console.log("Executive Insight CTA clicked");
+
+      // STEP 2 will go here:
+      // 1. Fetch entitlement status
+      // 2. Allow access OR redirect to payment
+    });
+  });
+</script>
+
 </body>
 </html>

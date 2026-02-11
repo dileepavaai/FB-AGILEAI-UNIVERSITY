@@ -4,11 +4,17 @@ FROM node:20-slim
 # Create app directory
 WORKDIR /app
 
-# Copy dependency definitions first (for caching)
-COPY package.json package-lock.json ./
+# Copy dependency definition
+COPY package.json ./
 
-# Install production dependencies deterministically
-RUN npm ci --omit=dev
+# Install dependencies
+# - npm ci is used when package-lock.json exists
+# - npm install fallback when it does not
+RUN if [ -f package-lock.json ]; then \
+      npm ci --omit=dev; \
+    else \
+      npm install --omit=dev; \
+    fi
 
 # Copy application source
 COPY . .
@@ -23,5 +29,5 @@ USER appuser
 ENV PORT=8080
 EXPOSE 8080
 
-# Start the app directly (Cloud Run best practice)
+# Start the app
 CMD ["node", "index.js"]

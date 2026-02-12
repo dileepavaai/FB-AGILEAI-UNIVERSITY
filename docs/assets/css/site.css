@@ -587,3 +587,35 @@ ul {
   margin-bottom: 1.4rem;
 }
 
+/* =========================================
+   Institutional Freeze Pane Stabilization
+   Aligns learn.agileai.university with main domain
+========================================= */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 3000;
+
+  background: var(--background);
+  border-bottom: 1px solid var(--border-subtle);
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+main {
+  margin-top: 32px;   /* tighten but prevent collision */
+}
+
+/* =========================================
+   Learning Surface Label
+========================================= */
+
+.surface-label {
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.6rem;
+}
+

@@ -67,40 +67,6 @@ nav li {
   display: flex;
 }
 
-nav a {
-  text-decoration: none;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  letter-spacing: 0.3px;
-  position: relative;
-  padding: 6px 0;
-  white-space: nowrap;
-  transition:
-    transform 0.18s ease,
-    opacity 0.18s ease;
-}
-
-nav a:hover {
-  transform: translateY(-1px);
-  opacity: 0.85;
-}
-
-nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0%;
-  height: 1.5px;
-  background-color: var(--text-primary);
-  transition: width 0.25s ease;
-}
-
-nav a:hover::after,
-nav a.active::after {
-  width: 100%;
-}
-
 /* =========================
    Layout
 ========================= */
@@ -512,10 +478,6 @@ header {
    Vertical Rhythm Refinement (Learn)
 ========================================= */
 
-main {
-  margin: 32px auto 80px auto;
-}
-
 section {
   margin-bottom: 2.6rem;
 }
@@ -564,11 +526,6 @@ p {
    VERTICAL RHYTHM — LEARN
 ========================= */
 
-main {
-  margin-top: 32px;
-  margin-bottom: 80px;
-}
-
 h1 {
   margin-top: 0;
   margin-bottom: 1.6rem;
@@ -588,26 +545,6 @@ ul {
 }
 
 /* =========================================
-   Institutional Freeze Pane Stabilization
-   Aligns learn.agileai.university with main domain
-========================================= */
-
-header {
-  position: sticky;
-  top: 0;
-  z-index: 3000;
-
-  background: var(--background);
-  border-bottom: 1px solid var(--border-subtle);
-
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-
-main {
-  margin-top: 32px;   /* tighten but prevent collision */
-}
-
-/* =========================================
    Learning Surface Label
 ========================================= */
 
@@ -619,3 +556,61 @@ main {
   margin-bottom: 0.6rem;
 }
 
+/* =========================================================
+   Institutional Navigation Normalization (Learn Domain)
+   Ensures dropdown parents behave like standard nav items
+========================================================= */
+
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav ul li {
+  position: relative;
+}
+
+.main-nav ul li > a {
+  display: inline-block;
+  position: relative;
+  padding: 6px 0;
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease;
+}
+
+/* Hover movement */
+.main-nav ul li > a:hover {
+  transform: translateY(-1px);
+  opacity: 0.85;
+}
+
+/* Underline animation */
+.main-nav ul li > a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 1.5px;
+  background-color: var(--text-primary);
+  transition: width 0.25s ease;
+}
+
+/* Activate underline on hover OR active */
+.main-nav ul li:hover > a::after,
+.main-nav ul li > a.active::after {
+  width: 100%;
+}
+
+/* Prevent dropdown menu from breaking parent hover */
+.dropdown-menu {
+  top: 100%;
+  left: 0;
+  z-index: 2000;
+}

@@ -74,10 +74,10 @@ nav li {
 main {
   max-width: var(--max-width);
 
-  margin: 40px 0 100px 0;   /* remove auto centering */
+  margin: 40px auto 100px auto;   /* ✅ restore proper centering */
   padding: 0 32px;
 
-  min-height: calc(100vh - 160px); /* prevents short-page collapse */
+  min-height: calc(100vh - 160px);
 
   opacity: 0;
   transform: translateY(8px);
@@ -151,13 +151,13 @@ a:hover {
 
 footer {
   border-top: 1px solid var(--border-subtle);
-  padding: 32px 32px;   /* ← match main */
+  padding: 32px 32px;
 
   font-size: 0.85rem;
   color: var(--text-secondary);
 
   max-width: var(--max-width);
-  margin: 0;
+  margin: 0 auto 60px auto;   /* ✅ align perfectly with main */
 
   transition:
     border-color var(--transition-speed) ease,
@@ -403,7 +403,8 @@ footer {
 ========================================= */
 
 /* =========================================
-   Institutional Dropdown Extension (SAFE)
+   Institutional Dropdown Extension (SAFE v2)
+   Left-Aligned & Inheritance Protected
 ========================================= */
 
 nav li.dropdown {
@@ -412,29 +413,51 @@ nav li.dropdown {
   align-items: center;
 }
 
+/* Dropdown container */
 nav li.dropdown > .dropdown-menu {
   display: none;
-  flex-direction: column !important;
-  flex-wrap: nowrap !important;
 
   position: absolute;
   top: 100%;
-  margin-top: 0;              /* 🔥 remove hover gap */
-
   left: 0;
+
   min-width: 240px;
-  padding: 12px 0;            /* keeps visual spacing */
+  padding: 12px 0;
+
   background: var(--background);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
+
   z-index: 1500;
-  gap: 0 !important;
+
+  /* 🔥 Critical fixes */
+  text-align: left !important;
 }
 
+/* Reset list styling inside dropdown */
+nav li.dropdown > .dropdown-menu li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Force link alignment */
+nav li.dropdown > .dropdown-menu a {
+  display: block;
+  padding: 10px 18px;
+
+  text-align: left !important;
+  white-space: nowrap;
+
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+/* Hover reveal (desktop only) */
 @media (min-width: 769px) {
   nav li.dropdown:hover > .dropdown-menu {
-    display: flex;
+    display: block;
   }
 }
 

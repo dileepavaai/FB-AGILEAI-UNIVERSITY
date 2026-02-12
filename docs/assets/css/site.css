@@ -478,15 +478,19 @@ footer {
 ========================================= */
 
 nav li.dropdown {
+  display: block;
   position: relative;
 }
 
-/* Override global nav ul flex behavior */
 nav li.dropdown > .dropdown-menu {
   display: none;
   flex-direction: column !important;
+  flex-wrap: nowrap !important;
+
   position: absolute;
-  top: calc(100% + 6px);
+  top: 100%;
+  margin-top: 6px;
+
   left: 0;
   min-width: 240px;
   padding: 12px 0;
@@ -495,39 +499,11 @@ nav li.dropdown > .dropdown-menu {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
   z-index: 1500;
-  gap: 0 !important;        /* override nav gap */
+  gap: 0 !important;
 }
 
-/* Dropdown items stacked vertically */
-nav li.dropdown > .dropdown-menu li {
-  display: block;
-  padding: 6px 18px;
-}
-
-nav li.dropdown > .dropdown-menu li a {
-  font-size: 0.85rem;
-  letter-spacing: 0.2px;
-  padding: 4px 0;
-  display: inline-block;
-}
-
-/* Desktop hover */
 @media (min-width: 769px) {
   nav li.dropdown:hover > .dropdown-menu {
     display: flex;
   }
-}
-
-/* Mobile stacked */
-@media (max-width: 768px) {
-
-  nav li.dropdown > .dropdown-menu {
-    position: static;
-    display: flex;
-    border: none;
-    box-shadow: none;
-    padding-left: 12px;
-    padding-top: 4px;
-  }
-
 }

@@ -409,6 +409,12 @@ nav li.dropdown {
   position: relative;
 }
 
+nav li.dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 nav li.dropdown > .dropdown-menu {
   display: none;
   flex-direction: column !important;
@@ -416,11 +422,11 @@ nav li.dropdown > .dropdown-menu {
 
   position: absolute;
   top: 100%;
-  margin-top: 6px;
+  margin-top: 0;              /* 🔥 remove hover gap */
 
   left: 0;
   min-width: 240px;
-  padding: 12px 0;
+  padding: 12px 0;            /* keeps visual spacing */
   background: var(--background);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);

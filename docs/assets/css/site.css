@@ -397,17 +397,16 @@ footer {
 }
 
 /* =========================================
-   Institutional Dropdown (Scoped to Header Only)
+   Institutional Dropdown — FINAL STABLE
+   Scoped ONLY to .main-nav
 ========================================= */
 
 .main-nav li.dropdown {
   position: relative;
 }
 
-/* Dropdown container */
 .main-nav li.dropdown > .dropdown-menu {
   display: none;
-
   position: absolute;
   top: 100%;
   left: 0;
@@ -417,32 +416,27 @@ footer {
 
   background: var(--background);
   border: 1px solid var(--border-subtle);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   border-radius: 6px;
 
   z-index: 2000;
 }
 
-/* Reset list styling inside dropdown */
 .main-nav li.dropdown > .dropdown-menu li {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-/* Force link alignment */
 .main-nav li.dropdown > .dropdown-menu a {
   display: block;
   padding: 10px 18px;
-
   text-align: left;
   white-space: nowrap;
-
   text-decoration: none;
   color: var(--text-primary);
 }
 
-/* Hover reveal (desktop only) */
 @media (min-width: 769px) {
   .main-nav li.dropdown:hover > .dropdown-menu {
     display: block;

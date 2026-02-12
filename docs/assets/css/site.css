@@ -46,24 +46,24 @@ body {
 }
 
 /* =========================
-   Navigation (Rhythm Stabilized)
+   Header Navigation (Scoped)
 ========================= */
 
-nav {
+.main-nav {
   display: flex;
 }
 
-nav ul {
+.main-nav ul {
   display: flex;
   align-items: center;
-  gap: 36px;                 /* ✅ increased spacing for clarity */
+  gap: 36px;
   list-style: none;
   margin: 0;
   padding: 0;
   flex-wrap: wrap;
 }
 
-nav li {
+.main-nav li {
   display: flex;
 }
 
@@ -397,24 +397,15 @@ footer {
 }
 
 /* =========================================
-   Institutional Dropdown Extension (SAFE)
-   Adds dropdown support without altering
-   existing nav rhythm or mobile behavior
+   Institutional Dropdown (Scoped to Header Only)
 ========================================= */
 
-/* =========================================
-   Institutional Dropdown Extension (SAFE v2)
-   Left-Aligned & Inheritance Protected
-========================================= */
-
-nav li.dropdown {
+.main-nav li.dropdown {
   position: relative;
-  display: flex;
-  align-items: center;
 }
 
 /* Dropdown container */
-nav li.dropdown > .dropdown-menu {
+.main-nav li.dropdown > .dropdown-menu {
   display: none;
 
   position: absolute;
@@ -429,25 +420,22 @@ nav li.dropdown > .dropdown-menu {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
 
-  z-index: 1500;
-
-  /* 🔥 Critical fixes */
-  text-align: left !important;
+  z-index: 2000;
 }
 
 /* Reset list styling inside dropdown */
-nav li.dropdown > .dropdown-menu li {
+.main-nav li.dropdown > .dropdown-menu li {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 /* Force link alignment */
-nav li.dropdown > .dropdown-menu a {
+.main-nav li.dropdown > .dropdown-menu a {
   display: block;
   padding: 10px 18px;
 
-  text-align: left !important;
+  text-align: left;
   white-space: nowrap;
 
   text-decoration: none;
@@ -456,7 +444,7 @@ nav li.dropdown > .dropdown-menu a {
 
 /* Hover reveal (desktop only) */
 @media (min-width: 769px) {
-  nav li.dropdown:hover > .dropdown-menu {
+  .main-nav li.dropdown:hover > .dropdown-menu {
     display: block;
   }
 }

@@ -74,8 +74,8 @@ nav li {
 main {
   max-width: var(--max-width);
 
-  margin: 40px auto 100px auto; /* reduced top spacing */
-  padding: 0 28px;
+  margin: 40px 0 100px 0;   /* remove auto centering */
+  padding: 0 32px;
 
   min-height: calc(100vh - 160px); /* prevents short-page collapse */
 

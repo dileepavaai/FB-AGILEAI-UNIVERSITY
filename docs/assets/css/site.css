@@ -54,7 +54,7 @@ header {
   padding: 18px 32px;
   background: var(--background);
   position: relative;
-  z-index: 1000;
+  z-index: 2000; /* ↑ Raised to ensure dropdown stays above animated main */
   transition:
     background-color var(--transition-speed) ease,
     border-color var(--transition-speed) ease,

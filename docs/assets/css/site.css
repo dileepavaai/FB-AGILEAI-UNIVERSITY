@@ -466,3 +466,65 @@ footer {
     background: none;
   }
 }
+
+/* =========================================
+   Institutional Dropdown Extension (SAFE)
+   Adds dropdown support without altering
+   existing nav rhythm or mobile behavior
+========================================= */
+
+nav li.dropdown {
+  position: relative;
+}
+
+/* Desktop dropdown */
+nav li.dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 240px;
+  padding: 12px 0;
+  background: var(--background);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  z-index: 1500;
+}
+
+/* Dropdown items */
+nav li.dropdown .dropdown-menu li {
+  padding: 6px 18px;
+}
+
+nav li.dropdown .dropdown-menu li a {
+  font-size: 0.85rem;
+  letter-spacing: 0.2px;
+  padding: 4px 0;
+  display: inline-block;
+}
+
+/* Hover activation (desktop only) */
+@media (min-width: 769px) {
+  nav li.dropdown:hover > .dropdown-menu {
+    display: block;
+  }
+}
+
+/* Mobile behavior — stacked like normal nav */
+@media (max-width: 768px) {
+
+  nav li.dropdown .dropdown-menu {
+    position: static;
+    display: block;
+    border: none;
+    box-shadow: none;
+    padding-left: 12px;
+    padding-top: 4px;
+  }
+
+  nav li.dropdown .dropdown-menu li {
+    padding: 4px 0;
+  }
+
+}

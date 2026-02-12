@@ -151,13 +151,18 @@ a:hover {
 
 footer {
   border-top: 1px solid var(--border-subtle);
-  padding: 32px 32px 32px 32px;
+  padding: 32px 32px;   /* ← match main */
+
   font-size: 0.85rem;
   color: var(--text-secondary);
 
   max-width: var(--max-width);
-}
+  margin: 0;
 
+  transition:
+    border-color var(--transition-speed) ease,
+    background-color var(--transition-speed) ease;
+}
 
 /* =========================
    Theme Toggle

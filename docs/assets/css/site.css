@@ -46,50 +46,6 @@ body {
 }
 
 /* =========================
-   Header
-========================= */
-
-header {
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 18px 32px;
-  background: var(--background);
-  position: relative;
-  z-index: 2000; /* ↑ Raised to ensure dropdown stays above animated main */
-  transition:
-    background-color var(--transition-speed) ease,
-    border-color var(--transition-speed) ease,
-    box-shadow var(--transition-speed) ease;
-}
-
-header.scrolled {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  background: rgba(255,255,255,0.85);
-}
-
-[data-theme="dark"] header.scrolled {
-  background: rgba(17,17,17,0.85);
-}
-
-.header-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.brand a {
-  text-decoration: none;
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-}
-
-/* =========================
    Navigation (Rhythm Stabilized)
 ========================= */
 
@@ -151,11 +107,16 @@ nav a.active::after {
 
 main {
   max-width: var(--max-width);
-  margin: 60px auto 100px auto;
+
+  margin: 40px auto 100px auto; /* reduced top spacing */
   padding: 0 28px;
+
+  min-height: calc(100vh - 160px); /* prevents short-page collapse */
+
   opacity: 0;
   transform: translateY(8px);
   animation: fadeInPage 0.5s ease forwards;
+
   transition:
     background-color var(--transition-speed) ease,
     color var(--transition-speed) ease;
@@ -367,7 +328,7 @@ footer {
   }
 
   main {
-    margin-top: 50px;
+    margin-top: 40px;      /* reduced from 50px */
     padding: 0 20px;
   }
 
@@ -395,7 +356,7 @@ footer {
   }
 
   main {
-    margin-top: 40px;
+    margin-top: 30px;      /* reduced from 40px */
     padding: 0 16px;
   }
 
@@ -507,3 +468,28 @@ nav li.dropdown > .dropdown-menu {
     display: flex;
   }
 }
+
+/* =========================
+   Header (Institutional Sticky — Stable Academic)
+========================= */
+
+header {
+  display: block;
+  width: 100%;
+
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 20px 32px;
+  background: var(--background);
+
+  position: sticky;
+  top: 0;
+  z-index: 3000;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+
+  transition:
+    background-color var(--transition-speed) ease,
+    border-color var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease;
+}
+

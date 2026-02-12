@@ -51,6 +51,8 @@ body {
 
 .main-nav {
   display: flex;
+  justify-content: center;   /* center menu horizontally */
+  flex: 1;                   /* allow nav to occupy available space */
 }
 
 .main-nav ul {

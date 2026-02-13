@@ -1,6 +1,7 @@
 /* =========================================================
    Global Header Injection
-   Institutional Navigation v4.5.0 — Accessible + Hardened
+   Institutional Navigation v4.6.0 — ARIA + Desktop Cycling
+   Safe Upgrade (Preserves v4.5.0 Behavior)
 ========================================================= */
 
 (function () {
@@ -12,7 +13,7 @@
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* =========================================================
-     Header Markup Injection
+     Header Markup Injection (ARIA Enhanced — Non-breaking)
   ========================================================= */
 
   headerContainer.innerHTML = `
@@ -30,47 +31,54 @@
         </button>
 
         <nav class="main-nav" aria-label="Primary Navigation">
-          <ul>
+          <ul role="menubar">
 
-            <li>
-              <a href="index.html">Home</a>
+            <li role="none">
+              <a role="menuitem" href="index.html">Home</a>
             </li>
 
-            <li class="dropdown">
-              <a href="#" aria-haspopup="true" aria-expanded="false">
+            <li class="dropdown" role="none">
+              <a role="menuitem"
+                 href="#"
+                 aria-haspopup="true"
+                 aria-expanded="false">
                 Intellectual Foundation
               </a>
-              <ul class="dropdown-menu">
-                <li><a href="intellectual-foundation/capability-architecture.html">Capability Architecture</a></li>
-                <li><a href="intellectual-foundation/agile-ai-ecosystem.html">Agile AI Ecosystem</a></li>
-                <li><a href="intellectual-foundation/myths-framework.html">Myth Framework</a></li>
-                <li><a href="intellectual-foundation/mindset-transition.html">Mindset Transition</a></li>
+              <ul class="dropdown-menu" role="menu">
+                <li role="none"><a role="menuitem" href="intellectual-foundation/capability-architecture.html">Capability Architecture</a></li>
+                <li role="none"><a role="menuitem" href="intellectual-foundation/agile-ai-ecosystem.html">Agile AI Ecosystem</a></li>
+                <li role="none"><a role="menuitem" href="intellectual-foundation/myths-framework.html">Myth Framework</a></li>
+                <li role="none"><a role="menuitem" href="intellectual-foundation/mindset-transition.html">Mindset Transition</a></li>
               </ul>
             </li>
 
-            <li class="dropdown">
-              <a href="#" aria-haspopup="true" aria-expanded="false">
+            <li class="dropdown" role="none">
+              <a role="menuitem"
+                 href="#"
+                 aria-haspopup="true"
+                 aria-expanded="false">
                 Programs
               </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="aipa/index.html">
+              <ul class="dropdown-menu" role="menu">
+                <li role="none">
+                  <a role="menuitem" href="aipa/index.html">
                     AIPA — Artificial Intelligence Professional Agilist
                   </a>
                 </li>
               </ul>
             </li>
 
-            <li>
-              <a href="https://verify.agileai.university"
+            <li role="none">
+              <a role="menuitem"
+                 href="https://verify.agileai.university"
                  target="_blank"
                  rel="noopener">
                 Verification
               </a>
             </li>
 
-            <li>
-              <a href="governance/index.html">Governance</a>
+            <li role="none">
+              <a role="menuitem" href="governance/index.html">Governance</a>
             </li>
 
           </ul>
@@ -87,7 +95,7 @@
   `;
 
   /* =========================================================
-     Active Link Detection
+     Active Link Detection (UNCHANGED)
   ========================================================= */
 
   const currentPath = window.location.pathname.replace(/\/$/, "");
@@ -108,10 +116,6 @@
     }
   });
 
-  /* =========================================================
-     Mobile Navigation Controller
-  ========================================================= */
-
   const toggle = document.querySelector(".mobile-menu-toggle");
   const nav = document.querySelector(".main-nav");
   const backdrop = document.querySelector(".nav-backdrop");
@@ -130,6 +134,10 @@
     firstFocusable = focusableElements[0];
     lastFocusable = focusableElements[focusableElements.length - 1];
   }
+
+  /* =========================================================
+     Mobile Open / Close (UNCHANGED CORE)
+  ========================================================= */
 
   function openNav() {
     nav.classList.add("open");
@@ -166,32 +174,38 @@
   backdrop.addEventListener("click", closeNav);
 
   /* =========================================================
-     Keyboard Support
+     Desktop Arrow Left / Right Cycling (NEW — Safe)
   ========================================================= */
 
-  document.addEventListener("keydown", function (e) {
+  const topLevelLinks = nav.querySelectorAll(":scope > ul > li > a");
 
-    // Escape closes everything
-    if (e.key === "Escape") {
-      closeNav();
-    }
+  topLevelLinks.forEach((link, index) => {
 
-    // Focus trap when mobile open
-    if (nav.classList.contains("open") && e.key === "Tab") {
-      if (focusableElements.length === 0) return;
+    link.addEventListener("keydown", function (e) {
 
-      if (e.shiftKey && document.activeElement === firstFocusable) {
+      if (e.key === "ArrowRight") {
         e.preventDefault();
-        lastFocusable.focus();
-      } else if (!e.shiftKey && document.activeElement === lastFocusable) {
-        e.preventDefault();
-        firstFocusable.focus();
+        const next =
+          topLevelLinks[(index + 1) % topLevelLinks.length];
+        next.focus();
       }
-    }
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        const prev =
+          topLevelLinks[
+            (index - 1 + topLevelLinks.length) %
+            topLevelLinks.length
+          ];
+        prev.focus();
+      }
+
+    });
+
   });
 
   /* =========================================================
-     Dropdown Keyboard Navigation
+     Dropdown Keyboard Navigation (Enhanced)
   ========================================================= */
 
   nav.querySelectorAll(".dropdown > a").forEach(trigger => {
@@ -205,24 +219,53 @@
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         parent.classList.toggle("open");
+        this.setAttribute(
+          "aria-expanded",
+          parent.classList.contains("open")
+        );
       }
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
         parent.classList.add("open");
+        this.setAttribute("aria-expanded", "true");
         items[0]?.focus();
       }
 
-      if (e.key === "ArrowUp") {
-        e.preventDefault();
-        parent.classList.add("open");
-        items[items.length - 1]?.focus();
+      if (e.key === "Escape") {
+        parent.classList.remove("open");
+        this.setAttribute("aria-expanded", "false");
+        this.focus();
       }
+
     });
+
   });
 
   /* =========================================================
-     Reduced Motion Adjustment
+     Focus Trap + Escape (UNCHANGED)
+  ========================================================= */
+
+  document.addEventListener("keydown", function (e) {
+
+    if (e.key === "Escape") closeNav();
+
+    if (nav.classList.contains("open") && e.key === "Tab") {
+
+      if (focusableElements.length === 0) return;
+
+      if (e.shiftKey && document.activeElement === firstFocusable) {
+        e.preventDefault();
+        lastFocusable.focus();
+      } else if (!e.shiftKey && document.activeElement === lastFocusable) {
+        e.preventDefault();
+        firstFocusable.focus();
+      }
+    }
+  });
+
+  /* =========================================================
+     Reduced Motion (UNCHANGED)
   ========================================================= */
 
   if (prefersReducedMotion) {

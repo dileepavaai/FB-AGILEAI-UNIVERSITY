@@ -1,12 +1,15 @@
 /* =========================================================
    Global Header Injection
-   Institutional Navigation v4.4.0 — Production Stable
+   Institutional Navigation v4.5.0 — Accessible + Hardened
 ========================================================= */
 
 (function () {
 
   const headerContainer = document.getElementById("header");
   if (!headerContainer) return;
+
+  const prefersReducedMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* =========================================================
      Header Markup Injection
@@ -20,7 +23,6 @@
           <a href="index.html">AgileAI Foundation & Agile AI University</a>
         </div>
 
-        <!-- Institutional Mobile Toggle -->
         <button class="mobile-menu-toggle"
                 aria-label="Open navigation"
                 aria-expanded="false">
@@ -35,9 +37,7 @@
             </li>
 
             <li class="dropdown">
-              <a href="#"
-                 aria-haspopup="true"
-                 aria-expanded="false">
+              <a href="#" aria-haspopup="true" aria-expanded="false">
                 Intellectual Foundation
               </a>
               <ul class="dropdown-menu">
@@ -49,9 +49,7 @@
             </li>
 
             <li class="dropdown">
-              <a href="#"
-                 aria-haspopup="true"
-                 aria-expanded="false">
+              <a href="#" aria-haspopup="true" aria-expanded="false">
                 Programs
               </a>
               <ul class="dropdown-menu">
@@ -95,16 +93,13 @@
   const currentPath = window.location.pathname.replace(/\/$/, "");
 
   document.querySelectorAll(".main-nav a").forEach(link => {
-
     const href = link.getAttribute("href");
     if (!href || href.startsWith("http") || href === "#") return;
 
     const normalizedHref = href.replace("index.html", "").replace(/\/$/, "");
 
     if (currentPath.endsWith(normalizedHref)) {
-
       link.classList.add("active");
-
       const parentDropdown = link.closest(".dropdown");
       if (parentDropdown) {
         const parentAnchor = parentDropdown.querySelector(":scope > a");
@@ -112,27 +107,6 @@
       }
     }
   });
-
-  /* =========================================================
-     Scroll-Aware Header
-  ========================================================= */
-
-  const siteHeader = document.querySelector(".site-header");
-
-  function getScrollThreshold() {
-    return Math.min(window.innerHeight * 0.04, 60);
-  }
-
-  function handleHeaderScroll() {
-    if (window.scrollY > getScrollThreshold()) {
-      siteHeader.classList.add("scrolled");
-    } else {
-      siteHeader.classList.remove("scrolled");
-    }
-  }
-
-  handleHeaderScroll();
-  window.addEventListener("scroll", handleHeaderScroll, { passive: true });
 
   /* =========================================================
      Mobile Navigation Controller
@@ -145,12 +119,27 @@
 
   if (!toggle || !nav || !backdrop) return;
 
+  let focusableElements = [];
+  let firstFocusable = null;
+  let lastFocusable = null;
+
+  function updateFocusable() {
+    focusableElements = nav.querySelectorAll(
+      "a, button, [tabindex]:not([tabindex='-1'])"
+    );
+    firstFocusable = focusableElements[0];
+    lastFocusable = focusableElements[focusableElements.length - 1];
+  }
+
   function openNav() {
     nav.classList.add("open");
     toggle.classList.add("active");
     toggle.setAttribute("aria-expanded", "true");
     body.classList.add("nav-open");
     backdrop.classList.add("active");
+
+    updateFocusable();
+    if (firstFocusable) firstFocusable.focus();
   }
 
   function closeNav() {
@@ -160,58 +149,85 @@
     body.classList.remove("nav-open");
     backdrop.classList.remove("active");
 
-    // Close dropdowns safely
     nav.querySelectorAll(".dropdown").forEach(d => {
       d.classList.remove("open");
       const a = d.querySelector(":scope > a");
       if (a) a.setAttribute("aria-expanded", "false");
     });
+
+    toggle.focus();
   }
 
-  /* Toggle main menu */
   toggle.addEventListener("click", function (e) {
     e.stopPropagation();
     nav.classList.contains("open") ? closeNav() : openNav();
   });
 
-  /* Tap outside */
   backdrop.addEventListener("click", closeNav);
 
-  /* Auto-close on link click (mobile only) */
-  nav.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", function () {
-      if (window.innerWidth <= 768) {
-        closeNav();
-      }
-    });
-  });
+  /* =========================================================
+     Keyboard Support
+  ========================================================= */
 
-  /* Dropdown toggle (mobile only) */
-  nav.querySelectorAll(".dropdown > a").forEach(link => {
+  document.addEventListener("keydown", function (e) {
 
-    link.addEventListener("click", function (e) {
+    // Escape closes everything
+    if (e.key === "Escape") {
+      closeNav();
+    }
 
-      if (window.innerWidth <= 768) {
+    // Focus trap when mobile open
+    if (nav.classList.contains("open") && e.key === "Tab") {
+      if (focusableElements.length === 0) return;
 
+      if (e.shiftKey && document.activeElement === firstFocusable) {
         e.preventDefault();
+        lastFocusable.focus();
+      } else if (!e.shiftKey && document.activeElement === lastFocusable) {
+        e.preventDefault();
+        firstFocusable.focus();
+      }
+    }
+  });
 
-        const parent = this.parentElement;
-        const isOpen = parent.classList.contains("open");
+  /* =========================================================
+     Dropdown Keyboard Navigation
+  ========================================================= */
 
-        // Close all first
-        nav.querySelectorAll(".dropdown").forEach(d => {
-          d.classList.remove("open");
-          const a = d.querySelector(":scope > a");
-          if (a) a.setAttribute("aria-expanded", "false");
-        });
+  nav.querySelectorAll(".dropdown > a").forEach(trigger => {
 
-        // Open current if it wasn't open
-        if (!isOpen) {
-          parent.classList.add("open");
-          this.setAttribute("aria-expanded", "true");
-        }
+    trigger.addEventListener("keydown", function (e) {
+
+      const parent = this.parentElement;
+      const menu = parent.querySelector(".dropdown-menu");
+      const items = menu.querySelectorAll("a");
+
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        parent.classList.toggle("open");
+      }
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        parent.classList.add("open");
+        items[0]?.focus();
+      }
+
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        parent.classList.add("open");
+        items[items.length - 1]?.focus();
       }
     });
   });
+
+  /* =========================================================
+     Reduced Motion Adjustment
+  ========================================================= */
+
+  if (prefersReducedMotion) {
+    nav.style.transition = "none";
+    backdrop.style.transition = "none";
+  }
 
 })();

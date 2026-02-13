@@ -651,3 +651,23 @@ ul {
   left: 0;
   z-index: 2000;
 }
+
+/* =========================================
+   Dropdown Alignment Correction (Left Align)
+   FINAL OVERRIDE
+========================================= */
+
+.main-nav li.dropdown > .dropdown-menu {
+  left: 0;
+  right: auto;
+  text-align: left;
+}
+
+.main-nav li.dropdown > .dropdown-menu li {
+  text-align: left;
+}
+
+.main-nav li.dropdown > .dropdown-menu a {
+  text-align: left;
+  display: block;
+}

@@ -741,69 +741,13 @@ ul {
 }
 
 /* =========================================
-   Mobile Navigation Stabilization — v4.3.5
-   Clean Vertical Institutional Menu
+   Mobile Navigation — Institutional v3.0
+   Stable + Animated + Backdrop + Scroll Lock
 ========================================= */
 
-@media (max-width: 768px) {
-
-  /* Header stacking fix */
-  .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  /* Stack nav properly */
-  .main-nav {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .main-nav ul {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
-    width: 100%;
-  }
-
-  .main-nav ul li {
-    width: 100%;
-  }
-
-  .main-nav ul li > a {
-    display: block;
-    width: 100%;
-    padding: 8px 0;
-    font-size: 1rem;
-    text-align: left;
-  }
-
-  /* Disable floating dropdown on mobile */
-  .main-nav li.dropdown > .dropdown-menu {
-    position: static;
-    display: none;
-    border: none;
-    box-shadow: none;
-    padding-left: 16px;
-    margin-top: 8px;
-  }
-
-  /* Show dropdown when active */
-  .main-nav li.dropdown.open > .dropdown-menu {
-    display: block;
-  }
-
-  /* Disable nav underline animation on mobile */
-.main-nav ul li > a::after {
-  display: none;
-}
-
-}
-
-/* =========================================
-   Mobile Navigation — Institutional v2.0
-   Smooth + Auto-close Ready
-========================================= */
+/* -----------------------------------------
+   Mobile Toggle Button
+----------------------------------------- */
 
 .mobile-menu-toggle {
   display: none;
@@ -816,9 +760,15 @@ ul {
   position: relative;
   align-items: center;
   justify-content: center;
+  transition: transform 140ms ease;
 }
 
-/* Minimal Institutional Icon (refined lines) */
+.mobile-menu-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Minimal Institutional Icon */
+
 .menu-icon,
 .menu-icon::before,
 .menu-icon::after {
@@ -828,7 +778,7 @@ ul {
   height: 1.6px;
   background: var(--text-primary);
   position: absolute;
-  transition: all 0.25s ease;
+  transition: all 240ms cubic-bezier(.4,0,.2,1);
 }
 
 .menu-icon {
@@ -843,7 +793,8 @@ ul {
   top: 6px;
 }
 
-/* Animate to X when open */
+/* Animate to X */
+
 .mobile-menu-toggle.active .menu-icon {
   background: transparent;
 }
@@ -858,13 +809,46 @@ ul {
   top: 0;
 }
 
-/* MOBILE ONLY */
+/* -----------------------------------------
+   Backdrop (Blur Layer)
+----------------------------------------- */
+
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.22);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms cubic-bezier(.4,0,.2,1);
+  z-index: 3500;
+}
+
+body.nav-open .nav-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Lock body scroll */
+
+body.nav-open {
+  overflow: hidden;
+}
+
+/* -----------------------------------------
+   MOBILE ONLY
+----------------------------------------- */
+
 @media (max-width: 768px) {
 
+  /* Show toggle */
   .mobile-menu-toggle {
     display: flex;
   }
 
+  /* Main nav container */
   .main-nav {
     position: absolute;
     top: 100%;
@@ -875,21 +859,75 @@ ul {
 
     overflow: hidden;
     max-height: 0;
-    transition: max-height 0.35s ease, opacity 0.25s ease;
     opacity: 0;
+
+    transition:
+      max-height 340ms cubic-bezier(.4,0,.2,1),
+      opacity 200ms ease;
+
     padding: 0 24px;
+    z-index: 3600;
   }
 
   .main-nav.open {
-    max-height: 400px;   /* enough to hold menu */
+    max-height: 500px;
     opacity: 1;
     padding: 20px 24px;
   }
 
+  /* Stack menu items */
   .main-nav ul {
     flex-direction: column;
     align-items: flex-start;
     gap: 18px;
+  }
+
+  .main-nav ul li {
+    width: 100%;
+  }
+
+  .main-nav ul li > a {
+    display: block;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 1rem;
+    text-align: left;
+    transition: transform 140ms cubic-bezier(.2,.8,.4,1),
+                opacity 140ms ease;
+  }
+
+  .main-nav ul li > a:active {
+    transform: scale(0.97);
+  }
+
+  /* Disable underline animation on mobile */
+  .main-nav ul li > a::after {
+    display: none;
+  }
+
+  /* -----------------------------------------
+     Dropdown Animation (Mobile Only)
+  ----------------------------------------- */
+
+  .main-nav li.dropdown > .dropdown-menu {
+    position: static;
+    border: none;
+    box-shadow: none;
+    padding-left: 16px;
+    margin-top: 6px;
+
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+
+    transition:
+      max-height 280ms cubic-bezier(.4,0,.2,1),
+      opacity 200ms ease;
+  }
+
+  .main-nav li.dropdown.open > .dropdown-menu {
+    max-height: 300px;
+    opacity: 1;
   }
 
 }
@@ -956,29 +994,44 @@ body.nav-open {
 }
 
 /* =========================================
-   Mobile Backdrop — Institutional Layer
+   Mobile Navigation — Institutional v2.0
 ========================================= */
 
-.nav-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.25);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+@media (max-width: 768px) {
 
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 220ms ease;
-  z-index: 3000;
-}
+  .mobile-menu-toggle {
+    display: flex;
+  }
 
-/* Activate */
-.nav-open .nav-backdrop {
-  opacity: 1;
-  pointer-events: auto;
-}
+  .main-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--background);
+    border-bottom: 1px solid var(--border-subtle);
 
-/* Lock body scroll when mobile menu is open */
-body.nav-open {
-  overflow: hidden;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    opacity: 0;
+    padding: 0 24px;
+  }
+
+  .main-nav.open {
+    max-height: 420px;
+    opacity: 1;
+    padding: 20px 24px;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .main-nav ul li > a::after {
+    display: none;
+  }
+
 }

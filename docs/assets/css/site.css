@@ -97,14 +97,14 @@ body {
 main {
   max-width: var(--max-width);
 
-  margin: 40px auto 100px auto;   /* ✅ restore proper centering */
+  margin: 40px auto 100px auto;   /* maintain proper centering */
   padding: 0 32px;
 
   min-height: calc(100vh - 160px);
 
+  /* Fade-in only (no transform to protect sticky header) */
   opacity: 0;
-  transform: translateY(8px);
-  animation: fadeInPage 0.5s ease forwards;
+  animation: fadeInPage 0.4s ease forwards;
 
   transition:
     background-color var(--transition-speed) ease,
@@ -114,7 +114,6 @@ main {
 @keyframes fadeInPage {
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -257,7 +256,7 @@ footer {
   --background: #111;
 }
 
-[data-theme="dark"] header {
+[data-theme="dark"] .site-header {
   box-shadow: 0 1px 6px rgba(0,0,0,0.28);
 }
 
@@ -468,10 +467,15 @@ footer {
    Header (Institutional Sticky — Stable Academic)
 ========================= */
 
-header {
-  display: block;
+/* Stabilize injected wrapper to protect sticky positioning */
+#header {
+  position: relative;
   width: 100%;
+}
 
+/* Actual sticky header */
+.site-header {
+  width: 100%;
   border-bottom: 1px solid var(--border-subtle);
   padding: 20px 32px;
   background: var(--background);

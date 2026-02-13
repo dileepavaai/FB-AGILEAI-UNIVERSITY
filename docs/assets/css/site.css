@@ -461,46 +461,6 @@ footer {
   position: relative;
 }
 
-.main-nav li.dropdown > .dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;                  /* Anchor to left edge of Programs */
-  transform: none;          /* Remove centering hacks */
-
-  min-width: 260px;
-  padding: 12px 0;
-
-  background: var(--background);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-
-  z-index: 2000;
-}
-
-.main-nav li.dropdown > .dropdown-menu li {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.main-nav li.dropdown > .dropdown-menu a {
-  display: block;
-  padding: 10px 18px;
-  text-decoration: none;
-  color: var(--text-primary);
-  white-space: nowrap;
-  text-align: left;
-}
-
-/* Desktop Hover */
-@media (min-width: 769px) {
-  .main-nav li.dropdown:hover > .dropdown-menu {
-    display: block;
-  }
-}
-
 /* =========================
    Header (Institutional Sticky — Stable Academic)
 ========================= */
@@ -680,64 +640,6 @@ ul {
 .main-nav ul li:hover > a::after,
 .main-nav ul li > a.active::after {
   width: 100%;
-}
-
-/* Prevent dropdown menu from breaking parent hover */
-.dropdown-menu {
-  top: 100%;
-  left: 0;
-  z-index: 2000;
-}
-
-/* =========================================
-   Institutional Dropdown — Canonical v4.3.3
-   Anchored Left, No Overrides, No Drift
-========================================= */
-
-.main-nav li.dropdown {
-  position: relative;
-}
-
-.main-nav li.dropdown > .dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;              /* Anchor directly under parent */
-  right: auto;
-  transform: none;
-
-  min-width: 220px;
-  padding: 12px 0;
-
-  background: var(--background);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-
-  z-index: 2000;
-  text-align: left;
-}
-
-.main-nav li.dropdown > .dropdown-menu li {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.main-nav li.dropdown > .dropdown-menu a {
-  display: block;
-  padding: 12px 18px;
-  text-decoration: none;
-  color: var(--text-primary);
-  white-space: nowrap;
-  text-align: left;
-}
-
-/* Desktop Hover */
-@media (min-width: 769px) {
-  .main-nav li.dropdown:hover > .dropdown-menu {
-    display: block;
-  }
 }
 
 /* =========================================
@@ -933,105 +835,44 @@ body.nav-open {
 }
 
 /* =========================================
-   Institutional Mobile Enhancement v2.1
-   Blur + Scroll Lock + Refined Motion
+   Unified Dropdown System (Desktop + Mobile)
 ========================================= */
 
-/* Backdrop overlay */
-.nav-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.18);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 220ms cubic-bezier(.4,0,.2,1);
-  z-index: 3500;
-}
-
-.nav-backdrop.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Lock scroll when menu open */
-body.nav-open {
-  overflow: hidden;
-}
-
-/* Refined motion curve */
-.main-nav {
-  transition:
-    max-height 340ms cubic-bezier(.4,0,.2,1),
-    opacity 200ms ease;
-}
-
-/* Dropdown submenu animation */
 .main-nav li.dropdown > .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  min-width: 220px;
+  padding: 12px 0;
+
+  background: var(--background);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+
   max-height: 0;
   overflow: hidden;
+  opacity: 0;
+
   transition:
     max-height 280ms cubic-bezier(.4,0,.2,1),
     opacity 200ms ease;
-  opacity: 0;
+
+  z-index: 2000;
 }
 
+/* JS controlled open state */
 .main-nav li.dropdown.open > .dropdown-menu {
-  max-height: 300px;
+  max-height: 500px;
   opacity: 1;
 }
 
-/* Micro haptic hover feel */
-.main-nav ul li > a {
-  transition:
-    transform 140ms cubic-bezier(.2,.8,.4,1),
-    opacity 140ms ease;
-}
-
-.main-nav ul li > a:active {
-  transform: scale(0.97);
-}
-
-/* =========================================
-   Mobile Navigation — Institutional v2.0
-========================================= */
-
-@media (max-width: 768px) {
-
-  .mobile-menu-toggle {
-    display: flex;
-  }
-
-  .main-nav {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: var(--background);
-    border-bottom: 1px solid var(--border-subtle);
-
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.35s ease, opacity 0.25s ease;
-    opacity: 0;
-    padding: 0 24px;
-  }
-
-  .main-nav.open {
-    max-height: 420px;
+/* Desktop hover support */
+@media (min-width: 769px) {
+  .main-nav li.dropdown:hover > .dropdown-menu {
+    max-height: 500px;
     opacity: 1;
-    padding: 20px 24px;
   }
-
-  .main-nav ul {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
-  }
-
-  .main-nav ul li > a::after {
-    display: none;
-  }
-
 }
+

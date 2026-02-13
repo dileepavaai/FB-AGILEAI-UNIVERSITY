@@ -46,13 +46,25 @@ body {
 }
 
 /* =========================
-   Header Navigation (Fully Scoped — Stable)
+   Header Navigation (Centered Institutional Layout — Stable)
 ========================= */
 
-.main-nav {
+.header-inner {
   display: flex;
-  justify-content: center;   /* center menu horizontally */
-  flex: 1;                   /* allow nav to occupy available space */
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Left: Brand */
+.brand {
+  flex: 1;
+}
+
+/* Center: Main Navigation */
+.main-nav {
+  flex: 2;
+  display: flex;
+  justify-content: center;
 }
 
 .main-nav ul {
@@ -68,6 +80,14 @@ body {
 .main-nav li {
   position: relative;
   display: flex;
+}
+
+/* Right: Theme Toggle */
+.theme-control {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center; 
 }
 
 /* =========================

@@ -739,3 +739,51 @@ ul {
     display: block;
   }
 }
+
+/* =========================================
+   Mobile Navigation Stabilization — v4.3.4
+   Clean Vertical Institutional Menu
+========================================= */
+
+@media (max-width: 768px) {
+
+  /* Stack nav properly */
+  .main-nav {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    width: 100%;
+  }
+
+  .main-nav ul li {
+    width: 100%;
+  }
+
+  .main-nav ul li > a {
+    display: block;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 1rem;
+  }
+
+  /* Disable floating dropdown on mobile */
+  .main-nav li.dropdown > .dropdown-menu {
+    position: static;
+    display: none;
+    border: none;
+    box-shadow: none;
+    padding-left: 16px;
+    margin-top: 8px;
+  }
+
+  /* Show dropdown when active (JS or click toggle ready) */
+  .main-nav li.dropdown.open > .dropdown-menu {
+    display: block;
+  }
+
+}

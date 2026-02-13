@@ -454,6 +454,7 @@ footer {
   text-decoration: none;
   color: var(--text-primary);
   white-space: nowrap;
+  text-align: left;   /* Ensure text is left aligned */
 }
 
 /* Desktop Hover */

@@ -671,3 +671,19 @@ ul {
   text-align: left;
   display: block;
 }
+
+/* FORCE Programs dropdown left alignment */
+.main-nav li.dropdown {
+  position: relative;
+}
+
+.main-nav li.dropdown > .dropdown-menu {
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
+  text-align: left;
+}
+
+.main-nav li.dropdown > .dropdown-menu a {
+  text-align: left;
+}

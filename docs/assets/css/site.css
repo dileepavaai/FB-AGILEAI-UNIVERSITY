@@ -741,11 +741,17 @@ ul {
 }
 
 /* =========================================
-   Mobile Navigation Stabilization — v4.3.4
+   Mobile Navigation Stabilization — v4.3.5
    Clean Vertical Institutional Menu
 ========================================= */
 
 @media (max-width: 768px) {
+
+  /* Header stacking fix */
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
   /* Stack nav properly */
   .main-nav {
@@ -769,6 +775,7 @@ ul {
     width: 100%;
     padding: 8px 0;
     font-size: 1rem;
+    text-align: left;
   }
 
   /* Disable floating dropdown on mobile */
@@ -781,7 +788,7 @@ ul {
     margin-top: 8px;
   }
 
-  /* Show dropdown when active (JS or click toggle ready) */
+  /* Show dropdown when active */
   .main-nav li.dropdown.open > .dropdown-menu {
     display: block;
   }

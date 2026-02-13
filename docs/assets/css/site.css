@@ -97,7 +97,7 @@ body {
 main {
   max-width: var(--max-width);
 
-  margin: 40px auto 100px auto;   /* maintain proper centering */
+  margin: 140px auto 100px auto; /* offset fixed header */
   padding: 0 32px;
 
   min-height: calc(100vh - 160px);
@@ -473,16 +473,18 @@ footer {
   width: 100%;
 }
 
-/* Actual sticky header */
+/* Actual frozen header (deterministic institutional behavior) */
 .site-header {
   width: 100%;
   border-bottom: 1px solid var(--border-subtle);
   padding: 20px 32px;
   background: var(--background);
 
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 3000;
+  left: 0;
+  right: 0;
+  z-index: 4000;
 
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 

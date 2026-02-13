@@ -1,11 +1,16 @@
 /* =========================================================
    Global Header Injection
-   Institutional Navigation v4.3.5 — Stable + Mobile Enhanced
+   Institutional Navigation v4.4.0 — Production Stable
 ========================================================= */
 
-const headerContainer = document.getElementById("header");
+(function () {
 
-if (headerContainer) {
+  const headerContainer = document.getElementById("header");
+  if (!headerContainer) return;
+
+  /* =========================================================
+     Header Markup Injection
+  ========================================================= */
 
   headerContainer.innerHTML = `
     <header class="site-header">
@@ -15,11 +20,11 @@ if (headerContainer) {
           <a href="index.html">AgileAI Foundation & Agile AI University</a>
         </div>
 
-        <!-- Subtle Institutional Toggle Icon -->
-        <button class="mobile-menu-toggle" aria-label="Open navigation" aria-expanded="false">
-          <span></span>
-          <span></span>
-          <span></span>
+        <!-- Institutional Mobile Toggle -->
+        <button class="mobile-menu-toggle"
+                aria-label="Open navigation"
+                aria-expanded="false">
+          <span class="menu-icon"></span>
         </button>
 
         <nav class="main-nav" aria-label="Primary Navigation">
@@ -30,7 +35,9 @@ if (headerContainer) {
             </li>
 
             <li class="dropdown">
-              <a href="#" aria-haspopup="true" aria-expanded="false">
+              <a href="#"
+                 aria-haspopup="true"
+                 aria-expanded="false">
                 Intellectual Foundation
               </a>
               <ul class="dropdown-menu">
@@ -42,7 +49,9 @@ if (headerContainer) {
             </li>
 
             <li class="dropdown">
-              <a href="#" aria-haspopup="true" aria-expanded="false">
+              <a href="#"
+                 aria-haspopup="true"
+                 aria-expanded="false">
                 Programs
               </a>
               <ul class="dropdown-menu">
@@ -55,7 +64,9 @@ if (headerContainer) {
             </li>
 
             <li>
-              <a href="https://verify.agileai.university" target="_blank" rel="noopener">
+              <a href="https://verify.agileai.university"
+                 target="_blank"
+                 rel="noopener">
                 Verification
               </a>
             </li>
@@ -84,13 +95,14 @@ if (headerContainer) {
   const currentPath = window.location.pathname.replace(/\/$/, "");
 
   document.querySelectorAll(".main-nav a").forEach(link => {
-    const href = link.getAttribute("href");
 
+    const href = link.getAttribute("href");
     if (!href || href.startsWith("http") || href === "#") return;
 
     const normalizedHref = href.replace("index.html", "").replace(/\/$/, "");
 
     if (currentPath.endsWith(normalizedHref)) {
+
       link.classList.add("active");
 
       const parentDropdown = link.closest(".dropdown");
@@ -121,14 +133,10 @@ if (headerContainer) {
 
   handleHeaderScroll();
   window.addEventListener("scroll", handleHeaderScroll, { passive: true });
-}
 
-
-/* =========================================================
-   Mobile Navigation Controller
-========================================================= */
-
-document.addEventListener("DOMContentLoaded", function () {
+  /* =========================================================
+     Mobile Navigation Controller
+  ========================================================= */
 
   const toggle = document.querySelector(".mobile-menu-toggle");
   const nav = document.querySelector(".main-nav");
@@ -152,20 +160,24 @@ document.addEventListener("DOMContentLoaded", function () {
     body.classList.remove("nav-open");
     backdrop.classList.remove("active");
 
-    // Close all dropdowns
-    nav.querySelectorAll(".dropdown").forEach(d => d.classList.remove("open"));
+    // Close dropdowns safely
+    nav.querySelectorAll(".dropdown").forEach(d => {
+      d.classList.remove("open");
+      const a = d.querySelector(":scope > a");
+      if (a) a.setAttribute("aria-expanded", "false");
+    });
   }
 
-  /* Toggle Main Menu */
+  /* Toggle main menu */
   toggle.addEventListener("click", function (e) {
     e.stopPropagation();
     nav.classList.contains("open") ? closeNav() : openNav();
   });
 
-  /* Tap Outside */
+  /* Tap outside */
   backdrop.addEventListener("click", closeNav);
 
-  /* Auto-close on link click */
+  /* Auto-close on link click (mobile only) */
   nav.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", function () {
       if (window.innerWidth <= 768) {
@@ -176,22 +188,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* Dropdown toggle (mobile only) */
   nav.querySelectorAll(".dropdown > a").forEach(link => {
+
     link.addEventListener("click", function (e) {
 
       if (window.innerWidth <= 768) {
+
         e.preventDefault();
 
         const parent = this.parentElement;
+        const isOpen = parent.classList.contains("open");
 
-        // Close other dropdowns
+        // Close all first
         nav.querySelectorAll(".dropdown").forEach(d => {
-          if (d !== parent) d.classList.remove("open");
+          d.classList.remove("open");
+          const a = d.querySelector(":scope > a");
+          if (a) a.setAttribute("aria-expanded", "false");
         });
 
-        parent.classList.toggle("open");
+        // Open current if it wasn't open
+        if (!isOpen) {
+          parent.classList.add("open");
+          this.setAttribute("aria-expanded", "true");
+        }
       }
-
     });
   });
 
-});
+})();

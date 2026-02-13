@@ -418,60 +418,49 @@ footer {
 }
 
 /* =========================================
-   Institutional Dropdown — Clean & Stable
+   Institutional Dropdown — Deterministic Anchor
+   CLEAN FINAL VERSION
 ========================================= */
 
 .main-nav li.dropdown {
   position: relative;
 }
 
+/* Anchor dropdown to the left edge of its parent <li> */
 .main-nav li.dropdown > .dropdown-menu {
   display: none;
   position: absolute;
-  top: 100%;
-  left: 0;                  /* left aligned to parent */
-  transform: none;
 
-  min-width: 220px;         /* tighter width = less "center illusion" */
-  padding: 10px 0;
+  top: 100%;
+  left: 0;
+
+  min-width: 260px;
+  padding: 12px 0;
 
   background: var(--background);
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 
   z-index: 3000;
+
+  text-align: left;
 }
 
-/* Dropdown items */
+/* Remove flex interference */
 .main-nav li.dropdown > .dropdown-menu li {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  display: block;
+  text-align: left;
 }
 
 .main-nav li.dropdown > .dropdown-menu a {
   display: block;
   padding: 10px 18px;
-  text-decoration: none;
-  color: var(--text-primary);
-  white-space: nowrap;
   text-align: left;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
 }
 
-.main-nav li.dropdown > .dropdown-menu a:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-/* Desktop Hover */
-@media (min-width: 769px) {
-  .main-nav li.dropdown:hover > .dropdown-menu {
-    display: block;
-  }
-}
-
-/* Desktop Hover */
+/* Desktop hover */
 @media (min-width: 769px) {
   .main-nav li.dropdown:hover > .dropdown-menu {
     display: block;

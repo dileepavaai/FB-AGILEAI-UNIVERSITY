@@ -793,4 +793,9 @@ ul {
     display: block;
   }
 
+  /* Disable nav underline animation on mobile */
+.main-nav ul li > a::after {
+  display: none;
+}
+
 }

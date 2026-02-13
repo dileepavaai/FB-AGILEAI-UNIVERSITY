@@ -418,21 +418,21 @@ footer {
 }
 
 /* =========================================
-   Institutional Dropdown — Deterministic Anchor
-   CLEAN FINAL VERSION
+   Institutional Dropdown (Stable + Anchored)
 ========================================= */
 
 .main-nav li.dropdown {
   position: relative;
 }
 
-/* Anchor dropdown to the left edge of its parent <li> */
 .main-nav li.dropdown > .dropdown-menu {
   display: none;
   position: absolute;
-
   top: 100%;
+
+  /* Anchor directly under the Programs text */
   left: 0;
+  transform: none;
 
   min-width: 260px;
   padding: 12px 0;
@@ -442,25 +442,25 @@ footer {
   border-radius: 6px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 
-  z-index: 3000;
-
-  text-align: left;
+  z-index: 2000;
 }
 
-/* Remove flex interference */
 .main-nav li.dropdown > .dropdown-menu li {
-  display: block;
-  text-align: left;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .main-nav li.dropdown > .dropdown-menu a {
   display: block;
   padding: 10px 18px;
-  text-align: left;
+  text-decoration: none;
+  color: var(--text-primary);
   white-space: nowrap;
+  text-align: left;
 }
 
-/* Desktop hover */
+/* Desktop Hover */
 @media (min-width: 769px) {
   .main-nav li.dropdown:hover > .dropdown-menu {
     display: block;

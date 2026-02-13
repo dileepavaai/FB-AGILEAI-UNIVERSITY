@@ -690,8 +690,8 @@ ul {
 }
 
 /* =========================================
-   Dropdown Alignment Correction (Left Align)
-   FINAL OVERRIDE
+   Institutional Dropdown — Canonical v4.3.3
+   Anchored Left, No Overrides, No Drift
 ========================================= */
 
 .main-nav li.dropdown {
@@ -699,31 +699,43 @@ ul {
 }
 
 .main-nav li.dropdown > .dropdown-menu {
-  left: 0 !important;
-  right: auto !important;
-  transform: none !important;
-  min-width: 220px;     /* slightly tighter */
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;              /* Anchor directly under parent */
+  right: auto;
+  transform: none;
+
+  min-width: 220px;
+  padding: 12px 0;
+
+  background: var(--background);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+
+  z-index: 2000;
   text-align: left;
+}
+
+.main-nav li.dropdown > .dropdown-menu li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .main-nav li.dropdown > .dropdown-menu a {
   display: block;
-  padding: 12px 18px;   /* slightly stronger left anchor */
+  padding: 12px 18px;
+  text-decoration: none;
+  color: var(--text-primary);
+  white-space: nowrap;
   text-align: left;
 }
 
-/* FORCE Programs dropdown left alignment */
-.main-nav li.dropdown {
-  position: relative;
-}
-
-.main-nav li.dropdown > .dropdown-menu {
-  left: 0 !important;
-  right: auto !important;
-  transform: none !important;
-  text-align: left;
-}
-
-.main-nav li.dropdown > .dropdown-menu a {
-  text-align: left;
+/* Desktop Hover */
+@media (min-width: 769px) {
+  .main-nav li.dropdown:hover > .dropdown-menu {
+    display: block;
+  }
 }

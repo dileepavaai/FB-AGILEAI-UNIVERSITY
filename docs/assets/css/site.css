@@ -120,7 +120,6 @@ body {
   font-size: 1rem;
 }
 
-
 /* =========================
    NAVIGATION
 ========================= */
@@ -129,7 +128,8 @@ body {
   position: relative;
 }
 
-.main-nav ul {
+/* FLEX ONLY FOR TOP-LEVEL NAV */
+.main-nav > ul {
   display: flex;
   gap: 32px;
   list-style: none;
@@ -154,16 +154,19 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM (v7.6)
-   - Left aligned under parent
+   DROPDOWN SYSTEM (Stable)
+   - Vertical layout enforced
+   - No flex inheritance
+   - Left-aligned under parent
    - Collision safe
-   - No horizontal transform
 ========================= */
 
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 12px);
   left: 0;
+
+  display: block;
 
   min-width: 260px;
   max-width: 320px;
@@ -189,6 +192,14 @@ body {
   z-index: 5200;
 }
 
+/* Force dropdown UL to be vertical */
+.dropdown-menu ul {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .dropdown.open > .dropdown-menu {
   opacity: 1;
   visibility: visible;
@@ -208,8 +219,12 @@ body {
 ========================= */
 
 .dropdown-menu li {
+  display: block;
+  width: 100%;
+
   opacity: 0;
   transform: translateY(6px);
+
   transition:
     opacity 180ms ease,
     transform 200ms ease;
@@ -228,6 +243,8 @@ body {
 
 .dropdown-menu a {
   display: block;
+  width: 100%;
+
   padding: 12px 20px;
 
   font-size: 0.9rem;
@@ -241,7 +258,6 @@ body {
 .dropdown-menu a:hover {
   background-color: var(--surface-muted);
 }
-
 
 /* =========================
    THEME TOGGLE BUTTON

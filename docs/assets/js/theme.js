@@ -1,5 +1,5 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v7.2
+   AgileAI Public Surface — Theme Controller v7.3
    Hardened Institutional Baseline (Light / Dark Only)
    - Deterministic header-safe binding
    - No observers
@@ -14,7 +14,6 @@
   const STORAGE_KEY = "aa_theme";
   const root = document.documentElement;
 
-  let initialized = false;
   let buttonBound = false;
 
   /* =========================================================
@@ -32,87 +31,42 @@
 
   function applyTheme(mode) {
     root.setAttribute("data-theme", mode);
-    updateButton(mode);
   }
 
-  function toggleTheme(e) {
+  function toggleTheme() {
     const current = getSavedTheme();
     const next = current === "light" ? "dark" : "light";
 
     saveTheme(next);
     applyTheme(next);
-    triggerRipple(e);
+    updateButton(next);
   }
 
   /* =========================================================
-     BUTTON STATE (Deterministic Safe Binding)
+     BUTTON BINDING (Header Safe)
   ========================================================== */
 
   function updateButton(mode) {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+
+    btn.textContent = mode === "dark" ? "🌙" : "☀️";
+    btn.title = mode === "dark"
+      ? "Switch to Light Mode"
+      : "Switch to Dark Mode";
+  }
+
+  function tryBindButton() {
+
+    if (buttonBound) return;
 
     const btn = document.getElementById("theme-toggle");
     if (!btn) return;
 
-    if (!buttonBound) {
-      btn.addEventListener("click", toggleTheme);
-      buttonBound = true;
-    }
+    btn.addEventListener("click", toggleTheme);
+    updateButton(getSavedTheme());
 
-    if (mode === "dark") {
-      btn.textContent = "🌙";
-      btn.title = "Switch to Light Mode";
-    } else {
-      btn.textContent = "☀️";
-      btn.title = "Switch to Dark Mode";
-    }
-  }
-
-  /* =========================================================
-     SAFE HEADER BIND RETRY
-  ========================================================== */
-
-  function ensureButtonBinding() {
-
-    const btn = document.getElementById("theme-toggle");
-
-    if (btn) {
-      updateButton(getSavedTheme());
-      return;
-    }
-
-    // Retry once after header injection delay
-    setTimeout(() => {
-      const retryBtn = document.getElementById("theme-toggle");
-      if (retryBtn) {
-        updateButton(getSavedTheme());
-      }
-    }, 50);
-  }
-
-  /* =========================================================
-     RIPPLE EFFECT
-  ========================================================== */
-
-  function triggerRipple(event) {
-
-    if (!event) return;
-
-    const btn = event.currentTarget;
-    if (!btn) return;
-
-    const circle = document.createElement("span");
-    circle.className = "ripple";
-
-    const rect = btn.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-
-    circle.style.width = circle.style.height = size + "px";
-    circle.style.left = event.clientX - rect.left - size / 2 + "px";
-    circle.style.top = event.clientY - rect.top - size / 2 + "px";
-
-    btn.appendChild(circle);
-
-    setTimeout(() => circle.remove(), 600);
+    buttonBound = true;
   }
 
   /* =========================================================
@@ -128,7 +82,6 @@
     document.body.appendChild(bar);
 
     function updateProgress() {
-
       const scrollTop = window.scrollY;
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -148,14 +101,19 @@
 
   function init() {
 
-    if (initialized) return;
-    initialized = true;
-
     const saved = getSavedTheme();
-    root.setAttribute("data-theme", saved);
+    applyTheme(saved);
 
-    ensureButtonBinding();
     initReadingProgress();
+
+    // Try binding immediately
+    tryBindButton();
+
+    // Safety retry for header injection timing
+    const interval = setInterval(() => {
+      tryBindButton();
+      if (buttonBound) clearInterval(interval);
+    }, 50);
   }
 
   if (document.readyState === "loading") {

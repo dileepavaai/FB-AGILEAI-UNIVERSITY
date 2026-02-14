@@ -1,14 +1,14 @@
 /* =========================================================  
    Global Header Injection
-   Institutional Navigation v5.5 (Edge-Safe Premium Build)
+   Institutional Navigation v5.6 (Viewport-Resilient Premium Build)
    - Early Theme Resolution
-   - Viewport Edge Detection (Prevents Clipping)
+   - Viewport Edge Detection (Resize Safe)
    - Desktop Hover Intent Buffer
    - Scroll Shrink (80px)
    - Scroll Direction Hide/Show
    - Mobile Nav Stable
    - Active Detection
-   - ARIA Support
+   - ARIA Support (Hardened)
    - Production Safe
 ========================================================= */
 
@@ -148,7 +148,7 @@
     if (!header || !toggle || !nav) return;
 
     /* =========================================================
-       THEME TOGGLE (Unchanged)
+       THEME TOGGLE (Safe Binding)
     ========================================================= */
 
     function resolveSystemTheme() {
@@ -165,7 +165,7 @@
       localStorage.setItem("aa_theme", theme);
     }
 
-    if (themeToggle) {
+    if (themeToggle && !themeToggle.dataset.bound) {
       themeToggle.addEventListener("click", () => {
         const current = localStorage.getItem("aa_theme") || "system";
         const next =
@@ -174,6 +174,7 @@
           "light";
         applyTheme(next);
       });
+      themeToggle.dataset.bound = "true";
     }
 
     /* =========================================================
@@ -194,10 +195,12 @@
     });
 
     /* =========================================================
-       DESKTOP HOVER + EDGE DETECTION
+       DESKTOP HOVER + EDGE DETECTION (Resize Safe)
     ========================================================= */
 
-    if (window.matchMedia("(min-width: 769px)").matches) {
+    const desktopQuery = window.matchMedia("(min-width: 769px)");
+
+    function setupDesktopDropdowns() {
 
       const dropdowns = nav.querySelectorAll(".dropdown");
 
@@ -213,9 +216,7 @@
           drop.classList.remove("align-right");
 
           const rect = menu.getBoundingClientRect();
-          const overflowRight = rect.right > window.innerWidth;
-
-          if (overflowRight) {
+          if (rect.right > window.innerWidth) {
             drop.classList.add("align-right");
           }
         }
@@ -237,8 +238,21 @@
           }, 140);
         });
 
+        window.addEventListener("resize", adjustAlignment);
       });
     }
+
+    if (desktopQuery.matches) {
+      setupDesktopDropdowns();
+    }
+
+    desktopQuery.addEventListener("change", e => {
+      if (!e.matches) {
+        nav.querySelectorAll(".dropdown").forEach(d => {
+          d.classList.remove("open", "align-right");
+        });
+      }
+    });
 
     /* =========================================================
        SCROLL BEHAVIOR

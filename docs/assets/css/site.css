@@ -1,6 +1,10 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS v6.3
-   Authoritative Paired Build (Header v5.2 Compatible)
+   Safe Structural Alignment Release
+   Compatible with:
+   - header.js v5.2
+   - footer.js v2.0
+   - theme.js v6.2
 ========================================= */
 
 /* =========================
@@ -12,22 +16,44 @@
   --text-secondary: #555;
   --border-subtle: #e6e6e6;
   --background: #ffffff;
-  --surface-muted: #fafafa;
-  --max-width: 720px;
-  --transition-speed: 240ms;
+  --surface-muted: #f6f6f6;
 
+  --max-width: 720px;
+  --header-height: 80px;
+
+  --transition-speed: 240ms;
   --motion-standard: cubic-bezier(.4, 0, .2, 1);
   --motion-decelerate: cubic-bezier(0, 0, .2, 1);
   --motion-smooth: cubic-bezier(.25, .8, .25, 1);
 }
 
 /* =========================
+   DARK MODE
+========================= */
+
+:root[data-theme="dark"] {
+  --text-primary: #f2f2f2;
+  --text-secondary: #b5b5b5;
+  --border-subtle: #2a2a2a;
+  --background: #0f1115;
+  --surface-muted: #151821;
+}
+
+:root[data-theme="system"] {
+  color-scheme: light dark;
+}
+
+/* =========================
    Base
 ========================= */
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
@@ -36,31 +62,7 @@ body {
   font-family: Georgia, "Times New Roman", serif;
   line-height: 1.75;
   font-size: 18px;
-}
-
-/* =========================
-   Layout
-========================= */
-
-main {
-  max-width: var(--max-width);
-  margin: 140px auto 100px auto;
-  padding: 0 32px;
-  min-height: calc(100vh - 160px);
-}
-
-/* =========================
-   Institutional Identity Band
-========================= */
-
-.institutional-band {
-  width: 100%;
-  padding: 10px 32px;
-  border-bottom: 1px solid var(--border-subtle);
-  background: var(--surface-muted);
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  letter-spacing: 0.2px;
+  transition: background var(--transition-speed), color var(--transition-speed);
 }
 
 /* =========================
@@ -74,8 +76,8 @@ main {
 
 .site-header {
   width: 100%;
+  height: var(--header-height);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 20px 32px;
   background: var(--background);
 
   position: fixed;
@@ -84,16 +86,18 @@ main {
   right: 0;
   z-index: 4000;
 
+  display: flex;
+  align-items: center;
+
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 
   transition:
     transform 320ms var(--motion-smooth),
-    padding 260ms var(--motion-standard),
-    box-shadow 260ms var(--motion-standard);
+    box-shadow 260ms var(--motion-standard),
+    background 260ms var(--motion-standard);
 }
 
 .site-header.scrolled {
-  padding: 12px 32px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.10);
 }
 
@@ -102,23 +106,20 @@ main {
 }
 
 .header-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.brand { flex: 1; }
-
-.main-nav {
-  flex: 2;
-  display: flex;
-  justify-content: center;
-}
-
-.theme-control {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
+.brand a {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 1rem;
 }
 
 /* =========================
@@ -127,54 +128,52 @@ main {
 
 .main-nav ul {
   display: flex;
-  gap: 36px;
+  gap: 32px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.main-nav li { position: relative; }
-
 .main-nav li > a {
   text-decoration: none;
   font-size: 0.9rem;
-  letter-spacing: 0.3px;
   color: var(--text-primary);
-  transition:
-    font-size 220ms var(--motion-standard),
-    transform 180ms ease,
-    opacity 180ms ease;
+  transition: opacity 180ms ease;
 }
 
 .main-nav li > a:hover {
-  transform: translateY(-1px);
-  opacity: 0.85;
+  opacity: 0.7;
 }
 
-.site-header.scrolled .main-nav li > a {
-  font-size: 0.85rem;
-}
-
-/* =========================
-   Dropdown
-========================= */
+/* Dropdown */
 
 .dropdown-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   left: 0;
-  min-width: 220px;
-  padding: 12px 0;
+
+  min-width: 240px;
+  padding: 14px 0;
+
   background: var(--background);
   border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border-radius: 8px;
+
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px);
+  transform: translateY(6px);
+
   transition:
     opacity 220ms var(--motion-decelerate),
     transform 220ms var(--motion-standard);
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 8px 18px;
+  font-size: 0.88rem;
 }
 
 @media (min-width: 769px) {
@@ -185,36 +184,132 @@ main {
   }
 }
 
-.dropdown-arrow {
-  margin-left: 6px;
-  font-size: 0.65rem;
-  transition: transform 200ms ease;
-}
+/* =========================
+   Institutional Band
+========================= */
 
-.dropdown.open > a .dropdown-arrow {
-  transform: rotate(180deg);
+.institutional-band {
+  margin-top: var(--header-height);
+  width: 100%;
+
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 0.85rem;
+
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 /* =========================
-   Mobile Backdrop
+   Layout
 ========================= */
 
-.nav-backdrop {
+main {
+  max-width: var(--max-width);
+  margin: 80px auto 100px auto;
+  padding: 0 32px;
+  min-height: calc(100vh - 200px);
+}
+
+/* =========================
+   Typography
+========================= */
+
+h1 {
+  font-size: 2.8rem;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-top: 60px;
+  margin-bottom: 18px;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+.surface-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+/* =========================
+   Links
+========================= */
+
+a {
+  color: inherit;
+  transition: opacity 180ms ease;
+}
+
+a:hover {
+  opacity: 0.7;
+}
+
+/* =========================
+   Footer
+========================= */
+
+#footer {
+  margin-top: 120px;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 40px 32px;
+  background: var(--surface-muted);
+}
+
+.footer-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.footer-inner p {
+  margin: 6px 0;
+}
+
+/* =========================
+   Reading Progress Bar
+========================= */
+
+#reading-progress {
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.22);
-  backdrop-filter: blur(6px);
-  opacity: 0;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: var(--text-primary);
+  z-index: 5000;
+  transition: width 120ms linear;
+}
+
+/* =========================
+   Theme Ripple
+========================= */
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-animation 600ms linear;
+  background-color: rgba(0, 0, 0, 0.2);
   pointer-events: none;
-  transition: opacity 240ms var(--motion-decelerate);
-  z-index: 3500;
 }
 
-body.nav-open {
-  overflow: hidden;
-}
-
-body.nav-open .nav-backdrop {
-  opacity: 1;
-  pointer-events: auto;
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
 }

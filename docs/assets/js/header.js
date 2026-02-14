@@ -1,13 +1,13 @@
-/* ========================================================= 
+/* =========================================================  
    Global Header Injection
-   Institutional Navigation v5.3 (Theme Stable Build)
+   Institutional Navigation v5.4 (Hover Stabilized)
    - Early Theme Resolution (System Safe)
-   - Arrow Rotation
+   - Desktop Hover Intent Buffer (140ms)
    - Scroll Shrink (80px)
    - Scroll Direction Hide/Show
-   - Mobile Focus Trap (Idempotent)
+   - Mobile Nav (Stable)
    - Active Detection
-   - ARIA Menubar Support
+   - ARIA Support
    - Production Safe
 ========================================================= */
 
@@ -15,7 +15,6 @@
 
   /* =========================================================
      EARLY THEME RESOLUTION (CRITICAL FIX)
-     Applies BEFORE header injection
   ========================================================= */
 
   (function applyInitialTheme() {
@@ -32,6 +31,7 @@
 
     document.documentElement.setAttribute("data-theme", finalTheme);
   })();
+
 
   /* =========================================================
      HEADER INJECTION
@@ -147,7 +147,7 @@
     if (!header || !toggle || !nav) return;
 
     /* =========================================================
-       THEME TOGGLE LOGIC
+       THEME TOGGLE (UNCHANGED — SAFE)
     ========================================================= */
 
     function resolveSystemTheme() {
@@ -194,6 +194,35 @@
     });
 
     /* =========================================================
+       DESKTOP HOVER INTENT (SMOOTH FIX)
+    ========================================================= */
+
+    if (window.matchMedia("(min-width: 769px)").matches) {
+
+      const dropdowns = nav.querySelectorAll(".dropdown");
+
+      dropdowns.forEach(drop => {
+
+        let closeTimer = null;
+        const trigger = drop.querySelector(":scope > a");
+
+        drop.addEventListener("mouseenter", () => {
+          if (closeTimer) clearTimeout(closeTimer);
+          drop.classList.add("open");
+          if (trigger) trigger.setAttribute("aria-expanded", "true");
+        });
+
+        drop.addEventListener("mouseleave", () => {
+          closeTimer = setTimeout(() => {
+            drop.classList.remove("open");
+            if (trigger) trigger.setAttribute("aria-expanded", "false");
+          }, 140);
+        });
+
+      });
+    }
+
+    /* =========================================================
        SCROLL BEHAVIOR
     ========================================================= */
 
@@ -202,11 +231,7 @@
     function handleScroll() {
       const currentScroll = window.scrollY;
 
-      if (currentScroll > 80) {
-        header.classList.add("scrolled");
-      } else {
-        header.classList.remove("scrolled");
-      }
+      header.classList.toggle("scrolled", currentScroll > 80);
 
       if (currentScroll > lastScrollY && currentScroll > 120) {
         header.classList.add("nav-hidden");
@@ -220,7 +245,7 @@
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     /* =========================================================
-       MOBILE NAV
+       MOBILE NAV (UNCHANGED)
     ========================================================= */
 
     function openNav() {

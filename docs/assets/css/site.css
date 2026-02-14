@@ -1,5 +1,5 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v6.2
+   AgileAI Public Surface — Institutional CSS v6.3
    Authoritative Paired Build (Header v5.2 Compatible)
 ========================================= */
 
@@ -12,6 +12,7 @@
   --text-secondary: #555;
   --border-subtle: #e6e6e6;
   --background: #ffffff;
+  --surface-muted: #fafafa;
   --max-width: 720px;
   --transition-speed: 240ms;
 
@@ -46,6 +47,20 @@ main {
   margin: 140px auto 100px auto;
   padding: 0 32px;
   min-height: calc(100vh - 160px);
+}
+
+/* =========================
+   Institutional Identity Band
+========================= */
+
+.institutional-band {
+  width: 100%;
+  padding: 10px 32px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.2px;
 }
 
 /* =========================
@@ -140,7 +155,9 @@ main {
   font-size: 0.85rem;
 }
 
-/* Dropdown */
+/* =========================
+   Dropdown
+========================= */
 
 .dropdown-menu {
   position: absolute;

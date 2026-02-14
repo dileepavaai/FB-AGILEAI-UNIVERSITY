@@ -1,6 +1,7 @@
-/* =========================================================
+/* ========================================================= 
    Global Header Injection
-   Institutional Navigation v5.2 (Stable Paired Build)
+   Institutional Navigation v5.3 (Theme Stable Build)
+   - Early Theme Resolution (System Safe)
    - Arrow Rotation
    - Scroll Shrink (80px)
    - Scroll Direction Hide/Show
@@ -12,6 +13,30 @@
 
 (function () {
 
+  /* =========================================================
+     EARLY THEME RESOLUTION (CRITICAL FIX)
+     Applies BEFORE header injection
+  ========================================================= */
+
+  (function applyInitialTheme() {
+    const savedTheme = localStorage.getItem("aa_theme") || "system";
+
+    function resolveSystemTheme() {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    const finalTheme =
+      savedTheme === "system" ? resolveSystemTheme() : savedTheme;
+
+    document.documentElement.setAttribute("data-theme", finalTheme);
+  })();
+
+  /* =========================================================
+     HEADER INJECTION
+  ========================================================= */
+
   function injectHeader() {
 
     const headerContainer = document.getElementById("header");
@@ -20,10 +45,6 @@
 
     const prefersReducedMotion =
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    /* =========================================================
-       Inject Markup
-    ========================================================= */
 
     headerContainer.innerHTML = `
       <header class="site-header">
@@ -120,12 +141,43 @@
     const toggle = headerContainer.querySelector(".mobile-menu-toggle");
     const nav = headerContainer.querySelector(".main-nav");
     const backdrop = headerContainer.querySelector(".nav-backdrop");
+    const themeToggle = headerContainer.querySelector("#theme-toggle");
     const body = document.body;
 
     if (!header || !toggle || !nav) return;
 
     /* =========================================================
-       Active Page Detection
+       THEME TOGGLE LOGIC
+    ========================================================= */
+
+    function resolveSystemTheme() {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    function applyTheme(theme) {
+      const finalTheme =
+        theme === "system" ? resolveSystemTheme() : theme;
+
+      document.documentElement.setAttribute("data-theme", finalTheme);
+      localStorage.setItem("aa_theme", theme);
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        const current = localStorage.getItem("aa_theme") || "system";
+        const next =
+          current === "light" ? "dark" :
+          current === "dark" ? "system" :
+          "light";
+
+        applyTheme(next);
+      });
+    }
+
+    /* =========================================================
+       ACTIVE PAGE DETECTION
     ========================================================= */
 
     const currentPath = window.location.pathname.replace(/\/$/, "");
@@ -142,7 +194,7 @@
     });
 
     /* =========================================================
-       Scroll Shrink + Direction Hide/Show
+       SCROLL BEHAVIOR
     ========================================================= */
 
     let lastScrollY = window.scrollY;
@@ -168,46 +220,8 @@
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     /* =========================================================
-       Mobile Nav
+       MOBILE NAV
     ========================================================= */
-
-    let focusTrapAttached = false;
-
-    function trapFocus() {
-
-      if (focusTrapAttached) return;
-
-      const focusable = nav.querySelectorAll(
-        'a, button, [tabindex]:not([tabindex="-1"])'
-      );
-
-      if (!focusable.length) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-
-      function handleKeydown(e) {
-
-        if (e.key === "Escape") {
-          closeNav();
-        }
-
-        if (e.key !== "Tab") return;
-
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-
-      nav.addEventListener("keydown", handleKeydown);
-      focusTrapAttached = true;
-
-      first.focus();
-    }
 
     function openNav() {
       nav.classList.add("open");
@@ -215,7 +229,6 @@
       toggle.setAttribute("aria-expanded", "true");
       body.classList.add("nav-open");
       if (backdrop) backdrop.classList.add("active");
-      trapFocus();
     }
 
     function closeNav() {
@@ -224,13 +237,6 @@
       toggle.setAttribute("aria-expanded", "false");
       body.classList.remove("nav-open");
       if (backdrop) backdrop.classList.remove("active");
-      focusTrapAttached = false;
-
-      nav.querySelectorAll(".dropdown").forEach(d => {
-        d.classList.remove("open");
-        const trigger = d.querySelector(":scope > a");
-        if (trigger) trigger.setAttribute("aria-expanded", "false");
-      });
     }
 
     toggle.addEventListener("click", e => {

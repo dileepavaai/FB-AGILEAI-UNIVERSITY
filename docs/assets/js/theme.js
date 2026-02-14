@@ -1,6 +1,6 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v5 (Robust)
-   Fully resilient across injected headers & all pages
+   AgileAI Public Surface — Theme Controller v5.1
+   Injection Safe + Idempotent + Ripple Hardened
 ========================================================= */
 
 (function () {
@@ -8,6 +8,8 @@
   const STORAGE_KEY = "aa_theme";
   const root = document.documentElement;
   const prefersDarkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+  let listenerAttached = false;
 
   /* =========================
      Helpers
@@ -37,6 +39,7 @@
     btn.classList.add("theme-icon-fade");
 
     setTimeout(() => {
+
       if (mode === "light") {
         btn.textContent = "🌞";
         btn.title = "Theme: Light";
@@ -49,6 +52,7 @@
       }
 
       btn.classList.remove("theme-icon-fade");
+
     }, 120);
   }
 
@@ -69,24 +73,30 @@
     saveTheme(next);
     applyTheme(next);
 
-    triggerRipple(e);
+    if (e) triggerRipple(e);
   }
 
   /* =========================
-     Ripple
+     Ripple (Hardened)
   ========================= */
 
   function triggerRipple(event) {
     const btn = event.currentTarget;
+    if (!btn) return;
+
+    const rect = btn.getBoundingClientRect();
     const circle = document.createElement("span");
     circle.className = "ripple";
 
-    const rect = btn.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
 
     circle.style.width = circle.style.height = size + "px";
-    circle.style.left = event.clientX - rect.left - size / 2 + "px";
-    circle.style.top = event.clientY - rect.top - size / 2 + "px";
+
+    const x = event.clientX || rect.left + rect.width / 2;
+    const y = event.clientY || rect.top + rect.height / 2;
+
+    circle.style.left = x - rect.left - size / 2 + "px";
+    circle.style.top = y - rect.top - size / 2 + "px";
 
     btn.appendChild(circle);
     setTimeout(() => circle.remove(), 600);
@@ -98,9 +108,14 @@
 
   function attachButtonListener() {
     const btn = document.getElementById("theme-toggle");
-    if (!btn) return false;
+    if (!btn || listenerAttached) return false;
 
     btn.addEventListener("click", toggleTheme);
+    listenerAttached = true;
+
+    // Sync icon after injection
+    updateButton(getSavedTheme());
+
     return true;
   }
 
@@ -119,6 +134,7 @@
   ========================= */
 
   function initReadingProgress() {
+
     if (document.getElementById("reading-progress")) return;
 
     const bar = document.createElement("div");
@@ -127,8 +143,12 @@
 
     function updateProgress() {
       const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      const progress =
+        docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
       bar.style.width = progress + "%";
     }
 
@@ -141,25 +161,29 @@
 
   function init() {
 
-    // Apply saved theme immediately
     applyTheme(getSavedTheme());
 
-    // Try attaching button
     if (!attachButtonListener()) {
 
-      // Retry if header is injected later
       const observer = new MutationObserver(() => {
         if (attachButtonListener()) {
           observer.disconnect();
         }
       });
 
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
     }
 
     initReadingProgress();
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 
 })();

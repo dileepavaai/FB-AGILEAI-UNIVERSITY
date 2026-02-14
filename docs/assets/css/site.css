@@ -162,47 +162,60 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM
+   DROPDOWN SYSTEM (Institutional Stable v7.5)
+   - Centered under parent
+   - No horizontal bleed
+   - Clean transform stack
+   - Theme consistent
 ========================= */
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
+  top: calc(100% + 12px);
+
+  /* Center under parent */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
 
   min-width: 260px;
   max-width: 320px;
 
-  padding: 12px 0;
+  padding: 14px 0;
 
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 10px;
+  border-radius: 12px;
 
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14);
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
-  transform: translateY(8px);
   transition:
     opacity 200ms ease,
-    transform 200ms ease;
+    transform 220ms var(--motion-standard);
 
-  z-index: 100;
+  z-index: 5200;
 }
 
 .dropdown.open > .dropdown-menu {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateY(0);
+
+  transform: translateX(-50%) translateY(0);
 }
 
+/* Optional right-aligned variant (if ever needed) */
 .dropdown.align-right > .dropdown-menu {
   left: auto;
   right: 0;
+  transform: translateY(10px);
+}
+
+.dropdown.align-right.open > .dropdown-menu {
+  transform: translateY(0);
 }
 
 
@@ -215,7 +228,7 @@ body {
   transform: translateY(6px);
   transition:
     opacity 180ms ease,
-    transform 180ms ease;
+    transform 200ms ease;
 }
 
 .dropdown.open > .dropdown-menu li {
@@ -223,6 +236,7 @@ body {
   transform: translateY(0);
 }
 
+/* Soft stagger */
 .dropdown.open > .dropdown-menu li:nth-child(1) { transition-delay: 40ms; }
 .dropdown.open > .dropdown-menu li:nth-child(2) { transition-delay: 70ms; }
 .dropdown.open > .dropdown-menu li:nth-child(3) { transition-delay: 100ms; }
@@ -230,11 +244,12 @@ body {
 
 .dropdown-menu a {
   display: block;
-  padding: 12px 18px;
-  font-size: 0.88rem;
+  padding: 12px 20px;
+
+  font-size: 0.9rem;
   color: var(--text-primary);
 
-  line-height: 1.45;
+  line-height: 1.5;
 
   white-space: normal;
   overflow-wrap: break-word;
@@ -243,7 +258,6 @@ body {
 .dropdown-menu a:hover {
   background-color: var(--surface-muted);
 }
-
 
 /* =========================
    THEME TOGGLE BUTTON

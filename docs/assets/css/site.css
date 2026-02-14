@@ -1,6 +1,6 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v6.5
-   JS-Controlled Premium Dropdown System
+   AgileAI Public Surface — Institutional CSS v6.6
+   Stable Premium Dropdown System
    Compatible with:
    - header.js v5.4
    - footer.js v2.0
@@ -45,7 +45,7 @@
 }
 
 /* =========================
-   Base
+   BASE
 ========================= */
 
 * { box-sizing: border-box; }
@@ -63,7 +63,7 @@ body {
 }
 
 /* =========================
-   Header
+   HEADER
 ========================= */
 
 #header {
@@ -81,7 +81,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 4000;
+  z-index: 5000; /* Ensure always above band/content */
 
   display: flex;
   align-items: center;
@@ -107,6 +107,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -119,7 +120,7 @@ body {
 }
 
 /* =========================
-   Navigation
+   NAVIGATION
 ========================= */
 
 .main-nav ul {
@@ -146,7 +147,7 @@ body {
 }
 
 /* =========================
-   JS-Controlled Dropdown
+   JS-CONTROLLED DROPDOWN
 ========================= */
 
 .dropdown-menu {
@@ -161,10 +162,12 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
 
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
 
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
+
   transform: translateY(8px) scale(0.98);
   transform-origin: top center;
 
@@ -172,7 +175,7 @@ body {
     opacity 260ms var(--motion-premium),
     transform 260ms var(--motion-premium);
 
-  z-index: 3000;
+  z-index: 5100; /* Above header stacking children */
 }
 
 /* OPEN STATE (Controlled by header.js) */
@@ -180,11 +183,12 @@ body {
 .dropdown.open > .dropdown-menu {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   transform: translateY(0) scale(1);
 }
 
 /* =========================
-   Submenu Stagger
+   SUBMENU STAGGER
 ========================= */
 
 .dropdown-menu li {
@@ -213,7 +217,7 @@ body {
 }
 
 /* =========================
-   Institutional Band
+   INSTITUTIONAL BAND
 ========================= */
 
 .institutional-band {
@@ -225,10 +229,14 @@ body {
   background: var(--surface-muted);
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border-subtle);
+
+  /* Important: no stacking context */
+  position: static;
+  z-index: auto;
 }
 
 /* =========================
-   Layout
+   LAYOUT
 ========================= */
 
 main {
@@ -239,7 +247,7 @@ main {
 }
 
 /* =========================
-   Typography
+   TYPOGRAPHY
 ========================= */
 
 h1 {
@@ -265,7 +273,7 @@ p { margin-bottom: 20px; }
 }
 
 /* =========================
-   Links
+   LINKS
 ========================= */
 
 a {
@@ -276,7 +284,7 @@ a {
 a:hover { opacity: 0.7; }
 
 /* =========================
-   Footer
+   FOOTER
 ========================= */
 
 #footer { margin-top: 120px; }
@@ -297,7 +305,7 @@ a:hover { opacity: 0.7; }
 .footer-inner p { margin: 6px 0; }
 
 /* =========================
-   Reading Progress
+   READING PROGRESS
 ========================= */
 
 #reading-progress {
@@ -307,12 +315,12 @@ a:hover { opacity: 0.7; }
   height: 3px;
   width: 0;
   background: var(--text-primary);
-  z-index: 5000;
+  z-index: 6000;
   transition: width 120ms linear;
 }
 
 /* =========================
-   Theme Ripple
+   THEME RIPPLE
 ========================= */
 
 .ripple {
@@ -332,13 +340,13 @@ a:hover { opacity: 0.7; }
 }
 
 /* =========================
-   Dark Mode Dropdown
+   DARK MODE DROPDOWN
 ========================= */
 
 [data-theme="dark"] .dropdown-menu {
   background: #1f1f1f;
   border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
 }
 
 [data-theme="dark"] .dropdown-menu a:hover {

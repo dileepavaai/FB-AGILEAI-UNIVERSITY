@@ -1,11 +1,11 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v7.3
+   AgileAI Public Surface — Institutional CSS v7.4
    Production Stable Institutional Baseline
    - Light / Dark only
-   - Wrap-safe dropdown
-   - No text distortion
-   - No overflow stacking bug
-   - Layout integrity preserved
+   - Theme-consistent dropdown
+   - Wrap-safe
+   - No stacking bug
+   - Institutional elevation refined
 ========================================= */
 
 
@@ -19,6 +19,7 @@
   --border-subtle: #e6e6e6;
   --background: #ffffff;
   --surface-muted: #f6f6f6;
+  --surface-elevated: #ffffff;
 
   --max-width: 720px;
   --header-height: 80px;
@@ -35,6 +36,7 @@
   --border-subtle: #e6e6e6;
   --background: #ffffff;
   --surface-muted: #f6f6f6;
+  --surface-elevated: #ffffff;
 }
 
 :root[data-theme="dark"] {
@@ -43,6 +45,7 @@
   --border-subtle: #2a2a2a;
   --background: #0f1115;
   --surface-muted: #151821;
+  --surface-elevated: #1b1f26;
 }
 
 
@@ -152,7 +155,7 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM (FIXED + WRAP SAFE)
+   DROPDOWN SYSTEM
 ========================= */
 
 .dropdown-menu {
@@ -160,16 +163,16 @@ body {
   top: calc(100% + 8px);
   left: 0;
 
-  width: 300px; /* widened for institutional names */
+  width: 300px;
   max-width: 90vw;
 
   padding: 12px 0;
 
-  background: var(--background);
+  background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
 
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
 
   opacity: 0;
   visibility: hidden;
@@ -222,15 +225,16 @@ body {
   display: block;
   padding: 10px 18px;
   font-size: 0.88rem;
+  color: var(--text-primary);
 
-  white-space: normal;        /* allow wrapping */
-  word-break: normal;         /* prevent letter stacking */
-  overflow-wrap: break-word;  /* safe long-word handling */
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
   line-height: 1.45;
 }
 
 .dropdown-menu a:hover {
-  background-color: rgba(0,0,0,0.04);
+  background-color: var(--surface-muted);
 }
 
 
@@ -252,12 +256,7 @@ body {
   background: rgba(0,0,0,0.05);
 }
 
-[data-theme="dark"] .theme-control button {
-  background: #1f1f1f;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-[data-theme="dark"] .theme-control button:hover {
+:root[data-theme="dark"] .theme-control button:hover {
   background: rgba(255,255,255,0.06);
 }
 
@@ -364,19 +363,4 @@ a:hover { opacity: 0.7; }
   background: var(--text-primary);
   z-index: 6000;
   transition: width 120ms linear;
-}
-
-
-/* =========================
-   DARK MODE DROPDOWN
-========================= */
-
-[data-theme="dark"] .dropdown-menu {
-  background: #1f1f1f;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-}
-
-[data-theme="dark"] .dropdown-menu a:hover {
-  background-color: rgba(255,255,255,0.06);
 }

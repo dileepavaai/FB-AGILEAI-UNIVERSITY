@@ -1,13 +1,19 @@
 /* =========================================================
    Global Header Injection
-   Institutional Navigation v6.2 (Hardened Stable Build)
+   Institutional Navigation v6.3 (Production Hardened)
+
+   DESIGN GUARANTEES
+   ---------------------------------------------------------
    - Theme fully handled by theme.js
-   - Desktop hover only
-   - Touch-safe click fallback
+   - Deterministic injection
+   - Desktop hover (≥769px)
+   - Touch/click toggle fallback
    - Outside click close
-   - Clean scroll logic
-   - Mobile safe
+   - Scroll shrink + hide
+   - Mobile nav safe
    - Active page detection
+   - Emits headerInjected event
+   - Idempotent
 ========================================================= */
 
 (function () {
@@ -104,6 +110,11 @@
     if (!header || !toggle || !nav) return;
 
     /* =========================================================
+       Notify theme.js (deterministic binding)
+    ========================================================= */
+    document.dispatchEvent(new Event("headerInjected"));
+
+    /* =========================================================
        ACTIVE PAGE DETECTION
     ========================================================= */
 
@@ -119,45 +130,11 @@
     });
 
     /* =========================================================
-       DROPDOWN SYSTEM (DESKTOP + TOUCH SAFE)
+       DROPDOWN SYSTEM
     ========================================================= */
 
     const dropdowns = nav.querySelectorAll(".dropdown");
-
-    dropdowns.forEach(drop => {
-
-      const trigger = drop.querySelector(":scope > a");
-
-      // Prevent "#" jump
-      trigger.addEventListener("click", (e) => {
-        e.preventDefault();
-
-        // Toggle on click (touch devices)
-        const isOpen = drop.classList.contains("open");
-
-        closeAllDropdowns();
-        if (!isOpen) {
-          drop.classList.add("open");
-          trigger.setAttribute("aria-expanded", "true");
-        }
-      });
-
-      // Desktop hover only
-      drop.addEventListener("mouseenter", () => {
-        if (window.innerWidth > 768) {
-          drop.classList.add("open");
-          trigger.setAttribute("aria-expanded", "true");
-        }
-      });
-
-      drop.addEventListener("mouseleave", () => {
-        if (window.innerWidth > 768) {
-          drop.classList.remove("open");
-          trigger.setAttribute("aria-expanded", "false");
-        }
-      });
-
-    });
+    const desktopQuery = window.matchMedia("(min-width: 769px)");
 
     function closeAllDropdowns() {
       dropdowns.forEach(d => {
@@ -167,7 +144,42 @@
       });
     }
 
-    // Close when clicking outside
+    dropdowns.forEach(drop => {
+
+      const trigger = drop.querySelector(":scope > a");
+
+      // CLICK (Touch-safe)
+      trigger.addEventListener("click", (e) => {
+
+        if (desktopQuery.matches) return;
+
+        e.preventDefault();
+
+        const isOpen = drop.classList.contains("open");
+        closeAllDropdowns();
+
+        if (!isOpen) {
+          drop.classList.add("open");
+          trigger.setAttribute("aria-expanded", "true");
+        }
+      });
+
+      // DESKTOP HOVER
+      drop.addEventListener("mouseenter", () => {
+        if (!desktopQuery.matches) return;
+        drop.classList.add("open");
+        trigger.setAttribute("aria-expanded", "true");
+      });
+
+      drop.addEventListener("mouseleave", () => {
+        if (!desktopQuery.matches) return;
+        drop.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      });
+
+    });
+
+    // Outside click close
     document.addEventListener("click", (e) => {
       if (!nav.contains(e.target)) {
         closeAllDropdowns();
@@ -214,6 +226,7 @@
       toggle.setAttribute("aria-expanded", "false");
       body.classList.remove("nav-open");
       if (backdrop) backdrop.classList.remove("active");
+      closeAllDropdowns();
     }
 
     toggle.addEventListener("click", (e) => {

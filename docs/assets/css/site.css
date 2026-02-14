@@ -1,8 +1,8 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v4.3.2
-   UI v4 Stabilized + Mobile Hardened + Nav Rhythm Stabilized
+   AgileAI Public Surface — Institutional CSS v6.1
+   Consolidated • Deterministic • Velocity-Compatible
    SAFE FULL REPLACEMENT
-   ========================================= */
+========================================= */
 
 /* =========================
    ROOT VARIABLES
@@ -15,19 +15,21 @@
   --background: #ffffff;
   --max-width: 720px;
   --transition-speed: 240ms;
+
+  /* Institutional Motion Tokens */
+  --motion-standard: cubic-bezier(.4, 0, .2, 1);
+  --motion-decelerate: cubic-bezier(0, 0, .2, 1);
+  --motion-accelerate: cubic-bezier(.4, 0, 1, 1);
+  --motion-smooth: cubic-bezier(.25, .8, .25, 1);
 }
 
 /* =========================
    Base Reset
 ========================= */
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -46,93 +48,41 @@ body {
 }
 
 /* =========================
-   Header Navigation (Centered Institutional Layout — Stable)
-========================= */
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Left: Brand */
-.brand {
-  flex: 1;
-}
-
-/* Center: Main Navigation */
-.main-nav {
-  flex: 2;
-  display: flex;
-  justify-content: center;   /* restore centered nav */
-}
-
-.main-nav ul {
-  display: flex;
-  align-items: center;
-  gap: 36px;
-  list-style: none;
-  margin: 0;                /* remove auto centering */
-  padding: 0;
-  flex-wrap: wrap;
-}
-
-.main-nav li {
-  position: relative;
-  display: flex;
-}
-
-/* Right: Theme Toggle */
-.theme-control {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center; 
-}
-
-/* =========================
    Layout
 ========================= */
 
 main {
   max-width: var(--max-width);
-
-  margin: 140px auto 100px auto; /* offset fixed header */
+  margin: 140px auto 100px auto;
   padding: 0 32px;
-
   min-height: calc(100vh - 160px);
 
-  /* Fade-in only (no transform to protect sticky header) */
   opacity: 0;
   animation: fadeInPage 0.4s ease forwards;
-
-  transition:
-    background-color var(--transition-speed) ease,
-    color var(--transition-speed) ease;
 }
 
 @keyframes fadeInPage {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 
 /* =========================
    Typography
 ========================= */
 
+h1 { font-size: 2.4rem; margin: 0 0 1.6rem 0; }
+
 h2, h3 {
   font-weight: 600;
   line-height: 1.25;
-  margin-top: 2.8rem;
-  margin-bottom: 1.2rem;
+  margin-top: 2.4rem;
+  margin-bottom: 1rem;
 }
 
-h2 { font-size: 1.6rem; margin-top: 3rem; }
-h3 { font-size: 1.2rem; margin-top: 2rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.2rem; }
 
-p { margin-bottom: 1.4rem; }
-ul, ol { margin-bottom: 1.6rem; padding-left: 1.5rem; }
+p { margin-bottom: 1.2rem; }
+ul, ol { margin-bottom: 1.4rem; padding-left: 1.5rem; }
 li { margin-bottom: 0.6rem; }
 
 /* =========================
@@ -145,13 +95,6 @@ blockquote {
   border-left: 4px solid var(--text-primary);
   background: rgba(0,0,0,0.04);
   font-style: italic;
-  transition:
-    background-color var(--transition-speed) ease,
-    border-color var(--transition-speed) ease;
-}
-
-[data-theme="dark"] blockquote {
-  background: rgba(255,255,255,0.05);
 }
 
 /* =========================
@@ -163,9 +106,7 @@ a {
   text-decoration: underline;
 }
 
-a:hover {
-  opacity: 0.75;
-}
+a:hover { opacity: 0.75; }
 
 /* =========================
    Footer
@@ -173,124 +114,203 @@ a:hover {
 
 footer {
   border-top: 1px solid var(--border-subtle);
-  padding: 32px 32px;
-
+  padding: 32px;
   font-size: 0.85rem;
   color: var(--text-secondary);
-
   max-width: var(--max-width);
-  margin: 0 auto 60px auto;   /* ✅ align perfectly with main */
-
-  transition:
-    border-color var(--transition-speed) ease,
-    background-color var(--transition-speed) ease;
+  margin: 0 auto 60px auto;
 }
 
-/* =========================
-   Theme Toggle
-========================= */
+/* =========================================================
+   HEADER SYSTEM — Authoritative
+========================================================= */
 
-.theme-control {
-  margin-left: 12px;
-}
-
-#theme-toggle {
+#header {
   position: relative;
-  overflow: hidden;
-  background: none;
-  border: 1px solid var(--border-subtle);
-  padding: 6px 12px;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 6px;
-  color: var(--text-primary);
-  min-width: 42px;
-  transition:
-    transform 0.15s ease,
-    background-color 0.2s ease,
-    opacity 0.2s ease;
-}
-
-#theme-toggle:hover {
-  transform: translateY(-2px);
-  background: var(--border-subtle);
-}
-
-#theme-toggle:active {
-  transform: scale(0.92);
-}
-
-/* Ripple */
-
-.ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.2);
-  transform: scale(0);
-  animation: ripple-animation 0.6s ease-out;
-  pointer-events: none;
-}
-
-@keyframes ripple-animation {
-  to {
-    transform: scale(3);
-    opacity: 0;
-  }
+  width: 100%;
 }
 
 /* =========================
-   Theme States
+   Base Header
 ========================= */
 
-[data-theme="light"] {
-  --text-primary: #111;
-  --text-secondary: #555;
-  --border-subtle: #e6e6e6;
-  --background: #ffffff;
-}
+.site-header {
+  width: 100%;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 20px 32px;
+  background: var(--background);
 
-[data-theme="dark"] {
-  --text-primary: #e6e6e6;
-  --text-secondary: #aaa;
-  --border-subtle: #333;
-  --background: #111;
-}
-
-[data-theme="dark"] .site-header {
-  box-shadow: 0 1px 6px rgba(0,0,0,0.28);
-}
-
-/* SYSTEM */
-
-[data-theme="system"] {
-  --text-primary: #111;
-  --text-secondary: #555;
-  --border-subtle: #e6e6e6;
-  --background: #ffffff;
-}
-
-@media (prefers-color-scheme: dark) {
-  [data-theme="system"] {
-    --text-primary: #e6e6e6;
-    --text-secondary: #aaa;
-    --border-subtle: #333;
-    --background: #111;
-  }
-}
-
-/* =========================
-   Reading Progress
-========================= */
-
-#reading-progress {
   position: fixed;
   top: 0;
   left: 0;
-  height: 3px;
-  width: 0%;
-  background: var(--text-primary);
-  z-index: 9999;
-  transition: width 0.15s ease-out;
+  right: 0;
+  z-index: 4000;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+
+  transition:
+    transform 320ms var(--motion-smooth),
+    padding 260ms var(--motion-standard),
+    box-shadow 260ms var(--motion-standard),
+    background-color var(--transition-speed) ease,
+    border-color var(--transition-speed) ease;
+}
+
+/* Scroll compression (80px JS controlled) */
+.site-header.scrolled {
+  padding: 12px 32px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+}
+
+/* Hide on downward velocity */
+.site-header.nav-hidden {
+  transform: translateY(-100%);
+}
+
+/* =========================
+   Header Layout
+========================= */
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand { flex: 1; }
+
+.main-nav {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.theme-control {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* =========================
+   Brand Micro Scaling
+========================= */
+
+.site-header .brand a {
+  display: inline-block;
+  transition: transform 240ms var(--motion-standard);
+}
+
+.site-header.scrolled .brand a {
+  transform: scale(0.96);
+}
+
+/* =========================
+   Navigation
+========================= */
+
+.main-nav ul {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav li { position: relative; }
+
+.main-nav li > a {
+  display: inline-block;
+  padding: 6px 0;
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
+
+  transition:
+    font-size 220ms var(--motion-standard),
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.main-nav li > a:hover {
+  transform: translateY(-1px);
+  opacity: 0.85;
+}
+
+.site-header.scrolled .main-nav li > a {
+  font-size: 0.85rem;
+}
+
+/* =========================
+   Dropdown
+========================= */
+
+.main-nav li.dropdown > .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  padding: 12px 0;
+
+  background: var(--background);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+
+  transition:
+    opacity 220ms var(--motion-decelerate),
+    transform 220ms var(--motion-standard);
+
+  z-index: 2000;
+}
+
+@media (min-width: 769px) {
+  .main-nav li.dropdown:hover > .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 18px;
+  font-size: 0.88rem;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.dropdown-menu a:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+/* =========================
+   Mobile Backdrop
+========================= */
+
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.22);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms var(--motion-decelerate);
+  z-index: 3500;
+}
+
+body.nav-open {
+  overflow: hidden;
+}
+
+body.nav-open .nav-backdrop {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* =========================
@@ -308,100 +328,15 @@ footer {
 }
 
 /* =========================
-   Mobile Optimization
-========================= */
-
-@media (max-width: 1024px) {
-
-  body {
-    font-size: 16px;
-  }
-
-  main {
-    margin-top: 40px;      /* reduced from 50px */
-    padding: 0 20px;
-  }
-
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.2rem; }
-
-}
-
-@media (max-width: 768px) {
-
-  header {
-    padding: 14px 18px;
-  }
-
-  .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .main-nav ul {
-  flex-direction: column;
-  align-items: flex-start;
-  }
-
-  main {
-    margin-top: 30px;      /* reduced from 40px */
-    padding: 0 16px;
-  }
-
-  a, button {
-    min-height: 44px;
-  }
-
-  footer {
-    padding: 24px 16px;
-  }
-
-}
-
-/* =========================
-   Reduced Motion
-========================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-  * {
-    transition: none !important;
-    animation: none !important;
-  }
-
-  html {
-    scroll-behavior: auto;
-  }
-
-  header.scrolled {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  .ripple {
-    display: none;
-  }
-}
-
-/* =========================
    Print
 ========================= */
 
 @media print {
-
-  body {
-    background: #ffffff !important;
-    color: #000 !important;
-    font-size: 12pt;
-  }
-
   header,
   nav,
-  .breadcrumb,
   #header,
   #footer,
-  #reading-progress {
+  .nav-backdrop {
     display: none;
   }
 
@@ -409,454 +344,5 @@ footer {
     max-width: 100%;
     margin: 0;
     padding: 0;
-  }
-
-  blockquote {
-    border-left: 3px solid #000;
-    background: none;
-  }
-}
-
-/* =========================================
-   Institutional Navigation (Centered + Stable)
-   SAFE FULL REPLACEMENT
-========================================= */
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Left: Brand */
-.brand {
-  flex: 1;
-}
-
-/* Center: Main Navigation */
-.main-nav {
-  flex: 2;
-  display: flex;
-  justify-content: center;   /* Proper centering */
-}
-
-.main-nav ul {
-  display: flex;
-  align-items: center;
-  gap: 36px;
-  list-style: none;
-  margin: 0;                 /* REMOVE auto-centering */
-  padding: 0;
-}
-
-.main-nav li {
-  position: relative;
-}
-
-/* =========================
-   Dropdown (Anchored Correctly)
-========================= */
-
-.main-nav li.dropdown {
-  position: relative;
-}
-
-/* =========================
-   Header (Institutional Sticky — Stable Academic)
-========================= */
-
-/* Stabilize injected wrapper to protect sticky positioning */
-#header {
-  position: relative;
-  width: 100%;
-}
-
-/* Actual frozen header (deterministic institutional behavior) */
-.site-header {
-  width: 100%;
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 20px 32px;
-  background: var(--background);
-
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 4000;
-
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-
-  transition:
-    background-color var(--transition-speed) ease,
-    border-color var(--transition-speed) ease,
-    box-shadow var(--transition-speed) ease;
-}
-
-/* =========================================
-   Nav Typography Normalization (Learn)
-========================================= */
-
-.site-nav a {
-  font-size: 0.88rem;
-  letter-spacing: 0.4px;
-  font-weight: 500;
-  text-transform: none;
-}
-
-.site-nav a:hover {
-  opacity: 0.8;
-}
-
-/* =========================================
-   Vertical Rhythm Refinement (Learn)
-========================================= */
-
-section {
-  margin-bottom: 2.6rem;
-}
-
-h1 {
-  margin-bottom: 1.4rem;
-}
-
-h2 {
-  margin-top: 2.4rem;
-  margin-bottom: 1rem;
-}
-
-p {
-  margin-bottom: 1.2rem;
-}
-
-/* =========================================
-   Academic Divider Under Hero (Learn)
-========================================= */
-
-.hero {
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: 2.8rem;
-}
-
-/* =========================================
-   Learn Surface Harmonization v1.2
-   - Nav Typography Normalization
-   - Vertical Rhythm Tightening
-========================================= */
-
-/* =========================
-   NAV TYPOGRAPHY ALIGNMENT
-========================= */
-
-.site-nav a,
-.nav-list a {
-  font-size: 0.92rem;
-  letter-spacing: 0.4px;
-  font-weight: 500;
-}
-
-/* =========================
-   VERTICAL RHYTHM — LEARN
-========================= */
-
-h1 {
-  font-size: 2.4rem;
-  margin-top: 0;
-  margin-bottom: 1.6rem;
-}
-
-h2 {
-  margin-top: 2.2rem;
-  margin-bottom: 0.8rem;
-}
-
-p {
-  margin-bottom: 1.2rem;
-}
-
-ul {
-  margin-bottom: 1.4rem;
-}
-
-/* =========================================
-   Learning Surface Label
-========================================= */
-
-.surface-label {
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 0.6rem;
-}
-
-/* =========================================================
-   Institutional Navigation Normalization (Learn Domain)
-   Ensures dropdown parents behave like standard nav items
-========================================================= */
-
-.main-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.main-nav ul li {
-  position: relative;
-}
-
-.main-nav ul li > a {
-  display: inline-block;
-  position: relative;
-  padding: 6px 0;
-  text-decoration: none;
-  font-size: 0.9rem;
-  letter-spacing: 0.3px;
-  color: var(--text-primary);
-  transition:
-    transform 0.18s ease,
-    opacity 0.18s ease;
-}
-
-/* Hover movement */
-.main-nav ul li > a:hover {
-  transform: translateY(-1px);
-  opacity: 0.85;
-}
-
-/* Underline animation */
-.main-nav ul li > a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0%;
-  height: 1.5px;
-  background-color: var(--text-primary);
-  transition: width 0.25s ease;
-}
-
-/* Activate underline on hover OR active */
-.main-nav ul li:hover > a::after,
-.main-nav ul li > a.active::after {
-  width: 100%;
-}
-
-/* =========================================
-   Mobile Navigation — Institutional v3.0
-   Stable + Animated + Backdrop + Scroll Lock
-========================================= */
-
-/* -----------------------------------------
-   Mobile Toggle Button
------------------------------------------ */
-
-.mobile-menu-toggle {
-  display: none;
-  background: none;
-  border: 1px solid var(--border-subtle);
-  width: 42px;
-  height: 38px;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-  transition: transform 140ms ease;
-}
-
-.mobile-menu-toggle:active {
-  transform: scale(0.95);
-}
-
-/* Minimal Institutional Icon */
-
-.menu-icon,
-.menu-icon::before,
-.menu-icon::after {
-  content: "";
-  display: block;
-  width: 18px;
-  height: 1.6px;
-  background: var(--text-primary);
-  position: absolute;
-  transition: all 240ms cubic-bezier(.4,0,.2,1);
-}
-
-.menu-icon {
-  position: relative;
-}
-
-.menu-icon::before {
-  top: -6px;
-}
-
-.menu-icon::after {
-  top: 6px;
-}
-
-/* Animate to X */
-
-.mobile-menu-toggle.active .menu-icon {
-  background: transparent;
-}
-
-.mobile-menu-toggle.active .menu-icon::before {
-  transform: rotate(45deg);
-  top: 0;
-}
-
-.mobile-menu-toggle.active .menu-icon::after {
-  transform: rotate(-45deg);
-  top: 0;
-}
-
-/* -----------------------------------------
-   Backdrop (Blur Layer)
------------------------------------------ */
-
-.nav-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.22);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 220ms cubic-bezier(.4,0,.2,1);
-  z-index: 3500;
-}
-
-body.nav-open .nav-backdrop {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Lock body scroll */
-
-body.nav-open {
-  overflow: hidden;
-}
-
-/* -----------------------------------------
-   MOBILE ONLY
------------------------------------------ */
-
-@media (max-width: 768px) {
-
-  /* Show toggle */
-  .mobile-menu-toggle {
-    display: flex;
-  }
-
-  /* Main nav container */
-  .main-nav {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: var(--background);
-    border-bottom: 1px solid var(--border-subtle);
-
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-
-    transition:
-      max-height 340ms cubic-bezier(.4,0,.2,1),
-      opacity 200ms ease;
-
-    padding: 0 24px;
-    z-index: 3600;
-  }
-
-  .main-nav.open {
-    max-height: 500px;
-    opacity: 1;
-    padding: 20px 24px;
-  }
-
-  /* Stack menu items */
-  .main-nav ul {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
-  }
-
-  .main-nav ul li {
-    width: 100%;
-  }
-
-  .main-nav ul li > a {
-    display: block;
-    width: 100%;
-    padding: 8px 0;
-    font-size: 1rem;
-    text-align: left;
-    transition: transform 140ms cubic-bezier(.2,.8,.4,1),
-                opacity 140ms ease;
-  }
-
-  .main-nav ul li > a:active {
-    transform: scale(0.97);
-  }
-
-  /* Disable underline animation on mobile */
-  .main-nav ul li > a::after {
-    display: none;
-  }
-
-}
-
-/* =========================================
-   Unified Dropdown System — Stable
-========================================= */
-
-.main-nav li.dropdown {
-  position: relative;
-}
-
-/* Base hidden state */
-.main-nav li.dropdown > .dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-
-  min-width: 220px;
-  padding: 12px 0;
-
-  background: var(--background);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(8px);
-  transition: opacity 200ms ease, transform 200ms ease;
-
-  z-index: 2000;
-}
-
-/* ==============================
-   DESKTOP — Hover Control
-============================== */
-@media (min-width: 769px) {
-  .main-nav li.dropdown:hover > .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-}
-
-/* ==============================
-   MOBILE — JS Controlled
-============================== */
-@media (max-width: 768px) {
-  .main-nav li.dropdown.open > .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
   }
 }

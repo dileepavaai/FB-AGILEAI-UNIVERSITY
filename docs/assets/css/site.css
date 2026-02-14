@@ -807,53 +807,24 @@ body.nav-open {
     display: none;
   }
 
-  /* -----------------------------------------
-     Dropdown Animation (Mobile Only)
-  ----------------------------------------- */
-
-  .main-nav li.dropdown > .dropdown-menu {
-    position: static;
-    border: none;
-    box-shadow: none;
-    padding-left: 16px;
-    margin-top: 6px;
-
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-
-    transition:
-      max-height 280ms cubic-bezier(.4,0,.2,1),
-      opacity 200ms ease;
-  }
-
-  .main-nav li.dropdown.open > .dropdown-menu {
-    max-height: 300px;
-    opacity: 1;
-  }
-
 }
 
 /* =========================================
-   Unified Dropdown System (Desktop + Mobile)
-   v4.7.3 — Syntax Correct + Stable
+   Unified Dropdown System — Stable
 ========================================= */
 
 .main-nav li.dropdown {
   position: relative;
 }
 
-/* Base dropdown (hidden state) */
+/* Base hidden state */
 .main-nav li.dropdown > .dropdown-menu {
   position: absolute;
-  top: calc(100% + 6px);
+  top: 100%;
   left: 0;
 
   min-width: 220px;
-  margin: 0;
-  padding: 6px 0;
-
-  list-style: none;
+  padding: 12px 0;
 
   background: var(--background);
   border: 1px solid var(--border-subtle);
@@ -862,38 +833,28 @@ body.nav-open {
 
   opacity: 0;
   visibility: hidden;
-  transform: translateY(6px);
+  transform: translateY(8px);
+  transition: opacity 200ms ease, transform 200ms ease;
 
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease;
-
-  z-index: 3000;
+  z-index: 2000;
 }
 
-/* Remove inherited spacing */
-.main-nav li.dropdown > .dropdown-menu li {
-  margin: 0;
-  padding: 0;
-}
-
-.main-nav li.dropdown > .dropdown-menu a {
-  display: block;
-  padding: 10px 18px;
-  white-space: nowrap;
-  text-decoration: none;
-}
-
-/* JS open state */
-.main-nav li.dropdown.open > .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-/* Desktop hover */
+/* ==============================
+   DESKTOP — Hover Control
+============================== */
 @media (min-width: 769px) {
   .main-nav li.dropdown:hover > .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+/* ==============================
+   MOBILE — JS Controlled
+============================== */
+@media (max-width: 768px) {
+  .main-nav li.dropdown.open > .dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);

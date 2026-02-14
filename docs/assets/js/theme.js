@@ -1,10 +1,13 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v6.2
-   Compatible with:
-   - header.js v5.2
-   - footer.js v2.0
-   - site.css v6.2
-   - Institutional Motion System
+   AgileAI Public Surface — Theme Controller v6.3
+   - Fixes system-mode resolution
+   - Resolves to real dark/light before applying
+   - No CSS dependency break
+   - Fully compatible with:
+       header.js v5.2
+       footer.js v2.0
+       site.css v6.2+
+       Institutional Motion System
    Production Safe + Idempotent
 ========================================================= */
 
@@ -28,9 +31,26 @@
     localStorage.setItem(STORAGE_KEY, mode);
   }
 
+  function getSystemResolvedTheme() {
+    return prefersDarkQuery.matches ? "dark" : "light";
+  }
+
+  function resolveTheme(mode) {
+    if (mode === "system") {
+      return getSystemResolvedTheme();
+    }
+    return mode;
+  }
+
   function applyTheme(mode) {
-    root.setAttribute("data-theme", mode);
-    updateButton(mode);
+
+    const resolved = resolveTheme(mode);
+
+    // IMPORTANT FIX:
+    // We apply resolved value to CSS
+    root.setAttribute("data-theme", resolved);
+
+    updateButton(mode); // Button still shows logical mode
   }
 
   function nextMode(current) {
@@ -48,13 +68,11 @@
     const btn = document.getElementById("theme-toggle");
     if (!btn) return;
 
-    // Prevent duplicate listeners
     if (!btn.dataset.bound) {
       btn.addEventListener("click", toggleTheme);
       btn.dataset.bound = "true";
     }
 
-    // Subtle fade effect (CSS controlled)
     btn.classList.add("theme-icon-fade");
 
     setTimeout(() => {
@@ -115,7 +133,7 @@
   }
 
   /* =========================================================
-     Reading Progress (Compatible with site.css v6.2)
+     Reading Progress
   ========================================================== */
 
   function initReadingProgress() {
@@ -152,7 +170,7 @@
   });
 
   /* =========================================================
-     Header Injection Observer (Safe)
+     Header Injection Observer
   ========================================================== */
 
   function observeForHeaderButton() {
@@ -183,10 +201,8 @@
     if (initialized) return;
     initialized = true;
 
-    // Apply theme immediately
     applyTheme(getSavedTheme());
 
-    // Try to bind button
     const btn = document.getElementById("theme-toggle");
 
     if (!btn) {
@@ -195,7 +211,6 @@
       updateButton(getSavedTheme());
     }
 
-    // Reading progress
     initReadingProgress();
   }
 

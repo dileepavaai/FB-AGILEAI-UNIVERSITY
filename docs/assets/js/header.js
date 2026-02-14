@@ -1,12 +1,13 @@
 /* =========================================================
    Global Header Injection
-   Institutional Navigation v5.1
+   Institutional Navigation v5.2 (Stable Paired Build)
    - Arrow Rotation
+   - Scroll Shrink (80px)
    - Scroll Direction Hide/Show
-   - Mobile Focus Trap
+   - Mobile Focus Trap (Idempotent)
    - Active Detection
    - ARIA Menubar Support
-   - Production Safe + Idempotent
+   - Production Safe
 ========================================================= */
 
 (function () {
@@ -149,14 +150,12 @@
     function handleScroll() {
       const currentScroll = window.scrollY;
 
-      // Shrink at 80px
       if (currentScroll > 80) {
         header.classList.add("scrolled");
       } else {
         header.classList.remove("scrolled");
       }
 
-      // Hide on scroll down, show on scroll up
       if (currentScroll > lastScrollY && currentScroll > 120) {
         header.classList.add("nav-hidden");
       } else {
@@ -169,74 +168,14 @@
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     /* =========================================================
-       Mobile Nav Open / Close
+       Mobile Nav
     ========================================================= */
 
-    function openNav() {
-      nav.classList.add("open");
-      toggle.classList.add("active");
-      toggle.setAttribute("aria-expanded", "true");
-      body.classList.add("nav-open");
-      if (backdrop) backdrop.classList.add("active");
-
-      trapFocus();
-    }
-
-    function closeNav() {
-      nav.classList.remove("open");
-      toggle.classList.remove("active");
-      toggle.setAttribute("aria-expanded", "false");
-      body.classList.remove("nav-open");
-      if (backdrop) backdrop.classList.remove("active");
-
-      nav.querySelectorAll(".dropdown").forEach(d => {
-        d.classList.remove("open");
-        const trigger = d.querySelector(":scope > a");
-        if (trigger) trigger.setAttribute("aria-expanded", "false");
-      });
-    }
-
-    toggle.addEventListener("click", function (e) {
-      e.stopPropagation();
-      nav.classList.contains("open") ? closeNav() : openNav();
-    });
-
-    if (backdrop) backdrop.addEventListener("click", closeNav);
-
-    /* =========================================================
-       Dropdown Toggle + Arrow Rotation
-    ========================================================= */
-
-    nav.querySelectorAll(".dropdown > a").forEach(trigger => {
-
-      trigger.addEventListener("click", function (e) {
-
-        if (window.innerWidth <= 768) {
-
-          e.preventDefault();
-          const parent = this.parentElement;
-          const expanded = parent.classList.contains("open");
-
-          nav.querySelectorAll(".dropdown").forEach(d => {
-            d.classList.remove("open");
-            const t = d.querySelector(":scope > a");
-            if (t) t.setAttribute("aria-expanded", "false");
-          });
-
-          if (!expanded) {
-            parent.classList.add("open");
-            this.setAttribute("aria-expanded", "true");
-          }
-        }
-      });
-
-    });
-
-    /* =========================================================
-       Focus Trap (Mobile Menu)
-    ========================================================= */
+    let focusTrapAttached = false;
 
     function trapFocus() {
+
+      if (focusTrapAttached) return;
 
       const focusable = nav.querySelectorAll(
         'a, button, [tabindex]:not([tabindex="-1"])'
@@ -247,7 +186,11 @@
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
 
-      nav.addEventListener("keydown", function (e) {
+      function handleKeydown(e) {
+
+        if (e.key === "Escape") {
+          closeNav();
+        }
 
         if (e.key !== "Tab") return;
 
@@ -258,13 +201,44 @@
           e.preventDefault();
           first.focus();
         }
+      }
 
-      });
+      nav.addEventListener("keydown", handleKeydown);
+      focusTrapAttached = true;
 
       first.focus();
     }
 
-    /* Reduced Motion */
+    function openNav() {
+      nav.classList.add("open");
+      toggle.classList.add("active");
+      toggle.setAttribute("aria-expanded", "true");
+      body.classList.add("nav-open");
+      if (backdrop) backdrop.classList.add("active");
+      trapFocus();
+    }
+
+    function closeNav() {
+      nav.classList.remove("open");
+      toggle.classList.remove("active");
+      toggle.setAttribute("aria-expanded", "false");
+      body.classList.remove("nav-open");
+      if (backdrop) backdrop.classList.remove("active");
+      focusTrapAttached = false;
+
+      nav.querySelectorAll(".dropdown").forEach(d => {
+        d.classList.remove("open");
+        const trigger = d.querySelector(":scope > a");
+        if (trigger) trigger.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    toggle.addEventListener("click", e => {
+      e.stopPropagation();
+      nav.classList.contains("open") ? closeNav() : openNav();
+    });
+
+    if (backdrop) backdrop.addEventListener("click", closeNav);
 
     if (prefersReducedMotion) {
       header.style.transition = "none";

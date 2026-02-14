@@ -1,6 +1,11 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v5.1
-   Injection Safe + Idempotent + Ripple Hardened
+   AgileAI Public Surface — Theme Controller v6.2
+   Compatible with:
+   - header.js v5.2
+   - footer.js v2.0
+   - site.css v6.2
+   - Institutional Motion System
+   Production Safe + Idempotent
 ========================================================= */
 
 (function () {
@@ -9,11 +14,11 @@
   const root = document.documentElement;
   const prefersDarkQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-  let listenerAttached = false;
+  let initialized = false;
 
-  /* =========================
-     Helpers
-  ========================= */
+  /* =========================================================
+     Utilities
+  ========================================================== */
 
   function getSavedTheme() {
     return localStorage.getItem(STORAGE_KEY) || "system";
@@ -28,14 +33,28 @@
     updateButton(mode);
   }
 
-  /* =========================
-     Icon + Tooltip
-  ========================= */
+  function nextMode(current) {
+    if (current === "light") return "dark";
+    if (current === "dark") return "system";
+    return "light";
+  }
+
+  /* =========================================================
+     Button State
+  ========================================================== */
 
   function updateButton(mode) {
+
     const btn = document.getElementById("theme-toggle");
     if (!btn) return;
 
+    // Prevent duplicate listeners
+    if (!btn.dataset.bound) {
+      btn.addEventListener("click", toggleTheme);
+      btn.dataset.bound = "true";
+    }
+
+    // Subtle fade effect (CSS controlled)
     btn.classList.add("theme-icon-fade");
 
     setTimeout(() => {
@@ -56,82 +75,48 @@
     }, 120);
   }
 
-  /* =========================
-     Rotation Logic
-  ========================= */
-
-  function nextMode(current) {
-    if (current === "light") return "dark";
-    if (current === "dark") return "system";
-    return "light";
-  }
+  /* =========================================================
+     Toggle Logic
+  ========================================================== */
 
   function toggleTheme(e) {
+
     const current = getSavedTheme();
     const next = nextMode(current);
 
     saveTheme(next);
     applyTheme(next);
 
-    if (e) triggerRipple(e);
+    triggerRipple(e);
   }
 
-  /* =========================
-     Ripple (Hardened)
-  ========================= */
+  /* =========================================================
+     Ripple Effect
+  ========================================================== */
 
   function triggerRipple(event) {
+
     const btn = event.currentTarget;
     if (!btn) return;
 
-    const rect = btn.getBoundingClientRect();
     const circle = document.createElement("span");
     circle.className = "ripple";
 
+    const rect = btn.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
 
     circle.style.width = circle.style.height = size + "px";
-
-    const x = event.clientX || rect.left + rect.width / 2;
-    const y = event.clientY || rect.top + rect.height / 2;
-
-    circle.style.left = x - rect.left - size / 2 + "px";
-    circle.style.top = y - rect.top - size / 2 + "px";
+    circle.style.left = event.clientX - rect.left - size / 2 + "px";
+    circle.style.top = event.clientY - rect.top - size / 2 + "px";
 
     btn.appendChild(circle);
+
     setTimeout(() => circle.remove(), 600);
   }
 
-  /* =========================
-     Attach Button Safely
-  ========================= */
-
-  function attachButtonListener() {
-    const btn = document.getElementById("theme-toggle");
-    if (!btn || listenerAttached) return false;
-
-    btn.addEventListener("click", toggleTheme);
-    listenerAttached = true;
-
-    // Sync icon after injection
-    updateButton(getSavedTheme());
-
-    return true;
-  }
-
-  /* =========================
-     Live System Detection
-  ========================= */
-
-  prefersDarkQuery.addEventListener("change", () => {
-    if (getSavedTheme() === "system") {
-      applyTheme("system");
-    }
-  });
-
-  /* =========================
-     Reading Progress
-  ========================= */
+  /* =========================================================
+     Reading Progress (Compatible with site.css v6.2)
+  ========================================================== */
 
   function initReadingProgress() {
 
@@ -142,6 +127,7 @@
     document.body.appendChild(bar);
 
     function updateProgress() {
+
       const scrollTop = window.scrollY;
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -155,28 +141,61 @@
     window.addEventListener("scroll", updateProgress, { passive: true });
   }
 
-  /* =========================
-     Init
-  ========================= */
+  /* =========================================================
+     System Theme Listener
+  ========================================================== */
+
+  prefersDarkQuery.addEventListener("change", () => {
+    if (getSavedTheme() === "system") {
+      applyTheme("system");
+    }
+  });
+
+  /* =========================================================
+     Header Injection Observer (Safe)
+  ========================================================== */
+
+  function observeForHeaderButton() {
+
+    const observer = new MutationObserver(() => {
+
+      const btn = document.getElementById("theme-toggle");
+
+      if (btn) {
+        updateButton(getSavedTheme());
+        observer.disconnect();
+      }
+
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  /* =========================================================
+     Initialization
+  ========================================================== */
 
   function init() {
 
+    if (initialized) return;
+    initialized = true;
+
+    // Apply theme immediately
     applyTheme(getSavedTheme());
 
-    if (!attachButtonListener()) {
+    // Try to bind button
+    const btn = document.getElementById("theme-toggle");
 
-      const observer = new MutationObserver(() => {
-        if (attachButtonListener()) {
-          observer.disconnect();
-        }
-      });
-
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
+    if (!btn) {
+      observeForHeaderButton();
+    } else {
+      updateButton(getSavedTheme());
     }
 
+    // Reading progress
     initReadingProgress();
   }
 

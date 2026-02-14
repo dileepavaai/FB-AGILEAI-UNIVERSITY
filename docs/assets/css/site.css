@@ -1,11 +1,12 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v6.6.2
-   Edge-Safe Premium Dropdown System
+   AgileAI Public Surface — Institutional CSS v6.7
+   Viewport-Hardened Premium Dropdown System
    Compatible with:
-   - header.js v5.4
+   - header.js v5.5
    - footer.js v2.0
    - theme.js v6.2
 ========================================= */
+
 
 /* =========================
    ROOT VARIABLES
@@ -28,6 +29,7 @@
   --motion-premium: cubic-bezier(.16, 1, .3, 1);
 }
 
+
 /* =========================
    DARK MODE
 ========================= */
@@ -43,6 +45,7 @@
 :root[data-theme="system"] {
   color-scheme: light dark;
 }
+
 
 /* =========================
    BASE
@@ -61,6 +64,7 @@ body {
   font-size: 18px;
   transition: background var(--transition-speed), color var(--transition-speed);
 }
+
 
 /* =========================
    HEADER
@@ -107,6 +111,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -117,6 +122,7 @@ body {
   color: var(--text-primary);
   font-size: 1rem;
 }
+
 
 /* =========================
    NAVIGATION
@@ -145,6 +151,7 @@ body {
   opacity: 0.7;
 }
 
+
 /* =========================
    JS-CONTROLLED DROPDOWN
 ========================= */
@@ -154,8 +161,9 @@ body {
   top: calc(100% + 8px);
   left: 0;
 
+  /* Viewport hardening */
   min-width: 240px;
-  max-width: min(320px, 90vw); /* Prevent viewport overflow */
+  max-width: min(340px, calc(100vw - 24px));
 
   padding: 12px 0;
 
@@ -179,7 +187,8 @@ body {
   z-index: 5100;
 }
 
-/* Open state */
+
+/* OPEN STATE */
 
 .dropdown.open > .dropdown-menu {
   opacity: 1;
@@ -188,13 +197,15 @@ body {
   transform: translateY(0) scale(1);
 }
 
-/* Right-aligned fallback (set via JS) */
+
+/* RIGHT EDGE PROTECTION */
 
 .dropdown.align-right > .dropdown-menu {
   left: auto;
   right: 0;
   transform-origin: top right;
 }
+
 
 /* =========================
    SUBMENU STAGGER
@@ -218,12 +229,17 @@ body {
 .dropdown.open > .dropdown-menu li:nth-child(3) { transition-delay: 120ms; }
 .dropdown.open > .dropdown-menu li:nth-child(4) { transition-delay: 160ms; }
 
+
 .dropdown-menu a {
   display: block;
   padding: 8px 18px;
   font-size: 0.88rem;
-  white-space: nowrap;
+
+  /* Allow controlled wrapping if needed */
+  white-space: normal;
+  word-break: break-word;
 }
+
 
 /* =========================
    INSTITUTIONAL BAND
@@ -240,6 +256,7 @@ body {
   border-bottom: 1px solid var(--border-subtle);
 }
 
+
 /* =========================
    LAYOUT
 ========================= */
@@ -250,6 +267,7 @@ main {
   padding: 0 32px;
   min-height: calc(100vh - 200px);
 }
+
 
 /* =========================
    TYPOGRAPHY
@@ -277,6 +295,7 @@ p { margin-bottom: 20px; }
   margin-bottom: 10px;
 }
 
+
 /* =========================
    LINKS
 ========================= */
@@ -287,6 +306,7 @@ a {
 }
 
 a:hover { opacity: 0.7; }
+
 
 /* =========================
    FOOTER
@@ -309,6 +329,7 @@ a:hover { opacity: 0.7; }
 
 .footer-inner p { margin: 6px 0; }
 
+
 /* =========================
    READING PROGRESS
 ========================= */
@@ -323,6 +344,7 @@ a:hover { opacity: 0.7; }
   z-index: 6000;
   transition: width 120ms linear;
 }
+
 
 /* =========================
    THEME RIPPLE
@@ -343,6 +365,7 @@ a:hover { opacity: 0.7; }
     opacity: 0;
   }
 }
+
 
 /* =========================
    DARK MODE DROPDOWN

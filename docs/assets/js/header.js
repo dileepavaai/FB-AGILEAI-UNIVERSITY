@@ -1,7 +1,6 @@
 /* =========================================================
    Global Header Injection
-   Institutional Navigation v4.6.0 — ARIA + Desktop Cycling
-   Safe Upgrade (Preserves v4.5.0 Behavior)
+   Institutional Navigation v4.7.2 — Execution Stabilized
 ========================================================= */
 
 (function () {
@@ -13,7 +12,7 @@
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* =========================================================
-     Header Markup Injection (ARIA Enhanced — Non-breaking)
+     Inject Markup
   ========================================================= */
 
   headerContainer.innerHTML = `
@@ -95,59 +94,22 @@
   `;
 
   /* =========================================================
-     Active Link Detection (UNCHANGED)
+     Bind Elements
   ========================================================= */
 
-  const currentPath = window.location.pathname.replace(/\/$/, "");
-
-  document.querySelectorAll(".main-nav a").forEach(link => {
-    const href = link.getAttribute("href");
-    if (!href || href.startsWith("http") || href === "#") return;
-
-    const normalizedHref = href.replace("index.html", "").replace(/\/$/, "");
-
-    if (currentPath.endsWith(normalizedHref)) {
-      link.classList.add("active");
-      const parentDropdown = link.closest(".dropdown");
-      if (parentDropdown) {
-        const parentAnchor = parentDropdown.querySelector(":scope > a");
-        if (parentAnchor) parentAnchor.classList.add("active");
-      }
-    }
-  });
-
-  const toggle = document.querySelector(".mobile-menu-toggle");
-  const nav = document.querySelector(".main-nav");
-  const backdrop = document.querySelector(".nav-backdrop");
+  const toggle = headerContainer.querySelector(".mobile-menu-toggle");
+  const nav = headerContainer.querySelector(".main-nav");
+  const backdrop = headerContainer.querySelector(".nav-backdrop");
   const body = document.body;
 
-  if (!toggle || !nav || !backdrop) return;
-
-  let focusableElements = [];
-  let firstFocusable = null;
-  let lastFocusable = null;
-
-  function updateFocusable() {
-    focusableElements = nav.querySelectorAll(
-      "a, button, [tabindex]:not([tabindex='-1'])"
-    );
-    firstFocusable = focusableElements[0];
-    lastFocusable = focusableElements[focusableElements.length - 1];
-  }
-
-  /* =========================================================
-     Mobile Open / Close (UNCHANGED CORE)
-  ========================================================= */
+  if (!toggle || !nav) return;
 
   function openNav() {
     nav.classList.add("open");
     toggle.classList.add("active");
     toggle.setAttribute("aria-expanded", "true");
     body.classList.add("nav-open");
-    backdrop.classList.add("active");
-
-    updateFocusable();
-    if (firstFocusable) firstFocusable.focus();
+    if (backdrop) backdrop.classList.add("active");
   }
 
   function closeNav() {
@@ -155,15 +117,13 @@
     toggle.classList.remove("active");
     toggle.setAttribute("aria-expanded", "false");
     body.classList.remove("nav-open");
-    backdrop.classList.remove("active");
+    if (backdrop) backdrop.classList.remove("active");
 
     nav.querySelectorAll(".dropdown").forEach(d => {
       d.classList.remove("open");
       const a = d.querySelector(":scope > a");
       if (a) a.setAttribute("aria-expanded", "false");
     });
-
-    toggle.focus();
   }
 
   toggle.addEventListener("click", function (e) {
@@ -171,106 +131,21 @@
     nav.classList.contains("open") ? closeNav() : openNav();
   });
 
-  backdrop.addEventListener("click", closeNav);
-
-  /* =========================================================
-     Desktop Arrow Left / Right Cycling (NEW — Safe)
-  ========================================================= */
-
-  const topLevelLinks = nav.querySelectorAll(":scope > ul > li > a");
-
-  topLevelLinks.forEach((link, index) => {
-
-    link.addEventListener("keydown", function (e) {
-
-      if (e.key === "ArrowRight") {
-        e.preventDefault();
-        const next =
-          topLevelLinks[(index + 1) % topLevelLinks.length];
-        next.focus();
-      }
-
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        const prev =
-          topLevelLinks[
-            (index - 1 + topLevelLinks.length) %
-            topLevelLinks.length
-          ];
-        prev.focus();
-      }
-
-    });
-
-  });
-
-  /* =========================================================
-     Dropdown Keyboard Navigation (Enhanced)
-  ========================================================= */
+  if (backdrop) backdrop.addEventListener("click", closeNav);
 
   nav.querySelectorAll(".dropdown > a").forEach(trigger => {
-
-    trigger.addEventListener("keydown", function (e) {
-
-      const parent = this.parentElement;
-      const menu = parent.querySelector(".dropdown-menu");
-      const items = menu.querySelectorAll("a");
-
-      if (e.key === "Enter" || e.key === " ") {
+    trigger.addEventListener("click", function (e) {
+      if (window.innerWidth <= 768) {
         e.preventDefault();
+        const parent = this.parentElement;
+
+        nav.querySelectorAll(".dropdown").forEach(d => {
+          d.classList.remove("open");
+        });
+
         parent.classList.toggle("open");
-        this.setAttribute(
-          "aria-expanded",
-          parent.classList.contains("open")
-        );
       }
-
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        parent.classList.add("open");
-        this.setAttribute("aria-expanded", "true");
-        items[0]?.focus();
-      }
-
-      if (e.key === "Escape") {
-        parent.classList.remove("open");
-        this.setAttribute("aria-expanded", "false");
-        this.focus();
-      }
-
     });
-
   });
-
-  /* =========================================================
-     Focus Trap + Escape (UNCHANGED)
-  ========================================================= */
-
-  document.addEventListener("keydown", function (e) {
-
-    if (e.key === "Escape") closeNav();
-
-    if (nav.classList.contains("open") && e.key === "Tab") {
-
-      if (focusableElements.length === 0) return;
-
-      if (e.shiftKey && document.activeElement === firstFocusable) {
-        e.preventDefault();
-        lastFocusable.focus();
-      } else if (!e.shiftKey && document.activeElement === lastFocusable) {
-        e.preventDefault();
-        firstFocusable.focus();
-      }
-    }
-  });
-
-  /* =========================================================
-     Reduced Motion (UNCHANGED)
-  ========================================================= */
-
-  if (prefersReducedMotion) {
-    nav.style.transition = "none";
-    backdrop.style.transition = "none";
-  }
 
 })();

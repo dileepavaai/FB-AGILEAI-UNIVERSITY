@@ -1,10 +1,11 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v7.5
-   Production Hardened Layout Baseline
+   AgileAI Public Surface — Institutional CSS v7.6
+   Production Stable Institutional Layout
    - Light / Dark only
+   - Left-aligned dropdown (collision-safe)
    - Header stacking isolated
-   - Dropdown collision fixed
    - Wrap-safe submenu
+   - No horizontal bleed
    - No stacking bleed
 ========================================= */
 
@@ -28,15 +29,6 @@
 
   --motion-standard: cubic-bezier(.4, 0, .2, 1);
   --motion-smooth: cubic-bezier(.25, .8, .25, 1);
-}
-
-:root[data-theme="light"] {
-  --text-primary: #111;
-  --text-secondary: #555;
-  --border-subtle: #e6e6e6;
-  --background: #ffffff;
-  --surface-muted: #f6f6f6;
-  --surface-elevated: #ffffff;
 }
 
 :root[data-theme="dark"] {
@@ -64,7 +56,8 @@ body {
   font-family: Georgia, "Times New Roman", serif;
   line-height: 1.75;
   font-size: 18px;
-  transition: background var(--transition-speed), color var(--transition-speed);
+  transition: background var(--transition-speed),
+              color var(--transition-speed);
 }
 
 
@@ -88,7 +81,6 @@ body {
   left: 0;
   right: 0;
 
-  /* HARDENED STACKING */
   z-index: 5000;
   isolation: isolate;
 
@@ -162,20 +154,16 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM (Institutional Stable v7.5)
-   - Centered under parent
-   - No horizontal bleed
-   - Clean transform stack
-   - Theme consistent
+   DROPDOWN SYSTEM (v7.6)
+   - Left aligned under parent
+   - Collision safe
+   - No horizontal transform
 ========================= */
 
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 12px);
-
-  /* Center under parent */
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
+  left: 0;
 
   min-width: 260px;
   max-width: 320px;
@@ -192,6 +180,8 @@ body {
   visibility: hidden;
   pointer-events: none;
 
+  transform: translateY(10px);
+
   transition:
     opacity 200ms ease,
     transform 220ms var(--motion-standard);
@@ -203,19 +193,13 @@ body {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
-/* Optional right-aligned variant (if ever needed) */
+/* Optional right aligned variant */
 .dropdown.align-right > .dropdown-menu {
   left: auto;
   right: 0;
-  transform: translateY(10px);
-}
-
-.dropdown.align-right.open > .dropdown-menu {
-  transform: translateY(0);
 }
 
 
@@ -248,7 +232,6 @@ body {
 
   font-size: 0.9rem;
   color: var(--text-primary);
-
   line-height: 1.5;
 
   white-space: normal;
@@ -258,6 +241,7 @@ body {
 .dropdown-menu a:hover {
   background-color: var(--surface-muted);
 }
+
 
 /* =========================
    THEME TOGGLE BUTTON
@@ -295,8 +279,6 @@ body {
   background: var(--surface-muted);
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border-subtle);
-  position: relative;
-  z-index: 1;
 }
 
 

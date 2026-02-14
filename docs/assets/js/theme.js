@@ -1,66 +1,51 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v6.3
-   - Fixes system-mode resolution
-   - Resolves to real dark/light before applying
-   - No CSS dependency break
-   - Fully compatible with:
-       header.js v5.2
-       footer.js v2.0
-       site.css v6.2+
-       Institutional Motion System
-   Production Safe + Idempotent
+   AgileAI Public Surface — Theme Controller v7.2
+   Hardened Institutional Baseline (Light / Dark Only)
+   - Deterministic header-safe binding
+   - No observers
+   - No media queries
+   - Idempotent
+   - Reading Progress Included
+   Production Safe
 ========================================================= */
 
 (function () {
 
   const STORAGE_KEY = "aa_theme";
   const root = document.documentElement;
-  const prefersDarkQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
   let initialized = false;
+  let buttonBound = false;
 
   /* =========================================================
-     Utilities
+     THEME UTILITIES
   ========================================================== */
 
   function getSavedTheme() {
-    return localStorage.getItem(STORAGE_KEY) || "system";
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved === "dark" ? "dark" : "light";
   }
 
   function saveTheme(mode) {
     localStorage.setItem(STORAGE_KEY, mode);
   }
 
-  function getSystemResolvedTheme() {
-    return prefersDarkQuery.matches ? "dark" : "light";
-  }
-
-  function resolveTheme(mode) {
-    if (mode === "system") {
-      return getSystemResolvedTheme();
-    }
-    return mode;
-  }
-
   function applyTheme(mode) {
-
-    const resolved = resolveTheme(mode);
-
-    // IMPORTANT FIX:
-    // We apply resolved value to CSS
-    root.setAttribute("data-theme", resolved);
-
-    updateButton(mode); // Button still shows logical mode
+    root.setAttribute("data-theme", mode);
+    updateButton(mode);
   }
 
-  function nextMode(current) {
-    if (current === "light") return "dark";
-    if (current === "dark") return "system";
-    return "light";
+  function toggleTheme(e) {
+    const current = getSavedTheme();
+    const next = current === "light" ? "dark" : "light";
+
+    saveTheme(next);
+    applyTheme(next);
+    triggerRipple(e);
   }
 
   /* =========================================================
-     Button State
+     BUTTON STATE (Deterministic Safe Binding)
   ========================================================== */
 
   function updateButton(mode) {
@@ -68,51 +53,49 @@
     const btn = document.getElementById("theme-toggle");
     if (!btn) return;
 
-    if (!btn.dataset.bound) {
+    if (!buttonBound) {
       btn.addEventListener("click", toggleTheme);
-      btn.dataset.bound = "true";
+      buttonBound = true;
     }
 
-    btn.classList.add("theme-icon-fade");
-
-    setTimeout(() => {
-
-      if (mode === "light") {
-        btn.textContent = "🌞";
-        btn.title = "Theme: Light";
-      } else if (mode === "dark") {
-        btn.textContent = "🌙";
-        btn.title = "Theme: Dark";
-      } else {
-        btn.textContent = "🖥️";
-        btn.title = "Theme: System";
-      }
-
-      btn.classList.remove("theme-icon-fade");
-
-    }, 120);
+    if (mode === "dark") {
+      btn.textContent = "🌙";
+      btn.title = "Switch to Light Mode";
+    } else {
+      btn.textContent = "☀️";
+      btn.title = "Switch to Dark Mode";
+    }
   }
 
   /* =========================================================
-     Toggle Logic
+     SAFE HEADER BIND RETRY
   ========================================================== */
 
-  function toggleTheme(e) {
+  function ensureButtonBinding() {
 
-    const current = getSavedTheme();
-    const next = nextMode(current);
+    const btn = document.getElementById("theme-toggle");
 
-    saveTheme(next);
-    applyTheme(next);
+    if (btn) {
+      updateButton(getSavedTheme());
+      return;
+    }
 
-    triggerRipple(e);
+    // Retry once after header injection delay
+    setTimeout(() => {
+      const retryBtn = document.getElementById("theme-toggle");
+      if (retryBtn) {
+        updateButton(getSavedTheme());
+      }
+    }, 50);
   }
 
   /* =========================================================
-     Ripple Effect
+     RIPPLE EFFECT
   ========================================================== */
 
   function triggerRipple(event) {
+
+    if (!event) return;
 
     const btn = event.currentTarget;
     if (!btn) return;
@@ -133,7 +116,7 @@
   }
 
   /* =========================================================
-     Reading Progress
+     READING PROGRESS
   ========================================================== */
 
   function initReadingProgress() {
@@ -160,40 +143,7 @@
   }
 
   /* =========================================================
-     System Theme Listener
-  ========================================================== */
-
-  prefersDarkQuery.addEventListener("change", () => {
-    if (getSavedTheme() === "system") {
-      applyTheme("system");
-    }
-  });
-
-  /* =========================================================
-     Header Injection Observer
-  ========================================================== */
-
-  function observeForHeaderButton() {
-
-    const observer = new MutationObserver(() => {
-
-      const btn = document.getElementById("theme-toggle");
-
-      if (btn) {
-        updateButton(getSavedTheme());
-        observer.disconnect();
-      }
-
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-
-  /* =========================================================
-     Initialization
+     INIT
   ========================================================== */
 
   function init() {
@@ -201,16 +151,10 @@
     if (initialized) return;
     initialized = true;
 
-    applyTheme(getSavedTheme());
+    const saved = getSavedTheme();
+    root.setAttribute("data-theme", saved);
 
-    const btn = document.getElementById("theme-toggle");
-
-    if (!btn) {
-      observeForHeaderButton();
-    } else {
-      updateButton(getSavedTheme());
-    }
-
+    ensureButtonBinding();
     initReadingProgress();
   }
 

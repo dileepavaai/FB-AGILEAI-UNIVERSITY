@@ -1,51 +1,22 @@
-/* =========================================================  
+/* =========================================================
    Global Header Injection
-   Institutional Navigation v5.6 (Viewport-Resilient Premium Build)
-   - Early Theme Resolution
-   - Viewport Edge Detection (Resize Safe)
-   - Desktop Hover Intent Buffer
-   - Scroll Shrink (80px)
-   - Scroll Direction Hide/Show
-   - Mobile Nav Stable
-   - Active Detection
-   - ARIA Support (Hardened)
-   - Production Safe
+   Institutional Navigation v6.2 (Hardened Stable Build)
+   - Theme fully handled by theme.js
+   - Desktop hover only
+   - Touch-safe click fallback
+   - Outside click close
+   - Clean scroll logic
+   - Mobile safe
+   - Active page detection
 ========================================================= */
 
 (function () {
-
-  /* =========================================================
-     EARLY THEME RESOLUTION
-  ========================================================= */
-
-  (function applyInitialTheme() {
-    const savedTheme = localStorage.getItem("aa_theme") || "system";
-
-    function resolveSystemTheme() {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    }
-
-    const finalTheme =
-      savedTheme === "system" ? resolveSystemTheme() : savedTheme;
-
-    document.documentElement.setAttribute("data-theme", finalTheme);
-  })();
-
-
-  /* =========================================================
-     HEADER INJECTION
-  ========================================================= */
 
   function injectHeader() {
 
     const headerContainer = document.getElementById("header");
     if (!headerContainer) return;
     if (headerContainer.dataset.injected === "true") return;
-
-    const prefersReducedMotion =
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     headerContainer.innerHTML = `
       <header class="site-header">
@@ -66,59 +37,45 @@
                id="primary-navigation"
                aria-label="Primary Navigation">
 
-            <ul role="menubar">
+            <ul>
 
-              <li role="none">
-                <a role="menuitem" href="/index.html">Home</a>
-              </li>
+              <li><a href="/index.html">Home</a></li>
 
-              <li class="dropdown" role="none">
-                <a role="menuitem"
-                   href="#"
-                   aria-haspopup="true"
-                   aria-expanded="false">
-                  Intellectual Foundation
-                  <span class="dropdown-arrow">▾</span>
+              <li class="dropdown">
+                <a href="#" aria-haspopup="true" aria-expanded="false">
+                  Intellectual Foundation ▾
                 </a>
-                <ul class="dropdown-menu" role="menu">
-                  <li role="none"><a role="menuitem" href="/intellectual-foundation/capability-architecture.html">Capability Architecture</a></li>
-                  <li role="none"><a role="menuitem" href="/intellectual-foundation/agile-ai-ecosystem.html">Agile AI Ecosystem</a></li>
-                  <li role="none"><a role="menuitem" href="/intellectual-foundation/myths-framework.html">Myth Framework</a></li>
-                  <li role="none"><a role="menuitem" href="/intellectual-foundation/mindset-transition.html">Mindset Transition</a></li>
+                <ul class="dropdown-menu">
+                  <li><a href="/intellectual-foundation/capability-architecture.html">Capability Architecture</a></li>
+                  <li><a href="/intellectual-foundation/agile-ai-ecosystem.html">Agile AI Ecosystem</a></li>
+                  <li><a href="/intellectual-foundation/myths-framework.html">Myth Framework</a></li>
+                  <li><a href="/intellectual-foundation/mindset-transition.html">Mindset Transition</a></li>
                 </ul>
               </li>
 
-              <li class="dropdown" role="none">
-                <a role="menuitem"
-                   href="#"
-                   aria-haspopup="true"
-                   aria-expanded="false">
-                  Programs
-                  <span class="dropdown-arrow">▾</span>
+              <li class="dropdown">
+                <a href="#" aria-haspopup="true" aria-expanded="false">
+                  Programs ▾
                 </a>
-                <ul class="dropdown-menu" role="menu">
-                  <li role="none">
-                    <a role="menuitem" href="/aipa/index.html">
-                      <span class="menu-title">AIPA</span>
-                      <span class="menu-sub">
-                        Artificial Intelligence Professional Agilist
-                      </span>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="/aipa/index.html">
+                      Artificial Intelligence Professional Agilist (AIPA)
                     </a>
                   </li>
                 </ul>
               </li>
 
-              <li role="none">
-                <a role="menuitem"
-                   href="https://verify.agileai.university"
+              <li>
+                <a href="https://verify.agileai.university"
                    target="_blank"
                    rel="noopener">
                   Verification
                 </a>
               </li>
 
-              <li role="none">
-                <a role="menuitem" href="/governance/index.html">
+              <li>
+                <a href="/governance/index.html">
                   Governance
                 </a>
               </li>
@@ -142,40 +99,9 @@
     const toggle = headerContainer.querySelector(".mobile-menu-toggle");
     const nav = headerContainer.querySelector(".main-nav");
     const backdrop = headerContainer.querySelector(".nav-backdrop");
-    const themeToggle = headerContainer.querySelector("#theme-toggle");
     const body = document.body;
 
     if (!header || !toggle || !nav) return;
-
-    /* =========================================================
-       THEME TOGGLE (Safe Binding)
-    ========================================================= */
-
-    function resolveSystemTheme() {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    }
-
-    function applyTheme(theme) {
-      const finalTheme =
-        theme === "system" ? resolveSystemTheme() : theme;
-
-      document.documentElement.setAttribute("data-theme", finalTheme);
-      localStorage.setItem("aa_theme", theme);
-    }
-
-    if (themeToggle && !themeToggle.dataset.bound) {
-      themeToggle.addEventListener("click", () => {
-        const current = localStorage.getItem("aa_theme") || "system";
-        const next =
-          current === "light" ? "dark" :
-          current === "dark" ? "system" :
-          "light";
-        applyTheme(next);
-      });
-      themeToggle.dataset.bound = "true";
-    }
 
     /* =========================================================
        ACTIVE PAGE DETECTION
@@ -189,68 +115,62 @@
 
       if (currentPath === linkPath) {
         link.classList.add("active");
-        const parent = link.closest(".dropdown");
-        if (parent) parent.classList.add("active-parent");
       }
     });
 
     /* =========================================================
-       DESKTOP HOVER + EDGE DETECTION (Resize Safe)
+       DROPDOWN SYSTEM (DESKTOP + TOUCH SAFE)
     ========================================================= */
 
-    const desktopQuery = window.matchMedia("(min-width: 769px)");
+    const dropdowns = nav.querySelectorAll(".dropdown");
 
-    function setupDesktopDropdowns() {
+    dropdowns.forEach(drop => {
 
-      const dropdowns = nav.querySelectorAll(".dropdown");
+      const trigger = drop.querySelector(":scope > a");
 
-      dropdowns.forEach(drop => {
+      // Prevent "#" jump
+      trigger.addEventListener("click", (e) => {
+        e.preventDefault();
 
-        let closeTimer = null;
-        const trigger = drop.querySelector(":scope > a");
-        const menu = drop.querySelector(".dropdown-menu");
+        // Toggle on click (touch devices)
+        const isOpen = drop.classList.contains("open");
 
-        function adjustAlignment() {
-          if (!menu) return;
-
-          drop.classList.remove("align-right");
-
-          const rect = menu.getBoundingClientRect();
-          if (rect.right > window.innerWidth) {
-            drop.classList.add("align-right");
-          }
-        }
-
-        drop.addEventListener("mouseenter", () => {
-          if (closeTimer) clearTimeout(closeTimer);
-
+        closeAllDropdowns();
+        if (!isOpen) {
           drop.classList.add("open");
-          if (trigger) trigger.setAttribute("aria-expanded", "true");
+          trigger.setAttribute("aria-expanded", "true");
+        }
+      });
 
-          requestAnimationFrame(adjustAlignment);
-        });
+      // Desktop hover only
+      drop.addEventListener("mouseenter", () => {
+        if (window.innerWidth > 768) {
+          drop.classList.add("open");
+          trigger.setAttribute("aria-expanded", "true");
+        }
+      });
 
-        drop.addEventListener("mouseleave", () => {
-          closeTimer = setTimeout(() => {
-            drop.classList.remove("open");
-            drop.classList.remove("align-right");
-            if (trigger) trigger.setAttribute("aria-expanded", "false");
-          }, 140);
-        });
+      drop.addEventListener("mouseleave", () => {
+        if (window.innerWidth > 768) {
+          drop.classList.remove("open");
+          trigger.setAttribute("aria-expanded", "false");
+        }
+      });
 
-        window.addEventListener("resize", adjustAlignment);
+    });
+
+    function closeAllDropdowns() {
+      dropdowns.forEach(d => {
+        d.classList.remove("open");
+        const a = d.querySelector(":scope > a");
+        if (a) a.setAttribute("aria-expanded", "false");
       });
     }
 
-    if (desktopQuery.matches) {
-      setupDesktopDropdowns();
-    }
-
-    desktopQuery.addEventListener("change", e => {
-      if (!e.matches) {
-        nav.querySelectorAll(".dropdown").forEach(d => {
-          d.classList.remove("open", "align-right");
-        });
+    // Close when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!nav.contains(e.target)) {
+        closeAllDropdowns();
       }
     });
 
@@ -260,7 +180,8 @@
 
     let lastScrollY = window.scrollY;
 
-    function handleScroll() {
+    window.addEventListener("scroll", () => {
+
       const currentScroll = window.scrollY;
 
       header.classList.toggle("scrolled", currentScroll > 80);
@@ -272,9 +193,8 @@
       }
 
       lastScrollY = currentScroll;
-    }
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    }, { passive: true });
 
     /* =========================================================
        MOBILE NAV
@@ -296,16 +216,12 @@
       if (backdrop) backdrop.classList.remove("active");
     }
 
-    toggle.addEventListener("click", e => {
+    toggle.addEventListener("click", (e) => {
       e.stopPropagation();
       nav.classList.contains("open") ? closeNav() : openNav();
     });
 
     if (backdrop) backdrop.addEventListener("click", closeNav);
-
-    if (prefersReducedMotion) {
-      header.style.transition = "none";
-    }
 
   }
 

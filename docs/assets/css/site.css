@@ -1,6 +1,6 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v6.3
-   Safe Structural Alignment Release
+   AgileAI Public Surface — Institutional CSS v6.4
+   Premium Motion Upgrade
    Compatible with:
    - header.js v5.2
    - footer.js v2.0
@@ -22,9 +22,13 @@
   --header-height: 80px;
 
   --transition-speed: 240ms;
+
   --motion-standard: cubic-bezier(.4, 0, .2, 1);
   --motion-decelerate: cubic-bezier(0, 0, .2, 1);
   --motion-smooth: cubic-bezier(.25, .8, .25, 1);
+
+  /* Premium dropdown curve */
+  --motion-premium: cubic-bezier(.16, 1, .3, 1);
 }
 
 /* =========================
@@ -134,6 +138,10 @@ body {
   padding: 0;
 }
 
+.main-nav li {
+  position: relative;
+}
+
 .main-nav li > a {
   text-decoration: none;
   font-size: 0.9rem;
@@ -145,7 +153,9 @@ body {
   opacity: 0.7;
 }
 
-/* Dropdown */
+/* =========================
+   Premium Dropdown Motion
+========================= */
 
 .dropdown-menu {
   position: absolute;
@@ -153,7 +163,7 @@ body {
   left: 0;
 
   min-width: 240px;
-  padding: 14px 0;
+  padding: 12px 0;
 
   background: var(--background);
   border: 1px solid var(--border-subtle);
@@ -163,25 +173,52 @@ body {
 
   opacity: 0;
   visibility: hidden;
-  transform: translateY(6px);
+  transform: translateY(8px) scale(0.98);
+  transform-origin: top center;
 
   transition:
-    opacity 220ms var(--motion-decelerate),
-    transform 220ms var(--motion-standard);
+    opacity 260ms var(--motion-premium),
+    transform 260ms var(--motion-premium);
+
+  z-index: 3000;
 }
 
 .dropdown-menu a {
   display: block;
   padding: 8px 18px;
   font-size: 0.88rem;
+  white-space: nowrap;
 }
 
+/* Desktop hover interaction */
+
 @media (min-width: 769px) {
+
   .dropdown:hover > .dropdown-menu {
     opacity: 1;
     visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Subtle stagger */
+
+  .dropdown-menu li {
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity 220ms var(--motion-premium),
+      transform 220ms var(--motion-premium);
+  }
+
+  .dropdown:hover > .dropdown-menu li {
+    opacity: 1;
     transform: translateY(0);
   }
+
+  .dropdown:hover > .dropdown-menu li:nth-child(1) { transition-delay: 40ms; }
+  .dropdown:hover > .dropdown-menu li:nth-child(2) { transition-delay: 80ms; }
+  .dropdown:hover > .dropdown-menu li:nth-child(3) { transition-delay: 120ms; }
+  .dropdown:hover > .dropdown-menu li:nth-child(4) { transition-delay: 160ms; }
 }
 
 /* =========================
@@ -314,77 +351,16 @@ a:hover {
   }
 }
 
-/* =========================================================
-   v6.3.3 – Institutional Dropdown Alignment Pass
-   Safe CSS refinement (non-breaking)
-   ========================================================= */
+/* =========================
+   Dark Mode Dropdown
+========================= */
 
-/* Ensure dropdown anchors directly under nav */
-nav ul li {
-  position: relative;
-}
-
-/* Core dropdown container */
-nav ul li ul {
-  position: absolute;
-  top: 100%; /* anchor directly below parent */
-  left: 0;
-  min-width: 220px;
-  width: auto;
-  padding: 8px 0;
-  margin: 0;
-  background: var(--surface-bg, #ffffff);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 6px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  display: none;
-  z-index: 2000; /* below header, above content */
-}
-
-/* Show dropdown on hover */
-nav ul li:hover > ul {
-  display: block;
-}
-
-/* Dropdown items */
-nav ul li ul li {
-  display: block;
-  width: 100%;
-}
-
-nav ul li ul li a {
-  display: block;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  color: inherit;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-/* Hover state */
-nav ul li ul li a:hover {
-  background-color: rgba(0, 0, 0, 0.04);
-}
-
-/* Remove pill / tooltip styling if inherited */
-nav ul li ul {
-  backdrop-filter: none;
-}
-
-/* Prevent dropdown from visually colliding with institutional band */
-.institutional-band {
-  position: relative;
-  z-index: 1000;
-}
-
-/* Dark mode adjustments */
-[data-theme="dark"] nav ul li ul {
+[data-theme="dark"] .dropdown-menu {
   background: #1f1f1f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
 }
 
-[data-theme="dark"] nav ul li ul li a:hover {
-  background-color: rgba(255, 255, 255, 0.06);
+[data-theme="dark"] .dropdown-menu a:hover {
+  background-color: rgba(255,255,255,0.06);
 }

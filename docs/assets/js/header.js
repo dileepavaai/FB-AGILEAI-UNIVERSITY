@@ -1,11 +1,12 @@
 /* =========================================================  
    Global Header Injection
-   Institutional Navigation v5.4 (Hover Stabilized)
-   - Early Theme Resolution (System Safe)
-   - Desktop Hover Intent Buffer (140ms)
+   Institutional Navigation v5.5 (Edge-Safe Premium Build)
+   - Early Theme Resolution
+   - Viewport Edge Detection (Prevents Clipping)
+   - Desktop Hover Intent Buffer
    - Scroll Shrink (80px)
    - Scroll Direction Hide/Show
-   - Mobile Nav (Stable)
+   - Mobile Nav Stable
    - Active Detection
    - ARIA Support
    - Production Safe
@@ -14,7 +15,7 @@
 (function () {
 
   /* =========================================================
-     EARLY THEME RESOLUTION (CRITICAL FIX)
+     EARLY THEME RESOLUTION
   ========================================================= */
 
   (function applyInitialTheme() {
@@ -147,7 +148,7 @@
     if (!header || !toggle || !nav) return;
 
     /* =========================================================
-       THEME TOGGLE (UNCHANGED — SAFE)
+       THEME TOGGLE (Unchanged)
     ========================================================= */
 
     function resolveSystemTheme() {
@@ -171,7 +172,6 @@
           current === "light" ? "dark" :
           current === "dark" ? "system" :
           "light";
-
         applyTheme(next);
       });
     }
@@ -194,7 +194,7 @@
     });
 
     /* =========================================================
-       DESKTOP HOVER INTENT (SMOOTH FIX)
+       DESKTOP HOVER + EDGE DETECTION
     ========================================================= */
 
     if (window.matchMedia("(min-width: 769px)").matches) {
@@ -205,16 +205,34 @@
 
         let closeTimer = null;
         const trigger = drop.querySelector(":scope > a");
+        const menu = drop.querySelector(".dropdown-menu");
+
+        function adjustAlignment() {
+          if (!menu) return;
+
+          drop.classList.remove("align-right");
+
+          const rect = menu.getBoundingClientRect();
+          const overflowRight = rect.right > window.innerWidth;
+
+          if (overflowRight) {
+            drop.classList.add("align-right");
+          }
+        }
 
         drop.addEventListener("mouseenter", () => {
           if (closeTimer) clearTimeout(closeTimer);
+
           drop.classList.add("open");
           if (trigger) trigger.setAttribute("aria-expanded", "true");
+
+          requestAnimationFrame(adjustAlignment);
         });
 
         drop.addEventListener("mouseleave", () => {
           closeTimer = setTimeout(() => {
             drop.classList.remove("open");
+            drop.classList.remove("align-right");
             if (trigger) trigger.setAttribute("aria-expanded", "false");
           }, 140);
         });
@@ -245,7 +263,7 @@
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     /* =========================================================
-       MOBILE NAV (UNCHANGED)
+       MOBILE NAV
     ========================================================= */
 
     function openNav() {

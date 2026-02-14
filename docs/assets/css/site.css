@@ -1,6 +1,6 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v6.6
-   Stable Premium Dropdown System
+   AgileAI Public Surface — Institutional CSS v6.6.2
+   Edge-Safe Premium Dropdown System
    Compatible with:
    - header.js v5.4
    - footer.js v2.0
@@ -81,7 +81,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 5000; /* Ensure always above band/content */
+  z-index: 5000;
 
   display: flex;
   align-items: center;
@@ -107,7 +107,6 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 32px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -156,6 +155,8 @@ body {
   left: 0;
 
   min-width: 240px;
+  max-width: min(320px, 90vw); /* Prevent viewport overflow */
+
   padding: 12px 0;
 
   background: var(--background);
@@ -169,22 +170,30 @@ body {
   pointer-events: none;
 
   transform: translateY(8px) scale(0.98);
-  transform-origin: top center;
+  transform-origin: top left;
 
   transition:
     opacity 260ms var(--motion-premium),
     transform 260ms var(--motion-premium);
 
-  z-index: 5100; /* Above header stacking children */
+  z-index: 5100;
 }
 
-/* OPEN STATE (Controlled by header.js) */
+/* Open state */
 
 .dropdown.open > .dropdown-menu {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0) scale(1);
+}
+
+/* Right-aligned fallback (set via JS) */
+
+.dropdown.align-right > .dropdown-menu {
+  left: auto;
+  right: 0;
+  transform-origin: top right;
 }
 
 /* =========================
@@ -229,10 +238,6 @@ body {
   background: var(--surface-muted);
   color: var(--text-secondary);
   border-bottom: 1px solid var(--border-subtle);
-
-  /* Important: no stacking context */
-  position: static;
-  z-index: auto;
 }
 
 /* =========================

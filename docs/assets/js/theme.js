@@ -1,12 +1,17 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v7.3
-   Hardened Institutional Baseline (Light / Dark Only)
-   - Deterministic header-safe binding
-   - No observers
+   AgileAI Public Surface — Theme Controller v7.4
+   Institutional Production Baseline (Light / Dark Only)
+
+   DESIGN GUARANTEES
+   ---------------------------------------------------------
+   - Deterministic initialization
+   - No polling loops
+   - No MutationObservers
    - No media queries
-   - Idempotent
-   - Reading Progress Included
-   Production Safe
+   - Idempotent binding
+   - Header-injection safe
+   - Reading progress included
+   - Production safe for GitHub Pages
 ========================================================= */
 
 (function () {
@@ -33,6 +38,17 @@
     root.setAttribute("data-theme", mode);
   }
 
+  function updateButton(mode) {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+
+    btn.textContent = mode === "dark" ? "🌙" : "☀️";
+    btn.title =
+      mode === "dark"
+        ? "Switch to Light Mode"
+        : "Switch to Dark Mode";
+  }
+
   function toggleTheme() {
     const current = getSavedTheme();
     const next = current === "light" ? "dark" : "light";
@@ -43,20 +59,10 @@
   }
 
   /* =========================================================
-     BUTTON BINDING (Header Safe)
+     BUTTON BINDING (Deterministic + Idempotent)
   ========================================================== */
 
-  function updateButton(mode) {
-    const btn = document.getElementById("theme-toggle");
-    if (!btn) return;
-
-    btn.textContent = mode === "dark" ? "🌙" : "☀️";
-    btn.title = mode === "dark"
-      ? "Switch to Light Mode"
-      : "Switch to Dark Mode";
-  }
-
-  function tryBindButton() {
+  function bindButtonIfPresent() {
 
     if (buttonBound) return;
 
@@ -101,19 +107,18 @@
 
   function init() {
 
+    // 1. Apply theme immediately (prevents flicker)
     const saved = getSavedTheme();
     applyTheme(saved);
 
+    // 2. Initialize reading progress once
     initReadingProgress();
 
-    // Try binding immediately
-    tryBindButton();
+    // 3. Bind button immediately if already injected
+    bindButtonIfPresent();
 
-    // Safety retry for header injection timing
-    const interval = setInterval(() => {
-      tryBindButton();
-      if (buttonBound) clearInterval(interval);
-    }, 50);
+    // 4. Re-attempt binding after header injection
+    document.addEventListener("headerInjected", bindButtonIfPresent);
   }
 
   if (document.readyState === "loading") {

@@ -1,12 +1,11 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v7.6
-   Production Stable Institutional Layout
-   - Light / Dark only
-   - Left-aligned dropdown (collision-safe)
-   - Header stacking isolated
-   - Wrap-safe submenu
-   - No horizontal bleed
-   - No stacking bleed
+   AgileAI Public Surface — Institutional CSS v7.7
+   Unified With Main Site Surface
+   - Sharp dropdown corners
+   - Reduced dropdown width
+   - Tighter vertical offset
+   - Standardized nav spacing
+   - Institutional shadow tone
 ========================================= */
 
 
@@ -120,6 +119,7 @@ body {
   font-size: 1rem;
 }
 
+
 /* =========================
    NAVIGATION
 ========================= */
@@ -128,10 +128,10 @@ body {
   position: relative;
 }
 
-/* FLEX ONLY FOR TOP-LEVEL NAV */
+/* Standardized spacing to match main site */
 .main-nav > ul {
   display: flex;
-  gap: 28px; /* standardized spacing */
+  gap: 24px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -154,46 +154,41 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM (Polished)
-   - Slightly narrower
-   - Balanced vertical spacing
-   - Institutional shadow tone
-   - No flex inheritance
+   DROPDOWN SYSTEM (Main Site Matched)
 ========================= */
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 8px); /* tighter vertical spacing */
+  top: calc(100% + 4px); /* tighter gap like main */
   left: 0;
 
   display: block;
 
-  min-width: 220px;   /* reduced width */
-  max-width: 280px;   /* reduced width */
+  min-width: 220px;
+  max-width: 260px;
 
-  padding: 10px 0;    /* tighter vertical padding */
+  padding: 8px 0;
 
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 10px;
+  border-radius: 0; /* SHARP — match main */
 
-  /* Matched to main site tone */
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06); /* lighter institutional shadow */
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
-  transform: translateY(6px); /* softer motion */
+  transform: translateY(4px);
 
   transition:
-    opacity 180ms ease,
-    transform 200ms var(--motion-standard);
+    opacity 150ms ease,
+    transform 150ms ease;
 
   z-index: 5200;
 }
 
-/* Force dropdown UL vertical */
+/* Force vertical layout */
 .dropdown-menu ul {
   display: block;
   list-style: none;
@@ -208,7 +203,6 @@ body {
   transform: translateY(0);
 }
 
-/* Optional right aligned variant */
 .dropdown.align-right > .dropdown-menu {
   left: auto;
   right: 0;
@@ -224,11 +218,11 @@ body {
   width: 100%;
 
   opacity: 0;
-  transform: translateY(4px);
+  transform: translateY(3px);
 
   transition:
-    opacity 160ms ease,
-    transform 180ms ease;
+    opacity 140ms ease,
+    transform 150ms ease;
 }
 
 .dropdown.open > .dropdown-menu li {
@@ -236,21 +230,15 @@ body {
   transform: translateY(0);
 }
 
-/* Soft stagger */
-.dropdown.open > .dropdown-menu li:nth-child(1) { transition-delay: 30ms; }
-.dropdown.open > .dropdown-menu li:nth-child(2) { transition-delay: 50ms; }
-.dropdown.open > .dropdown-menu li:nth-child(3) { transition-delay: 70ms; }
-.dropdown.open > .dropdown-menu li:nth-child(4) { transition-delay: 90ms; }
-
 .dropdown-menu a {
   display: block;
   width: 100%;
 
-  padding: 10px 18px; /* slightly tighter */
+  padding: 8px 16px;
 
   font-size: 0.88rem;
   color: var(--text-primary);
-  line-height: 1.45;
+  line-height: 1.4;
 
   white-space: normal;
   overflow-wrap: break-word;
@@ -259,6 +247,7 @@ body {
 .dropdown-menu a:hover {
   background-color: var(--surface-muted);
 }
+
 
 /* =========================
    THEME TOGGLE BUTTON

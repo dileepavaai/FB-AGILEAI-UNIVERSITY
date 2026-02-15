@@ -1,12 +1,13 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v9.4
+   AgileAI Public Surface — Institutional CSS v9.5
    Unified Institutional Baseline
 
    Final Alignment State:
    - Dropdown right-anchored to nav item
    - Submenu text LEFT-aligned (desktop)
    - Mobile text left-aligned
-   - Balanced optical spacing
+   - Clean link hierarchy
+   - No cascade duplication
 ========================================= */
 
 
@@ -54,8 +55,9 @@ body {
   font-family: Georgia, "Times New Roman", serif;
   line-height: 1.75;
   font-size: 18px;
-  transition: background var(--transition-speed),
-              color var(--transition-speed);
+  transition:
+    background var(--transition-speed),
+    color var(--transition-speed);
 }
 
 
@@ -156,7 +158,6 @@ body {
 
 /* =========================
    DROPDOWN SYSTEM
-   (RIGHT BOX + LEFT TEXT)
 ========================= */
 
 .dropdown-menu {
@@ -207,13 +208,11 @@ body {
 .dropdown-menu a {
   display: block;
   width: 100%;
-
-  padding: 8px 14px;   /* balanced spacing */
+  padding: 8px 14px;
 
   font-size: 0.86rem;
   font-weight: 400;
   line-height: 1.4;
-
   text-align: left;
 
   color: var(--text-primary);
@@ -225,7 +224,6 @@ body {
 
 .dropdown-menu a:hover {
   background-color: var(--surface-muted);
-  opacity: 1;
 }
 
 
@@ -285,7 +283,7 @@ p { margin-bottom: 20px; }
 
 
 /* =========================
-   LINKS
+   GLOBAL LINKS
 ========================= */
 
 a {
@@ -296,6 +294,67 @@ a {
 
 a:hover {
   opacity: 0.75;
+}
+
+
+/* =========================
+   MAIN CONTENT LINKS
+========================= */
+
+main a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  font-weight: 500;
+}
+
+main a:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 2px;
+}
+
+
+/* =========================
+   HERO CTA LINK
+========================= */
+
+.hero a {
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+}
+
+.hero a:hover {
+  border-bottom-color: var(--text-secondary);
+}
+
+
+/* =========================
+   ARROW-STYLE LINK VARIANT
+========================= */
+
+.link-arrow::after {
+  content: " →";
+  display: inline-block;
+  transition: transform 160ms ease;
+}
+
+.link-arrow:hover::after {
+  transform: translateX(3px);
+}
+
+
+/* =========================
+   REFINED LIST LINKS
+========================= */
+
+main ul li {
+  margin-bottom: 8px;
+}
+
+main ul li a {
+  font-weight: 500;
 }
 
 

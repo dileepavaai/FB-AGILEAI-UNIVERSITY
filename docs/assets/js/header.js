@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </nav>
 
         <div class="theme-control">
-          <button id="theme-toggle">☀</button>
+          <button id="theme-toggle">☀️</button>
         </div>
 
       </div>
@@ -53,7 +53,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById("header").innerHTML = headerHTML;
 
-  // Dropdown logic
+  /* ---------------------------------------------------------
+     DISPATCH HEADER READY EVENT (CRITICAL FIX)
+  --------------------------------------------------------- */
+
+  document.dispatchEvent(new Event("headerInjected"));
+
+  /* ---------------------------------------------------------
+     Dropdown Logic
+  --------------------------------------------------------- */
+
   const dropdowns = document.querySelectorAll(".dropdown");
 
   dropdowns.forEach(drop => {

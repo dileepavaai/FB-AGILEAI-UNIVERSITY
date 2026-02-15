@@ -1,11 +1,12 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v8.5
-   Unified Institutional Baseline (Header + Footer Harmonized)
+   AgileAI Public Surface — Institutional CSS v8.6
+   Unified Institutional Baseline
 
    Updates:
-   - Governance footer line integrated
-   - No layout regressions
-   - Dropdown + motion preserved
+   - Dropdown structurally left-aligned to nav grid
+   - Floating perception removed
+   - Governance footer preserved
+   - No mobile regressions
 ========================================= */
 
 
@@ -154,18 +155,19 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM
+   DROPDOWN SYSTEM (GRID-ALIGNED)
 ========================= */
 
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 1px);
-  left: 0;
 
-  min-width: 190px;
-  max-width: 230px;
+  /* Structural left alignment */
+  left: -14px;   /* Anchors to nav grid instead of text */
 
-  padding: 6px 0;
+  min-width: 240px;
+
+  padding: 8px 0;
 
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
@@ -177,12 +179,11 @@ body {
   visibility: hidden;
   pointer-events: none;
 
-  transform: translateY(4px);
+  transform: translateY(3px);
 
   transition:
-    opacity 120ms ease-out,
-    transform 140ms var(--motion-standard),
-    visibility 120ms ease;
+    opacity 110ms ease-out,
+    transform 130ms var(--motion-standard);
 
   z-index: 5200;
 }
@@ -212,7 +213,7 @@ body {
 .dropdown-menu a {
   display: block;
   width: 100%;
-  padding: 6px 14px;
+  padding: 6px 16px;
   font-size: 0.86rem;
   font-weight: 400;
   line-height: 1.4;

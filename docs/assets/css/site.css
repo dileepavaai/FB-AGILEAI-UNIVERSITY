@@ -1,13 +1,12 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v9.1
+   AgileAI Public Surface — Institutional CSS v9.2
    Unified Institutional Baseline
 
-   Updates:
+   Final Alignment State:
    - Dropdown right-anchored to nav item
-   - Submenu text right-aligned
-   - Floating perception removed
-   - Governance footer preserved
-   - No mobile regressions
+   - Submenu text right-aligned (desktop)
+   - Mobile text left-aligned
+   - No cascade conflicts
 ========================================= */
 
 
@@ -156,13 +155,13 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM (RIGHT-ALIGNED)
+   DROPDOWN SYSTEM (RIGHT ANCHORED)
 ========================= */
 
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 1px);
-  right: 0;                 /* RIGHT ANCHORED */
+  right: 0;
   left: auto;
 
   min-width: 240px;
@@ -186,7 +185,7 @@ body {
 
   z-index: 5200;
 
-  text-align: right;        /* TEXT RIGHT */
+  text-align: right;   /* Desktop alignment */
 }
 
 .dropdown.open > .dropdown-menu {
@@ -213,14 +212,9 @@ body {
   font-size: 0.86rem;
   font-weight: 400;
   line-height: 1.4;
-
-  text-align: right;        /* TEXT RIGHT */
-
+  text-align: right;  /* Desktop right aligned */
   color: var(--text-primary);
-
-  transition:
-    background 120ms ease,
-    opacity 120ms ease;
+  transition: background 120ms ease, opacity 120ms ease;
 }
 
 .dropdown-menu a:hover {
@@ -333,20 +327,9 @@ a:hover {
 
 .footer-links a {
   color: var(--text-secondary);
-  text-decoration: none;
-  transition: opacity 140ms ease;
 }
 
-.footer-links a:hover {
-  opacity: 0.75;
-}
-
-.footer-disclaimer {
-  margin-top: 18px;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
+.footer-disclaimer,
 .footer-copy {
   margin-top: 18px;
   font-size: 0.85rem;
@@ -393,7 +376,7 @@ a:hover {
     padding: 6px 0;
     width: 100%;
 
-    text-align: left; /* reset for mobile readability */
+    text-align: left; /* Mobile readability */
   }
 
   .dropdown-menu a {
@@ -401,5 +384,4 @@ a:hover {
     font-size: 0.95rem;
     text-align: left;
   }
-
 }

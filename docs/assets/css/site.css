@@ -1,10 +1,10 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v9.2
+   AgileAI Public Surface — Institutional CSS v9.3
    Unified Institutional Baseline
 
    Final Alignment State:
    - Dropdown right-anchored to nav item
-   - Submenu text right-aligned (desktop)
+   - Submenu text LEFT-aligned (desktop)
    - Mobile text left-aligned
    - No cascade conflicts
 ========================================= */
@@ -155,13 +155,15 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM (RIGHT ANCHORED)
+   DROPDOWN SYSTEM
+   (RIGHT BOX + LEFT TEXT)
 ========================= */
 
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 1px);
-  right: 0;
+
+  right: 0;        /* Box right anchored */
   left: auto;
 
   min-width: 240px;
@@ -185,7 +187,7 @@ body {
 
   z-index: 5200;
 
-  text-align: right;   /* Desktop alignment */
+  text-align: left;  /* TEXT LEFT (DESKTOP) */
 }
 
 .dropdown.open > .dropdown-menu {
@@ -209,12 +211,18 @@ body {
   display: block;
   width: 100%;
   padding: 8px 16px;
+
   font-size: 0.86rem;
   font-weight: 400;
   line-height: 1.4;
-  text-align: right;  /* Desktop right aligned */
+
+  text-align: left;   /* TEXT LEFT */
+
   color: var(--text-primary);
-  transition: background 120ms ease, opacity 120ms ease;
+
+  transition:
+    background 120ms ease,
+    opacity 120ms ease;
 }
 
 .dropdown-menu a:hover {
@@ -376,7 +384,7 @@ a:hover {
     padding: 6px 0;
     width: 100%;
 
-    text-align: left; /* Mobile readability */
+    text-align: left; /* Mobile readable */
   }
 
   .dropdown-menu a {

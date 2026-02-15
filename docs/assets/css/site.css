@@ -131,7 +131,7 @@ body {
 /* FLEX ONLY FOR TOP-LEVEL NAV */
 .main-nav > ul {
   display: flex;
-  gap: 32px;
+  gap: 28px; /* standardized spacing */
   list-style: none;
   margin: 0;
   padding: 0;
@@ -154,45 +154,46 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM (Stable)
-   - Vertical layout enforced
+   DROPDOWN SYSTEM (Polished)
+   - Slightly narrower
+   - Balanced vertical spacing
+   - Institutional shadow tone
    - No flex inheritance
-   - Left-aligned under parent
-   - Collision safe
 ========================= */
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 8px); /* tighter vertical spacing */
   left: 0;
 
   display: block;
 
-  min-width: 260px;
-  max-width: 320px;
+  min-width: 220px;   /* reduced width */
+  max-width: 280px;   /* reduced width */
 
-  padding: 14px 0;
+  padding: 10px 0;    /* tighter vertical padding */
 
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: 10px;
 
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.14);
+  /* Matched to main site tone */
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
-  transform: translateY(10px);
+  transform: translateY(6px); /* softer motion */
 
   transition:
-    opacity 200ms ease,
-    transform 220ms var(--motion-standard);
+    opacity 180ms ease,
+    transform 200ms var(--motion-standard);
 
   z-index: 5200;
 }
 
-/* Force dropdown UL to be vertical */
+/* Force dropdown UL vertical */
 .dropdown-menu ul {
   display: block;
   list-style: none;
@@ -223,11 +224,11 @@ body {
   width: 100%;
 
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateY(4px);
 
   transition:
-    opacity 180ms ease,
-    transform 200ms ease;
+    opacity 160ms ease,
+    transform 180ms ease;
 }
 
 .dropdown.open > .dropdown-menu li {
@@ -236,20 +237,20 @@ body {
 }
 
 /* Soft stagger */
-.dropdown.open > .dropdown-menu li:nth-child(1) { transition-delay: 40ms; }
-.dropdown.open > .dropdown-menu li:nth-child(2) { transition-delay: 70ms; }
-.dropdown.open > .dropdown-menu li:nth-child(3) { transition-delay: 100ms; }
-.dropdown.open > .dropdown-menu li:nth-child(4) { transition-delay: 130ms; }
+.dropdown.open > .dropdown-menu li:nth-child(1) { transition-delay: 30ms; }
+.dropdown.open > .dropdown-menu li:nth-child(2) { transition-delay: 50ms; }
+.dropdown.open > .dropdown-menu li:nth-child(3) { transition-delay: 70ms; }
+.dropdown.open > .dropdown-menu li:nth-child(4) { transition-delay: 90ms; }
 
 .dropdown-menu a {
   display: block;
   width: 100%;
 
-  padding: 12px 20px;
+  padding: 10px 18px; /* slightly tighter */
 
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.45;
 
   white-space: normal;
   overflow-wrap: break-word;

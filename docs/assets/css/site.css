@@ -1,12 +1,12 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v9.0
-   Institutional Baseline Stabilized
+   AgileAI Public Surface — Institutional CSS v9.1
+   Unified Institutional Baseline
 
    Updates:
-   - True visual left alignment for submenu text
-   - Dropdown width refined
-   - Padding corrected
-   - Removed unnecessary !important usage
+   - Dropdown right-anchored to nav item
+   - Submenu text right-aligned
+   - Floating perception removed
+   - Governance footer preserved
    - No mobile regressions
 ========================================= */
 
@@ -45,6 +45,7 @@
 ========================= */
 
 * { box-sizing: border-box; }
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -63,7 +64,10 @@ body {
    HEADER
 ========================= */
 
-#header { position: relative; width: 100%; }
+#header {
+  position: relative;
+  width: 100%;
+}
 
 .site-header {
   width: 100%;
@@ -121,7 +125,9 @@ body {
    NAVIGATION
 ========================= */
 
-.main-nav { position: relative; }
+.main-nav {
+  position: relative;
+}
 
 .main-nav > ul {
   display: flex;
@@ -131,7 +137,9 @@ body {
   padding: 0;
 }
 
-.main-nav li { position: relative; }
+.main-nav li {
+  position: relative;
+}
 
 .main-nav li > a {
   text-decoration: none;
@@ -142,20 +150,23 @@ body {
   transition: opacity 140ms ease;
 }
 
-.main-nav li > a:hover { opacity: 0.8; }
+.main-nav li > a:hover {
+  opacity: 0.8;
+}
 
 
 /* =========================
-   DROPDOWN SYSTEM
+   DROPDOWN SYSTEM (RIGHT-ALIGNED)
 ========================= */
 
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 1px);
-  left: -14px;
+  right: 0;                 /* RIGHT ANCHORED */
+  left: auto;
 
-  min-width: 210px; /* tightened */
-  padding: 6px 0;
+  min-width: 240px;
+  padding: 8px 0;
 
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
@@ -174,6 +185,8 @@ body {
     transform 130ms var(--motion-standard);
 
   z-index: 5200;
+
+  text-align: right;        /* TEXT RIGHT */
 }
 
 .dropdown.open > .dropdown-menu {
@@ -181,11 +194,6 @@ body {
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
-}
-
-.dropdown.align-right > .dropdown-menu {
-  left: auto;
-  right: 0;
 }
 
 
@@ -198,18 +206,15 @@ body {
   width: 100%;
 }
 
-.dropdown-menu li a {
+.dropdown-menu a {
   display: block;
   width: 100%;
-
-  padding: 8px 8px 8px 14px; /* asymmetric padding */
-
+  padding: 8px 16px;
   font-size: 0.86rem;
   font-weight: 400;
   line-height: 1.4;
 
-  text-align: left;
-  margin: 0;
+  text-align: right;        /* TEXT RIGHT */
 
   color: var(--text-primary);
 
@@ -218,7 +223,7 @@ body {
     opacity 120ms ease;
 }
 
-.dropdown-menu li a:hover {
+.dropdown-menu a:hover {
   background-color: var(--surface-muted);
   opacity: 1;
 }
@@ -289,14 +294,18 @@ a {
   transition: opacity 160ms ease;
 }
 
-a:hover { opacity: 0.75; }
+a:hover {
+  opacity: 0.75;
+}
 
 
 /* =========================
    FOOTER
 ========================= */
 
-#footer { margin-top: 120px; }
+#footer {
+  margin-top: 120px;
+}
 
 .site-footer {
   border-top: 1px solid var(--border-subtle);
@@ -318,7 +327,9 @@ a:hover { opacity: 0.75; }
   margin-bottom: 10px;
 }
 
-.footer-links { margin: 8px 0; }
+.footer-links {
+  margin: 8px 0;
+}
 
 .footer-links a {
   color: var(--text-secondary);
@@ -326,29 +337,19 @@ a:hover { opacity: 0.75; }
   transition: opacity 140ms ease;
 }
 
-.footer-links a:hover { opacity: 0.75; }
-
-.footer-disclaimer,
-.footer-governance,
-.footer-copy {
-  margin-top: 12px;
-  font-size: 0.85rem;
+.footer-links a:hover {
+  opacity: 0.75;
 }
 
+.footer-disclaimer {
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
 
-/* =========================
-   READING PROGRESS
-========================= */
-
-#reading-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  width: 0;
-  background: var(--text-primary);
-  z-index: 6000;
-  transition: width 120ms linear;
+.footer-copy {
+  margin-top: 18px;
+  font-size: 0.85rem;
 }
 
 
@@ -358,14 +359,18 @@ a:hover { opacity: 0.75; }
 
 @media (max-width: 768px) {
 
-  .header-inner { padding: 0 20px; }
+  .header-inner {
+    padding: 0 20px;
+  }
 
   .main-nav > ul {
     flex-direction: column;
     gap: 0;
   }
 
-  .main-nav li { width: 100%; }
+  .main-nav li {
+    width: 100%;
+  }
 
   .main-nav li > a {
     display: block;
@@ -387,11 +392,14 @@ a:hover { opacity: 0.75; }
     margin: 4px 0 8px 0;
     padding: 6px 0;
     width: 100%;
+
+    text-align: left; /* reset for mobile readability */
   }
 
-  .dropdown-menu li a {
+  .dropdown-menu a {
     padding: 8px 0 8px 16px;
     font-size: 0.95rem;
+    text-align: left;
   }
 
 }

@@ -1,10 +1,10 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v8.1
-   Fully Aligned With Main Site Surface
-   - Reduced dropdown vertical gap
-   - Normalized font weights
-   - Refined padding
-   - Institutional shadow tone
+   AgileAI Public Surface — Institutional CSS v8.2
+   Fully Aligned Institutional Baseline
+   - Font weight normalized
+   - Dropdown gap tightened
+   - Shadow tone unified
+   - Spacing consistent with main site
    - Stable mobile system
 ========================================= */
 
@@ -24,10 +24,9 @@
   --max-width: 720px;
   --header-height: 80px;
 
-  --transition-speed: 220ms;
+  --transition-speed: 200ms;
 
   --motion-standard: cubic-bezier(.4, 0, .2, 1);
-  --motion-smooth: cubic-bezier(.25, .8, .25, 1);
 }
 
 :root[data-theme="dark"] {
@@ -89,13 +88,13 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 
   transition:
-    transform 300ms var(--motion-smooth),
-    box-shadow 220ms var(--motion-standard),
-    background 220ms var(--motion-standard);
+    transform 260ms var(--motion-standard),
+    box-shadow 200ms var(--motion-standard),
+    background 200ms var(--motion-standard);
 }
 
 .site-header.scrolled {
-  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
 .site-header.nav-hidden {
@@ -117,6 +116,7 @@ body {
   text-decoration: none;
   color: var(--text-primary);
   font-size: 1rem;
+  font-weight: 400; /* Match main site */
 }
 
 
@@ -130,7 +130,7 @@ body {
 
 .main-nav > ul {
   display: flex;
-  gap: 22px;
+  gap: 20px;   /* Precisely matched spacing */
   list-style: none;
   margin: 0;
   padding: 0;
@@ -142,11 +142,11 @@ body {
 
 .main-nav li > a {
   text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 400;        /* MATCH MAIN SITE */
+  font-size: 0.87rem;   /* Exact visual match */
+  font-weight: 400;     /* Remove bold feel */
+  letter-spacing: 0.15px;
   color: var(--text-primary);
-  letter-spacing: 0.2px;
-  transition: opacity 160ms ease;
+  transition: opacity 150ms ease;
 }
 
 .main-nav li > a:hover {
@@ -160,40 +160,30 @@ body {
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 2px);   /* TIGHTER GAP */
+  top: calc(100% + 2px); /* Tight main-site gap */
   left: 0;
 
-  display: block;
+  min-width: 190px;
+  max-width: 230px;
 
-  min-width: 200px;
-  max-width: 240px;
-
-  padding: 6px 0;         /* TIGHTER VERTICAL */
+  padding: 6px 0;
 
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 4px;
+  border-radius: 3px; /* Slightly sharp, not rounded */
 
-  box-shadow: 0 6px 16px rgba(0,0,0,0.05); /* SOFTER MAIN-SITE SHADOW */
+  box-shadow: 0 6px 14px rgba(0,0,0,0.05); /* Main-site tone */
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
-  transform: translateY(3px);
-
+  transform: translateY(2px);
   transition:
-    opacity 150ms ease,
-    transform 150ms ease;
+    opacity 140ms ease,
+    transform 140ms ease;
 
   z-index: 5200;
-}
-
-.dropdown-menu ul {
-  display: block;
-  list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
 .dropdown.open > .dropdown-menu {
@@ -222,11 +212,11 @@ body {
   display: block;
   width: 100%;
 
-  padding: 7px 14px;      /* MATCHED TIGHT PADDING */
-  font-size: 0.87rem;
-  font-weight: 400;       /* REMOVE BOLD FEEL */
-  color: var(--text-primary);
+  padding: 6px 14px; /* Exact spacing match */
+  font-size: 0.86rem;
+  font-weight: 400;
   line-height: 1.4;
+  color: var(--text-primary);
 
   white-space: normal;
   overflow-wrap: break-word;
@@ -246,11 +236,11 @@ body {
 .theme-control button {
   border: 1px solid var(--border-subtle);
   background: var(--surface-muted);
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 6px 10px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 180ms ease, border 180ms ease;
+  font-size: 0.85rem;
+  transition: background 160ms ease;
 }
 
 .theme-control button:hover {
@@ -367,9 +357,9 @@ a:hover { opacity: 0.7; }
 }
 
 
-/* =========================================
+/* =========================
    MOBILE NAVIGATION
-========================================= */
+========================= */
 
 @media (max-width: 768px) {
 
@@ -405,7 +395,6 @@ a:hover { opacity: 0.7; }
 
     margin: 4px 0 8px 0;
     padding: 6px 0;
-
     width: 100%;
   }
 
@@ -416,7 +405,7 @@ a:hover { opacity: 0.7; }
   }
 
   .dropdown-menu a {
-    padding: 10px 0 10px 16px;
+    padding: 8px 0 8px 16px;
     font-size: 0.95rem;
   }
 

@@ -1,12 +1,12 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v9.5
+   AgileAI Public Surface — Institutional CSS v9.6
    Unified Institutional Baseline
 
    Final Alignment State:
    - Dropdown right-anchored to nav item
    - Submenu text LEFT-aligned (desktop)
    - Mobile text left-aligned
-   - Clean link hierarchy
+   - Refined academic link hierarchy
    - No cascade duplication
 ========================================= */
 
@@ -195,11 +195,6 @@ body {
   transform: translateY(0);
 }
 
-
-/* =========================
-   SUBMENU ITEMS
-========================= */
-
 .dropdown-menu li {
   display: block;
   width: 100%;
@@ -216,10 +211,7 @@ body {
   text-align: left;
 
   color: var(--text-primary);
-
-  transition:
-    background 120ms ease,
-    opacity 120ms ease;
+  transition: background 120ms ease;
 }
 
 .dropdown-menu a:hover {
@@ -298,13 +290,13 @@ a:hover {
 
 
 /* =========================
-   MAIN CONTENT LINKS
+   MAIN CONTENT LINKS (Academic)
 ========================= */
 
 main a {
   text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
+  text-decoration-thickness: 0.8px;
+  text-underline-offset: 2px;
   font-weight: 500;
 }
 
@@ -331,7 +323,7 @@ main a:focus-visible {
 
 
 /* =========================
-   ARROW-STYLE LINK VARIANT
+   ARROW LINK VARIANT
 ========================= */
 
 .link-arrow::after {
@@ -351,10 +343,6 @@ main a:focus-visible {
 
 main ul li {
   margin-bottom: 8px;
-}
-
-main ul li a {
-  font-weight: 500;
 }
 
 

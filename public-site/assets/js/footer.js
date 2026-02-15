@@ -28,10 +28,8 @@ document.addEventListener("DOMContentLoaded", function () {
         </p>
 
         <p class="footer-disclaimer">
-          This website presents academic frameworks, capability assessments,
-          governance references, and professional standards. It does not
-          constitute a training advertisement, certification offer,
-          hiring endorsement, or promotional claim.
+          Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
+          It operates as an independent academic and professional body and is not positioned as a commercial training vendor.
         </p>
 
         <p class="footer-copy">

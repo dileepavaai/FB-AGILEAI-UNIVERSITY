@@ -34,6 +34,13 @@ document.addEventListener("DOMContentLoaded", function () {
           hiring endorsement, or promotional claim.
         </p>
 
+        <p class="footer-governance">
+          Agile AI University operates under the governance framework of
+          <a href="https://agileai.foundation" target="_blank" rel="noopener">
+            agileai.foundation
+          </a>.
+        </p>
+
         <p class="footer-copy">
           © ${currentYear} AgileAI Foundation & Agile AI University
         </p>

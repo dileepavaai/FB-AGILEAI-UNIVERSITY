@@ -1,12 +1,12 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v8.7
-   Unified Institutional Baseline
+   AgileAI Public Surface — Institutional CSS v9.0
+   Institutional Baseline Stabilized
 
    Updates:
-   - Dropdown grid-anchored
-   - Submenu text strictly left-aligned
-   - Floating perception removed
-   - Governance footer preserved
+   - True visual left alignment for submenu text
+   - Dropdown width refined
+   - Padding corrected
+   - Removed unnecessary !important usage
    - No mobile regressions
 ========================================= */
 
@@ -45,7 +45,6 @@
 ========================= */
 
 * { box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -64,10 +63,7 @@ body {
    HEADER
 ========================= */
 
-#header {
-  position: relative;
-  width: 100%;
-}
+#header { position: relative; width: 100%; }
 
 .site-header {
   width: 100%;
@@ -125,9 +121,7 @@ body {
    NAVIGATION
 ========================= */
 
-.main-nav {
-  position: relative;
-}
+.main-nav { position: relative; }
 
 .main-nav > ul {
   display: flex;
@@ -137,9 +131,7 @@ body {
   padding: 0;
 }
 
-.main-nav li {
-  position: relative;
-}
+.main-nav li { position: relative; }
 
 .main-nav li > a {
   text-decoration: none;
@@ -150,25 +142,20 @@ body {
   transition: opacity 140ms ease;
 }
 
-.main-nav li > a:hover {
-  opacity: 0.8;
-}
+.main-nav li > a:hover { opacity: 0.8; }
 
 
 /* =========================
-   DROPDOWN SYSTEM (GRID-ALIGNED)
+   DROPDOWN SYSTEM
 ========================= */
 
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 1px);
-
-  /* Grid anchor */
   left: -14px;
 
-  min-width: 240px;
-
-  padding: 8px 0;
+  min-width: 210px; /* tightened */
+  padding: 6px 0;
 
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
@@ -203,7 +190,7 @@ body {
 
 
 /* =========================
-   SUBMENU ITEMS (STRICT LEFT ALIGNMENT)
+   SUBMENU ITEMS
 ========================= */
 
 .dropdown-menu li {
@@ -211,14 +198,19 @@ body {
   width: 100%;
 }
 
-.dropdown-menu a {
+.dropdown-menu li a {
   display: block;
   width: 100%;
-  padding: 6px 12px 6px 14px; /* stronger left anchor */
+
+  padding: 8px 8px 8px 14px; /* asymmetric padding */
+
   font-size: 0.86rem;
   font-weight: 400;
   line-height: 1.4;
+
   text-align: left;
+  margin: 0;
+
   color: var(--text-primary);
 
   transition:
@@ -226,7 +218,7 @@ body {
     opacity 120ms ease;
 }
 
-.dropdown-menu a:hover {
+.dropdown-menu li a:hover {
   background-color: var(--surface-muted);
   opacity: 1;
 }
@@ -297,18 +289,14 @@ a {
   transition: opacity 160ms ease;
 }
 
-a:hover {
-  opacity: 0.75;
-}
+a:hover { opacity: 0.75; }
 
 
 /* =========================
    FOOTER
 ========================= */
 
-#footer {
-  margin-top: 120px;
-}
+#footer { margin-top: 120px; }
 
 .site-footer {
   border-top: 1px solid var(--border-subtle);
@@ -330,9 +318,7 @@ a:hover {
   margin-bottom: 10px;
 }
 
-.footer-links {
-  margin: 8px 0;
-}
+.footer-links { margin: 8px 0; }
 
 .footer-links a {
   color: var(--text-secondary);
@@ -340,34 +326,12 @@ a:hover {
   transition: opacity 140ms ease;
 }
 
-.footer-links a:hover {
-  opacity: 0.75;
-}
+.footer-links a:hover { opacity: 0.75; }
 
-.footer-disclaimer {
-  margin-top: 18px;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
-.footer-governance {
-  margin-top: 12px;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.footer-governance a {
-  color: var(--text-secondary);
-  text-decoration: none;
-}
-
-.footer-governance a:hover {
-  opacity: 0.75;
-}
-
+.footer-disclaimer,
+.footer-governance,
 .footer-copy {
-  margin-top: 18px;
+  margin-top: 12px;
   font-size: 0.85rem;
 }
 
@@ -394,18 +358,14 @@ a:hover {
 
 @media (max-width: 768px) {
 
-  .header-inner {
-    padding: 0 20px;
-  }
+  .header-inner { padding: 0 20px; }
 
   .main-nav > ul {
     flex-direction: column;
     gap: 0;
   }
 
-  .main-nav li {
-    width: 100%;
-  }
+  .main-nav li { width: 100%; }
 
   .main-nav li > a {
     display: block;
@@ -429,7 +389,7 @@ a:hover {
     width: 100%;
   }
 
-  .dropdown-menu a {
+  .dropdown-menu li a {
     padding: 8px 0 8px 16px;
     font-size: 0.95rem;
   }

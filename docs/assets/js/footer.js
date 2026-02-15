@@ -1,46 +1,28 @@
-/* =========================================================
-   Global Footer Injection
-   Institutional Footer v2.0 (Header v5.2 Compatible)
-   - Idempotent
-   - Layout Aligned (720px max-width)
-   - Theme Compatible
-   - Production Safe
-========================================================= */
+document.addEventListener("DOMContentLoaded", function () {
 
-(function () {
+  const footerHTML = `
+    <footer class="site-footer">
+      <div class="footer-inner">
 
-  function injectFooter() {
+        <p><strong>AgileAI Foundation & Agile AI University</strong></p>
 
-    const footerContainer = document.getElementById("footer");
-    if (!footerContainer) return;
-    if (footerContainer.dataset.injected === "true") return;
+        <p>
+          An independent academic and professional body advancing 
+          structured capability in Agile AI and Agentic AI.
+        </p>
 
-    const year = new Date().getFullYear();
+        <p>
+          Public learning, governance frameworks, and credential verification.
+        </p>
 
-    footerContainer.innerHTML = `
-      <footer class="site-footer">
-        <div class="footer-inner">
+        <p style="margin-top:20px;">
+          © ${new Date().getFullYear()} AgileAI Foundation & Agile AI University
+        </p>
 
-          <div class="footer-brand">
-            © ${year} AgileAI Foundation & Agile AI University
-          </div>
+      </div>
+    </footer>
+  `;
 
-          <div class="footer-meta">
-            Public learning and research infrastructure.
-          </div>
+  document.getElementById("footer").innerHTML = footerHTML;
 
-        </div>
-      </footer>
-    `;
-
-    footerContainer.dataset.injected = "true";
-
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", injectFooter);
-  } else {
-    injectFooter();
-  }
-
-})();
+});

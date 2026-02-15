@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
                   </a>
                 </li>
 
-                <!-- Future-ready nested level -->
                 <li class="nav-item has-children">
                   <button class="nav-toggle">Professional Pathways ▾</button>
                   <ul class="sub-menu">
@@ -97,9 +96,12 @@ document.addEventListener("DOMContentLoaded", function () {
     </header>
   `;
 
-  document.getElementById("header").innerHTML = headerHTML;
+  const headerContainer = document.getElementById("header");
+  if (headerContainer) {
+    headerContainer.innerHTML = headerHTML;
+  }
 
-  // Expand / Collapse Logic (works for infinite nesting)
+  // Expand / Collapse Logic
   const toggles = document.querySelectorAll(".nav-toggle");
 
   toggles.forEach(toggle => {
@@ -108,5 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
       parent.classList.toggle("is-open");
     });
   });
+
+  // 🔔 Notify theme.js that header is ready
+  document.dispatchEvent(new Event("headerInjected"));
 
 });

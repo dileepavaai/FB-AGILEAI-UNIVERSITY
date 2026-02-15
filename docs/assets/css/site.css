@@ -1,10 +1,11 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v10.4
+   AgileAI Public Surface — Institutional CSS v10.5
    Unified Institutional Baseline
 
    Refinements:
-   - Subtle arrow rotation on open
-   - Soft backdrop blur on dropdown
+   - Removed desktop dropdown gap
+   - Subtle arrow rotation
+   - Soft backdrop blur
    - Micro fade + lift animation
    - Stable hover continuity
    - Pure CSS controlled system
@@ -114,12 +115,10 @@ body {
 
 
 /* =========================================================
-   NAVIGATION — TREE ARCHITECTURE
+   NAVIGATION
 ========================================================= */
 
-.main-nav {
-  position: relative;
-}
+.main-nav { position: relative; }
 
 .nav-tree {
   list-style: none;
@@ -130,11 +129,10 @@ body {
   align-items: center;
 }
 
-.nav-item {
-  position: relative;
-}
+.nav-item { position: relative; }
 
-/* Top-level links and toggles */
+
+/* Top-level links */
 
 .nav-item > a,
 .nav-toggle {
@@ -160,7 +158,8 @@ body {
   opacity: 0.8;
 }
 
-/* Arrow styling */
+
+/* Arrow */
 
 .nav-toggle::after,
 .nav-item > a.has-submenu::after {
@@ -169,8 +168,6 @@ body {
   transition: transform 180ms var(--motion-standard);
   transform-origin: center;
 }
-
-/* Rotate arrow on open */
 
 @media (min-width: 769px) {
   .nav-item:hover > .nav-toggle::after,
@@ -186,7 +183,6 @@ body {
 
 .sub-menu {
   list-style: none;
-  margin: 6px 0 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -195,7 +191,7 @@ body {
 
 
 /* =========================
-   DESKTOP DROPDOWN SYSTEM
+   DESKTOP DROPDOWN
 ========================= */
 
 @media (min-width: 769px) {
@@ -204,6 +200,7 @@ body {
     position: absolute;
     right: 0;
     top: 100%;
+    margin-top: 0; /* removes visual gap */
 
     background: var(--surface-elevated);
     border: 1px solid var(--border-subtle);
@@ -220,12 +217,12 @@ body {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(4px);
+    transform: translateY(2px);
 
     transition:
-      opacity 160ms ease,
-      transform 200ms var(--motion-standard),
-      visibility 0s linear 160ms;
+      opacity 150ms ease,
+      transform 180ms var(--motion-standard),
+      visibility 0s linear 150ms;
   }
 
   .nav-item:hover > .sub-menu {
@@ -235,12 +232,12 @@ body {
     transform: translateY(0);
 
     transition:
-      opacity 160ms ease,
-      transform 200ms var(--motion-standard),
+      opacity 150ms ease,
+      transform 180ms var(--motion-standard),
       visibility 0s;
   }
 
-  /* Nested submenu (Level 2+) */
+  /* Nested levels */
 
   .sub-menu .sub-menu {
     position: static;
@@ -338,7 +335,7 @@ p { margin-bottom: 20px; }
 
 
 /* =========================
-   GLOBAL LINKS
+   LINKS
 ========================= */
 
 a {
@@ -347,14 +344,7 @@ a {
   transition: opacity 160ms ease;
 }
 
-a:hover {
-  opacity: 0.75;
-}
-
-
-/* =========================
-   MAIN CONTENT LINKS
-========================= */
+a:hover { opacity: 0.75; }
 
 main a {
   text-decoration: underline;
@@ -370,53 +360,10 @@ main a:focus-visible {
 
 
 /* =========================
-   HERO CTA LINK
-========================= */
-
-.hero a {
-  font-weight: 600;
-  text-decoration: none;
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 2px;
-}
-
-.hero a:hover {
-  border-bottom-color: var(--text-secondary);
-}
-
-
-/* =========================
-   ARROW LINK VARIANT
-========================= */
-
-.link-arrow::after {
-  content: "→";
-  display: inline-block;
-  margin-left: 4px;
-  transition: transform 160ms ease;
-}
-
-.link-arrow:hover::after {
-  transform: translateX(3px);
-}
-
-
-/* =========================
-   LIST SPACING
-========================= */
-
-main ul li {
-  margin-bottom: 8px;
-}
-
-
-/* =========================
    FOOTER
 ========================= */
 
-#footer {
-  margin-top: 120px;
-}
+#footer { margin-top: 120px; }
 
 .site-footer {
   border-top: 1px solid var(--border-subtle);
@@ -430,56 +377,4 @@ main ul li {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.6;
-}
-
-.footer-title {
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 10px;
-}
-
-.footer-links {
-  margin: 8px 0;
-}
-
-.footer-links a {
-  color: var(--text-secondary);
-}
-
-.footer-disclaimer,
-.footer-copy {
-  margin-top: 18px;
-  font-size: 0.85rem;
-}
-
-
-/* =========================
-   MOBILE NAVIGATION
-========================= */
-
-@media (max-width: 768px) {
-
-  .header-inner {
-    padding: 0 20px;
-  }
-
-  .nav-tree {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .sub-menu {
-    position: static;
-    box-shadow: none;
-    border: none;
-    padding-left: 14px;
-    margin-top: 6px;
-  }
-
-  .sub-menu .sub-menu {
-    border-left: 1px solid var(--border-subtle);
-    margin-left: 6px;
-    padding-left: 12px;
-  }
 }

@@ -1,13 +1,11 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v8.4
+   AgileAI Public Surface — Institutional CSS v8.5
    Unified Institutional Baseline (Header + Footer Harmonized)
 
    Updates:
-   - Dropdown strictly left-aligned
-   - Hover behavior tightened
-   - Subtle restrained fade-in
-   - Motion normalized
-   - No mobile regressions
+   - Governance footer line integrated
+   - No layout regressions
+   - Dropdown + motion preserved
 ========================================= */
 
 
@@ -156,13 +154,13 @@ body {
 
 
 /* =========================
-   DROPDOWN SYSTEM (Refined)
+   DROPDOWN SYSTEM
 ========================= */
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 1px); /* tighter vertical gap */
-  left: 0; /* strict left alignment */
+  top: calc(100% + 1px);
+  left: 0;
 
   min-width: 190px;
   max-width: 230px;
@@ -189,8 +187,6 @@ body {
   z-index: 5200;
 }
 
-/* OPEN STATE */
-
 .dropdown.open > .dropdown-menu {
   opacity: 1;
   visibility: visible;
@@ -198,7 +194,6 @@ body {
   transform: translateY(0);
 }
 
-/* Optional right-aligned variant (if used anywhere) */
 .dropdown.align-right > .dropdown-menu {
   left: auto;
   right: 0;
@@ -206,7 +201,7 @@ body {
 
 
 /* =========================
-   SUBMENU ITEMS (Tightened Hover)
+   SUBMENU ITEMS
 ========================= */
 
 .dropdown-menu li {
@@ -222,7 +217,6 @@ body {
   font-weight: 400;
   line-height: 1.4;
   color: var(--text-primary);
-
   transition:
     background 120ms ease,
     opacity 120ms ease;
@@ -350,6 +344,22 @@ a:hover {
   margin-top: 18px;
   font-size: 0.85rem;
   color: var(--text-secondary);
+}
+
+.footer-governance {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.footer-governance a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.footer-governance a:hover {
+  opacity: 0.75;
 }
 
 .footer-copy {

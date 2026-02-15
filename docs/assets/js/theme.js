@@ -1,5 +1,5 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v7.4
+   AgileAI Public Surface — Theme Controller v7.5
    Institutional Production Baseline (Light / Dark Only)
 
    DESIGN GUARANTEES
@@ -12,6 +12,7 @@
    - Header-injection safe
    - Reading progress included
    - Production safe for GitHub Pages
+   - Attribute-minimal dark mode (no light attribute)
 ========================================================= */
 
 (function () {
@@ -35,7 +36,13 @@
   }
 
   function applyTheme(mode) {
-    root.setAttribute("data-theme", mode);
+    // Only apply attribute for dark mode.
+    // Light mode is the default (no attribute).
+    if (mode === "dark") {
+      root.setAttribute("data-theme", "dark");
+    } else {
+      root.removeAttribute("data-theme");
+    }
   }
 
   function updateButton(mode) {
@@ -107,7 +114,7 @@
 
   function init() {
 
-    // 1. Apply theme immediately (prevents flicker)
+    // 1. Apply saved theme immediately (prevents flicker)
     const saved = getSavedTheme();
     applyTheme(saved);
 

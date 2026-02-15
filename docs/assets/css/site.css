@@ -1,14 +1,14 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v10.5
-   Unified Institutional Baseline
+   AgileAI Public Surface — Institutional CSS v11.1
 
-   Refinements:
-   - Removed desktop dropdown gap
-   - Subtle arrow rotation
-   - Soft backdrop blur
-   - Micro fade + lift animation
-   - Stable hover continuity
-   - Pure CSS controlled system
+   Architecture:
+   - Stable desktop hover dropdown
+   - Dedicated mobile hamburger system
+   - Slide accordion animation (mobile)
+   - Scroll lock on open
+   - Infinite nesting support
+   - Backdrop blur + micro animation
+   - Theme-safe (attribute-minimal dark mode)
 ========================================= */
 
 
@@ -22,13 +22,13 @@
   --border-subtle: #e6e6e6;
   --background: #ffffff;
   --surface-muted: #f6f6f6;
-  --surface-elevated: rgba(255,255,255,0.92);
+  --surface-elevated: rgba(255,255,255,0.94);
 
   --max-width: 720px;
   --header-height: 80px;
 
   --transition-speed: 180ms;
-  --motion-standard: cubic-bezier(.4, 0, .2, 1);
+  --motion-standard: cubic-bezier(.4,0,.2,1);
 }
 
 :root[data-theme="dark"] {
@@ -37,7 +37,7 @@
   --border-subtle: #2a2a2a;
   --background: #0f1115;
   --surface-muted: #151821;
-  --surface-elevated: rgba(27,31,38,0.92);
+  --surface-elevated: rgba(27,31,38,0.94);
 }
 
 
@@ -61,15 +61,17 @@ body {
     color var(--transition-speed);
 }
 
+/* Scroll lock when mobile nav open */
+body.nav-open {
+  overflow: hidden;
+}
+
 
 /* =========================
    HEADER
 ========================= */
 
-#header {
-  position: relative;
-  width: 100%;
-}
+#header { width: 100%; }
 
 .site-header {
   width: 100%;
@@ -83,16 +85,10 @@ body {
   right: 0;
 
   z-index: 5000;
-  isolation: isolate;
-
   display: flex;
   align-items: center;
 
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-
-  transition:
-    transform 240ms var(--motion-standard),
-    box-shadow 180ms var(--motion-standard);
 }
 
 .header-inner {
@@ -114,9 +110,43 @@ body {
 }
 
 
-/* =========================================================
-   NAVIGATION
-========================================================= */
+/* =========================
+   HAMBURGER
+========================= */
+
+.nav-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.nav-hamburger span {
+  width: 22px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: all 200ms ease;
+}
+
+/* Animate to X */
+body.nav-open .nav-hamburger span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+body.nav-open .nav-hamburger span:nth-child(2) {
+  opacity: 0;
+}
+body.nav-open .nav-hamburger span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+
+/* =========================
+   NAVIGATION BASE
+========================= */
 
 .main-nav { position: relative; }
 
@@ -130,9 +160,6 @@ body {
 }
 
 .nav-item { position: relative; }
-
-
-/* Top-level links */
 
 .nav-item > a,
 .nav-toggle {
@@ -159,21 +186,18 @@ body {
 }
 
 
-/* Arrow */
+/* =========================
+   ARROW
+========================= */
 
-.nav-toggle::after,
-.nav-item > a.has-submenu::after {
+.nav-toggle::after {
   content: "▾";
   font-size: 0.7rem;
   transition: transform 180ms var(--motion-standard);
-  transform-origin: center;
 }
 
-@media (min-width: 769px) {
-  .nav-item:hover > .nav-toggle::after,
-  .nav-item:hover > a.has-submenu::after {
-    transform: rotate(180deg);
-  }
+.nav-item.is-open > .nav-toggle::after {
+  transform: rotate(180deg);
 }
 
 
@@ -184,15 +208,16 @@ body {
 .sub-menu {
   list-style: none;
   padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 
-/* =========================
-   DESKTOP DROPDOWN
-========================= */
+/* =========================================================
+   DESKTOP (>=769px)
+========================================================= */
 
 @media (min-width: 769px) {
 
@@ -200,7 +225,6 @@ body {
     position: absolute;
     right: 0;
     top: 100%;
-    margin-top: 0; /* removes visual gap */
 
     background: var(--surface-elevated);
     border: 1px solid var(--border-subtle);
@@ -209,7 +233,7 @@ body {
     padding: 10px 14px;
     min-width: 240px;
 
-    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.06);
 
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -217,12 +241,12 @@ body {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(2px);
+    transform: translateY(4px);
 
     transition:
-      opacity 150ms ease,
-      transform 180ms var(--motion-standard),
-      visibility 0s linear 150ms;
+      opacity 160ms ease,
+      transform 200ms var(--motion-standard),
+      visibility 0s linear 160ms;
   }
 
   .nav-item:hover > .sub-menu {
@@ -230,11 +254,14 @@ body {
     visibility: visible;
     pointer-events: auto;
     transform: translateY(0);
-
     transition:
-      opacity 150ms ease,
-      transform 180ms var(--motion-standard),
+      opacity 160ms ease,
+      transform 200ms var(--motion-standard),
       visibility 0s;
+  }
+
+  .nav-item:hover > .nav-toggle::after {
+    transform: rotate(180deg);
   }
 
   /* Nested levels */
@@ -244,38 +271,78 @@ body {
     background: transparent;
     border: none;
     box-shadow: none;
-
-    margin-top: 6px;
-    margin-bottom: 4px;
     padding-left: 14px;
-
+    margin-top: 6px;
     border-left: 1px solid var(--border-subtle);
   }
 }
 
 
-/* =========================
-   SUBMENU LINKS
-========================= */
+/* =========================================================
+   MOBILE (<=768px)
+========================================================= */
 
-.sub-menu a,
-.sub-menu .nav-toggle {
-  font-size: 0.86rem;
-  font-weight: 400;
-  text-align: left;
-  color: var(--text-primary);
-  padding: 4px 6px;
-  border-radius: 2px;
+@media (max-width: 768px) {
 
-  transition:
-    background 140ms ease,
-    opacity 140ms ease;
-}
+  .header-inner {
+    padding: 0 20px;
+  }
 
-.sub-menu a:hover,
-.sub-menu .nav-toggle:hover {
-  background-color: var(--surface-muted);
-  opacity: 1;
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .main-nav {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+
+    background: var(--background);
+    border-bottom: 1px solid var(--border-subtle);
+
+    max-height: 0;
+    overflow: hidden;
+
+    transition: max-height 260ms var(--motion-standard);
+  }
+
+  body.nav-open .main-nav {
+    max-height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+  }
+
+  .nav-tree {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 24px 20px;
+  }
+
+  /* Accordion */
+
+  .nav-item > .sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    padding-left: 14px;
+    margin-top: 6px;
+    opacity: 0;
+
+    transition:
+      max-height 260ms var(--motion-standard),
+      opacity 180ms ease;
+  }
+
+  .nav-item.is-open > .sub-menu {
+    max-height: 600px;
+    opacity: 1;
+  }
+
+  .sub-menu .sub-menu {
+    border-left: 1px solid var(--border-subtle);
+    padding-left: 12px;
+    margin-left: 6px;
+  }
 }
 
 
@@ -351,11 +418,6 @@ main a {
   text-decoration-thickness: 0.8px;
   text-underline-offset: 2px;
   font-weight: 500;
-}
-
-main a:focus-visible {
-  outline: 2px solid var(--text-secondary);
-  outline-offset: 2px;
 }
 
 

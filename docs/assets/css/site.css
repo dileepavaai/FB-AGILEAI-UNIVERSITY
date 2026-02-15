@@ -1,9 +1,10 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v8.6
+   AgileAI Public Surface — Institutional CSS v8.7
    Unified Institutional Baseline
 
    Updates:
-   - Dropdown structurally left-aligned to nav grid
+   - Dropdown grid-anchored
+   - Submenu text strictly left-aligned
    - Floating perception removed
    - Governance footer preserved
    - No mobile regressions
@@ -162,8 +163,8 @@ body {
   position: absolute;
   top: calc(100% + 1px);
 
-  /* Structural left alignment */
-  left: -14px;   /* Anchors to nav grid instead of text */
+  /* Grid anchor */
+  left: -14px;
 
   min-width: 240px;
 
@@ -202,7 +203,7 @@ body {
 
 
 /* =========================
-   SUBMENU ITEMS
+   SUBMENU ITEMS (STRICT LEFT ALIGNMENT)
 ========================= */
 
 .dropdown-menu li {
@@ -213,11 +214,13 @@ body {
 .dropdown-menu a {
   display: block;
   width: 100%;
-  padding: 6px 16px;
+  padding: 6px 12px 6px 14px; /* stronger left anchor */
   font-size: 0.86rem;
   font-weight: 400;
   line-height: 1.4;
+  text-align: left;
   color: var(--text-primary);
+
   transition:
     background 120ms ease,
     opacity 120ms ease;

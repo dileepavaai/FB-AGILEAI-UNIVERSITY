@@ -7,16 +7,24 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="footer-inner">
 
         <p class="footer-title">
-          AgileAI Foundation & Agile AI University
+          Agile AI University
         </p>
 
-        <p>
-          An independent academic and professional body advancing structured
-          capability in Agile AI and Agentic AI.
+        <p class="footer-disclaimer">
+          Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
+          It operates as an independent academic and professional body and is not positioned as a commercial training provider.
+        </p>
+
+        <p class="footer-governance">
+          The institution operates under the broader governance framework of 
+          <a href="https://agileai.foundation" target="_blank" rel="noopener">
+            AgileAI Foundation
+          </a>.
         </p>
 
         <p class="footer-links">
           <a href="https://agileai.university">agileai.university</a> ·
+          <a href="https://learn.agileai.university">learn.agileai.university</a> ·
           <a href="https://portal.agileai.university">portal.agileai.university</a> ·
           <a href="https://verify.agileai.university">verify.agileai.university</a>
         </p>
@@ -27,13 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
           <a href="/refund.html">Refund Policy</a>
         </p>
 
-        <p class="footer-disclaimer">
-          Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
-          It operates as an independent academic and professional body and is not positioned as a commercial training vendor.
-        </p>
-
         <p class="footer-copy">
-          © ${currentYear} AgileAI Foundation & Agile AI University
+          © ${currentYear} Agile AI University
         </p>
 
       </div>

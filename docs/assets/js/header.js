@@ -9,42 +9,88 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
         <nav class="main-nav">
-          <ul>
+          <ul class="nav-tree">
 
-            <li><a href="/">Home</a></li>
-
-            <li class="dropdown">
-              <a href="#">Intellectual Foundation ▾</a>
-              <div class="dropdown-menu">
-                <ul>
-                  <li><a href="/intellectual-foundation/capability-architecture.html">Capability Architecture</a></li>
-                  <li><a href="/intellectual-foundation/agile-ai-ecosystem.html">Agile AI Ecosystem</a></li>
-                  <li><a href="/intellectual-foundation/myth-framework.html">Myth Framework</a></li>
-                  <li><a href="/intellectual-foundation/mindset-transition.html">Mindset Transition</a></li>
-                </ul>
-              </div>
+            <li class="nav-item">
+              <a href="/">Home</a>
             </li>
 
-            <li class="dropdown">
-              <a href="#">Programs ▾</a>
-              <div class="dropdown-menu">
-                <ul>
-                  <li><a href="/public-assessment/">Agile + AI Capability Assessment</a></li>
-                  <li><a href="/academics/">Academic Frameworks</a></li>
-                  <li><a href="/credentials/">Professional Pathways (P · M · L)</a></li>
-                </ul>
-              </div>
+            <li class="nav-item has-children">
+              <button class="nav-toggle">Intellectual Foundation ▾</button>
+              <ul class="sub-menu">
+                <li class="nav-item">
+                  <a href="/intellectual-foundation/capability-architecture.html">
+                    Capability Architecture
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/intellectual-foundation/agile-ai-ecosystem.html">
+                    Agile AI Ecosystem
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/intellectual-foundation/myth-framework.html">
+                    Myth Framework
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/intellectual-foundation/mindset-transition.html">
+                    Mindset Transition
+                  </a>
+                </li>
+              </ul>
             </li>
 
-            <li><a href="/verification/">Verification</a></li>
-            <li><a href="/governance/">Governance</a></li>
-            <li><a href="/contact/">Contact</a></li>
+            <li class="nav-item has-children">
+              <button class="nav-toggle">Programs ▾</button>
+              <ul class="sub-menu">
+                <li class="nav-item">
+                  <a href="/public-assessment/">
+                    Agile + AI Capability Assessment
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/academics/">
+                    Academic Frameworks
+                  </a>
+                </li>
+
+                <!-- Future-ready nested level -->
+                <li class="nav-item has-children">
+                  <button class="nav-toggle">Professional Pathways ▾</button>
+                  <ul class="sub-menu">
+                    <li class="nav-item">
+                      <a href="/credentials/practitioner.html">Practitioner</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="/credentials/manager.html">Manager</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="/credentials/leader.html">Leader</a>
+                    </li>
+                  </ul>
+                </li>
+
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="/verification/">Verification</a>
+            </li>
+
+            <li class="nav-item">
+              <a href="/governance/">Governance</a>
+            </li>
+
+            <li class="nav-item">
+              <a href="/contact/">Contact</a>
+            </li>
 
           </ul>
         </nav>
 
         <div class="theme-control">
-          <button id="theme-toggle">☀️</button>
+          <button id="theme-toggle">☀</button>
         </div>
 
       </div>
@@ -53,21 +99,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById("header").innerHTML = headerHTML;
 
-  /* ---------------------------------------------------------
-     DISPATCH HEADER READY EVENT (CRITICAL FIX)
-  --------------------------------------------------------- */
+  // Expand / Collapse Logic (works for infinite nesting)
+  const toggles = document.querySelectorAll(".nav-toggle");
 
-  document.dispatchEvent(new Event("headerInjected"));
-
-  /* ---------------------------------------------------------
-     Dropdown Logic
-  --------------------------------------------------------- */
-
-  const dropdowns = document.querySelectorAll(".dropdown");
-
-  dropdowns.forEach(drop => {
-    drop.addEventListener("mouseenter", () => drop.classList.add("open"));
-    drop.addEventListener("mouseleave", () => drop.classList.remove("open"));
+  toggles.forEach(toggle => {
+    toggle.addEventListener("click", function () {
+      const parent = this.parentElement;
+      parent.classList.toggle("is-open");
+    });
   });
 
 });

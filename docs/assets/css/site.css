@@ -1,11 +1,11 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v7.7
-   Unified With Main Site Surface
+   AgileAI Public Surface — Institutional CSS v8.0
+   Unified + Stabilized Version
    - Sharp dropdown corners
    - Reduced dropdown width
-   - Tighter vertical offset
    - Standardized nav spacing
    - Institutional shadow tone
+   - Single breakpoint mobile system
 ========================================= */
 
 
@@ -128,10 +128,10 @@ body {
   position: relative;
 }
 
-/* Standardized spacing to match main site */
+/* Top-level navigation */
 .main-nav > ul {
   display: flex;
-  gap: 24px;
+  gap: 22px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -143,37 +143,39 @@ body {
 
 .main-nav li > a {
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 500;
   color: var(--text-primary);
-  transition: opacity 180ms ease;
+  letter-spacing: 0.2px;
+  transition: opacity 160ms ease;
 }
 
 .main-nav li > a:hover {
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 
 /* =========================
-   DROPDOWN SYSTEM (Main Site Matched)
+   DROPDOWN SYSTEM
 ========================= */
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 4px); /* tighter gap like main */
+  top: calc(100% + 5px);
   left: 0;
 
   display: block;
 
-  min-width: 220px;
+  min-width: 210px;
   max-width: 260px;
 
   padding: 8px 0;
 
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 0; /* SHARP — match main */
+  border-radius: 4px;
 
-  box-shadow: 0 8px 18px rgba(0,0,0,0.06); /* lighter institutional shadow */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
 
   opacity: 0;
   visibility: hidden;
@@ -182,13 +184,12 @@ body {
   transform: translateY(4px);
 
   transition:
-    opacity 150ms ease,
-    transform 150ms ease;
+    opacity 160ms ease,
+    transform 160ms ease;
 
   z-index: 5200;
 }
 
-/* Force vertical layout */
 .dropdown-menu ul {
   display: block;
   list-style: none;
@@ -216,32 +217,19 @@ body {
 .dropdown-menu li {
   display: block;
   width: 100%;
-
-  opacity: 0;
-  transform: translateY(3px);
-
-  transition:
-    opacity 140ms ease,
-    transform 150ms ease;
-}
-
-.dropdown.open > .dropdown-menu li {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .dropdown-menu a {
   display: block;
   width: 100%;
-
   padding: 8px 16px;
-
-  font-size: 0.88rem;
+  font-size: 0.87rem;
+  font-weight: 500;
   color: var(--text-primary);
   line-height: 1.4;
-
   white-space: normal;
   overflow-wrap: break-word;
+  transition: background 120ms ease;
 }
 
 .dropdown-menu a:hover {
@@ -294,7 +282,7 @@ body {
 
 main {
   max-width: var(--max-width);
-  margin: 100px auto 100px auto;
+  margin: 100px auto;
   padding: 0 32px;
   min-height: calc(100vh - 200px);
 }
@@ -376,19 +364,17 @@ a:hover { opacity: 0.7; }
   transition: width 120ms linear;
 }
 
+
 /* =========================================
-   MOBILE NAVIGATION OVERRIDE
-   Institutional Mobile Stabilization
+   MOBILE NAVIGATION (Single Unified Breakpoint)
 ========================================= */
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
 
-  /* Stack header vertically if needed */
   .header-inner {
     padding: 0 20px;
   }
 
-  /* Top-level nav becomes vertical */
   .main-nav > ul {
     flex-direction: column;
     gap: 0;
@@ -404,7 +390,6 @@ a:hover { opacity: 0.7; }
     font-size: 1rem;
   }
 
-  /* Dropdown becomes inline block (no floating) */
   .dropdown-menu {
     position: static;
     transform: none;
@@ -419,13 +404,10 @@ a:hover { opacity: 0.7; }
     margin: 4px 0 8px 0;
     padding: 6px 0;
 
-    min-width: 100%;
-    max-width: 100%;
+    width: 100%;
   }
 
-  /* Remove animation */
-  .dropdown-menu li,
-  .dropdown.open > .dropdown-menu li {
+  .dropdown-menu li {
     opacity: 1;
     transform: none;
     transition: none;

@@ -1,14 +1,13 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v10.1
+   AgileAI Public Surface — Institutional CSS v10.2
    Unified Institutional Baseline
 
-   Architecture Upgrade:
-   - Expandable vertical tree navigation
+   Stable Desktop Dropdown Architecture
+   - Pure CSS controlled visibility
+   - No double-open root menus
    - Infinite nesting support
    - Subtle structural hierarchy indicators
    - Desktop + Mobile parity
-   - Refined academic link hierarchy
-   - No cascade duplication
 ========================================= */
 
 
@@ -115,7 +114,7 @@ body {
 
 
 /* =========================================================
-   TREE NAVIGATION ARCHITECTURE
+   NAVIGATION — TREE ARCHITECTURE
 ========================================================= */
 
 .main-nav {
@@ -160,30 +159,26 @@ body {
 
 
 /* =========================
-   SUBMENU SYSTEM
+   SUBMENU BASE
 ========================= */
 
 .sub-menu {
   list-style: none;
   margin: 8px 0 0 0;
   padding: 0;
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.nav-item.is-open > .sub-menu {
-  display: flex;
-}
-
 
 /* =========================
-   DESKTOP DROPDOWN
+   DESKTOP DROPDOWN SYSTEM
 ========================= */
 
 @media (min-width: 769px) {
 
-  .sub-menu {
+  .nav-item > .sub-menu {
     position: absolute;
     right: 0;
     top: calc(100% + 6px);
@@ -196,6 +191,24 @@ body {
     min-width: 240px;
 
     box-shadow: 0 5px 12px rgba(0,0,0,0.05);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(6px);
+
+    transition:
+      opacity 120ms ease,
+      transform 140ms var(--motion-standard);
+  }
+
+  /* Only hovered root becomes visible */
+
+  .nav-item:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 
   /* Nested submenu (Level 2+) */
@@ -210,7 +223,7 @@ body {
     margin-bottom: 4px;
     padding-left: 14px;
 
-    border-left: 1px solid var(--border-subtle); /* subtle hierarchy indicator */
+    border-left: 1px solid var(--border-subtle);
   }
 }
 
@@ -225,7 +238,12 @@ body {
   font-weight: 400;
   text-align: left;
   color: var(--text-primary);
-  transition: background 140ms ease, opacity 140ms ease;
+  padding: 4px 6px;
+  border-radius: 2px;
+
+  transition:
+    background 140ms ease,
+    opacity 140ms ease;
 }
 
 .sub-menu a:hover,
@@ -306,7 +324,7 @@ a:hover {
 
 
 /* =========================
-   MAIN CONTENT LINKS (Academic)
+   MAIN CONTENT LINKS
 ========================= */
 
 main a {
@@ -354,7 +372,7 @@ main a:focus-visible {
 
 
 /* =========================
-   REFINED LIST LINKS
+   LIST SPACING
 ========================= */
 
 main ul li {
@@ -428,8 +446,6 @@ main ul li {
     padding-left: 14px;
     margin-top: 6px;
   }
-
-  /* Maintain hierarchy indicator on mobile */
 
   .sub-menu .sub-menu {
     border-left: 1px solid var(--border-subtle);

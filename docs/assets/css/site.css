@@ -1,11 +1,11 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v9.6
+   AgileAI Public Surface — Institutional CSS v10.0
    Unified Institutional Baseline
 
-   Final Alignment State:
-   - Dropdown right-anchored to nav item
-   - Submenu text LEFT-aligned (desktop)
-   - Mobile text left-aligned
+   Architecture Upgrade:
+   - Expandable vertical tree navigation
+   - Infinite nesting support
+   - Desktop + Mobile parity
    - Refined academic link hierarchy
    - No cascade duplication
 ========================================= */
@@ -91,16 +91,7 @@ body {
 
   transition:
     transform 240ms var(--motion-standard),
-    box-shadow 180ms var(--motion-standard),
-    background 180ms var(--motion-standard);
-}
-
-.site-header.scrolled {
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-.site-header.nav-hidden {
-  transform: translateY(-100%);
+    box-shadow 180ms var(--motion-standard);
 }
 
 .header-inner {
@@ -122,100 +113,101 @@ body {
 }
 
 
-/* =========================
-   NAVIGATION
-========================= */
+/* =========================================================
+   TREE NAVIGATION ARCHITECTURE
+========================================================= */
 
 .main-nav {
   position: relative;
 }
 
-.main-nav > ul {
-  display: flex;
-  gap: 20px;
+.nav-tree {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
-.main-nav li {
+.nav-item {
   position: relative;
 }
 
-.main-nav li > a {
-  text-decoration: none;
+/* Top level links + toggles */
+
+.nav-item > a,
+.nav-toggle {
+  background: none;
+  border: none;
+  font-family: inherit;
   font-size: 0.87rem;
   font-weight: 400;
   letter-spacing: 0.15px;
   color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
   transition: opacity 140ms ease;
 }
 
-.main-nav li > a:hover {
+.nav-item > a:hover,
+.nav-toggle:hover {
   opacity: 0.8;
 }
 
 
-/* =========================
-   DROPDOWN SYSTEM
-========================= */
+/* Submenu */
 
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 1px);
-  right: 0;
-  left: auto;
-
-  min-width: 240px;
-  padding: 6px 0;
-
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: 3px;
-
-  box-shadow: 0 5px 12px rgba(0,0,0,0.045);
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transform: translateY(3px);
-
-  transition:
-    opacity 110ms ease-out,
-    transform 130ms var(--motion-standard);
-
-  z-index: 5200;
+.sub-menu {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.dropdown.open > .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0);
+.nav-item.is-open > .sub-menu {
+  display: flex;
 }
 
-.dropdown-menu li {
-  display: block;
-  width: 100%;
+
+/* Desktop dropdown container */
+
+@media (min-width: 769px) {
+
+  .sub-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 3px;
+    padding: 12px 16px;
+
+    box-shadow: 0 5px 12px rgba(0,0,0,0.05);
+    min-width: 240px;
+  }
+
+  /* Nested indentation */
+  .sub-menu .sub-menu {
+    position: static;
+    border: none;
+    box-shadow: none;
+    padding: 6px 0 0 14px;
+    background: transparent;
+  }
 }
 
-.dropdown-menu a {
-  display: block;
-  width: 100%;
-  padding: 8px 14px;
 
+/* Submenu links */
+
+.sub-menu a,
+.sub-menu .nav-toggle {
   font-size: 0.86rem;
   font-weight: 400;
-  line-height: 1.4;
   text-align: left;
-
-  color: var(--text-primary);
-  transition: background 120ms ease;
-}
-
-.dropdown-menu a:hover {
-  background-color: var(--surface-muted);
 }
 
 
@@ -399,40 +391,17 @@ main ul li {
     padding: 0 20px;
   }
 
-  .main-nav > ul {
+  .nav-tree {
     flex-direction: column;
-    gap: 0;
+    align-items: flex-start;
+    gap: 12px;
   }
 
-  .main-nav li {
-    width: 100%;
-  }
-
-  .main-nav li > a {
-    display: block;
-    padding: 14px 0;
-    font-size: 1rem;
-  }
-
-  .dropdown-menu {
+  .sub-menu {
     position: static;
-    transform: none;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-
     box-shadow: none;
-    border-radius: 0;
-    border-left: 3px solid var(--border-subtle);
-
-    margin: 4px 0 8px 0;
-    padding: 6px 0;
-    width: 100%;
+    border: none;
+    padding: 6px 0 0 14px;
   }
 
-  .dropdown-menu a {
-    padding: 8px 0 8px 16px;
-    font-size: 0.95rem;
-    text-align: left;
-  }
 }

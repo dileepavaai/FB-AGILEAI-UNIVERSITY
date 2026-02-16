@@ -1,6 +1,6 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v2.0 Institutional Stability Refinement
+   v2.1 Institutional Stability Refinement
    SAFE FULL REPLACEMENT
    ===================================================== */
 
@@ -254,7 +254,7 @@ a:hover {
 
 
 /* =====================================================
-   BUTTONS — REFINED CURVATURE
+   BUTTONS
    ===================================================== */
 
 .btn {
@@ -316,7 +316,7 @@ a:hover {
 
 
 /* =====================================================
-   HAMBURGER → X TRANSFORMATION
+   HAMBURGER → X TRANSFORMATION (STABLE)
    ===================================================== */
 
 .hamburger {
@@ -336,7 +336,8 @@ a:hover {
   width: 100%;
   height: 2px;
   background: var(--text);
-  transition: transform var(--transition-slow), opacity var(--transition-fast);
+  transition: transform var(--transition-slow),
+              opacity var(--transition-fast);
 }
 
 .hamburger span:nth-child(1) { top: 0; }
@@ -409,5 +410,4 @@ body.menu-open .hamburger span:nth-child(3) {
   .has-submenu.submenu-open .submenu {
     display: block;
   }
-
 }

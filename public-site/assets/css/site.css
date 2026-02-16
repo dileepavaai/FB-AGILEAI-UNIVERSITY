@@ -1,6 +1,6 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v2.5 Institutional Layer Refinement
+   v2.6 Institutional Structural Stabilization
    SAFE FULL REPLACEMENT
    ===================================================== */
 
@@ -40,8 +40,6 @@
   --transition-slow: 0.32s cubic-bezier(.4,.0,.2,1);
 
   --overlay-shadow: 0 -6px 18px rgba(0, 0, 0, 0.06);
-
-  /* NEW: Desktop dropdown depth */
   --dropdown-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -162,7 +160,7 @@ body.menu-open { overflow: hidden; }
 }
 
 
-/* Desktop dropdown with subtle elevation */
+/* Desktop dropdown with elevation */
 
 .submenu {
   display: none;
@@ -305,4 +303,62 @@ body.menu-open .hamburger span:nth-child(3) {
   .has-submenu.submenu-open .submenu {
     max-height: 420px;
   }
+}
+
+
+/* =====================================================
+   FOOTER — STRUCTURED (NEW, NON-DESTRUCTIVE)
+   ===================================================== */
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 140px;
+  padding: 70px 0 50px;
+  background: var(--surface-deep);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .footer-inner {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+.footer-title {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.footer-links a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--text);
+}
+
+.footer-copy {
+  margin-top: 32px;
+  font-size: 0.8rem;
+  color: var(--muted);
 }

@@ -3,37 +3,72 @@
 
     <nav class="site-nav">
 
-      <!-- MOBILE HAMBURGER -->
-      <button class="hamburger" aria-label="Toggle Menu" aria-expanded="false">
-        ☰
+      <!-- MOBILE HAMBURGER (Animated Bars) -->
+      <button class="hamburger"
+              aria-label="Toggle Menu"
+              aria-expanded="false"
+              aria-controls="primary-navigation">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
       </button>
 
-      <ul class="nav-list">
+      <ul class="nav-list" id="primary-navigation">
 
         <li><a href="/">Home</a></li>
 
         <li class="has-submenu">
           <a href="/academics/">Academics</a>
           <ul class="submenu">
-            <li><a href="/academics/capability-assessment.html">Agile + AI Capability Assessment</a></li>
-            <li><a href="/academics/frameworks.html">Academic Frameworks</a></li>
-            <li><a href="/academics/pathways.html">Professional Pathways (P · M · L)</a></li>
+            <li>
+              <a href="/academics/capability-assessment.html">
+                Agile + AI Capability Assessment
+              </a>
+            </li>
+            <li>
+              <a href="/academics/frameworks.html">
+                Academic Frameworks
+              </a>
+            </li>
+            <li>
+              <a href="/academics/pathways.html">
+                Professional Pathways (P · M · L)
+              </a>
+            </li>
           </ul>
         </li>
 
         <li class="has-submenu">
           <a href="/credentials/">Credentials</a>
           <ul class="submenu">
-            <li><a href="/credentials/framework.html">Credential Architecture</a></li>
-            <li><a href="/credentials/index.html#verification">Credential Verification</a></li>
+            <li>
+              <a href="/credentials/framework.html">
+                Credential Architecture
+              </a>
+            </li>
+            <li>
+              <a href="/credentials/index.html#verification">
+                Credential Verification
+              </a>
+            </li>
           </ul>
         </li>
 
         <li class="has-submenu">
           <a href="/governance/">Governance</a>
           <ul class="submenu">
-            <li><a href="/governance/index.html">Academic & Professional Body</a></li>
-            <li><a href="/governance/policies.html">Standards & Integrity</a></li>
+            <li>
+              <a href="/governance/index.html">
+                Academic & Professional Body
+              </a>
+            </li>
+            <li>
+              <a href="/governance/policies.html">
+                Standards & Integrity
+              </a>
+            </li>
           </ul>
         </li>
 
@@ -41,8 +76,11 @@
 
       </ul>
 
+      <!-- Theme Toggle -->
       <div class="theme-control">
-        <button id="theme-toggle" aria-label="Toggle theme">☀</button>
+        <button id="theme-toggle" aria-label="Toggle theme">
+          ☀
+        </button>
       </div>
 
     </nav>

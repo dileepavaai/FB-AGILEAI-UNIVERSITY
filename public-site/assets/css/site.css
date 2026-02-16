@@ -1,20 +1,18 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v2.2 Institutional Stability Refinement
+   v2.5 Institutional Layer Refinement
    SAFE FULL REPLACEMENT
    ===================================================== */
 
 
 /* =====================================================
-   THEME SYSTEM (TYPOGRAPHY SCALE + MOTION)
+   THEME SYSTEM
    ===================================================== */
 
 :root {
 
-  /* Layout */
   --header-height: clamp(88px, 10vh, 116px);
 
-  /* Colors */
   --bg: #ffffff;
   --text: #111111;
   --muted: #5e5e5e;
@@ -30,7 +28,6 @@
   --link-color: #2e5c7a;
   --link-hover: #1f3f56;
 
-  /* Typography */
   --font-sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   --font-serif: "Georgia", "Times New Roman", serif;
 
@@ -38,9 +35,14 @@
   --h1-size: clamp(34px, 4vw, 46px);
   --h2-size: clamp(24px, 2.4vw, 32px);
 
-  /* Motion */
   --transition-fast: 0.18s ease;
-  --transition-slow: 0.28s ease;
+  --transition-medium: 0.26s cubic-bezier(.4,.0,.2,1);
+  --transition-slow: 0.32s cubic-bezier(.4,.0,.2,1);
+
+  --overlay-shadow: 0 -6px 18px rgba(0, 0, 0, 0.06);
+
+  /* NEW: Desktop dropdown depth */
+  --dropdown-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 html[data-theme="dark"] {
@@ -59,6 +61,9 @@ html[data-theme="dark"] {
 
   --link-color: #8ec5e6;
   --link-hover: #b7def5;
+
+  --overlay-shadow: 0 -6px 18px rgba(0, 0, 0, 0.35);
+  --dropdown-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 
@@ -75,12 +80,11 @@ html, body {
   font-size: var(--text-base);
   background: var(--bg);
   color: var(--text);
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background var(--transition-fast),
+              color var(--transition-fast);
 }
 
-body.menu-open {
-  overflow: hidden;
-}
+body.menu-open { overflow: hidden; }
 
 
 /* =====================================================
@@ -133,9 +137,7 @@ body.menu-open {
   margin: 0;
 }
 
-.nav-list > li {
-  position: relative;
-}
+.nav-list > li { position: relative; }
 
 .nav-list a {
   text-decoration: none;
@@ -145,22 +147,22 @@ body.menu-open {
   transition: opacity var(--transition-fast);
 }
 
-.nav-list a:hover {
-  opacity: 0.75;
-}
+.nav-list a:hover { opacity: 0.75; }
 
-/* Submenu arrow animation */
 .has-submenu > a::after {
   content: "▾";
   font-size: 11px;
   margin-left: 6px;
   display: inline-block;
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-medium);
 }
 
 .has-submenu.submenu-open > a::after {
   transform: rotate(180deg);
 }
+
+
+/* Desktop dropdown with subtle elevation */
 
 .submenu {
   display: none;
@@ -173,10 +175,18 @@ body.menu-open {
   padding: 8px 0;
   list-style: none;
   z-index: 10000;
+
+  box-shadow: var(--dropdown-shadow);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-medium),
+              transform var(--transition-medium);
 }
 
 .has-submenu:hover .submenu {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .submenu li a {
@@ -194,9 +204,7 @@ body.menu-open {
    CONTENT OFFSET
    ===================================================== */
 
-body {
-  padding-top: var(--header-height);
-}
+body { padding-top: var(--header-height); }
 
 .container {
   max-width: 1100px;
@@ -206,117 +214,7 @@ body {
 
 
 /* =====================================================
-   TYPOGRAPHY SYSTEM
-   ===================================================== */
-
-h1, h2 {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  letter-spacing: -0.3px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1 {
-  font-size: var(--h1-size);
-  line-height: 1.12;
-  margin-bottom: 32px;
-}
-
-h2 {
-  font-size: var(--h2-size);
-  margin-top: 72px;
-  margin-bottom: 22px;
-  line-height: 1.26;
-}
-
-p {
-  line-height: 1.75;
-  margin-bottom: 22px;
-  max-width: 820px;
-}
-
-
-/* =====================================================
-   LINKS
-   ===================================================== */
-
-a {
-  color: var(--link-color);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-a:hover {
-  color: var(--link-hover);
-  text-decoration: underline;
-}
-
-
-/* =====================================================
-   BUTTONS
-   ===================================================== */
-
-.btn {
-  display: inline-block;
-  margin-top: 18px;
-  padding: 11px 20px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: transform var(--transition-fast);
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-}
-
-.btn.primary {
-  background: var(--button-primary);
-  color: var(--button-primary-text);
-}
-
-.btn.secondary {
-  background: var(--button-secondary);
-  color: var(--text);
-}
-
-
-/* =====================================================
-   FOOTER
-   ===================================================== */
-
-.site-footer {
-  border-top: 1px solid var(--border);
-  margin-top: 140px;
-  padding: 70px 0;
-  background: var(--surface-deep);
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-.footer-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.footer-title {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: 1rem;
-  margin-bottom: 18px;
-  color: var(--text);
-}
-
-.footer-copy {
-  margin-top: 36px;
-  font-size: 0.8rem;
-}
-
-
-/* =====================================================
-   HAMBURGER → X TRANSFORMATION (REFINED LIGHTER)
+   HAMBURGER → X
    ===================================================== */
 
 .hamburger {
@@ -334,11 +232,11 @@ a:hover {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 1.6px;                  /* Reduced from 2px */
+  height: 1.6px;
   background: var(--text);
-  border-radius: 2px;             /* Softer institutional finish */
+  border-radius: 2px;
   transition: transform var(--transition-slow),
-              opacity var(--transition-fast);
+              opacity var(--transition-medium);
 }
 
 .hamburger span:nth-child(1) { top: 0; }
@@ -349,9 +247,7 @@ body.menu-open .hamburger span:nth-child(1) {
   transform: translateY(10px) rotate(45deg);
 }
 
-body.menu-open .hamburger span:nth-child(2) {
-  opacity: 0;
-}
+body.menu-open .hamburger span:nth-child(2) { opacity: 0; }
 
 body.menu-open .hamburger span:nth-child(3) {
   transform: translateY(-10px) rotate(-45deg);
@@ -359,14 +255,12 @@ body.menu-open .hamburger span:nth-child(3) {
 
 
 /* =====================================================
-   MOBILE NAVIGATION — OVERLAY + FADE
+   MOBILE NAVIGATION
    ===================================================== */
 
 @media (max-width: 768px) {
 
-  .hamburger {
-    display: block;
-  }
+  .hamburger { display: block; }
 
   .nav-list {
     display: none;
@@ -385,12 +279,13 @@ body.menu-open .hamburger span:nth-child(3) {
     background: var(--bg);
     z-index: 9998;
     padding-top: 16px;
-    animation: fadeInOverlay 0.2s ease forwards;
+    box-shadow: var(--overlay-shadow);
+    animation: overlayEntrance var(--transition-medium) forwards;
   }
 
-  @keyframes fadeInOverlay {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  @keyframes overlayEntrance {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .nav-list.mobile-open > li {
@@ -401,14 +296,13 @@ body.menu-open .hamburger span:nth-child(3) {
   .submenu {
     position: static;
     border: none;
-  }
-
-  .nav-list.mobile-open .submenu {
-    display: none;
-    padding-left: 18px;
+    box-shadow: none;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height var(--transition-slow);
   }
 
   .has-submenu.submenu-open .submenu {
-    display: block;
+    max-height: 420px;
   }
 }

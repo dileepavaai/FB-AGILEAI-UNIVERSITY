@@ -1,7 +1,7 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
    v1.3 Institutional Refinement
-   SAFE FULL REPLACEMENT — Non-Breaking
+   SAFE FULL REPLACEMENT — Navigation Preserved
    ===================================================== */
 
 
@@ -95,7 +95,7 @@ body {
 
 
 /* =====================================================
-   NAVIGATION
+   NAVIGATION (CANONICAL — RESTORED)
    ===================================================== */
 
 .nav-list {
@@ -106,7 +106,9 @@ body {
   margin: 0;
 }
 
-.nav-list > li { position: relative; }
+.nav-list > li {
+  position: relative;
+}
 
 .nav-list a {
   text-decoration: none;
@@ -116,7 +118,44 @@ body {
   transition: opacity 0.15s ease;
 }
 
-.nav-list a:hover { opacity: 0.75; }
+.nav-list a:hover {
+  opacity: 0.75;
+}
+
+/* Submenu arrow */
+.has-submenu > a::after {
+  content: " ▾";
+  font-size: 12px;
+}
+
+/* Desktop dropdown behavior */
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  min-width: 260px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 8px 0;
+  list-style: none;
+  z-index: 10000;
+}
+
+.has-submenu:hover .submenu {
+  display: block;
+}
+
+.submenu li a {
+  display: block;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.submenu li a:hover {
+  background: var(--surface-soft);
+}
 
 .nav-muted {
   margin-top: 8px;
@@ -162,8 +201,6 @@ h1,
 h2 {
   font-family: var(--font-serif);
   font-weight: 500;
-
-  /* ultra subtle refinement */
   letter-spacing: -0.2px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -190,25 +227,21 @@ p {
 
 
 /* =====================================================
-   GOVERNANCE SECTION RHYTHM REFINEMENT
+   GOVERNANCE SECTION RHYTHM
    ===================================================== */
 
-/* Stronger structural separation */
 main > section {
   margin-bottom: 56px;
 }
 
-/* Tighter intro section spacing */
 main > section:first-of-type {
   margin-bottom: 64px;
 }
 
-/* Improve H2 → paragraph rhythm */
 main h2 + p {
   margin-top: 6px;
 }
 
-/* Governance lists feel intentional */
 main ul {
   margin-top: 20px;
   margin-bottom: 32px;
@@ -311,7 +344,7 @@ a:hover {
 
 
 /* =====================================================
-   MOBILE NAVIGATION (UNCHANGED)
+   MOBILE NAVIGATION (UNCHANGED LOGIC)
    ===================================================== */
 
 .hamburger {
@@ -351,7 +384,9 @@ a:hover {
     padding-left: 12px;
   }
 
-  .has-submenu.submenu-open .submenu { display: block; }
+  .has-submenu.submenu-open .submenu {
+    display: block;
+  }
 
   .submenu li a {
     padding-left: 28px;

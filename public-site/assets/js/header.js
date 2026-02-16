@@ -1,5 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+  // Restore saved theme before injection
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme) {
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }
+
   fetch("/assets/partials/header.html")
     .then(response => response.text())
     .then(data => {
@@ -10,8 +16,8 @@ document.addEventListener("DOMContentLoaded", function () {
       container.innerHTML = data;
 
       bindHeaderInteractions();
+      bindThemeToggle();
 
-      // Notify other scripts (theme etc.)
       document.dispatchEvent(new Event("headerInjected"));
 
     })
@@ -22,16 +28,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+/* =======================================================
+   MOBILE NAVIGATION
+======================================================= */
+
 function bindHeaderInteractions() {
 
   const hamburger = document.querySelector(".hamburger");
   const navList = document.querySelector(".nav-list");
 
   if (!hamburger || !navList) return;
-
-  /* ==============================
-     MAIN MOBILE TOGGLE
-  ============================== */
 
   hamburger.addEventListener("click", function () {
 
@@ -42,10 +48,6 @@ function bindHeaderInteractions() {
 
   });
 
-  /* ==============================
-     MOBILE SUBMENU TOGGLE
-  ============================== */
-
   const submenuParents = document.querySelectorAll(".has-submenu > a");
 
   submenuParents.forEach(link => {
@@ -55,19 +57,13 @@ function bindHeaderInteractions() {
       if (window.innerWidth <= 768) {
 
         e.preventDefault();
-
-        const parentLi = this.parentElement;
-        parentLi.classList.toggle("submenu-open");
+        this.parentElement.classList.toggle("submenu-open");
 
       }
 
     });
 
   });
-
-  /* ==============================
-     RESET ON RESIZE
-  ============================== */
 
   window.addEventListener("resize", function () {
 
@@ -78,5 +74,44 @@ function bindHeaderInteractions() {
     }
 
   });
+
+}
+
+
+/* =======================================================
+   THEME TOGGLE (FIXED)
+======================================================= */
+
+function bindThemeToggle() {
+
+  const toggle = document.getElementById("theme-toggle");
+  if (!toggle) return;
+
+  updateThemeIcon();
+
+  toggle.addEventListener("click", function () {
+
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+
+    updateThemeIcon();
+
+  });
+
+}
+
+
+function updateThemeIcon() {
+
+  const toggle = document.getElementById("theme-toggle");
+  if (!toggle) return;
+
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+
+  toggle.textContent = currentTheme === "dark" ? "☀" : "☾";
 
 }

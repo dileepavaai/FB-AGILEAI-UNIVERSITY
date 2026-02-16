@@ -1,6 +1,6 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v1.7 Stable Institutional Navigation (Finalized)
+   v1.8 Institutional Stability Lock
    SAFE FULL REPLACEMENT
    ===================================================== */
 
@@ -294,7 +294,7 @@ a:hover {
 
 
 /* =====================================================
-   MOBILE NAVIGATION — CLEAN OVERLAY SYSTEM
+   MOBILE NAVIGATION — LOCKED OVERLAY SYSTEM
    ===================================================== */
 
 .hamburger {
@@ -308,13 +308,14 @@ a:hover {
 
 @media (max-width: 768px) {
 
+  .hamburger {
+    display: block;
+  }
+
   .nav-list {
     display: none;
     flex-direction: column;
-  }
-
-  .hamburger {
-    display: block;
+    width: 100%;
   }
 
   .nav-list.mobile-open {
@@ -323,10 +324,11 @@ a:hover {
     top: var(--header-height);
     left: 0;
     right: 0;
+    bottom: 0;                  /* full screen coverage */
+    overflow-y: auto;           /* scroll inside menu */
     background: var(--bg);
-    border-bottom: 1px solid var(--border);
     z-index: 9998;
-    padding: 12px 0;
+    padding-top: 12px;
   }
 
   .nav-list.mobile-open > li {
@@ -347,5 +349,4 @@ a:hover {
   .has-submenu.submenu-open .submenu {
     display: block;
   }
-
 }

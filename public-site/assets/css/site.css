@@ -1,7 +1,7 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v2.7 Institutional Structural Stabilization (CTA Safe Refinement)
-   SAFE FULL REPLACEMENT
+   v2.8 Institutional Stability Lock
+   SAFE FULL REPLACEMENT (STRUCTURE PRESERVED)
    ===================================================== */
 
 
@@ -53,10 +53,8 @@ html[data-theme="dark"] {
   --surface-soft: #161b24;
   --surface-deep: #0c0f14;
 
-  /* Softened white for dark mode CTA */
   --button-primary: #e6e6e6;
   --button-primary-text: #111111;
-
   --button-secondary: #1c2230;
 
   --link-color: #8ec5e6;
@@ -88,7 +86,7 @@ body.menu-open { overflow: hidden; }
 
 
 /* =====================================================
-   BUTTON SYSTEM (NON-BREAKING ADDITION)
+   BUTTON SYSTEM (UNCHANGED STRUCTURE)
    ===================================================== */
 
 .btn {
@@ -113,6 +111,35 @@ body.menu-open { overflow: hidden; }
 
 .btn.primary:hover {
   opacity: 0.92;
+}
+
+
+/* =====================================================
+   GLOBAL CONTENT LINK SYSTEM (ISOLATED & SAFE)
+   ===================================================== */
+
+/* Only affects content links inside <main> */
+/* Does NOT touch nav, buttons, footer */
+
+main a:not(.btn) {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast),
+              opacity var(--transition-fast);
+}
+
+main a:not(.btn):hover {
+  color: var(--link-hover);
+  opacity: 0.9;
+}
+
+html[data-theme="dark"] main a:not(.btn) {
+  color: #9fd3ff;
+}
+
+html[data-theme="dark"] main a:not(.btn):hover {
+  color: #cbe8ff;
 }
 
 
@@ -155,7 +182,7 @@ body.menu-open { overflow: hidden; }
 
 
 /* =====================================================
-   DESKTOP NAVIGATION
+   DESKTOP NAVIGATION (UNCHANGED)
    ===================================================== */
 
 .nav-list {
@@ -191,7 +218,7 @@ body.menu-open { overflow: hidden; }
 }
 
 
-/* Desktop dropdown with elevation */
+/* Desktop dropdown */
 
 .submenu {
   display: none;
@@ -204,7 +231,6 @@ body.menu-open { overflow: hidden; }
   padding: 8px 0;
   list-style: none;
   z-index: 10000;
-
   box-shadow: var(--dropdown-shadow);
   opacity: 0;
   transform: translateY(-4px);
@@ -243,7 +269,7 @@ body { padding-top: var(--header-height); }
 
 
 /* =====================================================
-   HAMBURGER → X
+   HAMBURGER → X (UNCHANGED)
    ===================================================== */
 
 .hamburger {
@@ -284,7 +310,7 @@ body.menu-open .hamburger span:nth-child(3) {
 
 
 /* =====================================================
-   MOBILE NAVIGATION
+   MOBILE NAVIGATION (UNCHANGED)
    ===================================================== */
 
 @media (max-width: 768px) {
@@ -338,7 +364,7 @@ body.menu-open .hamburger span:nth-child(3) {
 
 
 /* =====================================================
-   FOOTER — STRUCTURED (UNCHANGED)
+   FOOTER (STRUCTURE PRESERVED)
    ===================================================== */
 
 .site-footer {
@@ -354,7 +380,6 @@ body.menu-open .hamburger span:nth-child(3) {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
-
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
@@ -392,62 +417,4 @@ body.menu-open .hamburger span:nth-child(3) {
   margin-top: 32px;
   font-size: 0.8rem;
   color: var(--muted);
-}
-
-/* =====================================================
-   FOOTER REFINEMENT — DARK MODE LINK POLISH
-   SAFE ADDITIVE PATCH
-   ===================================================== */
-
-/* Improve contrast & reduce harsh blue glow in dark mode */
-
-html[data-theme="dark"] .site-footer a {
-  color: rgba(255, 255, 255, 0.75);
-  text-decoration: none;
-  transition: color var(--transition-fast),
-              opacity var(--transition-fast);
-}
-
-html[data-theme="dark"] .site-footer a:hover {
-  color: #ffffff;
-  opacity: 0.9;
-}
-
-/* Optional: soften governance link specifically */
-html[data-theme="dark"] .footer-governance a {
-  color: rgba(142, 197, 230, 0.85);
-}
-
-html[data-theme="dark"] .footer-governance a:hover {
-  color: #b7def5;
-}
-
-
-/* =====================================================
-   FOOTER SPACING RHYTHM REFINEMENT
-   SAFE ADDITIVE PATCH
-   ===================================================== */
-
-/* Add subtle vertical breathing between logical groups */
-
-.footer-inner > * + * {
-  margin-top: 12px;
-}
-
-/* Slightly more separation before policy links */
-
-.footer-links + .footer-links {
-  margin-top: 8px;
-}
-
-/* Improve paragraph rhythm */
-
-.site-footer p {
-  line-height: 1.6;
-}
-
-/* Reduce visual density in dark theme */
-
-html[data-theme="dark"] .site-footer {
-  letter-spacing: 0.2px;
 }

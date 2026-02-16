@@ -1,7 +1,7 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v1.4 Institutional Refinement
-   SAFE FULL REPLACEMENT — Header Height Aligned
+   v1.6 Stable Institutional Navigation
+   SAFE FULL REPLACEMENT
    ===================================================== */
 
 
@@ -15,7 +15,6 @@
   --muted: #666666;
   --border: #e6e6e6;
 
-  --surface: #f7f7f7;
   --surface-soft: #fafafa;
   --surface-deep: #f0f0f0;
 
@@ -28,9 +27,6 @@
 
   --link-color: #2e5c7a;
   --link-hover: #1f3f56;
-
-  /* ✅ Canonical header height */
-  --header-height: 116px;
 }
 
 html[data-theme="dark"] {
@@ -39,7 +35,6 @@ html[data-theme="dark"] {
   --muted: #b5b5b5;
   --border: #2a2f36;
 
-  --surface: #141821;
   --surface-soft: #161b24;
   --surface-deep: #0c0f14;
 
@@ -58,13 +53,12 @@ html[data-theme="dark"] {
 
 * { box-sizing: border-box; }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   font-family: var(--font-sans);
-  color: var(--text);
   background: var(--bg);
+  color: var(--text);
   transition: background 0.18s ease, color 0.18s ease;
 }
 
@@ -79,7 +73,6 @@ body {
   left: 0;
   right: 0;
   z-index: 9999;
-
   background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
@@ -94,11 +87,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 
 /* =====================================================
-   NAVIGATION
+   DESKTOP NAVIGATION
    ===================================================== */
 
 .nav-list {
@@ -109,7 +103,9 @@ body {
   margin: 0;
 }
 
-.nav-list > li { position: relative; }
+.nav-list > li {
+  position: relative;
+}
 
 .nav-list a {
   text-decoration: none;
@@ -119,9 +115,10 @@ body {
   transition: opacity 0.15s ease;
 }
 
-.nav-list a:hover { opacity: 0.75; }
+.nav-list a:hover {
+  opacity: 0.75;
+}
 
-/* Submenu arrow */
 .has-submenu > a::after {
   content: " ▾";
   font-size: 12px;
@@ -133,7 +130,6 @@ body {
   position: absolute;
   top: 100%;
   left: 0;
-
   min-width: 260px;
   background: var(--bg);
   border: 1px solid var(--border);
@@ -164,11 +160,11 @@ body {
 
 
 /* =====================================================
-   CONTENT OFFSET (Aligned to Header Height)
+   CONTENT OFFSET (Dynamic)
    ===================================================== */
 
 body {
-  padding-top: var(--header-height);
+  padding-top: 116px; /* stable header offset */
 }
 
 .container {
@@ -179,27 +175,10 @@ body {
 
 
 /* =====================================================
-   HERO
-   ===================================================== */
-
-.hero {
-  margin-bottom: 68px;
-  max-width: 880px;
-}
-
-.hero-subtitle {
-  font-size: 18px;
-  color: var(--muted);
-  margin-bottom: 28px;
-}
-
-
-/* =====================================================
    TYPOGRAPHY
    ===================================================== */
 
-h1,
-h2 {
+h1, h2 {
   font-family: var(--font-serif);
   font-weight: 500;
   letter-spacing: -0.2px;
@@ -228,28 +207,6 @@ p {
 
 
 /* =====================================================
-   LISTS
-   ===================================================== */
-
-main > section { margin-bottom: 56px; }
-
-main > section:first-of-type { margin-bottom: 64px; }
-
-main h2 + p { margin-top: 6px; }
-
-main ul {
-  margin-top: 20px;
-  margin-bottom: 32px;
-  padding-left: 22px;
-}
-
-main ul li {
-  margin-bottom: 10px;
-  line-height: 1.7;
-}
-
-
-/* =====================================================
    LINKS
    ===================================================== */
 
@@ -267,11 +224,6 @@ a:hover {
 .nav-list a,
 .footer-links a {
   color: var(--text);
-}
-
-.nav-list a:hover,
-.footer-links a:hover {
-  text-decoration: underline;
 }
 
 
@@ -327,11 +279,6 @@ a:hover {
   color: var(--text);
 }
 
-.footer-disclaimer {
-  margin-top: 26px;
-  max-width: 880px;
-}
-
 .footer-copy {
   margin-top: 40px;
   font-size: 13px;
@@ -339,52 +286,58 @@ a:hover {
 
 
 /* =====================================================
-   MOBILE NAVIGATION (FIXED ALIGNMENT)
+   MOBILE NAVIGATION — STABLE OVERLAY
    ===================================================== */
 
 .hamburger {
   display: none;
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
   background: none;
   border: none;
+  color: var(--text);
 }
 
 @media (max-width: 768px) {
 
-  .hamburger { display: block; }
+  .hamburger {
+    display: block;
+  }
 
-  .nav-list { display: none; }
+  .nav-list {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
 
   .nav-list.mobile-open {
-    display: block;
+    display: flex;
     position: fixed;
-    top: var(--header-height); /* ✅ aligned */
+    top: 96px; /* stable mobile alignment */
     left: 0;
     right: 0;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     z-index: 9998;
+    padding: 16px 0;
   }
 
   .nav-list.mobile-open > li {
-    padding: 14px 24px;
+    padding: 16px 24px;
     border-bottom: 1px solid var(--border);
   }
 
-  .nav-list.mobile-open .submenu {
+  .submenu {
     position: static;
-    display: none;
     border: none;
-    padding-left: 12px;
+  }
+
+  .nav-list.mobile-open .submenu {
+    display: none;
+    padding-left: 16px;
   }
 
   .has-submenu.submenu-open .submenu {
     display: block;
-  }
-
-  .submenu li a {
-    padding-left: 28px;
-    font-size: 15px;
   }
 }

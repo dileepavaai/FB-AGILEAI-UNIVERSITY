@@ -1,6 +1,6 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v1.6 Stable Institutional Navigation
+   v1.7 Stable Institutional Navigation (Finalized)
    SAFE FULL REPLACEMENT
    ===================================================== */
 
@@ -27,6 +27,8 @@
 
   --link-color: #2e5c7a;
   --link-hover: #1f3f56;
+
+  --header-height: 116px;
 }
 
 html[data-theme="dark"] {
@@ -62,6 +64,10 @@ html, body {
   transition: background 0.18s ease, color 0.18s ease;
 }
 
+body.menu-open {
+  overflow: hidden;
+}
+
 
 /* =====================================================
    HEADER
@@ -72,22 +78,26 @@ html, body {
   top: 0;
   left: 0;
   right: 0;
+  height: var(--header-height);
   z-index: 9999;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .site-header .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 20px 24px 14px;
+  padding: 0 24px;
+  width: 100%;
 }
 
 .site-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
 }
 
 
@@ -124,7 +134,6 @@ html, body {
   font-size: 12px;
 }
 
-/* Desktop dropdown */
 .submenu {
   display: none;
   position: absolute;
@@ -153,18 +162,18 @@ html, body {
 }
 
 .nav-muted {
-  margin-top: 8px;
   font-size: 14px;
   color: var(--muted);
+  margin-top: 6px;
 }
 
 
 /* =====================================================
-   CONTENT OFFSET (Dynamic)
+   CONTENT OFFSET
    ===================================================== */
 
 body {
-  padding-top: 116px; /* stable header offset */
+  padding-top: var(--header-height);
 }
 
 .container {
@@ -268,7 +277,6 @@ a:hover {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
-  line-height: 1.8;
 }
 
 .footer-title {
@@ -286,12 +294,12 @@ a:hover {
 
 
 /* =====================================================
-   MOBILE NAVIGATION — STABLE OVERLAY
+   MOBILE NAVIGATION — CLEAN OVERLAY SYSTEM
    ===================================================== */
 
 .hamburger {
   display: none;
-  font-size: 24px;
+  font-size: 26px;
   cursor: pointer;
   background: none;
   border: none;
@@ -300,26 +308,25 @@ a:hover {
 
 @media (max-width: 768px) {
 
-  .hamburger {
-    display: block;
-  }
-
   .nav-list {
     display: none;
     flex-direction: column;
-    width: 100%;
+  }
+
+  .hamburger {
+    display: block;
   }
 
   .nav-list.mobile-open {
     display: flex;
     position: fixed;
-    top: 96px; /* stable mobile alignment */
+    top: var(--header-height);
     left: 0;
     right: 0;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     z-index: 9998;
-    padding: 16px 0;
+    padding: 12px 0;
   }
 
   .nav-list.mobile-open > li {
@@ -334,10 +341,11 @@ a:hover {
 
   .nav-list.mobile-open .submenu {
     display: none;
-    padding-left: 16px;
+    padding-left: 18px;
   }
 
   .has-submenu.submenu-open .submenu {
     display: block;
   }
+
 }

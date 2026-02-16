@@ -1,6 +1,6 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v2.1 Institutional Stability Refinement
+   v2.2 Institutional Stability Refinement
    SAFE FULL REPLACEMENT
    ===================================================== */
 
@@ -316,7 +316,7 @@ a:hover {
 
 
 /* =====================================================
-   HAMBURGER → X TRANSFORMATION (STABLE)
+   HAMBURGER → X TRANSFORMATION (REFINED LIGHTER)
    ===================================================== */
 
 .hamburger {
@@ -334,8 +334,9 @@ a:hover {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 2px;
+  height: 1.6px;                  /* Reduced from 2px */
   background: var(--text);
+  border-radius: 2px;             /* Softer institutional finish */
   transition: transform var(--transition-slow),
               opacity var(--transition-fast);
 }

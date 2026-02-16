@@ -1,6 +1,6 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v2.7 Institutional Structural Stabilization (CTA Safe Refinement)
+   v2.7 Institutional Structural Stabilization (Revenue-Safe)
    SAFE FULL REPLACEMENT
    ===================================================== */
 
@@ -53,7 +53,7 @@ html[data-theme="dark"] {
   --surface-soft: #161b24;
   --surface-deep: #0c0f14;
 
-  /* Softened white for dark mode CTA */
+  /* Softened CTA tone (no structural change) */
   --button-primary: #e6e6e6;
   --button-primary-text: #111111;
 
@@ -88,7 +88,7 @@ body.menu-open { overflow: hidden; }
 
 
 /* =====================================================
-   BUTTON SYSTEM (NON-BREAKING ADDITION)
+   BUTTON SYSTEM (NON-BREAKING)
    ===================================================== */
 
 .btn {
@@ -102,18 +102,14 @@ body.menu-open { overflow: hidden; }
               opacity var(--transition-fast);
 }
 
-.btn:hover {
-  transform: translateY(-1px);
-}
+.btn:hover { transform: translateY(-1px); }
 
 .btn.primary {
   background: var(--button-primary);
   color: var(--button-primary-text);
 }
 
-.btn.primary:hover {
-  opacity: 0.92;
-}
+.btn.primary:hover { opacity: 0.92; }
 
 
 /* =====================================================
@@ -189,9 +185,6 @@ body.menu-open { overflow: hidden; }
 .has-submenu.submenu-open > a::after {
   transform: rotate(180deg);
 }
-
-
-/* Desktop dropdown with elevation */
 
 .submenu {
   display: none;
@@ -309,12 +302,6 @@ body.menu-open .hamburger span:nth-child(3) {
     z-index: 9998;
     padding-top: 16px;
     box-shadow: var(--overlay-shadow);
-    animation: overlayEntrance var(--transition-medium) forwards;
-  }
-
-  @keyframes overlayEntrance {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
   }
 
   .nav-list.mobile-open > li {
@@ -338,7 +325,7 @@ body.menu-open .hamburger span:nth-child(3) {
 
 
 /* =====================================================
-   FOOTER — STRUCTURED (UNCHANGED)
+   FOOTER (SAFE STRUCTURE)
    ===================================================== */
 
 .site-footer {
@@ -354,7 +341,6 @@ body.menu-open .hamburger span:nth-child(3) {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
-
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
@@ -382,6 +368,7 @@ body.menu-open .hamburger span:nth-child(3) {
 .footer-links a {
   color: var(--muted);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 .footer-links a:hover {
@@ -392,4 +379,14 @@ body.menu-open .hamburger span:nth-child(3) {
   margin-top: 32px;
   font-size: 0.8rem;
   color: var(--muted);
+}
+
+/* Dark mode refinement (safe additive only) */
+
+html[data-theme="dark"] .site-footer a {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+html[data-theme="dark"] .site-footer a:hover {
+  color: #ffffff;
 }

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(response => response.text())
     .then(data => {
 
-      const container = document.getElementById("header");
+      const container = document.getElementById("site-header");
       if (!container) return;
 
       container.innerHTML = data;
@@ -37,14 +37,10 @@ function bindHeaderInteractions() {
 
     const isOpen = navList.classList.toggle("mobile-open");
 
-    // Lock body scroll when open
     document.body.classList.toggle("menu-open", isOpen);
-
-    // Accessibility
     hamburger.setAttribute("aria-expanded", isOpen);
 
   });
-
 
   /* ==============================
      MOBILE SUBMENU TOGGLE
@@ -68,7 +64,6 @@ function bindHeaderInteractions() {
     });
 
   });
-
 
   /* ==============================
      RESET ON RESIZE

@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const currentYear = new Date().getFullYear();
 
   const footerHTML = `
-    <footer class="site-footer">
+    <div class="site-footer">
       <div class="footer-inner">
 
         <p class="footer-title">
@@ -30,9 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
         </p>
 
         <p class="footer-links">
-          <a href="/terms.html">Terms & Conditions</a> ·
-          <a href="/privacy.html">Privacy Policy</a> ·
-          <a href="/refund.html">Refund Policy</a>
+          <a href="/governance/terms-and-conditions.html">Terms & Conditions</a> ·
+          <a href="/governance/privacy-policy.html">Privacy Policy</a> ·
+          <a href="/governance/refund-policy.html">Refund Policy</a>
         </p>
 
         <p class="footer-copy">
@@ -40,10 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
         </p>
 
       </div>
-    </footer>
+    </div>
   `;
 
-  const footerContainer = document.getElementById("footer");
+  const footerContainer = document.getElementById("site-footer");
   if (footerContainer) {
     footerContainer.innerHTML = footerHTML;
   }

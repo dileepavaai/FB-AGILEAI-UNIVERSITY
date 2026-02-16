@@ -1,7 +1,7 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v1.3 Institutional Refinement
-   SAFE FULL REPLACEMENT — Navigation Preserved
+   v1.4 Institutional Refinement
+   SAFE FULL REPLACEMENT — Header Height Aligned
    ===================================================== */
 
 
@@ -28,6 +28,9 @@
 
   --link-color: #2e5c7a;
   --link-hover: #1f3f56;
+
+  /* ✅ Canonical header height */
+  --header-height: 116px;
 }
 
 html[data-theme="dark"] {
@@ -95,7 +98,7 @@ body {
 
 
 /* =====================================================
-   NAVIGATION (CANONICAL — RESTORED)
+   NAVIGATION
    ===================================================== */
 
 .nav-list {
@@ -106,9 +109,7 @@ body {
   margin: 0;
 }
 
-.nav-list > li {
-  position: relative;
-}
+.nav-list > li { position: relative; }
 
 .nav-list a {
   text-decoration: none;
@@ -118,9 +119,7 @@ body {
   transition: opacity 0.15s ease;
 }
 
-.nav-list a:hover {
-  opacity: 0.75;
-}
+.nav-list a:hover { opacity: 0.75; }
 
 /* Submenu arrow */
 .has-submenu > a::after {
@@ -128,7 +127,7 @@ body {
   font-size: 12px;
 }
 
-/* Desktop dropdown behavior */
+/* Desktop dropdown */
 .submenu {
   display: none;
   position: absolute;
@@ -165,10 +164,12 @@ body {
 
 
 /* =====================================================
-   CONTENT OFFSET
+   CONTENT OFFSET (Aligned to Header Height)
    ===================================================== */
 
-body { padding-top: 116px; }
+body {
+  padding-top: var(--header-height);
+}
 
 .container {
   max-width: 1100px;
@@ -194,7 +195,7 @@ body { padding-top: 116px; }
 
 
 /* =====================================================
-   TYPOGRAPHY — SERIF CONTRAST TUNING
+   TYPOGRAPHY
    ===================================================== */
 
 h1,
@@ -227,20 +228,14 @@ p {
 
 
 /* =====================================================
-   GOVERNANCE SECTION RHYTHM
+   LISTS
    ===================================================== */
 
-main > section {
-  margin-bottom: 56px;
-}
+main > section { margin-bottom: 56px; }
 
-main > section:first-of-type {
-  margin-bottom: 64px;
-}
+main > section:first-of-type { margin-bottom: 64px; }
 
-main h2 + p {
-  margin-top: 6px;
-}
+main h2 + p { margin-top: 6px; }
 
 main ul {
   margin-top: 20px;
@@ -255,7 +250,7 @@ main ul li {
 
 
 /* =====================================================
-   LINKS — INSTITUTIONAL
+   LINKS
    ===================================================== */
 
 a {
@@ -344,7 +339,7 @@ a:hover {
 
 
 /* =====================================================
-   MOBILE NAVIGATION (UNCHANGED LOGIC)
+   MOBILE NAVIGATION (FIXED ALIGNMENT)
    ===================================================== */
 
 .hamburger {
@@ -364,7 +359,7 @@ a:hover {
   .nav-list.mobile-open {
     display: block;
     position: fixed;
-    top: 72px;
+    top: var(--header-height); /* ✅ aligned */
     left: 0;
     right: 0;
     background: var(--bg);

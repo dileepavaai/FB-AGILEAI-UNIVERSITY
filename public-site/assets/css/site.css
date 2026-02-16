@@ -1,6 +1,6 @@
 /* =====================================================
    Agile AI University — Canonical Site Styles
-   v2.6 Institutional Structural Stabilization
+   v2.7 Institutional Structural Stabilization (CTA Safe Refinement)
    SAFE FULL REPLACEMENT
    ===================================================== */
 
@@ -53,8 +53,10 @@ html[data-theme="dark"] {
   --surface-soft: #161b24;
   --surface-deep: #0c0f14;
 
-  --button-primary: #f5f5f5;
+  /* Softened white for dark mode CTA */
+  --button-primary: #e6e6e6;
   --button-primary-text: #111111;
+
   --button-secondary: #1c2230;
 
   --link-color: #8ec5e6;
@@ -83,6 +85,35 @@ html, body {
 }
 
 body.menu-open { overflow: hidden; }
+
+
+/* =====================================================
+   BUTTON SYSTEM (NON-BREAKING ADDITION)
+   ===================================================== */
+
+.btn {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 11px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform var(--transition-fast),
+              opacity var(--transition-fast);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: var(--button-primary);
+  color: var(--button-primary-text);
+}
+
+.btn.primary:hover {
+  opacity: 0.92;
+}
 
 
 /* =====================================================
@@ -307,7 +338,7 @@ body.menu-open .hamburger span:nth-child(3) {
 
 
 /* =====================================================
-   FOOTER — STRUCTURED (NEW, NON-DESTRUCTIVE)
+   FOOTER — STRUCTURED (UNCHANGED)
    ===================================================== */
 
 .site-footer {

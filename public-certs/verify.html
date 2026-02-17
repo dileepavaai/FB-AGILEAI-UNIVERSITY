@@ -11,7 +11,7 @@
   <meta http-equiv="Expires" content="0" />
 
   <!-- Institutional Design System -->
-  <link rel="stylesheet" href="/assets-core/css/site.css" />
+  <link rel="stylesheet" href="./shared/assets-core/css/site.css" />
 
   <!-- Surface-specific layout -->
   <link rel="stylesheet" href="./assets/css/verify.css" />
@@ -19,8 +19,14 @@
 
 <body>
 
-  <!-- Institutional Header Injected -->
-  <script src="/design-authority/js/header.js"></script>
+  <!-- HEADER MOUNT POINT -->
+  <div id="header"></div>
+
+  <!-- Inject Header -->
+  <script src="./shared/design-authority/js/header.js"></script>
+
+  <!-- Inject Theme -->
+  <script src="./shared/design-authority/js/theme.js"></script>
 
   <!-- ===== Verification Console ===== -->
   <main class="verify-console">
@@ -37,12 +43,14 @@
       </p>
 
       <label for="emailInput">Registered Email Address</label>
+
       <input
         id="emailInput"
         type="email"
         placeholder="Enter registered email"
         autocomplete="email"
         aria-label="Registered email address"
+        required
       />
 
       <button id="verifyBtn" type="button">
@@ -54,8 +62,11 @@
     </div>
   </main>
 
-  <!-- Institutional Footer Injected -->
-  <script src="/design-authority/js/footer.js"></script>
+  <!-- FOOTER MOUNT POINT -->
+  <div id="footer"></div>
+
+  <!-- Inject Footer -->
+  <script src="./shared/design-authority/js/footer.js"></script>
 
   <!-- Verification Logic -->
   <script type="module" src="./assets/js/verify.js"></script>

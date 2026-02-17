@@ -1,0 +1,497 @@
+/* =========================================
+   AgileAI Public Surface — Institutional CSS v11.4
+
+   Safe Structural Upgrade
+   - No layout changes
+   - No typography changes
+   - No nav logic changes
+   - Adds controlled hamburger visibility
+   - Mobile hamburger styled intentionally
+========================================= */
+
+
+/* =========================
+   ROOT VARIABLES
+========================= */
+
+:root {
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --border-subtle: #e6e6e6;
+  --background: #ffffff;
+  --surface-muted: #f6f6f6;
+  --surface-elevated: rgba(255,255,255,0.94);
+
+  --max-width: 720px;
+  --header-height: 80px;
+
+  --transition-speed: 180ms;
+  --motion-standard: cubic-bezier(.4,0,.2,1);
+
+  --link-color: #2e5c7a;
+  --link-hover: #1f3f56;
+}
+
+:root[data-theme="dark"] {
+  --text-primary: #f2f2f2;
+  --text-secondary: #b5b5b5;
+  --border-subtle: #2a2a2a;
+  --background: #0f1115;
+  --surface-muted: #151821;
+  --surface-elevated: rgba(27,31,38,0.94);
+
+  --link-color: #7fb3d5;
+  --link-hover: #a8d0ea;
+}
+
+
+/* =========================
+   BASE
+========================= */
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.72;
+  transition:
+    background var(--transition-speed),
+    color var(--transition-speed);
+}
+
+body.nav-open {
+  overflow: hidden;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+#header { width: 100%; }
+
+.site-header {
+  width: 100%;
+  height: var(--header-height);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--background);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.header-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand a {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.main-nav { position: relative; }
+
+.nav-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+
+.nav-item { position: relative; }
+
+.nav-item > a,
+.nav-toggle {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.87rem;
+  font-weight: 400;
+  letter-spacing: 0.15px;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  transition: opacity 140ms ease;
+}
+
+.nav-item > a:hover,
+.nav-toggle:hover {
+  opacity: 0.8;
+}
+
+.nav-toggle::after {
+  content: "▾";
+  font-size: 0.7rem;
+  transition: transform 180ms var(--motion-standard);
+}
+
+.nav-item.is-open > .nav-toggle::after {
+  transform: rotate(180deg);
+}
+
+.sub-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+/* =========================
+   DESKTOP NAV
+========================= */
+
+@media (min-width: 769px) {
+
+  /* Hide hamburger completely on desktop */
+  .nav-hamburger {
+    display: none;
+  }
+
+  .nav-item > .sub-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+
+    padding: 10px 14px;
+    min-width: 240px;
+
+    box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(4px);
+
+    transition:
+      opacity 160ms ease,
+      transform 200ms var(--motion-standard),
+      visibility 0s linear 160ms;
+  }
+
+  .nav-item:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .sub-menu .sub-menu {
+    position: static;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding-left: 14px;
+    margin-top: 6px;
+    border-left: 1px solid var(--border-subtle);
+  }
+}
+
+
+/* =========================
+   MOBILE NAV
+========================= */
+
+@media (max-width: 768px) {
+
+  .header-inner { padding: 0 20px; }
+
+  /* Hamburger styling (only mobile) */
+  .nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .nav-hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text-primary);
+    display: block;
+  }
+
+  .main-nav {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+
+    background: var(--background);
+    border-bottom: 1px solid var(--border-subtle);
+
+    max-height: 0;
+    overflow: hidden;
+
+    transition: max-height 260ms var(--motion-standard);
+  }
+
+  body.nav-open .main-nav {
+    max-height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+  }
+
+  .nav-tree {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 24px 20px;
+  }
+
+  .nav-item > .sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    padding-left: 14px;
+    margin-top: 6px;
+    opacity: 0;
+
+    transition:
+      max-height 260ms var(--motion-standard),
+      opacity 180ms ease;
+  }
+
+  .nav-item.is-open > .sub-menu {
+    max-height: 600px;
+    opacity: 1;
+  }
+}
+
+
+/* =========================
+   LAYOUT
+========================= */
+
+main {
+  max-width: var(--max-width);
+  margin: 100px auto;
+  padding: 0 32px;
+  min-height: calc(100vh - 200px);
+}
+
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+
+h1 {
+  font-size: 2.9rem;
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.4px;
+  margin-bottom: 30px;
+}
+
+h2 {
+  font-size: 1.85rem;
+  font-weight: 500;
+  line-height: 1.28;
+  letter-spacing: -0.2px;
+  margin-top: 76px;
+  margin-bottom: 22px;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 22px;
+  max-width: 68ch;
+}
+
+
+/* =========================
+   HERO RHYTHM
+========================= */
+
+main > section:first-of-type {
+  margin-bottom: 60px;
+}
+
+main > section:first-of-type p:last-of-type {
+  margin-bottom: 34px;
+}
+
+
+/* =========================
+   LISTS
+========================= */
+
+main ul {
+  margin-top: 18px;
+  margin-bottom: 28px;
+  padding-left: 22px;
+}
+
+main ul li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+
+/* =========================
+   CTA
+========================= */
+
+.btn {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  transition: opacity 160ms ease;
+}
+
+.btn.primary {
+  background: var(--text-primary);
+  color: var(--background);
+}
+
+.btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+
+/* =========================
+   LINKS
+========================= */
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+main a {
+  text-decoration-thickness: 0.8px;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+#footer { margin-top: 120px; }
+
+.site-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 48px 32px;
+  background: var(--surface-muted);
+}
+
+.footer-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* =========================================
+   INSTITUTIONAL REFINEMENT ADDITIONS (Non-Destructive)
+   - Scoped hero rhythm enhancement
+   - Footer vertical rhythm calibration
+   - No existing selector modified
+========================================= */
+
+/* -------------------------
+   HERO — Scoped Line Rhythm
+-------------------------- */
+
+/* Only affects first section (hero) */
+main > section:first-of-type p {
+  line-height: 1.78; /* Slightly increased for dark mode breathing */
+}
+
+/* Slightly increase separation after hero block */
+main > section:first-of-type p:last-of-type {
+  margin-bottom: 40px;
+}
+
+
+/* -------------------------
+   FOOTER — Vertical Rhythm
+-------------------------- */
+
+.site-footer {
+  padding-top: 64px;   /* Only increases vertical breathing */
+  padding-bottom: 64px;
+}
+
+.footer-inner {
+  line-height: 1.78;   /* Slight breathing improvement */
+}
+
+.footer-inner p {
+  margin-bottom: 20px;
+}
+
+/* Subtle hierarchy refinement for footer links */
+.footer-links a {
+  font-weight: 500;
+  opacity: 0.92;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+}

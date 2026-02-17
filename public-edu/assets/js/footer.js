@@ -22,11 +22,12 @@ document.addEventListener("DOMContentLoaded", function () {
           </a>.
         </p>
 
+        <!-- Institutional Surfaces (Hardened v1.0) -->
         <p class="footer-links">
-          <a href="https://agileai.university">agileai.university</a> ·
-          <a href="https://edu.agileai.university">edu.agileai.university</a> ·
-          <a href="https://portal.agileai.university">portal.agileai.university</a> ·
-          <a href="https://verify.agileai.university">verify.agileai.university</a>
+          <a href="https://agileai.university">Institutional Site</a> ·
+          <a href="https://edu.agileai.university">Learning Surface</a> ·
+          <a href="https://portal.agileai.university">Student & Executive Portal</a> ·
+          <a href="https://verify.agileai.university">Credential Verification</a>
         </p>
 
         <p class="footer-links">

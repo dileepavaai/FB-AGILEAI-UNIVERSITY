@@ -16,9 +16,14 @@
     <div class="instrument-name">Agile + AI Capability Assessment</div>
   </div>
   <div class="assessment-shell-right">
-    <a href="https://agileai.university/academics/capability-assessment.html"
-       class="exit-link">← Exit assessment</a>
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+    Light
+  </button>
+
+  <a href="https://agileai.university/academics/capability-assessment.html"
+     class="exit-link">← Exit assessment</a>
   </div>
+
 </div>
 
 <main class="assessment-container">
@@ -325,6 +330,45 @@
 
 <script src="./assets/js/assessment-ui.js"></script>
 <script src="./assets/js/assessment.js"></script>
+
+<script>
+(function () {
+
+  const body = document.body;
+  const toggle = document.getElementById("themeToggle");
+  const storageKey = "assessmentTheme";
+
+  function applyTheme(mode) {
+    if (mode === "dark") {
+      body.classList.add("assessment-dark");
+      toggle.textContent = "Dark";
+    } else {
+      body.classList.remove("assessment-dark");
+      toggle.textContent = "Light";
+    }
+  }
+
+  // 1️⃣ Check manual override first
+  const savedTheme = localStorage.getItem(storageKey);
+
+  if (savedTheme) {
+    applyTheme(savedTheme);
+  } else {
+    // 2️⃣ Otherwise respect system preference
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(prefersDark ? "dark" : "light");
+  }
+
+  // 3️⃣ Toggle Click
+  toggle.addEventListener("click", function () {
+    const isDark = body.classList.contains("assessment-dark");
+    const newTheme = isDark ? "light" : "dark";
+    localStorage.setItem(storageKey, newTheme);
+    applyTheme(newTheme);
+  });
+
+})();
+</script>
 
 </body>
 </html>

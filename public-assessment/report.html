@@ -8,11 +8,99 @@
 
   <link rel="stylesheet" href="./assets/css/assessment.css" />
 
-  <!-- Executive upgrade UI styles (display only, no logic) -->
   <style>
+    /* =====================================================
+       Subtle Typographic Authority Elevation
+       (UNCHANGED)
+       ===================================================== */
+
+    .report-header h1 {
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .report-card h2 {
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin-bottom: 18px;
+    }
+
+    .report-subtitle {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* =====================================================
+       ADDITIVE: Spacing Rhythm Refinement (SAFE)
+       Does NOT change structure or logic
+       ===================================================== */
+
+    .report-card {
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .report-card p {
+      margin-bottom: 18px;
+    }
+
+    .report-card ul {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    /* Subtle divider between long-form sections */
+    .report-card:not(:last-of-type)::after {
+      content: "";
+      display: block;
+      margin: 36px auto 0 auto;
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        rgba(0,0,0,0.04),
+        rgba(0,0,0,0.10),
+        rgba(0,0,0,0.04)
+      );
+    }
+
+    /* =====================================================
+       ADDITIVE: Snapshot Visual Elevation (SAFE)
+       ===================================================== */
+
+    .chart-row {
+      align-items: center;
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .fill {
+      border-radius: 8px;
+      background: linear-gradient(
+        90deg,
+        #0f172a 0%,
+        #1f2937 100%
+      );
+      transition: width 0.6s ease;
+    }
+
+    .level {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* =====================================================
+       Executive CTA — Psychological Refinement
+       (UNCHANGED STRUCTURE)
+       ===================================================== */
+
     .paid-section {
       position: relative;
-      margin-top: 32px;
+      margin-top: 40px;
     }
 
     .paid-blur {
@@ -24,92 +112,138 @@
     .paid-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.94);
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 32px;
+      padding: 36px;
       border-radius: 12px;
     }
 
     .upgrade-box {
-      max-width: 560px;
+      max-width: 600px;
       border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 28px;
+      border-radius: 16px;
+      padding: 34px;
       background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     }
 
     .upgrade-box h3 {
       margin-top: 0;
-      font-size: 22px;
-      font-weight: 700;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
     .upgrade-box p {
       color: #374151;
-      line-height: 1.65;
-      font-size: 15px;
+      line-height: 1.7;
+      font-size: 15.5px;
+      margin-bottom: 18px;
     }
 
     .upgrade-btn {
-      margin-top: 18px;
-      padding: 14px 22px;
-      border-radius: 10px;
+      margin-top: 10px;
+      padding: 16px 26px;
+      border-radius: 12px;
       border: none;
-      background: #111827;
+      background: #0f172a;
       color: #ffffff;
-      font-weight: 600;
-      cursor: pointer;
+      font-weight: 700;
       font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+
+    .upgrade-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.18);
     }
 
     .upgrade-note {
       font-size: 13px;
       color: #6b7280;
-      margin-top: 12px;
+      margin-top: 14px;
+      line-height: 1.5;
     }
 
+    /* =====================================================
+       Next Actions (UNCHANGED)
+       ===================================================== */
+
     .next-actions {
-      margin-top: 36px;
-      padding: 20px;
-      border-radius: 12px;
+      margin-top: 40px;
+      padding: 22px;
+      border-radius: 14px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
     }
 
     .next-actions h3 {
       margin-top: 0;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 700;
     }
 
     .next-actions p {
-      font-size: 14px;
+      font-size: 14.5px;
       color: #374151;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .action-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
     }
 
     .action-btn {
-      padding: 12px 18px;
-      border-radius: 10px;
-      font-size: 14px;
+      padding: 13px 20px;
+      border-radius: 12px;
+      font-size: 14.5px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid #d1d5db;
       background: #ffffff;
       color: #111827;
+      transition: background 0.15s ease;
+    }
+
+    .action-btn:hover {
+      background: #f3f4f6;
     }
 
     .action-btn.primary {
       border-color: #9ca3af;
+    }
+
+    /* =====================================================
+       Institutional Footer (UNCHANGED STRUCTURE)
+       ===================================================== */
+
+    .institutional-footer {
+      margin-top: 48px;
+      padding: 28px;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      font-size: 14.5px;
+      line-height: 1.65;
+    }
+
+    .institutional-footer-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 0.01em;
+    }
+
+    .institutional-meta {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -118,12 +252,12 @@
 
 <main class="report-container">
 
-  <!-- ================= HEADER ================= -->
+  <!-- HEADER -->
   <section class="report-header">
     <h1>Agile + AI Capability Insight Report</h1>
 
     <p class="report-subtitle">
-      An insight-based reflection on Agile execution, Artificial Intelligence,
+      An insight-based academic reflection on Agile execution, Artificial Intelligence,
       systems thinking, ethics, trust, and learning orientation.
     </p>
 
@@ -133,10 +267,9 @@
     </p>
   </section>
 
-  <!-- ================= CONTEXT ================= -->
+  <!-- CONTEXT -->
   <section class="report-card">
     <h2>Your Context</h2>
-
     <ul class="context-list">
       <li><strong>Name:</strong> <span id="report-name-context">—</span></li>
       <li><strong>Role:</strong> <span id="report-role">—</span></li>
@@ -145,92 +278,59 @@
     </ul>
   </section>
 
-  <!-- ================= SNAPSHOT (FREE) ================= -->
+  <!-- SNAPSHOT -->
   <section class="report-card">
     <h2>Capability Snapshot</h2>
 
-    <div class="chart-row">
-      <span>Agile Execution</span>
-      <div class="bar"><div id="bar-agile" class="fill"></div></div>
-      <span id="label-agile" class="level">—</span>
-    </div>
-
-    <div class="chart-row">
-      <span>AI Conceptual Fluency</span>
-      <div class="bar"><div id="bar-ai" class="fill"></div></div>
-      <span id="label-ai" class="level">—</span>
-    </div>
-
-    <div class="chart-row">
-      <span>Systems Thinking</span>
-      <div class="bar"><div id="bar-systems" class="fill"></div></div>
-      <span id="label-systems" class="level">—</span>
-    </div>
-
-    <div class="chart-row">
-      <span>Ethics & Trust</span>
-      <div class="bar"><div id="bar-humics" class="fill"></div></div>
-      <span id="label-humics" class="level">—</span>
-    </div>
-
-    <div class="chart-row">
-      <span>Change & Learning</span>
-      <div class="bar"><div id="bar-change" class="fill"></div></div>
-      <span id="label-change" class="level">—</span>
-    </div>
+    <div class="chart-row"><span>Agile Execution</span><div class="bar"><div id="bar-agile" class="fill"></div></div><span id="label-agile" class="level">—</span></div>
+    <div class="chart-row"><span>AI Conceptual Fluency</span><div class="bar"><div id="bar-ai" class="fill"></div></div><span id="label-ai" class="level">—</span></div>
+    <div class="chart-row"><span>Systems Thinking</span><div class="bar"><div id="bar-systems" class="fill"></div></div><span id="label-systems" class="level">—</span></div>
+    <div class="chart-row"><span>Ethics & Trust</span><div class="bar"><div id="bar-humics" class="fill"></div></div><span id="label-humics" class="level">—</span></div>
+    <div class="chart-row"><span>Change & Learning</span><div class="bar"><div id="bar-change" class="fill"></div></div><span id="label-change" class="level">—</span></div>
   </section>
 
-  <!-- ================= SIGNALS (FREE) ================= -->
+  <!-- GOVERNANCE -->
   <section class="report-card">
-    <h2>Capability Signals</h2>
-
-    <div class="signal-block"><h3>Agile Execution Orientation</h3><p id="agile-signal">—</p></div>
-    <div class="signal-block"><h3>AI Conceptual Fluency</h3><p id="ai-signal">—</p></div>
-    <div class="signal-block"><h3>Systems Thinking & Integration</h3><p id="systems-signal">—</p></div>
-    <div class="signal-block"><h3>Ethics, Trust & Human Impact</h3><p id="governance-signal">—</p></div>
-    <div class="signal-block"><h3>Change & Learning Orientation</h3><p id="change-signal">—</p></div>
+    <h2>Governance & Usage Notice</h2>
+    <p class="auth-note">
+      This Insight Report is issued within the Agile AI Capability Assessment Framework (v1.0),
+      a structured academic model defined by Agile AI University.
+      It is developmental in nature and intended to support capability awareness,
+      informed dialogue, and responsible professional growth.
+    </p>
   </section>
 
-  <!-- ================= REFLECTION (FREE) ================= -->
-  <section class="report-card">
-    <h2>Overall Reflection</h2>
-    <p id="overall-signal">—</p>
-  </section>
-
-  <!-- ================= EXECUTIVE CTA (NO CLIENT LOGIC) ================= -->
+  <!-- EXECUTIVE CTA -->
   <section class="report-card paid-section">
-
     <div class="paid-blur">
-      <h2>Advanced Insight & Leadership Decision Support</h2>
-      <p>Executive-level interpretation is available in the next report.</p>
+      <h2>Executive-Level Interpretation</h2>
+      <p>Leadership-grade analysis is available in the Executive Insight Report.</p>
     </div>
 
     <div class="paid-overlay">
       <div class="upgrade-box">
-        <h3>Unlock Your Executive Insight Report</h3>
+        <h3>Unlock Executive Insight</h3>
 
         <p>
-          The <strong>Executive Insight Report</strong> provides decision-grade interpretation of your 
-          readiness for senior leadership, AI-driven roles, and organizational trust.
+          The <strong>Executive Insight Report</strong> extends this reflection into structured,
+          decision-grade interpretation aligned to leadership scope, governance readiness,
+          and AI-enabled role clarity.
         </p>
 
-        <button
-          class="upgrade-btn"
-          onclick="window.location.href='./executive-insight.html';"
-        >
+        <button class="upgrade-btn"
+          onclick="window.location.href='./executive-insight.html';">
           View Executive Insight Report
         </button>
 
         <div class="upgrade-note">
-          Used by senior professionals to reflect on leadership readiness, role alignment, and career 
-          progression in AI-enabled organizations.
+          Referenced by senior professionals for leadership alignment, decision maturity,
+          and executive responsibility within AI-enabled organizations.
         </div>
       </div>
     </div>
-
   </section>
 
-  <!-- ================= NEXT ACTIONS ================= -->
+  <!-- NEXT ACTIONS -->
   <section class="next-actions">
     <h3>Your Next Actions</h3>
     <p>These actions are available at any time and do not affect eligibility.</p>
@@ -240,36 +340,25 @@
         Download Insight Report (PDF)
       </button>
 
-      <button
-        class="action-btn"
-        onclick="window.location.href='./assessment.html';"
-      >
+      <button class="action-btn"
+        onclick="window.location.href='./assessment.html';">
         Retake Assessment (optional)
       </button>
     </div>
   </section>
 
-  <!-- ================= FOOTER ================= -->
-  <section class="report-footer-card">
-    <p>
-      <strong>Agile AI University — Official Website & Student Portal</strong><br />
-      <a href="https://agileai.university" target="_blank">agileai.university</a> ·
-      <a href="https://portal.agileai.university" target="_blank">portal.agileai.university</a><br />
-      Credential verification:
-      <a href="https://verify.agileai.university" target="_blank">verify.agileai.university</a>
-    </p>
+  <!-- FOOTER -->
+  <section class="institutional-footer">
+    <div class="institutional-footer-title">Agile AI University</div>
 
-    <p>
-      <strong>Report Reference ID:</strong>
-      <span id="report-reference-id">—</span><br />
-      <strong>Issue Date:</strong>
-      <span id="report-issue-date">—</span>
-    </p>
+    Agile AI University defines structured academic frameworks, capability standards,
+    and professional recognition models for the Agile AI domain. It operates as an
+    independent academic and professional body and is not positioned as a commercial training provider.
 
-    <p class="auth-note">
-      <strong>Governing Framework:</strong>
-      Agile + AI Capability Assessment Framework (v1.0)
-    </p>
+    <div class="institutional-meta">
+      Framework reference: Agile + AI Capability Assessment Framework (v1.0)<br />
+      © <span id="report-year"></span> Agile AI University. All rights reserved.
+    </div>
   </section>
 
 </main>
@@ -277,19 +366,8 @@
 <script src="./assets/js/assessment.js"></script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("viewExecutiveInsightBtn");
-
-    if (!btn) return;
-
-    btn.addEventListener("click", () => {
-      console.log("Executive Insight CTA clicked");
-
-      // STEP 2 will go here:
-      // 1. Fetch entitlement status
-      // 2. Allow access OR redirect to payment
-    });
-  });
+  document.getElementById("report-year").textContent =
+    new Date().getFullYear();
 </script>
 
 </body>

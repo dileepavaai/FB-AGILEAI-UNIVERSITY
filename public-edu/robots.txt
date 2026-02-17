@@ -1,0 +1,57 @@
+# ==================================================
+# Agile AI University – Robots.txt
+# Public Learning Surface Governance v2.1
+# Last Updated: 2026-02-11
+# ==================================================
+
+# --------------------------------------------------
+# Global policy – allow public learning surface
+# --------------------------------------------------
+User-agent: *
+Allow: /
+Crawl-delay: 10
+
+# --------------------------------------------------
+# Explicit public learning pages
+# --------------------------------------------------
+Allow: /index.html
+Allow: /start-here.html
+Allow: /core-concepts.html
+Allow: /myths-and-misconceptions.html
+Allow: /sitemap.html
+
+# --------------------------------------------------
+# Protect Internal / Non-Public System Areas
+# --------------------------------------------------
+Disallow: /public-admin/
+Disallow: /public-assessment/
+Disallow: /public-certs/
+Disallow: /public-portal/
+Disallow: /governance/
+Disallow: /scripts/
+Disallow: /.firebase/
+Disallow: /.git/
+
+# Prevent duplicate crawling via query parameters
+Disallow: /*?*
+
+# --------------------------------------------------
+# AI Crawler Transparency Policy
+# --------------------------------------------------
+
+# OpenAI
+User-agent: GPTBot
+Allow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+
+# Google AI / Gemini training opt-in
+User-agent: Google-Extended
+Allow: /
+
+# --------------------------------------------------
+# Sitemap Declaration
+# --------------------------------------------------
+Sitemap: https://learn.agileai.university/sitemap.xml

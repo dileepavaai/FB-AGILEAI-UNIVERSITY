@@ -14,13 +14,20 @@
         "portal": [
           "portal-agileai-university"
         ],
-        "certs": [
-          "certs-agileai"
-        ],
         "assessment": [
           "agileai-assessment"
+        ],
+        "agileai-edu": [
+          "agileai-edu"
+        ],
+        "agileai-learn": [
+          "agileai-learn"
+        ],
+        "agileai-certs": [
+          "certs-agileai"
         ]
       }
     }
-  }
+  },
+  "etags": {}
 }

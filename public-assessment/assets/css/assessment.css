@@ -1,10 +1,15 @@
-/* =========================================================
+/* ========================================================= 
    Agile + AI Capability Assessment
    Visual System — Institutional Grade
-   v1.9 FINAL (HEADER-AWARE, REPORT SAFE — LOCKED)
+   v2.0 FINAL (HEADER-AWARE, REPORT SAFE — LOCKED)
+   Executive-Safe Dark Mode (ASSESSMENT ONLY — GOVERNED)
    ========================================================= */
 
-/* ---------- Design Tokens ---------- */
+
+/* =========================================================
+   DESIGN TOKENS — LIGHT (CANONICAL)
+   ========================================================= */
+
 :root {
   --bg-main: #f8fafc;
   --bg-card: #ffffff;
@@ -20,14 +25,15 @@
 
   --max-width: 900px;
 
-  /* ✅ GLOBAL HEADER OFFSET (CANONICAL) */
   --site-header-height: 84px;
 }
 
-/* ---------- Base ---------- */
-* {
-  box-sizing: border-box;
-}
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -37,12 +43,11 @@ body {
   line-height: 1.65;
 }
 
-.hidden {
-  display: none !important;
-}
+.hidden { display: none !important; }
+
 
 /* =========================================================
-   ASSESSMENT SHELL (UNCHANGED)
+   ASSESSMENT SHELL
    ========================================================= */
 
 .assessment-shell {
@@ -84,8 +89,9 @@ body {
   background: #f1f5f9;
 }
 
+
 /* =========================================================
-   CONTAINERS (HEADER-AWARE)
+   CONTAINERS
    ========================================================= */
 
 .assessment-container,
@@ -95,13 +101,12 @@ body {
   padding: 0 20px;
 }
 
+
 /* =========================================================
-   PROGRESS INDICATOR
+   PROGRESS
    ========================================================= */
 
-.assessment-progress {
-  margin: 0 0 16px;
-}
+.assessment-progress { margin: 0 0 16px; }
 
 .progress-text {
   font-size: 13px;
@@ -126,8 +131,9 @@ body {
   transition: width 0.35s ease;
 }
 
+
 /* =========================================================
-   HEADINGS & TEXT
+   TYPOGRAPHY
    ========================================================= */
 
 h1 { font-size: 34px; font-weight: 800; margin: 0 0 14px; }
@@ -138,6 +144,7 @@ p {
   margin: 0 0 16px;
   color: var(--text-secondary);
 }
+
 
 /* =========================================================
    CARDS
@@ -156,6 +163,7 @@ p {
   padding: 32px;
   margin-top: 28px;
 }
+
 
 /* =========================================================
    BUTTONS
@@ -183,37 +191,6 @@ p {
   text-decoration: none;
 }
 
-/* =========================================================
-   REPORT HEADER
-   ========================================================= */
-
-.report-header h1 {
-  font-size: 36px;
-}
-
-.report-subtitle {
-  font-size: 16px;
-  color: var(--text-secondary);
-}
-
-.report-disclaimer {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-/* =========================================================
-   CONTEXT
-   ========================================================= */
-
-.context-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.context-list li {
-  margin-bottom: 10px;
-}
 
 /* =========================================================
    CAPABILITY SNAPSHOT
@@ -246,41 +223,6 @@ p {
   font-size: 14px;
 }
 
-/* =========================================================
-   FOOTER — TRUST & VERIFICATION
-   ========================================================= */
-
-.report-footer-card {
-  font-size: 14px;
-}
-
-.report-footer-card p:first-of-type {
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 16px;
-}
-
-.report-footer-card a {
-  color: #020617;
-  font-weight: 800;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-}
-
-.report-footer-card a:hover {
-  color: #1e293b;
-}
-
-.report-footer-card a[href*="certs"] {
-  font-weight: 900;
-}
-
-.auth-note {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 16px;
-}
 
 /* =========================================================
    MOBILE
@@ -296,13 +238,12 @@ p {
     gap: 6px;
   }
 
-  .level {
-    text-align: left;
-  }
+  .level { text-align: left; }
 }
 
+
 /* =========================================================
-   PRINT / PDF (LOCKED)
+   PRINT (LOCKED)
    ========================================================= */
 
 @media print {
@@ -336,4 +277,102 @@ p {
     font-size: 13px;
     line-height: 1.5;
   }
+}
+
+
+/* =========================================================
+   DARK MODE (SCOPED — ASSESSMENT ONLY)
+   Activates only when body has .assessment-dark
+   ========================================================= */
+
+body.assessment-dark {
+
+  --bg-main: #0b1220;
+  --bg-card: #111827;
+  --text-primary: #e5e7eb;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border: #1f2937;
+  --accent: #e5e7eb;
+
+  background: var(--bg-main);
+  color: var(--text-primary);
+}
+
+
+/* Shell */
+body.assessment-dark .assessment-shell {
+  background: #0f172a;
+  border-bottom: 1px solid var(--border);
+}
+
+
+/* Cards */
+body.assessment-dark .assessment-intro,
+body.assessment-dark .assessment-context,
+body.assessment-dark .assessment-section,
+body.assessment-dark .assessment-lead,
+body.assessment-dark .assessment-submit {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+
+/* Buttons */
+body.assessment-dark .primary-btn {
+  background: #e5e7eb;
+  color: #0b1220;
+}
+
+body.assessment-dark .primary-btn:hover {
+  background: #ffffff;
+}
+
+body.assessment-dark .secondary-btn {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+
+/* Form Fields */
+body.assessment-dark input,
+body.assessment-dark select {
+  background: #0f172a;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+
+/* Capability Snapshot — Institutional Refinement */
+body.assessment-dark .chart-row span:first-child {
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+body.assessment-dark .bar {
+  background: #1e293b;
+}
+
+body.assessment-dark .fill {
+  background: linear-gradient(
+    90deg,
+    #1e3a5f 0%,
+    #274c77 50%,
+    #2f5f94 100%
+  );
+  box-shadow: 0 0 4px rgba(47, 95, 148, 0.25);
+}
+
+body.assessment-dark .level {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+  min-width: 48px;
+  text-align: center;
 }

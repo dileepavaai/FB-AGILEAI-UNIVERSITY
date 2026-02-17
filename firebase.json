@@ -35,6 +35,15 @@
         "**/.*",
         "**/node_modules/**"
       ]
+    },
+    {
+      "target": "agileai-certs",
+      "public": "public-certs",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     }
   ],
   "firestore": {

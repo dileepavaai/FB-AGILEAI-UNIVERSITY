@@ -259,3 +259,38 @@ footer {
     color: #333;
   }
 }
+
+/* =========================================================
+   DARK MODE — CAPABILITY SNAPSHOT VISIBILITY FIX
+   Scoped to assessment-dark only
+   ========================================================= */
+
+body.assessment-dark .chart-row span:first-child {
+  /* Left label (e.g., Agile Execution) */
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+body.assessment-dark .chart-row .level {
+  /* Percentage / level text */
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+body.assessment-dark .bar {
+  background: #1f2937; /* darker track for contrast */
+}
+
+body.assessment-dark .fill {
+  background: linear-gradient(
+    90deg,
+    #3b82f6 0%,
+    #60a5fa 100%
+  ); /* executive blue gradient */
+}
+
+/* Slight glow for authority cue */
+body.assessment-dark .fill {
+  box-shadow: 0 0 6px rgba(96, 165, 250, 0.25);
+}

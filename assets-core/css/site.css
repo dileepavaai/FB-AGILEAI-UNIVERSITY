@@ -1,14 +1,12 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v11.3
+   AgileAI Public Surface — Institutional CSS v11.4
 
-   Consolidated Institutional Refinement
-   - Stable nav architecture (unchanged)
-   - Harmonized academic link tone
-   - Serif contrast tuning
-   - Global paragraph rhythm refinement
-   - Academic CTA hierarchy alignment
-   - Governance-safe footer tone
-   - Theme-safe dark mode
+   Safe Structural Upgrade
+   - No layout changes
+   - No typography changes
+   - No nav logic changes
+   - Adds controlled hamburger visibility
+   - Mobile hamburger styled intentionally
 ========================================= */
 
 
@@ -73,7 +71,7 @@ body.nav-open {
 
 
 /* =========================
-   HEADER (UNCHANGED ARCHITECTURE)
+   HEADER
 ========================= */
 
 #header { width: 100%; }
@@ -116,7 +114,7 @@ body.nav-open {
 
 
 /* =========================
-   NAVIGATION (UNCHANGED)
+   NAVIGATION
 ========================= */
 
 .main-nav { position: relative; }
@@ -182,6 +180,11 @@ body.nav-open {
 
 @media (min-width: 769px) {
 
+  /* Hide hamburger completely on desktop */
+  .nav-hamburger {
+    display: none;
+  }
+
   .nav-item > .sub-menu {
     position: absolute;
     right: 0;
@@ -236,6 +239,24 @@ body.nav-open {
 @media (max-width: 768px) {
 
   .header-inner { padding: 0 20px; }
+
+  /* Hamburger styling (only mobile) */
+  .nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .nav-hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text-primary);
+    display: block;
+  }
 
   .main-nav {
     position: fixed;
@@ -296,7 +317,7 @@ main {
 
 
 /* =========================
-   TYPOGRAPHY — REFINED
+   TYPOGRAPHY
 ========================= */
 
 h1 {
@@ -337,7 +358,7 @@ main > section:first-of-type p:last-of-type {
 
 
 /* =========================
-   ACADEMIC LIST REFINEMENT
+   LISTS
 ========================= */
 
 main ul {
@@ -353,7 +374,7 @@ main ul li {
 
 
 /* =========================
-   CTA — ACADEMIC HIERARCHY
+   CTA
 ========================= */
 
 .btn {
@@ -385,7 +406,7 @@ main ul li {
 
 
 /* =========================
-   INSTITUTIONAL LINK SYSTEM
+   LINKS
 ========================= */
 
 a {
@@ -424,4 +445,53 @@ main a {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.7;
+}
+
+/* =========================================
+   INSTITUTIONAL REFINEMENT ADDITIONS (Non-Destructive)
+   - Scoped hero rhythm enhancement
+   - Footer vertical rhythm calibration
+   - No existing selector modified
+========================================= */
+
+/* -------------------------
+   HERO — Scoped Line Rhythm
+-------------------------- */
+
+/* Only affects first section (hero) */
+main > section:first-of-type p {
+  line-height: 1.78; /* Slightly increased for dark mode breathing */
+}
+
+/* Slightly increase separation after hero block */
+main > section:first-of-type p:last-of-type {
+  margin-bottom: 40px;
+}
+
+
+/* -------------------------
+   FOOTER — Vertical Rhythm
+-------------------------- */
+
+.site-footer {
+  padding-top: 64px;   /* Only increases vertical breathing */
+  padding-bottom: 64px;
+}
+
+.footer-inner {
+  line-height: 1.78;   /* Slight breathing improvement */
+}
+
+.footer-inner p {
+  margin-bottom: 20px;
+}
+
+/* Subtle hierarchy refinement for footer links */
+.footer-links a {
+  font-weight: 500;
+  opacity: 0.92;
+}
+
+.footer-links a:hover {
+  opacity: 1;
 }

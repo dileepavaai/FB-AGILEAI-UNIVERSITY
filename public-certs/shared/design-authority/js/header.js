@@ -5,7 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="header-inner">
 
         <div class="brand">
-          <a href="/">AgileAI Foundation & Agile AI University</a>
+          <a href="https://agileai.foundation" target="_blank" rel="noopener">
+            Agile AI Foundation
+          </a>
+          <span class="brand-separator"> &amp; </span>
+          <a href="https://agileai.university">
+            Agile AI University
+          </a>
         </div>
 
         <!-- Hamburger -->

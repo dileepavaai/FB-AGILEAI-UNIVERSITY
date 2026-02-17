@@ -10,10 +10,6 @@
   <link rel="stylesheet" href="./assets/css/assessment.css" />
 
   <style>
-    /* =====================================================
-       Executive Instrument Header (LOCAL, GOVERNED)
-       ===================================================== */
-
     .exec-header {
       max-width: 960px;
       margin: 36px auto 20px;
@@ -39,10 +35,6 @@
       font-size: 13px;
       color: #6b7280;
     }
-
-    /* =====================================================
-       Executive Cards
-       ===================================================== */
 
     .exec-card {
       max-width: 720px;
@@ -77,10 +69,6 @@
       text-decoration: none;
     }
 
-    /* =====================================================
-       Loading State
-       ===================================================== */
-
     .exec-loading {
       font-size: 16px;
       color: #111827;
@@ -100,10 +88,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* =====================================================
-       Smooth Reveal
-       ===================================================== */
-
     #exec-content {
       animation: fadeIn 0.35s ease-in;
     }
@@ -118,10 +102,6 @@
       font-size: 13px;
       color: #6b7280;
     }
-
-    /* =====================================================
-       Executive Instrument Footer (LOCAL, GOVERNED)
-       ===================================================== */
 
     .exec-footer {
       margin-top: 64px;
@@ -167,10 +147,6 @@
       color: #6b7280;
     }
 
-    /* =====================================================
-       Print / PDF Safety
-       ===================================================== */
-
     @media print {
       .exec-header,
       .exec-footer {
@@ -182,23 +158,18 @@
 
 <body class="report-page">
 
-<!-- =====================================================
-     EXECUTIVE INSTRUMENT HEADER
-     ===================================================== -->
 <header class="exec-header">
   <div class="institution">Agile AI University</div>
   <div class="instrument">Executive Insight Report</div>
   <div class="descriptor">Governed Assessment Instrument · Decision Support</div>
 </header>
 
-<!-- ================= LOADING VIEW ================= -->
 <div id="exec-loading" class="exec-card exec-loading">
   <h1>Verifying Executive Access</h1>
   <p>Please wait while we confirm your Executive Insight entitlement.</p>
   <div class="spinner"></div>
 </div>
 
-<!-- ================= BLOCKED VIEW ================= -->
 <div id="exec-blocked" class="exec-card" style="display:none;">
   <h1>Executive Insight Access</h1>
   <p>Executive Insight access is governed and requires entitlement.</p>
@@ -209,17 +180,13 @@
   <a href="./report.html">Return to Insight Report</a>
 </div>
 
-<!-- ================= EXECUTIVE CONTENT ================= -->
 <main id="exec-content" class="report-container" style="display:none;">
-
   <section class="report-header">
     <h1>Executive Insight Report</h1>
-
     <p class="report-subtitle">
       Decision-grade interpretation of Agile + AI capability signals for leadership,
       role alignment, and next-step confidence.
     </p>
-
     <p class="report-disclaimer">
       Issued by <strong>Agile AI University</strong><br />
       Prepared for <strong><span id="exec-name">—</span></strong>
@@ -275,35 +242,41 @@
       It does not constitute certification, promotion approval, or hiring endorsement.
     </p>
   </section>
-
 </main>
 
-<!-- =====================================================
-     EXECUTIVE INSTRUMENT FOOTER
-     ===================================================== -->
 <footer class="exec-footer">
   <div class="exec-footer-inner">
     <p class="exec-footer-title">Agile AI University</p>
 
     <p class="exec-footer-text">
-      Executive Insight Reports are governed decision-support instruments.
-      They do not constitute certification, hiring endorsement, or promotional claims.
+      Agile AI University defines structured academic frameworks,
+      capability standards, and professional recognition models
+      for the Agile AI domain.
+      Executive Insight Reports are governed decision-support instruments
+      and do not constitute certification, hiring endorsement,
+      or promotional claims.
     </p>
 
     <p class="exec-footer-links">
-      <a href="https://agileai.university" target="_blank">agileai.university</a> ·
-      <a href="https://verify.agileai.university" target="_blank">verify.agileai.university</a>
+      <a href="https://agileai.university" target="_blank" rel="noopener noreferrer">agileai.university</a> ·
+      <a href="https://edu.agileai.university" target="_blank" rel="noopener noreferrer">edu.agileai.university</a> ·
+      <a href="https://portal.agileai.university" target="_blank" rel="noopener noreferrer">portal.agileai.university</a> ·
+      <a href="https://verify.agileai.university" target="_blank" rel="noopener noreferrer">verify.agileai.university</a> ·
+      <a href="https://foundation.agileai.university" target="_blank" rel="noopener noreferrer">foundation.agileai.university</a>
     </p>
 
     <p class="exec-footer-meta">
-      © 2025 Agile AI University. All rights reserved.
+      © <span id="exec-year"></span> Agile AI University. All rights reserved.
     </p>
   </div>
 </footer>
 
-<!-- ================= EXECUTIVE ACCESS GATE (CLOUD RUN · LOCKED) ================= -->
 <script>
 (async function () {
+
+  document.getElementById("exec-year").textContent =
+    new Date().getFullYear();
+
   try {
     const context =
       JSON.parse(sessionStorage.getItem("assessmentContext") || "null");
@@ -330,7 +303,6 @@
       return;
     }
 
-    // Access granted (backend-verified)
     showExecutive(context);
 
   } catch (err) {
@@ -344,6 +316,7 @@
     document.getElementById("exec-content").style.display = "block";
     document.getElementById("exec-name").textContent = context.name || "—";
   }
+
 })();
 </script>
 

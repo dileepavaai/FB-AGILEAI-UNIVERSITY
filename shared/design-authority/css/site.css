@@ -339,6 +339,18 @@ body.nav-open {
   }
 }
 
+/* =========================================
+   SPACING GOVERNANCE DISCIPLINE
+   -----------------------------------------
+   - Header is fixed at var(--header-height)
+   - Main vertical offset must reference header-height
+   - No hardcoded top margins allowed
+   - Bottom breathing space must be padding-based
+   - Footer spacing must not depend on magic numbers
+
+   Any layout change requires version bump.
+========================================= */
+
 
 /* =========================
    LAYOUT
@@ -407,3 +419,48 @@ body.surface-verify .header-inner::after {
     font-size: 0.6rem;
   }
 }
+
+/* =========================================
+   VERIFY SURFACE REFINEMENT
+   Governance: Additive, Scoped, Non-Destructive
+   Version: v12.1 Extension Layer
+========================================= */
+
+body.surface-verify .verify-console .card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--surface-elevated);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+  transition:
+    background var(--transition-speed),
+    box-shadow var(--transition-speed),
+    border-color var(--transition-speed);
+}
+
+/* Dark mode refinement */
+:root[data-theme="dark"] body.surface-verify .verify-console .card {
+  box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.06);
+}
+
+/* =========================================
+   DARK MODE CONTRAST CALIBRATION
+   Governance: Visual refinement only
+========================================= */
+
+:root[data-theme="dark"] {
+  --text-secondary: #c2c7d0;
+  --surface-muted: #161b24;
+}
+
+/* Improve input clarity in dark mode */
+:root[data-theme="dark"] input {
+  background: #0c111a;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-primary);
+}
+
+:root[data-theme="dark"] input::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+

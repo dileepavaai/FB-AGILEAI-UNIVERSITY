@@ -1,6 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
+   Current Version: v12.2 (Governed Refinement Layer)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -19,6 +20,8 @@
    v11.x  → Structural hardening phase
    v11.5  → Active state + verify badge
    v12.0  → Governance baseline lock
+   v12.1  → Verify surface refinement
+   v12.2  → Link calibration + motion discipline
 ========================================= */
 
 
@@ -37,24 +40,38 @@
   --max-width: 720px;
   --header-height: 80px;
 
-  --transition-speed: 180ms;
+  /* Motion Discipline */
+  --transition-speed-fast: 120ms;
+  --transition-speed-standard: 180ms;
+  --transition-speed-slow: 260ms;
   --motion-standard: cubic-bezier(.4,0,.2,1);
 
-  --link-color: #2e5c7a;
-  --link-hover: #1f3f56;
+  /* Institutional Link Calibration */
+  --link-color: #2c4f68;
+  --link-hover: #1d3648;
 }
 
 :root[data-theme="dark"] {
   --text-primary: #f2f2f2;
-  --text-secondary: #b5b5b5;
+  --text-secondary: #c2c7d0;
   --border-subtle: #2a2a2a;
   --background: #0f1115;
-  --surface-muted: #151821;
+  --surface-muted: #161b24;
   --surface-elevated: rgba(27,31,38,0.94);
 
-  --link-color: #7fb3d5;
-  --link-hover: #a8d0ea;
+  --link-color: #8fb9dd;
+  --link-hover: #b7d4f0;
 }
+
+
+/* =========================================
+   MOTION GOVERNANCE DISCIPLINE
+   -----------------------------------------
+   - No animation > 300ms
+   - No bounce or playful easing
+   - All transitions use var(--motion-standard)
+   - Motion supports clarity, not decoration
+========================================= */
 
 
 /* =========================
@@ -73,8 +90,8 @@ body {
   font-size: 18px;
   line-height: 1.72;
   transition:
-    background var(--transition-speed),
-    color var(--transition-speed);
+    background var(--transition-speed-standard),
+    color var(--transition-speed-standard);
 }
 
 body.nav-open {
@@ -160,7 +177,7 @@ body.nav-open {
   align-items: center;
   gap: 6px;
 
-  transition: opacity 140ms ease;
+  transition: opacity var(--transition-speed-fast) var(--motion-standard);
 }
 
 .nav-item > a:hover,
@@ -197,7 +214,7 @@ body.nav-open {
 .nav-toggle::after {
   content: "▾";
   font-size: 0.7rem;
-  transition: transform 180ms var(--motion-standard);
+  transition: transform var(--transition-speed-standard) var(--motion-standard);
 }
 
 .nav-item.is-open > .nav-toggle::after {
@@ -245,9 +262,9 @@ body.nav-open {
     transform: translateY(4px);
 
     transition:
-      opacity 160ms ease,
-      transform 200ms var(--motion-standard),
-      visibility 0s linear 160ms;
+      opacity var(--transition-speed-standard) ease,
+      transform var(--transition-speed-slow) var(--motion-standard),
+      visibility 0s linear var(--transition-speed-standard);
   }
 
   .nav-item:hover > .sub-menu {
@@ -306,7 +323,7 @@ body.nav-open {
     max-height: 0;
     overflow: hidden;
 
-    transition: max-height 260ms var(--motion-standard);
+    transition: max-height var(--transition-speed-slow) var(--motion-standard);
   }
 
   body.nav-open .main-nav {
@@ -329,8 +346,8 @@ body.nav-open {
     opacity: 0;
 
     transition:
-      max-height 260ms var(--motion-standard),
-      opacity 180ms ease;
+      max-height var(--transition-speed-slow) var(--motion-standard),
+      opacity var(--transition-speed-standard) ease;
   }
 
   .nav-item.is-open > .sub-menu {
@@ -339,22 +356,10 @@ body.nav-open {
   }
 }
 
+
 /* =========================================
    SPACING GOVERNANCE DISCIPLINE
-   -----------------------------------------
-   - Header is fixed at var(--header-height)
-   - Main vertical offset must reference header-height
-   - No hardcoded top margins allowed
-   - Bottom breathing space must be padding-based
-   - Footer spacing must not depend on magic numbers
-
-   Any layout change requires version bump.
 ========================================= */
-
-
-/* =========================
-   LAYOUT
-========================= */
 
 main {
   max-width: var(--max-width);
@@ -393,8 +398,23 @@ p {
 
 
 /* =========================
+   LINKS
+========================= */
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color var(--transition-speed-fast) var(--motion-standard);
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+
+/* =========================
    VERIFY SURFACE BADGE
-   (Strictly Scoped)
 ========================= */
 
 body.surface-verify .header-inner::after {
@@ -413,18 +433,10 @@ body.surface-verify .header-inner::after {
   pointer-events: none;
 }
 
-@media (max-width: 768px) {
-  body.surface-verify .header-inner::after {
-    right: 20px;
-    font-size: 0.6rem;
-  }
-}
 
-/* =========================================
+/* =========================
    VERIFY SURFACE REFINEMENT
-   Governance: Additive, Scoped, Non-Destructive
-   Version: v12.1 Extension Layer
-========================================= */
+========================= */
 
 body.surface-verify .verify-console .card {
   border: 1px solid var(--border-subtle);
@@ -432,28 +444,21 @@ body.surface-verify .verify-console .card {
   background: var(--surface-elevated);
   box-shadow: 0 10px 30px rgba(0,0,0,0.04);
   transition:
-    background var(--transition-speed),
-    box-shadow var(--transition-speed),
-    border-color var(--transition-speed);
+    background var(--transition-speed-standard),
+    box-shadow var(--transition-speed-standard),
+    border-color var(--transition-speed-standard);
 }
 
-/* Dark mode refinement */
 :root[data-theme="dark"] body.surface-verify .verify-console .card {
   box-shadow: 0 14px 40px rgba(0,0,0,0.35);
   border-color: rgba(255,255,255,0.06);
 }
 
-/* =========================================
-   DARK MODE CONTRAST CALIBRATION
-   Governance: Visual refinement only
-========================================= */
 
-:root[data-theme="dark"] {
-  --text-secondary: #c2c7d0;
-  --surface-muted: #161b24;
-}
+/* =========================
+   DARK MODE INPUT CALIBRATION
+========================= */
 
-/* Improve input clarity in dark mode */
 :root[data-theme="dark"] input {
   background: #0c111a;
   border: 1px solid rgba(255,255,255,0.08);
@@ -463,4 +468,3 @@ body.surface-verify .verify-console .card {
 :root[data-theme="dark"] input::placeholder {
   color: rgba(255,255,255,0.35);
 }
-

@@ -1,134 +1,226 @@
+/* ==========================================================
+   AgileAI Shared Header Controller
+   Governance Baseline: v2.0
+   Status: LOCKED
+   Scope: Shared Design Authority Layer
+
+   Governance Rules:
+   - No structural DOM changes without version bump
+   - No navigation logic mutation without governance review
+   - Surface-specific menus must rely on data-surface attribute
+   - Active state detection must remain data-path based
+   - Mobile behavior must remain CSS-driven (no layout overrides)
+========================================================== */
+
 document.addEventListener("DOMContentLoaded", function () {
 
-  const headerHTML = `
-    <header class="site-header">
-      <div class="header-inner">
+  const body = document.body;
+  const surface = body.getAttribute("data-surface");
+  const currentPath = window.location.pathname.replace(/\/$/, "");
 
-        <div class="brand">
-          <a href="https://agileai.foundation" target="_blank" rel="noopener">
-            Agile AI Foundation
-          </a>
-          <span class="brand-separator"> &amp; </span>
-          <a href="https://agileai.university">
-            Agile AI University
-          </a>
+  let headerHTML = "";
+
+
+  /* =====================================================
+     CERTS SURFACE — Minimal Governance Menu
+     Activated when: <body data-surface="certs">
+  ===================================================== */
+
+  if (surface === "certs") {
+
+    headerHTML = `
+      <header class="site-header">
+        <div class="header-inner">
+
+          <div class="brand">
+            <a href="https://agileai.university">
+              Agile AI University
+            </a>
+          </div>
+
+          <button class="nav-hamburger"
+                  aria-label="Toggle Navigation"
+                  aria-expanded="false"
+                  aria-controls="primary-navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <nav class="main-nav"
+               id="primary-navigation"
+               aria-hidden="true">
+            <ul class="nav-tree" role="menubar">
+
+              <li role="none">
+                <a role="menuitem"
+                   href="/verify.html"
+                   data-path="/verify.html">
+                   Verification
+                </a>
+              </li>
+
+              <li role="none">
+                <a role="menuitem"
+                   href="https://agileai.university/credentials/framework.html">
+                   Credential Framework
+                </a>
+              </li>
+
+              <li role="none">
+                <a role="menuitem"
+                   href="https://agileai.university/governance/">
+                   Governance
+                </a>
+              </li>
+
+              <li role="none">
+                <a role="menuitem"
+                   href="https://agileai.university/contact/">
+                   Contact
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+
+          <div class="theme-control">
+            <button id="theme-toggle">☀</button>
+          </div>
+
         </div>
+      </header>
+    `;
 
-        <!-- Hamburger -->
-        <button class="nav-hamburger"
-                aria-label="Toggle Navigation"
-                aria-expanded="false"
-                aria-controls="primary-navigation">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+  } else {
 
-        <nav class="main-nav" id="primary-navigation" aria-hidden="true">
-          <ul class="nav-tree" role="menubar">
+  /* =====================================================
+     DEFAULT SURFACE — Institutional Public Menu
+  ===================================================== */
 
-            <li class="nav-item" role="none">
-              <a href="/" role="menuitem">Home</a>
-            </li>
+    headerHTML = `
+      <header class="site-header">
+        <div class="header-inner">
 
-            <li class="nav-item has-children" role="none">
-              <button class="nav-toggle"
-                      aria-expanded="false">
-                Intellectual Foundation
-              </button>
-              <ul class="sub-menu" role="menu">
-                <li role="none"><a role="menuitem"
-                  href="/intellectual-foundation/capability-architecture.html">
-                  Capability Architecture</a></li>
-                <li role="none"><a role="menuitem"
-                  href="/intellectual-foundation/agile-ai-ecosystem.html">
-                  Agile AI Ecosystem</a></li>
-                <li role="none"><a role="menuitem"
-                  href="/intellectual-foundation/myth-framework.html">
-                  Myth Framework</a></li>
-                <li role="none"><a role="menuitem"
-                  href="/intellectual-foundation/mindset-transition.html">
-                  Mindset Transition</a></li>
-              </ul>
-            </li>
+          <div class="brand">
+            <a href="https://agileai.foundation"
+               target="_blank"
+               rel="noopener">
+              Agile AI Foundation
+            </a>
+            <span class="brand-separator"> &amp; </span>
+            <a href="https://agileai.university">
+              Agile AI University
+            </a>
+          </div>
 
-            <li class="nav-item has-children" role="none">
-              <button class="nav-toggle"
-                      aria-expanded="false">
-                Programs
-              </button>
-              <ul class="sub-menu" role="menu">
-                <li role="none">
-                  <a role="menuitem" href="/public-assessment/">
-                    Agile + AI Capability Assessment
-                  </a>
-                </li>
-                <li role="none">
-                  <a role="menuitem" href="/academics/">
-                    Academic Frameworks
-                  </a>
-                </li>
+          <button class="nav-hamburger"
+                  aria-label="Toggle Navigation"
+                  aria-expanded="false"
+                  aria-controls="primary-navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
 
-                <li class="nav-item has-children" role="none">
-                  <button class="nav-toggle"
-                          aria-expanded="false">
-                    Professional Pathways
-                  </button>
-                  <ul class="sub-menu" role="menu">
-                    <li role="none"><a role="menuitem"
-                      href="/credentials/practitioner.html">Practitioner</a></li>
-                    <li role="none"><a role="menuitem"
-                      href="/credentials/manager.html">Manager</a></li>
-                    <li role="none"><a role="menuitem"
-                      href="/credentials/leader.html">Leader</a></li>
-                  </ul>
-                </li>
+          <nav class="main-nav"
+               id="primary-navigation"
+               aria-hidden="true">
+            <ul class="nav-tree" role="menubar">
 
-              </ul>
-            </li>
+              <li role="none">
+                <a role="menuitem"
+                   href="/"
+                   data-path="/">
+                   Home
+                </a>
+              </li>
 
-            <li role="none"><a role="menuitem"
-              href="/verification/">Verification</a></li>
-            <li role="none"><a role="menuitem"
-              href="/governance/">Governance</a></li>
-            <li role="none"><a role="menuitem"
-              href="/contact/">Contact</a></li>
+              <li role="none">
+                <a role="menuitem"
+                   href="/verification/"
+                   data-path="/verification">
+                   Verification
+                </a>
+              </li>
 
-          </ul>
-        </nav>
+              <li role="none">
+                <a role="menuitem"
+                   href="/governance/"
+                   data-path="/governance">
+                   Governance
+                </a>
+              </li>
 
-        <div class="theme-control">
-          <button id="theme-toggle">☀</button>
+              <li role="none">
+                <a role="menuitem"
+                   href="/contact/"
+                   data-path="/contact">
+                   Contact
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+
+          <div class="theme-control">
+            <button id="theme-toggle">☀</button>
+          </div>
+
         </div>
+      </header>
+    `;
+  }
 
-      </div>
-    </header>
-  `;
+
+  /* =====================================================
+     INJECTION SAFETY
+  ===================================================== */
 
   const headerContainer = document.getElementById("header");
   if (!headerContainer) return;
 
   headerContainer.innerHTML = headerHTML;
 
-  const body = document.body;
+
+  /* =====================================================
+     ACTIVE STATE DISCIPLINE (Data-Path Based)
+  ===================================================== */
+
+  const navLinks = document.querySelectorAll(".main-nav a[data-path]");
+
+  navLinks.forEach(link => {
+    const linkPath = link.getAttribute("data-path");
+
+    if (
+      currentPath === linkPath ||
+      currentPath.startsWith(linkPath + "/")
+    ) {
+      link.classList.add("is-active");
+      link.setAttribute("aria-current", "page");
+    }
+  });
+
+
+  /* =====================================================
+     MOBILE NAVIGATION CONTROLLER
+     (CSS governs layout, JS only toggles state)
+  ===================================================== */
+
   const hamburger = document.querySelector(".nav-hamburger");
   const nav = document.querySelector(".main-nav");
   const toggles = document.querySelectorAll(".nav-toggle");
 
-  /* =========================
-     HAMBURGER TOGGLE
-  ========================= */
-
   function closeMobileNav() {
     body.classList.remove("nav-open");
-    hamburger.setAttribute("aria-expanded", "false");
-    nav.setAttribute("aria-hidden", "true");
+    if (hamburger) hamburger.setAttribute("aria-expanded", "false");
+    if (nav) nav.setAttribute("aria-hidden", "true");
   }
 
   function openMobileNav() {
     body.classList.add("nav-open");
-    hamburger.setAttribute("aria-expanded", "true");
-    nav.setAttribute("aria-hidden", "false");
+    if (hamburger) hamburger.setAttribute("aria-expanded", "true");
+    if (nav) nav.setAttribute("aria-hidden", "false");
   }
 
   if (hamburger) {
@@ -138,47 +230,38 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* =========================
-     ACCORDION
-  ========================= */
+
+  /* =====================================================
+     SUBMENU ACCORDION (Future-safe, non-destructive)
+  ===================================================== */
 
   toggles.forEach(toggle => {
     toggle.addEventListener("click", function (e) {
       e.preventDefault();
-
       const parent = this.parentElement;
       const isOpen = parent.classList.contains("is-open");
-
       parent.classList.toggle("is-open");
       this.setAttribute("aria-expanded", !isOpen);
     });
   });
 
-  /* =========================
-     OUTSIDE CLICK CLOSE
-  ========================= */
+
+  /* =====================================================
+     GLOBAL CLOSE CONTROLS
+  ===================================================== */
 
   document.addEventListener("click", function (e) {
     if (!body.classList.contains("nav-open")) return;
-
     if (!e.target.closest(".site-header")) {
       closeMobileNav();
     }
   });
-
-  /* =========================
-     ESC KEY CLOSE
-  ========================= */
 
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
       closeMobileNav();
     }
   });
-
-  /* =========================
-     DESKTOP RESET
-  ========================= */
 
   window.addEventListener("resize", function () {
     if (window.innerWidth >= 769) {
@@ -188,9 +271,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  /* =========================
-     THEME SAFETY RULE
-  ========================= */
+
+  /* =====================================================
+     THEME SAFETY EVENT (DO NOT REMOVE)
+  ===================================================== */
 
   document.dispatchEvent(new Event("headerInjected"));
 

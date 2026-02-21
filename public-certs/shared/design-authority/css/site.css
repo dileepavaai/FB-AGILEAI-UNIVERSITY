@@ -1,12 +1,24 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v11.4
+   AgileAI Public Surface — Institutional CSS
+   Governance Baseline: v12.0
+   Status: LOCKED
+   Scope: Shared Design Authority Layer
 
-   Safe Structural Upgrade
-   - No layout changes
-   - No typography changes
-   - No nav logic changes
-   - Adds controlled hamburger visibility
-   - Mobile hamburger styled intentionally
+   Governance Rules:
+   - No layout changes without explicit version bump
+   - No typography changes without governance review
+   - No navigation logic changes in CSS layer
+   - Surface-specific behavior must be body-scoped
+   - Extensions must be additive (non-destructive)
+========================================= */
+
+
+/* =========================================
+   SURFACE VERSION DISCIPLINE
+   -----------------------------------------
+   v11.x  → Structural hardening phase
+   v11.5  → Active state + verify badge
+   v12.0  → Governance baseline lock
 ========================================= */
 
 
@@ -103,6 +115,8 @@ body.nav-open {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  position: relative; /* Needed for scoped surface badge */
 }
 
 .brand a {
@@ -154,6 +168,32 @@ body.nav-open {
   opacity: 0.8;
 }
 
+
+/* =========================
+   ACTIVE NAV STATE (Additive)
+========================= */
+
+.main-nav a.is-active {
+  font-weight: 600;
+  position: relative;
+}
+
+.main-nav a.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+
+/* =========================
+   DROPDOWN
+========================= */
+
 .nav-toggle::after {
   content: "▾";
   font-size: 0.7rem;
@@ -180,10 +220,7 @@ body.nav-open {
 
 @media (min-width: 769px) {
 
-  /* Hide hamburger completely on desktop */
-  .nav-hamburger {
-    display: none;
-  }
+  .nav-hamburger { display: none; }
 
   .nav-item > .sub-menu {
     position: absolute;
@@ -240,7 +277,6 @@ body.nav-open {
 
   .header-inner { padding: 0 20px; }
 
-  /* Hamburger styling (only mobile) */
   .nav-hamburger {
     display: flex;
     flex-direction: column;
@@ -317,7 +353,7 @@ main {
 
 
 /* =========================
-   TYPOGRAPHY
+   TYPOGRAPHY (LOCKED)
 ========================= */
 
 h1 {
@@ -345,153 +381,29 @@ p {
 
 
 /* =========================
-   HERO RHYTHM
+   VERIFY SURFACE BADGE
+   (Strictly Scoped)
 ========================= */
 
-main > section:first-of-type {
-  margin-bottom: 60px;
-}
+body.surface-verify .header-inner::after {
+  content: "Credential Verification Surface";
+  position: absolute;
+  right: 32px;
+  bottom: -8px;
 
-main > section:first-of-type p:last-of-type {
-  margin-bottom: 34px;
-}
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 
-
-/* =========================
-   LISTS
-========================= */
-
-main ul {
-  margin-top: 18px;
-  margin-bottom: 28px;
-  padding-left: 22px;
-}
-
-main ul li {
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-
-
-/* =========================
-   CTA
-========================= */
-
-.btn {
-  display: inline-block;
-  margin-top: 16px;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 0.92rem;
-  letter-spacing: 0.2px;
-  text-decoration: none;
-  transition: opacity 160ms ease;
-}
-
-.btn.primary {
-  background: var(--text-primary);
-  color: var(--background);
-}
-
-.btn.secondary {
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  color: var(--text-primary);
-}
-
-.btn:hover {
-  opacity: 0.85;
-}
-
-
-/* =========================
-   LINKS
-========================= */
-
-a {
-  color: var(--link-color);
-  text-decoration: none;
-  transition: color 150ms ease;
-}
-
-a:hover {
-  color: var(--link-hover);
-  text-decoration: underline;
-}
-
-main a {
-  text-decoration-thickness: 0.8px;
-  text-underline-offset: 2px;
-  font-weight: 500;
-}
-
-
-/* =========================
-   FOOTER
-========================= */
-
-#footer { margin-top: 120px; }
-
-.site-footer {
-  border-top: 1px solid var(--border-subtle);
-  padding: 48px 32px;
-  background: var(--surface-muted);
-}
-
-.footer-inner {
-  max-width: 720px;
-  margin: 0 auto;
-  font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.7;
+  opacity: 0.6;
+
+  pointer-events: none;
 }
 
-/* =========================================
-   INSTITUTIONAL REFINEMENT ADDITIONS (Non-Destructive)
-   - Scoped hero rhythm enhancement
-   - Footer vertical rhythm calibration
-   - No existing selector modified
-========================================= */
-
-/* -------------------------
-   HERO — Scoped Line Rhythm
--------------------------- */
-
-/* Only affects first section (hero) */
-main > section:first-of-type p {
-  line-height: 1.78; /* Slightly increased for dark mode breathing */
-}
-
-/* Slightly increase separation after hero block */
-main > section:first-of-type p:last-of-type {
-  margin-bottom: 40px;
-}
-
-
-/* -------------------------
-   FOOTER — Vertical Rhythm
--------------------------- */
-
-.site-footer {
-  padding-top: 64px;   /* Only increases vertical breathing */
-  padding-bottom: 64px;
-}
-
-.footer-inner {
-  line-height: 1.78;   /* Slight breathing improvement */
-}
-
-.footer-inner p {
-  margin-bottom: 20px;
-}
-
-/* Subtle hierarchy refinement for footer links */
-.footer-links a {
-  font-weight: 500;
-  opacity: 0.92;
-}
-
-.footer-links a:hover {
-  opacity: 1;
+@media (max-width: 768px) {
+  body.surface-verify .header-inner::after {
+    right: 20px;
+    font-size: 0.6rem;
+  }
 }

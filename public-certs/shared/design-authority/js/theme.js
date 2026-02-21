@@ -1,6 +1,12 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v7.5
+   AgileAI Public Surface — Theme Controller v7.6
    Institutional Production Baseline (Light / Dark Only)
+
+   CHANGE LOG
+   ---------------------------------------------------------
+   v7.6 → Theme icon scoped update (.theme-icon)
+           No textContent replacement
+           Header structure compatible
 
    DESIGN GUARANTEES
    ---------------------------------------------------------
@@ -36,8 +42,6 @@
   }
 
   function applyTheme(mode) {
-    // Only apply attribute for dark mode.
-    // Light mode is the default (no attribute).
     if (mode === "dark") {
       root.setAttribute("data-theme", "dark");
     } else {
@@ -49,7 +53,10 @@
     const btn = document.getElementById("theme-toggle");
     if (!btn) return;
 
-    btn.textContent = mode === "dark" ? "🌙" : "☀️";
+    const icon = btn.querySelector(".theme-icon");
+    if (!icon) return;
+
+    icon.textContent = mode === "dark" ? "🌙" : "☀";
     btn.title =
       mode === "dark"
         ? "Switch to Light Mode"

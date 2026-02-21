@@ -1,6 +1,7 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
+   Current Version: v2.1 (Theme Toggle Structural Parity Lock)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -10,6 +11,7 @@
    - Surface-specific menus must rely on data-surface attribute
    - Active state detection must remain data-path based
    - Mobile behavior must remain CSS-driven (no layout overrides)
+   - Theme control markup must remain consistent across surfaces
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -23,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* =====================================================
      CERTS SURFACE — Minimal Governance Menu
-     Activated when: <body data-surface="certs">
   ===================================================== */
 
   if (surface === "certs") {
@@ -85,7 +86,9 @@ document.addEventListener("DOMContentLoaded", function () {
           </nav>
 
           <div class="theme-control">
-            <button id="theme-toggle">☀</button>
+            <button id="theme-toggle" aria-label="Toggle Theme">
+              <span class="theme-icon">☀</span>
+            </button>
           </div>
 
         </div>
@@ -164,7 +167,9 @@ document.addEventListener("DOMContentLoaded", function () {
           </nav>
 
           <div class="theme-control">
-            <button id="theme-toggle">☀</button>
+            <button id="theme-toggle" aria-label="Toggle Theme">
+              <span class="theme-icon">☀</span>
+            </button>
           </div>
 
         </div>
@@ -204,7 +209,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* =====================================================
      MOBILE NAVIGATION CONTROLLER
-     (CSS governs layout, JS only toggles state)
   ===================================================== */
 
   const hamburger = document.querySelector(".nav-hamburger");
@@ -232,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* =====================================================
-     SUBMENU ACCORDION (Future-safe, non-destructive)
+     SUBMENU ACCORDION
   ===================================================== */
 
   toggles.forEach(toggle => {

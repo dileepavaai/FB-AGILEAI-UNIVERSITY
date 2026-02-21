@@ -5,28 +5,26 @@
   <title>Official Credential Verification Portal – Agile AI University</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Cache control -->
+  <!-- Cache Control -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- Institutional Design System -->
-  <link rel="stylesheet" href="./shared/assets-core/css/site.css" />
+  <!-- Institutional Design Authority (LOCKED RULE) -->
+  <link rel="stylesheet" href="shared/design-authority/css/site.css" />
 
-  <!-- Surface-specific layout -->
-  <link rel="stylesheet" href="./assets/css/verify.css" />
+  <!-- Surface-Specific Styling -->
+  <link rel="stylesheet" href="assets/css/verify.css" />
 </head>
 
-<body>
+<body data-surface="certs">
 
-  <!-- HEADER MOUNT POINT -->
+  <!-- HEADER MOUNT -->
   <div id="header"></div>
 
-  <!-- Inject Header -->
-  <script src="./shared/design-authority/js/header.js"></script>
-
-  <!-- Inject Theme -->
-  <script src="./shared/design-authority/js/theme.js"></script>
+  <!-- Shared UI Infrastructure -->
+  <script src="shared/design-authority/js/header.js"></script>
+  <script src="shared/design-authority/js/theme.js"></script>
 
   <!-- ===== Verification Console ===== -->
   <main class="verify-console">
@@ -57,19 +55,19 @@
         Verify Credential
       </button>
 
-      <div id="result"></div>
+      <div id="result" aria-live="polite"></div>
 
     </div>
   </main>
 
-  <!-- FOOTER MOUNT POINT -->
+  <!-- FOOTER MOUNT -->
   <div id="footer"></div>
 
-  <!-- Inject Footer -->
-  <script src="./shared/design-authority/js/footer.js"></script>
+  <!-- Shared Footer -->
+  <script src="shared/design-authority/js/footer.js"></script>
 
-  <!-- Verification Logic -->
-  <script type="module" src="./assets/js/verify.js"></script>
+  <!-- Surface-Specific Verification Logic -->
+  <script type="module" src="assets/js/verify.js"></script>
 
 </body>
 </html>

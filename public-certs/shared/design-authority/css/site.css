@@ -1,4 +1,4 @@
-/* ========================================= 
+/* =========================================
    AgileAI Public Surface — Institutional CSS v11.4
 
    Safe Structural Upgrade
@@ -105,29 +105,11 @@ body.nav-open {
   justify-content: space-between;
 }
 
-/* Existing brand styling preserved */
 .brand a {
   text-decoration: none;
   color: var(--text-primary);
   font-size: 1rem;
   font-weight: 400;
-}
-
-/* =========================================
-   BRAND — Dual Institutional Link Support
-   (Safe Addition — No Layout Changes)
-========================================= */
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.brand-separator {
-  color: var(--text-primary);
-  pointer-events: none;
-  user-select: none;
 }
 
 
@@ -198,6 +180,7 @@ body.nav-open {
 
 @media (min-width: 769px) {
 
+  /* Hide hamburger completely on desktop */
   .nav-hamburger {
     display: none;
   }
@@ -257,6 +240,7 @@ body.nav-open {
 
   .header-inner { padding: 0 20px; }
 
+  /* Hamburger styling (only mobile) */
   .nav-hamburger {
     display: flex;
     flex-direction: column;
@@ -369,7 +353,7 @@ main > section:first-of-type {
 }
 
 main > section:first-of-type p:last-of-type {
-  margin-bottom: 40px;
+  margin-bottom: 34px;
 }
 
 
@@ -451,7 +435,7 @@ main a {
 
 .site-footer {
   border-top: 1px solid var(--border-subtle);
-  padding: 64px 32px;
+  padding: 48px 32px;
   background: var(--surface-muted);
 }
 
@@ -460,13 +444,49 @@ main a {
   margin: 0 auto;
   font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.78;
+  line-height: 1.7;
+}
+
+/* =========================================
+   INSTITUTIONAL REFINEMENT ADDITIONS (Non-Destructive)
+   - Scoped hero rhythm enhancement
+   - Footer vertical rhythm calibration
+   - No existing selector modified
+========================================= */
+
+/* -------------------------
+   HERO — Scoped Line Rhythm
+-------------------------- */
+
+/* Only affects first section (hero) */
+main > section:first-of-type p {
+  line-height: 1.78; /* Slightly increased for dark mode breathing */
+}
+
+/* Slightly increase separation after hero block */
+main > section:first-of-type p:last-of-type {
+  margin-bottom: 40px;
+}
+
+
+/* -------------------------
+   FOOTER — Vertical Rhythm
+-------------------------- */
+
+.site-footer {
+  padding-top: 64px;   /* Only increases vertical breathing */
+  padding-bottom: 64px;
+}
+
+.footer-inner {
+  line-height: 1.78;   /* Slight breathing improvement */
 }
 
 .footer-inner p {
   margin-bottom: 20px;
 }
 
+/* Subtle hierarchy refinement for footer links */
 .footer-links a {
   font-weight: 500;
   opacity: 0.92;

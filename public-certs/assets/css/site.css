@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v12.4 (Theme Toggle Standardization)
+   Current Version: v12.5 (Progress System Removal)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -24,6 +24,7 @@
    v12.2  → Link calibration + motion discipline
    v12.3  → Footer balance
    v12.4  → Theme toggle parity lock
+   v12.5  → Reading progress removal
 ========================================= */
 
 
@@ -325,24 +326,4 @@ body.surface-verify .header-inner::after {
   text-transform: uppercase;
   color: var(--text-secondary);
   opacity: 0.6;
-}
-
-
-/* =========================
-   READING PROGRESS BAR
-========================= */
-
-#reading-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  width: 0%;
-  background: var(--link-color);
-  z-index: 6000;
-  transition: width 120ms linear;
-}
-
-:root[data-theme="dark"] #reading-progress {
-  background: var(--link-hover);
 }

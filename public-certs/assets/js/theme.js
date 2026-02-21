@@ -4,9 +4,8 @@
 
    CHANGE LOG
    ---------------------------------------------------------
-   v8.0 → Removed reading progress system
-           Simplified surface behavior
-           No visual injection side-effects
+   v8.0 → Reading progress system removed
+          Theme subsystem isolated and locked
 
    DESIGN GUARANTEES
    ---------------------------------------------------------
@@ -94,14 +93,14 @@
 
   function init() {
 
-    // 1. Apply saved theme immediately (prevents flicker)
+    // Apply saved theme immediately (prevents flicker)
     const saved = getSavedTheme();
     applyTheme(saved);
 
-    // 2. Bind button immediately if already injected
+    // Bind button immediately if already injected
     bindButtonIfPresent();
 
-    // 3. Re-attempt binding after header injection
+    // Re-attempt binding after header injection
     document.addEventListener("headerInjected", bindButtonIfPresent);
   }
 

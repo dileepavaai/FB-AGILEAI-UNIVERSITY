@@ -327,3 +327,27 @@ body.surface-verify .header-inner::after {
   color: var(--text-secondary);
   opacity: 0.6;
 }
+
+/* =========================
+   READING PROGRESS BAR
+   Deterministic visual discipline
+========================= */
+
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  height: 3px;
+  width: 0%;
+
+  background: var(--link-color);
+
+  z-index: 6000;
+
+  transition: width 120ms linear;
+}
+
+:root[data-theme="dark"] #reading-progress {
+  background: var(--link-hover);
+}

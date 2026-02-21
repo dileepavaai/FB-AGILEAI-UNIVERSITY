@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v12.7 (Public-Certs Final Freeze)
+   Current Version: v12.8 (Stabilized Production Freeze)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 ========================================= */
@@ -105,10 +105,12 @@ body.nav-open {
 
 
 /* =========================
-   NAVIGATION
+   NAVIGATION (DESKTOP)
 ========================= */
 
-.main-nav { position: relative; }
+.main-nav {
+  position: relative;
+}
 
 .nav-tree {
   list-style: none;
@@ -127,7 +129,9 @@ body.nav-open {
   transition: opacity var(--transition-speed-fast) var(--motion-standard);
 }
 
-.main-nav a:hover { opacity: 0.8; }
+.main-nav a:hover {
+  opacity: 0.8;
+}
 
 .main-nav a.is-active {
   font-weight: 600;
@@ -237,4 +241,54 @@ a:hover {
 
 .theme-icon {
   font-size: 16px;
+}
+
+
+/* =========================
+   HAMBURGER CONTROL
+========================= */
+
+/* Force hide on desktop (extra specificity for safety) */
+.site-header .nav-hamburger {
+  display: none !important;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Hamburger visual lines */
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  margin: 5px 0;
+  background: var(--text-primary);
+  transition: background var(--transition-speed-fast);
+}
+
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+  .site-header .nav-hamburger {
+    display: block !important;
+  }
+
+  .main-nav {
+    display: none;
+    width: 100%;
+  }
+
+  body.nav-open .main-nav {
+    display: block;
+  }
+
+  .nav-tree {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 0;
+  }
 }

@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v12.5 (Public-Certs Stabilization Freeze)
+   Current Version: v12.6 (Header Alignment Stabilization)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -24,7 +24,8 @@
    v12.2  → Link calibration + motion discipline
    v12.3  → Footer balance
    v12.4  → Theme toggle parity lock
-   v12.5  → Public-Certs layout stabilization freeze
+   v12.5  → Public-Certs layout stabilization
+   v12.6  → Header alignment stabilization freeze
 ========================================= */
 
 
@@ -114,6 +115,8 @@ body.nav-open {
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
+/* ===== Header Alignment Stabilization ===== */
+
 .header-inner {
   width: 100%;
   max-width: 1200px;
@@ -122,9 +125,14 @@ body.nav-open {
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 24px;
 
   position: relative;
+}
+
+/* Push everything else to right */
+.brand {
+  margin-right: auto;
 }
 
 .brand a {
@@ -134,12 +142,15 @@ body.nav-open {
   font-weight: 400;
 }
 
+/* Keep nav + toggle visually grouped */
+.main-nav {
+  margin-right: 16px;
+}
+
 
 /* =========================
    NAVIGATION
 ========================= */
-
-.main-nav { position: relative; }
 
 .nav-tree {
   list-style: none;
@@ -205,10 +216,9 @@ main {
 }
 
 
-/* =========================================
-   VERIFY SURFACE LAYOUT NORMALIZATION
-   Scoped override (non-destructive)
-========================================= */
+/* =========================
+   VERIFY SURFACE NORMALIZATION
+========================= */
 
 body[data-surface="certs"] main.verify-console {
   margin: 140px auto 0;
@@ -277,9 +287,9 @@ a:hover {
 }
 
 
-/* =========================================
-   THEME TOGGLE — PARITY LOCK
-========================================= */
+/* =========================
+   THEME TOGGLE
+========================= */
 
 .theme-control {
   display: flex;
@@ -290,10 +300,8 @@ a:hover {
   width: 34px;
   height: 34px;
   padding: 0;
-
   border-radius: 6px;
   border: 1px solid var(--border-subtle);
-
   background: transparent;
   color: var(--text-primary);
 

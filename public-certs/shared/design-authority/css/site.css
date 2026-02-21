@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v12.5 (Progress System Removal)
+   Current Version: v12.5 (Public-Certs Stabilization Freeze)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -24,7 +24,7 @@
    v12.2  → Link calibration + motion discipline
    v12.3  → Footer balance
    v12.4  → Theme toggle parity lock
-   v12.5  → Reading progress removal
+   v12.5  → Public-Certs layout stabilization freeze
 ========================================= */
 
 
@@ -194,7 +194,7 @@ body.nav-open {
 
 
 /* =========================
-   LAYOUT
+   LAYOUT (GLOBAL)
 ========================= */
 
 main {
@@ -202,6 +202,18 @@ main {
   margin: 100px auto;
   padding: 0 32px;
   min-height: calc(100vh - 200px);
+}
+
+
+/* =========================================
+   VERIFY SURFACE LAYOUT NORMALIZATION
+   Scoped override (non-destructive)
+========================================= */
+
+body[data-surface="certs"] main.verify-console {
+  margin: 140px auto 0;
+  padding: 0 32px 80px;
+  min-height: auto;
 }
 
 
@@ -267,7 +279,6 @@ a:hover {
 
 /* =========================================
    THEME TOGGLE — PARITY LOCK
-   Visual only. No layout mutation.
 ========================================= */
 
 .theme-control {
@@ -313,7 +324,7 @@ a:hover {
 
 
 /* =========================
-   VERIFY SURFACE
+   VERIFY SURFACE BADGE
 ========================= */
 
 body.surface-verify .header-inner::after {

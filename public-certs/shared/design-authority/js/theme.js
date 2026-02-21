@@ -1,12 +1,11 @@
 /* =========================================================
-   AgileAI Public Surface — Theme Controller v7.6
+   AgileAI Public Surface — Theme Controller v8.0
    Institutional Production Baseline (Light / Dark Only)
 
    CHANGE LOG
    ---------------------------------------------------------
-   v7.6 → Theme icon scoped update (.theme-icon)
-           No textContent replacement
-           Header structure compatible
+   v8.0 → Reading progress system removed
+          Theme subsystem isolated and locked
 
    DESIGN GUARANTEES
    ---------------------------------------------------------
@@ -16,7 +15,6 @@
    - No media queries
    - Idempotent binding
    - Header-injection safe
-   - Reading progress included
    - Production safe for GitHub Pages
    - Attribute-minimal dark mode (no light attribute)
 ========================================================= */
@@ -90,48 +88,19 @@
   }
 
   /* =========================================================
-     READING PROGRESS
-  ========================================================== */
-
-  function initReadingProgress() {
-
-    if (document.getElementById("reading-progress")) return;
-
-    const bar = document.createElement("div");
-    bar.id = "reading-progress";
-    document.body.appendChild(bar);
-
-    function updateProgress() {
-      const scrollTop = window.scrollY;
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-
-      const progress =
-        docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-
-      bar.style.width = progress + "%";
-    }
-
-    window.addEventListener("scroll", updateProgress, { passive: true });
-  }
-
-  /* =========================================================
      INIT
   ========================================================== */
 
   function init() {
 
-    // 1. Apply saved theme immediately (prevents flicker)
+    // Apply saved theme immediately (prevents flicker)
     const saved = getSavedTheme();
     applyTheme(saved);
 
-    // 2. Initialize reading progress once
-    initReadingProgress();
-
-    // 3. Bind button immediately if already injected
+    // Bind button immediately if already injected
     bindButtonIfPresent();
 
-    // 4. Re-attempt binding after header injection
+    // Re-attempt binding after header injection
     document.addEventListener("headerInjected", bindButtonIfPresent);
   }
 

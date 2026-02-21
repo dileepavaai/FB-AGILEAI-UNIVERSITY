@@ -1,31 +1,9 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v12.6 (Header Alignment Stabilization)
+   Current Version: v12.7 (Public-Certs Final Freeze)
    Status: LOCKED
    Scope: Shared Design Authority Layer
-
-   Governance Rules:
-   - No layout changes without explicit version bump
-   - No typography changes without governance review
-   - No navigation logic changes in CSS layer
-   - Surface-specific behavior must be body-scoped
-   - Extensions must be additive (non-destructive)
-========================================= */
-
-
-/* =========================================
-   SURFACE VERSION DISCIPLINE
------------------------------------------
-   v11.x  → Structural hardening phase
-   v11.5  → Active state + verify badge
-   v12.0  → Governance baseline lock
-   v12.1  → Verify surface refinement
-   v12.2  → Link calibration + motion discipline
-   v12.3  → Footer balance
-   v12.4  → Theme toggle parity lock
-   v12.5  → Public-Certs layout stabilization
-   v12.6  → Header alignment stabilization freeze
 ========================================= */
 
 
@@ -46,7 +24,6 @@
 
   --transition-speed-fast: 120ms;
   --transition-speed-standard: 180ms;
-  --transition-speed-slow: 260ms;
   --motion-standard: cubic-bezier(.4,0,.2,1);
 
   --link-color: #2c4f68;
@@ -115,8 +92,6 @@ body.nav-open {
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
-/* ===== Header Alignment Stabilization ===== */
-
 .header-inner {
   width: 100%;
   max-width: 1200px;
@@ -125,32 +100,15 @@ body.nav-open {
 
   display: flex;
   align-items: center;
-  gap: 24px;
-
-  position: relative;
-}
-
-/* Push everything else to right */
-.brand {
-  margin-right: auto;
-}
-
-.brand a {
-  text-decoration: none;
-  color: var(--text-primary);
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-/* Keep nav + toggle visually grouped */
-.main-nav {
-  margin-right: 16px;
+  justify-content: space-between;
 }
 
 
 /* =========================
    NAVIGATION
 ========================= */
+
+.main-nav { position: relative; }
 
 .nav-tree {
   list-style: none;
@@ -161,31 +119,15 @@ body.nav-open {
   align-items: center;
 }
 
-.nav-item { position: relative; }
-
-.nav-item > a,
-.nav-toggle {
-  background: none;
-  border: none;
-  font-family: inherit;
+.main-nav a {
   font-size: 0.87rem;
-  font-weight: 400;
   letter-spacing: 0.15px;
   color: var(--text-primary);
-  cursor: pointer;
-  padding: 0;
-
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
+  text-decoration: none;
   transition: opacity var(--transition-speed-fast) var(--motion-standard);
 }
 
-.nav-item > a:hover,
-.nav-toggle:hover {
-  opacity: 0.8;
-}
+.main-nav a:hover { opacity: 0.8; }
 
 .main-nav a.is-active {
   font-weight: 600;
@@ -205,30 +147,18 @@ body.nav-open {
 
 
 /* =========================
-   LAYOUT (GLOBAL)
+   LAYOUT
 ========================= */
 
 main {
   max-width: var(--max-width);
-  margin: 100px auto;
-  padding: 0 32px;
-  min-height: calc(100vh - 200px);
-}
-
-
-/* =========================
-   VERIFY SURFACE NORMALIZATION
-========================= */
-
-body[data-surface="certs"] main.verify-console {
   margin: 140px auto 0;
   padding: 0 32px 80px;
-  min-height: auto;
 }
 
 
 /* =========================
-   TYPOGRAPHY (LOCKED)
+   TYPOGRAPHY
 ========================= */
 
 h1 {
@@ -239,17 +169,7 @@ h1 {
   margin-bottom: 30px;
 }
 
-h2 {
-  font-size: 1.85rem;
-  font-weight: 500;
-  line-height: 1.28;
-  letter-spacing: -0.2px;
-  margin-top: 76px;
-  margin-bottom: 22px;
-}
-
 p {
-  margin-top: 0;
   margin-bottom: 22px;
   max-width: 68ch;
 }
@@ -261,7 +181,6 @@ p {
 
 a {
   color: var(--link-color);
-  text-decoration: none;
   transition: color var(--transition-speed-fast) var(--motion-standard);
 }
 
@@ -299,18 +218,14 @@ a:hover {
 .theme-control button {
   width: 34px;
   height: 34px;
-  padding: 0;
   border-radius: 6px;
   border: 1px solid var(--border-subtle);
   background: transparent;
   color: var(--text-primary);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
-
   transition:
     background var(--transition-speed-fast) var(--motion-standard),
     border-color var(--transition-speed-fast) var(--motion-standard);
@@ -322,27 +237,4 @@ a:hover {
 
 .theme-icon {
   font-size: 16px;
-  line-height: 1;
-  display: block;
-}
-
-:root[data-theme="dark"] .theme-control button {
-  background: rgba(255,255,255,0.04);
-}
-
-
-/* =========================
-   VERIFY SURFACE BADGE
-========================= */
-
-body.surface-verify .header-inner::after {
-  content: "Credential Verification Surface";
-  position: absolute;
-  right: 32px;
-  bottom: -8px;
-  font-size: 0.65rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  opacity: 0.6;
 }

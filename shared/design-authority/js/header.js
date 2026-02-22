@@ -1,7 +1,7 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
-   Current Version: v2.2 (Structural Hardening Lock)
+   Current Version: v2.3 (Selector Integrity + Event Containment Lock)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* =====================================================
-     SUBMENU ACCORDION
+     SUBMENU ACCORDION (Scoped Only)
   ===================================================== */
 
   toggles.forEach(toggle => {

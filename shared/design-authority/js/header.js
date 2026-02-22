@@ -1,7 +1,7 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
-   Current Version: v2.1 (Theme Toggle Structural Parity Lock)
+   Current Version: v2.2 (Structural Hardening Lock)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -17,7 +17,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   const body = document.body;
-  const surface = body.getAttribute("data-surface");
+  const surface = body.getAttribute("data-surface") || "";
   const currentPath = window.location.pathname.replace(/\/$/, "");
 
   let headerHTML = "";
@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
 
           <button class="nav-hamburger"
+                  type="button"
                   aria-label="Toggle Navigation"
                   aria-expanded="false"
                   aria-controls="primary-navigation">
@@ -86,7 +87,9 @@ document.addEventListener("DOMContentLoaded", function () {
           </nav>
 
           <div class="theme-control">
-            <button id="theme-toggle" aria-label="Toggle Theme">
+            <button id="theme-toggle"
+                    type="button"
+                    aria-label="Toggle Theme">
               <span class="theme-icon">☀</span>
             </button>
           </div>
@@ -118,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
 
           <button class="nav-hamburger"
+                  type="button"
                   aria-label="Toggle Navigation"
                   aria-expanded="false"
                   aria-controls="primary-navigation">
@@ -167,7 +171,9 @@ document.addEventListener("DOMContentLoaded", function () {
           </nav>
 
           <div class="theme-control">
-            <button id="theme-toggle" aria-label="Toggle Theme">
+            <button id="theme-toggle"
+                    type="button"
+                    aria-label="Toggle Theme">
               <span class="theme-icon">☀</span>
             </button>
           </div>
@@ -192,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
      ACTIVE STATE DISCIPLINE (Data-Path Based)
   ===================================================== */
 
-  const navLinks = document.querySelectorAll(".main-nav a[data-path]");
+  const navLinks = headerContainer.querySelectorAll(".main-nav a[data-path]");
 
   navLinks.forEach(link => {
     const linkPath = link.getAttribute("data-path");
@@ -211,9 +217,9 @@ document.addEventListener("DOMContentLoaded", function () {
      MOBILE NAVIGATION CONTROLLER
   ===================================================== */
 
-  const hamburger = document.querySelector(".nav-hamburger");
-  const nav = document.querySelector(".main-nav");
-  const toggles = document.querySelectorAll(".nav-toggle");
+  const hamburger = headerContainer.querySelector(".nav-hamburger");
+  const nav = headerContainer.querySelector(".main-nav");
+  const toggles = headerContainer.querySelectorAll(".nav-toggle");
 
   function closeMobileNav() {
     body.classList.remove("nav-open");
@@ -245,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const parent = this.parentElement;
       const isOpen = parent.classList.contains("is-open");
       parent.classList.toggle("is-open");
-      this.setAttribute("aria-expanded", !isOpen);
+      this.setAttribute("aria-expanded", String(!isOpen));
     });
   });
 
@@ -270,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("resize", function () {
     if (window.innerWidth >= 769) {
       closeMobileNav();
-      document.querySelectorAll(".nav-item.is-open")
+      headerContainer.querySelectorAll(".nav-item.is-open")
         .forEach(item => item.classList.remove("is-open"));
     }
   });

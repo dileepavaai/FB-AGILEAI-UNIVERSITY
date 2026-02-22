@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v12.9 (Institutional Typography Stabilization)
+   Current Version: v13.0 (Institutional Brand Stabilization)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 ========================================= */
@@ -56,7 +56,7 @@ body {
   background: var(--background);
   color: var(--text-primary);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 17px; /* Reduced for registry tone */
+  font-size: 17px;
   line-height: 1.72;
   transition:
     background var(--transition-speed-standard),
@@ -103,12 +103,18 @@ body.nav-open {
   justify-content: space-between;
 }
 
-/* Brand refined for structural clarity */
+/* Institutional Brand Refinement */
 .site-header .brand a {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-weight: 500;
-  letter-spacing: 0.2px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  color: var(--text-primary);
   text-decoration: none;
+}
+
+.site-header .brand a:hover {
+  text-decoration: none;
+  opacity: 0.85;
 }
 
 
@@ -175,7 +181,7 @@ main {
 ========================= */
 
 h1 {
-  font-size: 2.4rem; /* Reduced from 2.9rem */
+  font-size: 2.4rem;
   font-weight: 500;
   line-height: 1.18;
   letter-spacing: -0.3px;

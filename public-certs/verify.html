@@ -2,8 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Official Credential Verification Portal – Agile AI University</title>
+
+  <title>Official Credential Verification | Agile AI University</title>
+
+  <meta name="description" content="Official portal to verify credentials issued under the Agile AI University Credential Governance Framework. Designed for employers, institutions, and third-party verification bodies.">
+
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="canonical" href="https://verify.agileai.university/verify.html" />
+
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Official Credential Verification | Agile AI University">
+  <meta property="og:description" content="Verify credentials issued under the Agile AI University Credential Governance Framework.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://verify.agileai.university/verify.html">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Official Credential Verification",
+    "url": "https://verify.agileai.university/verify.html",
+    "description": "Official portal to verify credentials issued under the Agile AI University Credential Governance Framework.",
+    "isPartOf": {
+      "@type": "EducationalOrganization",
+      "name": "Agile AI University",
+      "url": "https://agileai.university"
+    }
+  }
+  </script>
 
   <!-- Cache Control -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -37,18 +67,31 @@
       </p>
 
       <p class="verify-meta">
-        For use by employers, institutions, and third-party verification bodies.
+        Search using either the unique Credential ID or the registered Email Address.
       </p>
 
-      <label for="emailInput">Registered Email Address</label>
+      <!-- Credential ID Search (Primary Identifier) -->
+      <label for="credentialIdInput">Credential ID</label>
+      <input
+        id="credentialIdInput"
+        type="text"
+        placeholder="Enter credential ID"
+        autocomplete="off"
+        aria-label="Credential ID"
+      />
 
+      <p class="verify-divider" aria-hidden="true">
+        — or —
+      </p>
+
+      <!-- Email Search -->
+      <label for="emailInput">Registered Email Address</label>
       <input
         id="emailInput"
         type="email"
         placeholder="Enter registered email"
         autocomplete="email"
         aria-label="Registered email address"
-        required
       />
 
       <button id="verifyBtn" type="button">

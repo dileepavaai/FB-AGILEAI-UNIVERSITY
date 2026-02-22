@@ -21,7 +21,7 @@ const firebaseConfig = {
   projectId: "fb-agileai-university"
 };
 
-console.log("✅ verify.js loaded (credential-approval gated)");
+console.log("✅ verify.js loaded (credential-approval gated + dual identifier)");
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -31,6 +31,7 @@ const db = getFirestore(app);
    ========================= */
 const verifyBtn = document.getElementById("verifyBtn");
 const emailInput = document.getElementById("emailInput");
+const credentialIdInput = document.getElementById("credentialIdInput");
 const resultDiv = document.getElementById("result");
 
 /* =========================
@@ -38,13 +39,16 @@ const resultDiv = document.getElementById("result");
    (PUBLIC — APPROVAL GATED)
    ========================= */
 verifyBtn.addEventListener("click", async () => {
+
   const email = emailInput.value.trim().toLowerCase();
+  const credentialId = credentialIdInput.value.trim();
+
   resultDiv.innerHTML = "";
 
-  if (!email) {
+  if (!email && !credentialId) {
     resultDiv.innerHTML = `
       <div class="result error">
-        Please enter a registered email address.
+        Please enter either a Credential ID or a Registered Email Address.
       </div>`;
     return;
   }
@@ -54,29 +58,41 @@ verifyBtn.addEventListener("click", async () => {
 
   /* =========================
      1️⃣ LOG VERIFICATION REQUEST
-     (WRITE ONLY — PUBLIC SAFE)
      ========================= */
   try {
     await addDoc(collection(db, "verification_requests"), {
-      email,
-      status: "new",
+      email: email || null,
+      credential_id: credentialId || null,
       source: "verify_portal",
+      status: "new",
       created_at: serverTimestamp()
     });
   } catch (err) {
-    console.warn("⚠️ Verification request logging failed (non-blocking):", err);
+    console.warn("⚠️ Logging failed (non-blocking):", err);
   }
 
   try {
+
     /* =========================
-       2️⃣ VERIFY APPROVED + FINALIZED CREDENTIAL
+       2️⃣ BUILD QUERY (ID PRIORITY)
        ========================= */
-    const q = query(
-      collection(db, "credentials"),
-      where("email", "==", email),
-      where("issued_status", "==", "finalized"),
-      where("approval_status", "==", "approved")
-    );
+    let q;
+
+    if (credentialId) {
+      q = query(
+        collection(db, "credentials"),
+        where("credential_id", "==", credentialId),
+        where("issued_status", "==", "finalized"),
+        where("approval_status", "==", "approved")
+      );
+    } else {
+      q = query(
+        collection(db, "credentials"),
+        where("email", "==", email),
+        where("issued_status", "==", "finalized"),
+        where("approval_status", "==", "approved")
+      );
+    }
 
     const snap = await getDocs(q);
 
@@ -105,6 +121,9 @@ verifyBtn.addEventListener("click", async () => {
 
         <div class="label">Full Name</div>
         ${data.full_name}
+
+        <div class="label">Credential ID</div>
+        ${data.credential_id || "—"}
 
         <div class="label">Credential Awarded</div>
         ${data.credential_type}
@@ -135,6 +154,7 @@ verifyBtn.addEventListener("click", async () => {
           equivalency framework.
         </small>
       </div>`;
+      
   } catch (err) {
     console.error("❌ Verification error:", err);
     resultDiv.innerHTML = `

@@ -1,8 +1,9 @@
 /* =========================================
    Verification Surface — Theme Compliant
-   - No layout changes
+   - No layout changes (desktop)
    - No typography system override
    - Uses institutional variables
+   - Mobile width correction for reCAPTCHA intrinsic 304px width
 ========================================= */
 
 
@@ -158,10 +159,36 @@ button:disabled {
 
 /* =========================
    Mobile Optimization
+   - Corrects cumulative horizontal padding math
+   - Ensures reCAPTCHA 304px intrinsic width fits
+   - No scaling
+   - No scroll hacks
+   - No layout regression on desktop
 ========================= */
 
 @media (max-width: 600px) {
+
+  /*
+     Mobile viewport ≈ 360px (Samsung S25 Ultra portrait)
+
+     Shared CSS main padding: 16px each side → 32px
+     360 - 32 = 328px usable
+
+     To fit reCAPTCHA intrinsic width (304px),
+     card padding must not exceed 24px total.
+
+     Therefore:
+     - Remove body padding (avoid triple nesting)
+     - Reduce card horizontal padding to 12px each side
+  */
+
   body {
-    padding: 24px;
+    padding: 0;
   }
+
+  .card {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
 }

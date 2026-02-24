@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v13.0 (Institutional Brand Stabilization)
+   Current Version: v13.1 (Mobile Navigation Overlay Stabilization)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 ========================================= */
@@ -264,7 +264,7 @@ a:hover {
 ========================= */
 
 .site-header .nav-hamburger {
-  display: none !important;
+  display: none;
   background: none;
   border: none;
   cursor: pointer;
@@ -281,18 +281,25 @@ a:hover {
 
 
 /* =========================
-   MOBILE RESPONSIVE
+   MOBILE RESPONSIVE (v13.1 FIX)
 ========================= */
 
 @media (max-width: 768px) {
 
   .site-header .nav-hamburger {
-    display: block !important;
+    display: block;
   }
 
   .main-nav {
     display: none;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
     width: 100%;
+    background: var(--background);
+    border-top: 1px solid var(--border-subtle);
+    padding: 24px 32px;
+    z-index: 4000;
   }
 
   body.nav-open .main-nav {
@@ -301,7 +308,20 @@ a:hover {
 
   .nav-tree {
     flex-direction: column;
-    gap: 16px;
-    padding: 20px 0;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .nav-tree li {
+    width: 100%;
+  }
+
+  .nav-tree a {
+    display: block;
+    width: 100%;
+  }
+
+  body.nav-open {
+    overflow: hidden;
   }
 }

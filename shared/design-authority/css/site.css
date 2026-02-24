@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v13.4 (Mobile Overlay + Motion + Backdrop)
+   Current Version: v13.5 (Mobile Overlay + Backdrop + Motion + Captcha Refinement)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 ========================================= */
@@ -329,9 +329,16 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /* reCAPTCHA Mobile Scaling */
+  /* reCAPTCHA Mobile Proper Containment */
+  .verify-recaptcha {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+  }
+
   .g-recaptcha {
-    transform: scale(0.92);
-    transform-origin: left top;
+    transform: scale(0.94);
+    transform-origin: center top;
   }
 }

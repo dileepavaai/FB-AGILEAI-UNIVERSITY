@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v13.7 (Institutional Footer + Icon Stability Freeze)
+   Current Version: v13.8 (Breadcrumb Institutional Stabilization)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 ========================================= */
@@ -163,7 +163,29 @@ main {
 
 
 /* =========================
-   FOOTER — Institutional Stabilized
+   BREADCRUMB — Institutional Tone
+========================= */
+
+.breadcrumb a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}
+
+.breadcrumb a:hover {
+  color: var(--text-primary);
+}
+
+:root[data-theme="dark"] .breadcrumb a {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="dark"] .breadcrumb a:hover {
+  color: var(--text-primary);
+}
+
+
+/* =========================
+   FOOTER
 ========================= */
 
 .site-footer {
@@ -189,14 +211,13 @@ main {
   text-decoration: underline;
 }
 
-/* Dark Mode Elevation */
 :root[data-theme="dark"] .site-footer {
   background: rgba(20,26,38,0.95);
 }
 
 
 /* =========================
-   THEME TOGGLE — Centered
+   THEME TOGGLE
 ========================= */
 
 .theme-control button {
@@ -214,7 +235,7 @@ main {
 
 
 /* =========================
-   HAMBURGER — Precision Stable
+   HAMBURGER
 ========================= */
 
 .site-header .nav-hamburger {
@@ -239,20 +260,16 @@ main {
     opacity var(--transition-speed-fast);
 }
 
-/* Perfect bar spacing */
 .nav-hamburger span:nth-child(1) { top: 0; }
 .nav-hamburger span:nth-child(2) { top: 10px; }
 .nav-hamburger span:nth-child(3) { bottom: 0; }
 
-/* Clean X */
 body.nav-open .nav-hamburger span:nth-child(1) {
   top: 10px;
   transform: rotate(45deg);
 }
 
-body.nav-open .nav-hamburger span:nth-child(2) {
-  opacity: 0;
-}
+body.nav-open .nav-hamburger span:nth-child(2) { opacity: 0; }
 
 body.nav-open .nav-hamburger span:nth-child(3) {
   bottom: 10px;
@@ -261,7 +278,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
 
 /* =========================
-   MOBILE RESPONSIVE
+   MOBILE
 ========================= */
 
 @media (max-width: 768px) {
@@ -270,7 +287,6 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
   .site-header .nav-hamburger { display: block; }
 
-  /* Backdrop */
   body::before {
     content: "";
     position: fixed;
@@ -287,7 +303,6 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     pointer-events: auto;
   }
 
-  /* Overlay Nav */
   .main-nav {
     position: fixed;
     top: calc(var(--header-height) - 1px);
@@ -332,7 +347,6 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /* reCAPTCHA containment */
   .verify-recaptcha {
     display: flex;
     justify-content: center;

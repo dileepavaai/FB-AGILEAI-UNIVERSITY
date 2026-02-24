@@ -1,0 +1,307 @@
+/* =========================================
+   AgileAI Public Surface — Institutional CSS
+   Governance Baseline: v12.0
+   Current Version: v13.0 (Institutional Brand Stabilization)
+   Status: LOCKED
+   Scope: Shared Design Authority Layer
+========================================= */
+
+
+/* =========================
+   ROOT VARIABLES
+========================= */
+
+:root {
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --border-subtle: #e6e6e6;
+  --background: #ffffff;
+  --surface-muted: #f6f6f6;
+  --surface-elevated: rgba(255,255,255,0.94);
+
+  --max-width: 720px;
+  --header-height: 80px;
+
+  --transition-speed-fast: 120ms;
+  --transition-speed-standard: 180ms;
+  --motion-standard: cubic-bezier(.4,0,.2,1);
+
+  --link-color: #2c4f68;
+  --link-hover: #1d3648;
+}
+
+:root[data-theme="dark"] {
+  --text-primary: #f2f2f2;
+  --text-secondary: #c2c7d0;
+  --border-subtle: #2a2a2a;
+  --background: #0f1115;
+  --surface-muted: #161b24;
+  --surface-elevated: rgba(27,31,38,0.94);
+
+  --link-color: #8fb9dd;
+  --link-hover: #b7d4f0;
+}
+
+
+/* =========================
+   BASE
+========================= */
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.72;
+  transition:
+    background var(--transition-speed-standard),
+    color var(--transition-speed-standard);
+}
+
+body.nav-open {
+  overflow: hidden;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+#header { width: 100%; }
+
+.site-header {
+  width: 100%;
+  height: var(--header-height);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--background);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.header-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Institutional Brand Refinement */
+.site-header .brand a {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.site-header .brand a:hover {
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+
+/* =========================
+   NAVIGATION (DESKTOP)
+========================= */
+
+.main-nav {
+  position: relative;
+}
+
+.nav-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+
+.main-nav a {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.25px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: opacity var(--transition-speed-fast) var(--motion-standard);
+}
+
+.main-nav a:hover {
+  opacity: 0.8;
+}
+
+.main-nav a.is-active {
+  font-weight: 600;
+  position: relative;
+}
+
+.main-nav a.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+
+/* =========================
+   LAYOUT
+========================= */
+
+main {
+  max-width: var(--max-width);
+  margin: 140px auto 0;
+  padding: 0 32px 80px;
+}
+
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+
+h1 {
+  font-size: 2.4rem;
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.3px;
+  margin-bottom: 30px;
+}
+
+p {
+  margin-bottom: 22px;
+  max-width: 68ch;
+}
+
+
+/* =========================
+   LINKS
+========================= */
+
+a {
+  color: var(--link-color);
+  transition: color var(--transition-speed-fast) var(--motion-standard);
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.site-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 72px 32px;
+  background: var(--surface-muted);
+}
+
+.footer-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+
+/* =========================
+   THEME TOGGLE
+========================= */
+
+.theme-control {
+  display: flex;
+  align-items: center;
+}
+
+.theme-control button {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background var(--transition-speed-fast) var(--motion-standard),
+    border-color var(--transition-speed-fast) var(--motion-standard);
+}
+
+.theme-control button:hover {
+  background: var(--surface-muted);
+}
+
+.theme-icon {
+  font-size: 16px;
+}
+
+
+/* =========================
+   HAMBURGER CONTROL
+========================= */
+
+.site-header .nav-hamburger {
+  display: none !important;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  margin: 5px 0;
+  background: var(--text-primary);
+  transition: background var(--transition-speed-fast);
+}
+
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+  .site-header .nav-hamburger {
+    display: block !important;
+  }
+
+  .main-nav {
+    display: none;
+    width: 100%;
+  }
+
+  body.nav-open .main-nav {
+    display: block;
+  }
+
+  .nav-tree {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 0;
+  }
+}

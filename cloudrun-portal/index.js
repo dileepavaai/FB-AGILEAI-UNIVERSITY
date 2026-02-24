@@ -17,17 +17,19 @@ app.set("trust proxy", 1);
 app.use(express.json());
 
 /* -------------------------------------------------
-   CORS (PUBLIC endpoints only – LOCKED)
+   CORS (PUBLIC endpoints only – LOCKED v1.3)
 ------------------------------------------------- */
 app.use(
   cors({
-    origin: "https://assessment.agileai.university",
+    origin: [
+      "https://assessment.agileai.university",
+      "https://verify.agileai.university"
+    ],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   })
 );
 
-// Explicit preflight handling
 app.options("*", cors());
 
 /* -------------------------------------------------
@@ -79,13 +81,10 @@ function isCountryAllowed(req) {
 }
 
 /* -------------------------------------------------
-   READY check (container warm, zero cost)
+   READY check
 ------------------------------------------------- */
 app.get("/ready", (req, res) => {
-  res.status(200).json({
-    ready: true,
-    status: "ok",
-  });
+  res.status(200).json({ ready: true, status: "ok" });
 });
 
 /* -------------------------------------------------
@@ -98,9 +97,6 @@ app.get("/", (req, res) => {
   });
 });
 
-/* -------------------------------------------------
-   /health alias (compatibility, no contract break)
-------------------------------------------------- */
 app.get("/health", (req, res) => {
   res.status(200).json({
     service: "aaiu-portal-resolver",
@@ -109,63 +105,33 @@ app.get("/health", (req, res) => {
 });
 
 /* -------------------------------------------------
-   Metadata (Canonical – Backend v1.2)
+   Metadata (Backend v1.3)
 ------------------------------------------------- */
 app.get("/_meta", (req, res) => {
   res.status(200).json({
     service: "aaiu-cloudrun-backend",
-    version: "v1.2",
+    version: "v1.3",
     runtime: "cloud-run",
     auth: "firebase",
-    contract: "firestore-contract.v1.2",
+    contract: "firestore-contract.v1.3",
     status: "active",
   });
 });
 
 /* -------------------------------------------------
-   Firestore health + index safety check
+   Firestore health
 ------------------------------------------------- */
 app.get("/_health/firestore", async (req, res) => {
   try {
     await db.collection("_health").limit(1).get();
     res.status(200).json({ firestore: "connected" });
   } catch (error) {
-    if (error.code === 9 || error.code === "FAILED_PRECONDITION") {
-      return res.status(500).json({
-        firestore: "index_missing",
-        action: "Create required Firestore index",
-      });
-    }
-
     log("ERROR", "Firestore health failed", {
       error: error.message,
     });
-
     res.status(500).json({ firestore: "error" });
   }
 });
-
-/* -------------------------------------------------
-   Firebase Auth middleware (ADMIN)
-------------------------------------------------- */
-async function requireAuth(req, res, next) {
-  try {
-    const authHeader = req.headers.authorization || "";
-    const token = authHeader.startsWith("Bearer ")
-      ? authHeader.substring(7)
-      : null;
-
-    if (!token) {
-      return res.status(401).json({ error: "NO_TOKEN" });
-    }
-
-    const decoded = await admin.auth().verifyIdToken(token);
-    req.user = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ error: "INVALID_TOKEN" });
-  }
-}
 
 /* -------------------------------------------------
    reCAPTCHA verification (PUBLIC)
@@ -204,7 +170,7 @@ async function verifyRecaptcha(req, res, next) {
 }
 
 /* -------------------------------------------------
-   Rate limiting (public only)
+   Rate limiting
 ------------------------------------------------- */
 const publicLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -214,92 +180,76 @@ const publicLimiter = rateLimit({
 });
 
 /* -------------------------------------------------
-   PUBLIC: Credential lookup (READ-ONLY)
+   NEW: PUBLIC Credential Verification (READ-ONLY)
+   Canonical verification endpoint
 ------------------------------------------------- */
-app.get(
-  "/public/credentials",
+app.post(
+  "/public/verify-credential",
   publicLimiter,
   verifyRecaptcha,
   async (req, res) => {
     try {
-      if (!isCountryAllowed(req)) {
-        return res.status(403).json({ error: "COUNTRY_BLOCKED" });
-      }
+      const credentialId = req.body?.credential_id?.toUpperCase();
 
-      const email = req.query.email?.toLowerCase();
-      if (!email) {
-        return res.status(400).json({ error: "EMAIL_REQUIRED" });
+      if (!credentialId) {
+        return res.status(400).json({ status: "invalid" });
       }
 
       const snapshot = await db
         .collection("credentials")
-        .where("email", "==", email)
+        .where("credential_id", "==", credentialId)
         .where("issued_status", "==", "finalized")
-        .get();
-
-      const results = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      res.status(200).json({ credentials: results });
-    } catch (error) {
-      log("ERROR", "Public credential lookup failed", {
-        error: error.message,
-      });
-      res.status(500).json({ error: "INTERNAL_ERROR" });
-    }
-  }
-);
-
-/* -------------------------------------------------
-   PUBLIC: Executive Insight access verification (LOCKED)
-------------------------------------------------- */
-app.post(
-  "/public/verify-executive-insight",
-  publicLimiter,
-  verifyRecaptcha,
-  async (req, res) => {
-    try {
-      const email = req.body?.email?.toLowerCase();
-      if (!email) {
-        return res.status(400).json({ allowed: false, error: "EMAIL_REQUIRED" });
-      }
-
-      const snapshot = await db
-        .collection("advisory_entitlements")
-        .where("buyer.email", "==", email)
-        .where("artifact_code", "==", "EXEC_INSIGHT_V1")
-        .where("access.status", "==", "active")
+        .where("approval_status", "==", "approved")
         .limit(1)
         .get();
 
       if (snapshot.empty) {
-        return res.status(200).json({ allowed: false });
+        return res.status(200).json({ status: "not_found" });
       }
 
-      const entitlement = snapshot.docs[0].data();
-
-      if (entitlement.payment?.status !== "paid") {
-        return res.status(200).json({ allowed: false });
-      }
+      const doc = snapshot.docs[0].data();
 
       return res.status(200).json({
-        allowed: true,
-        source: "advisory_entitlements",
+        status: "valid",
+        full_name: doc.full_name,
+        credential_id: doc.credential_id,
+        credential_type: doc.credential_type || null,
+        program_code: doc.program_code || null,
+        issued_by: doc.issued_by || "Agile AI University",
+        issue_date: doc.issue_date || null
       });
+
     } catch (error) {
-      log("ERROR", "Executive Insight verification failed", {
+      log("ERROR", "Credential verification failed", {
         error: error.message,
       });
-      return res.status(500).json({ allowed: false });
+      return res.status(500).json({ status: "error" });
     }
   }
 );
 
 /* -------------------------------------------------
-   ADMIN routes (AUTH + IP allowlist)
+   ADMIN routes (unchanged)
 ------------------------------------------------- */
+async function requireAuth(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization || "";
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.substring(7)
+      : null;
+
+    if (!token) {
+      return res.status(401).json({ error: "NO_TOKEN" });
+    }
+
+    const decoded = await admin.auth().verifyIdToken(token);
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(401).json({ error: "INVALID_TOKEN" });
+  }
+}
+
 app.use("/admin", requireAuth, (req, res, next) => {
   const ip = getClientIP(req);
   if (!isIPAllowed(ip)) {

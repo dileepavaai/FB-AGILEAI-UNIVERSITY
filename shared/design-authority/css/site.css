@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v13.8 (Breadcrumb Institutional Stabilization)
+   Current Version: v13.9 (Breadcrumb Structural Stabilization)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 ========================================= */
@@ -163,23 +163,25 @@ main {
 
 
 /* =========================
-   BREADCRUMB — Institutional Tone
+   BREADCRUMB — Structural Target
+   (First link inside main content)
 ========================= */
 
-.breadcrumb a {
+main > *:first-child a {
   color: var(--text-secondary);
   text-decoration: underline;
+  font-size: 0.95rem;
 }
 
-.breadcrumb a:hover {
+main > *:first-child a:hover {
   color: var(--text-primary);
 }
 
-:root[data-theme="dark"] .breadcrumb a {
+:root[data-theme="dark"] main > *:first-child a {
   color: var(--text-secondary);
 }
 
-:root[data-theme="dark"] .breadcrumb a:hover {
+:root[data-theme="dark"] main > *:first-child a:hover {
   color: var(--text-primary);
 }
 

@@ -17,7 +17,7 @@ app.set("trust proxy", 1);
 app.use(express.json());
 
 /* -------------------------------------------------
-   CORS (PUBLIC endpoints only – LOCKED v1.3)
+   CORS (PUBLIC endpoints only – LOCKED)
 ------------------------------------------------- */
 app.use(
   cors({
@@ -70,16 +70,6 @@ function isIPAllowed(ip) {
   return allowlist.split(",").some(entry => ip.startsWith(entry.trim()));
 }
 
-function isCountryAllowed(req) {
-  const allowed = process.env.ALLOWED_COUNTRIES;
-  if (!allowed) return true;
-  const country =
-    req.headers["x-country"] ||
-    req.headers["x-geo-country"] ||
-    "unknown";
-  return allowed.split(",").includes(country);
-}
-
 /* -------------------------------------------------
    READY check
 ------------------------------------------------- */
@@ -105,15 +95,15 @@ app.get("/health", (req, res) => {
 });
 
 /* -------------------------------------------------
-   Metadata (Backend v1.3)
+   Metadata (Backend v1.4 – Canonical)
 ------------------------------------------------- */
 app.get("/_meta", (req, res) => {
   res.status(200).json({
     service: "aaiu-cloudrun-backend",
-    version: "v1.3",
+    version: "v1.4",
     runtime: "cloud-run",
     auth: "firebase",
-    contract: "firestore-contract.v1.3",
+    contract: "firestore-contract.v1.4",
     status: "active",
   });
 });
@@ -180,8 +170,9 @@ const publicLimiter = rateLimit({
 });
 
 /* -------------------------------------------------
-   NEW: PUBLIC Credential Verification (READ-ONLY)
-   Canonical verification endpoint
+   PUBLIC: Credential Verification (Canonical v1.4)
+   - Single field query (index safe)
+   - Status validation in code
 ------------------------------------------------- */
 app.post(
   "/public/verify-credential",
@@ -198,8 +189,6 @@ app.post(
       const snapshot = await db
         .collection("credentials")
         .where("credential_id", "==", credentialId)
-        .where("issued_status", "==", "finalized")
-        .where("approval_status", "==", "approved")
         .limit(1)
         .get();
 
@@ -208,6 +197,14 @@ app.post(
       }
 
       const doc = snapshot.docs[0].data();
+
+      // Institutional status validation
+      if (
+        doc.issued_status !== "finalized" ||
+        doc.approval_status !== "approved"
+      ) {
+        return res.status(200).json({ status: "not_found" });
+      }
 
       return res.status(200).json({
         status: "valid",
@@ -229,7 +226,7 @@ app.post(
 );
 
 /* -------------------------------------------------
-   ADMIN routes (unchanged)
+   ADMIN routes (LOCKED – unchanged)
 ------------------------------------------------- */
 async function requireAuth(req, res, next) {
   try {

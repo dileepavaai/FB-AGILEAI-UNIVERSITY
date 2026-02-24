@@ -5,19 +5,21 @@
 
   <title>Official Credential Verification | Agile AI University</title>
 
-  <meta name="description" content="Official portal to verify credentials issued under the Agile AI University Credential Governance Framework. Designed for employers, institutions, and third-party verification bodies.">
+  <meta name="description"
+        content="Official portal to verify credentials issued under the Agile AI University Credential Governance Framework. Designed for employers, institutions, and third-party verification bodies." />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <link rel="canonical" href="https://verify.agileai.university/verify.html" />
 
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Official Credential Verification | Agile AI University">
-  <meta property="og:description" content="Verify credentials issued under the Agile AI University Credential Governance Framework.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://verify.agileai.university/verify.html">
+  <meta property="og:title" content="Official Credential Verification | Agile AI University" />
+  <meta property="og:description"
+        content="Verify credentials issued under the Agile AI University Credential Governance Framework." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://verify.agileai.university/verify.html" />
 
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -48,12 +50,15 @@
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
-<body data-surface="certs">
+<body>
 
   <!-- HEADER MOUNT -->
   <div id="header"></div>
 
-  <!-- Shared UI Infrastructure -->
+  <!-- ===== Surface Configuration (MUST load before header.js) ===== -->
+  <script src="assets/js/surface-config.js"></script>
+
+  <!-- ===== Shared Institutional Infrastructure ===== -->
   <script src="shared/design-authority/js/header.js"></script>
   <script src="shared/design-authority/js/theme.js"></script>
 
@@ -64,7 +69,8 @@
       <h1>Official Credential Verification Portal</h1>
 
       <p class="verify-subtext">
-        This portal verifies credentials issued and registered under the Agile AI University Credential Governance Framework.
+        This portal verifies credentials issued and registered under
+        the Agile AI University Credential Governance Framework.
       </p>
 
       <p class="verify-meta">
@@ -82,7 +88,7 @@
       />
 
       <!-- reCAPTCHA -->
-      <div style="margin-top:18px;">
+      <div class="verify-recaptcha">
         <div class="g-recaptcha"
              data-sitekey="6LdRy3UsAAAAAIU-rQvx2Qh0V7cZ-yl_TwvfLF_c">
         </div>

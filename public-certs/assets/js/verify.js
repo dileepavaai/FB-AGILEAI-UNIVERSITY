@@ -1,5 +1,5 @@
 /* =====================================================
-   Agile AI University — Secure Verification Client v3.0
+   Agile AI University — Secure Verification Client v3.1
    Canonical Public Verification Surface
    Governance-Aligned · Deterministic · Hardened
 ===================================================== */
@@ -17,6 +17,17 @@ const resultDiv = document.getElementById("result");
 
 function isValidCredentialId(id) {
   return /^AAU-[A-Z0-9]{8}$/.test(id);
+}
+
+/* Escape potentially unsafe output (governance hygiene) */
+function escapeHtml(str) {
+  if (typeof str !== "string") return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function renderMessage(type, html) {
@@ -119,25 +130,25 @@ verifyBtn.addEventListener("click", async () => {
         renderMessage(
           "success",
           `
-          ✅ <strong>Credential Verified</strong>
+          <strong>Credential Verified</strong>
 
           <div class="label">Full Name</div>
-          ${data.full_name}
+          ${escapeHtml(data.full_name)}
 
           <div class="label">Credential ID</div>
-          ${data.credential_id}
+          ${escapeHtml(data.credential_id)}
 
           <div class="label">Credential Type</div>
-          ${data.credential_type || "—"}
+          ${escapeHtml(data.credential_type || "—")}
 
           <div class="label">Issued Under Program</div>
-          ${data.program_code || "—"}
+          ${escapeHtml(data.program_code || "—")}
 
           <div class="label">Issued By</div>
-          ${data.issued_by || "Agile AI University"}
+          ${escapeHtml(data.issued_by || "Agile AI University")}
 
           <div class="label">Issue Date</div>
-          ${data.issue_date || "—"}
+          ${escapeHtml(data.issue_date || "—")}
 
           <hr />
 
@@ -153,7 +164,7 @@ verifyBtn.addEventListener("click", async () => {
         renderMessage(
           "error",
           `
-          ⚠️ <strong>Credential Not Found</strong>
+          <strong>Credential Not Found</strong>
           <br /><br />
           The entered Credential ID does not match any publicly approved record.
           `

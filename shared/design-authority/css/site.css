@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v14.1 (Hamburger Geometric Stabilization + Breadcrumb Structural Fix + Mobile reCAPTCHA Touch Safety)
+   Current Version: v14.2 (Hamburger Geometric Stabilization + Breadcrumb Structural Fix + Mobile reCAPTCHA Natural Rendering)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -11,7 +11,8 @@
    - Hamburger rebuilt using center-based transform model
    - Perfect symmetrical X (no drift)
    - Mobile overlay + backdrop preserved
-   - reCAPTCHA mobile tap issue resolved via stacking & pointer safety patch
+   - reCAPTCHA rendered at native width (no scaling)
+   - Mobile stacking + pointer safety ensured
    - No layout, navigation logic, or DOM structure changes
 ========================================= */
 
@@ -173,8 +174,6 @@ main {
 
 /* =========================
    BREADCRUMB — Structural Target
-   Targets first link inside main content.
-   Prevents inherited bright link colors.
 ========================= */
 
 main > *:first-child a {
@@ -197,7 +196,7 @@ main > *:first-child a:hover {
 
 
 /* =========================
-   FOOTER — Institutional Stabilized
+   FOOTER
 ========================= */
 
 .site-footer {
@@ -248,9 +247,6 @@ main > *:first-child a:hover {
 
 /* =========================
    HAMBURGER — Geometric Center Model
-   - All bars originate from true vertical center
-   - Rotation occurs around midpoint
-   - Eliminates asymmetry & double-line artifacts
 ========================= */
 
 .site-header .nav-hamburger {
@@ -303,7 +299,6 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
   .site-header .nav-hamburger { display: block; }
 
-  /* Backdrop overlay (only interactive when nav-open) */
   body::before {
     content: "";
     position: fixed;
@@ -364,30 +359,24 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /* reCAPTCHA containment */
+  /* reCAPTCHA — Native Rendering */
   .verify-recaptcha {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
-    overflow: hidden;
-  }
-
-  .g-recaptcha {
-    transform: scale(0.94);
-    transform-origin: center top;
-  }
-
-  /* =========================
-     reCAPTCHA Touch Safety Patch (v14.1)
-     Ensures backdrop never intercepts taps
-     Restores stacking priority
-  ========================= */
-
-  .verify-recaptcha,
-  .g-recaptcha {
+    overflow: visible;
+    margin: 8px 0 12px 0;
     position: relative;
     z-index: 10;
-    pointer-events: auto;
+  }
+
+  .g-recaptcha {
+    transform: none !important;
+    width: auto;
+    max-width: 100%;
+    position: relative;
+    z-index: 10;
   }
 
   body:not(.nav-open)::before {

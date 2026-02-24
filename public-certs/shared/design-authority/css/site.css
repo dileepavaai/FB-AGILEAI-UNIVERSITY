@@ -372,11 +372,38 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     overflow: hidden;
   }
 
-  .g-recaptcha {
-    transform: scale(0.94);
-    transform-origin: center top;
-  }
+  /* =========================
+   reCAPTCHA — Mobile Natural Rendering (v14.2)
+   - Removes scaling
+   - Preserves native width
+   - True horizontal centering
+   - Fixes portrait misalignment
+========================= */
 
+.verify-recaptcha {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  overflow: visible;
+  margin: 8px 0 12px 0;
+}
+
+.g-recaptcha {
+  transform: none !important;
+  width: auto;
+  max-width: 100%;
+}
+.verify-recaptcha,
+.g-recaptcha {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+body:not(.nav-open)::before {
+  pointer-events: none !important;
+}
   /* =========================
      reCAPTCHA Touch Safety Patch (v14.1)
      Ensures backdrop never intercepts taps

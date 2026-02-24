@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v14.0 (Hamburger Geometric Stabilization + Breadcrumb Structural Fix)
+   Current Version: v14.1 (Hamburger Geometric Stabilization + Breadcrumb Structural Fix + Mobile reCAPTCHA Touch Safety)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -9,8 +9,10 @@
    - Breadcrumb structural targeting (no class dependency)
    - Footer institutional stabilization (light + dark)
    - Hamburger rebuilt using center-based transform model
-   - Perfect symmetrical X
-   - No layout or navigation logic changes
+   - Perfect symmetrical X (no drift)
+   - Mobile overlay + backdrop preserved
+   - reCAPTCHA mobile tap issue resolved via stacking & pointer safety patch
+   - No layout, navigation logic, or DOM structure changes
 ========================================= */
 
 
@@ -172,7 +174,7 @@ main {
 /* =========================
    BREADCRUMB — Structural Target
    Targets first link inside main content.
-   Removes bright link color inheritance.
+   Prevents inherited bright link colors.
 ========================= */
 
 main > *:first-child a {
@@ -246,9 +248,9 @@ main > *:first-child a:hover {
 
 /* =========================
    HAMBURGER — Geometric Center Model
-   - All bars originate from true center
-   - Rotation around midpoint
-   - Eliminates drift & double-line artifacts
+   - All bars originate from true vertical center
+   - Rotation occurs around midpoint
+   - Eliminates asymmetry & double-line artifacts
 ========================= */
 
 .site-header .nav-hamburger {
@@ -274,17 +276,9 @@ main > *:first-child a:hover {
     opacity var(--transition-speed-fast);
 }
 
-.nav-hamburger span:nth-child(1) {
-  transform: translateY(-8px);
-}
-
-.nav-hamburger span:nth-child(2) {
-  transform: translateY(0);
-}
-
-.nav-hamburger span:nth-child(3) {
-  transform: translateY(8px);
-}
+.nav-hamburger span:nth-child(1) { transform: translateY(-8px); }
+.nav-hamburger span:nth-child(2) { transform: translateY(0); }
+.nav-hamburger span:nth-child(3) { transform: translateY(8px); }
 
 body.nav-open .nav-hamburger span:nth-child(1) {
   transform: translateY(0) rotate(45deg);
@@ -309,6 +303,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
   .site-header .nav-hamburger { display: block; }
 
+  /* Backdrop overlay (only interactive when nav-open) */
   body::before {
     content: "";
     position: fixed;
@@ -369,6 +364,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
+  /* reCAPTCHA containment */
   .verify-recaptcha {
     display: flex;
     justify-content: center;
@@ -379,5 +375,22 @@ body.nav-open .nav-hamburger span:nth-child(3) {
   .g-recaptcha {
     transform: scale(0.94);
     transform-origin: center top;
+  }
+
+  /* =========================
+     reCAPTCHA Touch Safety Patch (v14.1)
+     Ensures backdrop never intercepts taps
+     Restores stacking priority
+  ========================= */
+
+  .verify-recaptcha,
+  .g-recaptcha {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+  }
+
+  body:not(.nav-open)::before {
+    pointer-events: none !important;
   }
 }

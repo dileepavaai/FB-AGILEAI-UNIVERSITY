@@ -3,7 +3,7 @@
    Cloud Run Controlled · Credential ID Only · reCAPTCHA
 ===================================================== */
 
-const API_ENDPOINT = "https://aau-credential-verify-458881040066.asia-south1.run.app/verify"; // Update after Cloud Run deploy
+const API_ENDPOINT = "https://aau-credential-verify-458881040066.asia-south1.run.app/public/verify-credential";
 
 const verifyBtn = document.getElementById("verifyBtn");
 const credentialIdInput = document.getElementById("credentialIdInput");
@@ -67,7 +67,7 @@ verifyBtn.addEventListener("click", async () => {
       },
       body: JSON.stringify({
         credential_id: credentialId,
-        recaptcha_token: recaptchaToken
+        recaptchaToken: recaptchaToken   // ✅ FIXED (camelCase)
       })
     });
 
@@ -84,8 +84,11 @@ verifyBtn.addEventListener("click", async () => {
         <div class="label">Credential ID</div>
         ${data.credential_id}
 
-        <div class="label">Program</div>
-        ${data.program_code}
+        <div class="label">Credential Type</div>
+        ${data.credential_type || "—"}
+
+        <div class="label">Issued Under Program</div>
+        ${data.program_code || "—"}
 
         <div class="label">Issued By</div>
         ${data.issued_by}
@@ -101,15 +104,22 @@ verifyBtn.addEventListener("click", async () => {
         </small>
       `);
 
-    } else {
+    } else if (data.status === "not_found") {
 
       renderMessage("error", `
         ⚠️ <strong>Credential Not Found</strong>
         <br /><br />
-        The entered Credential ID does not match any publicly approved record.
-        <br /><br />
-        Please verify the ID and try again.
+        The entered Credential ID does not match any approved record.
       `);
+
+    } else {
+
+      renderMessage("error", `
+        ⚠️ Verification service error.
+        <br /><br />
+        Please try again later.
+      `);
+
     }
 
   } catch (err) {

@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v13.5 (Mobile Overlay + Backdrop + Motion + Captcha Refinement)
+   Current Version: v13.6 (Icon Stability + Hamburger Precision Fix)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 ========================================= */
@@ -63,9 +63,7 @@ body {
     color var(--transition-speed-standard);
 }
 
-body.nav-open {
-  overflow: hidden;
-}
+body.nav-open { overflow: hidden; }
 
 
 /* =========================
@@ -79,16 +77,13 @@ body.nav-open {
   height: var(--header-height);
   border-bottom: 1px solid var(--border-subtle);
   background: var(--background);
-
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-
   z-index: 5000;
   display: flex;
   align-items: center;
-
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
@@ -97,7 +92,6 @@ body.nav-open {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 32px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -120,9 +114,7 @@ body.nav-open {
    NAVIGATION (DESKTOP)
 ========================= */
 
-.main-nav {
-  position: relative;
-}
+.main-nav { position: relative; }
 
 .nav-tree {
   list-style: none;
@@ -142,9 +134,7 @@ body.nav-open {
   transition: opacity var(--transition-speed-fast) var(--motion-standard);
 }
 
-.main-nav a:hover {
-  opacity: 0.8;
-}
+.main-nav a:hover { opacity: 0.8; }
 
 .main-nav a.is-active {
   font-weight: 600;
@@ -175,7 +165,7 @@ main {
 
 
 /* =========================
-   FOOTER
+   FOOTER (Institutional Restored)
 ========================= */
 
 .site-footer {
@@ -191,7 +181,7 @@ main {
 
 
 /* =========================
-   THEME TOGGLE
+   THEME TOGGLE (Perfect Centering)
 ========================= */
 
 .theme-control button {
@@ -201,12 +191,15 @@ main {
   border: 1px solid var(--border-subtle);
   background: transparent;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
 
 /* =========================
-   HAMBURGER
+   HAMBURGER (Precision Fixed)
 ========================= */
 
 .site-header .nav-hamburger {
@@ -214,12 +207,9 @@ main {
   background: none;
   border: none;
   cursor: pointer;
-}
-
-.nav-hamburger {
-  position: relative;
   width: 26px;
   height: 22px;
+  position: relative;
 }
 
 .nav-hamburger span {
@@ -228,17 +218,21 @@ main {
   width: 100%;
   height: 2px;
   background: var(--text-primary);
+  transform-origin: center;
   transition:
     transform var(--transition-speed-standard) var(--motion-standard),
     opacity var(--transition-speed-fast);
 }
 
+/* Evenly spaced bars */
 .nav-hamburger span:nth-child(1) { top: 0; }
 .nav-hamburger span:nth-child(2) { top: 10px; }
 .nav-hamburger span:nth-child(3) { bottom: 0; }
 
+/* Clean X transformation */
 body.nav-open .nav-hamburger span:nth-child(1) {
-  transform: translateY(10px) rotate(45deg);
+  top: 10px;
+  transform: rotate(45deg);
 }
 
 body.nav-open .nav-hamburger span:nth-child(2) {
@@ -246,7 +240,8 @@ body.nav-open .nav-hamburger span:nth-child(2) {
 }
 
 body.nav-open .nav-hamburger span:nth-child(3) {
-  transform: translateY(-10px) rotate(-45deg);
+  bottom: 10px;
+  transform: rotate(-45deg);
 }
 
 
@@ -256,13 +251,9 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
 @media (max-width: 768px) {
 
-  .header-inner {
-    padding: 0 20px;
-  }
+  .header-inner { padding: 0 20px; }
 
-  .site-header .nav-hamburger {
-    display: block;
-  }
+  .site-header .nav-hamburger { display: block; }
 
   /* Backdrop Dim */
   body::before {
@@ -281,14 +272,13 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     pointer-events: auto;
   }
 
-  /* Animated Overlay Nav */
+  /* Overlay Nav */
   .main-nav {
     position: fixed;
     top: calc(var(--header-height) - 1px);
     left: 0;
     right: 0;
     width: 100vw;
-
     background: var(--surface-elevated);
     border-top: 1px solid var(--border-subtle);
     padding: 28px 24px;
@@ -329,7 +319,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /* reCAPTCHA Mobile Proper Containment */
+  /* reCAPTCHA containment */
   .verify-recaptcha {
     display: flex;
     justify-content: center;

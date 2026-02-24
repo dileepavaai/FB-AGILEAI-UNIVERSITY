@@ -175,6 +175,8 @@ main {
 
 /* =========================
    BREADCRUMB — Structural Target
+   Targets first link inside main content
+   Prevents global link color inheritance
 ========================= */
 
 main > *:first-child a {
@@ -248,6 +250,10 @@ main > *:first-child a:hover {
 
 /* =========================
    HAMBURGER — True Center Model
+   - All bars originate from vertical center
+   - Rotation around midpoint
+   - No visual drift
+   - No double-line artifact
 ========================= */
 
 .site-header .nav-hamburger {
@@ -296,10 +302,24 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
 @media (max-width: 768px) {
 
+  /*
+     Portrait Width Correction
+     Default mobile viewport (Samsung S25 Ultra, etc.) ≈ 360px
+     Original 32px padding each side leaves only 296px usable space.
+     Google reCAPTCHA requires 304px intrinsic width.
+
+     Reduced to 16px each side → 328px usable width.
+     Prevents clipping without scaling or scroll hacks.
+  */
+  main {
+    padding: 0 16px 80px;
+  }
+
   .header-inner { padding: 0 20px; }
 
   .site-header .nav-hamburger { display: block; }
 
+  /* Backdrop Overlay */
   body::before {
     content: "";
     position: fixed;
@@ -316,6 +336,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     pointer-events: auto;
   }
 
+  /* Mobile Navigation Overlay */
   .main-nav {
     position: fixed;
     top: calc(var(--header-height) - 1px);
@@ -360,11 +381,16 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /* reCAPTCHA — Portrait Width Stabilization */
+  /* =========================
+     reCAPTCHA — Native Width Safe
+     - No scaling
+     - No horizontal scroll
+     - Uses corrected layout width
+     - Preserves tap accuracy
+  ========================= */
+
   .verify-recaptcha {
     width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
     display: flex;
     justify-content: center;
     padding-bottom: 4px;
@@ -373,7 +399,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
   }
 
   .g-recaptcha {
-    min-width: 304px;
+    min-width: 304px; /* Google intrinsic width */
     transform: none !important;
     position: relative;
     z-index: 10;

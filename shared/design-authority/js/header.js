@@ -1,7 +1,7 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
-   Current Version: v2.3 (Selector Integrity + Event Containment Lock)
+   Current Version: v2.4 (Canonical URL Normalization)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="header-inner">
 
           <div class="brand">
-            <a href="https://agileai.university">
+            <a href="https://agileai.university/">
               Agile AI University
             </a>
           </div>
@@ -109,13 +109,13 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="header-inner">
 
           <div class="brand">
-            <a href="https://agileai.foundation"
+            <a href="https://agileai.foundation/"
                target="_blank"
                rel="noopener">
               Agile AI Foundation
             </a>
             <span class="brand-separator"> &amp; </span>
-            <a href="https://agileai.university">
+            <a href="https://agileai.university/">
               Agile AI University
             </a>
           </div>
@@ -239,21 +239,6 @@ document.addEventListener("DOMContentLoaded", function () {
       isOpen ? closeMobileNav() : openMobileNav();
     });
   }
-
-
-  /* =====================================================
-     SUBMENU ACCORDION (Scoped Only)
-  ===================================================== */
-
-  toggles.forEach(toggle => {
-    toggle.addEventListener("click", function (e) {
-      e.preventDefault();
-      const parent = this.parentElement;
-      const isOpen = parent.classList.contains("is-open");
-      parent.classList.toggle("is-open");
-      this.setAttribute("aria-expanded", String(!isOpen));
-    });
-  });
 
 
   /* =====================================================

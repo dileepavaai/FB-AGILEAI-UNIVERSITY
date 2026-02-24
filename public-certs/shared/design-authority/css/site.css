@@ -336,4 +336,56 @@ a:hover {
     transform: scale(0.92);
     transform-origin: left top;
   }
+
+  .nav-tree a.is-active {
+  font-weight: 600;
+  border-bottom: 1px solid var(--text-primary);
+  padding-bottom: 6px;
+  }
+}
+
+/* =========================
+   HAMBURGER → CLOSE TRANSFORM
+========================= */
+
+.nav-hamburger {
+  position: relative;
+  width: 26px;
+  height: 22px;
+}
+
+.nav-hamburger span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--text-primary);
+  transition: 
+    transform var(--transition-speed-standard) var(--motion-standard),
+    opacity var(--transition-speed-fast);
+}
+
+.nav-hamburger span:nth-child(1) {
+  top: 0;
+}
+
+.nav-hamburger span:nth-child(2) {
+  top: 10px;
+}
+
+.nav-hamburger span:nth-child(3) {
+  bottom: 0;
+}
+
+/* Transform when open */
+body.nav-open .nav-hamburger span:nth-child(1) {
+  transform: translateY(10px) rotate(45deg);
+}
+
+body.nav-open .nav-hamburger span:nth-child(2) {
+  opacity: 0;
+}
+
+body.nav-open .nav-hamburger span:nth-child(3) {
+  transform: translateY(-10px) rotate(-45deg);
 }

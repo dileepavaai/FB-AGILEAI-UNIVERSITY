@@ -130,7 +130,7 @@ async function verifyRecaptcha(req, res, next) {
   const secret = process.env.RECAPTCHA_SECRET;
   if (!secret) return next();
 
-  const token = req.body?.recaptchaToken;
+  const token = req.body?.recaptchaToken || req.body?.recaptcha_token;
   if (!token) {
     return res.status(400).json({ error: "RECAPTCHA_REQUIRED" });
   }

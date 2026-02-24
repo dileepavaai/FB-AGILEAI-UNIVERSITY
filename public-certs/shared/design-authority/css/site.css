@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v14.3 (Responsive reCAPTCHA Stabilization)
+   Current Version: v14.4 (reCAPTCHA Portrait Width Stabilization)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -11,8 +11,9 @@
    - Hamburger rebuilt using true center transform model
    - Perfect symmetrical X (no drift / no double-line artifact)
    - Mobile overlay + backdrop preserved
-   - Responsive reCAPTCHA container (portrait + landscape safe)
-   - Tap accuracy preserved
+   - reCAPTCHA portrait width stabilization (no scaling)
+   - Prevents iframe clipping on narrow mobile devices
+   - Preserves tap accuracy
    - No layout, navigation logic, or DOM structure changes
 ========================================= */
 
@@ -174,7 +175,6 @@ main {
 
 /* =========================
    BREADCRUMB — Structural Target
-   Targets first link inside main content
 ========================= */
 
 main > *:first-child a {
@@ -360,38 +360,23 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /* =========================
-     reCAPTCHA — Responsive Container (v14.3)
-     Handles portrait + landscape safely
-  ========================= */
-
+  /* reCAPTCHA — Portrait Width Stabilization */
   .verify-recaptcha {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     display: flex;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    overflow: hidden;
-    margin: 8px 0 12px 0;
+    padding-bottom: 4px;
     position: relative;
     z-index: 10;
   }
 
   .g-recaptcha {
-    width: 304px; /* Google default width */
-    max-width: 100%;
-    transform-origin: top center;
+    min-width: 304px;
+    transform: none !important;
     position: relative;
     z-index: 10;
-  }
-
-  @supports (transform: scale(1)) {
-    .verify-recaptcha {
-      --recaptcha-scale: min(1, calc(100vw / 320));
-    }
-
-    .g-recaptcha {
-      transform: scale(var(--recaptcha-scale));
-    }
   }
 
   body:not(.nav-open)::before {

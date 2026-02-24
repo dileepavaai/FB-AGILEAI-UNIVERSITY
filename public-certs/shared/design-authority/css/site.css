@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v14.4 (reCAPTCHA Portrait Width Stabilization)
+   Current Version: v14.5 (reCAPTCHA Structural Width Neutralization)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -11,8 +11,10 @@
    - Hamburger rebuilt using true center transform model
    - Perfect symmetrical X (no drift / no double-line artifact)
    - Mobile overlay + backdrop preserved
-   - reCAPTCHA portrait width stabilization (no scaling)
-   - Prevents iframe clipping on narrow mobile devices
+   - Mobile padding reduced (32px → 16px)
+   - reCAPTCHA structural width neutralization (no scaling)
+   - Prevents iframe clipping on portrait mobile devices
+   - Preserves intrinsic 304px width
    - Preserves tap accuracy
    - No layout, navigation logic, or DOM structure changes
 ========================================= */
@@ -197,7 +199,7 @@ main > *:first-child a:hover {
 
 
 /* =========================
-   FOOTER — Institutional Stabilized
+   FOOTER
 ========================= */
 
 .site-footer {
@@ -296,6 +298,20 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
 @media (max-width: 768px) {
 
+  /*
+     Portrait viewport math:
+
+     Approx mobile width: 360px
+     Original padding: 32px each side → 296px usable
+     reCAPTCHA intrinsic width: 304px
+
+     Adjust padding to 16px per side → 328px usable
+     Neutralizes clipping without scaling or scroll.
+  */
+  main {
+    padding: 0 16px 80px;
+  }
+
   .header-inner { padding: 0 20px; }
 
   .site-header .nav-hamburger { display: block; }
@@ -360,11 +376,16 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /* reCAPTCHA — Portrait Width Stabilization */
+  /*
+     reCAPTCHA — Structural Width Neutralization
+     Expands container beyond padding boundary
+     while preserving intrinsic 304px width.
+  */
+
   .verify-recaptcha {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    margin-right: -16px;
     display: flex;
     justify-content: center;
     padding-bottom: 4px;

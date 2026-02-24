@@ -40,11 +40,12 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- Institutional Design Authority (LOCKED RULE) -->
+  <!-- Institutional Design Authority -->
   <link rel="stylesheet" href="shared/design-authority/css/site.css" />
-
-  <!-- Surface-Specific Styling -->
   <link rel="stylesheet" href="assets/css/verify.css" />
+
+  <!-- reCAPTCHA v2 -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body data-surface="certs">
@@ -67,32 +68,25 @@
       </p>
 
       <p class="verify-meta">
-        Search using either the unique Credential ID or the registered Email Address.
+        Enter the official Credential ID exactly as issued.
       </p>
 
-      <!-- Credential ID Search (Primary Identifier) -->
       <label for="credentialIdInput">Credential ID</label>
       <input
         id="credentialIdInput"
         type="text"
-        placeholder="Enter credential ID"
+        placeholder="AAU-XXXXXXXX"
         autocomplete="off"
         aria-label="Credential ID"
+        maxlength="13"
       />
 
-      <p class="verify-divider" aria-hidden="true">
-        — or —
-      </p>
-
-      <!-- Email Search -->
-      <label for="emailInput">Registered Email Address</label>
-      <input
-        id="emailInput"
-        type="email"
-        placeholder="Enter registered email"
-        autocomplete="email"
-        aria-label="Registered email address"
-      />
+      <!-- reCAPTCHA -->
+      <div style="margin-top:18px;">
+        <div class="g-recaptcha"
+             data-sitekey="6LdRy3UsAAAAAIU-rQvx2Qh0V7cZ-yl_TwvfLF_c">
+        </div>
+      </div>
 
       <button id="verifyBtn" type="button">
         Verify Credential

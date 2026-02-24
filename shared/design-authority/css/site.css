@@ -1,7 +1,7 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v13.6 (Icon Stability + Hamburger Precision Fix)
+   Current Version: v13.7 (Institutional Footer + Icon Stability Freeze)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 ========================================= */
@@ -105,9 +105,7 @@ body.nav-open { overflow: hidden; }
   text-decoration: none;
 }
 
-.site-header .brand a:hover {
-  opacity: 0.85;
-}
+.site-header .brand a:hover { opacity: 0.85; }
 
 
 /* =========================
@@ -165,7 +163,7 @@ main {
 
 
 /* =========================
-   FOOTER (Institutional Restored)
+   FOOTER — Institutional Stabilized
 ========================= */
 
 .site-footer {
@@ -177,11 +175,28 @@ main {
 .footer-inner {
   max-width: 760px;
   margin: 0 auto;
+  color: var(--text-secondary);
+}
+
+.site-footer a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color var(--transition-speed-fast);
+}
+
+.site-footer a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* Dark Mode Elevation */
+:root[data-theme="dark"] .site-footer {
+  background: rgba(20,26,38,0.95);
 }
 
 
 /* =========================
-   THEME TOGGLE (Perfect Centering)
+   THEME TOGGLE — Centered
 ========================= */
 
 .theme-control button {
@@ -199,7 +214,7 @@ main {
 
 
 /* =========================
-   HAMBURGER (Precision Fixed)
+   HAMBURGER — Precision Stable
 ========================= */
 
 .site-header .nav-hamburger {
@@ -224,12 +239,12 @@ main {
     opacity var(--transition-speed-fast);
 }
 
-/* Evenly spaced bars */
+/* Perfect bar spacing */
 .nav-hamburger span:nth-child(1) { top: 0; }
 .nav-hamburger span:nth-child(2) { top: 10px; }
 .nav-hamburger span:nth-child(3) { bottom: 0; }
 
-/* Clean X transformation */
+/* Clean X */
 body.nav-open .nav-hamburger span:nth-child(1) {
   top: 10px;
   transform: rotate(45deg);
@@ -255,7 +270,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
   .site-header .nav-hamburger { display: block; }
 
-  /* Backdrop Dim */
+  /* Backdrop */
   body::before {
     content: "";
     position: fixed;
@@ -283,11 +298,9 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     border-top: 1px solid var(--border-subtle);
     padding: 28px 24px;
     z-index: 6000;
-
     opacity: 0;
     transform: translateY(-8px);
     pointer-events: none;
-
     transition:
       opacity var(--transition-speed-standard),
       transform var(--transition-speed-standard);

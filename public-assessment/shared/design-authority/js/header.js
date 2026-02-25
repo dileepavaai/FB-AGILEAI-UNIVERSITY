@@ -1,7 +1,7 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
-   Current Version: v2.3 (Selector Integrity + Event Containment Lock)
+   Current Version: v2.5 (Institutional Analytics Integration)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
@@ -12,6 +12,7 @@
    - Active state detection must remain data-path based
    - Mobile behavior must remain CSS-driven (no layout overrides)
    - Theme control markup must remain consistent across surfaces
+   - Analytics injection must remain centralized and surface-bound
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="header-inner">
 
           <div class="brand">
-            <a href="https://agileai.university">
+            <a href="https://agileai.university/">
               Agile AI University
             </a>
           </div>
@@ -100,22 +101,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   } else {
 
-  /* =====================================================
-     DEFAULT SURFACE — Institutional Public Menu
-  ===================================================== */
-
     headerHTML = `
       <header class="site-header">
         <div class="header-inner">
 
           <div class="brand">
-            <a href="https://agileai.foundation"
+            <a href="https://agileai.foundation/"
                target="_blank"
                rel="noopener">
               Agile AI Foundation
             </a>
             <span class="brand-separator"> &amp; </span>
-            <a href="https://agileai.university">
+            <a href="https://agileai.university/">
               Agile AI University
             </a>
           </div>
@@ -195,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* =====================================================
-     ACTIVE STATE DISCIPLINE (Data-Path Based)
+     ACTIVE STATE DISCIPLINE
   ===================================================== */
 
   const navLinks = headerContainer.querySelectorAll(".main-nav a[data-path]");
@@ -219,7 +216,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const hamburger = headerContainer.querySelector(".nav-hamburger");
   const nav = headerContainer.querySelector(".main-nav");
-  const toggles = headerContainer.querySelectorAll(".nav-toggle");
 
   function closeMobileNav() {
     body.classList.remove("nav-open");
@@ -240,26 +236,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
-  /* =====================================================
-     SUBMENU ACCORDION (Scoped Only)
-  ===================================================== */
-
-  toggles.forEach(toggle => {
-    toggle.addEventListener("click", function (e) {
-      e.preventDefault();
-      const parent = this.parentElement;
-      const isOpen = parent.classList.contains("is-open");
-      parent.classList.toggle("is-open");
-      this.setAttribute("aria-expanded", String(!isOpen));
-    });
-  });
-
-
-  /* =====================================================
-     GLOBAL CLOSE CONTROLS
-  ===================================================== */
-
   document.addEventListener("click", function (e) {
     if (!body.classList.contains("nav-open")) return;
     if (!e.target.closest(".site-header")) {
@@ -276,10 +252,55 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("resize", function () {
     if (window.innerWidth >= 769) {
       closeMobileNav();
-      headerContainer.querySelectorAll(".nav-item.is-open")
-        .forEach(item => item.classList.remove("is-open"));
     }
   });
+
+
+  /* =====================================================
+     INSTITUTIONAL ANALYTICS LAYER (STRICT MODE)
+     Surface-bound | Centralized | Non-invasive
+  ===================================================== */
+
+  const STREAM_MAP = {
+    site: "G-79KD6F56DX",
+    portal: "G-T4MGDE3G63",
+    certs: "G-72N0GHGF1P",
+    education: "G-J84CWBF2C4",
+    assessment: "G-3Y7V3S3HJY"
+  };
+
+  if (!surface || !STREAM_MAP[surface]) {
+    console.error("[AAI Analytics] Invalid or missing data-surface. GA4 not initialized.");
+  } else {
+
+    const MEASUREMENT_ID = STREAM_MAP[surface];
+
+    const scriptTag = document.createElement("script");
+    scriptTag.async = true;
+    scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+    document.head.appendChild(scriptTag);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
+
+    gtag("js", new Date());
+    gtag("config", MEASUREMENT_ID, {
+      send_page_view: true,
+      surface: surface
+    });
+
+    window.AAI_Track = function (action, object, params = {}) {
+      if (!action || !object) return;
+      const eventName = `${action}_${object}`;
+      gtag("event", eventName, {
+        surface: surface,
+        ...params
+      });
+    };
+
+    console.info(`[AAI Analytics] Initialized | Surface: ${surface}`);
+  }
 
 
   /* =====================================================

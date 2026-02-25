@@ -10,7 +10,7 @@
       ]
     },
     {
-      "target": "assessment",
+      "target": "agileai-assessment",
       "public": "public-assessment",
       "ignore": [
         "firebase.json",
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "target": "agileai-edu",
+      "target": "agileai-education",
       "public": "public-edu",
       "ignore": [
         "firebase.json",

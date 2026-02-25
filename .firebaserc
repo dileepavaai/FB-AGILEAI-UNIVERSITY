@@ -8,16 +8,10 @@
         "agileai-site": [
           "agileai-site"
         ],
-        "admin": [
-          "admin-agileai-university"
-        ],
-        "portal": [
-          "portal-agileai-university"
-        ],
-        "assessment": [
+        "agileai-assessment": [
           "agileai-assessment"
         ],
-        "agileai-edu": [
+        "agileai-education": [
           "agileai-edu"
         ],
         "agileai-learn": [
@@ -25,6 +19,12 @@
         ],
         "agileai-certs": [
           "certs-agileai"
+        ],
+        "admin": [
+          "admin-agileai-university"
+        ],
+        "portal": [
+          "portal-agileai-university"
         ]
       }
     }

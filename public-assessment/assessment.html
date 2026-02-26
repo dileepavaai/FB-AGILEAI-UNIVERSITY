@@ -2,33 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Agile + AI Capability Assessment</title>
+  <title>Applied Agile AI Orchestration Capability Assessment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./assets/css/assessment.css" />
 </head>
 
 <body>
 
-<!-- ================= FIXED HEADER (MATCHES SCREENSHOT) ================= -->
 <div class="assessment-shell">
   <div class="assessment-shell-left">
     <div class="org-name">Agile AI University</div>
-    <div class="instrument-name">Agile + AI Capability Assessment</div>
+    <div class="instrument-name">Applied Agile AI Orchestration Capability Assessment</div>
   </div>
   <div class="assessment-shell-right">
-  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
-    Light
-  </button>
-
-  <a href="https://agileai.university/academics/capability-assessment.html"
-     class="exit-link">← Exit assessment</a>
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+      Light
+    </button>
+    <a href="https://agileai.university/academics/capability-assessment.html"
+       class="exit-link">← Exit assessment</a>
   </div>
-
 </div>
 
 <main class="assessment-container">
 
-  <!-- ================= PROGRESS ================= -->
+  <!-- PROGRESS -->
   <div class="assessment-progress hidden" id="assessmentProgress">
     <div class="progress-text" id="progressText">Step 1 of 8</div>
     <div class="progress-bar">
@@ -36,26 +33,25 @@
     </div>
   </div>
 
-  <!-- ================= INTRO ================= -->
+  <!-- INTRO -->
   <section class="assessment-intro">
-    <h1>Agile + AI Capability Assessment</h1>
+    <h1>Applied Agile AI Orchestration Capability Assessment</h1>
     <p class="intro-note">
-      An insight-driven diagnostic to reflect on how Agile and AI capabilities
-      show up in your professional context.
+      A structured diagnostic reflecting execution agility, AI fluency,
+      systems awareness, governance maturity, and outcome-based system prompting.
     </p>
     <p class="intro-disclaimer">
-      This is not a test. There are no right or wrong answers.
+      This is a reflective capability instrument. There are no right or wrong answers.
     </p>
     <button id="startAssessment" class="primary-btn">Begin Assessment</button>
   </section>
 
-  <!-- ================= CONTEXT ================= -->
+  <!-- CONTEXT -->
   <section class="assessment-context hidden">
     <h2>Your Context</h2>
     <p class="context-hint"><span>*</span> Required</p>
 
-    <p id="contextError"
-       style="display:none;color:#c62828;font-size:14px;margin-bottom:12px;">
+    <p id="contextError" style="display:none;color:#c62828;font-size:14px;margin-bottom:12px;">
       Please select your Current Role, Industry Context, and Career Aspiration.
     </p>
 
@@ -115,32 +111,48 @@
     <button id="continueToQuestions" class="primary-btn">Continue</button>
   </section>
 
-  <!-- ================= AGILE (Q1–Q3) ================= -->
+  <!-- ================= DIMENSION 1 ================= -->
   <section class="assessment-section hidden">
-    <h2>Agile Execution Orientation</h2>
+    <h2>Agile Execution Capability</h2>
 
     <div class="question-block">
-      <p>When priorities change mid-cycle, how does work adjust?</p>
-      <label><input type="radio" name="q1" value="1"> Replanned formally</label>
-      <label><input type="radio" name="q1" value="2"> With friction</label>
-      <label><input type="radio" name="q1" value="3"> Adapted locally</label>
-      <label><input type="radio" name="q1" value="4"> Continuously adaptive</label>
+      <p>How does execution respond when strategic priorities shift mid-cycle?</p>
+      <label><input type="radio" name="q1" value="1"> Formal replanning and control</label>
+      <label><input type="radio" name="q1" value="2"> Friction before adjustment</label>
+      <label><input type="radio" name="q1" value="3"> Adaptive team decisions</label>
+      <label><input type="radio" name="q1" value="4"> Fluid reprioritization aligned to outcomes</label>
     </div>
 
     <div class="question-block">
-      <p>How are outcomes tracked during execution?</p>
+      <p>How are delivery outcomes monitored during active work?</p>
       <label><input type="radio" name="q2" value="1"> Milestones only</label>
-      <label><input type="radio" name="q2" value="2"> Periodic reviews</label>
+      <label><input type="radio" name="q2" value="2"> Periodic review</label>
       <label><input type="radio" name="q2" value="3"> Frequent feedback</label>
-      <label><input type="radio" name="q2" value="4"> Continuous learning loops</label>
+      <label><input type="radio" name="q2" value="4"> Continuous calibration</label>
     </div>
 
     <div class="question-block">
-      <p>How empowered are teams to adjust their way of working?</p>
-      <label><input type="radio" name="q3" value="1"> Very limited</label>
-      <label><input type="radio" name="q3" value="2"> Some autonomy</label>
-      <label><input type="radio" name="q3" value="3"> Largely empowered</label>
-      <label><input type="radio" name="q3" value="4"> Fully self-managing</label>
+      <p>How much autonomy do teams have in evolving their way of working?</p>
+      <label><input type="radio" name="q3" value="1"> Minimal</label>
+      <label><input type="radio" name="q3" value="2"> Limited adjustments</label>
+      <label><input type="radio" name="q3" value="3"> Significant autonomy</label>
+      <label><input type="radio" name="q3" value="4"> Full self-regulating capability</label>
+    </div>
+
+    <div class="question-block">
+      <p>How visible is outcome alignment across teams?</p>
+      <label><input type="radio" name="q4" value="1"> Task-driven work</label>
+      <label><input type="radio" name="q4" value="2"> Outcomes inconsistently reinforced</label>
+      <label><input type="radio" name="q4" value="3"> Outcomes guide prioritization</label>
+      <label><input type="radio" name="q4" value="4"> Outcomes shape execution decisions</label>
+    </div>
+
+    <div class="question-block">
+      <p>How consistently does learning influence future execution cycles?</p>
+      <label><input type="radio" name="q5" value="1"> Rarely integrated</label>
+      <label><input type="radio" name="q5" value="2"> Inconsistent improvements</label>
+      <label><input type="radio" name="q5" value="3"> Learning informs cycles</label>
+      <label><input type="radio" name="q5" value="4"> Learning reshapes patterns dynamically</label>
     </div>
 
     <div class="section-nav">
@@ -149,32 +161,48 @@
     </div>
   </section>
 
-  <!-- ================= AI (Q4–Q6) ================= -->
+  <!-- ================= DIMENSION 2 ================= -->
   <section class="assessment-section hidden">
     <h2>AI Conceptual Fluency</h2>
 
     <div class="question-block">
-      <p>How is AI primarily perceived in your organization?</p>
-      <label><input type="radio" name="q4" value="1"> Automation tool</label>
-      <label><input type="radio" name="q4" value="2"> Productivity enhancer</label>
-      <label><input type="radio" name="q4" value="3"> System capability</label>
-      <label><input type="radio" name="q4" value="4"> Decision-influencing partner</label>
+      <p>How is AI positioned within operational workflows?</p>
+      <label><input type="radio" name="q6" value="1"> Automation tool</label>
+      <label><input type="radio" name="q6" value="2"> Productivity assistant</label>
+      <label><input type="radio" name="q6" value="3"> Integrated capability</label>
+      <label><input type="radio" name="q6" value="4"> Decision-influencing partner</label>
     </div>
 
     <div class="question-block">
-      <p>How well are AI limitations understood?</p>
-      <label><input type="radio" name="q5" value="1"> Poorly understood</label>
-      <label><input type="radio" name="q5" value="2"> Surface-level awareness</label>
-      <label><input type="radio" name="q5" value="3"> Clearly understood</label>
-      <label><input type="radio" name="q5" value="4"> Explicitly governed</label>
+      <p>How clearly are AI limitations understood?</p>
+      <label><input type="radio" name="q7" value="1"> Poorly understood</label>
+      <label><input type="radio" name="q7" value="2"> Surface-level awareness</label>
+      <label><input type="radio" name="q7" value="3"> Clearly articulated</label>
+      <label><input type="radio" name="q7" value="4"> Explicitly governed</label>
     </div>
 
     <div class="question-block">
-      <p>How are AI outputs used in decision-making?</p>
-      <label><input type="radio" name="q6" value="1"> Rarely trusted</label>
-      <label><input type="radio" name="q6" value="2"> Supporting input</label>
-      <label><input type="radio" name="q6" value="3"> Regular influence</label>
-      <label><input type="radio" name="q6" value="4"> Integrated with accountability</label>
+      <p>How are AI outputs evaluated?</p>
+      <label><input type="radio" name="q8" value="1"> Informally</label>
+      <label><input type="radio" name="q8" value="2"> Manual review</label>
+      <label><input type="radio" name="q8" value="3"> Defined criteria</label>
+      <label><input type="radio" name="q8" value="4"> Structured accountability</label>
+    </div>
+
+    <div class="question-block">
+      <p>How consistently is AI aligned to business objectives?</p>
+      <label><input type="radio" name="q9" value="1"> Opportunistic usage</label>
+      <label><input type="radio" name="q9" value="2"> Selective alignment</label>
+      <label><input type="radio" name="q9" value="3"> Intentional mapping</label>
+      <label><input type="radio" name="q9" value="4"> Systematically outcome-aligned</label>
+    </div>
+
+    <div class="question-block">
+      <p>How clearly is AI assistance distinguished from AI authority?</p>
+      <label><input type="radio" name="q10" value="1"> Unclear distinction</label>
+      <label><input type="radio" name="q10" value="2"> Recognized inconsistently</label>
+      <label><input type="radio" name="q10" value="3"> Understood in decisions</label>
+      <label><input type="radio" name="q10" value="4"> Explicitly structured</label>
     </div>
 
     <div class="section-nav">
@@ -183,32 +211,48 @@
     </div>
   </section>
 
-  <!-- ================= SYSTEMS (Q7–Q9) ================= -->
+  <!-- ================= DIMENSION 3 ================= -->
   <section class="assessment-section hidden">
     <h2>Systems Thinking</h2>
 
     <div class="question-block">
-      <p>How connected are workflows across teams?</p>
-      <label><input type="radio" name="q7" value="1"> Fragmented</label>
-      <label><input type="radio" name="q7" value="2"> Partially connected</label>
-      <label><input type="radio" name="q7" value="3"> Mostly integrated</label>
-      <label><input type="radio" name="q7" value="4"> End-to-end systems</label>
+      <p>How interconnected are workflows across domains?</p>
+      <label><input type="radio" name="q11" value="1"> Siloed</label>
+      <label><input type="radio" name="q11" value="2"> Partially connected</label>
+      <label><input type="radio" name="q11" value="3"> Mostly integrated</label>
+      <label><input type="radio" name="q11" value="4"> End-to-end awareness</label>
     </div>
 
     <div class="question-block">
       <p>How are downstream impacts considered?</p>
-      <label><input type="radio" name="q8" value="1"> Rarely</label>
-      <label><input type="radio" name="q8" value="2"> Occasionally</label>
-      <label><input type="radio" name="q8" value="3"> Regularly</label>
-      <label><input type="radio" name="q8" value="4"> Systematically</label>
+      <label><input type="radio" name="q12" value="1"> Rarely assessed</label>
+      <label><input type="radio" name="q12" value="2"> Occasionally reviewed</label>
+      <label><input type="radio" name="q12" value="3"> Regularly evaluated</label>
+      <label><input type="radio" name="q12" value="4"> Systematically modeled</label>
     </div>
 
     <div class="question-block">
-      <p>How are feedback loops designed?</p>
-      <label><input type="radio" name="q9" value="1"> Informal</label>
-      <label><input type="radio" name="q9" value="2"> Reactive</label>
-      <label><input type="radio" name="q9" value="3"> Intentional</label>
-      <label><input type="radio" name="q9" value="4"> Continuous & measurable</label>
+      <p>How visible are dependencies?</p>
+      <label><input type="radio" name="q13" value="1"> Discovered reactively</label>
+      <label><input type="radio" name="q13" value="2"> Identified in reviews</label>
+      <label><input type="radio" name="q13" value="3"> Mapped and monitored</label>
+      <label><input type="radio" name="q13" value="4"> Actively managed</label>
+    </div>
+
+    <div class="question-block">
+      <p>How are feedback loops structured?</p>
+      <label><input type="radio" name="q14" value="1"> Ad hoc</label>
+      <label><input type="radio" name="q14" value="2"> Reactive</label>
+      <label><input type="radio" name="q14" value="3"> Intentional</label>
+      <label><input type="radio" name="q14" value="4"> Continuous and measurable</label>
+    </div>
+
+    <div class="question-block">
+      <p>How does decision-making account for long-term systemic impact?</p>
+      <label><input type="radio" name="q15" value="1"> Immediate focus</label>
+      <label><input type="radio" name="q15" value="2"> Occasional consideration</label>
+      <label><input type="radio" name="q15" value="3"> Frequent inclusion</label>
+      <label><input type="radio" name="q15" value="4"> Strategically aligned</label>
     </div>
 
     <div class="section-nav">
@@ -217,32 +261,48 @@
     </div>
   </section>
 
-  <!-- ================= HUMICS (Q10–Q12) ================= -->
+  <!-- ================= DIMENSION 4 ================= -->
   <section class="assessment-section hidden">
     <h2>Ethics, Trust & Human Impact</h2>
 
     <div class="question-block">
-      <p>How are ethical concerns addressed?</p>
-      <label><input type="radio" name="q10" value="1"> After incidents</label>
-      <label><input type="radio" name="q10" value="2"> During reviews</label>
-      <label><input type="radio" name="q10" value="3"> Proactively discussed</label>
-      <label><input type="radio" name="q10" value="4"> Embedded in design</label>
+      <p>How are ethical implications addressed?</p>
+      <label><input type="radio" name="q16" value="1"> After incidents</label>
+      <label><input type="radio" name="q16" value="2"> Periodic review</label>
+      <label><input type="radio" name="q16" value="3"> Proactively discussed</label>
+      <label><input type="radio" name="q16" value="4"> Embedded in design</label>
     </div>
 
     <div class="question-block">
-      <p>How is trust maintained with AI usage?</p>
-      <label><input type="radio" name="q11" value="1"> Assumed</label>
-      <label><input type="radio" name="q11" value="2"> Explained when needed</label>
-      <label><input type="radio" name="q11" value="3"> Actively managed</label>
-      <label><input type="radio" name="q11" value="4"> Explicitly governed</label>
+      <p>How is trust calibrated when using AI?</p>
+      <label><input type="radio" name="q17" value="1"> Assumed</label>
+      <label><input type="radio" name="q17" value="2"> Reviewed when needed</label>
+      <label><input type="radio" name="q17" value="3"> Actively monitored</label>
+      <label><input type="radio" name="q17" value="4"> Governed structurally</label>
     </div>
 
     <div class="question-block">
       <p>How are human impacts evaluated?</p>
-      <label><input type="radio" name="q12" value="1"> Rarely</label>
-      <label><input type="radio" name="q12" value="2"> Occasionally</label>
-      <label><input type="radio" name="q12" value="3"> Consistently</label>
-      <label><input type="radio" name="q12" value="4"> Central to decisions</label>
+      <label><input type="radio" name="q18" value="1"> Rarely considered</label>
+      <label><input type="radio" name="q18" value="2"> Informally considered</label>
+      <label><input type="radio" name="q18" value="3"> Regularly assessed</label>
+      <label><input type="radio" name="q18" value="4"> Central to decisions</label>
+    </div>
+
+    <div class="question-block">
+      <p>How transparent are AI-influenced decisions?</p>
+      <label><input type="radio" name="q19" value="1"> Limited transparency</label>
+      <label><input type="radio" name="q19" value="2"> Explained upon request</label>
+      <label><input type="radio" name="q19" value="3"> Routinely documented</label>
+      <label><input type="radio" name="q19" value="4"> Designed for explainability</label>
+    </div>
+
+    <div class="question-block">
+      <p>How is accountability structured when AI influences outcomes?</p>
+      <label><input type="radio" name="q20" value="1"> Ambiguous responsibility</label>
+      <label><input type="radio" name="q20" value="2"> Clarified after decisions</label>
+      <label><input type="radio" name="q20" value="3"> Defined within roles</label>
+      <label><input type="radio" name="q20" value="4"> Explicitly governed</label>
     </div>
 
     <div class="section-nav">
@@ -251,32 +311,48 @@
     </div>
   </section>
 
-  <!-- ================= CHANGE (Q13–Q15) ================= -->
+  <!-- ================= DIMENSION 5 ================= -->
   <section class="assessment-section hidden">
-    <h2>Change & Learning Orientation</h2>
+    <h2>Outcome-Based System Prompting</h2>
 
     <div class="question-block">
-      <p>How does the organization respond to change?</p>
-      <label><input type="radio" name="q13" value="1"> Resistance</label>
-      <label><input type="radio" name="q13" value="2"> Compliance</label>
-      <label><input type="radio" name="q13" value="3"> Engagement</label>
-      <label><input type="radio" name="q13" value="4"> Co-creation</label>
+      <p>How intentionally are AI prompts structured toward defined outcomes?</p>
+      <label><input type="radio" name="q21" value="1"> Exploratory interaction</label>
+      <label><input type="radio" name="q21" value="2"> Task-oriented prompts</label>
+      <label><input type="radio" name="q21" value="3"> Objective-aligned prompts</label>
+      <label><input type="radio" name="q21" value="4"> Engineered for measurable delivery</label>
     </div>
 
     <div class="question-block">
-      <p>How is learning embedded?</p>
-      <label><input type="radio" name="q14" value="1"> Informal</label>
-      <label><input type="radio" name="q14" value="2"> Event-based</label>
-      <label><input type="radio" name="q14" value="3"> Continuous</label>
-      <label><input type="radio" name="q14" value="4"> System-driven</label>
+      <p>How consistently are contextual constraints embedded in prompts?</p>
+      <label><input type="radio" name="q22" value="1"> Loosely defined</label>
+      <label><input type="radio" name="q22" value="2"> Partially provided</label>
+      <label><input type="radio" name="q22" value="3"> Intentionally structured</label>
+      <label><input type="radio" name="q22" value="4"> Systematically embedded</label>
     </div>
 
     <div class="question-block">
-      <p>How are improvements sustained?</p>
-      <label><input type="radio" name="q15" value="1"> Short-term</label>
-      <label><input type="radio" name="q15" value="2"> Inconsistently</label>
-      <label><input type="radio" name="q15" value="3"> Through discipline</label>
-      <label><input type="radio" name="q15" value="4"> Through culture</label>
+      <p>How are AI-generated responses integrated into workflows?</p>
+      <label><input type="radio" name="q23" value="1"> Informally used</label>
+      <label><input type="radio" name="q23" value="2"> Selectively applied</label>
+      <label><input type="radio" name="q23" value="3"> Integrated into tasks</label>
+      <label><input type="radio" name="q23" value="4"> Embedded in orchestrated cycles</label>
+    </div>
+
+    <div class="question-block">
+      <p>How disciplined is prompt refinement over time?</p>
+      <label><input type="radio" name="q24" value="1"> Rarely refined</label>
+      <label><input type="radio" name="q24" value="2"> Occasionally adjusted</label>
+      <label><input type="radio" name="q24" value="3"> Iteratively improved</label>
+      <label><input type="radio" name="q24" value="4"> Continuously optimized</label>
+    </div>
+
+    <div class="question-block">
+      <p>How clearly is AI prompting treated as an orchestration capability?</p>
+      <label><input type="radio" name="q25" value="1"> Ad hoc usage</label>
+      <label><input type="radio" name="q25" value="2"> Useful technique</label>
+      <label><input type="radio" name="q25" value="3"> Recognized capability</label>
+      <label><input type="radio" name="q25" value="4"> Structured orchestration discipline</label>
     </div>
 
     <div class="section-nav">
@@ -285,40 +361,23 @@
     </div>
   </section>
 
-  <!-- ================= LEAD CAPTURE ================= -->
+  <!-- LEAD -->
   <section class="assessment-lead hidden">
     <h2>Get Your Insight Report</h2>
     <p class="section-note"><span>*</span> Name & Email required</p>
-
-    <p id="leadError"
-       style="display:none;color:#c62828;font-size:14px;margin-bottom:12px;">
+    <p id="leadError" style="display:none;color:#c62828;font-size:14px;margin-bottom:12px;">
       Please enter your Name and Email to continue.
     </p>
 
-    <label>
-      Full Name *
-      <input type="text" id="lead-name" />
-    </label>
-
-    <label>
-      Email Address *
-      <input type="email" id="lead-email" />
-    </label>
-
-    <label>
-      LinkedIn URL (Optional)
-      <input type="url" id="lead-linkedin" />
-    </label>
-
-    <label>
-      Cell Phone (Optional)
-      <input type="tel" id="lead-phone" />
-    </label>
+    <label>Full Name * <input type="text" id="lead-name" /></label>
+    <label>Email Address * <input type="email" id="lead-email" /></label>
+    <label>LinkedIn URL (Optional) <input type="url" id="lead-linkedin" /></label>
+    <label>Cell Phone (Optional) <input type="tel" id="lead-phone" /></label>
 
     <button id="submitLead" class="primary-btn">Continue</button>
   </section>
 
-  <!-- ================= SUBMIT ================= -->
+  <!-- SUBMIT -->
   <section class="assessment-submit hidden">
     <h2>Generate Your Insight Report</h2>
     <button id="generateReport" class="primary-btn">
@@ -330,45 +389,6 @@
 
 <script src="./assets/js/assessment-ui.js"></script>
 <script src="./assets/js/assessment.js"></script>
-
-<script>
-(function () {
-
-  const body = document.body;
-  const toggle = document.getElementById("themeToggle");
-  const storageKey = "assessmentTheme";
-
-  function applyTheme(mode) {
-    if (mode === "dark") {
-      body.classList.add("assessment-dark");
-      toggle.textContent = "Dark";
-    } else {
-      body.classList.remove("assessment-dark");
-      toggle.textContent = "Light";
-    }
-  }
-
-  // 1️⃣ Check manual override first
-  const savedTheme = localStorage.getItem(storageKey);
-
-  if (savedTheme) {
-    applyTheme(savedTheme);
-  } else {
-    // 2️⃣ Otherwise respect system preference
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    applyTheme(prefersDark ? "dark" : "light");
-  }
-
-  // 3️⃣ Toggle Click
-  toggle.addEventListener("click", function () {
-    const isDark = body.classList.contains("assessment-dark");
-    const newTheme = isDark ? "light" : "dark";
-    localStorage.setItem(storageKey, newTheme);
-    applyTheme(newTheme);
-  });
-
-})();
-</script>
 
 </body>
 </html>

@@ -3,20 +3,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Agile + AI Capability Insight Report</title>
+  <title>Applied Agile AI Orchestration Capability — Insight Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <link rel="stylesheet" href="./assets/css/assessment.css" />
 
   <style>
-    /* =====================================================
-       Subtle Typographic Authority Elevation
-       (UNCHANGED)
-       ===================================================== */
-
     .report-header h1 {
       font-weight: 800;
       letter-spacing: -0.01em;
+    }
+
+    .report-card {
+      margin-bottom: 48px;
     }
 
     .report-card h2 {
@@ -25,52 +23,7 @@
       margin-bottom: 18px;
     }
 
-    .report-subtitle {
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    /* =====================================================
-       ADDITIVE: Spacing Rhythm Refinement (SAFE)
-       Does NOT change structure or logic
-       ===================================================== */
-
-    .report-card {
-      margin-bottom: 48px;
-      position: relative;
-    }
-
-    .report-card p {
-      margin-bottom: 18px;
-    }
-
-    .report-card ul {
-      margin-top: 12px;
-      margin-bottom: 12px;
-    }
-
-    /* Subtle divider between long-form sections */
-    .report-card:not(:last-of-type)::after {
-      content: "";
-      display: block;
-      margin: 36px auto 0 auto;
-      width: 60%;
-      height: 1px;
-      background: linear-gradient(
-        90deg,
-        rgba(0,0,0,0.04),
-        rgba(0,0,0,0.10),
-        rgba(0,0,0,0.04)
-      );
-    }
-
-    /* =====================================================
-       ADDITIVE: Snapshot Visual Elevation (SAFE)
-       ===================================================== */
-
-    .chart-row {
-      align-items: center;
-    }
+    .chart-row { align-items: center; }
 
     .bar {
       height: 12px;
@@ -80,11 +33,7 @@
 
     .fill {
       border-radius: 8px;
-      background: linear-gradient(
-        90deg,
-        #0f172a 0%,
-        #1f2937 100%
-      );
+      background: linear-gradient(90deg,#0f172a 0%,#1f2937 100%);
       transition: width 0.6s ease;
     }
 
@@ -93,21 +42,45 @@
       color: #0f172a;
     }
 
-    /* =====================================================
-       Executive CTA — Psychological Refinement
-       (UNCHANGED STRUCTURE)
-       ===================================================== */
-
-    .paid-section {
-      position: relative;
-      margin-top: 40px;
+    .signal-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: #f3f4f6;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
 
-    .paid-blur {
-      filter: blur(6px);
-      pointer-events: none;
-      user-select: none;
+    .reflection-block h3 {
+      margin-top: 18px;
+      font-size: 15px;
+      font-weight: 700;
     }
+
+    .reflection-block ul {
+      padding-left: 18px;
+    }
+
+    .development-direction {
+      margin-top: 14px;
+      padding: 16px;
+      background: #f9fafb;
+      border-radius: 10px;
+      font-size: 14.5px;
+      line-height: 1.6;
+    }
+
+    .overall-block {
+      padding: 20px;
+      background: #f8fafc;
+      border-left: 4px solid #0f172a;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .paid-section { position: relative; margin-top: 40px; }
+    .paid-blur { filter: blur(6px); pointer-events: none; user-select: none; }
 
     .paid-overlay {
       position: absolute;
@@ -122,107 +95,30 @@
     }
 
     .upgrade-box {
-      max-width: 600px;
+      max-width: 620px;
       border: 1px solid #e5e7eb;
       border-radius: 16px;
-      padding: 34px;
+      padding: 36px;
       background: #ffffff;
       box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     }
 
     .upgrade-box h3 {
       margin-top: 0;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
-      letter-spacing: -0.01em;
-    }
-
-    .upgrade-box p {
-      color: #374151;
-      line-height: 1.7;
-      font-size: 15.5px;
-      margin-bottom: 18px;
     }
 
     .upgrade-btn {
-      margin-top: 10px;
+      margin-top: 16px;
       padding: 16px 26px;
       border-radius: 12px;
       border: none;
       background: #0f172a;
       color: #ffffff;
       font-weight: 700;
-      font-size: 15px;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
     }
-
-    .upgrade-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-    }
-
-    .upgrade-note {
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 14px;
-      line-height: 1.5;
-    }
-
-    /* =====================================================
-       Next Actions (UNCHANGED)
-       ===================================================== */
-
-    .next-actions {
-      margin-top: 40px;
-      padding: 22px;
-      border-radius: 14px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-    }
-
-    .next-actions h3 {
-      margin-top: 0;
-      font-size: 19px;
-      font-weight: 700;
-    }
-
-    .next-actions p {
-      font-size: 14.5px;
-      color: #374151;
-      margin-bottom: 18px;
-    }
-
-    .action-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .action-btn {
-      padding: 13px 20px;
-      border-radius: 12px;
-      font-size: 14.5px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      color: #111827;
-      transition: background 0.15s ease;
-    }
-
-    .action-btn:hover {
-      background: #f3f4f6;
-    }
-
-    .action-btn.primary {
-      border-color: #9ca3af;
-    }
-
-    /* =====================================================
-       Institutional Footer (UNCHANGED STRUCTURE)
-       ===================================================== */
 
     .institutional-footer {
       margin-top: 48px;
@@ -234,12 +130,6 @@
       line-height: 1.65;
     }
 
-    .institutional-footer-title {
-      font-weight: 700;
-      margin-bottom: 10px;
-      letter-spacing: 0.01em;
-    }
-
     .institutional-meta {
       font-size: 13px;
       color: #6b7280;
@@ -249,19 +139,17 @@
 </head>
 
 <body class="report-page">
-
 <main class="report-container">
 
   <!-- HEADER -->
   <section class="report-header">
-    <h1>Agile + AI Capability Insight Report</h1>
-
-    <p class="report-subtitle">
-      An insight-based academic reflection on Agile execution, Artificial Intelligence,
-      systems thinking, ethics, trust, and learning orientation.
+    <h1>Applied Agile AI Orchestration Capability</h1>
+    <p>
+      Structured institutional reflection across execution agility,
+      AI fluency, systemic coherence, ethical governance,
+      and outcome-based system prompting architecture.
     </p>
-
-    <p class="report-disclaimer">
+    <p>
       Issued by <strong>Agile AI University</strong><br />
       Prepared for <strong><span id="report-name">—</span></strong>
     </p>
@@ -269,8 +157,8 @@
 
   <!-- CONTEXT -->
   <section class="report-card">
-    <h2>Your Context</h2>
-    <ul class="context-list">
+    <h2>Participant Context</h2>
+    <ul>
       <li><strong>Name:</strong> <span id="report-name-context">—</span></li>
       <li><strong>Role:</strong> <span id="report-role">—</span></li>
       <li><strong>Industry:</strong> <span id="report-industry">—</span></li>
@@ -285,79 +173,57 @@
     <div class="chart-row"><span>Agile Execution</span><div class="bar"><div id="bar-agile" class="fill"></div></div><span id="label-agile" class="level">—</span></div>
     <div class="chart-row"><span>AI Conceptual Fluency</span><div class="bar"><div id="bar-ai" class="fill"></div></div><span id="label-ai" class="level">—</span></div>
     <div class="chart-row"><span>Systems Thinking</span><div class="bar"><div id="bar-systems" class="fill"></div></div><span id="label-systems" class="level">—</span></div>
-    <div class="chart-row"><span>Ethics & Trust</span><div class="bar"><div id="bar-humics" class="fill"></div></div><span id="label-humics" class="level">—</span></div>
-    <div class="chart-row"><span>Change & Learning</span><div class="bar"><div id="bar-change" class="fill"></div></div><span id="label-change" class="level">—</span></div>
+    <div class="chart-row"><span>Ethical Governance & Trust</span><div class="bar"><div id="bar-humics" class="fill"></div></div><span id="label-humics" class="level">—</span></div>
+    <div class="chart-row"><span>Outcome-Based System Prompting</span><div class="bar"><div id="bar-outcome" class="fill"></div></div><span id="label-outcome" class="level">—</span></div>
   </section>
 
-  <!-- GOVERNANCE -->
+  <!-- OVERALL REFLECTION -->
   <section class="report-card">
-    <h2>Governance & Usage Notice</h2>
-    <p class="auth-note">
-      This Insight Report is issued within the Agile AI Capability Assessment Framework (v1.0),
-      a structured academic model defined by Agile AI University.
-      It is developmental in nature and intended to support capability awareness,
-      informed dialogue, and responsible professional growth.
-    </p>
+    <h2>Overall Capability Integration</h2>
+    <div class="overall-block" id="overall-signal"></div>
   </section>
 
   <!-- EXECUTIVE CTA -->
   <section class="report-card paid-section">
     <div class="paid-blur">
       <h2>Executive-Level Interpretation</h2>
-      <p>Leadership-grade analysis is available in the Executive Insight Report.</p>
+      <p>
+        This report describes structural capability maturity.
+        Executive Insight interprets what this profile implies
+        for leadership accountability, governance exposure,
+        and AI-enabled decision authority.
+      </p>
     </div>
 
     <div class="paid-overlay">
       <div class="upgrade-box">
         <h3>Unlock Executive Insight</h3>
-
         <p>
-          The <strong>Executive Insight Report</strong> extends this reflection into structured,
-          decision-grade interpretation aligned to leadership scope, governance readiness,
-          and AI-enabled role clarity.
+          The Executive Insight Report translates this institutional profile
+          into leadership-grade implications across governance readiness,
+          systemic risk exposure, decision maturity, and
+          long-term AI-enabled strategic positioning.
         </p>
-
         <button class="upgrade-btn"
           onclick="window.location.href='./executive-insight.html';">
           View Executive Insight Report
         </button>
-
-        <div class="upgrade-note">
-          Referenced by senior professionals for leadership alignment, decision maturity,
-          and executive responsibility within AI-enabled organizations.
-        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- NEXT ACTIONS -->
-  <section class="next-actions">
-    <h3>Your Next Actions</h3>
-    <p>These actions are available at any time and do not affect eligibility.</p>
-
-    <div class="action-buttons">
-      <button class="action-btn primary" id="downloadPdf">
-        Download Insight Report (PDF)
-      </button>
-
-      <button class="action-btn"
-        onclick="window.location.href='./assessment.html';">
-        Retake Assessment (optional)
-      </button>
     </div>
   </section>
 
   <!-- FOOTER -->
   <section class="institutional-footer">
-    <div class="institutional-footer-title">Agile AI University</div>
-
-    Agile AI University defines structured academic frameworks, capability standards,
-    and professional recognition models for the Agile AI domain. It operates as an
-    independent academic and professional body and is not positioned as a commercial training provider.
+    Agile AI University defines structured academic frameworks,
+    capability standards, and professional recognition models
+    for the Agile AI domain. It operates as an independent
+    academic and professional body.
 
     <div class="institutional-meta">
-      Framework reference: Agile + AI Capability Assessment Framework (v1.0)<br />
-      © <span id="report-year"></span> Agile AI University. All rights reserved.
+      Framework: Applied Agile AI Orchestration Capability (AAOC)<br />
+      Reference ID: <span id="report-reference-id"></span><br />
+      Issue Date: <span id="report-issue-date"></span><br />
+      © <span id="report-year"></span> Agile AI University
     </div>
   </section>
 
@@ -368,6 +234,22 @@
 <script>
   document.getElementById("report-year").textContent =
     new Date().getFullYear();
+
+  function mapSignalLabel(signal) {
+    if (signal === "low") return "Foundational";
+    if (signal === "mid") return "Emerging";
+    return "Integrated";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const signals = JSON.parse(sessionStorage.getItem("assessmentSignals")) || {};
+    ["agile","ai","systems","humics","outcome"].forEach(dim => {
+      const el = document.getElementById(dim + "-level");
+      if (el && signals[dim]) {
+        el.textContent = mapSignalLabel(signals[dim]);
+      }
+    });
+  });
 </script>
 
 </body>

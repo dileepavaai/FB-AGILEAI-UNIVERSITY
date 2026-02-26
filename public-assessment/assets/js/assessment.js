@@ -1,9 +1,9 @@
-/* =========================================================
-   Agile + AI Capability Assessment — Core Logic
+/* ========================================================= 
+   Applied Agile AI Orchestration Capability Assessment
    Agile AI University
 
-   FINAL — SAFE TO FREEZE
-   v2.4.1 — GOVERNANCE CLARITY PASS (NO LOGIC CHANGE)
+   v3.2 — 25 Question Framework (5×5)
+   Institutional Authority Language Precision Pass
    ========================================================= */
 
 /* =========================================================
@@ -16,56 +16,65 @@
    - DOES NOT grant, upgrade, or verify Executive access
 
    Executive access enforcement happens ONLY in:
-   - report.html            → Executive CTA intent
-   - executive-insight.html → Cloud Function entitlement check
+   - report.html
+   - executive-insight.html
 
    Any attempt to grant Executive access here
    is a GOVERNANCE VIOLATION.
    ========================================================= */
 
+
 /* ================================
-   1. DIMENSION MAPPING (15 Qs)
+   1. DIMENSION MAPPING (25 Qs)
 ================================ */
 
 const DIMENSIONS = {
-  agile:   [1, 2, 3],
-  ai:      [4, 5, 6],
-  systems: [7, 8, 9],
-  humics:  [10, 11, 12],
-  change:  [13, 14, 15]
+  agile:   [1, 2, 3, 4, 5],
+  ai:      [6, 7, 8, 9, 10],
+  systems: [11, 12, 13, 14, 15],
+  humics:  [16, 17, 18, 19, 20],
+  outcome: [21, 22, 23, 24, 25]
 };
 
+
 /* ================================
-   2. SIGNAL COPY (LOCKED)
+   2. SIGNAL COPY (Institutional Standard)
 ================================ */
 
 const SIGNAL_COPY = {
+
   agile: {
-    low:  "Execution relies on plans and controls, with limited adaptability under change.",
-    mid:  "Execution adapts through feedback and learning, though often at a local level.",
-    high: "Execution is continuously adaptive, with outcomes and learning shaping flow."
+    low:  "Execution is predominantly plan-driven, with adaptability constrained by procedural control structures.",
+    mid:  "Execution incorporates adaptive mechanisms, though adaptability remains partially localized rather than systemically embedded.",
+    high: "Execution functions as an adaptive delivery system in which outcome alignment and disciplined learning structurally guide operational flow."
   },
+
   ai: {
-    low:  "AI is primarily viewed as tooling or automation support.",
-    mid:  "AI is understood as part of systems, with awareness of strengths and limits.",
-    high: "AI is treated as a decision-influencing capability with clear boundaries."
+    low:  "Artificial Intelligence is positioned primarily as a tooling mechanism, with limited formal boundary definition.",
+    mid:  "Artificial Intelligence is recognized as a capability layer, with emerging clarity regarding decision influence and operational constraints.",
+    high: "Artificial Intelligence operates as a bounded decision-influencing capability within defined governance, accountability, and risk parameters."
   },
+
   systems: {
-    low:  "Challenges are addressed in isolation, with limited systems awareness.",
-    mid:  "Interdependencies are recognized, though not always acted upon systemically.",
-    high: "Decisions consistently reflect system-wide behavior and long-term effects."
+    low:  "Organizational challenges are addressed in functional isolation, with limited systemic visibility across interdependencies.",
+    mid:  "Cross-functional interdependencies are acknowledged, though systemic integration remains variably applied.",
+    high: "Decisions are consistently evaluated through systemic impact analysis, reflecting structural coherence across interconnected domains."
   },
+
   humics: {
-    low:  "Ethical, trust, and human impacts are considered inconsistently.",
-    mid:  "Ethical and trust considerations are discussed during key decisions.",
-    high: "Empathy, trust, and ethical responsibility actively shape AI and Agile choices."
+    low:  "Ethical and human impact considerations are addressed reactively, without consistent structural integration.",
+    mid:  "Ethical responsibility and trust calibration are incorporated into key decision contexts, though not uniformly embedded.",
+    high: "Ethical governance, trust calibration, and human impact assessment are structurally integrated within AI-enabled operational design."
   },
-  change: {
-    low:  "Change is met with resistance or compliance.",
-    mid:  "Change is accepted and managed through engagement.",
-    high: "Change is co-created through continuous learning and adaptation."
+
+  outcome: {
+    low:  "AI interaction is predominantly task-oriented, with limited formal alignment to defined outcome architecture.",
+    mid:  "Outcome intent is articulated with increasing clarity, though prompting discipline and accountability mechanisms remain emergent.",
+    high: "Outcome-based system prompting operates as a structured capability, aligned to measurable objectives and governed through iterative refinement protocols."
   }
+
 };
+
 
 /* ================================
    3. SCORING HELPERS
@@ -74,12 +83,14 @@ const SIGNAL_COPY = {
 function averageScore(answers, questions) {
   let total = 0;
   let count = 0;
+
   questions.forEach(q => {
-    if (answers[q]) {
+    if (answers[q] !== undefined) {
       total += answers[q];
       count++;
     }
   });
+
   return count === 0 ? 0 : total / count;
 }
 
@@ -90,37 +101,42 @@ function scoreToSignal(score) {
 }
 
 function scoreToPercent(score) {
+  if (score === 0) return 0;
   return Math.round(((score - 1) / 3) * 100);
 }
 
+
 /* ================================
-   4. REPORT REFERENCE ID (LOCKED)
+   4. REPORT REFERENCE ID
 ================================ */
 
 function generateReferenceId() {
   const year = new Date().getFullYear();
   const rand = Math.floor(1000 + Math.random() * 9000);
-  return `AAIU-AACI-${year}-${rand}`;
+  return `AAIU-AAOC-${year}-${rand}`;
 }
 
+
 /* ================================
-   5. OVERALL REFLECTION
+   5. OVERALL REFLECTION (Institutional Tone)
 ================================ */
 
 function generateOverallReflection(signals) {
+
   const highs = Object.values(signals).filter(v => v === "high").length;
   const lows  = Object.values(signals).filter(v => v === "low").length;
 
   if (highs >= 3) {
-    return "Your responses reflect a well-integrated Agile AI capability, balancing execution, AI understanding, systems thinking, governance, and human impact.";
+    return "The responses indicate an integrated Applied Agile AI Orchestration capability profile, in which execution discipline, AI fluency, systemic coherence, governance responsibility, and outcome-based prompting operate as a structurally aligned capability system.";
   }
 
   if (lows >= 3) {
-    return "Your responses indicate foundational capability development, with opportunities to strengthen alignment across Agile, AI, and human considerations.";
+    return "The responses reflect a foundational capability profile, where structural integration across execution, AI fluency, governance alignment, and outcome-based prompting remains emergent.";
   }
 
-  return "Your responses reflect a mixed capability profile, with strengths in some areas and growth opportunities in others.";
+  return "The responses reflect a variably integrated capability profile, with areas of structural maturity alongside domains requiring deeper systemic alignment.";
 }
+
 
 /* ================================
    6. GENERATE FREE INSIGHT REPORT
@@ -128,14 +144,13 @@ function generateOverallReflection(signals) {
 
 function generateReport() {
 
-  /* ---------- Answers ---------- */
   const answers = {};
+
   document.querySelectorAll("input[type=radio]:checked").forEach(radio => {
     const qId = parseInt(radio.name.replace("q", ""), 10);
     answers[qId] = parseInt(radio.value, 10);
   });
 
-  /* ---------- Scores ---------- */
   const signals = {};
   const insights = {};
   const percents = {};
@@ -143,16 +158,15 @@ function generateReport() {
   Object.keys(DIMENSIONS).forEach(dim => {
     const score = averageScore(answers, DIMENSIONS[dim]);
     const level = scoreToSignal(score);
+
     signals[dim]  = level;
     insights[dim] = SIGNAL_COPY[dim][level];
     percents[dim] = scoreToPercent(score);
   });
 
-  /* ---------- Participant (Source of Truth) ---------- */
   const participant =
     JSON.parse(sessionStorage.getItem("assessmentParticipant")) || {};
 
-  /* ---------- Context ---------- */
   const context = {
     name: participant.name || "—",
     email: participant.email || "",
@@ -161,7 +175,6 @@ function generateReport() {
     aspiration: document.getElementById("ctx-aspiration")?.value || "—"
   };
 
-  /* ---------- Persist Context ---------- */
   sessionStorage.setItem("assessmentSignals", JSON.stringify(signals));
   sessionStorage.setItem("assessmentInsights", JSON.stringify(insights));
   sessionStorage.setItem("assessmentPercents", JSON.stringify(percents));
@@ -177,16 +190,11 @@ function generateReport() {
     })
   );
 
-  /* ==================================================
-     PHASE-2 ENTITLEMENT DEFAULT (LOCKED — DO NOT CHANGE)
-     --------------------------------------------------
-     Executive Insight is DENIED by default.
-     Any upgrade happens outside this file.
-  ================================================== */
   sessionStorage.setItem("executiveEntitled", "false");
 
   window.location.href = "./report.html";
 }
+
 
 /* ================================
    7. HYDRATE FREE REPORT
@@ -202,40 +210,51 @@ function hydrateReport() {
 
   if (!signals || !context || !percents) return;
 
-  /* ---------- Header ---------- */
-  document.getElementById("report-name").textContent = context.name || "—";
-  document.getElementById("report-name-context").textContent = context.name || "—";
-  document.getElementById("report-role").textContent = context.role;
-  document.getElementById("report-industry").textContent = context.industry;
-  document.getElementById("report-aspiration").textContent = context.aspiration;
+  document.getElementById("report-name")?.textContent = context.name || "—";
+  document.getElementById("report-name-context")?.textContent = context.name || "—";
+  document.getElementById("report-role")?.textContent = context.role;
+  document.getElementById("report-industry")?.textContent = context.industry;
+  document.getElementById("report-aspiration")?.textContent = context.aspiration;
 
-  /* ---------- Bars ---------- */
-  ["agile","ai","systems","humics","change"].forEach(dim => {
+  ["agile","ai","systems","humics","outcome"].forEach(dim => {
     const bar = document.getElementById(`bar-${dim}`);
     const label = document.getElementById(`label-${dim}`);
-    if (bar) bar.style.width = percents[dim] + "%";
+
+    if (bar) bar.style.width = (percents[dim] || 0) + "%";
     if (label) label.textContent = `${signals[dim]} · ${percents[dim]}%`;
   });
 
-  /* ---------- Signals ---------- */
-  document.getElementById("agile-signal").textContent = insights.agile;
-  document.getElementById("ai-signal").textContent = insights.ai;
-  document.getElementById("systems-signal").textContent = insights.systems;
-  document.getElementById("governance-signal").textContent = insights.humics;
-  document.getElementById("change-signal").textContent = insights.change;
-  document.getElementById("overall-signal").textContent = overall;
+  const signalMap = {
+    agile: "agile-signal",
+    ai: "ai-signal",
+    systems: "systems-signal",
+    humics: "governance-signal",
+    outcome: "outcome-signal"
+  };
 
-  /* ---------- Footer ---------- */
-  document.getElementById("report-reference-id").textContent =
-    sessionStorage.getItem("reportReferenceId");
+  Object.keys(signalMap).forEach(dim => {
+    const el = document.getElementById(signalMap[dim]);
+    if (el && insights[dim]) {
+      el.textContent = insights[dim];
+    }
+  });
 
-  document.getElementById("report-issue-date").textContent =
-    sessionStorage.getItem("reportIssueDate");
+  const overallEl = document.getElementById("overall-signal");
+  if (overallEl && overall) {
+    overallEl.textContent = overall;
+  }
+
+  document.getElementById("report-reference-id")?.textContent =
+    sessionStorage.getItem("reportReferenceId") || "";
+
+  document.getElementById("report-issue-date")?.textContent =
+    sessionStorage.getItem("reportIssueDate") || "";
 
   document
     .getElementById("downloadPdf")
     ?.addEventListener("click", () => window.print());
 }
+
 
 /* ================================
    8. INIT
@@ -250,4 +269,5 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("generateReport")
     ?.addEventListener("click", generateReport);
+
 });

@@ -6,19 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="description"
-        content="About Agile AI University — an independent Academic & Professional Body defining capability standards for Agile AI and Agentic AI." />
+        content="About Agile AI University — an independent Academic & Professional Body defining structured capability standards for Agile AI and Agentic AI." />
 
-  <!-- ================= DESIGN AUTHORITY (LOCKED) ================= -->
+  <!-- ======================================================
+       DESIGN AUTHORITY LAYER (LOCKED)
+       Order is intentional:
+       1. site.css  → Canonical system design
+       2. refinement.css → Additive visual layer only
+       DO NOT REORDER
+  ======================================================= -->
   <link rel="stylesheet" href="/shared/design-authority/css/site.css" />
   <link rel="stylesheet" href="/shared/design-authority/css/refinement.css" />
 </head>
 
 <body>
 
-<!-- ================= HEADER (INJECTED) ================= -->
-<header id="site-header"></header>
+<!-- ======================================================
+     HEADER INJECTION CONTAINER
+     IMPORTANT:
+     - Must be <div id="header">
+     - header.js injects full structural header inside
+     - Do NOT change ID
+======================================================= -->
+<div id="header"></div>
 
-<!-- ================= MAIN CONTENT ================= -->
+<!-- ======================================================
+     MAIN CONTENT (PAGE-SPECIFIC CONTENT ONLY)
+     No structural wrappers
+     No navigation markup
+     No theme logic
+======================================================= -->
 <main class="container">
 
   <section>
@@ -76,12 +93,30 @@
 
 </main>
 
-<!-- ================= FOOTER (INJECTED) ================= -->
-<footer id="site-footer"></footer>
+<!-- ======================================================
+     FOOTER INJECTION CONTAINER
+     IMPORTANT:
+     - Must match footer.js expected ID
+     - footer.js injects full footer markup
+======================================================= -->
+<div id="footer"></div>
 
-<!-- ================= DESIGN AUTHORITY SCRIPTS ================= -->
+<!-- ======================================================
+     SCRIPT ORDER (GOVERNANCE CRITICAL)
+     Order matters due to dependency model:
+
+     1. surface-config.js  → defines window.SURFACE_CONFIG
+     2. header.js          → builds header using config
+     3. footer.js          → builds footer
+     4. theme.js           → theme engine (data-theme based)
+     5. analytics.js       → tracking (non-blocking)
+======================================================= -->
+
+<script src="/assets/js/surface-config.js"></script>
+
 <script src="/shared/design-authority/js/header.js"></script>
 <script src="/shared/design-authority/js/footer.js"></script>
+
 <script src="/shared/design-authority/js/theme.js"></script>
 <script src="/shared/design-authority/js/analytics.js"></script>
 

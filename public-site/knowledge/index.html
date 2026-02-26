@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 
   <!-- ======================================================
@@ -16,6 +16,7 @@
        - Replaces legacy "Learning" terminology
        - Structured as institutional knowledge reference
        - Non-programmatic positioning
+       - Script order aligned with institutional standard
   ====================================================== -->
 
   <meta charset="UTF-8" />
@@ -26,7 +27,7 @@
   <link rel="stylesheet" href="/shared/design-authority/css/refinement.css" />
 
 </head>
-<body>
+<body data-surface="public-site">
 
   <div id="header"></div>
 
@@ -69,9 +70,12 @@
 
   <div id="footer"></div>
 
+  <!-- Script Order Enforcement -->
+  <script src="/assets/js/surface-config.js"></script>
   <script src="/shared/design-authority/js/header.js"></script>
   <script src="/shared/design-authority/js/footer.js"></script>
   <script src="/shared/design-authority/js/theme.js"></script>
+  <script src="/shared/design-authority/js/analytics.js"></script>
 
 </body>
 </html>

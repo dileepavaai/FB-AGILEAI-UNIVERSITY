@@ -1,17 +1,52 @@
-/* =======================================================
+/* ============================================================
+   Agile AI University
    Visual Refinement Layer
-   Step 1 — Institutional Link Styling
-   Safe • Additive • Reversible
-   ======================================================= */
+   ------------------------------------------------------------
+   File: refinement.css
+   Version: 1.0.0
+   Date: 2026-02-26
+   Status: Governance Locked (Additive Layer Only)
+   ------------------------------------------------------------
 
-/* Base link reset (removes default browser blue) */
+   PURPOSE
+   -------
+   This file provides controlled visual refinements on top of
+   the canonical design system (site.css).
+
+   GOVERNANCE RULES
+   ----------------
+   - site.css remains the authoritative design system.
+   - refinement.css must load AFTER site.css.
+   - This layer is strictly additive and reversible.
+   - No structural layout overrides permitted.
+   - No theme engine modifications permitted.
+   - No header/footer injection interference.
+   - No analytics or JS behavior interference.
+   - No cross-surface dependency assumptions.
+
+   If removal is required, delete this file reference.
+   The system will revert safely to canonical design.
+
+   ============================================================ */
+
+
+/* ============================================================
+   SECTION 1 — Base Link Reset
+   Removes default browser blue without affecting structure
+   ============================================================ */
+
 a {
     color: inherit;
     text-decoration: none;
     transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-/* Inline content links */
+
+/* ============================================================
+   SECTION 2 — Inline Content Link Styling
+   Applies only within text blocks (paragraphs & lists)
+   ============================================================ */
+
 p a,
 li a {
     border-bottom: 1px solid rgba(0, 0, 0, 0.25);
@@ -24,7 +59,9 @@ li a:hover {
     border-bottom-color: rgba(0, 0, 0, 0.6);
 }
 
-/* Dark mode inline adjustment (if your body toggles a class like .dark) */
+
+/* Dark Mode Adjustments (Non-structural) */
+
 body.dark p a,
 body.dark li a {
     border-bottom-color: rgba(255, 255, 255, 0.35);
@@ -35,7 +72,12 @@ body.dark li a:hover {
     border-bottom-color: rgba(255, 255, 255, 0.7);
 }
 
-/* CTA-style links (buttons or primary action anchors) */
+
+/* ============================================================
+   SECTION 3 — CTA-Style Anchor Refinement
+   Used for non-button anchor actions
+   ============================================================ */
+
 a.cta,
 a.primary-action {
     display: inline-block;
@@ -49,3 +91,66 @@ a.cta:hover,
 a.primary-action:hover {
     opacity: 0.75;
 }
+
+
+/* ============================================================
+   SECTION 4 — Button Link Refinement
+   Refines .btn classes without altering layout system
+   ============================================================ */
+
+a.btn {
+    text-decoration: none !important;
+}
+
+
+/* Primary Button — Institutional Minimal */
+
+.btn.primary {
+    color: #111;
+    background: transparent;
+    border: 1px solid #111;
+}
+
+.btn.primary:hover {
+    background: #111;
+    color: #ffffff;
+}
+
+
+/* Secondary Button — Subtle Institutional Style */
+
+.btn.secondary {
+    color: #111;
+    border-bottom: 1px solid #111;
+}
+
+.btn.secondary:hover {
+    opacity: 0.75;
+}
+
+
+/* ============================================================
+   SECTION 5 — Dark Mode Button Adjustments
+   Theme-compatible overrides only
+   ============================================================ */
+
+body.dark .btn.primary {
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+body.dark .btn.primary:hover {
+    background: #ffffff;
+    color: #000000;
+}
+
+body.dark .btn.secondary {
+    color: #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+
+/* ============================================================
+   END OF FILE
+   Version: 1.0.0
+   ============================================================ */

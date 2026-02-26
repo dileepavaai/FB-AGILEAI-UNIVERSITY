@@ -1,215 +1,106 @@
 /* ==========================================================
-   AgileAI Shared Header Controller
-   Governance Baseline: v2.0
-   Current Version: v2.7 (Analytics Authority Separation)
-   Status: LOCKED
-   Scope: Shared Design Authority Layer
+   AgileAI Shared Header Engine
+   Version: v4.0 (Config-Driven Architecture)
+   Scope: Structural Controller Only
+   Navigation defined per-surface via window.SURFACE_CONFIG
 
-   Change Log v2.7:
-   - Removed analytics injection layer from header.js
-   - Analytics authority fully delegated to analytics.js
-   - No structural DOM changes
-   - No navigation mutation
-   - Separation of concerns enforced
-
-   Governance Rules:
-   - No structural DOM changes without version bump
-   - No navigation logic mutation without governance review
-   - Surface-specific menus must rely on data-surface attribute
-   - Active state detection must remain data-path based
-   - Mobile behavior must remain CSS-driven (no layout overrides)
-   - Theme control markup must remain consistent across surfaces
+   Safety Model:
+   - If SURFACE_CONFIG missing → safe minimal fallback
+   - No analytics logic
+   - No surface branching
+   - No hardcoded navigation
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
 
   const body = document.body;
-  const surface = body.getAttribute("data-surface") || "";
-
-  // Normalize path safely (prevents double slash issues)
   const currentPath = window.location.pathname
     .replace(/\/+$/, "")
     .replace(/\/index\.html$/, "") || "/";
 
-  let headerHTML = "";
+  const config = window.SURFACE_CONFIG || null;
 
+  let brandLabel = "Agile AI University";
+  let brandHref = "/";
+  let navigation = [];
 
-  /* =====================================================
-     CERTS SURFACE — Minimal Governance Menu
-     Surfaces included:
-     - certs
-     - verify
-  ===================================================== */
-
-  if (surface === "certs" || surface === "verify") {
-
-    headerHTML = `
-      <header class="site-header">
-        <div class="header-inner">
-
-          <div class="brand">
-            <a href="https://agileai.university/">
-              Agile AI University
-            </a>
-          </div>
-
-          <button class="nav-hamburger"
-                  type="button"
-                  aria-label="Toggle Navigation"
-                  aria-expanded="false"
-                  aria-controls="primary-navigation">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-
-          <nav class="main-nav"
-               id="primary-navigation"
-               aria-hidden="true">
-            <ul class="nav-tree" role="menubar">
-
-              <li role="none">
-                <a role="menuitem"
-                   href="/verify.html"
-                   data-path="/verify.html">
-                   Verification
-                </a>
-              </li>
-
-              <li role="none">
-                <a role="menuitem"
-                   href="https://agileai.university/credentials/framework.html">
-                   Credential Framework
-                </a>
-              </li>
-
-              <li role="none">
-                <a role="menuitem"
-                   href="https://agileai.university/governance/">
-                   Governance
-                </a>
-              </li>
-
-              <li role="none">
-                <a role="menuitem"
-                   href="https://agileai.university/contact/">
-                   Contact
-                </a>
-              </li>
-
-            </ul>
-          </nav>
-
-          <div class="theme-control">
-            <button id="theme-toggle"
-                    type="button"
-                    aria-label="Toggle Theme">
-              <span class="theme-icon">☀</span>
-            </button>
-          </div>
-
-        </div>
-      </header>
-    `;
-
-  } else {
-
-    /* =====================================================
-       DEFAULT SURFACE — Institutional Public Menu
-    ===================================================== */
-
-    headerHTML = `
-      <header class="site-header">
-        <div class="header-inner">
-
-          <div class="brand">
-            <a href="https://agileai.foundation/"
-               target="_blank"
-               rel="noopener">
-              Agile AI Foundation
-            </a>
-            <span class="brand-separator"> &amp; </span>
-            <a href="https://agileai.university/">
-              Agile AI University
-            </a>
-          </div>
-
-          <button class="nav-hamburger"
-                  type="button"
-                  aria-label="Toggle Navigation"
-                  aria-expanded="false"
-                  aria-controls="primary-navigation">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-
-          <nav class="main-nav"
-               id="primary-navigation"
-               aria-hidden="true">
-            <ul class="nav-tree" role="menubar">
-
-              <li role="none">
-                <a role="menuitem"
-                   href="/"
-                   data-path="/">
-                   Home
-                </a>
-              </li>
-
-              <li role="none">
-                <a role="menuitem"
-                   href="/verification/"
-                   data-path="/verification">
-                   Verification
-                </a>
-              </li>
-
-              <li role="none">
-                <a role="menuitem"
-                   href="/governance/"
-                   data-path="/governance">
-                   Governance
-                </a>
-              </li>
-
-              <li role="none">
-                <a role="menuitem"
-                   href="/contact/"
-                   data-path="/contact">
-                   Contact
-                </a>
-              </li>
-
-            </ul>
-          </nav>
-
-          <div class="theme-control">
-            <button id="theme-toggle"
-                    type="button"
-                    aria-label="Toggle Theme">
-              <span class="theme-icon">☀</span>
-            </button>
-          </div>
-
-        </div>
-      </header>
-    `;
+  // Safe Fallback (Option B)
+  if (config && typeof config === "object") {
+    if (config.brand) {
+      brandLabel = config.brand.label || brandLabel;
+      brandHref = config.brand.href || brandHref;
+    }
+    if (Array.isArray(config.navigation)) {
+      navigation = config.navigation;
+    }
   }
 
+  function buildNavHTML(navItems) {
+    return navItems.map(item => {
+      const isExternal = item.external === true;
+      const target = isExternal ? `target="_blank" rel="noopener"` : "";
+      const dataPath = item.dataPath ? `data-path="${item.dataPath}"` : "";
 
-  /* =====================================================
-     INJECTION SAFETY
-  ===================================================== */
+      return `
+        <li role="none">
+          <a role="menuitem"
+             href="${item.href}"
+             ${dataPath}
+             ${target}>
+             ${item.label}
+          </a>
+        </li>
+      `;
+    }).join("");
+  }
+
+  const headerHTML = `
+    <header class="site-header">
+      <div class="header-inner">
+
+        <div class="brand">
+          <a href="${brandHref}">
+            ${brandLabel}
+          </a>
+        </div>
+
+        <button class="nav-hamburger"
+                type="button"
+                aria-label="Toggle Navigation"
+                aria-expanded="false"
+                aria-controls="primary-navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="main-nav"
+             id="primary-navigation"
+             aria-hidden="true">
+          <ul class="nav-tree" role="menubar">
+            ${buildNavHTML(navigation)}
+          </ul>
+        </nav>
+
+        <div class="theme-control">
+          <button id="theme-toggle"
+                  type="button"
+                  aria-label="Toggle Theme">
+            <span class="theme-icon">☀</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+  `;
 
   const headerContainer = document.getElementById("header");
   if (!headerContainer) return;
 
   headerContainer.innerHTML = headerHTML;
 
-
   /* =====================================================
-     ACTIVE STATE DISCIPLINE
+     ACTIVE STATE
   ===================================================== */
 
   const navLinks = headerContainer.querySelectorAll(".main-nav a[data-path]");
@@ -226,9 +117,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-
   /* =====================================================
-     MOBILE NAVIGATION CONTROLLER
+     MOBILE NAV
   ===================================================== */
 
   const hamburger = headerContainer.querySelector(".nav-hamburger");
@@ -271,11 +161,6 @@ document.addEventListener("DOMContentLoaded", function () {
       closeMobileNav();
     }
   });
-
-
-  /* =====================================================
-     THEME SAFETY EVENT (DO NOT REMOVE)
-  ===================================================== */
 
   document.dispatchEvent(new Event("headerInjected"));
 

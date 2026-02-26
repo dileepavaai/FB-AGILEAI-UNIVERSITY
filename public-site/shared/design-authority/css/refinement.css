@@ -1,0 +1,51 @@
+/* =======================================================
+   Visual Refinement Layer
+   Step 1 — Institutional Link Styling
+   Safe • Additive • Reversible
+   ======================================================= */
+
+/* Base link reset (removes default browser blue) */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Inline content links */
+p a,
+li a {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    padding-bottom: 1px;
+}
+
+p a:hover,
+li a:hover {
+    opacity: 0.75;
+    border-bottom-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Dark mode inline adjustment (if your body toggles a class like .dark) */
+body.dark p a,
+body.dark li a {
+    border-bottom-color: rgba(255, 255, 255, 0.35);
+}
+
+body.dark p a:hover,
+body.dark li a:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.7);
+}
+
+/* CTA-style links (buttons or primary action anchors) */
+a.cta,
+a.primary-action {
+    display: inline-block;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 3px;
+}
+
+a.cta:hover,
+a.primary-action:hover {
+    opacity: 0.75;
+}

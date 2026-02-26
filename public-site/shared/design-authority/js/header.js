@@ -25,7 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const body = document.body;
   const surface = body.getAttribute("data-surface") || "";
-  const currentPath = window.location.pathname.replace(/\/$/, "");
+
+  // Normalize path safely (prevents double slash issues)
+  const currentPath = window.location.pathname
+    .replace(/\/+$/, "")
+    .replace(/\/index\.html$/, "") || "/";
 
   let headerHTML = "";
 

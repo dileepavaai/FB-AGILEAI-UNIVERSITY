@@ -1,8 +1,8 @@
 /* =========================================
    Agile AI University
    Institutional Analytics Engine
-   Version: v1.0
-   Status: LOCKED
+   Version: v1.1
+   Status: HARDENED
    Scope: Shared Design Authority Layer
 
    Principles:
@@ -12,6 +12,7 @@
    - PII-safe
    - Production-only activation
    - Fail-safe execution
+   - Governance-aligned configuration
 ========================================= */
 
 (function () {
@@ -21,11 +22,16 @@
   ========================= */
 
   const AAU_CONFIG = {
-    measurementId: "G-L6Q5J3S1YY", // 🔒 REPLACE WITH REAL ID
+    measurementId: "G-L6Q5J3S1YY", // 🔒 Institutional GA4 Property
     environment: window.location.hostname.includes("localhost")
       ? "dev"
       : "prod"
   };
+
+  if (!AAU_CONFIG.measurementId) {
+    console.warn("AAU Analytics: Missing Measurement ID");
+    return;
+  }
 
   if (AAU_CONFIG.environment !== "prod") {
     console.info("AAU Analytics: Development mode (tracking disabled)");
@@ -52,14 +58,35 @@
   ========================= */
 
   function detectSurface() {
-    const surface = document.body?.dataset?.surface;
-    return surface || "unknown";
+
+    // Preferred explicit declaration
+    const explicit = document.body?.dataset?.surface;
+    if (explicit) return explicit;
+
+    // Fallback by hostname
+    const host = window.location.hostname;
+
+    if (host.includes("cert")) return "certs";
+    if (host.includes("verify")) return "verify";
+    if (host.includes("assessment")) return "assessment";
+    if (host.includes("portal")) return "portal";
+    if (host.includes("learn")) return "learn";
+    if (host.includes("edu")) return "edu";
+
+    return "site";
   }
 
   const surface = detectSurface();
 
+  /* =========================
+     BASE CONFIGURATION
+  ========================= */
+
   gtag("config", AAU_CONFIG.measurementId, {
     page_path: window.location.pathname,
+    anonymize_ip: true,
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false,
     surface: surface
   });
 
@@ -111,7 +138,9 @@
       return surface;
     },
 
-    /* Assessment Helpers */
+    /* =========================
+       Assessment Events
+    ========================= */
 
     trackAssessmentStart: function () {
       safeTrack("assessment_start", {}, true);
@@ -147,7 +176,9 @@
       safeTrack("report_generated", {}, true);
     },
 
-    /* Credential */
+    /* =========================
+       Credential Events
+    ========================= */
 
     trackCredentialAttempt: function () {
       safeTrack("credential_verify_attempt");

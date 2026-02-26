@@ -3,37 +3,46 @@
    Visual Refinement Layer
    ------------------------------------------------------------
    File: refinement.css
-   Version: 1.1.0
+   Version: 1.1.1
    Date: 2026-02-26
    Status: Governance Locked (Additive Layer Only)
    ------------------------------------------------------------
 
    PURPOSE
    -------
-   This file provides controlled visual refinements on top of
-   the canonical design system (site.css).
+   This file provides controlled visual refinements layered
+   on top of the canonical design system (site.css).
+
+   ARCHITECTURAL PRINCIPLE
+   -----------------------
+   site.css = Canonical Design System (Locked)
+   refinement.css = Controlled Additive Overlay (Reversible)
 
    GOVERNANCE RULES
    ----------------
-   - site.css remains the authoritative design system.
-   - refinement.css must load AFTER site.css.
-   - This layer is strictly additive and reversible.
-   - No structural layout overrides permitted.
-   - No theme engine modifications permitted.
-   - No header/footer injection interference.
-   - No analytics or JS behavior interference.
-   - No cross-surface dependency assumptions.
-   - No grid/container width overrides permitted.
+   - Must load AFTER site.css
+   - Strictly additive and removable
+   - No layout grid overrides
+   - No container width overrides
+   - No structural positioning overrides
+   - No theme engine modification
+   - No JS behavior interference
+   - No header/footer injection interference
+   - No cross-surface coupling assumptions
 
-   If removal is required, delete this file reference.
-   The system will revert safely to canonical design.
+   Removal of this file must safely revert system to
+   canonical site.css behavior without regression.
 
    ============================================================ */
 
 
+
 /* ============================================================
-   SECTION 1 — Base Link Reset
-   Removes default browser blue without affecting structure
+   SECTION 1 — Global Anchor Normalization
+   ------------------------------------------------------------
+   Removes browser default blue/underline.
+   Applies neutral institutional baseline.
+   Structural behavior untouched.
    ============================================================ */
 
 a {
@@ -43,9 +52,13 @@ a {
 }
 
 
+
 /* ============================================================
-   SECTION 2 — Inline Content Link Styling
-   Applies only within text blocks (paragraphs & lists)
+   SECTION 2 — Inline Content Links (Text Context Only)
+   ------------------------------------------------------------
+   Applies only inside paragraphs and list content.
+   Provides subtle institutional underlining.
+   Does not affect navigation or button anchors.
    ============================================================ */
 
 p a,
@@ -61,7 +74,7 @@ li a:hover {
 }
 
 
-/* Dark Mode Adjustments (Non-structural) */
+/* Dark Mode Parity (Non-Structural) */
 
 body.dark p a,
 body.dark li a {
@@ -74,9 +87,12 @@ body.dark li a:hover {
 }
 
 
+
 /* ============================================================
-   SECTION 3 — CTA-Style Anchor Refinement
-   Used for non-button anchor actions
+   SECTION 3 — CTA-Style Anchors (Non-Button Actions)
+   ------------------------------------------------------------
+   Used for action links not implemented as .btn.
+   Maintains academic tone while improving affordance.
    ============================================================ */
 
 a.cta,
@@ -94,9 +110,13 @@ a.primary-action:hover {
 }
 
 
+
 /* ============================================================
-   SECTION 4 — Button Link Refinement
-   Refines .btn classes without altering layout system
+   SECTION 4 — Button System Refinement
+   ------------------------------------------------------------
+   Refines existing .btn classes.
+   Does NOT modify layout, grid, or component structure.
+   Purely visual authority adjustment.
    ============================================================ */
 
 a.btn {
@@ -104,25 +124,40 @@ a.btn {
 }
 
 
-/* Primary Button — Institutional Minimal */
+/* ------------------------------------------------------------
+   Primary Button — Institutional Authority Grade
+   Solid neutral authority (non-commercial, non-marketing)
+   ------------------------------------------------------------ */
 
 .btn.primary {
-    color: #111;
-    background: transparent;
-    border: 1px solid #111;
+    background: #111111;
+    color: #ffffff;
+    border: 1px solid #111111;
+    padding: 0.7rem 1.4rem;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
 .btn.primary:hover {
-    background: #111;
-    color: #ffffff;
+    background: #000000;
+    border-color: #000000;
+    transform: translateY(-1px);
 }
 
 
-/* Secondary Button — Subtle Institutional Style */
+/* ------------------------------------------------------------
+   Secondary Button — Subtle Institutional Companion
+   Maintains hierarchy below primary CTA.
+   ------------------------------------------------------------ */
 
 .btn.secondary {
-    color: #111;
-    border-bottom: 1px solid #111;
+    background: transparent;
+    color: #111111;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #111111;
+    padding: 0.7rem 1.4rem;
 }
 
 .btn.secondary:hover {
@@ -130,19 +165,23 @@ a.btn {
 }
 
 
+
 /* ============================================================
-   SECTION 5 — Dark Mode Button Adjustments
-   Theme-compatible overrides only
+   SECTION 5 — Dark Mode Button Compatibility
+   ------------------------------------------------------------
+   Theme-compatible overrides only.
+   No theme engine modification.
    ============================================================ */
 
 body.dark .btn.primary {
-    color: #ffffff;
+    background: #ffffff;
+    color: #000000;
     border: 1px solid #ffffff;
 }
 
 body.dark .btn.primary:hover {
-    background: #ffffff;
-    color: #000000;
+    background: #e6e6e6;
+    border-color: #e6e6e6;
 }
 
 body.dark .btn.secondary {
@@ -151,20 +190,23 @@ body.dark .btn.secondary {
 }
 
 
+
 /* ============================================================
    SECTION 6 — Section Rhythm & Typographic Cadence
-   Non-structural spacing refinements only
-   Does NOT alter layout grid or container system
+   ------------------------------------------------------------
+   Non-structural vertical spacing refinement.
+   Does NOT alter layout containers or grid system.
    ============================================================ */
 
-/* Increase vertical spacing between major sections */
+
+/* Increase separation between major sections */
 
 main section {
     margin-top: 4.5rem;
 }
 
 
-/* Improve heading breathing space */
+/* Heading breathing space */
 
 section h2 {
     margin-top: 1.5rem;
@@ -172,14 +214,7 @@ section h2 {
 }
 
 
-/* Improve readability of long-form text */
-
-main p {
-    line-height: 1.75;
-}
-
-
-/* Improve subheading rhythm (pillar sections) */
+/* Subheading rhythm */
 
 section h3 {
     margin-top: 2rem;
@@ -187,7 +222,14 @@ section h3 {
 }
 
 
-/* Improve hero action spacing */
+/* Improve paragraph readability */
+
+main p {
+    line-height: 1.75;
+}
+
+
+/* Hero action spacing */
 
 .hero-actions {
     margin-top: 2rem;
@@ -202,14 +244,16 @@ section h3 {
 }
 
 
-/* Ensure dark mode parity (no visual drift) */
+/* Ensure Dark Mode parity (no visual drift) */
 
 body.dark main section {
     margin-top: 4.5rem;
 }
 
 
+
 /* ============================================================
    END OF FILE
-   Version: 1.1.0
+   Version: 1.1.1
+   Refinement Layer — Authority Alignment Update
    ============================================================ */

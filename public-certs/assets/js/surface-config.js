@@ -1,9 +1,15 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
-   Current Version: v2.3 (Selector Integrity + Event Containment Lock)
+   Current Version: v2.4 (Certs Surface Classification Extension)
    Status: LOCKED
    Scope: Shared Design Authority Layer
+
+   Change Log v2.4:
+   - Treat "verify" surface as Certs Governance Surface
+   - No structural DOM changes
+   - No navigation mutation
+   - Classification-only update
 
    Governance Rules:
    - No structural DOM changes without version bump
@@ -25,9 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* =====================================================
      CERTS SURFACE — Minimal Governance Menu
+     Surfaces included:
+     - certs
+     - verify
   ===================================================== */
 
-  if (surface === "certs") {
+  if (surface === "certs" || surface === "verify") {
 
     headerHTML = `
       <header class="site-header">
@@ -242,21 +251,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* =====================================================
-     SUBMENU ACCORDION (Scoped Only)
-  ===================================================== */
-
-  toggles.forEach(toggle => {
-    toggle.addEventListener("click", function (e) {
-      e.preventDefault();
-      const parent = this.parentElement;
-      const isOpen = parent.classList.contains("is-open");
-      parent.classList.toggle("is-open");
-      this.setAttribute("aria-expanded", String(!isOpen));
-    });
-  });
-
-
-  /* =====================================================
      GLOBAL CLOSE CONTROLS
   ===================================================== */
 
@@ -276,8 +270,6 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("resize", function () {
     if (window.innerWidth >= 769) {
       closeMobileNav();
-      headerContainer.querySelectorAll(".nav-item.is-open")
-        .forEach(item => item.classList.remove("is-open"));
     }
   });
 

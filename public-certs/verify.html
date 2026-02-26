@@ -10,6 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Canonical -->
   <link rel="canonical" href="https://verify.agileai.university/verify.html" />
 
   <meta name="robots" content="index, follow" />
@@ -37,33 +38,52 @@
   }
   </script>
 
-  <!-- Cache Control -->
+  <!-- Cache Control (Verification must never cache stale results) -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- Institutional Design Authority (Runtime Copy) -->
+  <!-- ======================================================
+       DESIGN AUTHORITY — RUNTIME COPY (Surface-Local)
+       DO NOT LINK ROOT SHARED FOLDER
+  ======================================================= -->
   <link rel="stylesheet" href="shared/design-authority/css/site.css" />
   <link rel="stylesheet" href="assets/css/verify.css" />
 
   <!-- reCAPTCHA v2 -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 </head>
 
-<!-- 🔒 CRITICAL: Surface Identity Required -->
+<!-- 🔒 CRITICAL:
+     Surface Identity must match surface-config.js condition.
+     "verify" remains distinct for analytics segmentation.
+     Menu logic handled in surface-config.js via:
+     surface === "certs" || surface === "verify"
+-->
 <body data-surface="verify">
 
-  <!-- HEADER MOUNT -->
+  <!-- ======================================================
+       HEADER MOUNT (Injected by surface-config.js)
+  ======================================================= -->
   <div id="header"></div>
 
-  <!-- Surface Configuration (if used for future flags) -->
+  <!-- ======================================================
+       SURFACE CONFIGURATION (Header Controller)
+       Must load BEFORE header.js
+  ======================================================= -->
   <script src="assets/js/surface-config.js"></script>
 
-  <!-- Shared Institutional Infrastructure -->
+  <!-- ======================================================
+       SHARED DESIGN AUTHORITY INFRASTRUCTURE
+       (Order matters)
+  ======================================================= -->
   <script src="shared/design-authority/js/header.js"></script>
   <script src="shared/design-authority/js/theme.js"></script>
 
-  <!-- ===== Verification Console ===== -->
+  <!-- ======================================================
+       VERIFICATION CONSOLE
+  ======================================================= -->
   <main class="verify-console">
     <div class="card">
 
@@ -112,16 +132,28 @@
     </div>
   </main>
 
-  <!-- FOOTER MOUNT -->
+  <!-- ======================================================
+       FOOTER MOUNT
+  ======================================================= -->
   <div id="footer"></div>
 
-  <!-- Shared Footer -->
+  <!-- Shared Footer Injection -->
   <script src="shared/design-authority/js/footer.js"></script>
 
-  <!-- Surface-Specific Verification Logic -->
+  <!-- ======================================================
+       SURFACE-SPECIFIC BUSINESS LOGIC
+       (Must remain module-based)
+  ======================================================= -->
   <script type="module" src="assets/js/verify.js"></script>
 
-  <!-- Institutional Analytics Engine (Safe Injection) -->
+  <!-- ======================================================
+       INSTITUTIONAL ANALYTICS ENGINE
+       - Single GA4 Property
+       - Surface-aware tracking
+       - Fail-safe execution
+       - Production-only activation
+       Must always load LAST.
+  ======================================================= -->
   <script src="shared/design-authority/js/analytics.js"></script>
 
 </body>

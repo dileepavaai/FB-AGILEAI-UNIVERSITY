@@ -3,19 +3,19 @@
    Visual Refinement Layer
    ------------------------------------------------------------
    File: refinement.css
-   Version: 1.2.0
+   Version: 1.2.1
    Date: 2026-02-26
    Status: Governance Locked (Additive Layer Only)
    ------------------------------------------------------------
 
    PURPOSE
    -------
-   This file provides controlled visual refinements layered
-   on top of the canonical design system (site.css).
+   Controlled visual refinements layered on top of the
+   canonical design system (site.css).
 
    ARCHITECTURAL PRINCIPLE
    -----------------------
-   site.css      = Canonical Design System (Locked)
+   site.css       = Canonical Design System (Locked)
    refinement.css = Controlled Additive Overlay (Reversible)
 
    GOVERNANCE RULES
@@ -30,7 +30,7 @@
    - No header/footer injection interference
    - No cross-surface coupling assumptions
 
-   Removal of this file must safely revert system to
+   Removing this file must safely revert system to
    canonical site.css behavior without regression.
 
    ============================================================ */
@@ -39,10 +39,6 @@
 
 /* ============================================================
    SECTION 1 — Global Anchor Normalization
-   ------------------------------------------------------------
-   Removes browser default blue/underline.
-   Applies neutral institutional baseline.
-   Structural behavior untouched.
    ============================================================ */
 
 a {
@@ -55,10 +51,6 @@ a {
 
 /* ============================================================
    SECTION 2 — Inline Content Links (Text Context Only)
-   ------------------------------------------------------------
-   Applies only inside paragraphs and list content.
-   Provides subtle institutional underlining.
-   Does not affect navigation or button anchors.
    ============================================================ */
 
 p a,
@@ -73,8 +65,7 @@ li a:hover {
     border-bottom-color: rgba(0, 0, 0, 0.6);
 }
 
-
-/* Dark Mode Parity (Non-Structural) */
+/* Dark Mode Parity */
 
 body.dark p a,
 body.dark li a {
@@ -90,9 +81,6 @@ body.dark li a:hover {
 
 /* ============================================================
    SECTION 3 — CTA-Style Anchors (Non-Button Actions)
-   ------------------------------------------------------------
-   Used for action links not implemented as .btn.
-   Maintains academic tone while improving affordance.
    ============================================================ */
 
 a.cta,
@@ -112,11 +100,7 @@ a.primary-action:hover {
 
 
 /* ============================================================
-   SECTION 4 — Button System Refinement
-   ------------------------------------------------------------
-   Refines existing .btn classes.
-   Does NOT modify layout, grid, or component structure.
-   Purely visual authority adjustment.
+   SECTION 4 — Button System Refinement (Light Mode Baseline)
    ============================================================ */
 
 a.btn {
@@ -124,9 +108,7 @@ a.btn {
 }
 
 
-/* ------------------------------------------------------------
-   Primary Button — Institutional Authority Grade
-   ------------------------------------------------------------ */
+/* Primary Button — Institutional Authority */
 
 .btn.primary {
     background: #111111;
@@ -146,9 +128,7 @@ a.btn {
 }
 
 
-/* ------------------------------------------------------------
-   Secondary Button — Subtle Institutional Companion
-   ------------------------------------------------------------ */
+/* Secondary Button */
 
 .btn.secondary {
     background: transparent;
@@ -165,72 +145,56 @@ a.btn {
 
 
 /* ============================================================
-   SECTION 5 — Dark Mode Button Calibration
+   SECTION 5 — Dark Mode Button Calibration (Contrast Corrected)
    ------------------------------------------------------------
-   Replaces harsh inversion (pure white blocks)
-   with elevated surface tone.
-   Governance-safe visual refinement only.
+   Proper inversion for hierarchy preservation.
+   Ensures primary CTA remains visually dominant.
    ============================================================ */
 
 body.dark .btn.primary {
-    background: #1c1f24;                 /* Soft elevated surface */
-    color: #ffffff;
-    border: 1px solid rgba(255,255,255,0.25);
+    background: #ffffff;
+    color: #111111;
+    border: 1px solid #ffffff;
 }
 
 body.dark .btn.primary:hover {
-    background: #252a30;
-    border-color: rgba(255,255,255,0.4);
+    background: #f2f2f2;
+    border-color: #f2f2f2;
     transform: translateY(-1px);
 }
 
 body.dark .btn.secondary {
-    color: #ffffff;
-    border-bottom: 1px solid rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.5);
 }
 
 
 
 /* ============================================================
    SECTION 6 — Section Rhythm & Typographic Cadence
-   ------------------------------------------------------------
-   Non-structural vertical spacing refinement.
-   Does NOT alter layout containers or grid system.
    ============================================================ */
-
-/* Major section separation */
 
 main section {
     margin-top: 4.5rem;
 }
-
-/* Heading breathing space */
 
 section h2 {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
 }
 
-/* Subheading rhythm */
-
 section h3 {
     margin-top: 2rem;
     margin-bottom: 0.75rem;
 }
 
-/* Paragraph readability */
-
 main p {
     line-height: 1.75;
 }
 
-/* Hero action spacing */
-
 .hero-actions {
     margin-top: 2rem;
 }
-
-/* Constrain hero text width */
 
 .hero p,
 .hero .hero-subtitle {
@@ -242,29 +206,22 @@ main p {
 /* ============================================================
    SECTION 7 — Dark Mode Surface Calibration
    ------------------------------------------------------------
-   Introduces subtle tonal layering in dark theme.
-   Prevents flat visual density.
+   Subtle tonal layering to prevent flat density.
    No structural overrides.
    ============================================================ */
 
 body.dark main {
-    background: #0d1117;  /* Slight lift from pure black */
+    background: #0d1117;
 }
-
-/* Preserve spacing parity */
 
 body.dark main section {
     margin-top: 4.5rem;
     background: transparent;
 }
 
-/* Subtle alternating surface rhythm */
-
 body.dark main section:nth-of-type(even) {
     background: rgba(255, 255, 255, 0.02);
 }
-
-/* Improve readability contrast */
 
 body.dark main p {
     color: rgba(255, 255, 255, 0.85);
@@ -280,6 +237,6 @@ body.dark h3 {
 
 /* ============================================================
    END OF FILE
-   Version: 1.2.0
-   Dark Mode Authority & Surface Calibration Release
+   Version: 1.2.1
+   Dark Mode Contrast & Hierarchy Correction
    ============================================================ */

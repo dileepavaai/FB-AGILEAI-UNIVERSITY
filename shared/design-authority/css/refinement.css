@@ -3,7 +3,7 @@
    Visual Refinement Layer
    ------------------------------------------------------------
    File: refinement.css
-   Version: 1.3.0
+   Version: 1.3.2
    Date: 2026-02-26
    Status: Governance Locked (Additive Layer Only)
    ------------------------------------------------------------
@@ -32,13 +32,12 @@
 
    SYSTEM INTEGRITY RULE
    ---------------------
-   - All updates to refinement.css must be FULL-FILE replacements.
-   - Partial edits are not permitted.
-   - Version header must be incremented on every change.
-   - This prevents cascade drift and governance regression.
+   - All updates must be FULL-FILE replacements.
+   - Version header must increment on every change.
+   - Prevents cascade drift and governance regression.
 
-   Removing this file must safely revert system to
-   canonical site.css behavior without regression.
+   Removal of this file must safely revert system
+   to canonical site.css behavior.
 
    ============================================================ */
 
@@ -72,15 +71,15 @@ li a:hover {
     border-bottom-color: rgba(0, 0, 0, 0.6);
 }
 
-/* Dark Mode Parity */
+/* Dark Theme Parity (data-theme system) */
 
-body.dark p a,
-body.dark li a {
+:root[data-theme="dark"] p a,
+:root[data-theme="dark"] li a {
     border-bottom-color: rgba(255, 255, 255, 0.35);
 }
 
-body.dark p a:hover,
-body.dark li a:hover {
+:root[data-theme="dark"] p a:hover,
+:root[data-theme="dark"] li a:hover {
     border-bottom-color: rgba(255, 255, 255, 0.7);
 }
 
@@ -150,29 +149,25 @@ a.btn {
 
 
 /* ============================================================
-   SECTION 5 — Dark Mode Button Calibration (Specificity-Safe)
-   ------------------------------------------------------------
-   Ensures refinement layer overrides locked site.css
-   without structural modification.
+   SECTION 5 — Dark Mode Button Calibration
+   Theme Engine Compatible (data-theme="dark")
    ============================================================ */
 
-body.dark a.btn.primary,
-body.dark .hero a.btn.primary,
-body.dark main a.btn.primary {
+:root[data-theme="dark"] .btn.primary {
     background: #ffffff !important;
     color: #111111 !important;
     border: 1px solid #ffffff !important;
 }
 
-body.dark a.btn.primary:hover {
+:root[data-theme="dark"] .btn.primary:hover {
     background: #f2f2f2 !important;
     border-color: #f2f2f2 !important;
     transform: translateY(-1px);
 }
 
-body.dark a.btn.secondary {
-    color: rgba(255,255,255,0.85);
-    border-bottom: 1px solid rgba(255,255,255,0.5);
+:root[data-theme="dark"] .btn.secondary {
+    color: rgba(255,255,255,0.9);
+    border-bottom: 1px solid rgba(255,255,255,0.6);
 }
 
 
@@ -212,35 +207,36 @@ main p {
 
 /* ============================================================
    SECTION 7 — Dark Mode Surface Calibration
+   Compatible with data-theme system
    ============================================================ */
 
-body.dark main {
+:root[data-theme="dark"] main {
     background: #0d1117;
 }
 
-body.dark main section {
+:root[data-theme="dark"] main section {
     margin-top: 4.5rem;
     background: transparent;
 }
 
-body.dark main section:nth-of-type(even) {
+:root[data-theme="dark"] main section:nth-of-type(even) {
     background: rgba(255, 255, 255, 0.02);
 }
 
-body.dark main p {
-    color: rgba(255, 255, 255, 0.85);
+:root[data-theme="dark"] main p {
+    color: rgba(255, 255, 255, 0.88);
 }
 
-body.dark h1,
-body.dark h2,
-body.dark h3 {
-    color: rgba(255, 255, 255, 0.92);
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3 {
+    color: rgba(255, 255, 255, 0.95);
 }
 
 
 
 /* ============================================================
    END OF FILE
-   Version: 1.3.0
-   Full-File Governance Release — Dark Mode Override Stabilized
+   Version: 1.3.2
+   Theme-Engine Compatible Dark Mode Stabilization
    ============================================================ */

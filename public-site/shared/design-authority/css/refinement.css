@@ -3,7 +3,7 @@
    Visual Refinement Layer
    ------------------------------------------------------------
    File: refinement.css
-   Version: 1.1.1
+   Version: 1.2.0
    Date: 2026-02-26
    Status: Governance Locked (Additive Layer Only)
    ------------------------------------------------------------
@@ -15,7 +15,7 @@
 
    ARCHITECTURAL PRINCIPLE
    -----------------------
-   site.css = Canonical Design System (Locked)
+   site.css      = Canonical Design System (Locked)
    refinement.css = Controlled Additive Overlay (Reversible)
 
    GOVERNANCE RULES
@@ -126,7 +126,6 @@ a.btn {
 
 /* ------------------------------------------------------------
    Primary Button — Institutional Authority Grade
-   Solid neutral authority (non-commercial, non-marketing)
    ------------------------------------------------------------ */
 
 .btn.primary {
@@ -149,7 +148,6 @@ a.btn {
 
 /* ------------------------------------------------------------
    Secondary Button — Subtle Institutional Companion
-   Maintains hierarchy below primary CTA.
    ------------------------------------------------------------ */
 
 .btn.secondary {
@@ -167,26 +165,28 @@ a.btn {
 
 
 /* ============================================================
-   SECTION 5 — Dark Mode Button Compatibility
+   SECTION 5 — Dark Mode Button Calibration
    ------------------------------------------------------------
-   Theme-compatible overrides only.
-   No theme engine modification.
+   Replaces harsh inversion (pure white blocks)
+   with elevated surface tone.
+   Governance-safe visual refinement only.
    ============================================================ */
 
 body.dark .btn.primary {
-    background: #ffffff;
-    color: #000000;
-    border: 1px solid #ffffff;
+    background: #1c1f24;                 /* Soft elevated surface */
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.25);
 }
 
 body.dark .btn.primary:hover {
-    background: #e6e6e6;
-    border-color: #e6e6e6;
+    background: #252a30;
+    border-color: rgba(255,255,255,0.4);
+    transform: translateY(-1px);
 }
 
 body.dark .btn.secondary {
     color: #ffffff;
-    border-bottom: 1px solid #ffffff;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
 }
 
 
@@ -198,13 +198,11 @@ body.dark .btn.secondary {
    Does NOT alter layout containers or grid system.
    ============================================================ */
 
-
-/* Increase separation between major sections */
+/* Major section separation */
 
 main section {
     margin-top: 4.5rem;
 }
-
 
 /* Heading breathing space */
 
@@ -213,7 +211,6 @@ section h2 {
     margin-bottom: 1.5rem;
 }
 
-
 /* Subheading rhythm */
 
 section h3 {
@@ -221,13 +218,11 @@ section h3 {
     margin-bottom: 0.75rem;
 }
 
-
-/* Improve paragraph readability */
+/* Paragraph readability */
 
 main p {
     line-height: 1.75;
 }
-
 
 /* Hero action spacing */
 
@@ -235,8 +230,7 @@ main p {
     margin-top: 2rem;
 }
 
-
-/* Constrain hero text width for institutional elegance */
+/* Constrain hero text width */
 
 .hero p,
 .hero .hero-subtitle {
@@ -244,16 +238,48 @@ main p {
 }
 
 
-/* Ensure Dark Mode parity (no visual drift) */
+
+/* ============================================================
+   SECTION 7 — Dark Mode Surface Calibration
+   ------------------------------------------------------------
+   Introduces subtle tonal layering in dark theme.
+   Prevents flat visual density.
+   No structural overrides.
+   ============================================================ */
+
+body.dark main {
+    background: #0d1117;  /* Slight lift from pure black */
+}
+
+/* Preserve spacing parity */
 
 body.dark main section {
     margin-top: 4.5rem;
+    background: transparent;
+}
+
+/* Subtle alternating surface rhythm */
+
+body.dark main section:nth-of-type(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Improve readability contrast */
+
+body.dark main p {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+body.dark h1,
+body.dark h2,
+body.dark h3 {
+    color: rgba(255, 255, 255, 0.92);
 }
 
 
 
 /* ============================================================
    END OF FILE
-   Version: 1.1.1
-   Refinement Layer — Authority Alignment Update
+   Version: 1.2.0
+   Dark Mode Authority & Surface Calibration Release
    ============================================================ */

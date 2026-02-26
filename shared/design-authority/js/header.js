@@ -1,9 +1,16 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
-   Current Version: v2.5 (Institutional Analytics Integration)
+   Current Version: v2.6 (Verify Governance + Analytics Alignment)
    Status: LOCKED
    Scope: Shared Design Authority Layer
+
+   Change Log v2.6:
+   - Treat "verify" surface as Certs Governance Surface
+   - Map "verify" to certs GA4 stream
+   - No structural DOM changes
+   - No navigation mutation
+   - Analytics architecture preserved
 
    Governance Rules:
    - No structural DOM changes without version bump
@@ -26,9 +33,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* =====================================================
      CERTS SURFACE — Minimal Governance Menu
+     Surfaces included:
+     - certs
+     - verify
   ===================================================== */
 
-  if (surface === "certs") {
+  if (surface === "certs" || surface === "verify") {
 
     headerHTML = `
       <header class="site-header">
@@ -258,13 +268,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* =====================================================
      INSTITUTIONAL ANALYTICS LAYER (STRICT MODE)
-     Surface-bound | Centralized | Non-invasive
   ===================================================== */
 
   const STREAM_MAP = {
     site: "G-79KD6F56DX",
     portal: "G-T4MGDE3G63",
     certs: "G-72N0GHGF1P",
+    verify: "G-72N0GHGF1P",  // ← aligned to certs stream
     education: "G-J84CWBF2C4",
     assessment: "G-3Y7V3S3HJY"
   };

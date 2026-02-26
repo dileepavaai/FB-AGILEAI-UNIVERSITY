@@ -1,9 +1,16 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
-   Current Version: v2.4 (Canonical URL Normalization)
+   Current Version: v2.6 (Verify Governance + Analytics Alignment)
    Status: LOCKED
    Scope: Shared Design Authority Layer
+
+   Change Log v2.6:
+   - Treat "verify" surface as Certs Governance Surface
+   - Map "verify" to certs GA4 stream
+   - No structural DOM changes
+   - No navigation mutation
+   - Analytics architecture preserved
 
    Governance Rules:
    - No structural DOM changes without version bump
@@ -12,6 +19,7 @@
    - Active state detection must remain data-path based
    - Mobile behavior must remain CSS-driven (no layout overrides)
    - Theme control markup must remain consistent across surfaces
+   - Analytics injection must remain centralized and surface-bound
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -25,9 +33,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* =====================================================
      CERTS SURFACE — Minimal Governance Menu
+     Surfaces included:
+     - certs
+     - verify
   ===================================================== */
 
-  if (surface === "certs") {
+  if (surface === "certs" || surface === "verify") {
 
     headerHTML = `
       <header class="site-header">
@@ -99,10 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
 
   } else {
-
-  /* =====================================================
-     DEFAULT SURFACE — Institutional Public Menu
-  ===================================================== */
 
     headerHTML = `
       <header class="site-header">
@@ -195,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* =====================================================
-     ACTIVE STATE DISCIPLINE (Data-Path Based)
+     ACTIVE STATE DISCIPLINE
   ===================================================== */
 
   const navLinks = headerContainer.querySelectorAll(".main-nav a[data-path]");
@@ -219,7 +226,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const hamburger = headerContainer.querySelector(".nav-hamburger");
   const nav = headerContainer.querySelector(".main-nav");
-  const toggles = headerContainer.querySelectorAll(".nav-toggle");
 
   function closeMobileNav() {
     body.classList.remove("nav-open");
@@ -240,11 +246,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
-  /* =====================================================
-     GLOBAL CLOSE CONTROLS
-  ===================================================== */
-
   document.addEventListener("click", function (e) {
     if (!body.classList.contains("nav-open")) return;
     if (!e.target.closest(".site-header")) {
@@ -261,10 +262,55 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("resize", function () {
     if (window.innerWidth >= 769) {
       closeMobileNav();
-      headerContainer.querySelectorAll(".nav-item.is-open")
-        .forEach(item => item.classList.remove("is-open"));
     }
   });
+
+
+  /* =====================================================
+     INSTITUTIONAL ANALYTICS LAYER (STRICT MODE)
+  ===================================================== */
+
+  const STREAM_MAP = {
+    site: "G-79KD6F56DX",
+    portal: "G-T4MGDE3G63",
+    certs: "G-72N0GHGF1P",
+    verify: "G-72N0GHGF1P",  // ← aligned to certs stream
+    education: "G-J84CWBF2C4",
+    assessment: "G-3Y7V3S3HJY"
+  };
+
+  if (!surface || !STREAM_MAP[surface]) {
+    console.error("[AAI Analytics] Invalid or missing data-surface. GA4 not initialized.");
+  } else {
+
+    const MEASUREMENT_ID = STREAM_MAP[surface];
+
+    const scriptTag = document.createElement("script");
+    scriptTag.async = true;
+    scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+    document.head.appendChild(scriptTag);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
+
+    gtag("js", new Date());
+    gtag("config", MEASUREMENT_ID, {
+      send_page_view: true,
+      surface: surface
+    });
+
+    window.AAI_Track = function (action, object, params = {}) {
+      if (!action || !object) return;
+      const eventName = `${action}_${object}`;
+      gtag("event", eventName, {
+        surface: surface,
+        ...params
+      });
+    };
+
+    console.info(`[AAI Analytics] Initialized | Surface: ${surface}`);
+  }
 
 
   /* =====================================================

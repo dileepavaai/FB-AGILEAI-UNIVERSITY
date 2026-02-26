@@ -3,7 +3,7 @@
    Visual Refinement Layer
    ------------------------------------------------------------
    File: refinement.css
-   Version: 1.0.0
+   Version: 1.1.0
    Date: 2026-02-26
    Status: Governance Locked (Additive Layer Only)
    ------------------------------------------------------------
@@ -23,6 +23,7 @@
    - No header/footer injection interference.
    - No analytics or JS behavior interference.
    - No cross-surface dependency assumptions.
+   - No grid/container width overrides permitted.
 
    If removal is required, delete this file reference.
    The system will revert safely to canonical design.
@@ -151,6 +152,64 @@ body.dark .btn.secondary {
 
 
 /* ============================================================
+   SECTION 6 — Section Rhythm & Typographic Cadence
+   Non-structural spacing refinements only
+   Does NOT alter layout grid or container system
+   ============================================================ */
+
+/* Increase vertical spacing between major sections */
+
+main section {
+    margin-top: 4.5rem;
+}
+
+
+/* Improve heading breathing space */
+
+section h2 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+
+/* Improve readability of long-form text */
+
+main p {
+    line-height: 1.75;
+}
+
+
+/* Improve subheading rhythm (pillar sections) */
+
+section h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+
+/* Improve hero action spacing */
+
+.hero-actions {
+    margin-top: 2rem;
+}
+
+
+/* Constrain hero text width for institutional elegance */
+
+.hero p,
+.hero .hero-subtitle {
+    max-width: 720px;
+}
+
+
+/* Ensure dark mode parity (no visual drift) */
+
+body.dark main section {
+    margin-top: 4.5rem;
+}
+
+
+/* ============================================================
    END OF FILE
-   Version: 1.0.0
+   Version: 1.1.0
    ============================================================ */

@@ -1,13 +1,13 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v14.5 (reCAPTCHA Structural Width Neutralization)
+   Current Version: v15.0 (Footer Authority + Version Badge Integration)
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
    Summary:
    - Breadcrumb structural targeting (no class dependency)
-   - Footer institutional stabilization (light + dark)
+   - Footer institutional stabilization (light + dark unified)
    - Hamburger rebuilt using true center transform model
    - Perfect symmetrical X (no drift / no double-line artifact)
    - Mobile overlay + backdrop preserved
@@ -16,12 +16,15 @@
    - Prevents iframe clipping on portrait mobile devices
    - Preserves intrinsic 304px width
    - Preserves tap accuracy
+   - Institutional footer refinement integrated
+   - Version badge system introduced
    - No layout, navigation logic, or DOM structure changes
 ========================================= */
 
 
 /* =========================
    ROOT VARIABLES
+   Design tokens and theme system
 ========================= */
 
 :root {
@@ -43,6 +46,7 @@
   --link-hover: #1d3648;
 }
 
+/* Dark Theme Override */
 :root[data-theme="dark"] {
   --text-primary: #f2f2f2;
   --text-secondary: #c2c7d0;
@@ -57,7 +61,7 @@
 
 
 /* =========================
-   BASE
+   BASE ELEMENTS
 ========================= */
 
 * { box-sizing: border-box; }
@@ -80,7 +84,7 @@ body.nav-open { overflow: hidden; }
 
 
 /* =========================
-   HEADER
+   HEADER STRUCTURE
 ========================= */
 
 #header { width: 100%; }
@@ -111,7 +115,6 @@ body.nav-open { overflow: hidden; }
 }
 
 .site-header .brand a {
-  font-family: Georgia, "Times New Roman", serif;
   font-weight: 600;
   letter-spacing: 0.25px;
   color: var(--text-primary);
@@ -165,7 +168,7 @@ body.nav-open { overflow: hidden; }
 
 
 /* =========================
-   LAYOUT
+   LAYOUT CONTAINER
 ========================= */
 
 main {
@@ -176,7 +179,7 @@ main {
 
 
 /* =========================
-   BREADCRUMB — Structural Target
+   BREADCRUMB (Structural Targeting)
 ========================= */
 
 main > *:first-child a {
@@ -189,49 +192,87 @@ main > *:first-child a:hover {
   color: var(--text-primary);
 }
 
-:root[data-theme="dark"] main > *:first-child a {
-  color: var(--text-secondary);
-}
-
-:root[data-theme="dark"] main > *:first-child a:hover {
-  color: var(--text-primary);
-}
-
 
 /* =========================
-   FOOTER
+   INSTITUTIONAL FOOTER
+   Unified + refined
 ========================= */
 
 .site-footer {
-  border-top: 1px solid var(--border-subtle);
-  padding: 72px 32px;
+  margin-top: 80px;
+  padding: 56px 32px;
   background: var(--surface-muted);
-}
-
-.footer-inner {
-  max-width: 760px;
-  margin: 0 auto;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 14px;
+  line-height: 1.7;
   color: var(--text-secondary);
 }
 
-.site-footer a {
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.footer-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.footer-disclaimer {
+  max-width: 720px;
+  margin-bottom: 18px;
+}
+
+.footer-links {
+  margin-bottom: 18px;
+  font-size: 13.5px;
+}
+
+.footer-links a {
   color: var(--link-color);
   text-decoration: none;
-  transition: color var(--transition-speed-fast);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
 }
 
-.site-footer a:hover {
-  color: var(--link-hover);
-  text-decoration: underline;
+.footer-links a:hover {
+  border-bottom: 1px solid currentColor;
 }
 
-:root[data-theme="dark"] .site-footer {
-  background: rgba(20,26,38,0.95);
+.footer-meta {
+  font-size: 12.5px;
+  color: var(--text-secondary);
 }
 
 
 /* =========================
-   THEME TOGGLE
+   VERSION BADGE SYSTEM
+========================= */
+
+.version-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 20px;
+  background: #e5e7eb;
+  color: #1f2937;
+  margin-left: 8px;
+}
+
+:root[data-theme="dark"] .version-badge {
+  background: #2a2f38;
+  color: #f2f2f2;
+}
+
+
+/* =========================
+   THEME TOGGLE CONTROL
 ========================= */
 
 .theme-control button {
@@ -293,21 +334,11 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
 
 /* =========================
-   MOBILE
+   MOBILE RESPONSIVE
 ========================= */
 
 @media (max-width: 768px) {
 
-  /*
-     Portrait viewport math:
-
-     Approx mobile width: 360px
-     Original padding: 32px each side → 296px usable
-     reCAPTCHA intrinsic width: 304px
-
-     Adjust padding to 16px per side → 328px usable
-     Neutralizes clipping without scaling or scroll.
-  */
   main {
     padding: 0 16px 80px;
   }
@@ -376,11 +407,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /*
-     reCAPTCHA — Structural Width Neutralization
-     Expands container beyond padding boundary
-     while preserving intrinsic 304px width.
-  */
+  /* reCAPTCHA Structural Width Neutralization */
 
   .verify-recaptcha {
     width: calc(100% + 32px);

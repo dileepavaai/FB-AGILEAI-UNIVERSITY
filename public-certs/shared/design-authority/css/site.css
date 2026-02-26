@@ -1,14 +1,41 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS
-   Governance Baseline: v12.0
-   Current Version: v14.5 (reCAPTCHA Structural Width Neutralization)
-   Status: LOCKED
-   Scope: Shared Design Authority Layer
+   AgileAI Verify Surface — Operational CSS
 
-   Summary:
+   Governance Baseline: v12.0
+   Current Version: v14.5
+   Status: LOCKED — Operational Surface Freeze
+   Surface: verify.agileai.university
+   Scope: Shared Design Authority (Isolated Hosting Root)
+
+   ---------------------------------------------------------
+   OPERATIONAL FREEZE NOTICE
+
+   This stylesheet governs the Verify surface.
+   The Verify surface is a trust-critical operational interface.
+
+   It is intentionally isolated from the evolving
+   institutional presentation layer (public-site).
+
+   DO NOT:
+   - Introduce visual refinements
+   - Add framework indicators
+   - Add version badges
+   - Modify layout spacing
+   - Alter navigation structure
+   - Introduce experimental styling
+   - Sync cosmetic changes from other surfaces
+
+   ONLY update if:
+   - Security patch required
+   - Accessibility compliance required
+   - Critical layout bug detected
+   - reCAPTCHA structural change required
+
+   ---------------------------------------------------------
+   Summary of Capabilities:
    - Breadcrumb structural targeting (no class dependency)
-   - Footer institutional stabilization (light + dark)
-   - Hamburger rebuilt using true center transform model
+   - Footer stabilization (light + dark safe)
+   - Hamburger using true center transform model
    - Perfect symmetrical X (no drift / no double-line artifact)
    - Mobile overlay + backdrop preserved
    - Mobile padding reduced (32px → 16px)
@@ -17,12 +44,18 @@
    - Preserves intrinsic 304px width
    - Preserves tap accuracy
    - No layout, navigation logic, or DOM structure changes
+
+   ---------------------------------------------------------
+   This file is intentionally boring.
+   Boring is stable.
+   Stable builds trust.
 ========================================= */
 
 
-/* =========================
-   ROOT VARIABLES
-========================= */
+/* =========================================================
+   1. ROOT VARIABLES
+   Design Tokens — DO NOT ALTER WITHOUT GOVERNANCE REVIEW
+========================================================= */
 
 :root {
   --text-primary: #111111;
@@ -43,6 +76,8 @@
   --link-hover: #1d3648;
 }
 
+/* Dark Theme Support — Operationally Safe */
+
 :root[data-theme="dark"] {
   --text-primary: #f2f2f2;
   --text-secondary: #c2c7d0;
@@ -56,9 +91,10 @@
 }
 
 
-/* =========================
-   BASE
-========================= */
+/* =========================================================
+   2. BASE ELEMENTS
+   Core typography & structural stability
+========================================================= */
 
 * { box-sizing: border-box; }
 
@@ -76,12 +112,14 @@ body {
     color var(--transition-speed-standard);
 }
 
+/* Prevent background scroll when mobile navigation is open */
 body.nav-open { overflow: hidden; }
 
 
-/* =========================
-   HEADER
-========================= */
+/* =========================================================
+   3. HEADER — Fixed Institutional Header
+   No visual experimentation allowed
+========================================================= */
 
 #header { width: 100%; }
 
@@ -121,9 +159,10 @@ body.nav-open { overflow: hidden; }
 .site-header .brand a:hover { opacity: 0.85; }
 
 
-/* =========================
-   NAVIGATION (DESKTOP)
-========================= */
+/* =========================================================
+   4. NAVIGATION (DESKTOP)
+   Stable top navigation — DO NOT RESTYLE
+========================================================= */
 
 .main-nav { position: relative; }
 
@@ -164,9 +203,10 @@ body.nav-open { overflow: hidden; }
 }
 
 
-/* =========================
-   LAYOUT
-========================= */
+/* =========================================================
+   5. LAYOUT CONTAINER
+   Central content constraint — DO NOT MODIFY SPACING
+========================================================= */
 
 main {
   max-width: var(--max-width);
@@ -175,9 +215,10 @@ main {
 }
 
 
-/* =========================
-   BREADCRUMB — Structural Target
-========================= */
+/* =========================================================
+   6. BREADCRUMB — Structural Target
+   Classless targeting to avoid markup dependency
+========================================================= */
 
 main > *:first-child a {
   color: var(--text-secondary);
@@ -198,9 +239,10 @@ main > *:first-child a:hover {
 }
 
 
-/* =========================
-   FOOTER
-========================= */
+/* =========================================================
+   7. FOOTER — Minimal & Stable
+   No institutional evolution allowed here
+========================================================= */
 
 .site-footer {
   border-top: 1px solid var(--border-subtle);
@@ -230,9 +272,10 @@ main > *:first-child a:hover {
 }
 
 
-/* =========================
-   THEME TOGGLE
-========================= */
+/* =========================================================
+   8. THEME TOGGLE
+   Minimal functional control
+========================================================= */
 
 .theme-control button {
   width: 34px;
@@ -248,9 +291,10 @@ main > *:first-child a:hover {
 }
 
 
-/* =========================
-   HAMBURGER — True Center Model
-========================= */
+/* =========================================================
+   9. HAMBURGER — True Center Transform Model
+   Perfect symmetry preserved
+========================================================= */
 
 .site-header .nav-hamburger {
   display: none;
@@ -292,22 +336,14 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 }
 
 
-/* =========================
-   MOBILE
-========================= */
+/* =========================================================
+   10. MOBILE (≤768px)
+   reCAPTCHA Structural Protection
+   CRITICAL: Do not alter containment logic
+========================================================= */
 
 @media (max-width: 768px) {
 
-  /*
-     Portrait viewport math:
-
-     Approx mobile width: 360px
-     Original padding: 32px each side → 296px usable
-     reCAPTCHA intrinsic width: 304px
-
-     Adjust padding to 16px per side → 328px usable
-     Neutralizes clipping without scaling or scroll.
-  */
   main {
     padding: 0 16px 80px;
   }
@@ -376,11 +412,7 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     padding-bottom: 6px;
   }
 
-  /*
-     reCAPTCHA — Structural Width Neutralization
-     Expands container beyond padding boundary
-     while preserving intrinsic 304px width.
-  */
+  /* reCAPTCHA containment safeguard */
 
   .verify-recaptcha {
     width: calc(100% + 32px);

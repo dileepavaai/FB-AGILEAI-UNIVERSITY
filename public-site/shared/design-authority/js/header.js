@@ -1,9 +1,16 @@
 /* ==========================================================
    AgileAI Shared Header Controller
    Governance Baseline: v2.0
-   Current Version: v2.5 (Institutional Analytics Integration)
+   Current Version: v2.7 (Analytics Authority Separation)
    Status: LOCKED
    Scope: Shared Design Authority Layer
+
+   Change Log v2.7:
+   - Removed analytics injection layer from header.js
+   - Analytics authority fully delegated to analytics.js
+   - No structural DOM changes
+   - No navigation mutation
+   - Separation of concerns enforced
 
    Governance Rules:
    - No structural DOM changes without version bump
@@ -12,7 +19,6 @@
    - Active state detection must remain data-path based
    - Mobile behavior must remain CSS-driven (no layout overrides)
    - Theme control markup must remain consistent across surfaces
-   - Analytics injection must remain centralized and surface-bound
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -26,9 +32,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* =====================================================
      CERTS SURFACE — Minimal Governance Menu
+     Surfaces included:
+     - certs
+     - verify
   ===================================================== */
 
-  if (surface === "certs") {
+  if (surface === "certs" || surface === "verify") {
 
     headerHTML = `
       <header class="site-header">
@@ -100,6 +109,10 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
 
   } else {
+
+    /* =====================================================
+       DEFAULT SURFACE — Institutional Public Menu
+    ===================================================== */
 
     headerHTML = `
       <header class="site-header">
@@ -254,53 +267,6 @@ document.addEventListener("DOMContentLoaded", function () {
       closeMobileNav();
     }
   });
-
-
-  /* =====================================================
-     INSTITUTIONAL ANALYTICS LAYER (STRICT MODE)
-     Surface-bound | Centralized | Non-invasive
-  ===================================================== */
-
-  const STREAM_MAP = {
-    site: "G-79KD6F56DX",
-    portal: "G-T4MGDE3G63",
-    certs: "G-72N0GHGF1P",
-    education: "G-J84CWBF2C4",
-    assessment: "G-3Y7V3S3HJY"
-  };
-
-  if (!surface || !STREAM_MAP[surface]) {
-    console.error("[AAI Analytics] Invalid or missing data-surface. GA4 not initialized.");
-  } else {
-
-    const MEASUREMENT_ID = STREAM_MAP[surface];
-
-    const scriptTag = document.createElement("script");
-    scriptTag.async = true;
-    scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-    document.head.appendChild(scriptTag);
-
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    window.gtag = gtag;
-
-    gtag("js", new Date());
-    gtag("config", MEASUREMENT_ID, {
-      send_page_view: true,
-      surface: surface
-    });
-
-    window.AAI_Track = function (action, object, params = {}) {
-      if (!action || !object) return;
-      const eventName = `${action}_${object}`;
-      gtag("event", eventName, {
-        surface: surface,
-        ...params
-      });
-    };
-
-    console.info(`[AAI Analytics] Initialized | Surface: ${surface}`);
-  }
 
 
   /* =====================================================

@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <!-- Institutional Surfaces (Hardened v1.1) -->
         <p class="footer-links">
           <a href="https://agileai.university">Institutional Site</a> ·
-          <a href="https://edu.agileai.university">Learning Surface</a> ·
+          <a href="https://edu.agileai.university">Knowledge Surface</a> ·
           <a href="https://portal.agileai.university">Student & Executive Portal</a> ·
           <a href="https://verify.agileai.university">Credential Verification</a>
         </p>

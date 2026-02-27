@@ -17,15 +17,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <p class="footer-governance">
           The institution operates under the broader governance framework of 
-          <a href="https://agileai.foundation" target="_blank" rel="noopener">
+          <a href="https://agileai.foundation" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             aria-label="Agile AI Foundation (opens in new tab)">
             AgileAI Foundation
           </a>.
         </p>
 
-        <!-- Institutional Surfaces (Hardened v1.0) -->
+        <!-- Institutional Surfaces (Hardened v1.1) -->
         <p class="footer-links">
           <a href="https://agileai.university">Institutional Site</a> ·
-          <a href="https://edu.agileai.university">Learning Surface</a> ·
+          <a href="https://edu.agileai.university">Knowledge Surface</a> ·
           <a href="https://portal.agileai.university">Student & Executive Portal</a> ·
           <a href="https://verify.agileai.university">Credential Verification</a>
         </p>
@@ -37,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </p>
 
         <p class="footer-copy">
-          © ${currentYear} Agile AI University
+          © ${currentYear} Agile AI University. All rights reserved.
         </p>
 
       </div>

@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
              target="_blank" 
              rel="noopener noreferrer"
              aria-label="Agile AI Foundation (opens in new tab)">
-            AgileAI Foundation
+            Agile AI Foundation
           </a>.
         </p>
 

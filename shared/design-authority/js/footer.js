@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <a href="https://agileai.foundation" 
              target="_blank" 
              rel="noopener noreferrer"
-             aria-label="AgileAI Foundation (opens in new tab)">
+             aria-label="Agile AI Foundation (opens in new tab)">
             AgileAI Foundation
           </a>.
         </p>

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </p>
 
         <p class="footer-governance">
-          The institution operates under the broader governance framework of 
+          Agile AI University builds upon the canonical standards defined by 
           <a href="https://agileai.foundation" 
              target="_blank" 
              rel="noopener noreferrer"
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </a>.
         </p>
 
-        <!-- Institutional Surfaces (Hardened v1.1) -->
+        <!-- Institutional Surfaces (Hardened v1.2) -->
         <p class="footer-links">
           <a href="https://agileai.university">Institutional Site</a> ·
           <a href="https://edu.agileai.university">Knowledge Surface</a> ·

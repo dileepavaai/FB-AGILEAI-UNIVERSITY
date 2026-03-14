@@ -4,7 +4,7 @@ Visual Refinement Layer
 --------------------------------------------------------------
 
 File: refinement.css
-Version: 1.4.4
+Version: 1.4.5
 Date: 2026-03-14
 Status: Governance Locked (Additive Layer Only)
 
@@ -51,6 +51,10 @@ canonical site.css behaviour.
 
 CHANGELOG
 
+v1.4.5
+• Added short-page vertical balance rule
+• Prevents excessive whitespace before footer on minimal pages
+
 v1.4.4
 • Corrected dark-theme scoping for surfaces and typography
 • Prevents dark styles leaking into light theme
@@ -70,25 +74,6 @@ v1.4.0
 • Navigation spacing calibration
 • Academic heading hierarchy refinement
 • Footer grid alignment improvement
-
-v1.3.9
-• Footer spacing calibration
-• Footer grid alignment with page container
-
-v1.3.8
-• First-section spacing guard
-
-v1.3.7
-• Short-page visual guard before footer
-
-v1.3.6
-• Header-content spacing normalization
-
-v1.3.5
-• Footer viewport stabilization
-
-v1.3.4
-• Footer spacing rule consolidation
 
 ============================================================ */
 
@@ -119,8 +104,6 @@ li a:hover {
   opacity: 0.75;
   border-bottom-color: rgba(0,0,0,0.6);
 }
-
-/* Dark theme parity */
 
 :root[data-theme="dark"] p a,
 :root[data-theme="dark"] li a {
@@ -250,12 +233,6 @@ main p {
 SECTION 7 — Header → Content Spacing
 ============================================================ */
 
-/*
-Important:
-main must remain full-width.
-Container elements handle reading width.
-*/
-
 main {
   padding-top: 36px;
 }
@@ -349,6 +326,15 @@ main section:last-child {
 
 
 /* ============================================================
+SECTION 12B — Short Page Vertical Balance
+============================================================ */
+
+main {
+  min-height: calc(100vh - 300px);
+}
+
+
+/* ============================================================
 SECTION 13 — Institutional Typography & Navigation Polish
 ============================================================ */
 
@@ -372,5 +358,5 @@ h3 {
 
 /* ============================================================
 END OF FILE
-Version: 1.4.4
+Version: 1.4.5
 ============================================================ */

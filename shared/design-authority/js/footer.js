@@ -14,6 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
           Academic & Professional Institution for Agile AI Systems
         </p>
 
+        <p class="footer-global">
+          Global Digital Institution
+        </p>
+
         <p class="footer-disclaimer">
           Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
           It operates as an independent academic and professional body and is not positioned as a commercial training provider.

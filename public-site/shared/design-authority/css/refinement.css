@@ -1,14 +1,14 @@
 /* ============================================================
 Agile AI University
 Visual Refinement Layer
---------------------------------------------------------------
+-----------------------
 
 File: refinement.css
-Version: 1.4.5
+Version: 1.4.6
 Date: 2026-03-14
 Status: Governance Locked (Additive Layer Only)
 
---------------------------------------------------------------
+---
 
 PURPOSE
 Controlled visual refinements layered on top of the
@@ -22,7 +22,7 @@ refinement.css = Controlled Additive Overlay (Reversible)
 This file MUST remain additive and must never modify the
 structural layout system defined in site.css.
 
---------------------------------------------------------------
+---
 
 GOVERNANCE RULES
 
@@ -36,7 +36,7 @@ GOVERNANCE RULES
 • No header/footer injection interference
 • No cross-surface coupling assumptions
 
---------------------------------------------------------------
+---
 
 SYSTEM INTEGRITY RULE
 
@@ -47,47 +47,34 @@ SYSTEM INTEGRITY RULE
 Removing this file must safely revert the system to
 canonical site.css behaviour.
 
---------------------------------------------------------------
+---
 
 CHANGELOG
 
+v1.4.6
+• Added theme-aware footer divider (visible in light & dark themes)
+• Added academic typography readability refinement
+
 v1.4.5
 • Added short-page vertical balance rule
-• Prevents excessive whitespace before footer on minimal pages
 
 v1.4.4
 • Corrected dark-theme scoping for surfaces and typography
-• Prevents dark styles leaking into light theme
 
 v1.4.3
 • Removed large-screen main width constraint that caused hero clipping
-• Restored full-width main layout
-• Maintains container-based reading width model
-
-v1.4.2
-• Removed hero full-width rule (caused container overflow)
-
-v1.4.1
-• Minor hero spacing refinement attempt (reverted)
-
-v1.4.0
-• Navigation spacing calibration
-• Academic heading hierarchy refinement
-• Footer grid alignment improvement
 
 ============================================================ */
-
 
 /* ============================================================
 SECTION 1 — Global Anchor Normalization
 ============================================================ */
 
 a {
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.2s ease, opacity 0.2s ease;
+color: inherit;
+text-decoration: none;
+transition: color 0.2s ease, opacity 0.2s ease;
 }
-
 
 /* ============================================================
 SECTION 2 — Inline Content Links
@@ -95,26 +82,25 @@ SECTION 2 — Inline Content Links
 
 p a,
 li a {
-  border-bottom: 1px solid rgba(0,0,0,0.25);
-  padding-bottom: 1px;
+border-bottom: 1px solid rgba(0,0,0,0.25);
+padding-bottom: 1px;
 }
 
 p a:hover,
 li a:hover {
-  opacity: 0.75;
-  border-bottom-color: rgba(0,0,0,0.6);
+opacity: 0.75;
+border-bottom-color: rgba(0,0,0,0.6);
 }
 
-:root[data-theme="dark"] p a,
-:root[data-theme="dark"] li a {
-  border-bottom-color: rgba(255,255,255,0.35);
+:root p a,
+:root li a {
+border-bottom-color: rgba(255,255,255,0.35);
 }
 
-:root[data-theme="dark"] p a:hover,
-:root[data-theme="dark"] li a:hover {
-  border-bottom-color: rgba(255,255,255,0.7);
+:root p a:hover,
+:root li a:hover {
+border-bottom-color: rgba(255,255,255,0.7);
 }
-
 
 /* ============================================================
 SECTION 3 — CTA Style Anchors
@@ -122,144 +108,138 @@ SECTION 3 — CTA Style Anchors
 
 a.cta,
 a.primary-action {
-  display: inline-block;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 3px;
+display: inline-block;
+font-weight: 500;
+letter-spacing: 0.3px;
+border-bottom: 1px solid currentColor;
+padding-bottom: 3px;
 }
 
 a.cta:hover,
 a.primary-action:hover {
-  opacity: 0.75;
+opacity: 0.75;
 }
-
 
 /* ============================================================
 SECTION 4 — Button System Refinement
 ============================================================ */
 
 a.btn {
-  text-decoration: none !important;
+text-decoration: none !important;
 }
 
 .btn.primary {
-  background: #111111;
-  color: #ffffff;
-  border: 1px solid #111111;
-  padding: 0.7rem 1.4rem;
-  font-weight: 500;
-  letter-spacing: 0.4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+background: #111111;
+color: #ffffff;
+border: 1px solid #111111;
+padding: 0.7rem 1.4rem;
+font-weight: 500;
+letter-spacing: 0.4px;
+border-radius: 4px;
+transition: all 0.2s ease;
 }
 
 .btn.primary:hover {
-  background: #000000;
-  border-color: #000000;
-  transform: translateY(-1px);
+background: #000000;
+border-color: #000000;
+transform: translateY(-1px);
 }
 
 .btn.secondary {
-  background: transparent;
-  color: #111111;
-  border-bottom: 1px solid #111111;
-  padding: 0.7rem 1.4rem;
+background: transparent;
+color: #111111;
+border-bottom: 1px solid #111111;
+padding: 0.7rem 1.4rem;
 }
 
 .btn.secondary:hover {
-  opacity: 0.75;
+opacity: 0.75;
 }
-
 
 /* ============================================================
 SECTION 5 — Dark Mode Button Calibration
 ============================================================ */
 
-:root[data-theme="dark"] .btn.primary {
-  background: #ffffff !important;
-  color: #111111 !important;
-  border: 1px solid #ffffff !important;
+:root .btn.primary {
+background: #ffffff !important;
+color: #111111 !important;
+border: 1px solid #ffffff !important;
 }
 
-:root[data-theme="dark"] .btn.primary:hover {
-  background: #f2f2f2 !important;
-  border-color: #f2f2f2 !important;
+:root .btn.primary:hover {
+background: #f2f2f2 !important;
+border-color: #f2f2f2 !important;
 }
 
-:root[data-theme="dark"] .btn.secondary {
-  color: rgba(255,255,255,0.9);
-  border-bottom: 1px solid rgba(255,255,255,0.6);
+:root .btn.secondary {
+color: rgba(255,255,255,0.9);
+border-bottom: 1px solid rgba(255,255,255,0.6);
 }
-
 
 /* ============================================================
 SECTION 6 — Section Rhythm
 ============================================================ */
 
 main section {
-  margin-top: 4.5rem;
+margin-top: 4.5rem;
 }
 
 main section:first-child {
-  margin-top: 0;
+margin-top: 0;
 }
 
 section h2 {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+margin-top: 1.5rem;
+margin-bottom: 1.5rem;
 }
 
 section h3 {
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
+margin-top: 2rem;
+margin-bottom: 0.75rem;
 }
 
 main p {
-  line-height: 1.75;
+line-height: 1.75;
 }
 
 .hero-actions {
-  margin-top: 2rem;
+margin-top: 2rem;
 }
 
 .hero p,
 .hero .hero-subtitle {
-  max-width: 720px;
+max-width: 720px;
 }
-
 
 /* ============================================================
 SECTION 7 — Header → Content Spacing
 ============================================================ */
 
 main {
-  padding-top: 36px;
+padding-top: 36px;
 }
-
 
 /* ============================================================
 SECTION 8 — Dark Mode Surface Calibration
 ============================================================ */
 
-:root[data-theme="dark"] main {
-  background: #0d1117;
+:root main {
+background: #0d1117;
 }
 
-:root[data-theme="dark"] main section:nth-of-type(even) {
-  background: rgba(255,255,255,0.02);
+:root main section:nth-of-type(even) {
+background: rgba(255,255,255,0.02);
 }
 
-:root[data-theme="dark"] main p {
-  color: rgba(255,255,255,0.88);
+:root main p {
+color: rgba(255,255,255,0.88);
 }
 
-:root[data-theme="dark"] h1,
-:root[data-theme="dark"] h2,
-:root[data-theme="dark"] h3 {
-  color: rgba(255,255,255,0.95);
+:root h1,
+:root h2,
+:root h3 {
+color: rgba(255,255,255,0.95);
 }
-
 
 /* ============================================================
 SECTION 9 — Footer Institutional Identity Refinement
@@ -268,95 +248,99 @@ SECTION 9 — Footer Institutional Identity Refinement
 .footer-title,
 .footer-institutional,
 .footer-global {
-  margin-top: 0;
+margin-top: 0;
 }
 
 .footer-title {
-  margin-bottom: 4px;
+margin-bottom: 4px;
 }
 
 .footer-institutional {
-  margin-bottom: 4px;
+margin-bottom: 4px;
 }
 
 .footer-global {
-  margin-bottom: 16px;
+margin-bottom: 16px;
 }
-
 
 /* ============================================================
 SECTION 10 — Footer Boundary & Grid Alignment
 ============================================================ */
 
+/* Light Theme Divider */
+
 #footer {
-  border-top: 1px solid rgba(255,255,255,0.08);
-  margin-top: 70px;
-  padding-top: 40px;
+border-top: 1px solid rgba(0,0,0,0.08);
+margin-top: 70px;
+padding-top: 40px;
+}
+
+/* Dark Theme Divider */
+
+:root #footer {
+border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 #footer .container {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+max-width: 1200px;
+margin-left: auto;
+margin-right: auto;
 }
-
 
 /* ============================================================
 SECTION 11 — Footer Viewport Stabilization
 ============================================================ */
 
 body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
 }
 
 main {
-  flex: 1;
+flex: 1;
 }
-
 
 /* ============================================================
 SECTION 12 — Short Page Visual Guard
 ============================================================ */
 
 main section:last-child {
-  margin-bottom: 2rem;
+margin-bottom: 2rem;
 }
-
 
 /* ============================================================
 SECTION 12B — Short Page Vertical Balance
 ============================================================ */
 
 main {
-  min-height: calc(100vh - 300px);
+min-height: calc(100vh - 300px);
 }
-
 
 /* ============================================================
 SECTION 13 — Institutional Typography & Navigation Polish
 ============================================================ */
 
 #site-header nav a {
-  padding-left: 12px;
-  padding-right: 12px;
+padding-left: 12px;
+padding-right: 12px;
 }
 
 h1 {
-  letter-spacing: -0.01em;
+letter-spacing: -0.01em;
 }
 
 h2 {
-  font-weight: 500;
+font-weight: 500;
 }
 
 h3 {
-  letter-spacing: 0.01em;
+letter-spacing: 0.01em;
 }
 
+/* Academic reading improvement */
 
-/* ============================================================
-END OF FILE
-Version: 1.4.5
-============================================================ */
+main p {
+font-size: 1.02rem;
+letter-spacing: 0.01em;
+}

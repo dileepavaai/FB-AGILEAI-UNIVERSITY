@@ -1,9 +1,20 @@
 # FB-AgileAI-University
 
-This repository is the **canonical monorepo** for Agile AI University.  
-It contains the authoritative definition of Agile AI, supporting governance records, and the technical systems that enable learning, assessment, certification, and execution.
+This repository is the canonical monorepo for Agile AI University.
 
-The repository is intentionally structured to **separate canon, governance, and runtime systems**, ensuring clarity, integrity, and long-term maintainability.
+It contains:
+- The preserved canonical reference surface (Agile AI Functional Elements)
+- Governance and institutional records
+- Public learning and assessment surfaces
+- Runtime systems that enable portal, payment, and credential operations
+
+The repository is intentionally structured to separate:
+- Canonical definition
+- Governance records
+- Public surfaces
+- Runtime systems
+
+This separation preserves institutional clarity, authority boundaries, and long-term credibility.
 
 ---
 
@@ -11,145 +22,152 @@ The repository is intentionally structured to **separate canon, governance, and 
 
 This repository exists to:
 
-- Preserve the **canonical definition of Agile AI**
-- Maintain **governance and decision records**
-- Operate **runtime systems** (portals, assessments, payments)
-- Support **learning, evaluation, and credentialing**
-- Enable a **solopreneur-friendly but institution-grade architecture**
+- Preserve the canonical reference surface for Agile AI
+- Maintain governance and decision records
+- Operate runtime systems (portals, assessments, payments)
+- Support learning, evaluation, and credentialing
+- Enable institution-grade architecture with solopreneur manageability
 
 ---
 
-## 🏛 Canonical Reference (READ-ONLY BY DESIGN)
+## 🏛 Canonical Reference (Constitutionally Locked)
 
 ### `agileai.foundation/`
-This folder contains the **Agile AI Functional Elements (v1.0)**.
 
-- Single-page static website
-- Defines **WHAT must exist** for Agile AI
-- Framework-agnostic, technology-neutral
-- No training, certification, or assessment logic
-- Changes require explicit versioning and governance
+This folder contains the Agile AI Functional Elements (v1.0).
 
-> This is the **root authority** for Agile AI meaning.
+- Static reference surface
+- Defines WHAT must exist for Agile AI
+- Framework-agnostic and technology-neutral
+- Non-commercial
+- Non-certifying
+- Governed by explicit version discipline
+
+Changes require:
+- Version increment
+- Changelog entry
+- Governance record
+
+This surface defines meaning.  
+University layers may interpret and apply — but must not redefine.
 
 ---
 
-## 📚 Learning & Public Surfaces
+## 📚 Public & Learning Surfaces
 
 ### `public-site/`
-Static public website content (marketing, orientation).
+Public-facing institutional surface.
 
 ### `public-assessment/`
-Public-facing Agile + AI capability assessment (non-authenticated).
+Capability assessment aligned to the canon.
 
 ### `public-portal/`
-Participant-facing portal surfaces (pre-auth / entry points).
+Participant-facing entry and orchestration layer.
 
 ### `public-certs/`
-Public credential verification and certificate display.
+Public credential verification.
+
+These surfaces apply the canon but do not alter it.
 
 ---
 
 ## 🎓 Learning, Assessment & Credentials
 
-Learning, assessment, and credentials are **intentionally separated** from the canonical definition:
+The ecosystem is layered intentionally:
 
-- Learning explains **HOW** Agile AI is practiced
-- Assessments determine **WHETHER** readiness exists
-- Credentials represent **validated capability**, not attendance
+- Canon defines WHAT must exist.
+- Learning explains HOW it is practiced.
+- Assessment evaluates WHETHER alignment exists.
+- Credentials represent validated capability (not attendance).
 
-These layers must **never redefine the canon** in `agileai.foundation`.
+Reverse authority is prohibited.
 
 ---
 
 ## ⚙️ Runtime & Backend Systems
 
 ### `cloudrun-portal/`
-Primary backend services deployed via Google Cloud Run.
-
+Backend services (Google Cloud Run):
 - Authentication
-- Session handling
+- Session control
 - Secure APIs
 - Portal orchestration
 
 ### `razorpay-webhook/`
 Payment processing and webhook handling.
 
+Runtime systems may evolve independently, provided they do not alter canonical definitions.
+
 ---
 
 ## 🗂 Governance & Records
 
 ### `governance/`
-Formal governance artifacts, including:
 
+Contains:
 - Phase locks and freezes
 - Architecture decisions
-- Authentication governance
-- Credential and trainer governance
-- Versioned records and charters
+- Version records
+- Institutional charters
 
-These documents ensure **decision traceability and institutional discipline**.
+Governance artifacts preserve traceability and institutional discipline.
+
+They must not be altered retroactively.
 
 ---
 
 ## 🧰 Scripts & Tooling
 
 ### `scripts/`
-Operational scripts for:
-- Dependency checks
-- Port checks
-- Deployment helpers
-- Internal validation
+
+Operational utilities for:
+- Validation
+- Deployment checks
+- Environment verification
 
 ---
 
-## 🔒 Design Principles for This Repo
+## 🔒 Institutional Design Principles
 
-- **Canon before commerce**
-- **Reference before runtime**
-- **Learning before assessment**
-- **Assessment before credential**
-- **Governance before scaling**
+- Canon before commerce
+- Reference before runtime
+- Learning before assessment
+- Assessment before credential
+- Governance before scaling
 
-This structure is intentional and should be preserved.
+These principles are intentional and structural.
 
 ---
 
-## 🚫 What This Repo Is NOT
+## 🚫 What This Repository Is Not
 
-- Not a single deployable app
-- Not a monolithic runtime
-- Not a casual experiment repo
+- Not a monolithic application
 - Not a marketing-only site
+- Not a casual experimentation space
+- Not a runtime-first architecture
 
-Each folder serves a **distinct institutional purpose**.
-
----
-
-## 📌 Contribution & Change Policy
-
-- `agileai.foundation/` changes require explicit versioning
-- Governance records must not be altered retroactively
-- Runtime code may evolve independently
-- No component may redefine Agile AI Functional Elements outside the foundation
+Each directory serves a distinct institutional role.
 
 ---
 
-## © Attribution
+## 📌 Change Policy
 
-Agile AI University  
-Agile AI Functional Elements v1.0
-
-Learning, assessment, and credential systems are operated independently of the canonical definition.
+- Canonical surface changes require version governance.
+- Governance records must not be rewritten.
+- Runtime code may evolve independently.
+- No component may redefine Agile AI Functional Elements outside the canonical surface.
 
 ---
 
 ## 🔗 Related Properties
 
-- Canon: **https://agileai.foundation**
-- Learning: **https://learn.agileai.university**
-- Portal & Assessment: **https://portal.agileai.university**
+- Canon: https://agileai.foundation
+- knowledge: https://edu.agileai.university
+- Portal & Assessment: https://portal.agileai.university
 
 ---
 
-**This repository is intentionally structured to support long-term credibility, clarity, and trust in Agile AI as a discipline.**
+© Agile AI University  
+Agile AI Functional Elements v1.0
+
+This repository supports long-term credibility, clarity, and structural integrity of Agile AI as a discipline.

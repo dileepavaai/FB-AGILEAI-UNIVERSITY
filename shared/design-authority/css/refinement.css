@@ -4,7 +4,7 @@ Visual Refinement Layer
 -----------------------
 
 File: refinement.css
-Version: 1.4.0
+Version: 1.4.1
 Date: 2026-03-14
 Status: Governance Locked (Additive Layer Only)
 
@@ -42,6 +42,10 @@ Removal of this file must safely revert system
 to canonical site.css behavior.
 
 ## CHANGELOG
+
+v1.4.1
+• Hero section full-width correction
+• Improves light-theme layout balance
 
 v1.4.0
 • Navigation spacing calibration
@@ -188,8 +192,6 @@ main section {
 margin-top: 4.5rem;
 }
 
-/* Prevent accidental double spacing at page start */
-
 main section:first-child {
 margin-top: 0;
 }
@@ -284,6 +286,19 @@ margin-right: auto;
 }
 
 /* ============================================================
+SECTION 9C — Hero Section Full-Width Correction
+============================================================ */
+
+@media (min-width: 1024px) {
+
+.hero {
+margin-left: calc(50% - 50vw);
+margin-right: calc(50% - 50vw);
+}
+
+}
+
+/* ============================================================
 SECTION 10 — Footer Boundary & Grid Alignment
 ============================================================ */
 
@@ -292,8 +307,6 @@ border-top: 1px solid rgba(255,255,255,0.08);
 margin-top: 70px;
 padding-top: 40px;
 }
-
-/* Align footer content with page grid */
 
 #footer .container {
 max-width: 1200px;
@@ -325,21 +338,12 @@ margin-bottom: 3rem;
 
 /* ============================================================
 SECTION 13 — Institutional Typography & Navigation Polish
----------------------------------------------------------
-
-Enhances perceived academic presentation quality across the
-site by refining navigation spacing and heading hierarchy.
-
 ============================================================ */
-
-/* Navigation Spacing Calibration */
 
 #site-header nav a {
 padding-left: 12px;
 padding-right: 12px;
 }
-
-/* Academic Heading Hierarchy */
 
 h1 {
 letter-spacing: -0.01em;
@@ -355,5 +359,5 @@ letter-spacing: 0.01em;
 
 /* ============================================================
 END OF FILE
-Version: 1.4.0
+Version: 1.4.1
 ============================================================ */

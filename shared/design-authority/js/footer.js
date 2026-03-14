@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <a href="https://agileai.university">Institutional Site</a> ·
           <a href="https://edu.agileai.university">Knowledge Surface</a> ·
           <a href="https://assessment.agileai.university">Capability Assessment</a> ·
-          <a href="https://portal.agileai.university">Student & Executive Portal</a> ·
+          <a href="https://portal.agileai.university">Executive & Student Portal</a> ·
           <a href="https://verify.agileai.university">Credential Verification</a>
         </p>
 

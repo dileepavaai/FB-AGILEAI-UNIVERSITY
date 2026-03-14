@@ -10,6 +10,10 @@ document.addEventListener("DOMContentLoaded", function () {
           Agile AI University
         </p>
 
+        <p class="footer-institutional">
+          Academic & Professional Institution for Agile AI Systems
+        </p>
+
         <p class="footer-disclaimer">
           Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
           It operates as an independent academic and professional body and is not positioned as a commercial training provider.
@@ -17,20 +21,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <p class="footer-governance">
           Agile AI University builds upon the canonical standards defined by 
-          <a href="https://agileai.foundation" 
-             target="_blank" 
+          <a href="https://agileai.foundation"
+             target="_blank"
              rel="noopener noreferrer"
              aria-label="Agile AI Foundation (opens in new tab)">
             Agile AI Foundation
           </a>.
         </p>
 
-        <!-- Institutional Surfaces -->
         <p class="footer-links">
           <a href="https://agileai.university">Institutional Site</a> ·
           <a href="https://edu.agileai.university">Knowledge Surface</a> ·
           <a href="https://assessment.agileai.university">Capability Assessment</a> ·
-          <a href="https://portal.agileai.university">Executive &amp; Student Portal</a> ·
+          <a href="https://portal.agileai.university">Student & Executive Portal</a> ·
           <a href="https://verify.agileai.university">Credential Verification</a>
         </p>
 

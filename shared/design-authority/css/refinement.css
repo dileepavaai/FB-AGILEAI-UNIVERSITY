@@ -4,7 +4,7 @@ Visual Refinement Layer
 -----------------------
 
 File: refinement.css
-Version: 1.3.5
+Version: 1.3.6
 Date: 2026-03-14
 Status: Governance Locked (Additive Layer Only)
 
@@ -34,21 +34,26 @@ refinement.css = Controlled Additive Overlay (Reversible)
 
 ## SYSTEM INTEGRITY RULE
 
-* All updates must be FULL-FILE replacements.
-* Version header must increment on every change.
-* Prevents cascade drift and governance regression.
+* All updates must be FULL-FILE replacements
+* Version header must increment on every change
+* Prevents cascade drift and governance regression
 
 Removal of this file must safely revert system
 to canonical site.css behavior.
 
 ## CHANGELOG
 
-v1.3.5
-
-• Introduced footer viewport stabilization pattern
-• Ensures footer remains at bottom on short pages
-• No structural layout overrides
+v1.3.6
+• Added header-content spacing normalization
+• Improves vertical rhythm across all pages
+• Maintains governance constraints
 • Fully reversible additive enhancement
+
+v1.3.5
+• Footer viewport stabilization for short pages
+
+v1.3.4
+• Consolidated duplicate footer spacing rules
 
 ============================================================ */
 
@@ -77,8 +82,6 @@ li a:hover {
 opacity: 0.75;
 border-bottom-color: rgba(0,0,0,0.6);
 }
-
-/* Dark Theme Parity */
 
 :root p a,
 :root li a {
@@ -136,7 +139,6 @@ transform: translateY(-1px);
 .btn.secondary {
 background: transparent;
 color: #111111;
-border: 1px solid transparent;
 border-bottom: 1px solid #111111;
 padding: 0.7rem 1.4rem;
 }
@@ -158,7 +160,6 @@ border: 1px solid #ffffff !important;
 :root .btn.primary:hover {
 background: #f2f2f2 !important;
 border-color: #f2f2f2 !important;
-transform: translateY(-1px);
 }
 
 :root .btn.secondary {
@@ -198,16 +199,22 @@ max-width: 720px;
 }
 
 /* ============================================================
-SECTION 7 — Dark Mode Surface Calibration
+SECTION 7 — Header → Content Spacing
+------------------------------------
+
+Creates consistent breathing room below header.
+============================================================ */
+
+main {
+padding-top: 48px;
+}
+
+/* ============================================================
+SECTION 8 — Dark Mode Surface Calibration
 ============================================================ */
 
 :root main {
 background: #0d1117;
-}
-
-:root main section {
-margin-top: 4.5rem;
-background: transparent;
 }
 
 :root main section:nth-of-type(even) {
@@ -225,7 +232,7 @@ color: rgba(255,255,255,0.95);
 }
 
 /* ============================================================
-SECTION 8 — Footer Institutional Identity Refinement
+SECTION 9 — Footer Institutional Identity Refinement
 ============================================================ */
 
 .footer-title,
@@ -247,7 +254,7 @@ margin-bottom: 16px;
 }
 
 /* ============================================================
-SECTION 9 — Footer Separation Boundary
+SECTION 10 — Footer Boundary
 ============================================================ */
 
 #footer {
@@ -257,11 +264,7 @@ padding-top: 40px;
 }
 
 /* ============================================================
-SECTION 10 — Institutional Footer Stabilization
------------------------------------------------
-
-Ensures footer remains at viewport bottom on short pages.
-Common pattern used across large academic sites.
+SECTION 11 — Footer Viewport Stabilization
 ============================================================ */
 
 body {
@@ -276,5 +279,5 @@ flex: 1;
 
 /* ============================================================
 END OF FILE
-Version: 1.3.5
+Version: 1.3.6
 ============================================================ */

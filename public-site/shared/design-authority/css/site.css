@@ -1,22 +1,38 @@
 /* =========================================
    AgileAI Public Surface — Institutional CSS
    Governance Baseline: v12.0
-   Current Version: v14.5 (reCAPTCHA Structural Width Neutralization)
+
+   Current Version: v14.6
    Status: LOCKED
    Scope: Shared Design Authority Layer
 
-   Summary:
-   - Breadcrumb structural targeting (no class dependency)
-   - Footer institutional stabilization (light + dark)
-   - Hamburger rebuilt using true center transform model
-   - Perfect symmetrical X (no drift / no double-line artifact)
-   - Mobile overlay + backdrop preserved
-   - Mobile padding reduced (32px → 16px)
-   - reCAPTCHA structural width neutralization (no scaling)
-   - Prevents iframe clipping on portrait mobile devices
-   - Preserves intrinsic 304px width
-   - Preserves tap accuracy
-   - No layout, navigation logic, or DOM structure changes
+   CHANGELOG
+   ------------------------------------------------
+   v14.6 — Footer Identity Spacing Normalization
+   - Introduced controlled spacing rules for
+     institutional identity block:
+       .footer-title
+       .footer-institutional
+       .footer-global
+   - Eliminates browser default paragraph margins
+     causing unintended vertical gaps
+   - No layout change
+   - No navigation change
+   - No DOM change
+   - No behavioral change
+
+   v14.5 — reCAPTCHA Structural Width Neutralization
+   - Prevent iframe clipping on portrait devices
+   - Preserve intrinsic width
+   - Maintain tap accuracy
+
+   DESIGN GUARANTEES
+   ------------------------------------------------
+   - No layout grid changes
+   - No DOM structure changes
+   - No navigation logic changes
+   - No JavaScript dependencies
+   - Mobile overlay system preserved
 ========================================= */
 
 
@@ -176,7 +192,7 @@ main {
 
 
 /* =========================
-   BREADCRUMB — Structural Target
+   BREADCRUMB
 ========================= */
 
 main > *:first-child a {
@@ -214,6 +230,33 @@ main > *:first-child a:hover {
   color: var(--text-secondary);
 }
 
+
+/* =========================
+   FOOTER — Institutional Identity Block
+   ------------------------------------------------
+   Normalizes spacing for identity lines
+   Removes browser default paragraph margins
+========================= */
+
+.footer-title,
+.footer-institutional,
+.footer-global {
+  margin-top: 0;
+}
+
+.footer-title {
+  margin-bottom: 6px;
+}
+
+.footer-institutional {
+  margin-bottom: 6px;
+}
+
+.footer-global {
+  margin-bottom: 18px;
+}
+
+
 .site-footer a {
   color: var(--link-color);
   text-decoration: none;
@@ -249,7 +292,7 @@ main > *:first-child a:hover {
 
 
 /* =========================
-   HAMBURGER — True Center Model
+   HAMBURGER
 ========================= */
 
 .site-header .nav-hamburger {
@@ -298,16 +341,6 @@ body.nav-open .nav-hamburger span:nth-child(3) {
 
 @media (max-width: 768px) {
 
-  /*
-     Portrait viewport math:
-
-     Approx mobile width: 360px
-     Original padding: 32px each side → 296px usable
-     reCAPTCHA intrinsic width: 304px
-
-     Adjust padding to 16px per side → 328px usable
-     Neutralizes clipping without scaling or scroll.
-  */
   main {
     padding: 0 16px 80px;
   }
@@ -375,12 +408,6 @@ body.nav-open .nav-hamburger span:nth-child(3) {
     border-bottom: 1px solid var(--text-primary);
     padding-bottom: 6px;
   }
-
-  /*
-     reCAPTCHA — Structural Width Neutralization
-     Expands container beyond padding boundary
-     while preserving intrinsic 304px width.
-  */
 
   .verify-recaptcha {
     width: calc(100% + 32px);

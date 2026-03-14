@@ -4,7 +4,7 @@ Visual Refinement Layer
 --------------------------------------------------------------
 
 File: refinement.css
-Version: 1.4.2
+Version: 1.4.3
 Date: 2026-03-14
 Status: Governance Locked (Additive Layer Only)
 
@@ -51,13 +51,16 @@ canonical site.css behaviour.
 
 CHANGELOG
 
+v1.4.3
+• Removed large-screen main width constraint that caused hero clipping
+• Restored full-width main layout
+• Maintains container-based reading width model
+
 v1.4.2
 • Removed hero full-width rule (caused container overflow)
-• Restored stable container-based layout
-• Maintains safe institutional page grid
 
 v1.4.1
-• Minor hero spacing refinement attempt (reverted in 1.4.2)
+• Minor hero spacing refinement attempt (reverted)
 
 v1.4.0
 • Navigation spacing calibration
@@ -70,7 +73,6 @@ v1.3.9
 
 v1.3.8
 • First-section spacing guard
-• Large-screen readability optimization
 
 v1.3.7
 • Short-page visual guard before footer
@@ -246,6 +248,12 @@ main p {
 SECTION 7 — Header → Content Spacing
 ============================================================ */
 
+/* 
+Important:
+main must remain full-width.
+Container elements handle reading width.
+*/
+
 main {
   padding-top: 36px;
 }
@@ -294,21 +302,6 @@ SECTION 9 — Footer Institutional Identity Refinement
 
 .footer-global {
   margin-bottom: 16px;
-}
-
-
-/* ============================================================
-SECTION 9B — Large Screen Reading Width Optimization
-============================================================ */
-
-@media (min-width: 1440px) {
-
-  main {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
 }
 
 
@@ -383,5 +376,5 @@ h3 {
 
 /* ============================================================
 END OF FILE
-Version: 1.4.2
+Version: 1.4.3
 ============================================================ */

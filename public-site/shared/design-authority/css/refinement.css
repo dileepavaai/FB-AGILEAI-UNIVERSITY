@@ -4,7 +4,7 @@ Visual Refinement Layer
 --------------------------------------------------------------
 
 File: refinement.css
-Version: 1.4.3
+Version: 1.4.4
 Date: 2026-03-14
 Status: Governance Locked (Additive Layer Only)
 
@@ -50,6 +50,10 @@ canonical site.css behaviour.
 --------------------------------------------------------------
 
 CHANGELOG
+
+v1.4.4
+• Corrected dark-theme scoping for surfaces and typography
+• Prevents dark styles leaking into light theme
 
 v1.4.3
 • Removed large-screen main width constraint that caused hero clipping
@@ -118,13 +122,13 @@ li a:hover {
 
 /* Dark theme parity */
 
-:root p a,
-:root li a {
+:root[data-theme="dark"] p a,
+:root[data-theme="dark"] li a {
   border-bottom-color: rgba(255,255,255,0.35);
 }
 
-:root p a:hover,
-:root li a:hover {
+:root[data-theme="dark"] p a:hover,
+:root[data-theme="dark"] li a:hover {
   border-bottom-color: rgba(255,255,255,0.7);
 }
 
@@ -189,18 +193,18 @@ a.btn {
 SECTION 5 — Dark Mode Button Calibration
 ============================================================ */
 
-:root .btn.primary {
+:root[data-theme="dark"] .btn.primary {
   background: #ffffff !important;
   color: #111111 !important;
   border: 1px solid #ffffff !important;
 }
 
-:root .btn.primary:hover {
+:root[data-theme="dark"] .btn.primary:hover {
   background: #f2f2f2 !important;
   border-color: #f2f2f2 !important;
 }
 
-:root .btn.secondary {
+:root[data-theme="dark"] .btn.secondary {
   color: rgba(255,255,255,0.9);
   border-bottom: 1px solid rgba(255,255,255,0.6);
 }
@@ -213,8 +217,6 @@ SECTION 6 — Section Rhythm
 main section {
   margin-top: 4.5rem;
 }
-
-/* Prevent accidental spacing at page start */
 
 main section:first-child {
   margin-top: 0;
@@ -248,7 +250,7 @@ main p {
 SECTION 7 — Header → Content Spacing
 ============================================================ */
 
-/* 
+/*
 Important:
 main must remain full-width.
 Container elements handle reading width.
@@ -263,21 +265,21 @@ main {
 SECTION 8 — Dark Mode Surface Calibration
 ============================================================ */
 
-:root main {
+:root[data-theme="dark"] main {
   background: #0d1117;
 }
 
-:root main section:nth-of-type(even) {
+:root[data-theme="dark"] main section:nth-of-type(even) {
   background: rgba(255,255,255,0.02);
 }
 
-:root main p {
+:root[data-theme="dark"] main p {
   color: rgba(255,255,255,0.88);
 }
 
-:root h1,
-:root h2,
-:root h3 {
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3 {
   color: rgba(255,255,255,0.95);
 }
 
@@ -315,8 +317,6 @@ SECTION 10 — Footer Boundary & Grid Alignment
   padding-top: 40px;
 }
 
-/* Align footer content with page grid */
-
 #footer .container {
   max-width: 1200px;
   margin-left: auto;
@@ -344,7 +344,7 @@ SECTION 12 — Short Page Visual Guard
 ============================================================ */
 
 main section:last-child {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 
@@ -352,14 +352,10 @@ main section:last-child {
 SECTION 13 — Institutional Typography & Navigation Polish
 ============================================================ */
 
-/* Navigation spacing calibration */
-
 #site-header nav a {
   padding-left: 12px;
   padding-right: 12px;
 }
-
-/* Academic heading hierarchy */
 
 h1 {
   letter-spacing: -0.01em;
@@ -376,5 +372,5 @@ h3 {
 
 /* ============================================================
 END OF FILE
-Version: 1.4.3
+Version: 1.4.4
 ============================================================ */

@@ -4,7 +4,7 @@ Visual Refinement Layer
 -----------------------
 
 File: refinement.css
-Version: 1.3.9
+Version: 1.4.0
 Date: 2026-03-14
 Status: Governance Locked (Additive Layer Only)
 
@@ -43,16 +43,21 @@ to canonical site.css behavior.
 
 ## CHANGELOG
 
+v1.4.0
+• Navigation spacing calibration
+• Academic heading hierarchy refinement
+• Footer grid alignment improvement
+
 v1.3.9
 • Footer spacing calibration
 • Footer grid alignment with page container
 
 v1.3.8
-• Added first-section spacing guard
-• Added large-screen readability optimization (1440px+)
+• First-section spacing guard
+• Large-screen readability optimization
 
 v1.3.7
-• Added short-page visual guard before footer
+• Short-page visual guard before footer
 
 v1.3.6
 • Header-content spacing normalization
@@ -280,11 +285,6 @@ margin-right: auto;
 
 /* ============================================================
 SECTION 10 — Footer Boundary & Grid Alignment
----------------------------------------------
-
-Provides visual separation between page content and footer
-while aligning footer text with the main page container.
-
 ============================================================ */
 
 #footer {
@@ -324,6 +324,36 @@ margin-bottom: 3rem;
 }
 
 /* ============================================================
+SECTION 13 — Institutional Typography & Navigation Polish
+---------------------------------------------------------
+
+Enhances perceived academic presentation quality across the
+site by refining navigation spacing and heading hierarchy.
+
+============================================================ */
+
+/* Navigation Spacing Calibration */
+
+#site-header nav a {
+padding-left: 12px;
+padding-right: 12px;
+}
+
+/* Academic Heading Hierarchy */
+
+h1 {
+letter-spacing: -0.01em;
+}
+
+h2 {
+font-weight: 500;
+}
+
+h3 {
+letter-spacing: 0.01em;
+}
+
+/* ============================================================
 END OF FILE
-Version: 1.3.9
+Version: 1.4.0
 ============================================================ */

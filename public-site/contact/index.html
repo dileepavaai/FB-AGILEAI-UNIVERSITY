@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <title>Contact · Agile AI University</title>
@@ -8,15 +8,16 @@
   <meta name="description"
         content="Official institutional contact information for Agile AI University." />
 
-  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="stylesheet" href="/shared/design-authority/css/site.css" />
+  <link rel="stylesheet" href="/shared/design-authority/css/refinement.css" />
 </head>
 
-<body>
+<body data-surface="public-site">
 
-<!-- ================= CANONICAL HEADER (INJECTED) ================= -->
-<header id="site-header"></header>
+<div id="header"></div>
 
 <main class="container">
+
   <h1>Contact</h1>
 
   <p>
@@ -40,14 +41,17 @@
     Credential verification and issuance are handled exclusively through
     the institution’s certification and governance-controlled systems.
   </div>
+
 </main>
 
-<!-- ================= FOOTER (INJECTED) ================= -->
-<footer id="site-footer"></footer>
+<div id="footer"></div>
 
-<!-- ================= SCRIPTS ================= -->
-<script src="/assets/js/header.js"></script>
-<script src="/assets/js/footer.js"></script>
+<!-- Script Order Enforcement -->
+<script src="/assets/js/surface-config.js"></script>
+<script src="/shared/design-authority/js/header.js"></script>
+<script src="/shared/design-authority/js/footer.js"></script>
+<script src="/shared/design-authority/js/theme.js"></script>
+<script src="/shared/design-authority/js/analytics.js"></script>
 
 </body>
 </html>

@@ -248,6 +248,22 @@ main p {
     margin-bottom: 1rem;
 }
 
+/* ============================================================
+   SECTION 8 — Footer Institutional Identity Spacing
+   Tightens institutional identity block spacing
+   ============================================================ */
+
+.footer-title {
+  margin-bottom: 4px;
+}
+
+.footer-institutional {
+  margin-bottom: 4px;
+}
+
+.footer-global {
+  margin-bottom: 16px;
+}
 
 
 /* ============================================================

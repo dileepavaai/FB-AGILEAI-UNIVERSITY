@@ -3,8 +3,8 @@
    Visual Refinement Layer
    ------------------------------------------------------------
    File: refinement.css
-   Version: 1.3.2
-   Date: 2026-02-26
+   Version: 1.3.3
+   Date: 2026-03-14
    Status: Governance Locked (Additive Layer Only)
    ------------------------------------------------------------
 
@@ -71,7 +71,7 @@ li a:hover {
     border-bottom-color: rgba(0, 0, 0, 0.6);
 }
 
-/* Dark Theme Parity (data-theme system) */
+/* Dark Theme Parity */
 
 :root[data-theme="dark"] p a,
 :root[data-theme="dark"] li a {
@@ -86,7 +86,7 @@ li a:hover {
 
 
 /* ============================================================
-   SECTION 3 — CTA-Style Anchors (Non-Button Actions)
+   SECTION 3 — CTA-Style Anchors
    ============================================================ */
 
 a.cta,
@@ -106,14 +106,14 @@ a.primary-action:hover {
 
 
 /* ============================================================
-   SECTION 4 — Button System Refinement (Light Mode Baseline)
+   SECTION 4 — Button System Refinement
    ============================================================ */
 
 a.btn {
     text-decoration: none !important;
 }
 
-/* Primary Button — Institutional Authority */
+/* Primary Button */
 
 .btn.primary {
     background: #111111;
@@ -150,7 +150,6 @@ a.btn {
 
 /* ============================================================
    SECTION 5 — Dark Mode Button Calibration
-   Theme Engine Compatible (data-theme="dark")
    ============================================================ */
 
 :root[data-theme="dark"] .btn.primary {
@@ -207,7 +206,6 @@ main p {
 
 /* ============================================================
    SECTION 7 — Dark Mode Surface Calibration
-   Compatible with data-theme system
    ============================================================ */
 
 :root[data-theme="dark"] main {
@@ -236,7 +234,24 @@ main p {
 
 
 /* ============================================================
+   SECTION 8 — Footer Institutional Identity Refinement
+   Tightens identity block spacing for academic presentation
+   ============================================================ */
+
+.footer-title,
+.footer-institutional,
+.footer-global {
+    margin-bottom: 0.25rem;
+}
+
+.footer-global {
+    margin-bottom: 1rem;
+}
+
+
+
+/* ============================================================
    END OF FILE
-   Version: 1.3.2
-   Theme-Engine Compatible Dark Mode Stabilization
+   Version: 1.3.3
+   Footer Institutional Identity Refinement
    ============================================================ */

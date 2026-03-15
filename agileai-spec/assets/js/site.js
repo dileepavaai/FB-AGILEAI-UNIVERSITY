@@ -1,6 +1,6 @@
 /*
 ======================================================
-Agile AI Specification Header + Mermaid Rendering
+Agile AI Specification Header + Mermaid Initialization
 ======================================================
 */
 
@@ -41,7 +41,7 @@ Agile AI Specification Header + Mermaid Rendering
 
   /*
   ======================================================
-  Render Mermaid Diagrams
+  Mermaid Rendering
   ======================================================
   */
 
@@ -50,25 +50,14 @@ Agile AI Specification Header + Mermaid Rendering
     if (typeof mermaid === "undefined") return;
 
     mermaid.initialize({
-      startOnLoad: false,
-      theme: "default",
-      securityLevel: "loose"
+      startOnLoad: true,
+      securityLevel: "loose",
+      theme: "default"
     });
 
-    document.querySelectorAll("pre code.language-mermaid").forEach((block) => {
-
-      const code = block.textContent;
-
-      const mermaidDiv = document.createElement("div");
-      mermaidDiv.className = "mermaid";
-      mermaidDiv.textContent = code;
-
-      const parent = block.parentElement;
-      parent.replaceWith(mermaidDiv);
-
+    mermaid.run({
+      querySelector: ".language-mermaid"
     });
-
-    mermaid.init(undefined, document.querySelectorAll(".mermaid"));
 
   }
 
@@ -94,6 +83,7 @@ Agile AI Specification Header + Mermaid Rendering
   */
 
   document.addEventListener("DOMContentLoaded", initializePage);
+
   document.addEventListener("navigation.end", initializePage);
 
 })();

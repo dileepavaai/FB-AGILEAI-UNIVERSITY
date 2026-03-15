@@ -1,7 +1,7 @@
 /*
 ======================================================
-Agile AI Specification Banner
-Injects a global specification banner into all pages
+Agile AI Specification Header
+Injects a global specification header into all pages
 ======================================================
 */
 
@@ -19,11 +19,16 @@ Injects a global specification banner into all pages
     const banner = document.createElement("div");
     banner.className = "spec-banner";
 
-    banner.innerHTML =
-      "Agile AI Specification — " +
-      "<span>Status: Canonical</span> — " +
-      "<span>Version: 1.0</span> — " +
-      "<span>Maintained by Agile AI University</span>";
+    banner.innerHTML = `
+      <div class="spec-banner-title">
+        Agile AI Specification
+      </div>
+      <div class="spec-banner-meta">
+        <span><strong>Version:</strong> 1.0</span>
+        <span><strong>Status:</strong> Canonical</span>
+        <span><strong>Maintained by:</strong> Agile AI University</span>
+      </div>
+    `;
 
     container.prepend(banner);
 

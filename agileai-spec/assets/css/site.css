@@ -1,40 +1,63 @@
 /* ======================================================
-   Agile AI Specification Banner
+   Agile AI Specification Header
    ====================================================== */
 
 /*
-   Global specification banner displayed at the top
+   Global specification header displayed at the top
    of all documentation pages.
 */
 
 .spec-banner {
   background: #0b3d91;
   color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 10px 16px;
+  padding: 14px 18px;
   border-radius: 6px;
   margin-bottom: 24px;
   line-height: 1.4;
 }
 
-/* Secondary text inside banner */
-.spec-banner span {
+/* Title row */
+
+.spec-banner-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Metadata row */
+
+.spec-banner-meta {
+  font-size: 13px;
   font-weight: 500;
-  opacity: 0.9;
+  opacity: 0.95;
+}
+
+/* Spacing between metadata fields */
+
+.spec-banner-meta span {
+  margin-right: 16px;
 }
 
 /* Improve spacing with Material theme headings */
+
 .md-content__inner h1:first-of-type {
   margin-top: 0.4rem;
 }
 
 /* Responsive behavior */
+
 @media screen and (max-width: 768px) {
 
   .spec-banner {
-    font-size: 13px;
-    padding: 10px 14px;
+    padding: 12px 14px;
+  }
+
+  .spec-banner-title {
+    font-size: 15px;
+  }
+
+  .spec-banner-meta {
+    font-size: 12px;
   }
 
 }

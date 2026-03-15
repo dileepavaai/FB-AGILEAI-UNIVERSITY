@@ -6,6 +6,12 @@ Agile AI Specification Header + Mermaid Initialization
 
 (function () {
 
+  /*
+  ======================================================
+  Inject Specification Banner
+  ======================================================
+  */
+
   function injectSpecBanner() {
 
     const container = document.querySelector(".md-content__inner");
@@ -45,36 +51,17 @@ Agile AI Specification Header + Mermaid Initialization
     if (typeof mermaid === "undefined") return;
 
     mermaid.initialize({
-      startOnLoad: false,
-      theme: "default"
+      startOnLoad: true,
+      theme: "default",
+      securityLevel: "loose"
     });
-
-    document.querySelectorAll("pre code.language-mermaid").forEach((block) => {
-
-      const parent = block.parentElement;
-
-      if (parent.classList.contains("mermaid-rendered")) return;
-
-      const graphDefinition = block.textContent;
-
-      const mermaidDiv = document.createElement("div");
-      mermaidDiv.className = "mermaid";
-      mermaidDiv.textContent = graphDefinition;
-
-      parent.replaceWith(mermaidDiv);
-
-      parent.classList.add("mermaid-rendered");
-
-    });
-
-    mermaid.init(undefined, document.querySelectorAll(".mermaid"));
 
   }
 
 
   /*
   ======================================================
-  Page Load Events
+  Page Initialization
   ======================================================
   */
 
@@ -84,6 +71,13 @@ Agile AI Specification Header + Mermaid Initialization
     renderMermaid();
 
   }
+
+
+  /*
+  ======================================================
+  Page Load Events
+  ======================================================
+  */
 
   document.addEventListener("DOMContentLoaded", initializePage);
 

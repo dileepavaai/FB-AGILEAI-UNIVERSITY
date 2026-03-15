@@ -49,32 +49,44 @@ The Agile AI credential framework is organized across three professional tracks.
 
 # Agile AI Credential Architecture
 
-The Agile AI credential ecosystem is structured across three professional tracks that represent increasing levels of capability and responsibility.
-
 ```mermaid
 graph TD
 
 A[Agile AI Professional Capability]
 
-A --> P1[AIPA<br>Artificial Intelligence Professional Agilist]
-P1 --> P2[AISD<br>Artificial Intelligence System Designer]
-P2 --> P3[AIAP<br>AI Agentic Professional]
+subgraph Professional Track
+P1[AIPA<br>AI Professional Agilist]
+P2[AISD<br>AI System Designer]
+P3[AIAP<br>AI Agentic Professional]
+P1 --> P2 --> P3
+end
 
-A --> M1[AAIA<br>Agentic AI Agilist]
-M1 --> M2[AAIM<br>Agentic AI Master]
-M2 --> M3[AAICC<br>Agentic AI Capability Coach]
+subgraph Master Track
+M1[AAIA<br>Agentic AI Agilist]
+M2[AAIM<br>Agentic AI Master]
+M3[AAICC<br>Agentic AI Capability Coach]
+M1 --> M2 --> M3
+end
 
-A --> L1[AISL<br>AI Strategic Leadership]
-L1 --> L2[AIOL<br>AI Organizational Leadership]
-L2 --> L3[AIPL<br>AI Product Leadership]
+subgraph Leadership Track
+L1[AISL<br>AI Strategic Leadership]
+L2[AIOL<br>AI Organizational Leadership]
+L3[AIPL<br>AI Product Leadership]
+L1 --> L2 --> L3
+end
+
+A --> P1
+A --> M1
+A --> L1
 
 classDef professional fill:#e3f2fd,stroke:#1e88e5;
 classDef master fill:#e8f5e9,stroke:#43a047;
 classDef leadership fill:#fff3e0,stroke:#fb8c00;
 
-class P1,P2,P3 professional;
-class M1,M2,M3 master;
-class L1,L2,L3 leadership;
+class P1,P2,P3 professional
+class M1,M2,M3 master
+class L1,L2,L3 leadership
+```
 
 Credential Registry
 

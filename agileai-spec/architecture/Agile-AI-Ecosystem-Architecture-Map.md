@@ -45,9 +45,10 @@ Digital Systems
 | edu.agileai.university | Canonical knowledge interface |
 | learn.agileai.university | Redirect surface |
 | portal.agileai.university | Student & executive portal |
-| certs.agileai.university | Credential issuance |
-| verify.agileai.university | Credential verification |
-| assessment surface | Capability assessment system |
+| admin.agileai.university | Administrative systems and credential issuance |
+| certs.agileai.university | Redirect surface for credential services |
+| verify.agileai.university | Credential verification interface |
+| assessment.agileai.university | Capability assessment system |
 
 ---
 
@@ -83,16 +84,21 @@ portal.agileai.university
 
 # 6. Credential Infrastructure
 
-Credential services include:
+Credential services operate through multiple coordinated surfaces.
 
-certs.agileai.university  
-verify.agileai.university
+| Surface | Role |
+|------|------|
+| admin.agileai.university | Credential issuance and administrative management |
+| certs.agileai.university | Public redirect entry point for credential services |
+| verify.agileai.university | Credential verification interface |
 
 These systems support:
 
 • credential issuance  
-• verification  
+• credential verification  
 • institutional recognition
+
+The **certs.agileai.university** surface exists primarily as a public entry point that redirects users to the appropriate credential services.
 
 ---
 
@@ -104,7 +110,11 @@ Capability assessment systems provide:
 • insight reports  
 • professional readiness signals
 
-These operate independently from credential issuance.
+These systems operate independently from credential issuance and verification infrastructure.
+
+Example surface:
+
+assessment.agileai.university
 
 ---
 
@@ -116,4 +126,7 @@ This enables:
 
 • architectural isolation  
 • operational stability  
-• independent deployment
+• independent deployment  
+• ecosystem scalability
+
+Each hosting surface maintains its own deployment configuration and shared design authority layer.

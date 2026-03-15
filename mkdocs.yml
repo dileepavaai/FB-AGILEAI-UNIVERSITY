@@ -5,45 +5,77 @@ site_author: Agile AI Foundation
 docs_dir: agileai-spec
 
 theme:
-  name: material
+name: material
+features:
+- navigation.tabs
+- navigation.sections
+- navigation.top
+- content.code.copy
+- content.action.edit
+- search.highlight
+- search.share
 
 plugins:
-  - search
+
+* search
 
 markdown_extensions:
-  - toc:
-      permalink: true
+
+* toc:
+  permalink: true
+* tables
+* admonition
+* attr_list
+* def_list
+* footnotes
+* pymdownx.superfences
+
+extra_javascript:
+
+* https://unpkg.com/mermaid@10/dist/mermaid.min.js
+
+repo_url: https://github.com/YOUR-ORG/FB-AgileAI-University
+repo_name: Agile AI Specification
+edit_uri: edit/main/agileai-spec/
 
 nav:
-  - Home: index.md
 
-  - Specification:
-      - Agile AI Specification v1.0: versions/v1.0/Agile-AI-Specification.md
+* Home: index.md
 
-  - Architecture:
-      - Operating Model: architecture/Agile-AI-Operating-Model.md
-      - Ecosystem Architecture: architecture/Agile-AI-Ecosystem-Architecture-Map.md
+* Specification:
 
-  - Domain:
-      - Core Framework: domain/Agile-AI-Core-Framework.md
-      - Capability Model: domain/Agile-AI-Capability-Model.md
-      - Domain Definition: domain/Agile-AI-Domain-Definition.md
-      - Glossary: domain/Agile-AI-Glossary.md
-      - History: domain/Agile-AI-History-and-Evolution.md
-      - Research Directions: domain/Agile-AI-Research-Directions.md
+  * Agile AI Specification v1.0: versions/v1.0/Agile-AI-Specification.md
 
-  - Ecosystem:
-      - Principles: ecosystem/Agile-AI-Ecosystem-Principles.md
-      - System Context: ecosystem/Agile-AI-Ecosystem-System-Context.md
+* Architecture:
 
-  - Registries:
-      - Capability Registry: registry/capabilities/Agile-AI-Capability-Registry.md
-      - Concept Registry: registry/concepts/Agile-AI-Concept-Registry.md
-      - Credential Registry: registry/credentials/Agile-AI-Credential-Registry.md
-      - Program Registry: registry/programs/Agile-AI-Program-Registry.md
+  * Operating Model: architecture/Agile-AI-Operating-Model.md
+  * Ecosystem Architecture: architecture/Agile-AI-Ecosystem-Architecture-Map.md
 
-  - Standards:
-      - Design Authority Charter: standards/Design-Authority-Charter.md
+* Domain:
 
-  - Version Log:
-      - Ecosystem Governance Log: version-log/ecosystem-governance-log.md
+  * Core Framework: domain/Agile-AI-Core-Framework.md
+  * Capability Model: domain/Agile-AI-Capability-Model.md
+  * Domain Definition: domain/Agile-AI-Domain-Definition.md
+  * Glossary: domain/Agile-AI-Glossary.md
+  * History: domain/Agile-AI-History-and-Evolution.md
+  * Research Directions: domain/Agile-AI-Research-Directions.md
+
+* Ecosystem:
+
+  * Principles: ecosystem/Agile-AI-Ecosystem-Principles.md
+  * System Context: ecosystem/Agile-AI-Ecosystem-System-Context.md
+
+* Registries:
+
+  * Capability Registry: registry/capabilities/Agile-AI-Capability-Registry.md
+  * Concept Registry: registry/concepts/Agile-AI-Concept-Registry.md
+  * Credential Registry: registry/credentials/Agile-AI-Credential-Registry.md
+  * Program Registry: registry/programs/Agile-AI-Program-Registry.md
+
+* Standards:
+
+  * Design Authority Charter: standards/Design-Authority-Charter.md
+
+* Version Log:
+
+  * Ecosystem Governance Log: version-log/ecosystem-governance-log.md

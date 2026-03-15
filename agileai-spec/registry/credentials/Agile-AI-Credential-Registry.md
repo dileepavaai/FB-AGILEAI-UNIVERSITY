@@ -78,14 +78,6 @@ end
 A --> P1
 A --> M1
 A --> L1
-
-classDef professional fill:#e3f2fd,stroke:#1e88e5;
-classDef master fill:#e8f5e9,stroke:#43a047;
-classDef leadership fill:#fff3e0,stroke:#fb8c00;
-
-class P1,P2,P3 professional
-class M1,M2,M3 master
-class L1,L2,L3 leadership
 ```
 
 Credential Registry

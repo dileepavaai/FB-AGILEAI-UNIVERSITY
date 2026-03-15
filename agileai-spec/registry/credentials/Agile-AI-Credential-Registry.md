@@ -10,14 +10,16 @@ MAINTAINED BY: Agile AI University
 
 ---
 
+## Overview
+
 This registry defines the official credentials recognized within the Agile AI ecosystem.
 
 Credential identifiers defined in this registry are used for:
 
-* certificate issuance  
-* credential verification  
-* institutional recognition  
-* ecosystem governance  
+- certificate issuance  
+- credential verification  
+- institutional recognition  
+- ecosystem governance  
 
 ---
 
@@ -29,9 +31,9 @@ It recognizes experienced professionals who demonstrate the ability to integrate
 
 Advanced credentials extend this capability into specialized domains such as:
 
-* Agentic AI systems  
-* organizational transformation  
-* AI product leadership  
+- Agentic AI systems  
+- organizational transformation  
+- AI product leadership  
 
 ---
 
@@ -78,7 +80,6 @@ end
 A --> P1
 A --> M1
 A --> L1
-```
 
 Credential Registry
 
@@ -189,4 +190,3 @@ invitation-based cohorts
 strategic partnerships
 
 Professionals interested in participating in Agile AI credential pathways may explore institutional portals or engage with the Agile AI University ecosystem.
-

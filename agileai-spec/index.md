@@ -1,10 +1,15 @@
 # Agile AI Registry
 
-This directory contains canonical registries used within the Agile AI ecosystem.
+This directory contains the canonical registries used within the **Agile AI ecosystem**.
 
-Registries define stable identifiers for concepts, capabilities, standards, and credentials.
+Registries define stable identifiers for domain concepts, capabilities, and professional credentials.  
+These identifiers provide consistent references across documentation, assessments, and institutional systems.
 
-These identifiers ensure consistency across:
+---
+
+## Purpose
+
+Agile AI registries support consistency across the ecosystem by providing stable identifiers that can be referenced by:
 
 - domain documentation
 - capability assessments
@@ -12,23 +17,58 @@ These identifiers ensure consistency across:
 - institutional systems
 - credential verification infrastructure
 
----
-
-## Registry Structure
-
-concepts  
-Defines canonical domain concepts.
-
-capabilities  
-Defines capability dimensions used in Agile AI assessments and frameworks.
-
-credentials  
-Defines professional credentials recognized within the ecosystem.
+Once assigned, registry identifiers remain stable and may be referenced across the ecosystem.
 
 ---
 
-## Governance
+# Registry Structure
 
-Registries are maintained through the Agile AI governance process.
+The Agile AI Registry is organized into several canonical registries.
 
-Identifiers are stable once assigned and may be referenced across the ecosystem.
+## Concept Registry
+
+Defines canonical **Agile AI domain concepts**.
+
+Concept identifiers allow consistent reference across:
+
+- domain documentation
+- research publications
+- ecosystem frameworks
+
+---
+
+## Capability Registry
+
+Defines the **capability dimensions** used within the Agile AI capability model.
+
+These capability identifiers are used by:
+
+- capability assessments
+- institutional capability frameworks
+- professional capability development models
+
+---
+
+## Credential Registry
+
+Defines the professional **credentials recognized within the Agile AI ecosystem**.
+
+Credential identifiers support:
+
+- credential issuance
+- credential verification
+- institutional recognition systems
+
+---
+
+# Governance
+
+Agile AI registries are maintained through the **Agile AI governance process**.
+
+Registry identifiers follow these principles:
+
+- identifiers are stable once assigned
+- identifiers remain reserved even if elements are retired
+- registries evolve through controlled ecosystem governance
+
+This governance approach ensures long-term **consistency, traceability, and ecosystem stability**.

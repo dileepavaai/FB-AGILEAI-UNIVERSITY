@@ -10,10 +10,14 @@ theme:
     - navigation.tabs
     - navigation.sections
     - navigation.top
+    - navigation.instant
+    - navigation.expand
     - content.code.copy
     - content.action.edit
     - search.highlight
-    - search.share
+    - search.suggest
+  icon:
+    repo: fontawesome/brands/github
 
 plugins:
   - search
@@ -33,7 +37,6 @@ extra_css:
 
 extra_javascript:
   - assets/js/site.js
-  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 
 repo_url: https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY
 repo_name: FB-AGILEAI-UNIVERSITY
@@ -55,7 +58,7 @@ nav:
       - Domain Definition: domain/Agile-AI-Domain-Definition.md
       - Glossary: domain/Agile-AI-Glossary.md
       - History: domain/Agile-AI-History-and-Evolution.md
-      - Research Directions: domain/Agile-AI-Research-Directions.md
+      - Research Directions: domain/Agile-AI-Research- Directions.md
 
   - Ecosystem:
       - Principles: ecosystem/Agile-AI-Ecosystem-Principles.md
@@ -72,3 +75,7 @@ nav:
 
   - Version Log:
       - Ecosystem Governance Log: version-log/ecosystem-governance-log.md
+
+copyright: |
+  © Agile AI University.  
+  Agile AI Specification v1.0

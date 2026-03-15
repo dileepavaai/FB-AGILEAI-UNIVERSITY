@@ -28,7 +28,11 @@ markdown_extensions:
   - footnotes
   - pymdownx.superfences
 
+extra_css:
+  - assets/css/site.css
+
 extra_javascript:
+  - assets/js/site.js
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 
 repo_url: https://github.com/YOUR-ORG/FB-AgileAI-University

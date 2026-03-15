@@ -1,0 +1,18 @@
+/* =========================================
+   Agile AI Specification Banner
+   ========================================= */
+
+.spec-banner {
+  background: #0b3d91;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.spec-banner span {
+  font-weight: 500;
+  opacity: 0.9;
+}

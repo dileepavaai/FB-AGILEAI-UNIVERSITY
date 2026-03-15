@@ -1,6 +1,6 @@
 /*
 ======================================================
-Agile AI Specification Header + Mermaid Initialization
+Agile AI Specification Header + Mermaid Rendering
 ======================================================
 */
 
@@ -18,7 +18,6 @@ Agile AI Specification Header + Mermaid Initialization
 
     if (!container) return;
 
-    // Prevent duplicate banner insertion
     if (container.querySelector(".spec-banner")) return;
 
     const banner = document.createElement("div");
@@ -42,7 +41,7 @@ Agile AI Specification Header + Mermaid Initialization
 
   /*
   ======================================================
-  Mermaid Diagram Initialization
+  Render Mermaid Diagrams
   ======================================================
   */
 
@@ -51,10 +50,25 @@ Agile AI Specification Header + Mermaid Initialization
     if (typeof mermaid === "undefined") return;
 
     mermaid.initialize({
-      startOnLoad: true,
+      startOnLoad: false,
       theme: "default",
       securityLevel: "loose"
     });
+
+    document.querySelectorAll("pre code.language-mermaid").forEach((block) => {
+
+      const code = block.textContent;
+
+      const mermaidDiv = document.createElement("div");
+      mermaidDiv.className = "mermaid";
+      mermaidDiv.textContent = code;
+
+      const parent = block.parentElement;
+      parent.replaceWith(mermaidDiv);
+
+    });
+
+    mermaid.init(undefined, document.querySelectorAll(".mermaid"));
 
   }
 
@@ -75,13 +89,11 @@ Agile AI Specification Header + Mermaid Initialization
 
   /*
   ======================================================
-  Page Load Events
+  Page Events
   ======================================================
   */
 
   document.addEventListener("DOMContentLoaded", initializePage);
-
-  // Support Material for MkDocs instant navigation
   document.addEventListener("navigation.end", initializePage);
 
 })();

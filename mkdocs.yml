@@ -17,7 +17,7 @@ theme:
     - search.highlight
     - search.suggest
   icon:
-    repo: github
+    repo: github.svg
 
 plugins:
   - search

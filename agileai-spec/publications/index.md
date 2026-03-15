@@ -12,7 +12,7 @@ The Agile AI Guide provides a practical explanation of the Agile AI domain, incl
 
 This guide acts as an interpretive companion to the Agile AI Functional Elements specification.
 
-[⬇ Download Agile AI Guide v1.1](../publications/Agile-AI-Guide-v1.1.pdf)
+<a href="../publications/Agile-AI-Guide-v1.1.pdf" target="_blank">⬇ Download Agile AI Guide v1.1</a>
 
 ---
 
@@ -22,7 +22,7 @@ The Agile AI Functional Elements document defines the core functional building b
 
 It provides the structural foundation that supports the Agile AI specification framework.
 
-[⬇ Download Agile AI Functional Elements v1.1](../publications/Agile-AI-Functional-Elements-v1.1.pdf)
+<a href="../publications/Agile-AI-Functional-Elements-v1.1.pdf" target="_blank">⬇ Download Agile AI Functional Elements v1.1</a>
 
 ---
 

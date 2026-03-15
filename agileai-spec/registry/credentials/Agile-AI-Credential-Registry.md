@@ -6,7 +6,7 @@
 DOCUMENT TYPE: Registry  
 VERSION: 1.0  
 STATUS: CANONICAL  
-MAINTAINED BY: Agile AI University
+MAINTAINED BY: Agile AI University  
 
 ---
 
@@ -65,7 +65,7 @@ M1 --> M2[AAIM<br>Agentic AI Master]
 M2 --> M3[AAICC<br>Agentic AI Capability Coach]
 
 A --> L1[AISL<br>AI Strategic Leadership]
-L1 --> L2[AI Organizational Leadership]
+L1 --> L2[AIOL<br>AI Organizational Leadership]
 L2 --> L3[AIPL<br>AI Product Leadership]
 
 classDef professional fill:#e3f2fd,stroke:#1e88e5;
@@ -97,18 +97,16 @@ Credentials within the Agile AI ecosystem follow a structured identifier format.
 
 AAI-CR-XXX
 
-Where:
-
 | Component | Meaning                       |
 | --------- | ----------------------------- |
-| AAI   | Agile AI ecosystem identifier |
-| CR    | Credential Registry           |
-| XXX   | Sequential credential number  |
+| AAI       | Agile AI ecosystem identifier |
+| CR        | Credential Registry           |
+| XXX       | Sequential credential number  |
 
-Example:
+Example
 
-| Identifier     | Meaning                                                      |
-| -------------- | ------------------------------------------------------------ |
+| Identifier | Meaning                                                      |
+| ---------- | ------------------------------------------------------------ |
 | AAI-CR-001 | First credential defined in the Agile AI Credential Registry |
 | AAI-CR-002 | Second credential defined in the registry                    |
 | AAI-CR-003 | Third credential defined in the registry                     |
@@ -166,12 +164,11 @@ Credential Lifecycle Governance
 
 Credentials within the Agile AI ecosystem follow a lifecycle governance model.
 
-| Status         | Meaning                                                              |
-| -------------- | -------------------------------------------------------------------- |
+| Status     | Meaning                                                              |
+| ---------- | -------------------------------------------------------------------- |
 | Active     | Credential currently issued by Agile AI University                   |
 | Recognized | Credential formally defined within the Agile AI framework            |
 | Retired    | Credential no longer issued but preserved for historical recognition |
-
 
 This lifecycle ensures transparency, institutional continuity, and long-term ecosystem stability.
 
@@ -188,3 +185,4 @@ invitation-based cohorts
 strategic partnerships
 
 Professionals interested in participating in Agile AI credential pathways may explore institutional portals or engage with the Agile AI University ecosystem.
+

@@ -2,10 +2,17 @@ site_name: Agile AI Specification
 site_description: Canonical specification for Agile AI systems
 site_author: Agile AI Foundation
 
-docs_dir: spec-site
+docs_dir: agileai-spec
 
 theme:
   name: material
+
+plugins:
+  - search
+
+markdown_extensions:
+  - toc:
+      permalink: true
 
 nav:
   - Home: index.md
@@ -34,3 +41,9 @@ nav:
       - Concept Registry: registry/concepts/Agile-AI-Concept-Registry.md
       - Credential Registry: registry/credentials/Agile-AI-Credential-Registry.md
       - Program Registry: registry/programs/Agile-AI-Program-Registry.md
+
+  - Standards:
+      - Design Authority Charter: standards/Design-Authority-Charter.md
+
+  - Version Log:
+      - Ecosystem Governance Log: version-log/ecosystem-governance-log.md

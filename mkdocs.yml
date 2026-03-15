@@ -6,33 +6,32 @@ docs_dir: agileai-spec
 
 theme:
   name: material
-features:
-- navigation.tabs
-- navigation.sections
-- navigation.top
-- navigation.instant
-- navigation.expand
-- content.code.copy
-- content.action.edit
-- search.highlight
-- search.suggest
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - navigation.expand
+    - content.code.copy
+    - content.action.edit
+    - search.highlight
+    - search.suggest
 icon:
-repo: fontawesome/brands/github
+  repo: fontawesome/brands/github
 
 plugins:
 
 - search
 
 markdown_extensions:
-
-- toc:
-  permalink: true
-- tables
-- admonition
-- attr_list
-- def_list
-- footnotes
-- pymdownx.superfences
+  - toc:
+      permalink: true
+  - tables
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - pymdownx.superfences
 
 extra_css:
 

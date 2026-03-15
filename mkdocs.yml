@@ -16,12 +16,11 @@ theme:
     - content.action.edit
     - search.highlight
     - search.suggest
-icon:
-  repo: fontawesome/brands/github
+  icon:
+    repo: github
 
 plugins:
-
-- search
+  - search
 
 markdown_extensions:
   - toc:
@@ -34,12 +33,10 @@ markdown_extensions:
   - pymdownx.superfences
 
 extra_css:
-
-- assets/css/site.css
+  - assets/css/site.css
 
 extra_javascript:
-
-- assets/js/site.js
+  - assets/js/site.js
 
 repo_url: https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY
 repo_name: FB-AGILEAI-UNIVERSITY
@@ -47,49 +44,44 @@ edit_uri: edit/main/agileai-spec/
 
 nav:
 
-- Home: index.md
+  - Home: index.md
 
-- Specification:
+  - Specification:
+      - Agile AI Specification v1.0: versions/v1.0/Agile-AI-Specification.md
 
-  - Agile AI Specification v1.0: versions/v1.0/Agile-AI-Specification.md
+  - Architecture:
+      - Operating Model: architecture/Agile-AI-Operating-Model.md
+      - Ecosystem Architecture: architecture/Agile-AI-Ecosystem-Architecture-Map.md
 
-- Architecture:
+  - Domain:
+      - Core Framework: domain/Agile-AI-Core-Framework.md
+      - Capability Model: domain/Agile-AI-Capability-Model.md
+      - Domain Definition: domain/Agile-AI-Domain-Definition.md
+      - Glossary: domain/Agile-AI-Glossary.md
+      - History: domain/Agile-AI-History-and-Evolution.md
+      - Research Directions: domain/Agile-AI-Research-Directions.md
 
-  - Operating Model: architecture/Agile-AI-Operating-Model.md
-  - Ecosystem Architecture: architecture/Agile-AI-Ecosystem-Architecture-Map.md
+  - Ecosystem:
+      - Principles: ecosystem/Agile-AI-Ecosystem-Principles.md
+      - System Context: ecosystem/Agile-AI-Ecosystem-System-Context.md
 
-- Domain:
+  - Registries:
+      - Capability Registry: registry/capabilities/Agile-AI-Capability-Registry.md
+      - Concept Registry: registry/concepts/Agile-AI-Concept-Registry.md
+      - Credential Registry: registry/credentials/Agile-AI-Credential-Registry.md
+      - Program Registry: registry/programs/Agile-AI-Program-Registry.md
 
-  - Core Framework: domain/Agile-AI-Core-Framework.md
-  - Capability Model: domain/Agile-AI-Capability-Model.md
-  - Domain Definition: domain/Agile-AI-Domain-Definition.md
-  - Glossary: domain/Agile-AI-Glossary.md
-  - History: domain/Agile-AI-History-and-Evolution.md
-  - Research Directions: domain/Agile-AI-Research-Directions.md
+  - Standards:
+      - Design Authority Charter: standards/Design-Authority-Charter.md
 
-- Ecosystem:
+  - Reference:
+      - Reference Library: reference/index.md
 
-  - Principles: ecosystem/Agile-AI-Ecosystem-Principles.md
-  - System Context: ecosystem/Agile-AI-Ecosystem-System-Context.md
+  - Publications:
+      - Publications: publications/index.md
 
-- Registries:
-
-  - Capability Registry: registry/capabilities/Agile-AI-Capability-Registry.md
-  - Concept Registry: registry/concepts/Agile-AI-Concept-Registry.md
-  - Credential Registry: registry/credentials/Agile-AI-Credential-Registry.md
-  - Program Registry: registry/programs/Agile-AI-Program-Registry.md
-
-- Standards:
-
-  - Design Authority Charter: standards/Design-Authority-Charter.md
-
-- Reference:
-
-  - Reference Library: reference/index.md
-
-- Version Log:
-
-  - Ecosystem Governance Log: version-log/ecosystem-governance-log.md
+  - Version Log:
+      - Ecosystem Governance Log: version-log/ecosystem-governance-log.md
 
 copyright: |
   © Agile AI University

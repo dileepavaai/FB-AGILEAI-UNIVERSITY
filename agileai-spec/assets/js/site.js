@@ -1,18 +1,38 @@
-document.addEventListener("DOMContentLoaded", function () {
+/*
+======================================================
+Agile AI Specification Banner
+Injects a global specification banner into all pages
+======================================================
+*/
 
-  const content = document.querySelector(".md-content");
+(function () {
 
-  if (!content) return;
+  function injectSpecBanner() {
 
-  const banner = document.createElement("div");
-  banner.className = "spec-banner";
+    const container = document.querySelector(".md-content__inner");
 
-  banner.innerHTML =
-    "Agile AI Specification — " +
-    "<span>Status: Canonical</span> — " +
-    "<span>Version: 1.0</span> — " +
-    "<span>Maintained by Agile AI University</span>";
+    if (!container) return;
 
-  content.prepend(banner);
+    // Prevent duplicate banner insertion
+    if (container.querySelector(".spec-banner")) return;
 
-});
+    const banner = document.createElement("div");
+    banner.className = "spec-banner";
+
+    banner.innerHTML =
+      "Agile AI Specification — " +
+      "<span>Status: Canonical</span> — " +
+      "<span>Version: 1.0</span> — " +
+      "<span>Maintained by Agile AI University</span>";
+
+    container.prepend(banner);
+
+  }
+
+  // Initial load
+  document.addEventListener("DOMContentLoaded", injectSpecBanner);
+
+  // Support Material for MkDocs instant navigation
+  document.addEventListener("navigation.end", injectSpecBanner);
+
+})();

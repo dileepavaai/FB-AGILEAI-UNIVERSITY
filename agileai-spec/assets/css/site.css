@@ -1,6 +1,11 @@
-/* =========================================
+/* ======================================================
    Agile AI Specification Banner
-   ========================================= */
+   ====================================================== */
+
+/*
+   Global specification banner displayed at the top
+   of all documentation pages.
+*/
 
 .spec-banner {
   background: #0b3d91;
@@ -8,11 +13,28 @@
   font-size: 14px;
   font-weight: 600;
   padding: 10px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   margin-bottom: 24px;
+  line-height: 1.4;
 }
 
+/* Secondary text inside banner */
 .spec-banner span {
   font-weight: 500;
   opacity: 0.9;
+}
+
+/* Improve spacing with Material theme headings */
+.md-content__inner h1:first-of-type {
+  margin-top: 0.4rem;
+}
+
+/* Responsive behavior */
+@media screen and (max-width: 768px) {
+
+  .spec-banner {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+
 }

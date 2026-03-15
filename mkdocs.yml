@@ -35,8 +35,8 @@ extra_javascript:
   - assets/js/site.js
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 
-repo_url: https://github.com/YOUR-ORG/FB-AgileAI-University
-repo_name: Agile AI Specification
+repo_url: https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY
+repo_name: FB-AGILEAI-UNIVERSITY
 edit_uri: edit/main/agileai-spec/
 
 nav:

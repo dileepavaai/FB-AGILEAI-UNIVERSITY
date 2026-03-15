@@ -16,8 +16,6 @@ theme:
     - content.action.edit
     - search.highlight
     - search.suggest
-  icon:
-    repo: github.svg
 
 plugins:
   - search

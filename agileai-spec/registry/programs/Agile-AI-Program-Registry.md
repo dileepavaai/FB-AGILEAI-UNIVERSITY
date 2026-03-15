@@ -9,43 +9,43 @@ MAINTAINED BY: Agile AI University
 
 This registry defines the official **professional capability pathways** within the Agile AI ecosystem.
 
-Programs represent structured pathways through which experienced professionals develop and demonstrate Agile AI capability.
+Programs represent structured pathways through which experienced professionals strengthen their capability to operate within Agile AI systems.
 
-Programs are **not introductory courses or entry-level learning tracks**.
+Programs are not introductory learning courses or training programs.
 
-Instead, they provide structured capability development aligned with:
+Instead, they represent **professional capability pathways aligned with the Agile AI ecosystem architecture**.
 
-• Agile AI domain principles  
-• organizational capability needs  
-• professional credential recognition
+Programs operate across three primary tracks:
 
-Programs organize the progression from **capability development to professional recognition**.
+• Professional  
+• Master  
+• Leadership
 
 ---
 
 # Program Registry
 
-| Program ID | Program Name | Purpose | Status |
-|------------|-------------|--------|--------|
-| AAI-PR-001 | Agile AI Professional Capability Pathway | Development of professional Agile AI capability within organizational environments | Active |
-| AAI-PR-002 | Agentic AI Systems Capability Pathway | Development of advanced capability for designing and governing agentic AI systems | Recognized |
-| AAI-PR-003 | Agile AI Leadership Capability Pathway | Development of leadership capability for AI-enabled organizational transformation | Recognized |
+| Program ID | Program Name | Track | Purpose | Status |
+|------------|-------------|------|--------|--------|
+| AAI-PR-001 | Agile AI Professional Capability Pathway | Professional | Development of core Agile AI professional capability | Active |
+| AAI-PR-002 | Agentic AI Systems Capability Pathway | Master | Development of advanced capability for designing and governing agentic AI systems | Recognized |
+| AAI-PR-003 | Agile AI Leadership Capability Pathway | Leadership | Development of strategic leadership capability in AI-enabled organizations | Recognized |
 
 ---
 
 # Program Structure
 
-Programs within the Agile AI ecosystem provide structured environments for professionals to strengthen their capability in applying Agile AI principles in practice.
+Programs provide structured environments for professionals to strengthen their capability in applying Agile AI principles within real organizational contexts.
 
 Programs may include:
 
 • applied capability development  
-• real-world organizational contexts  
-• structured peer interaction  
+• real-world organizational scenarios  
+• peer collaboration and dialogue  
 • capability assessments  
 • credential recognition pathways
 
-Programs are designed primarily for **experienced professionals operating in complex environments**.
+Programs are designed primarily for **experienced professionals operating in complex organizational environments**.
 
 ---
 
@@ -53,19 +53,34 @@ Programs are designed primarily for **experienced professionals operating in com
 
 Programs provide structured pathways that may lead to credential recognition.
 
-Example relationship:
+Example progression:
 
-Program → Capability Development → Credential
-
-Example:
-Agile AI Professional Capability Pathway
+Professional Capability Pathway
 ↓
 Artificial Intelligence Professional Agilist (AIPA)
 
 
-Advanced programs may support additional credentials within the Agile AI ecosystem.
+More advanced programs may support additional credentials within the Agile AI ecosystem.
 
-Programs therefore act as the **capability development layer** within the ecosystem.
+Example:
+
+Agentic AI Systems Capability Pathway
+↓
+Agentic AI Agilist (AAIA)
+↓
+Agentic AI Master (AAIM)
+↓
+Agentic AI Capability Coach (AAICC)
+
+
+Leadership programs may support credentials such as:
+
+AI Strategic Leadership (AISL)
+AI Organizational Leadership (AIOL)
+AI Product Leadership (AIPL)
+
+
+Programs therefore represent the **capability development layer of the ecosystem**.
 
 ---
 
@@ -106,3 +121,4 @@ Example:
 
 Program identifiers remain permanent once assigned.
 
+    

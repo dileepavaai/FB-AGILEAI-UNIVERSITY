@@ -1,70 +1,169 @@
-# Governance Records
+# Agile AI University — Operational Governance
 
-This folder contains frozen governance records for Agile AI University systems.
+This directory contains the **governance artifacts** that define and preserve the architectural integrity of the Agile AI ecosystem.
 
-Rules:
-- Documents here are non-runtime and non-deployable
-- Records are immutable once locked
-- Any change requires an explicit governance unlock
-- New decisions must be added as versioned records
+These documents represent the **institutional governance layer** of the system and are separate from application code, deployment assets, and runtime infrastructure.
 
-These files govern system behavior but are not part of application execution.
-# Governance Records
-
-This directory contains **formal governance records** for Agile AI University systems.
-
-These documents define:
-- Locked architectural decisions
-- Phase boundaries
-- Scope constraints
-- Institutional guarantees
-
-They exist to preserve system integrity over time.
+Governance artifacts document decisions that shape system structure, constraints, and evolution.
 
 ---
 
-## Rules
+# Purpose
 
-- Files in this directory are **non-runtime** and **non-deployable**.
-- Records are **immutable once locked**.
-- Changes require an **explicit governance unlock**.
-- New decisions must be recorded as **new, versioned documents**.
-- Existing records must never be edited or replaced in place.
+The purpose of this directory is to preserve **formal governance records and architectural authority** for the Agile AI ecosystem.
 
----
+These records ensure that:
 
-## Relationship to Code
+- architectural decisions remain traceable
+- system constraints are preserved over time
+- institutional guarantees remain stable
+- system evolution occurs in a controlled manner
 
-- Governance records **inform** system behavior.
-- They do **not execute**, configure, or override code.
-- Application logic must comply with these records.
-- If code and governance conflict, **governance prevails**.
+Governance documents exist to **protect long-term system integrity**.
 
 ---
 
-## Structure
+# Governance Scope
 
+Documents in this directory may include:
+
+- system context snapshots
+- ecosystem architecture definitions
+- governance registers
+- institutional governance artifacts
+- architecture blueprints
+- version history records
+- governance decision records
+
+These artifacts describe **how the ecosystem is structured and governed**, not how applications run.
 
 ---
 
-## Access & Visibility
+# Governance Rules
 
-- This directory is intentionally excluded from deployment targets.
-- Contents may be reviewed internally or during audits.
-- Public exposure requires separate, explicit approval.
+The following rules apply to all files within this directory.
+
+### 1. Non-Runtime
+
+Files in this directory are **non-runtime artifacts**.
+
+They:
+
+- do not execute
+- do not configure applications
+- do not affect system runtime behavior directly
 
 ---
 
-## Change Control
+### 2. Non-Deployable
 
-Any modification to systems governed by these records must:
-1. Declare the affected phase
-2. Obtain an explicit governance unlock
-3. Produce a new, versioned governance record
+Governance documents are **not part of deployment packages**.
 
-Silent changes are not permitted.
+They exist solely as **reference and authority documents**.
+
+---
+
+### 3. Immutability of Records
+
+Once a governance record is **formally locked**, it must be treated as immutable.
+
+Existing records should **not be modified in place**.
+
+---
+
+### 4. Versioned Governance Changes
+
+Changes to governed systems must be recorded through **new versioned governance records** rather than editing historical files.
+
+This preserves the **decision history of the ecosystem**.
+
+---
+
+### 5. Explicit Governance Unlock
+
+Changes to governed architectural constraints require an **explicit governance unlock**.
+
+Silent or undocumented changes are not permitted.
+
+---
+
+# Relationship to System Code
+
+Governance artifacts provide **institutional guidance for system implementation**.
+
+They do not replace or override application code.
+
+However:
+
+- system design should align with governance decisions
+- architectural constraints defined in governance artifacts should be respected during development
+
+Governance documents exist to maintain **ecosystem consistency over time**.
+
+---
+
+# Directory Structure
+
+This directory may contain subfolders such as:
+
+operational-governance
+│
+├── architecture
+│
+├── system-context
+│
+├── governance
+│
+├── institutional-docs
+│
+└── records
+
+
+These folders organize governance artifacts according to their role within the ecosystem.
+
+---
+
+# Records Directory
+
+The `records` directory contains **time-based governance records** documenting major decisions, changes, and governance actions.
+
+Records are typically organized by year.
+
+Example:
+records/
+2025/
+2026/
+
+
+These records preserve the **historical evolution of the ecosystem**.
+
+---
+
+# Access and Visibility
+
+Governance artifacts may be used for:
+
+- internal architectural reference
+- institutional documentation
+- governance reviews
+- ecosystem audits
+
+Some documents may also be referenced publicly where appropriate.
+
+---
+
+# Governance Authority
+
+The Agile AI ecosystem architecture and governance framework are maintained under the **Agile AI University Design Authority**.
+
+The Design Authority is responsible for:
+
+- ecosystem architecture stewardship
+- governance record maintenance
+- specification oversight
+- registry governance
 
 ---
 
 © Agile AI University  
-Governance Authority
+Operational Governance Authority

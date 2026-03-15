@@ -1,7 +1,6 @@
 /*
 ======================================================
-Agile AI Specification Header
-Injects a global specification header into all pages
+Agile AI Specification Header + Mermaid Initialization
 ======================================================
 */
 
@@ -34,10 +33,61 @@ Injects a global specification header into all pages
 
   }
 
-  // Initial load
-  document.addEventListener("DOMContentLoaded", injectSpecBanner);
+
+  /*
+  ======================================================
+  Mermaid Diagram Initialization
+  ======================================================
+  */
+
+  function renderMermaid() {
+
+    if (typeof mermaid === "undefined") return;
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "default"
+    });
+
+    document.querySelectorAll("pre code.language-mermaid").forEach((block) => {
+
+      const parent = block.parentElement;
+
+      if (parent.classList.contains("mermaid-rendered")) return;
+
+      const graphDefinition = block.textContent;
+
+      const mermaidDiv = document.createElement("div");
+      mermaidDiv.className = "mermaid";
+      mermaidDiv.textContent = graphDefinition;
+
+      parent.replaceWith(mermaidDiv);
+
+      parent.classList.add("mermaid-rendered");
+
+    });
+
+    mermaid.init(undefined, document.querySelectorAll(".mermaid"));
+
+  }
+
+
+  /*
+  ======================================================
+  Page Load Events
+  ======================================================
+  */
+
+  function initializePage() {
+
+    injectSpecBanner();
+    renderMermaid();
+
+  }
+
+  document.addEventListener("DOMContentLoaded", initializePage);
 
   // Support Material for MkDocs instant navigation
-  document.addEventListener("navigation.end", injectSpecBanner);
+  document.addEventListener("navigation.end", initializePage);
 
 })();

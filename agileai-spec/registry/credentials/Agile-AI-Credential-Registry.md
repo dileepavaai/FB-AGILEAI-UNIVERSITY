@@ -49,38 +49,6 @@ The Agile AI credential framework is organized across three professional tracks.
 
 ---
 
-# Agile AI Credential Architecture
-
-```mermaid
-graph TD
-
-A[Agile AI Professional Capability]
-
-subgraph Professional Track
-P1[AIPA<br>AI Professional Agilist]
-P2[AISD<br>AI System Designer]
-P3[AIAP<br>AI Agentic Professional]
-P1 --> P2 --> P3
-end
-
-subgraph Master Track
-M1[AAIA<br>Agentic AI Agilist]
-M2[AAIM<br>Agentic AI Master]
-M3[AAICC<br>Agentic AI Capability Coach]
-M1 --> M2 --> M3
-end
-
-subgraph Leadership Track
-L1[AISL<br>AI Strategic Leadership]
-L2[AIOL<br>AI Organizational Leadership]
-L3[AIPL<br>AI Product Leadership]
-L1 --> L2 --> L3
-end
-
-A --> P1
-A --> M1
-A --> L1
-
 Credential Registry
 
 | Credential ID | Credential Name                                     | Track        | Status     |

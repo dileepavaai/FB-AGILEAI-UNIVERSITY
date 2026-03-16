@@ -7,7 +7,6 @@ docs_dir: agileai-spec
 
 theme:
   name: material
-  custom_dir: agileai-spec/overrides
   features:
     - navigation.tabs
     - navigation.sections

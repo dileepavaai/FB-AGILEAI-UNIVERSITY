@@ -35,17 +35,7 @@ markdown_extensions:
   - pymdownx.superfences
 
 extra:
-  meta:
-    - property: og:title
-      content: Agile AI Specification
-    - property: og:description
-      content: Academic frameworks, capability standards, and professional recognition for Agile AI.
-    - property: og:type
-      content: website
-    - property: og:url
-      content: https://spec.agileai.university
-    - property: og:image
-      content: https://spec.agileai.university/assets/images/og-image.png
+  social_image: assets/images/og-image.png
 
 extra_css:
   - assets/css/site.css

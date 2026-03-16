@@ -44,6 +44,8 @@ extra:
       content: website
     - property: og:url
       content: https://spec.agileai.university
+    - property: og:image
+      content: https://spec.agileai.university/assets/images/og-image.png
 
 extra_css:
   - assets/css/site.css

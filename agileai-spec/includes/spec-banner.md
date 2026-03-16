@@ -1,0 +1,13 @@
+<div class="spec-banner">
+
+<div class="spec-banner-title">
+Agile AI Specification
+</div>
+
+<div class="spec-banner-meta">
+<span>Version: 1.0</span>
+<span>Status: Canonical</span>
+<span>Maintained by: Agile AI University</span>
+</div>
+
+</div>

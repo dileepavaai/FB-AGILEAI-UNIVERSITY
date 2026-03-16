@@ -35,8 +35,21 @@ markdown_extensions:
   - pymdownx.superfences
 
 extra:
-  social:
-    image: assets/images/og-image.png
+  meta:
+    - property: og:title
+      content: Agile AI Specification
+    - property: og:description
+      content: Agile AI Specification is the canonical framework defining academic structures, capability standards, and professional recognition models for Agile AI systems.
+    - property: og:type
+      content: website
+    - property: og:url
+      content: https://spec.agileai.university
+    - property: og:image
+      content: https://spec.agileai.university/assets/images/og-image.png
+    - property: og:image:width
+      content: 1200
+    - property: og:image:height
+      content: 630
 
 extra_css:
   - assets/css/site.css

@@ -1,18 +1,12 @@
 ---
 title: Agile AI Specification
-description: Academic frameworks, capability standards, and professional recognition for Agile AI.
-image: /assets/images/og-image.png
+description: Agile AI Specification defines the academic frameworks, capability models, governance structures, and professional standards used to guide the development of Agile AI systems.
+image: https://spec.agileai.university/assets/images/og-image.png
 ---
-
-<meta property="og:title" content="Agile AI Specification">
-<meta property="og:description" content="Agile AI Specification defines the academic frameworks, capability models, governance structures, and professional standards used to guide the development of Agile AI systems.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://spec.agileai.university">
-<meta property="og:image" content="https://spec.agileai.university/assets/images/og-image.png">
 
 # Agile AI Specification
 
-# Agile AI Registry
+## Agile AI Registry
 
 This directory contains the canonical registries used within the **Agile AI ecosystem**.
 
@@ -35,11 +29,11 @@ Once assigned, registry identifiers remain stable and may be referenced across t
 
 ---
 
-# Registry Structure
+## Registry Structure
 
 The Agile AI Registry is organized into several canonical registries.
 
-## Concept Registry
+### Concept Registry
 
 Defines canonical **Agile AI domain concepts**.
 
@@ -51,7 +45,7 @@ Concept identifiers allow consistent reference across:
 
 ---
 
-## Capability Registry
+### Capability Registry
 
 Defines the **capability dimensions** used within the Agile AI capability model.
 
@@ -63,7 +57,7 @@ These capability identifiers are used by:
 
 ---
 
-## Credential Registry
+### Credential Registry
 
 Defines the professional **credentials recognized within the Agile AI ecosystem**.
 
@@ -75,7 +69,7 @@ Credential identifiers support:
 
 ---
 
-# Governance
+## Governance
 
 Agile AI registries are maintained through the **Agile AI governance process**.
 

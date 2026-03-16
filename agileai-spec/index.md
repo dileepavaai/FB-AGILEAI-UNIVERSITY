@@ -5,7 +5,7 @@ image: /assets/images/og-image.png
 ---
 
 <meta property="og:title" content="Agile AI Specification">
-<meta property="og:description" content="Academic frameworks, capability standards, and professional recognition for Agile AI.">
+<meta property="og:description" content="Agile AI Specification defines the academic frameworks, capability models, and professional standards used to guide the development and governance of Agile AI systems.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://spec.agileai.university">
 <meta property="og:image" content="https://spec.agileai.university/assets/images/og-image.png">

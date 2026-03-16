@@ -2,11 +2,9 @@
 
 !!! info "Architecture Reference"
 
-```
-**Status:** Canonical  
-**Maintained By:** Agile AI Foundation & Agile AI University  
-**Scope:** Defines the structural architecture for designing and operating Agile AI systems.
-```
+    **Status:** Canonical  
+    **Maintained By:** Agile AI Foundation & Agile AI University  
+    **Scope:** Defines the structural architecture for designing and operating Agile AI systems.
 
 ---
 

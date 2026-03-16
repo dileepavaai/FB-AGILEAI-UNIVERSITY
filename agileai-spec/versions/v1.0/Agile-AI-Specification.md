@@ -11,7 +11,7 @@
 
 !!! note "Version Notice"
 
-    This document represents **Agile AI Specification v1.0**.
+    This document defines the **Agile AI Specification v1.0**.
 
     Future revisions may extend the specification while maintaining compatibility with the
     core principles and architectural model defined in this version.

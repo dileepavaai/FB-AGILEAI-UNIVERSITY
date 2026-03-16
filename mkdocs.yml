@@ -16,6 +16,9 @@ theme:
     - content.action.edit
     - search.highlight
     - search.suggest
+  analytics:
+    provider: google
+    property: G-L6Q5J3S1YY
 
 plugins:
   - search

@@ -36,14 +36,14 @@ markdown_extensions:
 
 extra:
   meta:
-    - property: og
+    - property: og:title
       content: Agile AI Specification
-    - property: og
+    - property: og:description
       content: Academic frameworks, capability standards, and professional recognition for Agile AI.
-    - property: og
+    - property: og:type
       content: website
-    - property: og
-content: https://spec.agileai.university
+    - property: og:url
+      content: https://spec.agileai.university
 
 extra_css:
   - assets/css/site.css

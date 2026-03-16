@@ -1,3 +1,17 @@
+---
+title: Agile AI Specification
+description: Academic frameworks, capability standards, and professional recognition for Agile AI.
+image: /assets/images/og-image.png
+---
+
+<meta property="og:title" content="Agile AI Specification">
+<meta property="og:description" content="Academic frameworks, capability standards, and professional recognition for Agile AI.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://spec.agileai.university">
+<meta property="og:image" content="https://spec.agileai.university/assets/images/og-image.png">
+
+# Agile AI Specification
+
 # Agile AI Registry
 
 This directory contains the canonical registries used within the **Agile AI ecosystem**.

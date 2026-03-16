@@ -1,6 +1,7 @@
 site_name: Agile AI Specification
-site_description: Canonical specification for Agile AI systems
+site_description: Agile AI University defines academic frameworks, capability standards, and professional recognition for Agile AI.
 site_author: Agile AI University
+site_url: https://spec.agileai.university
 
 docs_dir: agileai-spec
 
@@ -32,6 +33,17 @@ markdown_extensions:
   - def_list
   - footnotes
   - pymdownx.superfences
+
+extra:
+  meta:
+    - property: og
+      content: Agile AI Specification
+    - property: og
+      content: Academic frameworks, capability standards, and professional recognition for Agile AI.
+    - property: og
+      content: website
+    - property: og
+content: https://spec.agileai.university
 
 extra_css:
   - assets/css/site.css

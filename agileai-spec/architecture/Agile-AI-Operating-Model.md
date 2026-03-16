@@ -42,11 +42,40 @@ Together these elements form a balanced operational architecture.
 
 ---
 
-## 3. Agile AI Interaction Model
+## 3. Operating Model Architecture
+
+The Agile AI Operating Model can be visualized as a layered architecture connecting conceptual foundations with professional capability systems.
+
+```mermaid
+flowchart TB
+
+    DOMAIN[Domain Layer\nConceptual Foundations]
+    REGISTRY[Registry Layer\nCanonical Identifiers]
+    CAPABILITY[Capability Layer\nOrganizational Capabilities]
+    PROGRAM[Program Layer\nCapability Development Pathways]
+    CREDENTIAL[Credential Layer\nProfessional Recognition]
+
+    DOMAIN --> REGISTRY
+    REGISTRY --> CAPABILITY
+    CAPABILITY --> PROGRAM
+    PROGRAM --> CREDENTIAL
+
+    HUMAN[Accountable Human Judgment]
+    EXECUTION[Adaptive Execution]
+    MACHINE[Machine Intelligence]
+    OUTCOME[Organizational Outcomes]
+
+    HUMAN --> EXECUTION
+    EXECUTION --> MACHINE
+    MACHINE --> OUTCOME
+
+    This architecture illustrates how conceptual foundations evolve into operational capability systems while maintaining accountable human governance.
+
+4. Agile AI Interaction Model
 
 The interaction between humans, execution systems, and machine intelligence forms the core architecture of Agile AI systems.
 
-**Interaction flow**
+Interaction flow
 
 Human Judgment → Adaptive Execution → Machine Intelligence → AI Systems → Organizational Outcomes
 
@@ -54,40 +83,44 @@ Human judgment also directly influences organizational outcomes through governan
 
 In this model:
 
-- Human judgment provides direction, context, and accountability.
-- Adaptive execution enables iterative delivery and learning.
-- Machine intelligence augments human capability through analytical and generative systems.
+Human judgment provides direction, context, and accountability.
+
+Adaptive execution enables iterative delivery and learning.
+
+Machine intelligence augments human capability through analytical and generative systems.
 
 These interactions produce organizational outcomes while maintaining responsible governance.
 
----
-
-## 4. Architectural Layers
-
-### 4.1 Domain Layer
+5. Architectural Layers
+5.1 Domain Layer
 
 The domain layer defines the intellectual foundations of Agile AI.
 
 This layer includes:
 
-- conceptual definitions  
-- theoretical frameworks  
-- capability models  
-- research directions  
+conceptual definitions
+
+theoretical frameworks
+
+capability models
+
+research directions
 
 Primary documents include:
 
-- Agile AI Core Framework  
-- Agile AI Capability Model  
-- Agile AI Glossary  
-- Agile AI Research Directions  
-- Agile AI History and Evolution  
+Agile AI Core Framework
 
-This layer is primarily maintained by the **Agile AI Foundation**.
+Agile AI Capability Model
 
----
+Agile AI Glossary
 
-### 4.2 Registry Layer
+Agile AI Research Directions
+
+Agile AI History and Evolution
+
+This layer is primarily maintained by the Agile AI Foundation.
+
+5.2 Registry Layer
 
 The registry layer defines stable identifiers for the core elements of the Agile AI ecosystem.
 
@@ -95,23 +128,21 @@ Registries ensure consistency across documentation, systems, and institutional i
 
 The following registries are maintained:
 
-**Concept Registry**  
+Concept Registry
 Defines canonical concepts within the Agile AI domain.
 
-**Capability Registry**  
+Capability Registry
 Defines capability dimensions used in organizational assessments.
 
-**Credential Registry**  
+Credential Registry
 Defines recognized professional credentials within the ecosystem.
 
-**Program Registry**  
+Program Registry
 Defines structured professional capability programs.
 
 Registry identifiers are stable once assigned and may be referenced across the ecosystem.
 
----
-
-### 4.3 Capability Layer
+5.3 Capability Layer
 
 The capability layer defines the practical organizational capabilities required to implement Agile AI systems.
 
@@ -119,17 +150,19 @@ These capabilities represent the operational competencies organizations must dev
 
 Examples include:
 
-- strategic alignment of AI initiatives  
-- intelligent decision systems  
-- adaptive operational execution  
-- human–AI collaboration  
-- governance and accountability mechanisms  
+strategic alignment of AI initiatives
 
-Capability development is primarily operationalized by **Agile AI University**.
+intelligent decision systems
 
----
+adaptive operational execution
 
-### 4.4 Program Layer
+human–AI collaboration
+
+governance and accountability mechanisms
+
+Capability development is primarily operationalized by Agile AI University.
+
+5.4 Program Layer
 
 The program layer defines structured pathways through which individuals and organizations develop Agile AI capability.
 
@@ -137,120 +170,121 @@ Programs organize learning pathways, capability development, and professional re
 
 Examples include:
 
-- Agile AI Foundations  
-- Agile AI Professional Track  
-- Agile AI Leadership Track  
+Agile AI Foundations
+
+Agile AI Professional Track
+
+Agile AI Leadership Track
 
 Programs may include associated credentials, assessments, and institutional recognition mechanisms.
 
----
-
-### 4.5 Credential Layer
+5.5 Credential Layer
 
 The credential layer provides formal recognition of professional capability within the Agile AI ecosystem.
 
-Credentials are issued by **Agile AI University** and represent demonstrated capability in applying Agile AI principles in practice.
+Credentials are issued by Agile AI University and represent demonstrated capability in applying Agile AI principles in practice.
 
 Examples include:
 
-- Agile Outcome Practitioner (AOP)  
-- Artificial Intelligence Professional Agilist (AIPA)  
+Agile Outcome Practitioner (AOP)
+
+Artificial Intelligence Professional Agilist (AIPA)
 
 Credential identifiers are maintained in the credential registry.
 
----
-
-## 5. Institutional Roles
+6. Institutional Roles
 
 The Agile AI ecosystem operates through complementary institutional roles.
 
-### Agile AI Foundation
+Agile AI Foundation
 
 The Agile AI Foundation defines the canonical intellectual architecture of the Agile AI domain.
 
 Responsibilities include:
 
-- domain definition  
-- conceptual frameworks  
-- standards development  
-- ecosystem governance  
-- research direction  
+domain definition
 
-The Foundation does **not** provide training, certification, or credential issuance.
+conceptual frameworks
 
----
+standards development
 
-### Agile AI University
+ecosystem governance
+
+research direction
+
+The Foundation does not provide training, certification, or credential issuance, ensuring a clear separation between domain governance and capability development institutions.
+
+Agile AI University
 
 Agile AI University operationalizes the Agile AI domain into structured academic and professional capability systems.
 
 Responsibilities include:
 
-- capability frameworks  
-- assessment systems  
-- professional credentials  
-- knowledge interfaces  
-- institutional portals  
+capability frameworks
 
-The University does **not position itself as a commercial training provider.**
+assessment systems
 
----
+professional credentials
 
-## 6. Ecosystem Interaction Model
+knowledge interfaces
+
+institutional portals
+
+The University does not position itself as a commercial training provider.
+
+7. Ecosystem Interaction Model
 
 The interaction model between the Foundation and the University follows a standards-to-academic implementation pattern.
 
-**Agile AI Foundation**  
+Agile AI Foundation
 Defines the conceptual and governance architecture of the domain.
 
-**Agile AI University**  
+Agile AI University
 Operationalizes these standards through capability development and professional recognition systems.
 
 This model is similar to relationships seen in established ecosystems such as standards bodies and academic institutions.
 
----
-
-## 7. Operational Flow
+8. Operational Flow
 
 The Agile AI Operating Model can be understood as a structured progression:
 
-1. **Domain Concepts**  
-   Define the intellectual foundations.
+Domain Concepts
+Define the intellectual foundations.
 
-2. **Registries**  
-   Define stable identifiers and system primitives.
+Registries
+Define stable identifiers and system primitives.
 
-3. **Capabilities**  
-   Define operational organizational competencies.
+Capabilities
+Define operational organizational competencies.
 
-4. **Programs**  
-   Provide structured pathways for capability development.
+Programs
+Provide structured pathways for capability development.
 
-5. **Credentials**  
-   Recognize demonstrated professional capability.
+Credentials
+Recognize demonstrated professional capability.
 
 This layered architecture enables organizations to systematically build and operate Agile AI capability.
 
----
-
-## 8. Long-Term Vision
+9. Long-Term Vision
 
 The Agile AI Operating Model aims to establish a structured institutional framework for the Agile AI domain.
 
 Over time, the ecosystem may support:
 
-- standardized capability assessments  
-- institutional benchmarks  
-- professional recognition systems  
-- ecosystem-wide knowledge sharing  
-- research collaboration  
+standardized capability assessments
+
+institutional benchmarks
+
+professional recognition systems
+
+ecosystem-wide knowledge sharing
+
+research collaboration
 
 The long-term goal is to enable organizations to build AI-enabled systems that remain adaptive, reliable, transparent, and responsibly governed.
 
----
-
-## 9. Governance
+10. Governance
 
 This operating model is maintained through the Agile AI ecosystem governance framework.
 
-Updates to the architecture must follow governance procedures defined in the **Design Authority Charter**.
+Updates to the architecture must follow governance procedures defined in the Design Authority Charter.

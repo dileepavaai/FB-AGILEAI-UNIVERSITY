@@ -2,23 +2,27 @@
 
 !!! info "Specification Status"
 
-    **Version:** 1.0  
-    **Status:** Canonical  
-    **Maintained By:** Agile AI University  
-    **Scope:** Defines the foundational architecture, principles, and capability model for Agile AI systems.
+```
+**Version:** 1.0  
+**Status:** Canonical  
+**Maintained By:** Agile AI University  
+**Scope:** Defines the foundational architecture, principles, and capability model for Agile AI systems.
+```
 
 ---
 
 !!! note "Version Notice"
 
-    This document defines the **Agile AI Specification v1.0**.
+```
+This document defines the **Agile AI Specification v1.0**.
 
-    Future revisions may extend the specification while maintaining compatibility with the
-    core principles and architectural model defined in this version.
+Future revisions may extend the specification while maintaining compatibility with the
+core principles and architectural model defined in this version.
+```
 
 ---
 
-# Introduction
+## Introduction
 
 The **Agile AI Specification** defines the foundational architecture for integrating **Agile execution practices with Artificial Intelligence systems** in modern organizations.
 
@@ -28,6 +32,6 @@ The Agile AI specification defines how these two domains can operate together wi
 
 ---
 
-# Core Principle
+## Core Principle
 
 The Agile AI ecosystem is built around a simple but powerful architectural principle:

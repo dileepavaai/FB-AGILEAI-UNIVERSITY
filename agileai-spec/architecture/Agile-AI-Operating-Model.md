@@ -162,7 +162,7 @@ governance and accountability mechanisms
 
 Capability development is primarily operationalized by Agile AI University.
 
-5.4 Program Layer
+### 5.4 Program Layer
 
 The program layer defines structured pathways through which individuals and organizations develop Agile AI capability.
 
@@ -170,11 +170,11 @@ Programs organize learning pathways, capability development, and professional re
 
 Examples include:
 
-Agile AI Foundations
+- Agile AI Professional Track (P)  
+- Agile AI Master Track (M)  
+- Agile AI Leadership Track (L)  
 
-Agile AI Professional Track
-
-Agile AI Leadership Track
+Programs may include associated credentials, assessments, and institutional recognition mechanisms.  
 
 Programs may include associated credentials, assessments, and institutional recognition mechanisms.
 
@@ -186,9 +186,9 @@ Credentials are issued by Agile AI University and represent demonstrated capabil
 
 Examples include:
 
-Agile Outcome Practitioner (AOP)
-
 Artificial Intelligence Professional Agilist (AIPA)
+
+Agentic AI Agilist (AAIA)
 
 Credential identifiers are maintained in the credential registry.
 

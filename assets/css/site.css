@@ -1,63 +1,134 @@
 /* ======================================================
-   Agile AI Specification Header
-   ====================================================== */
+Agile AI Specification – Global Banner
+Design Authority: Agile AI University
+Purpose:
+Provide a consistent specification identity banner
+across all documentation pages.
+Compatible with MkDocs Material theme.
+====================================================== */
 
-/*
-   Global specification header displayed at the top
-   of all documentation pages.
-*/
+/* ======================================================
+SPECIFICATION BANNER CONTAINER
+====================================================== */
 
 .spec-banner {
-  background: #0b3d91;
-  color: #ffffff;
-  padding: 14px 18px;
-  border-radius: 6px;
-  margin-bottom: 24px;
-  line-height: 1.4;
+background: #0b3d91;
+color: #ffffff;
+
+padding: 16px 20px;
+margin-bottom: 26px;
+
+border-radius: 8px;
+
+line-height: 1.45;
+letter-spacing: 0.2px;
+
+box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-/* Title row */
+/* ======================================================
+SPECIFICATION TITLE
+====================================================== */
 
 .spec-banner-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 4px;
+font-size: 16px;
+font-weight: 700;
+
+margin-bottom: 6px;
+
+display: block;
 }
 
-/* Metadata row */
+/* ======================================================
+SPECIFICATION METADATA ROW
+====================================================== */
 
 .spec-banner-meta {
-  font-size: 13px;
-  font-weight: 500;
-  opacity: 0.95;
+font-size: 13px;
+font-weight: 500;
+
+opacity: 0.96;
 }
 
-/* Spacing between metadata fields */
+/* ======================================================
+METADATA FIELD SPACING
+====================================================== */
 
 .spec-banner-meta span {
-  margin-right: 16px;
+margin-right: 18px;
 }
 
-/* Improve spacing with Material theme headings */
+/* ======================================================
+ALIGNMENT WITH MATERIAL THEME CONTENT
+====================================================== */
 
 .md-content__inner h1:first-of-type {
-  margin-top: 0.4rem;
+margin-top: 0.4rem;
 }
 
-/* Responsive behavior */
+.md-content__inner {
+padding-top: 4px;
+}
+
+/* ======================================================
+IMPROVED VISUAL BALANCE FOR WIDE SCREENS
+====================================================== */
+
+@media screen and (min-width: 1200px) {
+
+.spec-banner {
+padding: 18px 22px;
+}
+
+.spec-banner-title {
+font-size: 17px;
+}
+
+}
+
+/* ======================================================
+TABLET OPTIMIZATION
+====================================================== */
+
+@media screen and (max-width: 1024px) {
+
+.spec-banner {
+padding: 14px 16px;
+}
+
+.spec-banner-title {
+font-size: 15px;
+}
+
+.spec-banner-meta {
+font-size: 12.5px;
+}
+
+}
+
+/* ======================================================
+MOBILE OPTIMIZATION
+====================================================== */
 
 @media screen and (max-width: 768px) {
 
-  .spec-banner {
-    padding: 12px 14px;
-  }
+.spec-banner {
+padding: 12px 14px;
+border-radius: 6px;
+}
 
-  .spec-banner-title {
-    font-size: 15px;
-  }
+.spec-banner-title {
+font-size: 14.5px;
+}
 
-  .spec-banner-meta {
-    font-size: 12px;
-  }
+.spec-banner-meta {
+font-size: 12px;
+}
+
+.spec-banner-meta span {
+display: block;
+margin-right: 0;
+margin-bottom: 2px;
+}
 
 }

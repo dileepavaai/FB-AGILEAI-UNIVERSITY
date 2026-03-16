@@ -194,6 +194,8 @@ Examples include:
 * Agile AI Master Track (M)
 * Agile AI Leadership Track (L)
 
+Each program track may include one or more credentials defined within the **Agile AI Credential Registry**.
+
 Programs may include associated credentials, assessments, and institutional recognition mechanisms.
 
 ---
@@ -207,9 +209,10 @@ Credentials are issued by **Agile AI University** and represent demonstrated cap
 Examples include:
 
 * Artificial Intelligence Professional Agilist (AIPA)
-* Agentic AI Agilist (AAIA)
+* Agentic Artificial Intelligence Agilist (AAIA)
+* Agile Artificial Intelligence Capability Coach (AAICC)
 
-Credential identifiers are maintained in the credential registry.
+Credential identifiers are maintained in the **Agile AI Credential Registry**.
 
 ---
 

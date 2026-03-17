@@ -5,6 +5,12 @@
   "targets": {
     "fb-agileai-university": {
       "hosting": {
+        "agileai-site": [
+          "agileai-site"
+        ],
+        "agileai-spec": [
+          "agileai-spec"
+        ],
         "agileai-assessment": [
           "agileai-assessment"
         ],
@@ -22,12 +28,8 @@
         ],
         "portal": [
           "portal-agileai-university"
-        ],
-        "agileai-spec": [
-          "agileai-site"
         ]
       }
     }
-  },
-  "etags": {}
+  }
 }

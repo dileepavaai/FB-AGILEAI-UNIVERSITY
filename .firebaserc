@@ -28,6 +28,9 @@
         ],
         "portal": [
           "portal-agileai-university"
+        ],
+        "agileai-academy": [
+          "agileai-academy"
         ]
       }
     }

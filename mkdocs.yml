@@ -4,6 +4,7 @@ site_author: Agile AI University
 site_url: https://spec.agileai.university
 
 docs_dir: agileai-spec
+site_dir: public-spec
 
 theme:
   name: material

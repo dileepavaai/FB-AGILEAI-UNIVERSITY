@@ -102,7 +102,7 @@
     },
     {
       "target": "agileai-spec",
-      "public": "site",
+      "public": "public-spec",
       "ignore": [
         "firebase.json",
         "**/.*",

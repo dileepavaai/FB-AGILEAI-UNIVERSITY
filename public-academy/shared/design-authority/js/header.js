@@ -1,15 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
   const el = document.getElementById("header");
-  if (el) {
-    el.innerHTML = `
-      <header style="padding:20px; border-bottom:1px solid #1e293b; display:flex; justify-content:space-between;">
-        <strong>Agile AI Academy</strong>
-        <nav>
-          <a href="#" style="margin-left:20px; color:white;">Programs</a>
-          <a href="#" style="margin-left:20px; color:white;">Cohorts</a>
-          <a href="#" style="margin-left:20px; color:white;">Contact</a>
-        </nav>
-      </header>
-    `;
-  }
+
+  if (!el) return;
+
+  el.innerHTML = `
+    <header class="site-header">
+      
+      <!-- BRAND -->
+      <div class="brand">
+        <a href="/" class="brand-link">Agile AI Academy</a>
+      </div>
+
+      <!-- NAV -->
+      <nav class="site-nav">
+        <a href="/programs">Programs</a>
+        <a href="/cohorts">Cohorts</a>
+        <a href="/contact">Contact</a>
+      </nav>
+
+    </header>
+  `;
 });

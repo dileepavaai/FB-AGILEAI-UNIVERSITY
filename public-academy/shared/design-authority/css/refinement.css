@@ -1,14 +1,20 @@
-/* TYPOGRAPHY REFINEMENT */
+/* =========================================
+   TYPOGRAPHY REFINEMENT
+========================================= */
 body {
   letter-spacing: -0.2px;
 }
 
-/* HEADINGS */
+/* =========================================
+   HEADINGS
+========================================= */
 h1, h2, h3 {
   font-weight: 600;
 }
 
-/* CARDS */
+/* =========================================
+   CARDS
+========================================= */
 .card {
   border-radius: 8px;
   transition: all 0.2s ease;
@@ -18,26 +24,31 @@ h1, h2, h3 {
   border-color: #ccc;
 }
 
-/* BUTTONS */
-.btn.primary {
-  border-radius: 4px;
-}
-
+/* =========================================
+   BUTTONS
+========================================= */
+.btn.primary,
 .btn.secondary {
   border-radius: 4px;
 }
 
-/* LINKS */
+/* =========================================
+   LINKS
+========================================= */
 .link:hover {
   text-decoration: underline;
 }
 
-/* SECTION SPACING REFINEMENT */
+/* =========================================
+   SECTION SPACING REFINEMENT
+========================================= */
 .section {
   padding: 100px 0;
 }
 
-/* HERO BALANCE */
+/* =========================================
+   HERO BALANCE
+========================================= */
 .hero h1 {
   max-width: 800px;
 }
@@ -46,13 +57,96 @@ h1, h2, h3 {
   max-width: 700px;
 }
 
-/* PATHWAY VISUAL */
+/* =========================================
+   PATHWAY VISUAL
+========================================= */
 .path-step {
   border-radius: 20px;
   font-size: 14px;
 }
 
-/* CTA */
+/* =========================================
+   CTA
+========================================= */
 .cta h2 {
   margin-bottom: 10px;
+}
+
+.cta-note {
+  max-width: 600px;
+  margin: 0 auto 20px;
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+}
+
+/* =========================================
+   FORM — STRUCTURED APPLICATION LAYOUT
+========================================= */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+/* Field grouping */
+.contact-form label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* Inputs */
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus state (subtle, institutional) */
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: #000;
+}
+
+/* Textarea */
+.contact-form textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+/* Button alignment */
+.contact-form button {
+  margin-top: 8px;
+  align-self: flex-start;
+}
+
+/* Form note */
+.form-note {
+  font-size: 13px;
+  color: #666;
+  margin-top: 10px;
+  max-width: 500px;
+}
+
+/* =========================================
+   RESPONSIVE (IMPORTANT)
+========================================= */
+@media (max-width: 768px) {
+  .section {
+    padding: 70px 0;
+  }
+
+  .contact-form {
+    gap: 16px;
+  }
 }

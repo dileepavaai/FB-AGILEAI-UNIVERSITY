@@ -88,9 +88,10 @@ h1, h2, h3 {
   flex-direction: column;
   gap: 18px;
   margin-top: 24px;
+  max-width: 600px;
 }
 
-/* Field grouping */
+/* Labels */
 .contact-form label {
   font-weight: 500;
   margin-bottom: 4px;
@@ -107,10 +108,10 @@ h1, h2, h3 {
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  transition: border 0.2s ease;
 }
 
-/* Focus state (subtle, institutional) */
+/* Focus state */
 .contact-form input:focus,
 .contact-form select:focus,
 .contact-form textarea:focus {
@@ -124,7 +125,7 @@ h1, h2, h3 {
   resize: vertical;
 }
 
-/* Button alignment */
+/* Button */
 .contact-form button {
   margin-top: 8px;
   align-self: flex-start;
@@ -139,7 +140,7 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   RESPONSIVE (IMPORTANT)
+   RESPONSIVE
 ========================================= */
 @media (max-width: 768px) {
   .section {

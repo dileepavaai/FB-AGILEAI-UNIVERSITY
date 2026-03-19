@@ -43,7 +43,7 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   HERO GUIDANCE LINK (CENTERED AUTHORITY)
+   HERO GUIDANCE LINK
 ========================================= */
 .hero-guidance {
   margin-top: 20px;
@@ -104,7 +104,7 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   FORM — STRUCTURED APPLICATION LAYOUT
+   FORM
 ========================================= */
 .contact-form {
   display: flex;
@@ -114,14 +114,12 @@ h1, h2, h3 {
   max-width: 600px;
 }
 
-/* Labels */
 .contact-form label {
   font-weight: 500;
   margin-bottom: 4px;
   display: block;
 }
 
-/* Inputs */
 .contact-form input,
 .contact-form select,
 .contact-form textarea {
@@ -134,7 +132,6 @@ h1, h2, h3 {
   transition: border 0.2s ease;
 }
 
-/* Focus state */
 .contact-form input:focus,
 .contact-form select:focus,
 .contact-form textarea:focus {
@@ -142,19 +139,16 @@ h1, h2, h3 {
   border-color: #000;
 }
 
-/* Textarea */
 .contact-form textarea {
   min-height: 140px;
   resize: vertical;
 }
 
-/* Button alignment */
 .contact-form button {
   margin-top: 8px;
   align-self: flex-start;
 }
 
-/* Form note */
 .form-note {
   font-size: 13px;
   color: #666;
@@ -163,7 +157,7 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   HEADER (FIXED — PRODUCTION SAFE)
+   HEADER (SYSTEM NAV + FIXED)
 ========================================= */
 .site-header {
   position: fixed;
@@ -181,20 +175,33 @@ h1, h2, h3 {
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* Offset for fixed header */
+/* Offset */
 body {
   padding-top: 80px;
 }
 
-/* Brand */
-.brand-link {
-  text-decoration: none;
-  color: inherit;
-  font-weight: 600;
+/* =========================================
+   SYSTEM NAV STRUCTURE
+========================================= */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
 }
 
-.brand-link:hover {
-  opacity: 0.7;
+.nav-system {
+  color: #666;
+  font-size: 13px;
+}
+
+.nav-divider {
+  color: #ccc;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
 }
 
 /* Navigation */
@@ -209,19 +216,79 @@ body {
   opacity: 0.7;
 }
 
+/* Buttons */
+.theme-toggle,
+.menu-toggle {
+  margin-left: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 /* =========================================
-   RESPONSIVE
+   MOBILE NAV
 ========================================= */
+.menu-toggle {
+  display: none;
+}
+
 @media (max-width: 768px) {
-  .section {
-    padding: 70px 0;
+
+  .menu-toggle {
+    display: inline-block;
   }
 
-  .contact-form {
-    gap: 16px;
+  .site-nav {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+  }
+
+  .site-nav.active {
+    display: flex;
   }
 
   body {
     padding-top: 70px;
   }
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+body.dark-mode {
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+body.dark-mode .site-header {
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+}
+
+body.dark-mode .nav-system {
+  color: #94a3b8;
+}
+
+body.dark-mode .card {
+  border-color: #1e293b;
+}
+
+body.dark-mode .section.alt {
+  background: #020617;
+}
+
+body.dark-mode .subtitle,
+body.dark-mode .support {
+  color: #94a3b8;
+}
+
+body.dark-mode .site-nav {
+  background: #0f172a;
 }

@@ -163,14 +163,22 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   HEADER (DESIGN AUTHORITY)
+   HEADER (DESIGN AUTHORITY + STICKY)
 ========================================= */
 .site-header {
   padding: 20px;
-  border-bottom: 1px solid #1e293b;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  /* Sticky behavior */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  /* Visual stability */
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 /* Brand */

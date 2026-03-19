@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!el) return;
 
   el.innerHTML = `
-    <header class="site-header">
+    <header class="site-header" id="site-header">
 
       <!-- LEFT: BRAND + SYSTEM -->
       <div class="nav-left">
@@ -69,5 +69,27 @@ document.addEventListener("DOMContentLoaded", function () {
       link.classList.add("active");
     }
   });
+
+  /* ==============================
+     SCROLL INTELLIGENCE (SAFE)
+  ============================== */
+  const header = document.getElementById("site-header");
+
+  if (header) {
+    let lastScroll = 0;
+
+    window.addEventListener("scroll", () => {
+      const currentScroll = window.scrollY;
+
+      // Add "scrolled" state
+      if (currentScroll > 20) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+
+      lastScroll = currentScroll;
+    });
+  }
 
 });

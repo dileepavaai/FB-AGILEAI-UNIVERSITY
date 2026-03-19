@@ -425,3 +425,21 @@ body.dark-mode .btn.primary {
 body.dark-mode .cta {
   background: linear-gradient(to bottom, #0f172a, #020617);
 }
+
+/* =========================================
+   SCROLL INTELLIGENCE (HEADER)
+========================================= */
+.site-header {
+  transition: all 0.25s ease;
+}
+
+/* On scroll */
+.site-header.scrolled {
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Dark mode */
+body.dark-mode .site-header.scrolled {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}

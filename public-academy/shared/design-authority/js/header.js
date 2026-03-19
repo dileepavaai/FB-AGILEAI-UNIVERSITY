@@ -18,10 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <!-- NAVIGATION -->
         <nav class="site-nav" id="site-nav">
-          <a href="/aipa.html">AIPA</a>
-          <a href="/aaia.html">AAIA</a>
-          <a href="https://spec.agileai.university">Registry</a>
-          <a href="/contact.html">Apply</a>
+          <a href="/aipa.html" data-link="aipa">AIPA</a>
+          <a href="/aaia.html" data-link="aaia">AAIA</a>
+          <a href="https://spec.agileai.university" data-link="registry">Registry</a>
+          <a href="/contact.html" data-link="contact">Apply</a>
         </nav>
 
         <!-- THEME TOGGLE -->
@@ -51,4 +51,23 @@ document.addEventListener("DOMContentLoaded", function () {
       nav.classList.toggle("active");
     });
   }
+
+  /* ==============================
+     ACTIVE NAV HIGHLIGHT
+  ============================== */
+  const path = window.location.pathname.toLowerCase();
+  const navLinks = document.querySelectorAll(".site-nav a");
+
+  navLinks.forEach(link => {
+    const key = link.getAttribute("data-link");
+
+    if (
+      (path.includes("aipa") && key === "aipa") ||
+      (path.includes("aaia") && key === "aaia") ||
+      (path.includes("contact") && key === "contact")
+    ) {
+      link.classList.add("active");
+    }
+  });
+
 });

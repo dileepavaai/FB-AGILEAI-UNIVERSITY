@@ -163,22 +163,27 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   HEADER (DESIGN AUTHORITY + STICKY)
+   HEADER (FIXED — PRODUCTION SAFE)
 ========================================= */
 .site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+
   padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  /* Sticky behavior */
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-
-  /* Visual stability */
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
+}
+
+/* Offset for fixed header */
+body {
+  padding-top: 80px;
 }
 
 /* Brand */
@@ -214,5 +219,9 @@ h1, h2, h3 {
 
   .contact-form {
     gap: 16px;
+  }
+
+  body {
+    padding-top: 70px;
   }
 }

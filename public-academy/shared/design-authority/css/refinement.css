@@ -31,6 +31,11 @@ h1, h2, h3 {
   padding: 100px 0;
 }
 
+/* Subtle contrast improvement */
+.section.alt {
+  background: #f9fafb;
+}
+
 /* =========================================
    HERO BALANCE
 ========================================= */
@@ -81,11 +86,22 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   BUTTONS
+   BUTTONS (VISIBILITY FIX)
 ========================================= */
 .btn.primary,
 .btn.secondary {
   border-radius: 4px;
+}
+
+.btn.secondary {
+  border: 1px solid #111;
+  color: #111;
+  background: transparent;
+}
+
+.btn.secondary:hover {
+  background: #111;
+  color: #fff;
 }
 
 /* =========================================
@@ -157,7 +173,7 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   HEADER (SYSTEM NAV — FIXED)
+   HEADER (SYSTEM NAV — FIXED + POLISHED)
 ========================================= */
 .site-header {
   position: fixed;
@@ -173,6 +189,9 @@ h1, h2, h3 {
 
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
+
+  /* 👇 KEY ADDITION */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 
 /* Offset for fixed header */
@@ -181,7 +200,7 @@ body {
 }
 
 /* =========================================
-   BRAND (UPDATED STRUCTURE)
+   BRAND
 ========================================= */
 .brand {
   display: flex;
@@ -193,6 +212,7 @@ body {
   text-decoration: none;
   color: inherit;
   font-weight: 600;
+  font-size: 15px;
 }
 
 .brand-link:hover {
@@ -217,24 +237,23 @@ body {
   align-items: center;
 }
 
-/* Navigation */
 .site-nav {
   display: flex;
 }
 
 .site-nav a {
-  margin-left: 20px;
-  color: inherit;
-  text-decoration: none;
+  margin-left: 22px;
   font-size: 14px;
+  opacity: 0.85;
+  transition: all 0.2s ease;
 }
 
 .site-nav a:hover {
-  opacity: 0.7;
+  opacity: 1;
 }
 
 /* =========================================
-   TOGGLE BUTTONS
+   TOGGLE BUTTONS (IMPROVED)
 ========================================= */
 .theme-toggle,
 .menu-toggle {
@@ -243,24 +262,22 @@ body {
   border: none;
   cursor: pointer;
   font-size: 16px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.theme-toggle:hover,
+.menu-toggle:hover {
+  background: rgba(0,0,0,0.05);
 }
 
 /* Theme icons */
-.icon-light {
-  display: none;
-}
+.icon-light { display: none; }
+.icon-dark { display: inline; }
 
-.icon-dark {
-  display: inline;
-}
-
-body.dark-mode .icon-light {
-  display: inline;
-}
-
-body.dark-mode .icon-dark {
-  display: none;
-}
+body.dark-mode .icon-light { display: inline; }
+body.dark-mode .icon-dark { display: none; }
 
 /* =========================================
    MOBILE NAV
@@ -277,14 +294,18 @@ body.dark-mode .icon-dark {
 
   .site-nav {
     position: absolute;
-    top: 70px;
-    right: 20px;
+    top: 65px;
+    right: 16px;
     background: #fff;
     border: 1px solid #e5e7eb;
     padding: 12px;
     display: none;
     flex-direction: column;
     min-width: 160px;
+    border-radius: 8px;
+
+    /* 👇 Depth */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
   }
 
   .site-nav.active {
@@ -311,6 +332,7 @@ body.dark-mode {
 body.dark-mode .site-header {
   background: #0f172a;
   border-bottom: 1px solid #1e293b;
+  box-shadow: none;
 }
 
 body.dark-mode .brand-sub {
@@ -335,11 +357,17 @@ body.dark-mode .site-nav {
   border-color: #1e293b;
 }
 
+body.dark-mode .theme-toggle:hover,
+body.dark-mode .menu-toggle:hover {
+  background: rgba(255,255,255,0.08);
+}
+
 /* =========================================
    ACTIVE NAV (SYSTEM FEEDBACK)
 ========================================= */
 .site-nav a.active {
   font-weight: 600;
+  opacity: 1;
   position: relative;
 }
 
@@ -353,7 +381,6 @@ body.dark-mode .site-nav {
   background: #111;
 }
 
-/* Dark mode */
 body.dark-mode .site-nav a.active::after {
   background: #e5e7eb;
 }

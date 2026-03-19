@@ -384,3 +384,35 @@ body.dark-mode .menu-toggle:hover {
 body.dark-mode .site-nav a.active::after {
   background: #e5e7eb;
 }
+
+/* =========================================
+   NAV COLOR FIX (CRITICAL)
+========================================= */
+
+/* Default nav color (light mode) */
+.site-nav a {
+  color: #111;
+  text-decoration: none;
+}
+
+/* Hover */
+.site-nav a:hover {
+  color: #000;
+  opacity: 1;
+}
+
+/* Dark mode nav */
+body.dark-mode .site-nav a {
+  color: #e5e7eb;
+}
+
+/* Dark hover */
+body.dark-mode .site-nav a:hover {
+  color: #ffffff;
+}
+
+/* Prevent browser default blue */
+.site-nav a:visited,
+.site-nav a:active {
+  color: inherit;
+}

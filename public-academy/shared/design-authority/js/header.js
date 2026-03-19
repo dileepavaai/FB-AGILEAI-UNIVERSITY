@@ -5,14 +5,15 @@ document.addEventListener("DOMContentLoaded", function () {
   el.innerHTML = `
     <header class="site-header">
 
-      <!-- LEFT: SYSTEM IDENTITY -->
+      <!-- LEFT: BRAND + SYSTEM -->
       <div class="nav-left">
-        <a href="/" class="brand-link">Agile AI</a>
-        <span class="nav-divider">|</span>
-        <span class="nav-system">Capability System</span>
+        <div class="brand">
+          <a href="/" class="brand-link">Agile AI Academy</a>
+          <span class="brand-sub">Capability System</span>
+        </div>
       </div>
 
-      <!-- RIGHT: CONTROLS -->
+      <!-- RIGHT: NAV + CONTROLS -->
       <div class="nav-right">
 
         <!-- NAVIGATION -->
@@ -23,11 +24,16 @@ document.addEventListener("DOMContentLoaded", function () {
           <a href="/contact.html">Apply</a>
         </nav>
 
-        <!-- MOBILE MENU BUTTON -->
-        <button id="menu-toggle" class="menu-toggle">☰</button>
-
         <!-- THEME TOGGLE -->
-        <button id="theme-toggle" class="theme-toggle">◐</button>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <span class="icon-light">☀️</span>
+          <span class="icon-dark">🌙</span>
+        </button>
+
+        <!-- MOBILE MENU BUTTON -->
+        <button id="menu-toggle" class="menu-toggle" aria-label="Menu">
+          ☰
+        </button>
 
       </div>
 

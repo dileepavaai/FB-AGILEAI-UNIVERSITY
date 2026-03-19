@@ -157,7 +157,7 @@ h1, h2, h3 {
 }
 
 /* =========================================
-   HEADER (SYSTEM NAV + FIXED)
+   HEADER (SYSTEM NAV — FIXED)
 ========================================= */
 .site-header {
   position: fixed;
@@ -166,7 +166,7 @@ h1, h2, h3 {
   width: 100%;
   z-index: 1000;
 
-  padding: 20px;
+  padding: 16px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -175,28 +175,41 @@ h1, h2, h3 {
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* Offset */
+/* Offset for fixed header */
 body {
   padding-top: 80px;
 }
 
 /* =========================================
-   SYSTEM NAV STRUCTURE
+   BRAND (UPDATED STRUCTURE)
+========================================= */
+.brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-link {
+  text-decoration: none;
+  color: inherit;
+  font-weight: 600;
+}
+
+.brand-link:hover {
+  opacity: 0.7;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* =========================================
+   NAV STRUCTURE
 ========================================= */
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.nav-system {
-  color: #666;
-  font-size: 13px;
-}
-
-.nav-divider {
-  color: #ccc;
 }
 
 .nav-right {
@@ -205,6 +218,10 @@ body {
 }
 
 /* Navigation */
+.site-nav {
+  display: flex;
+}
+
 .site-nav a {
   margin-left: 20px;
   color: inherit;
@@ -216,7 +233,9 @@ body {
   opacity: 0.7;
 }
 
-/* Buttons */
+/* =========================================
+   TOGGLE BUTTONS
+========================================= */
 .theme-toggle,
 .menu-toggle {
   margin-left: 12px;
@@ -224,6 +243,23 @@ body {
   border: none;
   cursor: pointer;
   font-size: 16px;
+}
+
+/* Theme icons */
+.icon-light {
+  display: none;
+}
+
+.icon-dark {
+  display: inline;
+}
+
+body.dark-mode .icon-light {
+  display: inline;
+}
+
+body.dark-mode .icon-dark {
+  display: none;
 }
 
 /* =========================================
@@ -245,13 +281,18 @@ body {
     right: 20px;
     background: #fff;
     border: 1px solid #e5e7eb;
-    padding: 10px;
+    padding: 12px;
     display: none;
     flex-direction: column;
+    min-width: 160px;
   }
 
   .site-nav.active {
     display: flex;
+  }
+
+  .site-nav a {
+    margin: 8px 0;
   }
 
   body {
@@ -272,7 +313,7 @@ body.dark-mode .site-header {
   border-bottom: 1px solid #1e293b;
 }
 
-body.dark-mode .nav-system {
+body.dark-mode .brand-sub {
   color: #94a3b8;
 }
 
@@ -291,4 +332,5 @@ body.dark-mode .support {
 
 body.dark-mode .site-nav {
   background: #0f172a;
+  border-color: #1e293b;
 }

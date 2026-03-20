@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Capability Alignment Check | Agile AI Academy</title>
+  <title>Engage with Agile AI Academy</title>
 
   <!-- Base Styles -->
   <link rel="stylesheet" href="/assets/css/main.css" />
@@ -26,69 +26,118 @@
 
     <!-- HERO -->
     <section class="section hero">
-      <div class="container narrow">
-
-        <h1>Capability Alignment Check</h1>
+      <div class="container">
+        <h1>Request Capability Recognition</h1>
 
         <p class="subtitle">
-          Before proceeding, confirm your alignment with the Agile AI capability system.
+          Submit your context for review and align with Agile AI institutional capability standards.
         </p>
+
+        <div class="hero-guidance">
+          <a href="/aipa" class="link">Explore the Agile AI Capability Standard (AIPA)</a>
+        </div>
 
         <p class="support">
-          This is not a course or certification process. It is a structured capability framework.
+          Reviewed based on alignment, not prior certifications or credentials.
         </p>
-
       </div>
     </section>
 
-    <!-- QUALIFICATION -->
+    <!-- ENGAGEMENT PATHWAYS -->
     <section class="section">
-      <div class="container narrow">
+      <div class="container">
+        <h2>Engagement Pathways</h2>
 
-        <h2>Confirm Your Alignment</h2>
+        <div class="grid-3">
 
-        <ul class="points">
-          <li>I am working in or transitioning into AI-enabled environments</li>
-          <li>I am interested in structured capability development</li>
-          <li>I am not looking for a course, but a professional capability framework</li>
-        </ul>
+          <div class="card">
+            <h3>Professional Participation</h3>
+            <p>
+              For individuals developing capability aligned to Agile AI standards and credential pathways.
+            </p>
+          </div>
 
-        <div class="cta-group" style="margin-top: 30px;">
+          <div class="card">
+            <h3>Institutional Alignment</h3>
+            <p>
+              For organizations aligning teams to the Agile AI Specification.
+            </p>
+          </div>
 
-          <a href="https://forms.gle/K7mBquaVNY36uioQA"
-             target="_blank"
-             class="btn primary"
-             id="qualified-btn">
-            Proceed to Capability Submission
-          </a>
-
-          <a href="/aipa.html" class="btn secondary">
-            Explore AIPA Standard First
-          </a>
+          <div class="card">
+            <h3>Strategic Collaboration</h3>
+            <p>
+              For partners contributing to the Agile AI ecosystem.
+            </p>
+          </div>
 
         </div>
-
-        <p class="form-note" style="margin-top: 15px;">
-          Takes less than 2 minutes. Reviewed based on alignment, not prior credentials.
-        </p>
-
       </div>
     </section>
 
-    <!-- EXIT / ALTERNATIVE -->
+    <!-- FORM (CTA) -->
     <section class="section alt">
       <div class="container narrow">
-
-        <h2>Not Sure Yet?</h2>
+        <h2>Start Your Capability Review</h2>
 
         <p>
-          You can explore the Agile AI Capability Standard before proceeding.
+          Share your context and intent. This helps determine alignment with Agile AI capability pathways.
         </p>
 
-        <div class="cta-group">
-          <a href="/aipa.html" class="btn secondary">Explore AIPA</a>
+        <div class="contact-form">
+
+          <a href="/qualify.html"
+             class="btn primary"
+             id="apply-btn">
+            Submit for Capability Review
+          </a>
+
+          <p class="form-note">
+            Takes less than 2 minutes. No prior certification required.
+          </p>
+
+          <p class="form-note">
+            Used by professionals aligning to Agile AI standards across roles and industries.
+          </p>
+
+          <p class="form-note">
+            Submissions are reviewed based on alignment with capability pathways, professional intent, and institutional standards.  
+            If aligned, you will be contacted with next steps.
+          </p>
+
         </div>
 
+      </div>
+    </section>
+
+    <!-- DIRECT CONTACT -->
+    <section class="section">
+      <div class="container narrow">
+        <h2>Direct Contact</h2>
+
+        <p>
+          For formal or institutional communication:
+        </p>
+
+        <p class="highlight">
+          support@agileai.university
+        </p>
+
+        <p>
+          Communication is reviewed within the context of institutional alignment and ecosystem relevance.
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta">
+      <div class="container">
+        <h2>Explore Before You Engage</h2>
+
+        <div class="cta-group">
+          <a href="https://spec.agileai.university" class="btn secondary">View Credential Registry</a>
+          <a href="/aipa" class="btn primary">Explore AIPA Standard</a>
+        </div>
       </div>
     </section>
 
@@ -106,22 +155,22 @@
   <script src="/assets/js/main.js"></script>
 
   <!-- =========================
-       ANALYTICS TRACKING
+       ANALYTICS TRACKING (SAFE)
   ========================== -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-      if (!window.AAUAnalytics) return;
+      if (window.AAUAnalytics) {
+        window.AAUAnalytics.track("contact_page_view");
+      }
 
-      // Track qualification page view
-      window.AAUAnalytics.track("qualification_page_view");
+      const btn = document.getElementById("apply-btn");
 
-      // Track qualification success
-      const btn = document.getElementById("qualified-btn");
-
-      if (btn) {
+      if (btn && window.AAUAnalytics) {
         btn.addEventListener("click", function () {
-          window.AAUAnalytics.track("qualification_passed");
+          window.AAUAnalytics.track("apply_clicked", {
+            location: "contact_page"
+          });
         });
       }
 

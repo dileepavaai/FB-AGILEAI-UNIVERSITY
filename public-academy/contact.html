@@ -87,7 +87,10 @@
 
         <div class="contact-form">
 
-          <a href="https://forms.gle/K7mBquaVNY36uioQA" target="_blank" class="btn primary">
+          <a href="https://forms.gle/K7mBquaVNY36uioQA"
+             target="_blank"
+             class="btn primary"
+             id="apply-btn">
             Submit for Review
           </a>
 
@@ -144,6 +147,21 @@
   <script src="/shared/design-authority/js/theme.js"></script>
   <script src="/shared/design-authority/js/analytics.js"></script>
   <script src="/assets/js/main.js"></script>
+
+  <!-- APPLY BUTTON TRACKING (SAFE) -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const btn = document.getElementById("apply-btn");
+
+      if (!btn || !window.AAUAnalytics) return;
+
+      btn.addEventListener("click", function () {
+        window.AAUAnalytics.track("apply_clicked", {
+          location: "contact_page"
+        });
+      });
+    });
+  </script>
 
 </body>
 </html>

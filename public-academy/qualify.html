@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Capability Alignment Check | Agile AI Academy</title>
+
+  <!-- Base Styles -->
+  <link rel="stylesheet" href="/assets/css/main.css" />
+
+  <!-- Design Authority -->
+  <link rel="stylesheet" href="/shared/design-authority/css/refinement.css" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/img/favicon.ico" />
+</head>
+
+<body data-surface="academy">
+
+  <!-- Header -->
+  <div id="header"></div>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="section hero">
+      <div class="container narrow">
+
+        <h1>Capability Alignment Check</h1>
+
+        <p class="subtitle">
+          Before proceeding, confirm your alignment with the Agile AI capability system.
+        </p>
+
+        <p class="support">
+          This is not a course or certification process. It is a structured capability framework.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- QUALIFICATION -->
+    <section class="section">
+      <div class="container narrow">
+
+        <h2>Confirm Your Alignment</h2>
+
+        <ul class="points">
+          <li>I am working in or transitioning into AI-enabled environments</li>
+          <li>I am interested in structured capability development</li>
+          <li>I am not looking for a course, but a professional capability framework</li>
+        </ul>
+
+        <div class="cta-group" style="margin-top: 30px;">
+
+          <a href="https://forms.gle/K7mBquaVNY36uioQA"
+             target="_blank"
+             class="btn primary"
+             id="qualified-btn">
+            Proceed to Capability Submission
+          </a>
+
+          <a href="/aipa.html" class="btn secondary">
+            Explore AIPA Standard First
+          </a>
+
+        </div>
+
+        <p class="form-note" style="margin-top: 15px;">
+          Takes less than 2 minutes. Reviewed based on alignment, not prior credentials.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- EXIT / ALTERNATIVE -->
+    <section class="section alt">
+      <div class="container narrow">
+
+        <h2>Not Sure Yet?</h2>
+
+        <p>
+          You can explore the Agile AI Capability Standard before proceeding.
+        </p>
+
+        <div class="cta-group">
+          <a href="/aipa.html" class="btn secondary">Explore AIPA</a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="footer"></div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/surface-config.js"></script>
+  <script src="/shared/design-authority/js/header.js"></script>
+  <script src="/shared/design-authority/js/footer.js"></script>
+  <script src="/shared/design-authority/js/theme.js"></script>
+  <script src="/shared/design-authority/js/analytics.js"></script>
+  <script src="/assets/js/main.js"></script>
+
+  <!-- =========================
+       ANALYTICS TRACKING
+  ========================== -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      if (!window.AAUAnalytics) return;
+
+      // Track qualification page view
+      window.AAUAnalytics.track("qualification_page_view");
+
+      // Track qualification success
+      const btn = document.getElementById("qualified-btn");
+
+      if (btn) {
+        btn.addEventListener("click", function () {
+          window.AAUAnalytics.track("qualification_passed");
+        });
+      }
+
+    });
+  </script>
+
+</body>
+</html>

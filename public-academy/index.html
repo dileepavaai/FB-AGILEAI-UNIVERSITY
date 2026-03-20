@@ -36,8 +36,12 @@
         </p>
 
         <div class="cta-group">
-          <a href="/contact.html" class="btn primary">Apply for Institutional Access</a>
-          <a href="/aipa.html" class="btn secondary">Explore AIPA Standard</a>
+          <a href="/contact.html" class="btn primary" id="cta-apply">
+            Apply for Institutional Access
+          </a>
+          <a href="/aipa.html" class="btn secondary" id="cta-explore">
+            Explore AIPA Standard
+          </a>
         </div>
 
         <p class="support">
@@ -221,7 +225,9 @@
         </p>
 
         <div class="cta-group">
-          <a href="/contact.html" class="btn primary">Apply for Access</a>
+          <a href="/contact.html" class="btn primary" id="cta-apply-final">
+            Apply for Access
+          </a>
         </div>
       </div>
     </section>
@@ -238,6 +244,37 @@
   <script src="/shared/design-authority/js/theme.js"></script>
   <script src="/shared/design-authority/js/analytics.js"></script>
   <script src="/assets/js/main.js"></script>
+
+  <!-- CTA TRACKING (SAFE) -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      if (!window.AAUAnalytics) return;
+
+      const applyBtn = document.getElementById("cta-apply");
+      const exploreBtn = document.getElementById("cta-explore");
+      const finalApplyBtn = document.getElementById("cta-apply-final");
+
+      if (applyBtn) {
+        applyBtn.addEventListener("click", function () {
+          window.AAUAnalytics.track("cta_apply_clicked", { location: "hero" });
+        });
+      }
+
+      if (exploreBtn) {
+        exploreBtn.addEventListener("click", function () {
+          window.AAUAnalytics.track("cta_explore_clicked", { location: "hero" });
+        });
+      }
+
+      if (finalApplyBtn) {
+        finalApplyBtn.addEventListener("click", function () {
+          window.AAUAnalytics.track("cta_apply_clicked", { location: "final_cta" });
+        });
+      }
+
+    });
+  </script>
 
 </body>
 </html>

@@ -7,9 +7,10 @@
 
   <link rel="stylesheet" href="/assets/css/main.css">
   <link rel="stylesheet" href="/shared/design-authority/css/refinement.css">
+  <link rel="icon" href="/assets/img/favicon.ico" />
 </head>
 
-<body>
+<body data-surface="academy">
 
 <div id="header"></div>
 
@@ -27,8 +28,12 @@
     </p>
 
     <div class="cta-group">
-      <a href="#" class="btn primary">Request Program Details</a>
-      <a href="#" class="btn secondary">View Capability Framework</a>
+      <a href="/qualify.html" class="btn primary" id="cta-aipa-apply">
+        Request Capability Review
+      </a>
+      <a href="/aipa.html" class="btn secondary" id="cta-aipa-framework">
+        View Capability Framework
+      </a>
     </div>
   </div>
 </section>
@@ -95,7 +100,7 @@
     </p>
 
     <p>
-      <strong>Agentic AI Agilist (AAIA)</strong> — focused on agent-based and autonomous systems.
+      <strong>Agentic Artificial Intelligence Agilist (AAIA)</strong> — focused on agent-based and autonomous systems.
     </p>
 
     <p>
@@ -110,8 +115,12 @@
     <h2>Start Your Capability Journey</h2>
 
     <div class="cta-group">
-      <a href="#" class="btn primary">Request Program Details</a>
-      <a href="#" class="btn secondary">Explore AAIA Pathway</a>
+      <a href="/qualify.html" class="btn primary" id="cta-aipa-final">
+        Request Capability Review
+      </a>
+      <a href="/aaia.html" class="btn secondary" id="cta-aipa-aaia">
+        Explore AAIA Pathway
+      </a>
     </div>
   </div>
 </section>
@@ -126,6 +135,39 @@
 <script src="/shared/design-authority/js/theme.js"></script>
 <script src="/shared/design-authority/js/analytics.js"></script>
 <script src="/assets/js/main.js"></script>
+
+<!-- =========================
+     ANALYTICS TRACKING (SAFE)
+========================== -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    if (!window.AAUAnalytics) return;
+
+    const applyTop = document.getElementById("cta-aipa-apply");
+    const applyFinal = document.getElementById("cta-aipa-final");
+    const aaiaBtn = document.getElementById("cta-aipa-aaia");
+
+    if (applyTop) {
+      applyTop.addEventListener("click", function () {
+        window.AAUAnalytics.track("aipa_apply_clicked", { location: "hero" });
+      });
+    }
+
+    if (applyFinal) {
+      applyFinal.addEventListener("click", function () {
+        window.AAUAnalytics.track("aipa_apply_clicked", { location: "final_cta" });
+      });
+    }
+
+    if (aaiaBtn) {
+      aaiaBtn.addEventListener("click", function () {
+        window.AAUAnalytics.track("aipa_aaia_clicked");
+      });
+    }
+
+  });
+</script>
 
 </body>
 </html>

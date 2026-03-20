@@ -33,7 +33,6 @@
           Submit your context for review and align with Agile AI institutional capability standards.
         </p>
 
-        <!-- CENTRALIZED GUIDANCE LINK -->
         <div class="hero-guidance">
           <a href="/aipa" class="link">Explore the Agile AI Capability Standard (AIPA)</a>
         </div>
@@ -76,7 +75,7 @@
       </div>
     </section>
 
-    <!-- FORM (CTA) -->
+    <!-- CTA (FORM ENTRY) -->
     <section class="section alt">
       <div class="container narrow">
         <h2>Start Your Capability Review</h2>
@@ -87,24 +86,21 @@
 
         <div class="contact-form">
 
-          <a href="https://forms.gle/K7mBquaVNY36uioQA"
-             target="_blank"
+          <!-- ✅ FIXED: Internal funnel instead of external form -->
+          <a href="/qualify.html"
              class="btn primary"
              id="apply-btn">
             Submit for Capability Review
           </a>
 
-          <!-- 🔥 FRICTION REDUCTION -->
           <p class="form-note">
             Takes less than 2 minutes. No prior certification required.
           </p>
 
-          <!-- 🔥 TRUST BOOST -->
           <p class="form-note">
             Used by professionals aligning to Agile AI standards across roles and industries.
           </p>
 
-          <!-- EXISTING NOTE (PRESERVED INTENT) -->
           <p class="form-note">
             Submissions are reviewed based on alignment with capability pathways, professional intent, and institutional standards.  
             If aligned, you will be contacted with next steps.
@@ -165,15 +161,13 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-      /* CONTACT PAGE VIEW */
-      if (window.AAUAnalytics) {
-        window.AAUAnalytics.track("contact_page_view");
-      }
+      if (!window.AAUAnalytics) return;
 
-      /* APPLY BUTTON TRACKING */
+      window.AAUAnalytics.track("contact_page_view");
+
       const btn = document.getElementById("apply-btn");
 
-      if (btn && window.AAUAnalytics) {
+      if (btn) {
         btn.addEventListener("click", function () {
           window.AAUAnalytics.track("apply_clicked", {
             location: "contact_page"

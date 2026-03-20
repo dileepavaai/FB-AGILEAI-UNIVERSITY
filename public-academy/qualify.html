@@ -75,7 +75,7 @@
       </div>
     </section>
 
-    <!-- FORM (CTA) -->
+    <!-- FORM EMBED -->
     <section class="section alt">
       <div class="container narrow">
         <h2>Start Your Capability Review</h2>
@@ -84,28 +84,32 @@
           Share your context and intent. This helps determine alignment with Agile AI capability pathways.
         </p>
 
-        <div class="contact-form">
+        <div class="form-embed">
 
-          <a href="/qualify.html"
-             class="btn primary"
-             id="apply-btn">
-            Submit for Capability Review
-          </a>
-
-          <p class="form-note">
-            Takes less than 2 minutes. No prior certification required.
-          </p>
-
-          <p class="form-note">
-            Used by professionals aligning to Agile AI standards across roles and industries.
-          </p>
-
-          <p class="form-note">
-            Submissions are reviewed based on alignment with capability pathways, professional intent, and institutional standards.  
-            If aligned, you will be contacted with next steps.
-          </p>
+          <iframe 
+            src="https://docs.google.com/forms/d/e/1UmQkZBT2jL5n3rF7KpofmI-DMVJjwBYO_19kzISOvU0/viewform"
+            width="100%" 
+            height="1200" 
+            frameborder="0" 
+            marginheight="0" 
+            marginwidth="0">
+            Loading…
+          </iframe>
 
         </div>
+
+        <p class="form-note">
+          Takes less than 2 minutes. No prior certification required.
+        </p>
+
+        <p class="form-note">
+          Used by professionals aligning to Agile AI standards across roles and industries.
+        </p>
+
+        <p class="form-note">
+          Submissions are reviewed based on alignment with capability pathways, professional intent, and institutional standards.  
+          If aligned, you will be contacted with next steps.
+        </p>
 
       </div>
     </section>
@@ -153,29 +157,6 @@
   <script src="/shared/design-authority/js/theme.js"></script>
   <script src="/shared/design-authority/js/analytics.js"></script>
   <script src="/assets/js/main.js"></script>
-
-  <!-- =========================
-       ANALYTICS TRACKING (SAFE)
-  ========================== -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-      if (window.AAUAnalytics) {
-        window.AAUAnalytics.track("contact_page_view");
-      }
-
-      const btn = document.getElementById("apply-btn");
-
-      if (btn && window.AAUAnalytics) {
-        btn.addEventListener("click", function () {
-          window.AAUAnalytics.track("apply_clicked", {
-            location: "contact_page"
-          });
-        });
-      }
-
-    });
-  </script>
 
 </body>
 </html>

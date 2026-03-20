@@ -2,6 +2,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const el = document.getElementById("header");
   if (!el) return;
 
+  // Prevent duplicate injection (safety)
+  if (document.getElementById("site-header")) return;
+
   el.innerHTML = `
     <header class="site-header" id="site-header">
 
@@ -71,24 +74,51 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   /* ==============================
-     SCROLL INTELLIGENCE (SAFE)
+     SCROLL INTELLIGENCE (HEADER)
   ============================== */
   const header = document.getElementById("site-header");
 
   if (header) {
-    let lastScroll = 0;
-
     window.addEventListener("scroll", () => {
-      const currentScroll = window.scrollY;
-
-      // Add "scrolled" state
-      if (currentScroll > 20) {
+      if (window.scrollY > 20) {
         header.classList.add("scrolled");
       } else {
         header.classList.remove("scrolled");
       }
+    });
+  }
 
-      lastScroll = currentScroll;
+  /* ==============================
+     SCROLL REVEAL (FINAL LAYER)
+  ============================== */
+  const revealElements = document.querySelectorAll(
+    ".section, .card, .hero h1, .hero p, .cta-group"
+  );
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("reveal-visible");
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -40px 0px" // smoother trigger before full visibility
+      }
+    );
+
+    revealElements.forEach((el) => {
+      el.classList.add("reveal");
+      observer.observe(el);
+    });
+  } else {
+    // fallback (older browsers)
+    revealElements.forEach((el) => {
+      el.classList.add("reveal-visible");
     });
   }
 

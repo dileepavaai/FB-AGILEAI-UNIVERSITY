@@ -443,3 +443,89 @@ body.dark-mode .cta {
 body.dark-mode .site-header.scrolled {
   box-shadow: 0 6px 18px rgba(0,0,0,0.5);
 }
+
+/* =========================================
+   MICRO INTERACTIONS (PREMIUM LAYER)
+========================================= */
+
+/* Global smoothness */
+* {
+  transition: all 0.2s ease;
+}
+
+/* =========================================
+   BUTTON INTERACTIONS
+========================================= */
+.btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn.primary:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.btn.secondary:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Click feedback */
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* =========================================
+   CARD INTERACTIONS
+========================================= */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* Dark mode cards */
+body.dark-mode .card:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* =========================================
+   LINK INTERACTIONS
+========================================= */
+.site-nav a,
+.link {
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+
+.site-nav a::after,
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.25s ease;
+}
+
+.site-nav a:hover::after,
+.link:hover::after {
+  width: 100%;
+}
+
+/* =========================================
+   IMAGE / SECTION SMOOTHNESS
+========================================= */
+.section,
+.card,
+.btn {
+  will-change: transform;
+}

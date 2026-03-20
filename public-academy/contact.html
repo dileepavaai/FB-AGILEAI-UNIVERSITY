@@ -76,7 +76,7 @@
       </div>
     </section>
 
-    <!-- FORM (REPLACED WITH CTA) -->
+    <!-- FORM (CTA) -->
     <section class="section alt">
       <div class="container narrow">
         <h2>Expression of Interest</h2>
@@ -148,18 +148,28 @@
   <script src="/shared/design-authority/js/analytics.js"></script>
   <script src="/assets/js/main.js"></script>
 
-  <!-- APPLY BUTTON TRACKING (SAFE) -->
+  <!-- =========================
+       ANALYTICS TRACKING (SAFE)
+  ========================== -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+      /* CONTACT PAGE VIEW */
+      if (window.AAUAnalytics) {
+        window.AAUAnalytics.track("contact_page_view");
+      }
+
+      /* APPLY BUTTON TRACKING */
       const btn = document.getElementById("apply-btn");
 
-      if (!btn || !window.AAUAnalytics) return;
-
-      btn.addEventListener("click", function () {
-        window.AAUAnalytics.track("apply_clicked", {
-          location: "contact_page"
+      if (btn && window.AAUAnalytics) {
+        btn.addEventListener("click", function () {
+          window.AAUAnalytics.track("apply_clicked", {
+            location: "contact_page"
+          });
         });
-      });
+      }
+
     });
   </script>
 

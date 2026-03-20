@@ -1,17 +1,13 @@
-/* =========================================
+/* ========================================= 
    Agile AI University
    Institutional Analytics Engine
-   Version: v1.0
-   Status: LOCKED
-   Scope: Shared Design Authority Layer
+   Version: v1.1 (Hardened)
+   Status: LOCKED + SAFE UPGRADE
 
-   Principles:
-   - Single GA4 Property
-   - Surface-aware tracking
-   - No inline gtag calls outside this file
-   - PII-safe
-   - Production-only activation
-   - Fail-safe execution
+   Changes:
+   - Safer surface detection
+   - Default fallback protection
+   - Optional debug mode
 ========================================= */
 
 (function () {
@@ -21,10 +17,11 @@
   ========================= */
 
   const AAU_CONFIG = {
-    measurementId: "G-L6Q5J3S1YY", // 🔒 REPLACE WITH REAL ID
+    measurementId: "G-L6Q5J3S1YY",
     environment: window.location.hostname.includes("localhost")
       ? "dev"
-      : "prod"
+      : "prod",
+    debug: false // set true if needed
   };
 
   if (AAU_CONFIG.environment !== "prod") {
@@ -48,15 +45,28 @@
   gtag("js", new Date());
 
   /* =========================
-     SURFACE DETECTION
+     SURFACE DETECTION (HARDENED)
   ========================= */
 
   function detectSurface() {
-    const surface = document.body?.dataset?.surface;
-    return surface || "unknown";
+    try {
+      const attr = document.body?.getAttribute("data-surface");
+
+      if (!attr || attr.trim() === "") {
+        return "unknown";
+      }
+
+      return attr.toLowerCase();
+    } catch (e) {
+      return "unknown";
+    }
   }
 
   const surface = detectSurface();
+
+  if (AAU_CONFIG.debug) {
+    console.log("AAU Surface Detected:", surface);
+  }
 
   gtag("config", AAU_CONFIG.measurementId, {
     page_path: window.location.pathname,
@@ -72,13 +82,21 @@
   function safeTrack(eventName, payload = {}, once = false) {
     try {
 
+      if (!eventName) return;
+
       if (once && firedEvents.has(eventName)) return;
       if (once) firedEvents.add(eventName);
 
-      gtag("event", eventName, {
+      const finalPayload = {
         ...payload,
         surface: surface
-      });
+      };
+
+      if (AAU_CONFIG.debug) {
+        console.log("AAU Event:", eventName, finalPayload);
+      }
+
+      gtag("event", eventName, finalPayload);
 
     } catch (error) {
       console.warn("AAU Analytics error:", error);
@@ -111,7 +129,7 @@
       return surface;
     },
 
-    /* Assessment Helpers */
+    /* Assessment */
 
     trackAssessmentStart: function () {
       safeTrack("assessment_start", {}, true);
@@ -125,17 +143,17 @@
 
     trackAssessmentContext: function (role, industry, aspiration) {
       safeTrack("assessment_context_submitted", {
-        role: role,
-        industry: industry,
-        aspiration: aspiration
+        role,
+        industry,
+        aspiration
       });
     },
 
     trackAssessmentComplete: function (scoreBand, role, industry) {
       safeTrack("assessment_complete", {
         score_band: scoreBand,
-        role: role,
-        industry: industry
+        role,
+        industry
       }, true);
     },
 

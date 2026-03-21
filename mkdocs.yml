@@ -60,8 +60,6 @@ extra_css:
 extra_javascript:
   - assets/js/site.js
 
-repo_url: https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY
-repo_name: FB-AGILEAI-UNIVERSITY
 edit_uri: edit/main/agileai-spec/
 
 nav:

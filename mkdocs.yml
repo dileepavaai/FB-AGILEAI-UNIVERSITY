@@ -8,7 +8,7 @@ site_dir: public-spec
 
 theme:
   name: material
-  custom_dir: agileai-spec/overrides
+  custom_dir: overrides
   features:
     - navigation.tabs
     - navigation.sections

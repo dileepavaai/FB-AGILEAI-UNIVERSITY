@@ -57,6 +57,7 @@ extra:
 
 extra_css:
   - assets/css/site.css
+  - assets/stylesheets/extra.css
 
 extra_javascript:
   - assets/js/site.js

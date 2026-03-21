@@ -1,0 +1,24 @@
+.spec-banner {
+  background: linear-gradient(90deg, #1a3c8b, #2d5bd1);
+  color: white;
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+.spec-banner-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.spec-banner-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.spec-banner-meta span {
+  margin-right: 20px;
+  font-size: 13px;
+  opacity: 0.9;
+}

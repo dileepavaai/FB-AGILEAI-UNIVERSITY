@@ -60,8 +60,6 @@ extra_css:
 extra_javascript:
   - assets/js/site.js
 
-edit_uri: edit/main/agileai-spec/
-
 nav:
 
   - Home: index.md

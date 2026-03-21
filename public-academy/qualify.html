@@ -7,6 +7,11 @@
 
   <title>Engage with Agile AI Academy</title>
 
+  <!-- FORCE LIGHT MODE (Page-specific override) -->
+  <script>
+    localStorage.setItem("theme", "light");
+  </script>
+
   <!-- Base Styles -->
   <link rel="stylesheet" href="/assets/css/main.css" />
 
@@ -15,9 +20,26 @@
 
   <!-- Favicon -->
   <link rel="icon" href="/assets/img/favicon.ico" />
+
+  <!-- LOCAL SAFE ENHANCEMENTS -->
+  <style>
+    .form-embed {
+      overflow: hidden;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .form-embed iframe {
+      width: 100%;
+      border: none;
+      display: block;
+      background: #ffffff;
+    }
+  </style>
 </head>
 
-<body data-surface="academy">
+<body data-surface="academy" data-theme="light">
 
   <!-- Header -->
   <div id="header"></div>
@@ -84,16 +106,11 @@
           Share your context and intent. This helps determine alignment with Agile AI capability pathways.
         </p>
 
-        <div class="form-embed" style="overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+        <div class="form-embed">
 
           <iframe 
-            src="https://docs.google.com/forms/d/e/1FAIpQLSfzNlU60ABFGqX7AJSqAV5KzBpcVyM4srcxJmUyaxRrRZdeug/viewform?embedded=true"
-            width="100%" 
-            height="1440"
-            frameborder="0"
-            marginheight="0"
-            marginwidth="0"
-            style="border: none;">
+            id="eoiForm"
+            src="https://docs.google.com/forms/d/e/1FAIpQLSfzNlU60ABFGqX7AJSqAV5KzBpcVyM4srcxJmUyaxRrRZdeug/viewform?embedded=true">
             Loading…
           </iframe>
 
@@ -158,6 +175,27 @@
   <script src="/shared/design-authority/js/theme.js"></script>
   <script src="/shared/design-authority/js/analytics.js"></script>
   <script src="/assets/js/main.js"></script>
+
+  <!-- SMART HEIGHT CONTROL (SAFE) -->
+  <script>
+    function adjustFormHeight() {
+      const iframe = document.getElementById("eoiForm");
+      const width = window.innerWidth;
+
+      if (width > 1400) {
+        iframe.style.height = "1500px"; // large desktop
+      } else if (width > 1024) {
+        iframe.style.height = "1600px"; // laptop
+      } else if (width > 768) {
+        iframe.style.height = "1800px"; // tablet
+      } else {
+        iframe.style.height = "2100px"; // mobile
+      }
+    }
+
+    window.addEventListener("load", adjustFormHeight);
+    window.addEventListener("resize", adjustFormHeight);
+  </script>
 
 </body>
 </html>

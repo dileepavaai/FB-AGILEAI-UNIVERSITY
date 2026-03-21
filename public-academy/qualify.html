@@ -176,7 +176,7 @@
   <script src="/shared/design-authority/js/analytics.js"></script>
   <script src="/assets/js/main.js"></script>
 
-  <!-- SMART HEIGHT CONTROL (SAFE) -->
+  <!-- SMART HEIGHT CONTROL (FINAL) -->
   <script>
     function adjustFormHeight() {
       const iframe = document.getElementById("eoiForm");
@@ -187,9 +187,9 @@
       } else if (width > 1024) {
         iframe.style.height = "1600px"; // laptop
       } else if (width > 768) {
-        iframe.style.height = "1800px"; // tablet
+        iframe.style.height = "1900px"; // tablet (slightly increased)
       } else {
-        iframe.style.height = "2100px"; // mobile
+        iframe.style.height = "2400px"; // mobile FIX (eliminates inner scroll)
       }
     }
 

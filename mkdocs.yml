@@ -17,6 +17,7 @@ theme:
     - content.action.edit
     - search.highlight
     - search.suggest
+    - announcement.dismiss
   analytics:
     provider: google
     property: G-L6Q5J3S1YY
@@ -36,7 +37,7 @@ markdown_extensions:
 
 extra:
   announcement: "Agile AI Specification is part of the Agile AI University Knowledge Framework"
-  
+
   meta:
     - property: og:title
       content: Agile AI Specification

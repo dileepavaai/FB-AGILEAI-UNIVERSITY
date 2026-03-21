@@ -35,6 +35,8 @@ markdown_extensions:
   - pymdownx.superfences
 
 extra:
+  announcement: "Agile AI Specification is part of the Agile AI University Knowledge Framework"
+  
   meta:
     - property: og:title
       content: Agile AI Specification

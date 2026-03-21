@@ -1,11 +1,11 @@
-/* ============================================================
+/* ============================================================ 
 Agile AI University
 Visual Refinement Layer
 --------------------------------------------------------------
 
 File: refinement.css
-Version: 1.4.7
-Date: 2026-03-14
+Version: 1.4.8
+Date: 2026-03-21
 Status: Governance Locked (Additive Layer Only)
 
 --------------------------------------------------------------
@@ -50,6 +50,12 @@ canonical site.css behaviour.
 --------------------------------------------------------------
 
 CHANGELOG
+
+v1.4.8
+• Introduced Knowledge page refinement layer
+• Added spacing and readability for knowledge-block sections
+• Improved conceptual vs specification visual separation
+• Fully additive — no layout or system overrides
 
 v1.4.7
 • Fixed dark-mode scoping so styles do not affect light theme
@@ -284,15 +290,11 @@ SECTION 9 — Footer Institutional Identity Refinement
 SECTION 10 — Footer Boundary & Grid Alignment
 ============================================================ */
 
-/* Light theme divider */
-
 #footer {
   border-top: 1px solid rgba(0,0,0,0.08);
   margin-top: 70px;
   padding-top: 40px;
 }
-
-/* Dark theme divider */
 
 :root[data-theme="dark"] #footer {
   border-top: 1px solid rgba(255,255,255,0.08);
@@ -350,9 +352,6 @@ h3 {
   letter-spacing: 0.01em;
 }
 
-
-/* Academic reading improvement */
-
 main p {
   font-size: 1.02rem;
   letter-spacing: 0.01em;
@@ -360,6 +359,30 @@ main p {
 
 
 /* ============================================================
+SECTION 14 — Knowledge Page Refinement (Additive Only)
+============================================================ */
+
+.knowledge-block {
+  margin-top: 1.75rem;
+}
+
+.knowledge-block h3 {
+  margin-bottom: 0.5rem;
+}
+
+.knowledge-block p {
+  margin-bottom: 0.75rem;
+}
+
+/* Subtle separation for readability */
+
+:root[data-theme="dark"] .knowledge-block {
+  border-left: 2px solid rgba(255,255,255,0.06);
+  padding-left: 12px;
+}
+
+
+/* ============================================================
 END OF FILE
-Version: 1.4.7
+Version: 1.4.8
 ============================================================ */

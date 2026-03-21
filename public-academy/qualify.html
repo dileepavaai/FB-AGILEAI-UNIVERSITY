@@ -36,6 +36,28 @@
       display: block;
       background: #ffffff;
     }
+
+    /* ✅ STABLE HEIGHT SYSTEM (NO JS, NO BLANK SPACE) */
+
+    /* Desktop large */
+    @media (min-width: 1400px) {
+      #eoiForm { height: 1400px; }
+    }
+
+    /* Laptop */
+    @media (max-width: 1399px) and (min-width: 1025px) {
+      #eoiForm { height: 1500px; }
+    }
+
+    /* Tablet */
+    @media (max-width: 1024px) and (min-width: 769px) {
+      #eoiForm { height: 1700px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      #eoiForm { height: 1900px; }
+    }
   </style>
 </head>
 
@@ -107,13 +129,11 @@
         </p>
 
         <div class="form-embed">
-
           <iframe 
             id="eoiForm"
             src="https://docs.google.com/forms/d/e/1FAIpQLSfzNlU60ABFGqX7AJSqAV5KzBpcVyM4srcxJmUyaxRrRZdeug/viewform?embedded=true">
             Loading…
           </iframe>
-
         </div>
 
         <p class="form-note">
@@ -175,27 +195,6 @@
   <script src="/shared/design-authority/js/theme.js"></script>
   <script src="/shared/design-authority/js/analytics.js"></script>
   <script src="/assets/js/main.js"></script>
-
-  <!-- SMART HEIGHT CONTROL (FINAL) -->
-  <script>
-    function adjustFormHeight() {
-      const iframe = document.getElementById("eoiForm");
-      const width = window.innerWidth;
-
-      if (width > 1400) {
-        iframe.style.height = "1500px"; // large desktop
-      } else if (width > 1024) {
-        iframe.style.height = "1600px"; // laptop
-      } else if (width > 768) {
-        iframe.style.height = "1900px"; // tablet (slightly increased)
-      } else {
-        iframe.style.height = "2400px"; // mobile FIX (eliminates inner scroll)
-      }
-    }
-
-    window.addEventListener("load", adjustFormHeight);
-    window.addEventListener("resize", adjustFormHeight);
-  </script>
 
 </body>
 </html>

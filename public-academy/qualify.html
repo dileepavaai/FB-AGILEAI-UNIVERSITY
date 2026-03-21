@@ -7,7 +7,7 @@
 
   <title>Engage with Agile AI Academy</title>
 
-  <!-- FORCE LIGHT MODE (Page-specific override) -->
+  <!-- FORCE LIGHT MODE -->
   <script>
     localStorage.setItem("theme", "light");
   </script>
@@ -21,13 +21,14 @@
   <!-- Favicon -->
   <link rel="icon" href="/assets/img/favicon.ico" />
 
-  <!-- LOCAL SAFE ENHANCEMENTS -->
+  <!-- FINAL VISUAL TUNING -->
   <style>
     .form-embed {
       overflow: hidden;
       border-radius: 12px;
       background: #ffffff;
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      position: relative;
     }
 
     .form-embed iframe {
@@ -37,26 +38,41 @@
       background: #ffffff;
     }
 
-    /* ✅ STABLE HEIGHT SYSTEM (NO JS, NO BLANK SPACE) */
+    /* ===== HEIGHT SYSTEM (BALANCED) ===== */
 
-    /* Desktop large */
+    /* Desktop */
     @media (min-width: 1400px) {
-      #eoiForm { height: 1400px; }
+      #eoiForm { height: 1350px; }
     }
 
     /* Laptop */
     @media (max-width: 1399px) and (min-width: 1025px) {
-      #eoiForm { height: 1500px; }
+      #eoiForm { height: 1450px; }
     }
 
     /* Tablet */
     @media (max-width: 1024px) and (min-width: 769px) {
-      #eoiForm { height: 1700px; }
+      #eoiForm { height: 1650px; }
     }
 
-    /* Mobile */
+    /* 🔥 MOBILE (TUNED — NOT OVERSTRETCHED) */
     @media (max-width: 768px) {
-      #eoiForm { height: 2000px; }
+      #eoiForm { height: 1850px; }
+
+      /* Pull content up slightly */
+      .form-embed {
+        margin-bottom: -24px;
+      }
+
+      /* Reduce spacing below form */
+      .form-note {
+        margin-top: 10px;
+      }
+
+      /* Tighten section spacing */
+      .section.alt {
+        padding-bottom: 40px;
+      }
     }
   </style>
 </head>
@@ -93,33 +109,25 @@
         <h2>Engagement Pathways</h2>
 
         <div class="grid-3">
-
           <div class="card">
             <h3>Professional Participation</h3>
-            <p>
-              For individuals developing capability aligned to Agile AI standards and credential pathways.
-            </p>
+            <p>For individuals developing capability aligned to Agile AI standards and credential pathways.</p>
           </div>
 
           <div class="card">
             <h3>Institutional Alignment</h3>
-            <p>
-              For organizations aligning teams to the Agile AI Specification.
-            </p>
+            <p>For organizations aligning teams to the Agile AI Specification.</p>
           </div>
 
           <div class="card">
             <h3>Strategic Collaboration</h3>
-            <p>
-              For partners contributing to the Agile AI ecosystem.
-            </p>
+            <p>For partners contributing to the Agile AI ecosystem.</p>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- FORM EMBED -->
+    <!-- FORM -->
     <section class="section alt">
       <div class="container narrow">
         <h2>Start Your Capability Review</h2>
@@ -157,9 +165,7 @@
       <div class="container narrow">
         <h2>Direct Contact</h2>
 
-        <p>
-          For formal or institutional communication:
-        </p>
+        <p>For formal or institutional communication:</p>
 
         <p class="highlight">
           support@agileai.university

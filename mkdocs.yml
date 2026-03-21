@@ -5,10 +5,10 @@ site_url: https://spec.agileai.university
 
 docs_dir: agileai-spec
 site_dir: public-spec
-custom_dir: agileai-spec/overrides
 
 theme:
   name: material
+  custom_dir: agileai-spec/overrides
   features:
     - navigation.tabs
     - navigation.sections

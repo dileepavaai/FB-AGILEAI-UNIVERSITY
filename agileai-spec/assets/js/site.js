@@ -1,19 +1,18 @@
 /*
 ======================================================
 Agile AI Specification — UI Control Layer
-Version: 3.0 (Stable Toggle Relocation + Governance Safe)
+Version: 3.1 (Deterministic Toggle + Clean Lifecycle)
 ======================================================
 */
 
 (function () {
 
   /* ======================================================
-  THEME TOGGLE RELOCATION (STABLE + NON-BREAKING)
+  THEME TOGGLE RELOCATION (CLEAN + DETERMINISTIC)
   ====================================================== */
 
   function relocateThemeToggle() {
 
-    // Correct Material toggle selector (label for palette)
     const toggle = document.querySelector("[for='__palette']");
     const target = document.getElementById("spec-toggle-slot");
 
@@ -106,7 +105,7 @@ Version: 3.0 (Stable Toggle Relocation + Governance Safe)
 
 
   /* ======================================================
-  INITIALIZATION (STABLE ACROSS NAVIGATION)
+  INITIALIZATION (STABLE)
   ====================================================== */
 
   function initializePage() {
@@ -121,13 +120,7 @@ Version: 3.0 (Stable Toggle Relocation + Governance Safe)
   // Initial load
   document.addEventListener("DOMContentLoaded", initializePage);
 
-  // MkDocs Material navigation events
+  // MkDocs Material navigation lifecycle
   document.addEventListener("navigation.end", initializePage);
-
-  // Fallback for delayed rendering (critical stability layer)
-  window.addEventListener("load", function () {
-    setTimeout(relocateThemeToggle, 200);
-    setTimeout(relocateThemeToggle, 500);
-  });
 
 })();

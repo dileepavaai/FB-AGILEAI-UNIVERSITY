@@ -1,6 +1,6 @@
 /* =========================================================
 Agile AI Specification — UI Refinement Layer
-Version: 5.0 (Institutional Tone Correction)
+Version: 5.1 (Stability + Dark Mode Correction)
 Purpose:
 - Reduce visual aggression (banner + accents)
 - Improve readability (light + dark)
@@ -20,10 +20,15 @@ INSTITUTIONAL HEADER (PRIMARY)
 
   width: 100%;
 
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
 
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-md-color-scheme="slate"] .spec-institutional-header {
+  background: rgba(15, 23, 42, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .spec-header-container {
@@ -37,6 +42,7 @@ INSTITUTIONAL HEADER (PRIMARY)
 }
 
 /* Left */
+
 .spec-header-left {
   display: flex;
   align-items: center;
@@ -51,6 +57,10 @@ INSTITUTIONAL HEADER (PRIMARY)
   transition: opacity 0.2s ease;
 }
 
+[data-md-color-scheme="slate"] .spec-brand {
+  color: #e2e8f0;
+}
+
 .spec-brand:hover {
   opacity: 0.7;
 }
@@ -63,7 +73,13 @@ INSTITUTIONAL HEADER (PRIMARY)
   color: #666;
 }
 
+[data-md-color-scheme="slate"] .spec-surface {
+  color: #94a3b8;
+}
+
+
 /* Right Navigation */
+
 .spec-header-nav {
   display: flex;
   gap: 18px;
@@ -72,17 +88,26 @@ INSTITUTIONAL HEADER (PRIMARY)
 
 .spec-header-nav a {
   text-decoration: none;
-  color: #333;
+  color: #334155;
   position: relative;
   transition: all 0.2s ease;
 }
 
+[data-md-color-scheme="slate"] .spec-header-nav a {
+  color: #cbd5f5;
+}
+
 .spec-header-nav a:hover {
-  color: #000;
+  color: #0f172a;
   transform: translateY(-1px);
 }
 
+[data-md-color-scheme="slate"] .spec-header-nav a:hover {
+  color: #ffffff;
+}
+
 /* External link indicator */
+
 .external-link::after {
   content: " ↗";
   font-size: 11px;
@@ -104,6 +129,11 @@ CONTEXT BAR (SECTION AWARENESS)
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
+[data-md-color-scheme="slate"] .spec-context-bar {
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 .spec-context-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -118,10 +148,18 @@ CONTEXT BAR (SECTION AWARENESS)
   color: #888;
 }
 
+[data-md-color-scheme="slate"] .spec-context-label {
+  color: #94a3b8;
+}
+
 .spec-context-value {
   font-weight: 600;
   color: #334155;
   letter-spacing: 0.2px;
+}
+
+[data-md-color-scheme="slate"] .spec-context-value {
+  color: #e2e8f0;
 }
 
 .spec-context-separator {
@@ -132,34 +170,46 @@ CONTEXT BAR (SECTION AWARENESS)
   color: #444;
 }
 
+[data-md-color-scheme="slate"] .spec-context-page {
+  color: #cbd5f5;
+}
+
 
 /* =========================================================
-GLOBAL SPEC BANNER (REFINED)
+GLOBAL SPEC BANNER (REFINED + SOFTENED)
 ========================================================= */
 
 .spec-global-banner {
   background: linear-gradient(
     90deg,
-    rgba(30, 41, 59, 0.95),
-    rgba(51, 65, 85, 0.92)
+    rgba(30, 41, 59, 0.92),
+    rgba(51, 65, 85, 0.88)
   );
 
-  color: #f8fafc;
+  color: #f1f5f9;
 
-  padding: 14px 20px;
-  margin-bottom: 18px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
 
-  border-radius: 8px;
+  border-radius: 6px;
 
   display: flex;
   flex-direction: column;
   gap: 6px;
 
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+[data-md-color-scheme="slate"] .spec-global-banner {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.95),
+    rgba(30, 41, 59, 0.92)
+  );
 }
 
 .spec-title {
-  font-size: 16px;
+  font-size: 15.5px;
   font-weight: 600;
   letter-spacing: 0.2px;
 }
@@ -167,21 +217,26 @@ GLOBAL SPEC BANNER (REFINED)
 .spec-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 14px;
 
-  font-size: 13px;
+  font-size: 12.5px;
   opacity: 0.85;
 }
 
 
 /* =========================================================
-ACTIVE NAVIGATION STATE
+ACTIVE NAVIGATION STATE (CALMER)
 ========================================================= */
 
 .md-tabs__link--active {
   font-weight: 600;
   color: #334155 !important;
-  border-bottom: 2px solid rgba(51, 65, 85, 0.6);
+  border-bottom: 2px solid rgba(51, 65, 85, 0.45);
+}
+
+[data-md-color-scheme="slate"] .md-tabs__link--active {
+  color: #e2e8f0 !important;
+  border-bottom: 2px solid rgba(226, 232, 240, 0.4);
 }
 
 .md-nav__link--active {
@@ -189,8 +244,16 @@ ACTIVE NAVIGATION STATE
   font-weight: 600;
 }
 
+[data-md-color-scheme="slate"] .md-nav__link--active {
+  color: #e2e8f0 !important;
+}
+
 .md-tabs__link:hover {
   color: #1e293b;
+}
+
+[data-md-color-scheme="slate"] .md-tabs__link:hover {
+  color: #ffffff;
 }
 
 
@@ -203,6 +266,10 @@ BREADCRUMB POLISH
   color: #666;
 }
 
+[data-md-color-scheme="slate"] .md-path {
+  color: #94a3b8;
+}
+
 .md-path__item {
   opacity: 0.8;
 }
@@ -210,6 +277,10 @@ BREADCRUMB POLISH
 .md-path__item--active {
   font-weight: 600;
   color: #111;
+}
+
+[data-md-color-scheme="slate"] .md-path__item--active {
+  color: #f1f5f9;
 }
 
 
@@ -220,8 +291,8 @@ LEGACY SUPPORT (DO NOT REMOVE)
 .spec-banner {
   background: linear-gradient(
     90deg,
-    rgba(30, 41, 59, 0.95),
-    rgba(51, 65, 85, 0.92)
+    rgba(30, 41, 59, 0.92),
+    rgba(51, 65, 85, 0.88)
   );
   color: #f8fafc;
   padding: 16px 20px;

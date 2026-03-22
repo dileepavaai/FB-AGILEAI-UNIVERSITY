@@ -1,24 +1,16 @@
 /*
 ======================================================
 Agile AI Specification Header + Mermaid Initialization
-Analytics Tracking Added
+Analytics Tracking Added + Theme Toggle (Refinement)
 ======================================================
 */
 
 (function () {
 
-  /*
-  ======================================================
-  Inject Specification Banner
-  ======================================================
-  */
-
   function injectSpecBanner() {
 
     const container = document.querySelector(".md-content__inner");
-
     if (!container) return;
-
     if (container.querySelector(".spec-banner")) return;
 
     const banner = document.createElement("div");
@@ -36,15 +28,34 @@ Analytics Tracking Added
     `;
 
     container.prepend(banner);
-
   }
 
 
-  /*
-  ======================================================
-  Mermaid Rendering
-  ======================================================
-  */
+  function injectThemeToggle() {
+
+    const header = document.querySelector(".md-header__inner");
+    if (!header) return;
+    if (header.querySelector("#theme-toggle")) return;
+
+    const btn = document.createElement("button");
+    btn.id = "theme-toggle";
+    btn.className = "spec-theme-toggle";
+    btn.title = "Toggle theme";
+    btn.innerHTML = "🌙";
+
+    btn.addEventListener("click", () => {
+      const body = document.body;
+      const current = body.getAttribute("data-md-color-scheme");
+
+      body.setAttribute(
+        "data-md-color-scheme",
+        current === "default" ? "slate" : "default"
+      );
+    });
+
+    header.appendChild(btn);
+  }
+
 
   function renderMermaid() {
 
@@ -63,12 +74,6 @@ Analytics Tracking Added
   }
 
 
-  /*
-  ======================================================
-  Analytics Tracking
-  ======================================================
-  */
-
   function setupAnalyticsTracking() {
 
     if (typeof gtag !== "function") return;
@@ -80,34 +85,22 @@ Analytics Tracking Added
       const href = link.getAttribute("href");
       if (!href) return;
 
-      /* Agile AI Guide Download */
-
       if (href.includes("Agile-AI-Guide")) {
-
         link.addEventListener("click", function () {
-
           gtag("event", "download_agile_ai_guide", {
             event_category: "publication",
             event_label: "Agile AI Guide"
           });
-
         });
-
       }
 
-      /* Functional Elements Download */
-
       if (href.includes("Agile-AI-Functional-Elements")) {
-
         link.addEventListener("click", function () {
-
           gtag("event", "download_functional_elements", {
             event_category: "publication",
             event_label: "Agile AI Functional Elements"
           });
-
         });
-
       }
 
     });
@@ -115,29 +108,15 @@ Analytics Tracking Added
   }
 
 
-  /*
-  ======================================================
-  Page Initialization
-  ======================================================
-  */
-
   function initializePage() {
-
     injectSpecBanner();
+    injectThemeToggle();
     renderMermaid();
     setupAnalyticsTracking();
-
   }
 
 
-  /*
-  ======================================================
-  Page Events
-  ======================================================
-  */
-
   document.addEventListener("DOMContentLoaded", initializePage);
-
   document.addEventListener("navigation.end", initializePage);
 
 })();

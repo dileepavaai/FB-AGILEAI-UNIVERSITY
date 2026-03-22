@@ -1,29 +1,11 @@
 /*
 ======================================================
 Agile AI Specification — UI Control Layer
-Version: 3.1 (Deterministic Toggle + Clean Lifecycle)
+Version: 3.2 (Final Clean — No Toggle Manipulation)
 ======================================================
 */
 
 (function () {
-
-  /* ======================================================
-  THEME TOGGLE RELOCATION (CLEAN + DETERMINISTIC)
-  ====================================================== */
-
-  function relocateThemeToggle() {
-
-    const toggle = document.querySelector("[for='__palette']");
-    const target = document.getElementById("spec-toggle-slot");
-
-    if (!toggle || !target) return;
-
-    // Prevent duplicate move
-    if (target.contains(toggle)) return;
-
-    target.appendChild(toggle);
-  }
-
 
   /* ======================================================
   SPEC BANNER INJECTION
@@ -105,12 +87,10 @@ Version: 3.1 (Deterministic Toggle + Clean Lifecycle)
 
 
   /* ======================================================
-  INITIALIZATION (STABLE)
+  INITIALIZATION
   ====================================================== */
 
   function initializePage() {
-
-    relocateThemeToggle();
     injectSpecBanner();
     renderMermaid();
     setupAnalyticsTracking();
@@ -120,7 +100,7 @@ Version: 3.1 (Deterministic Toggle + Clean Lifecycle)
   // Initial load
   document.addEventListener("DOMContentLoaded", initializePage);
 
-  // MkDocs Material navigation lifecycle
+  // MkDocs navigation
   document.addEventListener("navigation.end", initializePage);
 
 })();

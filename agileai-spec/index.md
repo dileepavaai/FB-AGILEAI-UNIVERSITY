@@ -46,7 +46,7 @@ The Agile AI ecosystem is structured as an integrated system of specifications a
 
 ## Core Specification
 
-- [Agile AI Specification v1.0](versions/1.0/Agile-AI-Specification.md)
+- [Agile AI Specification v1.0](../agileai-spec/versions/1.0/Agile-AI-Specification.md)
 
 Defines the foundational architecture, principles, and capability model of Agile AI systems.
 
@@ -54,10 +54,10 @@ Defines the foundational architecture, principles, and capability model of Agile
 
 ## Registry System
 
-- [Concept Registry](registry/Agile-AI-Concept-Registry.md)  
-- [Capability Registry](registry/Agile-AI-Capability-Registry.md)  
-- [Credential Registry](registry/Agile-AI-Credential-Registry.md)  
-- [Program Registry](registry/Agile-AI-Program-Registry.md)  
+- [Concept Registry](../agileai-spec/registry/Agile-AI-Concept-Registry.md)  
+- [Capability Registry](../agileai-spec/registry/Agile-AI-Capability-Registry.md)  
+- [Credential Registry](../agileai-spec/registry/Agile-AI-Credential-Registry.md)  
+- [Program Registry](../agileai-spec/registry/Agile-AI-Program-Registry.md)  
 
 Defines stable identifiers and institutional reference structures across the ecosystem.
 

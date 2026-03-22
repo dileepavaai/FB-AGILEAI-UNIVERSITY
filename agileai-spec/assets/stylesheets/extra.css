@@ -1,13 +1,75 @@
 /* =========================================================
-Agile AI Specification — Global Banner Styling
-Version: 2.0
+Agile AI Specification — UI Refinement Layer
+Version: 3.0 (Header + Banner Unified)
 Purpose:
-Unified institutional identity banner across all pages
+- Global Banner (canonical)
+- Institutional Header (new)
+- Fully additive, non-breaking
 ========================================================= */
 
 
 /* =========================================================
-GLOBAL SPEC BANNER (NEW — PRIMARY)
+INSTITUTIONAL HEADER (NEW — SAFE ADDITION)
+========================================================= */
+
+.spec-institutional-header {
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+  z-index: 10;
+}
+
+.spec-header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Left section */
+.spec-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spec-brand {
+  font-weight: 600;
+  text-decoration: none;
+  color: #111;
+}
+
+.spec-divider {
+  color: #999;
+}
+
+.spec-surface {
+  color: #666;
+}
+
+/* Right navigation */
+.spec-header-nav {
+  display: flex;
+  gap: 18px;
+}
+
+.spec-header-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.spec-header-nav a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+GLOBAL SPEC BANNER (PRIMARY — UNCHANGED CORE)
 ========================================================= */
 
 .spec-global-banner {
@@ -45,7 +107,7 @@ GLOBAL SPEC BANNER (NEW — PRIMARY)
 
 
 /* =========================================================
-LEGACY SUPPORT (DO NOT REMOVE — SAFE BACKWARD COMPATIBILITY)
+LEGACY SUPPORT (DO NOT REMOVE — LOCKED)
 ========================================================= */
 
 .spec-banner {
@@ -79,6 +141,17 @@ RESPONSIVE OPTIMIZATION
 ========================================================= */
 
 @media (max-width: 768px) {
+
+  /* Header */
+  .spec-header-nav {
+    display: none;
+  }
+
+  .spec-header-container {
+    padding: 10px 14px;
+  }
+
+  /* Banner */
   .spec-global-banner {
     padding: 12px 14px;
   }

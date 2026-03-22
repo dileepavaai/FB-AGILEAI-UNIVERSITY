@@ -332,3 +332,35 @@ FINAL HEADER TOGGLE ALIGNMENT FIX (SURGICAL)
 
   margin-top: 2px; /* fine-tune vertical alignment */
 }
+
+/* =========================================================
+TOGGLE SLOT (FINAL — CLEAN + STABLE)
+========================================================= */
+
+#spec-toggle-slot {
+  display: flex;
+  align-items: center;
+
+  margin-left: 10px;   /* space from "Specification v1.0" */
+  margin-right: 10px;  /* space from search */
+}
+
+/* Material toggle normalization */
+#spec-toggle-slot label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  opacity: 0.85;
+  cursor: pointer;
+
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+#spec-toggle-slot label:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}

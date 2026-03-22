@@ -54,7 +54,7 @@
     </div>
   </div>
 
-  <!-- Context Bar (SAFE — NO URL DEPENDENCY) -->
+  <!-- Context Bar (FULLY SAFE) -->
   <div class="spec-context-bar">
     <div class="spec-context-container">
 
@@ -62,11 +62,7 @@
       <span class="spec-context-label">Section</span>
 
       <span class="spec-context-value">
-        {% if page %}
-          Specification
-        {% else %}
-          Specification
-        {% endif %}
+        Specification
       </span>
 
       <!-- Separator -->
@@ -74,8 +70,8 @@
 
       <!-- Page -->
       <span class="spec-context-page">
-        {% if page and page.title %}
-          {{ page.title }}
+        {% if page %}
+          {{ page.title | default("Overview") }}
         {% else %}
           Overview
         {% endif %}

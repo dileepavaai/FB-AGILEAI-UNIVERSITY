@@ -1,9 +1,13 @@
-# AGILE AI
+---
+section: Architecture
+title: Agile AI Research Directions
+---
 
-## RESEARCH DIRECTIONS
+# Agile AI  
+## Research Directions
 
-STATUS: CANONICAL
-DATE ESTABLISHED: 2026-03-14
+**Status:** Canonical  
+**Date Established:** 2026-03-14
 
 ---
 
@@ -13,9 +17,9 @@ This document outlines potential research directions within the Agile AI domain.
 
 The purpose of this document is to:
 
-• identify areas for academic and professional exploration
-• encourage research contributions
-• guide the evolution of the Agile AI domain
+- identify areas for academic and professional exploration  
+- encourage research contributions  
+- guide the evolution of the Agile AI domain  
 
 These research directions are intended to support the long-term development of intelligent organizational capabilities.
 
@@ -29,9 +33,9 @@ At the same time, Agile principles have reshaped how teams plan, build, and deli
 
 The Agile AI domain explores the intersection of these two movements by examining how organizations can combine:
 
-• adaptive execution
-• machine intelligence
-• accountable human judgment
+- adaptive execution  
+- machine intelligence  
+- accountable human judgment  
 
 Developing effective models for this integration presents new research opportunities.
 
@@ -45,9 +49,9 @@ One important area of research concerns the interaction between human judgment a
 
 Key questions include:
 
-• How should AI insights be presented to human decision-makers?
-• What forms of oversight are required for responsible use of AI?
-• How can organizations balance automation with human accountability?
+- How should AI insights be presented to human decision-makers?  
+- What forms of oversight are required for responsible use of AI?  
+- How can organizations balance automation with human accountability?  
 
 Research in this area may contribute to improved models for AI-augmented decision making.
 
@@ -61,9 +65,9 @@ However, AI introduces new dynamics into organizational operations.
 
 Research opportunities include:
 
-• how teams adapt workflows when intelligent systems are introduced
-• how decision cycles change when AI insights are available
-• how organizations manage rapid feedback from intelligent systems
+- how teams adapt workflows when intelligent systems are introduced  
+- how decision cycles change when AI insights are available  
+- how organizations manage rapid feedback from intelligent systems  
 
 Understanding these dynamics can help organizations maintain agility while leveraging AI capabilities.
 
@@ -75,9 +79,9 @@ Organizations currently lack clear benchmarks for measuring their ability to int
 
 Research may explore:
 
-• maturity models for intelligent organizations
-• capability indicators for human-AI collaboration
-• metrics for adaptive execution in AI-enabled environments
+- maturity models for intelligent organizations  
+- capability indicators for human–AI collaboration  
+- metrics for adaptive execution in AI-enabled environments  
 
 These insights could inform the development of structured capability assessments.
 
@@ -89,9 +93,9 @@ Responsible governance of AI systems remains an evolving area of study.
 
 Potential research topics include:
 
-• governance frameworks for AI-enabled decision systems
-• accountability structures for AI-supported decisions
-• ethical guidelines for operational AI usage
+- governance frameworks for AI-enabled decision systems  
+- accountability structures for AI-supported decisions  
+- ethical guidelines for operational AI usage  
 
 Research in this area is essential for ensuring that intelligent systems are used responsibly.
 
@@ -103,11 +107,11 @@ Artificial intelligence systems can generate insights from large volumes of data
 
 Research may explore how organizations transform these insights into learning.
 
-Questions include:
+Key questions include:
 
-• how teams interpret and apply AI-generated insights
-• how learning cycles evolve in AI-enabled environments
-• how organizations build institutional knowledge from intelligent systems
+- how teams interpret and apply AI-generated insights  
+- how learning cycles evolve in AI-enabled environments  
+- how organizations build institutional knowledge from intelligent systems  
 
 This research could help organizations develop more effective learning cultures.
 
@@ -119,9 +123,9 @@ The effectiveness of AI systems depends not only on technical performance but al
 
 Research opportunities include:
 
-• user-centered design of AI decision interfaces
-• cognitive load in AI-supported workflows
-• trust dynamics between humans and intelligent systems
+- user-centered design of AI decision interfaces  
+- cognitive load in AI-supported workflows  
+- trust dynamics between humans and intelligent systems  
 
 These insights can improve collaboration between humans and AI.
 
@@ -133,11 +137,11 @@ The Agile AI domain intersects with several established disciplines.
 
 These include:
 
-• artificial intelligence
-• organizational management
-• decision science
-• systems engineering
-• human-computer interaction
+- artificial intelligence  
+- organizational management  
+- decision science  
+- systems engineering  
+- human-computer interaction  
 
 Research in Agile AI often draws insights from multiple fields to address complex organizational challenges.
 
@@ -147,10 +151,10 @@ Research in Agile AI often draws insights from multiple fields to address comple
 
 Researchers and practitioners may contribute to the Agile AI domain by:
 
-• developing conceptual frameworks
-• conducting empirical studies
-• proposing governance models
-• exploring human-AI collaboration practices
+- developing conceptual frameworks  
+- conducting empirical studies  
+- proposing governance models  
+- exploring human–AI collaboration practices  
 
 Such contributions support the continued evolution of the domain.
 
@@ -162,10 +166,10 @@ The Agile AI ecosystem encourages responsible exploration of these research dire
 
 Institutional roles include:
 
-Agile AI Foundation
+**Agile AI Foundation**  
 Defines conceptual frameworks and research themes.
 
-Agile AI University
+**Agile AI University**  
 Supports academic exploration, capability development, and practical application.
 
 ---
@@ -176,11 +180,8 @@ The long-term goal of Agile AI research is to support the development of organiz
 
 Advances in this field may help organizations:
 
-• navigate increasing complexity
-• improve decision quality
-• adapt more effectively to technological change
+- navigate increasing complexity  
+- improve decision quality  
+- adapt more effectively to technological change  
 
 The Agile AI domain will continue to evolve as organizations gain deeper experience integrating intelligent systems into everyday operations.
-
-
-

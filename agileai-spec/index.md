@@ -22,7 +22,7 @@ It establishes:
 - registry systems  
 - governance structures  
 
-These elements provide a consistent foundation for interpretation, implementation, and ecosystem alignment.
+This page serves as the **institutional entry point** into the Agile AI specification system.
 
 ---
 
@@ -40,82 +40,69 @@ These specifications are published and maintained as part of the institutional k
 
 ---
 
-# 3. Registry System
+# 3. Explore the Specification System
 
-The Agile AI Specification includes canonical registries used across the ecosystem.
+The Agile AI ecosystem is structured as an integrated system of specifications, registries, and governance frameworks.
 
-Registries define stable identifiers for domain concepts, capabilities, and professional credentials.
+## Core Specification
 
-These identifiers provide consistent references across:
+- [Agile AI Specification v1.0](versions/1.0/Agile-AI-Specification.md)
 
-- documentation  
-- assessments  
-- institutional systems  
-- credential verification infrastructure  
+Defines the foundational architecture, principles, and capability model of Agile AI systems.
 
 ---
 
-# 4. Registry Structure
+## Registry System
 
-The Agile AI registry system is organized into distinct canonical registries.
+- [Concept Registry](registry/Agile-AI-Concept-Registry.md)  
+- [Capability Registry](registry/Agile-AI-Capability-Registry.md)  
+- [Credential Registry](registry/Agile-AI-Credential-Registry.md)  
+- [Program Registry](registry/Agile-AI-Program-Registry.md)  
 
-## 4.1 Concept Registry
-
-Defines canonical **Agile AI domain concepts**.
-
-Concept identifiers support consistent reference across:
-
-- domain documentation  
-- research publications  
-- ecosystem frameworks  
+Defines stable identifiers and institutional reference structures across the ecosystem.
 
 ---
 
-## 4.2 Capability Registry
+## Governance Framework
 
-Defines the **capability dimensions** used within the Agile AI capability model.
+- [Design Authority Charter](architecture/Design-Authority-Charter.md)  
+- [Ecosystem Governance Change Log](architecture/ecosystem-governance-log.md)  
 
-Capability identifiers are used by:
-
-- capability assessments  
-- institutional capability frameworks  
-- professional development models  
+Defines architectural governance, system rules, and institutional evolution tracking.
 
 ---
 
-## 4.3 Credential Registry
+# 4. How to Navigate
 
-Defines the professional **credentials recognized within the Agile AI ecosystem**.
+The specification system is designed to be explored in a structured manner.
 
-Credential identifiers support:
+Recommended flow:
 
-- credential issuance  
-- credential verification  
-- institutional recognition systems  
+1. Start with the **Core Specification** to understand the architecture  
+2. Explore the **Registry System** to understand structural components  
+3. Review the **Governance Framework** for system rules and authority  
+
+This ensures a coherent understanding of the Agile AI ecosystem.
 
 ---
 
 # 5. Governance
 
-Agile AI registries are maintained through the **Agile AI governance process**.
+This specification system is maintained under the authority of **Agile AI University**.
 
-Registry identifiers follow these principles:
+All components must:
 
-- identifiers are stable once assigned  
-- identifiers remain reserved even if elements are retired  
-- registries evolve through controlled governance  
+- align with the canonical specification  
+- follow registry and governance rules  
+- maintain structural consistency  
 
-This governance model ensures:
-
-- consistency  
-- traceability  
-- long-term ecosystem stability  
+Changes must be governed and recorded through the **governance change log**.
 
 ---
 
 # 6. Governance Notes
 
-- This specification acts as a reference entry point to the registry system  
-- All registries must align with the canonical specification framework  
-- Changes must be governed and recorded through the governance change log  
-- No registry may operate outside the defined institutional governance model  
+- This page acts as the canonical navigation entry point  
+- All links must remain stable and explicitly defined  
+- No dynamic navigation logic is permitted  
+- Structural changes must follow governance protocols  

@@ -18,12 +18,9 @@
         <span class="spec-divider">|</span>
 
         <span class="spec-surface">Specification v1.0</span>
-
-        <!-- ✅ Toggle Slot (DO NOT REMOVE) -->
-        <div id="spec-toggle-slot"></div>
       </div>
 
-      <!-- Right: Cross-Surface Navigation -->
+      <!-- Right: Cross-Surface Navigation + Toggle -->
       <div class="spec-header-nav">
 
         <a href="https://assessment.agileai.university"
@@ -54,16 +51,18 @@
           Governance
         </a>
 
+        <!-- ✅ FINAL TOGGLE POSITION -->
+        <div id="spec-toggle-slot"></div>
+
       </div>
 
     </div>
   </div>
 
-  <!-- Context Bar (Section Intelligence v2 — SAFE) -->
+  <!-- Context Bar -->
   <div class="spec-context-bar">
     <div class="spec-context-container">
 
-      <!-- Section -->
       <span class="spec-context-label">Section</span>
 
       <span class="spec-context-value">
@@ -74,10 +73,8 @@
         {% endif %}
       </span>
 
-      <!-- Separator -->
       <span class="spec-context-separator">→</span>
 
-      <!-- Page -->
       <span class="spec-context-page">
         {% if page %}
           {{ page.title | default("Overview") }}
@@ -89,7 +86,7 @@
     </div>
   </div>
 
-  <!-- Material Header (REQUIRED — DO NOT REMOVE) -->
+  <!-- Material Header (DO NOT REMOVE) -->
   {{ super() }}
 
 {% endblock %}

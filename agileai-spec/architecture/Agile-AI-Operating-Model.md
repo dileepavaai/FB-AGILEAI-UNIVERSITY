@@ -3,6 +3,10 @@ section: Architecture
 title: Agile AI Operating Model
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Architecture</strong> → Operating Model
+</div>
+
 # Agile AI Operating Model
 
 !!! info "Architecture Reference"
@@ -309,4 +313,4 @@ This document connects with the following components of the Agile AI Specificati
 - **Domain Model:** [Agile AI Capability Model](../domain/Agile-AI-Capability-Model.md)  
 - **Capability System:** [Agile AI Capability Registry](../registry/capabilities/Agile-AI-Capability-Registry.md)  
 - **Program Structure:** [Agile AI Program Registry](../registry/programs/Agile-AI-Program-Registry.md)  
-- **Ecosystem Architecture:** [Agile AI Ecosystem Architecture Map](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)
+- **Ecosystem Architecture:** [Agile AI Ecosystem Architecture Map](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)  

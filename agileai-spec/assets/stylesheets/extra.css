@@ -1,182 +1,25 @@
 /* =========================================================
 Agile AI Specification — UI Refinement Layer
-Version: 3.0 (Header + Banner Unified)
+Version: 4.0 (Clean + Unified)
 Purpose:
+- Institutional Header (sticky + refined)
 - Global Banner (canonical)
-- Institutional Header (new)
+- Context Awareness Layer
+- Navigation Active State
 - Fully additive, non-breaking
 ========================================================= */
 
 
 /* =========================================================
-INSTITUTIONAL HEADER (NEW — SAFE ADDITION)
+INSTITUTIONAL HEADER (PRIMARY)
 ========================================================= */
 
-.spec-institutional-header {
-  width: 100%;
-  background: #ffffff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  font-size: 14px;
-  z-index: 10;
-}
-
-.spec-header-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 10px 20px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Left section */
-.spec-header-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.spec-brand {
-  font-weight: 600;
-  text-decoration: none;
-  color: #111;
-}
-
-.spec-divider {
-  color: #999;
-}
-
-.spec-surface {
-  color: #666;
-}
-
-/* Right navigation */
-.spec-header-nav {
-  display: flex;
-  gap: 18px;
-}
-
-.spec-header-nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-}
-
-.spec-header-nav a:hover {
-  text-decoration: underline;
-}
-
-
-/* =========================================================
-GLOBAL SPEC BANNER (PRIMARY — UNCHANGED CORE)
-========================================================= */
-
-.spec-global-banner {
-  background: linear-gradient(90deg, #1e3a8a, #2563eb);
-  color: #ffffff;
-
-  padding: 14px 20px;
-  margin-bottom: 18px;
-
-  border-radius: 8px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-
-/* Title */
-.spec-title {
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-}
-
-
-/* Meta row */
-.spec-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-
-  font-size: 13px;
-  opacity: 0.92;
-}
-
-
-/* =========================================================
-LEGACY SUPPORT (DO NOT REMOVE — LOCKED)
-========================================================= */
-
-.spec-banner {
-  background: linear-gradient(90deg, #1a3c8b, #2d5bd1);
-  color: white;
-  padding: 16px 20px;
-  margin: 20px 0;
-  border-radius: 8px;
-}
-
-.spec-banner-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.spec-banner-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.spec-banner-meta span {
-  margin-right: 20px;
-  font-size: 13px;
-  opacity: 0.9;
-}
-
-
-/* =========================================================
-RESPONSIVE OPTIMIZATION
-========================================================= */
-
-@media (max-width: 768px) {
-
-  /* Header */
-  .spec-header-nav {
-    display: none;
-  }
-
-  .spec-header-container {
-    padding: 10px 14px;
-  }
-
-  /* Banner */
-  .spec-global-banner {
-    padding: 12px 14px;
-  }
-
-  .spec-title {
-    font-size: 15px;
-  }
-
-  .spec-meta {
-    flex-direction: column;
-    gap: 4px;
-    font-size: 12px;
-  }
-}
-
-/* =====================================
-   SPEC HEADER — REFINEMENT LAYER
-   (Additive, Safe, Non-breaking)
-   ===================================== */
-
-/* Sticky header with subtle glass effect */
 .spec-institutional-header {
   position: sticky;
   top: 0;
   z-index: 1000;
+
+  width: 100%;
 
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
@@ -184,15 +27,14 @@ RESPONSIVE OPTIMIZATION
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* Layout */
 .spec-header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 8px 24px;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 8px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* Left */
@@ -236,13 +78,13 @@ RESPONSIVE OPTIMIZATION
   transition: all 0.2s ease;
 }
 
-/* Subtle hover differentiation */
+/* Hover refinement */
 .spec-header-nav a:hover {
   color: #000;
   transform: translateY(-1px);
 }
 
-/* External link indicator ↗ */
+/* External link indicator */
 .external-link::after {
   content: " ↗";
   font-size: 11px;
@@ -255,42 +97,172 @@ RESPONSIVE OPTIMIZATION
   opacity: 1;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .spec-header-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
 
-  .spec-header-nav {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+/* =========================================================
+CONTEXT BAR (SECTION AWARENESS)
+========================================================= */
+
+.spec-context-bar {
+  background: #f8fafc;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* =====================================
-   ACTIVE NAVIGATION STATE (Spec Layer)
-   ===================================== */
+.spec-context-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 6px 24px;
 
-/* Active top navigation tab */
+  font-size: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.spec-context-label {
+  color: #888;
+}
+
+.spec-context-value {
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+
+/* =========================================================
+GLOBAL SPEC BANNER (LOCKED)
+========================================================= */
+
+.spec-global-banner {
+  background: linear-gradient(90deg, #1e3a8a, #2563eb);
+  color: #ffffff;
+
+  padding: 14px 20px;
+  margin-bottom: 18px;
+
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spec-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.spec-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  font-size: 13px;
+  opacity: 0.92;
+}
+
+
+/* =========================================================
+ACTIVE NAVIGATION STATE
+========================================================= */
+
 .md-tabs__link--active {
   font-weight: 600;
   color: #2563eb !important;
   border-bottom: 2px solid #2563eb;
 }
 
-/* Active sidebar item */
 .md-nav__link--active {
   color: #2563eb !important;
   font-weight: 600;
 }
 
-/* Subtle hover for non-active tabs */
 .md-tabs__link {
   transition: all 0.2s ease;
 }
 
 .md-tabs__link:hover {
   color: #1e3a8a;
+}
+
+
+/* =========================================================
+BREADCRUMB POLISH
+========================================================= */
+
+.md-path {
+  font-size: 12px;
+  color: #666;
+}
+
+.md-path__item {
+  opacity: 0.8;
+}
+
+.md-path__item--active {
+  font-weight: 600;
+  color: #111;
+}
+
+
+/* =========================================================
+LEGACY SUPPORT (DO NOT REMOVE)
+========================================================= */
+
+.spec-banner {
+  background: linear-gradient(90deg, #1a3c8b, #2d5bd1);
+  color: white;
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+.spec-banner-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.spec-banner-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.spec-banner-meta span {
+  margin-right: 20px;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+
+/* =========================================================
+RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .spec-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 10px 14px;
+  }
+
+  .spec-header-nav {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .spec-global-banner {
+    padding: 12px 14px;
+  }
+
+  .spec-title {
+    font-size: 15px;
+  }
+
+  .spec-meta {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+  }
 }

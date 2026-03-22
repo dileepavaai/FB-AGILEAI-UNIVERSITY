@@ -1,9 +1,13 @@
-# AGILE AI
+---
+section: Architecture
+title: Agile AI History and Evolution
+---
 
-## HISTORY AND EVOLUTION
+# Agile AI  
+## History and Evolution
 
-STATUS: CANONICAL
-DATE ESTABLISHED: 2026-03-14
+**Status:** Canonical  
+**Date Established:** 2026-03-14
 
 ---
 
@@ -13,9 +17,9 @@ This document describes the historical background and evolution of the Agile AI 
 
 The purpose of this document is to:
 
-• explain the origins of the Agile AI concept
-• provide historical context for the domain
-• describe the convergence of multiple technological and organizational movements
+- explain the origins of the Agile AI concept  
+- provide historical context for the domain  
+- describe the convergence of multiple technological and organizational movements  
 
 Understanding the evolution of the domain helps clarify why Agile AI has emerged as a distinct capability discipline.
 
@@ -25,8 +29,8 @@ Understanding the evolution of the domain helps clarify why Agile AI has emerged
 
 The Agile AI domain emerged from the convergence of two major developments in modern organizations:
 
-1. the evolution of adaptive organizational practices
-2. the advancement of artificial intelligence technologies
+1. the evolution of adaptive organizational practices  
+2. the advancement of artificial intelligence technologies  
 
 Each of these developments evolved independently before gradually intersecting.
 
@@ -54,10 +58,10 @@ More recent developments in machine learning and data-driven algorithms have dra
 
 Advances in computing power, large-scale data availability, and algorithmic innovation have enabled AI systems to perform tasks such as:
 
-• pattern recognition
-• predictive analysis
-• natural language processing
-• automated decision support
+- pattern recognition  
+- predictive analysis  
+- natural language processing  
+- automated decision support  
 
 These capabilities have increasingly influenced how organizations analyze information and make decisions.
 
@@ -71,9 +75,9 @@ Traditional organizational structures often struggled to integrate machine-gener
 
 Several questions became increasingly relevant:
 
-• How should organizations act on AI-generated insights?
-• How should teams adapt when intelligent systems change how information is produced?
-• What role should human judgment play in AI-supported decisions?
+- How should organizations act on AI-generated insights?  
+- How should teams adapt when intelligent systems change how information is produced?  
+- What role should human judgment play in AI-supported decisions?  
 
 These questions highlighted the need for a structured approach to integrating agility and intelligence.
 
@@ -85,15 +89,15 @@ The concept of Agile AI emerged as a response to these challenges.
 
 Agile AI describes an organizational capability that integrates:
 
-Adaptive Execution
-Machine Intelligence
-Accountable Human Judgment
+- Adaptive Execution  
+- Machine Intelligence  
+- Accountable Human Judgment  
 
 This integration enables organizations to:
 
-• adapt rapidly to new information
-• leverage intelligent systems responsibly
-• maintain human accountability in decision-making
+- adapt rapidly to new information  
+- leverage intelligent systems responsibly  
+- maintain human accountability in decision-making  
 
 Rather than focusing solely on technology, the Agile AI perspective emphasizes the development of **organizational capability**.
 
@@ -103,12 +107,12 @@ Rather than focusing solely on technology, the Agile AI perspective emphasizes t
 
 As the concept matured, the need for institutional stewardship became increasingly clear.
 
-To support the development of the domain, the Agile AI ecosystem was established with two complementary entities.
+To support the development of the domain, the Agile AI ecosystem was established with two complementary entities:
 
-Agile AI Foundation
+**Agile AI Foundation**  
 Responsible for defining conceptual frameworks and canonical domain standards.
 
-Agile AI University
+**Agile AI University**  
 Responsible for operationalizing the domain through academic capability systems, assessments, and professional recognition models.
 
 This structure separates conceptual domain stewardship from academic operationalization.
@@ -121,10 +125,10 @@ As organizations continue integrating intelligent systems into operational envir
 
 Institutional elements supporting this development include:
 
-• domain frameworks
-• capability models
-• assessment systems
-• academic knowledge surfaces
+- domain frameworks  
+- capability models  
+- assessment systems  
+- academic knowledge surfaces  
 
 These elements help establish a shared understanding of how organizations can responsibly integrate AI into adaptive execution environments.
 
@@ -136,10 +140,10 @@ The Agile AI domain is expected to evolve as organizations gain more experience 
 
 Future developments may include:
 
-• refined capability models
-• improved governance frameworks
-• deeper understanding of human–AI collaboration
-• expanded academic research
+- refined capability models  
+- improved governance frameworks  
+- deeper understanding of human–AI collaboration  
+- expanded academic research  
 
 The domain will continue to adapt as technological capabilities and organizational practices evolve.
 
@@ -151,11 +155,8 @@ The long-term significance of the Agile AI domain lies in its focus on responsib
 
 Organizations that effectively combine adaptive execution, intelligent systems, and accountable human judgment are better positioned to operate in environments characterized by:
 
-• rapid technological change
-• increasing data complexity
-• evolving decision landscapes
+- rapid technological change  
+- increasing data complexity  
+- evolving decision landscapes  
 
 The Agile AI domain exists to support the development of these capabilities in a structured and responsible manner.
-
-
-

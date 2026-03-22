@@ -130,3 +130,11 @@ This enables:
 - ecosystem scalability  
 
 Each hosting surface maintains its own deployment configuration and shared design authority layer.
+
+---
+
+## Related
+
+- See: [Agile AI Capability Model](../domain/Agile-AI-Capability-Model.md)
+- See: [Agile AI Concept Registry](../registry/concepts/Agile-AI-Concept-Registry.md)
+- See: [Agile AI Ecosystem Principles](../ecosystem/Agile-AI-Ecosystem-Principles.md)

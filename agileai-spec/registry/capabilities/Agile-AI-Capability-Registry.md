@@ -3,6 +3,10 @@ section: Registry
 title: Agile AI Capability Registry
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Registry</strong> → Capability Registry
+</div>
+
 # Agile AI Capability Registry
 
 **Status:** Canonical  

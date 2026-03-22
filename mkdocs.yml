@@ -18,6 +18,25 @@ theme:
     - content.action.edit
     - search.highlight
     - search.suggest
+
+  palette:
+
+    # Light Mode
+    - scheme: default
+      primary: grey
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    # Dark Mode
+    - scheme: slate
+      primary: black
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
   analytics:
     provider: google
     property: G-L6Q5J3S1YY

@@ -42,7 +42,7 @@ These specifications are published and maintained as part of the institutional k
 
 # 3. Explore the Specification System
 
-The Agile AI ecosystem is structured as an integrated system of specifications, registries, and governance frameworks.
+The Agile AI ecosystem is structured as an integrated system of specifications and registries.
 
 ## Core Specification
 
@@ -63,26 +63,14 @@ Defines stable identifiers and institutional reference structures across the eco
 
 ---
 
-## Governance Framework
-
-- [Design Authority Charter](architecture/Design-Authority-Charter.md)  
-- [Ecosystem Governance Change Log](architecture/ecosystem-governance-log.md)  
-
-Defines architectural governance, system rules, and institutional evolution tracking.
-
----
-
 # 4. How to Navigate
 
 The specification system is designed to be explored in a structured manner.
 
 Recommended flow:
 
-1. Start with the **Core Specification** to understand the architecture  
-2. Explore the **Registry System** to understand structural components  
-3. Review the **Governance Framework** for system rules and authority  
-
-This ensures a coherent understanding of the Agile AI ecosystem.
+1. Start with the **Core Specification**  
+2. Explore the **Registry System**  
 
 ---
 
@@ -96,13 +84,11 @@ All components must:
 - follow registry and governance rules  
 - maintain structural consistency  
 
-Changes must be governed and recorded through the **governance change log**.
-
 ---
 
 # 6. Governance Notes
 
 - This page acts as the canonical navigation entry point  
-- All links must remain stable and explicitly defined  
+- All links must remain within the specification surface  
+- No cross-surface linking is permitted  
 - No dynamic navigation logic is permitted  
-- Structural changes must follow governance protocols  

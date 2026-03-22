@@ -1,29 +1,34 @@
 /*
 ======================================================
 Agile AI Specification — UI Control Layer
-Version: 2.8 (Relocate Material Toggle)
+Version: 3.0 (Stable Toggle Relocation + Governance Safe)
 ======================================================
 */
 
 (function () {
 
+  /* ======================================================
+  THEME TOGGLE RELOCATION (STABLE + NON-BREAKING)
+  ====================================================== */
+
   function relocateThemeToggle() {
 
-    // Find existing Material toggle
-    const toggle = document.querySelector('[data-md-color-switch]');
-    if (!toggle) return;
+    // Correct Material toggle selector (label for palette)
+    const toggle = document.querySelector("[for='__palette']");
+    const target = document.getElementById("spec-toggle-slot");
 
-    // Find top header container
-    const header = document.querySelector(".md-header__inner");
-    if (!header) return;
+    if (!toggle || !target) return;
 
     // Prevent duplicate move
-    if (header.querySelector('[data-md-color-switch]')) return;
+    if (target.contains(toggle)) return;
 
-    // Move toggle to header right side
-    header.appendChild(toggle);
+    target.appendChild(toggle);
   }
 
+
+  /* ======================================================
+  SPEC BANNER INJECTION
+  ====================================================== */
 
   function injectSpecBanner() {
 
@@ -47,6 +52,10 @@ Version: 2.8 (Relocate Material Toggle)
   }
 
 
+  /* ======================================================
+  MERMAID RENDERING
+  ====================================================== */
+
   function renderMermaid() {
 
     if (typeof mermaid === "undefined") return;
@@ -60,6 +69,10 @@ Version: 2.8 (Relocate Material Toggle)
     mermaid.run({ querySelector: ".language-mermaid" });
   }
 
+
+  /* ======================================================
+  ANALYTICS TRACKING
+  ====================================================== */
 
   function setupAnalyticsTracking() {
 
@@ -92,14 +105,29 @@ Version: 2.8 (Relocate Material Toggle)
   }
 
 
+  /* ======================================================
+  INITIALIZATION (STABLE ACROSS NAVIGATION)
+  ====================================================== */
+
   function initializePage() {
+
     relocateThemeToggle();
     injectSpecBanner();
     renderMermaid();
     setupAnalyticsTracking();
   }
 
+
+  // Initial load
   document.addEventListener("DOMContentLoaded", initializePage);
+
+  // MkDocs Material navigation events
   document.addEventListener("navigation.end", initializePage);
+
+  // Fallback for delayed rendering (critical stability layer)
+  window.addEventListener("load", function () {
+    setTimeout(relocateThemeToggle, 200);
+    setTimeout(relocateThemeToggle, 500);
+  });
 
 })();

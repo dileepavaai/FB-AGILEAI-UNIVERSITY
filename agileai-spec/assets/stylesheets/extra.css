@@ -1,10 +1,11 @@
 /* =========================================================
 Agile AI Specification — UI Refinement Layer
-Version: 5.2 (Stable + Non-Breaking Header Fix)
+Version: 5.3 (Theme Stability + Toggle Slot Completion)
 Purpose:
 - Preserve Material layout integrity
 - Maintain calm institutional UI
-- Fix theme toggle alignment safely
+- Ensure Light/Dark consistency
+- Finalize toggle slot alignment
 - Fully additive, non-breaking
 ========================================================= */
 
@@ -25,7 +26,7 @@ INSTITUTIONAL HEADER
 }
 
 [data-md-color-scheme="slate"] .spec-institutional-header {
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.88);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -76,6 +77,32 @@ LEFT SIDE
 
 [data-md-color-scheme="slate"] .spec-surface {
   color: #94a3b8;
+}
+
+
+/* =========================================================
+TOGGLE SLOT (CRITICAL — FINAL FIX)
+========================================================= */
+
+#spec-toggle-slot {
+  display: flex;
+  align-items: center;
+  margin-left: 6px;
+}
+
+/* Ensure Material toggle fits cleanly */
+#spec-toggle-slot label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+#spec-toggle-slot label:hover {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 
@@ -174,7 +201,7 @@ GLOBAL SPEC BANNER
 [data-md-color-scheme="slate"] .spec-global-banner {
   background: linear-gradient(
     90deg,
-    rgba(15, 23, 42, 0.95),
+    rgba(15, 23, 42, 0.96),
     rgba(30, 41, 59, 0.92)
   );
 }
@@ -282,28 +309,4 @@ RESPONSIVE
     gap: 4px;
     font-size: 12px;
   }
-}
-
-
-/* =========================================================
-FINAL THEME TOGGLE ALIGNMENT (SAFE)
-========================================================= */
-
-/* Do NOT override Material layout — only style toggle */
-
-.spec-theme-toggle {
-  margin-left: 8px;
-  font-size: 16px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Match Material header button spacing */
-.md-header__button.spec-theme-toggle {
-  padding: 0.4rem;
 }

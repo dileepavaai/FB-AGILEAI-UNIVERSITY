@@ -83,12 +83,11 @@ The Agile AI Operating Model can be visualized as a layered architecture connect
                 │  Foundations      │
                 └───────────────────┘
 
-HUMAN JUDGMENT → ADAPTIVE EXECUTION → MACHINE INTELLIGENCE
-↓
-AI-Enabled Systems
-↓
-ORGANIZATIONAL OUTCOMES
-
+HUMAN JUDGMENT → ADAPTIVE EXECUTION → MACHINE INTELLIGENCE  
+↓  
+AI-Enabled Systems  
+↓  
+ORGANIZATIONAL OUTCOMES  
 
 This architecture illustrates how conceptual foundations evolve into operational capability systems while maintaining accountable human governance.
 
@@ -301,9 +300,13 @@ This operating model is maintained through the Agile AI ecosystem governance fra
 
 Updates to the architecture must follow governance procedures defined in the **Design Authority Charter**.
 
+---
+
 ## Related
 
-- See: [Agile AI Capability Model](../domain/Agile-AI-Capability-Model.md)
-- See: [Agile AI Capability Registry](../registry/capabilities/Agile-AI-Capability-Registry.md)
-- See: [Agile AI Program Registry](../registry/programs/Agile-AI-Program-Registry.md)
-- See: [Agile AI Ecosystem Architecture Map](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)
+This document connects with the following components of the Agile AI Specification:
+
+- **Domain Model:** [Agile AI Capability Model](../domain/Agile-AI-Capability-Model.md)  
+- **Capability System:** [Agile AI Capability Registry](../registry/capabilities/Agile-AI-Capability-Registry.md)  
+- **Program Structure:** [Agile AI Program Registry](../registry/programs/Agile-AI-Program-Registry.md)  
+- **Ecosystem Architecture:** [Agile AI Ecosystem Architecture Map](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)

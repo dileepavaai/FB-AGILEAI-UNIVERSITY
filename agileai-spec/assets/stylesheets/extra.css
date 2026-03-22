@@ -1,12 +1,6 @@
 /* =========================================================
 Agile AI Specification — UI Refinement Layer
-Version: 5.3 (Theme Stability + Toggle Slot Completion)
-Purpose:
-- Preserve Material layout integrity
-- Maintain calm institutional UI
-- Ensure Light/Dark consistency
-- Finalize toggle slot alignment
-- Fully additive, non-breaking
+Version: 5.4 (Clean Stable Toggle — No Conflicts)
 ========================================================= */
 
 
@@ -56,15 +50,10 @@ LEFT SIDE
   font-weight: 600;
   text-decoration: none;
   color: #111;
-  transition: opacity 0.2s ease;
 }
 
 [data-md-color-scheme="slate"] .spec-brand {
   color: #e2e8f0;
-}
-
-.spec-brand:hover {
-  opacity: 0.7;
 }
 
 .spec-divider {
@@ -81,37 +70,12 @@ LEFT SIDE
 
 
 /* =========================================================
-TOGGLE SLOT (CRITICAL — FINAL FIX)
-========================================================= */
-
-#spec-toggle-slot {
-  display: flex;
-  align-items: center;
-  margin-left: 6px;
-}
-
-/* Ensure Material toggle fits cleanly */
-#spec-toggle-slot label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0.85;
-  transition: opacity 0.2s ease, transform 0.15s ease;
-}
-
-#spec-toggle-slot label:hover {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-
-/* =========================================================
 RIGHT NAVIGATION
 ========================================================= */
 
 .spec-header-nav {
   display: flex;
+  align-items: center;
   gap: 18px;
   font-size: 13px;
 }
@@ -119,7 +83,6 @@ RIGHT NAVIGATION
 .spec-header-nav a {
   text-decoration: none;
   color: #334155;
-  transition: all 0.2s ease;
 }
 
 [data-md-color-scheme="slate"] .spec-header-nav a {
@@ -132,6 +95,33 @@ RIGHT NAVIGATION
 
 [data-md-color-scheme="slate"] .spec-header-nav a:hover {
   color: #ffffff;
+}
+
+
+/* =========================================================
+TOGGLE SLOT (ONLY ONE — FINAL)
+========================================================= */
+
+#spec-toggle-slot {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+#spec-toggle-slot label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+#spec-toggle-slot label:hover {
+  opacity: 1;
 }
 
 
@@ -238,47 +228,6 @@ NAVIGATION STATE
 
 
 /* =========================================================
-BREADCRUMB
-========================================================= */
-
-.md-path {
-  font-size: 12px;
-  color: #666;
-}
-
-[data-md-color-scheme="slate"] .md-path {
-  color: #94a3b8;
-}
-
-
-/* =========================================================
-LEGACY SUPPORT
-========================================================= */
-
-.spec-banner {
-  background: linear-gradient(
-    90deg,
-    rgba(30, 41, 59, 0.92),
-    rgba(51, 65, 85, 0.88)
-  );
-  color: #f8fafc;
-  padding: 16px 20px;
-  margin: 20px 0;
-  border-radius: 8px;
-}
-
-.spec-banner-title {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.spec-banner-meta span {
-  margin-right: 20px;
-  font-size: 13px;
-}
-
-
-/* =========================================================
 RESPONSIVE
 ========================================================= */
 
@@ -309,58 +258,4 @@ RESPONSIVE
     gap: 4px;
     font-size: 12px;
   }
-}
-
-/* =========================================================
-FINAL HEADER TOGGLE ALIGNMENT FIX (SURGICAL)
-========================================================= */
-
-#spec-toggle-slot {
-  display: flex;
-  align-items: center;
-  margin-left: 6px;
-  height: 100%;
-}
-
-#spec-toggle-slot label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  height: 40px; /* match search input height */
-  width: 40px;
-
-  margin-top: 2px; /* fine-tune vertical alignment */
-}
-
-/* =========================================================
-TOGGLE SLOT (FINAL — CLEAN + STABLE)
-========================================================= */
-
-#spec-toggle-slot {
-  display: flex;
-  align-items: center;
-
-  margin-left: 10px;   /* space from "Specification v1.0" */
-  margin-right: 10px;  /* space from search */
-}
-
-/* Material toggle normalization */
-#spec-toggle-slot label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 36px;
-  height: 36px;
-
-  opacity: 0.85;
-  cursor: pointer;
-
-  transition: opacity 0.2s ease, transform 0.15s ease;
-}
-
-#spec-toggle-slot label:hover {
-  opacity: 1;
-  transform: scale(1.05);
 }

@@ -1,6 +1,7 @@
 /* ========================================================= 
 Agile AI Specification — UI Refinement Layer
-Version: 6.0 (Authority Stable — Zero Structural Risk)
+Version: 6.1 (Navigation Intelligence + Authority Refinement)
+SAFE: Additive Only · Zero Structural Impact
 ========================================================= */
 
 
@@ -86,7 +87,6 @@ RIGHT NAVIGATION (CALM + CONTROLLED)
 .spec-header-nav a {
   text-decoration: none;
   color: #334155;
-  transition: color 0.2s ease;
 }
 
 [data-md-color-scheme="slate"] .spec-header-nav a {
@@ -103,7 +103,35 @@ RIGHT NAVIGATION (CALM + CONTROLLED)
 
 
 /* =========================================================
-CONTEXT BAR (LOW NOISE)
+ORIENTATION STRIP (NEW — HIGH VALUE, LOW NOISE)
+========================================================= */
+
+.spec-orientation-strip {
+  font-size: 12px;
+  padding: 6px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  color: #64748b;
+  background: #f8fafc;
+}
+
+[data-md-color-scheme="slate"] .spec-orientation-strip {
+  background: #0f172a;
+  color: #94a3b8;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.spec-orientation-strip strong {
+  color: #334155;
+  font-weight: 600;
+}
+
+[data-md-color-scheme="slate"] .spec-orientation-strip strong {
+  color: #e2e8f0;
+}
+
+
+/* =========================================================
+CONTEXT BAR (LOW NOISE — REFINED)
 ========================================================= */
 
 .spec-context-bar {
@@ -145,17 +173,14 @@ CONTEXT BAR (LOW NOISE)
 
 
 /* =========================================================
-GLOBAL SPEC BANNER (AUTHORITY — MUTED)
+GLOBAL SPEC BANNER (DOCUMENT STYLE — FIXED)
 ========================================================= */
 
 .spec-global-banner {
-  background: linear-gradient(
-    90deg,
-    rgba(30, 41, 59, 0.90),
-    rgba(51, 65, 85, 0.85)
-  );
+  background: #f1f5f9;
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  color: #0f172a;
 
-  color: #f1f5f9;
   padding: 14px 18px;
   margin-bottom: 16px;
   border-radius: 6px;
@@ -166,11 +191,9 @@ GLOBAL SPEC BANNER (AUTHORITY — MUTED)
 }
 
 [data-md-color-scheme="slate"] .spec-global-banner {
-  background: linear-gradient(
-    90deg,
-    rgba(15, 23, 42, 0.96),
-    rgba(30, 41, 59, 0.90)
-  );
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #e2e8f0;
 }
 
 .spec-title {
@@ -189,20 +212,27 @@ GLOBAL SPEC BANNER (AUTHORITY — MUTED)
 
 
 /* =========================================================
-NAVIGATION STATE (SAFE — NO LAYOUT IMPACT)
+NAVIGATION STATE (PRECISION IMPROVED)
 ========================================================= */
 
 .md-tabs__link--active {
   font-weight: 600;
-  color: #334155 !important;
+  color: #0f172a !important;
+  border-bottom: 2px solid rgba(100, 116, 139, 0.6);
 }
 
 [data-md-color-scheme="slate"] .md-tabs__link--active {
-  color: #e2e8f0 !important;
+  color: #ffffff !important;
+  border-bottom: 2px solid rgba(148, 163, 184, 0.6);
 }
 
 .md-nav__link--active {
   font-weight: 600;
+  color: #0f172a !important;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link--active {
+  color: #ffffff !important;
 }
 
 
@@ -217,7 +247,90 @@ MATERIAL HEADER ALIGNMENT (STRICTLY SAFE)
 
 
 /* =========================================================
-RESPONSIVE (NON-DESTRUCTIVE)
+READING EXPERIENCE LAYER (UNCHANGED — STABLE)
+========================================================= */
+
+.md-content__inner {
+  max-width: 820px;
+}
+
+.md-typeset {
+  font-size: 15.5px;
+  line-height: 1.7;
+  letter-spacing: 0.2px;
+}
+
+[data-md-color-scheme="slate"] .md-typeset {
+  color: #e2e8f0;
+}
+
+.md-typeset p {
+  margin-bottom: 1.1em;
+}
+
+.md-typeset h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+}
+
+.md-typeset h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 1.4em;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding-bottom: 4px;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2 {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.md-typeset h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.md-typeset ul,
+.md-typeset ol {
+  margin-bottom: 1em;
+  padding-left: 1.2em;
+}
+
+.md-typeset li {
+  margin-bottom: 0.35em;
+}
+
+.md-typeset strong {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+[data-md-color-scheme="slate"] .md-typeset strong {
+  color: #f1f5f9;
+}
+
+.md-typeset blockquote {
+  border-left: 3px solid rgba(100, 116, 139, 0.4);
+  padding-left: 12px;
+  color: #475569;
+}
+
+[data-md-color-scheme="slate"] .md-typeset blockquote {
+  color: #94a3b8;
+  border-left: 3px solid rgba(148, 163, 184, 0.4);
+}
+
+.md-typeset pre {
+  border-radius: 6px;
+  font-size: 13.5px;
+}
+
+
+/* =========================================================
+RESPONSIVE (SAFE)
 ========================================================= */
 
 @media (max-width: 768px) {
@@ -233,176 +346,6 @@ RESPONSIVE (NON-DESTRUCTIVE)
     flex-wrap: wrap;
     gap: 10px;
   }
-
-  .spec-global-banner {
-    padding: 12px 14px;
-  }
-
-  .spec-title {
-    font-size: 15px;
-  }
-
-  .spec-meta {
-    flex-direction: column;
-    gap: 4px;
-    font-size: 12px;
-  }
-}
-
-/* =========================================================
-READING EXPERIENCE LAYER (Authority + Clarity)
-Version: 1.0 (Non-Structural, Additive Only)
-========================================================= */
-
-
-/* =========================================================
-CONTENT WIDTH CONTROL (READABILITY)
-========================================================= */
-
-.md-content__inner {
-  max-width: 820px;
-}
-
-
-/* =========================================================
-TYPOGRAPHY — BASE CONTENT
-========================================================= */
-
-.md-typeset {
-  font-size: 15.5px;
-  line-height: 1.7;
-  letter-spacing: 0.2px;
-}
-
-[data-md-color-scheme="slate"] .md-typeset {
-  color: #e2e8f0;
-}
-
-
-/* =========================================================
-PARAGRAPH RHYTHM
-========================================================= */
-
-.md-typeset p {
-  margin-bottom: 1.1em;
-}
-
-
-/* =========================================================
-HEADINGS — AUTHORITY SCALE
-========================================================= */
-
-.md-typeset h1 {
-  font-size: 28px;
-  font-weight: 600;
-  margin-top: 0.6em;
-  margin-bottom: 0.6em;
-  letter-spacing: 0.2px;
-}
-
-.md-typeset h2 {
-  font-size: 22px;
-  font-weight: 600;
-  margin-top: 1.4em;
-  margin-bottom: 0.5em;
-}
-
-.md-typeset h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-top: 1.2em;
-  margin-bottom: 0.4em;
-}
-
-
-/* =========================================================
-SECTION SEPARATION (SUBTLE DOCUMENT FEEL)
-========================================================= */
-
-.md-typeset h2 {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  padding-bottom: 4px;
-}
-
-[data-md-color-scheme="slate"] .md-typeset h2 {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-
-/* =========================================================
-LIST READABILITY
-========================================================= */
-
-.md-typeset ul,
-.md-typeset ol {
-  margin-bottom: 1em;
-  padding-left: 1.2em;
-}
-
-.md-typeset li {
-  margin-bottom: 0.35em;
-}
-
-
-/* =========================================================
-STRONG TEXT (CONTROLLED EMPHASIS)
-========================================================= */
-
-.md-typeset strong {
-  font-weight: 600;
-  color: #0f172a;
-}
-
-[data-md-color-scheme="slate"] .md-typeset strong {
-  color: #f1f5f9;
-}
-
-
-/* =========================================================
-BLOCKQUOTE — DOCUMENT STYLE (NOT BLOG STYLE)
-========================================================= */
-
-.md-typeset blockquote {
-  border-left: 3px solid rgba(100, 116, 139, 0.4);
-  padding-left: 12px;
-  color: #475569;
-  margin: 1em 0;
-}
-
-[data-md-color-scheme="slate"] .md-typeset blockquote {
-  color: #94a3b8;
-  border-left: 3px solid rgba(148, 163, 184, 0.4);
-}
-
-
-/* =========================================================
-TABLE IMPROVEMENT (READABILITY)
-========================================================= */
-
-.md-typeset table {
-  font-size: 14px;
-}
-
-.md-typeset th {
-  font-weight: 600;
-}
-
-
-/* =========================================================
-CODE BLOCKS — CALM + CLEAN
-========================================================= */
-
-.md-typeset pre {
-  border-radius: 6px;
-  font-size: 13.5px;
-}
-
-
-/* =========================================================
-RESPONSIVE REFINEMENT
-========================================================= */
-
-@media (max-width: 768px) {
 
   .md-content__inner {
     max-width: 100%;

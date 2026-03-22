@@ -57,3 +57,5 @@ Reference materials provide **supporting explanations and guidance** but do not 
 Agile AI University maintains the Agile AI Specification and the associated reference library as part of the broader Agile AI ecosystem.
 
 These materials support academic research, professional capability development, and institutional adoption of Agile AI principles.
+
+

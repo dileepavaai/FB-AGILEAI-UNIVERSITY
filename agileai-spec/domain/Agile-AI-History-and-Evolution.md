@@ -156,3 +156,6 @@ Organizations that effectively combine adaptive execution, intelligent systems, 
 • evolving decision landscapes
 
 The Agile AI domain exists to support the development of these capabilities in a structured and responsible manner.
+
+
+

@@ -143,3 +143,5 @@ It must avoid:
 • marketing-heavy UI  
 • startup-style aesthetics  
 • unnecessary visual complexity
+
+

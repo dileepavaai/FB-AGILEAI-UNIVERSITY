@@ -147,3 +147,6 @@ The Agile AI ecosystem is guided by a simple belief:
 The future of intelligent organizations will depend on the ability to combine adaptive execution, intelligent systems, and accountable human judgment.
 
 Organizations that cultivate this integration will build the capabilities required to navigate increasing complexity and change.
+
+
+

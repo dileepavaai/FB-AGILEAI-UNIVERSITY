@@ -51,3 +51,5 @@ Accountable human judgment refers to the role of human decision-makers in interp
 Concept identifiers are permanent once assigned.
 
 New concepts may be added through the Agile AI Foundation governance process.
+
+

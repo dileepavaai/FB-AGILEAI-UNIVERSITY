@@ -299,3 +299,6 @@ The long-term goal is to enable organizations to build AI-enabled systems that r
 This operating model is maintained through the Agile AI ecosystem governance framework.
 
 Updates to the architecture must follow governance procedures defined in the **Design Authority Charter**.
+
+
+

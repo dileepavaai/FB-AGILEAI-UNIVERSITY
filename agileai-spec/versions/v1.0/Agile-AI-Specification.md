@@ -31,3 +31,5 @@ The Agile AI specification defines how these two domains can operate together wi
 ## Core Principle
 
 The Agile AI ecosystem is built around a simple but powerful architectural principle:
+
+

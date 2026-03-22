@@ -40,3 +40,5 @@ Current publication versions:
 - Agile AI Functional Elements v1.1
 
 Future updates to these documents will be reflected in this section as new versions are released.
+
+

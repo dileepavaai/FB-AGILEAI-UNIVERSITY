@@ -186,3 +186,6 @@ Credentials defined within the Agile AI ecosystem may be issued through:
 * strategic partnerships
 
 Professionals interested in participating in Agile AI credential pathways may explore institutional portals or engage with the **Agile AI University ecosystem**.
+
+
+

@@ -54,7 +54,7 @@
     </div>
   </div>
 
-  <!-- Context Bar (Section + Page Intelligence) -->
+  <!-- Context Bar (SAFE — NO URL DEPENDENCY) -->
   <div class="spec-context-bar">
     <div class="spec-context-container">
 
@@ -62,26 +62,10 @@
       <span class="spec-context-label">Section</span>
 
       <span class="spec-context-value">
-        {% if page.url.startswith('architecture/') %}
-          Architecture
-        {% elif page.url.startswith('domain/') %}
-          Domain
-        {% elif page.url.startswith('ecosystem/') %}
-          Ecosystem
-        {% elif page.url.startswith('registry/') %}
-          Registries
-        {% elif page.url.startswith('standards/') %}
-          Standards
-        {% elif page.url.startswith('reference/') %}
-          Reference
-        {% elif page.url.startswith('publications/') %}
-          Publications
-        {% elif page.url.startswith('version-log/') %}
-          Governance Log
-        {% elif page.url.startswith('versions/') %}
+        {% if page %}
           Specification
         {% else %}
-          Overview
+          Specification
         {% endif %}
       </span>
 
@@ -90,7 +74,11 @@
 
       <!-- Page -->
       <span class="spec-context-page">
-        {{ page.title }}
+        {% if page and page.title %}
+          {{ page.title }}
+        {% else %}
+          Overview
+        {% endif %}
       </span>
 
     </div>

@@ -1,9 +1,13 @@
-# AGILE AI
+---
+section: Architecture
+title: Agile AI Domain Definition
+---
 
-## DOMAIN DEFINITION
+# Agile AI  
+## Domain Definition
 
-STATUS: CANONICAL
-DATE ESTABLISHED: 2026-03-14
+**Status:** Canonical  
+**Date Established:** 2026-03-14
 
 ---
 
@@ -13,10 +17,10 @@ This document defines the **Agile AI domain**.
 
 The purpose of this definition is to establish:
 
-• conceptual clarity
-• domain boundaries
-• foundational terminology
-• intellectual structure
+- conceptual clarity  
+- domain boundaries  
+- foundational terminology  
+- intellectual structure  
 
 This definition serves as the **reference model** for frameworks, capability architectures, academic programs, and professional recognition systems developed within the Agile AI ecosystem.
 
@@ -26,7 +30,7 @@ This definition serves as the **reference model** for frameworks, capability arc
 
 Agile AI is an organizational capability that integrates adaptive execution with machine intelligence under accountable human judgment.
 
-Core definition:
+**Core definition:**
 
 **Agile AI = Adaptive Execution + Machine Intelligence + Accountable Human Judgment**
 
@@ -42,10 +46,10 @@ Adaptive execution refers to the ability of an organization to adjust plans, wor
 
 This capability originates from Agile principles, emphasizing:
 
-• iterative development
-• continuous feedback
-• rapid adaptation
-• cross-functional collaboration
+- iterative development  
+- continuous feedback  
+- rapid adaptation  
+- cross-functional collaboration  
 
 Adaptive execution ensures that organizations remain responsive to change.
 
@@ -55,10 +59,10 @@ Adaptive execution ensures that organizations remain responsive to change.
 
 Machine intelligence refers to the use of computational systems capable of:
 
-• pattern recognition
-• predictive analysis
-• data-driven insights
-• automated reasoning
+- pattern recognition  
+- predictive analysis  
+- data-driven insights  
+- automated reasoning  
 
 Artificial intelligence technologies extend human capability by processing information at scale and generating insights that support decision-making.
 
@@ -70,10 +74,10 @@ Human judgment provides the ethical, contextual, and strategic interpretation re
 
 Human accountability includes responsibility for:
 
-• interpreting AI-generated insights
-• understanding contextual implications
-• ensuring ethical alignment
-• making final decisions
+- interpreting AI-generated insights  
+- understanding contextual implications  
+- ensuring ethical alignment  
+- making final decisions  
 
 Human oversight remains essential for responsible use of intelligent systems.
 
@@ -83,11 +87,11 @@ Human oversight remains essential for responsible use of intelligent systems.
 
 The Agile AI domain includes the study and development of:
 
-• organizational capability models
-• AI-enabled decision systems
-• adaptive operational frameworks
-• human-AI collaboration models
-• governance structures for intelligent organizations
+- organizational capability models  
+- AI-enabled decision systems  
+- adaptive operational frameworks  
+- human–AI collaboration models  
+- governance structures for intelligent organizations  
 
 The domain focuses on **capability development** rather than isolated technologies.
 
@@ -95,14 +99,14 @@ The domain focuses on **capability development** rather than isolated technologi
 
 # 5. Domain Boundaries
 
-Agile AI is distinct from several adjacent fields.
+Agile AI is distinct from several adjacent fields:
 
 | Adjacent Field          | Relationship                                     |
-| ----------------------- | ------------------------------------------------ |
+|------------------------|--------------------------------------------------|
 | Artificial Intelligence | Provides computational intelligence capabilities |
-| Agile Methods           | Provides adaptive execution frameworks           |
-| Data Science            | Provides analytical techniques                   |
-| Digital Transformation  | Provides organizational change initiatives       |
+| Agile Methods          | Provides adaptive execution frameworks           |
+| Data Science           | Provides analytical techniques                   |
+| Digital Transformation | Provides organizational change initiatives       |
 
 Agile AI integrates elements of these fields but represents a **distinct capability discipline**.
 
@@ -112,10 +116,10 @@ Agile AI integrates elements of these fields but represents a **distinct capabil
 
 The Agile AI domain is stewarded through two complementary institutional entities.
 
-Agile AI Foundation
+**Agile AI Foundation**  
 Defines canonical standards and conceptual frameworks.
 
-Agile AI University
+**Agile AI University**  
 Operationalizes the domain through academic capability systems and professional recognition models.
 
 This structure ensures both **conceptual clarity and practical application**.
@@ -128,10 +132,10 @@ The Agile AI domain is expected to evolve as organizations continue integrating 
 
 Future evolution may include:
 
-• expanded governance models
-• advanced human-AI collaboration frameworks
-• institutional capability benchmarks
-• emerging academic research
+- expanded governance models  
+- advanced human–AI collaboration frameworks  
+- institutional capability benchmarks  
+- emerging academic research  
 
 The domain definition will be periodically reviewed to maintain conceptual clarity.
 
@@ -144,6 +148,3 @@ Agile AI represents a new class of organizational capability.
 Organizations that effectively integrate adaptive execution, intelligent systems, and accountable human judgment will be better equipped to navigate uncertainty, complexity, and continuous technological change.
 
 The Agile AI domain exists to support the development of these capabilities across industries and institutions.
-
-
-

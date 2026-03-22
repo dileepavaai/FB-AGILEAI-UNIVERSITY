@@ -1,16 +1,22 @@
 /*
 ======================================================
 Agile AI Specification Header + Mermaid Initialization
-Version: 2.6 (Correct Material Header Injection)
+Version: 2.7 (Canonical — Material Toggle Only)
 ======================================================
 */
 
 (function () {
 
+  /* =====================================================
+  SPEC BANNER
+  ===================================================== */
+
   function injectSpecBanner() {
 
     const container = document.querySelector(".md-content__inner");
     if (!container) return;
+
+    // Prevent duplicate banner
     if (container.querySelector(".spec-banner")) return;
 
     const banner = document.createElement("div");
@@ -29,46 +35,12 @@ Version: 2.6 (Correct Material Header Injection)
   }
 
 
-  function injectThemeToggle() {
-
-    // Remove duplicates
-    document.querySelectorAll("#theme-toggle").forEach(el => el.remove());
-
-    const header = document.querySelector(".md-header__inner");
-    if (!header) return;
-
-    // ✅ STRICT: insert inside search container (correct alignment)
-    const search = header.querySelector(".md-search");
-    if (!search) return;
-
-    const btn = document.createElement("button");
-    btn.id = "theme-toggle";
-    btn.className = "spec-theme-toggle md-header__button";
-    btn.title = "Toggle theme";
-
-    function updateIcon() {
-      const current = document.body.getAttribute("data-md-color-scheme");
-      btn.textContent = current === "slate" ? "☀️" : "🌙";
-    }
-
-    updateIcon();
-
-    btn.addEventListener("click", () => {
-      const current = document.body.getAttribute("data-md-color-scheme");
-      const next = current === "default" ? "slate" : "default";
-
-      document.body.setAttribute("data-md-color-scheme", next);
-      localStorage.setItem("md-color-scheme", next);
-
-      updateIcon();
-    });
-
-    // 🔥 CRITICAL: append INSIDE search wrapper
-    search.parentElement.appendChild(btn);
-  }
-
+  /* =====================================================
+  MERMAID INITIALIZATION
+  ===================================================== */
 
   function renderMermaid() {
+
     if (typeof mermaid === "undefined") return;
 
     mermaid.initialize({
@@ -77,21 +49,29 @@ Version: 2.6 (Correct Material Header Injection)
       theme: "default"
     });
 
-    mermaid.run({ querySelector: ".language-mermaid" });
+    mermaid.run({
+      querySelector: ".language-mermaid"
+    });
   }
 
+
+  /* =====================================================
+  ANALYTICS TRACKING
+  ===================================================== */
 
   function setupAnalyticsTracking() {
 
     if (typeof gtag !== "function") return;
 
-    document.querySelectorAll("a").forEach(link => {
+    const links = document.querySelectorAll("a");
+
+    links.forEach(link => {
 
       const href = link.getAttribute("href");
       if (!href) return;
 
       if (href.includes("Agile-AI-Guide")) {
-        link.addEventListener("click", () => {
+        link.addEventListener("click", function () {
           gtag("event", "download_agile_ai_guide", {
             event_category: "publication",
             event_label: "Agile AI Guide"
@@ -100,7 +80,7 @@ Version: 2.6 (Correct Material Header Injection)
       }
 
       if (href.includes("Agile-AI-Functional-Elements")) {
-        link.addEventListener("click", () => {
+        link.addEventListener("click", function () {
           gtag("event", "download_functional_elements", {
             event_category: "publication",
             event_label: "Agile AI Functional Elements"
@@ -109,12 +89,16 @@ Version: 2.6 (Correct Material Header Injection)
       }
 
     });
+
   }
 
 
+  /* =====================================================
+  INIT (SAFE FOR MKDOCS NAVIGATION)
+  ===================================================== */
+
   function initializePage() {
     injectSpecBanner();
-    injectThemeToggle();
     renderMermaid();
     setupAnalyticsTracking();
   }

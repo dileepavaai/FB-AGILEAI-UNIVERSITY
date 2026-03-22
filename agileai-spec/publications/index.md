@@ -1,4 +1,5 @@
 ---
+section: Publications
 title: Publications
 description: Official reference publications of the Agile AI ecosystem providing explanatory material that complements the Agile AI Specification.
 image: https://spec.agileai.university/assets/images/og-image.png
@@ -34,11 +35,9 @@ It provides the structural foundation that supports the Agile AI specification f
 
 ## Version Information
 
-Current publication versions:
+**Current publication versions:**
 
-- Agile AI Guide v1.1
-- Agile AI Functional Elements v1.1
+- Agile AI Guide v1.1  
+- Agile AI Functional Elements v1.1  
 
 Future updates to these documents will be reflected in this section as new versions are released.
-
-

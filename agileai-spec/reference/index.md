@@ -1,3 +1,8 @@
+---
+section: Reference
+title: Agile AI Reference Library
+---
+
 # Agile AI Reference Library
 
 The Agile AI Reference Library contains supporting materials that complement the **Agile AI Specification**.
@@ -14,13 +19,13 @@ While the **Specification** defines the canonical domain structure, the **Refere
 
 Defines the core structural elements that compose Agile AI systems, including the interaction between:
 
-* adaptive execution  
-* machine intelligence  
-* accountable human judgment  
+- adaptive execution  
+- machine intelligence  
+- accountable human judgment  
 
 This document provides a structural model used throughout the Agile AI ecosystem.
 
-<a href="../publications/Agile-AI-Functional-Elements-v1.1.pdf" target="_blank">⬇ Download Agile AI Functional Elements v1.1</a>
+[⬇ Download Agile AI Functional Elements v1.1](../publications/Agile-AI-Functional-Elements-v1.1.pdf)
 
 ---
 
@@ -30,12 +35,12 @@ Provides practical guidance for professionals and organizations adopting Agile A
 
 Topics include:
 
-* applying Agile AI capability in organizations  
-* designing AI-enabled workflows  
-* enabling responsible human–AI collaboration  
-* organizational transformation patterns  
+- applying Agile AI capability in organizations  
+- designing AI-enabled workflows  
+- enabling responsible human–AI collaboration  
+- organizational transformation patterns  
 
-<a href="../publications/Agile-AI-Guide-v1.1.pdf" target="_blank">⬇ Download Agile AI Guide v1.1</a>
+[⬇ Download Agile AI Guide v1.1](../publications/Agile-AI-Guide-v1.1.pdf)
 
 ---
 
@@ -43,10 +48,10 @@ Topics include:
 
 The Agile AI Specification defines:
 
-* domain concepts  
-* capability models  
-* credential frameworks  
-* ecosystem architecture  
+- domain concepts  
+- capability models  
+- credential frameworks  
+- ecosystem architecture  
 
 Reference materials provide **supporting explanations and guidance** but do not override the canonical definitions contained within the specification.
 
@@ -57,5 +62,3 @@ Reference materials provide **supporting explanations and guidance** but do not 
 Agile AI University maintains the Agile AI Specification and the associated reference library as part of the broader Agile AI ecosystem.
 
 These materials support academic research, professional capability development, and institutional adoption of Agile AI principles.
-
-

@@ -1,9 +1,13 @@
-# AGILE AI
+---
+section: Architecture
+title: Agile AI Capability Model
+---
 
-## CAPABILITY MODEL
+# Agile AI  
+## Capability Model
 
-STATUS: CANONICAL
-DATE ESTABLISHED: 2026-03-14
+**Status:** Canonical  
+**Date Established:** 2026-03-14
 
 ---
 
@@ -15,10 +19,10 @@ The capability model describes the organizational capabilities required to succe
 
 The model provides the conceptual foundation for:
 
-• capability assessments
-• organizational diagnostics
-• academic frameworks
-• professional development models
+- capability assessments  
+- organizational diagnostics  
+- academic frameworks  
+- professional development models  
 
 It serves as the structural reference for the evaluation and development of Agile AI capabilities within organizations.
 
@@ -32,9 +36,9 @@ Organizations do not become intelligent simply by deploying artificial intellige
 
 Sustainable capability emerges from the integration of:
 
-• adaptive execution frameworks
-• intelligent analytical systems
-• responsible human decision processes
+- adaptive execution frameworks  
+- intelligent analytical systems  
+- responsible human decision processes  
 
 The capability model therefore focuses on the **organizational systems required to support this integration**.
 
@@ -54,9 +58,9 @@ Strategic alignment refers to the integration of AI capabilities with organizati
 
 Organizations with strong strategic alignment:
 
-• clearly define the role of AI in achieving strategic objectives
-• prioritize AI initiatives based on business impact
-• align leadership understanding with operational capabilities
+- clearly define the role of AI in achieving strategic objectives  
+- prioritize AI initiatives based on business impact  
+- align leadership understanding with operational capabilities  
 
 Without strategic alignment, AI initiatives risk becoming fragmented or experimental.
 
@@ -68,10 +72,10 @@ Intelligent decision systems refer to the infrastructure and processes used to g
 
 These systems may include:
 
-• machine learning models
-• predictive analytics platforms
-• decision-support tools
-• data processing pipelines
+- machine learning models  
+- predictive analytics platforms  
+- decision-support tools  
+- data processing pipelines  
 
 The goal of this dimension is to ensure that organizations can generate reliable insights that support operational and strategic decisions.
 
@@ -83,10 +87,10 @@ Adaptive execution refers to the ability of teams and operational processes to r
 
 Organizations demonstrating strong adaptive execution typically exhibit:
 
-• iterative delivery practices
-• continuous learning cycles
-• rapid feedback integration
-• flexible operational structures
+- iterative delivery practices  
+- continuous learning cycles  
+- rapid feedback integration  
+- flexible operational structures  
 
 This dimension ensures that insights can translate into meaningful organizational action.
 
@@ -98,9 +102,9 @@ Human–AI collaboration describes the interaction between intelligent systems a
 
 Effective collaboration requires:
 
-• clear roles for human oversight
-• structured interpretation of AI outputs
-• accountability for final decisions
+- clear roles for human oversight  
+- structured interpretation of AI outputs  
+- accountability for final decisions  
 
 Organizations must ensure that AI insights support, rather than replace, responsible human judgment.
 
@@ -112,10 +116,10 @@ Governance ensures that AI capabilities are applied responsibly and aligned with
 
 Governance structures may include:
 
-• ethical review mechanisms
-• risk management processes
-• accountability frameworks
-• transparency in decision systems
+- ethical review mechanisms  
+- risk management processes  
+- accountability frameworks  
+- transparency in decision systems  
 
 This dimension ensures that AI-enabled operations remain responsible and trustworthy.
 
@@ -127,10 +131,10 @@ Organizations may demonstrate varying levels of maturity across each capability 
 
 Capability maturity generally progresses through stages such as:
 
-1. Initial experimentation
-2. Structured adoption
-3. Integrated capability
-4. Institutionalized practice
+1. Initial experimentation  
+2. Structured adoption  
+3. Integrated capability  
+4. Institutionalized practice  
 
 The purpose of capability maturity analysis is not to assign labels, but to identify areas where organizations can strengthen their capabilities.
 
@@ -144,9 +148,9 @@ Assessments use structured evaluation methods to measure organizational maturity
 
 Assessment results may be used to:
 
-• generate insight reports
-• identify development priorities
-• guide capability-building initiatives
+- generate insight reports  
+- identify development priorities  
+- guide capability-building initiatives  
 
 The capability model itself remains **conceptual and framework-oriented**, while assessments provide **practical measurement tools**.
 
@@ -158,10 +162,10 @@ The Agile AI Capability Model is maintained as part of the Agile AI domain archi
 
 Institutional responsibilities include:
 
-Agile AI Foundation
+**Agile AI Foundation**  
 Responsible for conceptual domain frameworks.
 
-Agile AI University
+**Agile AI University**  
 Responsible for operationalizing the capability model through assessments, academic frameworks, and professional recognition systems.
 
 This separation ensures both conceptual clarity and practical application.
@@ -175,6 +179,3 @@ The Agile AI Capability Model is expected to evolve as organizations gain experi
 Future revisions may refine capability dimensions or introduce additional guidance based on emerging practices.
 
 Any changes must be recorded in the ecosystem governance log to preserve historical traceability.
-
-
-

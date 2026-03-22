@@ -1,17 +1,22 @@
-# AGILE AI ECOSYSTEM
-## SYSTEM CONTEXT
+---
+section: Architecture
+title: Agile AI Ecosystem System Context
+---
 
-STATUS: CANONICAL · GOVERNANCE LOCKED  
-DATE LOCKED: 2026-03-14
+# Agile AI Ecosystem  
+## System Context
+
+**Status:** Canonical · Governance Locked  
+**Date Locked:** 2026-03-14
 
 ---
 
 # 1. Ecosystem Overview
 
-The Agile AI ecosystem consists of two complementary but independent institutional entities.
+The Agile AI ecosystem consists of two complementary but independent institutional entities:
 
 | Entity | Role |
-|------|------|
+|--------|------|
 | Agile AI Foundation | Canonical standards authority |
 | Agile AI University | Academic operationalization authority |
 
@@ -21,29 +26,27 @@ These two entities operate in a **standards → academic implementation model**.
 
 # 2. Agile AI Foundation
 
-Primary Domain:
-
+**Primary Domain:**  
 agileai.foundation
 
-Purpose:
-
+**Purpose:**  
 The Agile AI Foundation defines the **canonical intellectual architecture** of the Agile AI domain.
 
-Responsibilities:
+**Responsibilities:**
 
-• Conceptual frameworks  
-• Capability models  
-• Governance principles  
-• Architectural standards  
-• Domain definitions  
-• Thought leadership  
+- conceptual frameworks  
+- capability models  
+- governance principles  
+- architectural standards  
+- domain definitions  
+- thought leadership  
 
 The Foundation **does NOT provide**:
 
-• training  
-• certification  
-• credentials  
-• assessments  
+- training  
+- certification  
+- credentials  
+- assessments  
 
 These responsibilities belong to the academic layer.
 
@@ -51,27 +54,26 @@ These responsibilities belong to the academic layer.
 
 # 3. Agile AI University
 
-Primary Domain:
-
+**Primary Domain:**  
 agileai.university
 
 Agile AI University operationalizes Foundation standards into **structured academic capability systems**.
 
 The University provides:
 
-• Capability architectures  
-• Assessment frameworks  
-• Professional credentials  
-• Academic recognition models  
-• Knowledge systems  
-• Institutional portals  
+- capability architectures  
+- assessment frameworks  
+- professional credentials  
+- academic recognition models  
+- knowledge systems  
+- institutional portals  
 
 The University does **NOT position itself as**:
 
-• Training provider  
-• Course marketplace  
-• Certification vendor  
-• Consulting company  
+- a training provider  
+- a course marketplace  
+- a certification vendor  
+- a consulting company  
 
 ---
 
@@ -85,17 +87,17 @@ It operates as an **independent academic and professional body** and is **not po
 
 # 5. Standards → Academic Model
 
-Relationship structure:
+**Relationship structure:**
 
 Agile AI Foundation  
 ↓  
-Defines canonical standards
+Defines canonical standards  
 
 Agile AI University  
 ↓  
-Operationalizes standards academically
+Operationalizes standards academically  
 
-Comparable models:
+**Comparable models:**
 
 | Standards Body | Academic Ecosystem |
 |---------------|------------------|
@@ -111,11 +113,9 @@ The ecosystem is supported by a distributed digital architecture.
 
 This layer includes:
 
-• knowledge systems  
-• institutional portals  
-• credential infrastructure  
-• capability assessment systems
+- knowledge systems  
+- institutional portals  
+- credential infrastructure  
+- capability assessment systems  
 
 These systems operate under the academic authority of Agile AI University.
-
-

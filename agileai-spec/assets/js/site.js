@@ -1,22 +1,34 @@
 /*
 ======================================================
-Agile AI Specification Header + Mermaid Initialization
-Version: 2.7 (Canonical — Material Toggle Only)
+Agile AI Specification — UI Control Layer
+Version: 2.8 (Relocate Material Toggle)
 ======================================================
 */
 
 (function () {
 
-  /* =====================================================
-  SPEC BANNER
-  ===================================================== */
+  function relocateThemeToggle() {
+
+    // Find existing Material toggle
+    const toggle = document.querySelector('[data-md-color-switch]');
+    if (!toggle) return;
+
+    // Find top header container
+    const header = document.querySelector(".md-header__inner");
+    if (!header) return;
+
+    // Prevent duplicate move
+    if (header.querySelector('[data-md-color-switch]')) return;
+
+    // Move toggle to header right side
+    header.appendChild(toggle);
+  }
+
 
   function injectSpecBanner() {
 
     const container = document.querySelector(".md-content__inner");
     if (!container) return;
-
-    // Prevent duplicate banner
     if (container.querySelector(".spec-banner")) return;
 
     const banner = document.createElement("div");
@@ -35,10 +47,6 @@ Version: 2.7 (Canonical — Material Toggle Only)
   }
 
 
-  /* =====================================================
-  MERMAID INITIALIZATION
-  ===================================================== */
-
   function renderMermaid() {
 
     if (typeof mermaid === "undefined") return;
@@ -49,29 +57,21 @@ Version: 2.7 (Canonical — Material Toggle Only)
       theme: "default"
     });
 
-    mermaid.run({
-      querySelector: ".language-mermaid"
-    });
+    mermaid.run({ querySelector: ".language-mermaid" });
   }
 
-
-  /* =====================================================
-  ANALYTICS TRACKING
-  ===================================================== */
 
   function setupAnalyticsTracking() {
 
     if (typeof gtag !== "function") return;
 
-    const links = document.querySelectorAll("a");
-
-    links.forEach(link => {
+    document.querySelectorAll("a").forEach(link => {
 
       const href = link.getAttribute("href");
       if (!href) return;
 
       if (href.includes("Agile-AI-Guide")) {
-        link.addEventListener("click", function () {
+        link.addEventListener("click", () => {
           gtag("event", "download_agile_ai_guide", {
             event_category: "publication",
             event_label: "Agile AI Guide"
@@ -80,7 +80,7 @@ Version: 2.7 (Canonical — Material Toggle Only)
       }
 
       if (href.includes("Agile-AI-Functional-Elements")) {
-        link.addEventListener("click", function () {
+        link.addEventListener("click", () => {
           gtag("event", "download_functional_elements", {
             event_category: "publication",
             event_label: "Agile AI Functional Elements"
@@ -89,15 +89,11 @@ Version: 2.7 (Canonical — Material Toggle Only)
       }
 
     });
-
   }
 
 
-  /* =====================================================
-  INIT (SAFE FOR MKDOCS NAVIGATION)
-  ===================================================== */
-
   function initializePage() {
+    relocateThemeToggle();
     injectSpecBanner();
     renderMermaid();
     setupAnalyticsTracking();

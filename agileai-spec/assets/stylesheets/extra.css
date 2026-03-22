@@ -248,3 +248,179 @@ RESPONSIVE (NON-DESTRUCTIVE)
     font-size: 12px;
   }
 }
+
+/* =========================================================
+READING EXPERIENCE LAYER (Authority + Clarity)
+Version: 1.0 (Non-Structural, Additive Only)
+========================================================= */
+
+
+/* =========================================================
+CONTENT WIDTH CONTROL (READABILITY)
+========================================================= */
+
+.md-content__inner {
+  max-width: 820px;
+}
+
+
+/* =========================================================
+TYPOGRAPHY — BASE CONTENT
+========================================================= */
+
+.md-typeset {
+  font-size: 15.5px;
+  line-height: 1.7;
+  letter-spacing: 0.2px;
+}
+
+[data-md-color-scheme="slate"] .md-typeset {
+  color: #e2e8f0;
+}
+
+
+/* =========================================================
+PARAGRAPH RHYTHM
+========================================================= */
+
+.md-typeset p {
+  margin-bottom: 1.1em;
+}
+
+
+/* =========================================================
+HEADINGS — AUTHORITY SCALE
+========================================================= */
+
+.md-typeset h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+  letter-spacing: 0.2px;
+}
+
+.md-typeset h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 1.4em;
+  margin-bottom: 0.5em;
+}
+
+.md-typeset h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 1.2em;
+  margin-bottom: 0.4em;
+}
+
+
+/* =========================================================
+SECTION SEPARATION (SUBTLE DOCUMENT FEEL)
+========================================================= */
+
+.md-typeset h2 {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding-bottom: 4px;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2 {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================================
+LIST READABILITY
+========================================================= */
+
+.md-typeset ul,
+.md-typeset ol {
+  margin-bottom: 1em;
+  padding-left: 1.2em;
+}
+
+.md-typeset li {
+  margin-bottom: 0.35em;
+}
+
+
+/* =========================================================
+STRONG TEXT (CONTROLLED EMPHASIS)
+========================================================= */
+
+.md-typeset strong {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+[data-md-color-scheme="slate"] .md-typeset strong {
+  color: #f1f5f9;
+}
+
+
+/* =========================================================
+BLOCKQUOTE — DOCUMENT STYLE (NOT BLOG STYLE)
+========================================================= */
+
+.md-typeset blockquote {
+  border-left: 3px solid rgba(100, 116, 139, 0.4);
+  padding-left: 12px;
+  color: #475569;
+  margin: 1em 0;
+}
+
+[data-md-color-scheme="slate"] .md-typeset blockquote {
+  color: #94a3b8;
+  border-left: 3px solid rgba(148, 163, 184, 0.4);
+}
+
+
+/* =========================================================
+TABLE IMPROVEMENT (READABILITY)
+========================================================= */
+
+.md-typeset table {
+  font-size: 14px;
+}
+
+.md-typeset th {
+  font-weight: 600;
+}
+
+
+/* =========================================================
+CODE BLOCKS — CALM + CLEAN
+========================================================= */
+
+.md-typeset pre {
+  border-radius: 6px;
+  font-size: 13.5px;
+}
+
+
+/* =========================================================
+RESPONSIVE REFINEMENT
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .md-content__inner {
+    max-width: 100%;
+  }
+
+  .md-typeset {
+    font-size: 15px;
+  }
+
+  .md-typeset h1 {
+    font-size: 24px;
+  }
+
+  .md-typeset h2 {
+    font-size: 20px;
+  }
+
+  .md-typeset h3 {
+    font-size: 17px;
+  }
+}

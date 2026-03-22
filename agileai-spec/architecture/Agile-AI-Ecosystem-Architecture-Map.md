@@ -3,6 +3,10 @@ section: Architecture
 title: Agile AI Ecosystem — Digital Architecture Map
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Architecture</strong> → Ecosystem Architecture Map
+</div>
+
 # Agile AI Ecosystem  
 ## Digital Architecture Map
 
@@ -31,12 +35,12 @@ Institutional systems and platforms
 **Agile AI Foundation**  
 *(Canonical Standards Authority)*
 
-↓
+↓  
 
 **Agile AI University**  
 *(Academic Operationalization)*
 
-↓
+↓  
 
 **Digital Systems**
 

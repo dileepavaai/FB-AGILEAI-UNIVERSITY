@@ -54,6 +54,48 @@
     </div>
   </div>
 
+  <!-- Context Bar (Section + Page Intelligence) -->
+  <div class="spec-context-bar">
+    <div class="spec-context-container">
+
+      <!-- Section -->
+      <span class="spec-context-label">Section</span>
+
+      <span class="spec-context-value">
+        {% if page.url.startswith('architecture/') %}
+          Architecture
+        {% elif page.url.startswith('domain/') %}
+          Domain
+        {% elif page.url.startswith('ecosystem/') %}
+          Ecosystem
+        {% elif page.url.startswith('registry/') %}
+          Registries
+        {% elif page.url.startswith('standards/') %}
+          Standards
+        {% elif page.url.startswith('reference/') %}
+          Reference
+        {% elif page.url.startswith('publications/') %}
+          Publications
+        {% elif page.url.startswith('version-log/') %}
+          Governance Log
+        {% elif page.url.startswith('versions/') %}
+          Specification
+        {% else %}
+          Overview
+        {% endif %}
+      </span>
+
+      <!-- Separator -->
+      <span class="spec-context-separator">→</span>
+
+      <!-- Page -->
+      <span class="spec-context-page">
+        {{ page.title }}
+      </span>
+
+    </div>
+  </div>
+
   <!-- Material Header (DO NOT REMOVE) -->
   {{ super() }}
 

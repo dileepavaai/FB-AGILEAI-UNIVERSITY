@@ -266,3 +266,17 @@ RESPONSIVE
     font-size: 12px;
   }
 }
+
+.spec-context-value {
+  font-weight: 600;
+  color: #1e3a8a;
+  letter-spacing: 0.2px;
+}
+
+.spec-context-separator {
+  opacity: 0.4;
+}
+
+.spec-context-page {
+  color: #444;
+}

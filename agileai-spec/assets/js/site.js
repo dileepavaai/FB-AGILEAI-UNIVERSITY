@@ -1,7 +1,7 @@
 /*
 ======================================================
 Agile AI Specification Header + Mermaid Initialization
-Version: 2.2 (Stabilized Injection Layer)
+Version: 2.4 (Correct Actions Container Injection)
 ======================================================
 */
 
@@ -37,22 +37,30 @@ Version: 2.2 (Stabilized Injection Layer)
 
 
   /* =====================================================
-  THEME TOGGLE (STRICT SINGLE INSTANCE)
+  THEME TOGGLE (RIGHT ACTION AREA — CORRECT FIX)
   ===================================================== */
 
   function injectThemeToggle() {
 
+    // Remove duplicates globally
+    document.querySelectorAll("#theme-toggle").forEach(el => el.remove());
+
     const header = document.querySelector(".md-header__inner");
     if (!header) return;
 
-    /* ---- HARD CLEANUP (prevents duplicates permanently) ---- */
-    document.querySelectorAll("#theme-toggle").forEach(el => el.remove());
+    // 🔴 CRITICAL: Find the RIGHT ACTION CONTAINER
+    let actions = header.querySelector(".md-header__option");
 
-    if (header.querySelector("#theme-toggle")) return;
+    // Fallback (Material variations)
+    if (!actions) {
+      actions = header.querySelector(".md-header__inner");
+    }
+
+    if (!actions) return;
 
     const btn = document.createElement("button");
     btn.id = "theme-toggle";
-    btn.className = "spec-theme-toggle";
+    btn.className = "spec-theme-toggle md-header__button";
     btn.title = "Toggle theme";
 
     function updateIcon() {
@@ -60,14 +68,11 @@ Version: 2.2 (Stabilized Injection Layer)
       btn.innerHTML = current === "slate" ? "☀️" : "🌙";
     }
 
-    /* ---- Initial state ---- */
     updateIcon();
 
     btn.addEventListener("click", () => {
-
       const body = document.body;
       const current = body.getAttribute("data-md-color-scheme");
-
       const next = current === "default" ? "slate" : "default";
 
       body.setAttribute("data-md-color-scheme", next);
@@ -76,7 +81,8 @@ Version: 2.2 (Stabilized Injection Layer)
       updateIcon();
     });
 
-    header.appendChild(btn);
+    // ✅ Insert into correct action group
+    actions.appendChild(btn);
   }
 
 
@@ -140,7 +146,7 @@ Version: 2.2 (Stabilized Injection Layer)
 
 
   /* =====================================================
-  INIT (SAFE FOR MKDOCS NAVIGATION)
+  INIT (MKDOCS SAFE)
   ===================================================== */
 
   function initializePage() {

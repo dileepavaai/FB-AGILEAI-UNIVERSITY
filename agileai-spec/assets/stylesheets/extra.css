@@ -268,3 +268,29 @@ RESPONSIVE OPTIMIZATION
     gap: 10px;
   }
 }
+
+/* =====================================
+   ACTIVE NAVIGATION STATE (Spec Layer)
+   ===================================== */
+
+/* Active top navigation tab */
+.md-tabs__link--active {
+  font-weight: 600;
+  color: #2563eb !important;
+  border-bottom: 2px solid #2563eb;
+}
+
+/* Active sidebar item */
+.md-nav__link--active {
+  color: #2563eb !important;
+  font-weight: 600;
+}
+
+/* Subtle hover for non-active tabs */
+.md-tabs__link {
+  transition: all 0.2s ease;
+}
+
+.md-tabs__link:hover {
+  color: #1e3a8a;
+}

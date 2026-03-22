@@ -1,29 +1,32 @@
+section: Registry
+title: Agile AI Credential Registry
+
 # Agile AI Credential Registry
 
 !!! success "Specification Status — CANONICAL"
 This document is part of the official **Agile AI Specification** and represents the canonical registry of professional credentials within the Agile AI ecosystem.
 
-**DOCUMENT TYPE:** Registry
-**VERSION:** 1.0
-**STATUS:** CANONICAL
-**MAINTAINED BY:** Agile AI University
+**DOCUMENT TYPE:** Registry  
+**VERSION:** 1.0  
+**STATUS:** CANONICAL  
+**MAINTAINED BY:** Agile AI University  
 
 ---
 
-## Overview
+# 1. Purpose
 
 This registry defines the official credentials recognized within the Agile AI ecosystem.
 
 Credential identifiers defined in this registry are used for:
 
-* certificate issuance
-* credential verification
-* institutional recognition
-* ecosystem governance
+- certificate issuance  
+- credential verification  
+- institutional recognition  
+- ecosystem governance  
 
 ---
 
-## Core Professional Capability Standard
+# 2. Core Capability Standard
 
 **Artificial Intelligence Professional Agilist (AIPA)** represents the core professional capability standard within the Agile AI ecosystem.
 
@@ -31,57 +34,57 @@ It recognizes experienced professionals who demonstrate the ability to integrate
 
 Advanced credentials extend this capability into specialized domains such as:
 
-* Agentic AI systems
-* organizational transformation
-* AI product leadership
+- agentic AI systems  
+- organizational transformation  
+- AI product leadership  
 
 ---
 
-## Credential Tracks
+# 3. Credential Tracks
 
 The Agile AI credential framework is organized across three professional tracks.
 
 | Track                | Focus                                                                        |
-| -------------------- | ---------------------------------------------------------------------------- |
+|---------------------|------------------------------------------------------------------------------|
 | **P — Professional** | Applying Agile AI capability in organizational environments                  |
 | **M — Master**       | Designing and governing Agentic AI systems                                   |
 | **L — Leadership**   | Strategic, organizational, and product leadership in AI-enabled environments |
 
 ---
 
-## Credential Registry
+# 4. Credential Registry
 
 | Credential ID | Credential Name                                        | Track        | Status     |
-| ------------- | ------------------------------------------------------ | ------------ | ---------- |
-| AAI-CR-001    | Agile Outcome Practitioner (AOP)                       | Professional | Retired    |
-| AAI-CR-002    | Artificial Intelligence Professional Agilist (AIPA)    | Professional | Active     |
-| AAI-CR-003    | Artificial Intelligence System Designer (AISD)         | Professional | Recognized |
-| AAI-CR-004    | Artificial Intelligence Delegator and Enabler (AIDE)   | Professional | Recognized |
-| AAI-CR-005    | Agentic Artificial Intelligence Agilist (AAIA)         | Master       | Recognized |
-| AAI-CR-006    | Agentic Artificial Intelligence Master (AAIM)          | Master       | Recognized |
-| AAI-CR-007    | Agile Artificial Intelligence Capability Coach (AAICC) | Master       | Recognized |
-| AAI-CR-008    | AI Strategic Leadership (AISL)                         | Leadership   | Recognized |
-| AAI-CR-009    | AI Organizational Leadership (AIOL)                    | Leadership   | Recognized |
-| AAI-CR-010    | AI Product Leadership (AIPL)                           | Leadership   | Recognized |
+|---------------|--------------------------------------------------------|--------------|------------|
+| AAI-CR-001    | Agile Outcome Practitioner (AOP)                        | Professional | Retired    |
+| AAI-CR-002    | Artificial Intelligence Professional Agilist (AIPA)     | Professional | Active     |
+| AAI-CR-003    | Artificial Intelligence System Designer (AISD)          | Professional | Recognized |
+| AAI-CR-004    | Artificial Intelligence Delegator and Enabler (AIDE)    | Professional | Recognized |
+| AAI-CR-005    | Agentic Artificial Intelligence Agilist (AAIA)          | Master       | Recognized |
+| AAI-CR-006    | Agentic Artificial Intelligence Master (AAIM)           | Master       | Recognized |
+| AAI-CR-007    | Agile Artificial Intelligence Capability Coach (AAICC)  | Master       | Recognized |
+| AAI-CR-008    | AI Strategic Leadership (AISL)                          | Leadership   | Recognized |
+| AAI-CR-009    | AI Organizational Leadership (AIOL)                     | Leadership   | Recognized |
+| AAI-CR-010    | AI Product Leadership (AIPL)                            | Leadership   | Recognized |
 
 ---
 
-## Credential Identifier Format
+# 5. Credential Identifier Format
 
 Credentials within the Agile AI ecosystem follow a structured identifier format.
 
 **AAI-CR-XXX**
 
 | Component | Meaning                       |
-| --------- | ----------------------------- |
+|-----------|-------------------------------|
 | AAI       | Agile AI ecosystem identifier |
 | CR        | Credential Registry           |
 | XXX       | Sequential credential number  |
 
-### Example
+## Example
 
 | Identifier | Meaning                                                      |
-| ---------- | ------------------------------------------------------------ |
+|------------|--------------------------------------------------------------|
 | AAI-CR-001 | First credential defined in the Agile AI Credential Registry |
 | AAI-CR-002 | Second credential defined in the registry                    |
 | AAI-CR-003 | Third credential defined in the registry                     |
@@ -92,9 +95,9 @@ Even when credentials are retired, their identifiers remain reserved to preserve
 
 ---
 
-## Credential Descriptions
+# 6. Credential Descriptions
 
-### AAI-CR-001 — Agile Outcome Practitioner (AOP)
+## AAI-CR-001 — Agile Outcome Practitioner (AOP)
 
 A legacy credential previously issued to recognize professionals applying Agile AI principles to achieve organizational outcomes.
 
@@ -106,7 +109,7 @@ The AOP identifier remains preserved within the registry for historical traceabi
 
 ---
 
-### AAI-CR-002 — Artificial Intelligence Professional Agilist (AIPA)
+## AAI-CR-002 — Artificial Intelligence Professional Agilist (AIPA)
 
 A professional credential recognizing experienced professionals capable of integrating adaptive execution, machine intelligence, and accountable human judgment in complex organizational environments.
 
@@ -114,60 +117,60 @@ This credential represents the **core professional capability standard** of the 
 
 ---
 
-### AAI-CR-003 — Artificial Intelligence System Designer (AISD)
+## AAI-CR-003 — Artificial Intelligence System Designer (AISD)
 
 A credential recognizing professionals capable of designing AI-enabled systems and architectures that incorporate Agile AI principles within organizational environments.
 
 ---
 
-### AAI-CR-004 — Artificial Intelligence Delegator and Enabler (AIDE)
+## AAI-CR-004 — Artificial Intelligence Delegator and Enabler (AIDE)
 
 A credential recognizing professionals capable of enabling responsible delegation of decisions and workflows to AI systems within organizational environments.
 
 ---
 
-### AAI-CR-005 — Agentic Artificial Intelligence Agilist (AAIA)
+## AAI-CR-005 — Agentic Artificial Intelligence Agilist (AAIA)
 
 A credential recognizing professionals capable of designing and implementing agent-based workflows and integrating agentic systems within Agile AI execution environments.
 
 ---
 
-### AAI-CR-006 — Agentic Artificial Intelligence Master (AAIM)
+## AAI-CR-006 — Agentic Artificial Intelligence Master (AAIM)
 
 An advanced credential recognizing professionals capable of architecting and governing agentic AI systems and decision-delegation frameworks.
 
 ---
 
-### AAI-CR-007 — Agile Artificial Intelligence Capability Coach (AAICC)
+## AAI-CR-007 — Agile Artificial Intelligence Capability Coach (AAICC)
 
 A senior credential recognizing professionals who enable organizations to adopt agentic AI by mentoring teams, guiding leaders, and developing long-term AI capability.
 
 ---
 
-### AAI-CR-008 — AI Strategic Leadership (AISL)
+## AAI-CR-008 — AI Strategic Leadership (AISL)
 
 A leadership credential recognizing professionals responsible for defining long-term AI strategy and institutional direction.
 
 ---
 
-### AAI-CR-009 — AI Organizational Leadership (AIOL)
+## AAI-CR-009 — AI Organizational Leadership (AIOL)
 
 A credential recognizing leaders responsible for enabling enterprise-wide AI adoption and organizational transformation.
 
 ---
 
-### AAI-CR-010 — AI Product Leadership (AIPL)
+## AAI-CR-010 — AI Product Leadership (AIPL)
 
 A credential recognizing leaders responsible for AI-enabled product strategy, platform ecosystems, and product innovation.
 
 ---
 
-## Credential Lifecycle Governance
+# 7. Credential Lifecycle Governance
 
 Credentials within the Agile AI ecosystem follow a lifecycle governance model.
 
 | Status         | Meaning                                                              |
-| -------------- | -------------------------------------------------------------------- |
+|----------------|----------------------------------------------------------------------|
 | **Active**     | Credential currently issued by Agile AI University                   |
 | **Recognized** | Credential formally defined within the Agile AI framework            |
 | **Retired**    | Credential no longer issued but preserved for historical recognition |
@@ -176,16 +179,23 @@ This lifecycle ensures transparency, institutional continuity, and long-term eco
 
 ---
 
-## Credential Participation
+# 8. Governance Notes
+
+- Credential IDs are permanent and must never be reused  
+- Credentials must never be deleted from the registry  
+- Retired credentials remain part of institutional history  
+- Registry must support traceability and cross-system referencing  
+- Any additions must follow the established identifier format  
+
+---
+
+# 9. Participation Pathways
 
 Credentials defined within the Agile AI ecosystem may be issued through:
 
-* institutional recognition
-* professional capability assessments
-* invitation-based cohorts
-* strategic partnerships
+- institutional recognition  
+- professional capability assessments  
+- invitation-based cohorts  
+- strategic partnerships  
 
-Professionals interested in participating in Agile AI credential pathways may explore institutional portals or engage with the **Agile AI University ecosystem**.
-
-
-
+Professionals interested in participating in Agile AI credential pathways may engage with the Agile AI University ecosystem through its institutional platforms.

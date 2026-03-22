@@ -1,9 +1,13 @@
-# AGILE AI
+---
+section: Architecture
+title: Agile AI Core Framework
+---
 
-## CORE FRAMEWORK
+# Agile AI  
+## Core Framework
 
-STATUS: CANONICAL
-DATE ESTABLISHED: 2026-03-14
+**Status:** Canonical  
+**Date Established:** 2026-03-14
 
 ---
 
@@ -17,10 +21,10 @@ It explains how organizations integrate adaptive execution, machine intelligence
 
 The core framework provides the foundation for:
 
-• capability models
-• assessment systems
-• academic knowledge structures
-• organizational adoption models
+- capability models  
+- assessment systems  
+- academic knowledge structures  
+- organizational adoption models  
 
 ---
 
@@ -28,9 +32,9 @@ The core framework provides the foundation for:
 
 The Agile AI framework describes an organizational capability formed through the interaction of three core elements:
 
-Adaptive Execution
-Machine Intelligence
-Accountable Human Judgment
+- Adaptive Execution  
+- Machine Intelligence  
+- Accountable Human Judgment  
 
 These elements operate together to support continuous adaptation and informed decision-making.
 
@@ -50,9 +54,9 @@ Adaptive execution refers to the ability of organizations to modify plans, proce
 
 This capability enables organizations to:
 
-• respond to new insights quickly
-• iterate operational approaches
-• learn continuously from outcomes
+- respond to new insights quickly  
+- iterate operational approaches  
+- learn continuously from outcomes  
 
 Adaptive execution ensures that organizations remain responsive to change.
 
@@ -64,10 +68,10 @@ Machine intelligence refers to computational systems capable of analyzing large 
 
 These systems may perform tasks such as:
 
-• pattern recognition
-• predictive modeling
-• anomaly detection
-• automated analysis
+- pattern recognition  
+- predictive modeling  
+- anomaly detection  
+- automated analysis  
 
 Machine intelligence expands the analytical capacity available to organizations.
 
@@ -79,10 +83,10 @@ Human judgment provides the contextual understanding necessary to interpret AI-g
 
 Humans remain responsible for:
 
-• evaluating AI outputs
-• understanding contextual implications
-• making final decisions
-• maintaining ethical oversight
+- evaluating AI outputs  
+- understanding contextual implications  
+- making final decisions  
+- maintaining ethical oversight  
 
 Accountable human judgment ensures that intelligent systems remain aligned with organizational goals and societal expectations.
 
@@ -92,17 +96,15 @@ Accountable human judgment ensures that intelligent systems remain aligned with 
 
 The Agile AI framework emphasizes the interaction between its three core components.
 
-Machine intelligence generates insights from data.
-
-Adaptive execution allows organizations to act on these insights.
-
-Human judgment interprets results and ensures responsible decision-making.
+- Machine intelligence generates insights from data  
+- Adaptive execution allows organizations to act on these insights  
+- Human judgment interprets results and ensures responsible decision-making  
 
 When these elements operate together, organizations can:
 
-• adapt more rapidly
-• improve decision quality
-• respond effectively to complex environments
+- adapt more rapidly  
+- improve decision quality  
+- respond effectively to complex environments  
 
 ---
 
@@ -112,11 +114,11 @@ The Agile AI framework can be applied across a wide range of organizational cont
 
 Examples include:
 
-• strategic decision support
-• operational optimization
-• product development
-• service delivery
-• risk management
+- strategic decision support  
+- operational optimization  
+- product development  
+- service delivery  
+- risk management  
 
 Organizations may implement the framework at varying levels of maturity depending on their capabilities and resources.
 
@@ -138,11 +140,11 @@ Capability assessments evaluate how effectively organizations implement the Agil
 
 Assessments examine organizational maturity across capability dimensions related to:
 
-• strategic alignment
-• intelligent decision systems
-• adaptive execution
-• human–AI collaboration
-• governance and responsibility
+- strategic alignment  
+- intelligent decision systems  
+- adaptive execution  
+- human–AI collaboration  
+- governance and responsibility  
 
 Assessment insights help organizations strengthen their implementation of the framework.
 
@@ -154,10 +156,10 @@ The Agile AI Core Framework is maintained as part of the Agile AI domain archite
 
 Institutional responsibilities include:
 
-Agile AI Foundation
+**Agile AI Foundation**  
 Responsible for defining conceptual frameworks and domain standards.
 
-Agile AI University
+**Agile AI University**  
 Responsible for operationalizing the framework through capability models, academic knowledge systems, and professional recognition programs.
 
 This institutional structure supports both conceptual clarity and practical implementation.
@@ -170,9 +172,9 @@ The Agile AI Core Framework is expected to evolve as organizations gain deeper e
 
 Future refinements may include:
 
-• expanded models of human–AI collaboration
-• improved governance structures for intelligent systems
-• advanced organizational capability frameworks
+- expanded models of human–AI collaboration  
+- improved governance structures for intelligent systems  
+- advanced organizational capability frameworks  
 
 Changes to the framework must follow ecosystem governance processes and be recorded in the governance log.
 
@@ -185,6 +187,3 @@ The Agile AI framework represents a structured approach to integrating intellige
 As technological capabilities and organizational practices continue to evolve, the principles underlying the framework will remain focused on responsible integration.
 
 Organizations that effectively combine adaptive execution, machine intelligence, and accountable human judgment will be better positioned to operate successfully in complex and rapidly changing environments.
-
-
-

@@ -1,6 +1,6 @@
 /* ========================================================= 
 Agile AI Specification — UI Refinement Layer
-Version: 6.1 (Navigation Intelligence + Authority Refinement)
+Version: 6.2 (Micro UX Authority Layer — FINAL)
 SAFE: Additive Only · Zero Structural Impact
 ========================================================= */
 
@@ -103,7 +103,7 @@ RIGHT NAVIGATION (CALM + CONTROLLED)
 
 
 /* =========================================================
-ORIENTATION STRIP (NEW — HIGH VALUE, LOW NOISE)
+ORIENTATION STRIP
 ========================================================= */
 
 .spec-orientation-strip {
@@ -131,7 +131,7 @@ ORIENTATION STRIP (NEW — HIGH VALUE, LOW NOISE)
 
 
 /* =========================================================
-CONTEXT BAR (LOW NOISE — REFINED)
+CONTEXT BAR
 ========================================================= */
 
 .spec-context-bar {
@@ -173,7 +173,7 @@ CONTEXT BAR (LOW NOISE — REFINED)
 
 
 /* =========================================================
-GLOBAL SPEC BANNER (DOCUMENT STYLE — FIXED)
+GLOBAL SPEC BANNER (DOCUMENT STYLE)
 ========================================================= */
 
 .spec-global-banner {
@@ -199,7 +199,6 @@ GLOBAL SPEC BANNER (DOCUMENT STYLE — FIXED)
 .spec-title {
   font-size: 15.5px;
   font-weight: 600;
-  letter-spacing: 0.2px;
 }
 
 .spec-meta {
@@ -212,7 +211,7 @@ GLOBAL SPEC BANNER (DOCUMENT STYLE — FIXED)
 
 
 /* =========================================================
-NAVIGATION STATE (PRECISION IMPROVED)
+NAVIGATION STATE
 ========================================================= */
 
 .md-tabs__link--active {
@@ -237,7 +236,7 @@ NAVIGATION STATE (PRECISION IMPROVED)
 
 
 /* =========================================================
-MATERIAL HEADER ALIGNMENT (STRICTLY SAFE)
+MATERIAL HEADER ALIGNMENT
 ========================================================= */
 
 .md-header__option {
@@ -247,7 +246,7 @@ MATERIAL HEADER ALIGNMENT (STRICTLY SAFE)
 
 
 /* =========================================================
-READING EXPERIENCE LAYER (UNCHANGED — STABLE)
+READING EXPERIENCE
 ========================================================= */
 
 .md-content__inner {
@@ -257,7 +256,6 @@ READING EXPERIENCE LAYER (UNCHANGED — STABLE)
 .md-typeset {
   font-size: 15.5px;
   line-height: 1.7;
-  letter-spacing: 0.2px;
 }
 
 [data-md-color-scheme="slate"] .md-typeset {
@@ -271,17 +269,12 @@ READING EXPERIENCE LAYER (UNCHANGED — STABLE)
 .md-typeset h1 {
   font-size: 28px;
   font-weight: 600;
-  margin-top: 0.6em;
-  margin-bottom: 0.6em;
 }
 
 .md-typeset h2 {
   font-size: 22px;
   font-weight: 600;
-  margin-top: 1.4em;
-  margin-bottom: 0.5em;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  padding-bottom: 4px;
 }
 
 [data-md-color-scheme="slate"] .md-typeset h2 {
@@ -293,77 +286,51 @@ READING EXPERIENCE LAYER (UNCHANGED — STABLE)
   font-weight: 600;
 }
 
-.md-typeset ul,
-.md-typeset ol {
-  margin-bottom: 1em;
-  padding-left: 1.2em;
+
+/* =========================================================
+MICRO UX AUTHORITY LAYER (NEW)
+========================================================= */
+
+/* Links */
+
+.md-typeset a {
+  color: #334155;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-.md-typeset li {
-  margin-bottom: 0.35em;
-}
-
-.md-typeset strong {
-  font-weight: 600;
+.md-typeset a:hover {
   color: #0f172a;
 }
 
-[data-md-color-scheme="slate"] .md-typeset strong {
-  color: #f1f5f9;
+[data-md-color-scheme="slate"] .md-typeset a {
+  color: #cbd5f5;
 }
 
-.md-typeset blockquote {
-  border-left: 3px solid rgba(100, 116, 139, 0.4);
-  padding-left: 12px;
-  color: #475569;
-}
-
-[data-md-color-scheme="slate"] .md-typeset blockquote {
-  color: #94a3b8;
-  border-left: 3px solid rgba(148, 163, 184, 0.4);
-}
-
-.md-typeset pre {
-  border-radius: 6px;
-  font-size: 13.5px;
+[data-md-color-scheme="slate"] .md-typeset a:hover {
+  color: #ffffff;
 }
 
 
-/* =========================================================
-RESPONSIVE (SAFE)
-========================================================= */
+/* TOC */
 
-@media (max-width: 768px) {
+.md-nav--secondary .md-nav__link {
+  color: #64748b;
+  font-size: 13px;
+}
 
-  .spec-header-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    padding: 10px 14px;
-  }
+.md-nav--secondary .md-nav__link--active {
+  color: #0f172a;
+  font-weight: 600;
+}
 
-  .spec-header-nav {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+[data-md-color-scheme="slate"] .md-nav--secondary .md-nav__link--active {
+  color: #ffffff;
+}
 
-  .md-content__inner {
-    max-width: 100%;
-  }
 
-  .md-typeset {
-    font-size: 15px;
-  }
+/* Smooth perception */
 
-  .md-typeset h1 {
-    font-size: 24px;
-  }
-
-  .md-typeset h2 {
-    font-size: 20px;
-  }
-
-  .md-typeset h3 {
-    font-size: 17px;
-  }
+* {
+  transition: color 0.15s ease;
 }

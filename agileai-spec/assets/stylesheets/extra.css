@@ -1,6 +1,6 @@
 /* =========================================================
 Agile AI Specification — UI Refinement Layer
-Version: 5.4 (Clean Stable Toggle — No Conflicts)
+Version: 5.5 (Final Clean — No Toggle Overrides)
 ========================================================= */
 
 
@@ -95,33 +95,6 @@ RIGHT NAVIGATION
 
 [data-md-color-scheme="slate"] .spec-header-nav a:hover {
   color: #ffffff;
-}
-
-
-/* =========================================================
-TOGGLE SLOT (ONLY ONE — FINAL)
-========================================================= */
-
-#spec-toggle-slot {
-  display: flex;
-  align-items: center;
-  margin-left: 8px;
-}
-
-#spec-toggle-slot label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 32px;
-  height: 32px;
-
-  cursor: pointer;
-  opacity: 0.9;
-}
-
-#spec-toggle-slot label:hover {
-  opacity: 1;
 }
 
 
@@ -224,6 +197,16 @@ NAVIGATION STATE
 
 .md-nav__link--active {
   font-weight: 600;
+}
+
+
+/* =========================================================
+MATERIAL HEADER ALIGNMENT (SAFE)
+========================================================= */
+
+.md-header__option {
+  display: flex;
+  align-items: center;
 }
 
 

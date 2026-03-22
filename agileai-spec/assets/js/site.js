@@ -1,16 +1,21 @@
 /*
 ======================================================
 Agile AI Specification Header + Mermaid Initialization
-Analytics Tracking Added + Theme Toggle (Refinement)
+Version: 2.2 (Stabilized Injection Layer)
 ======================================================
 */
 
 (function () {
 
+  /* =====================================================
+  SPEC BANNER
+  ===================================================== */
+
   function injectSpecBanner() {
 
     const container = document.querySelector(".md-content__inner");
     if (!container) return;
+
     if (container.querySelector(".spec-banner")) return;
 
     const banner = document.createElement("div");
@@ -31,31 +36,53 @@ Analytics Tracking Added + Theme Toggle (Refinement)
   }
 
 
+  /* =====================================================
+  THEME TOGGLE (STRICT SINGLE INSTANCE)
+  ===================================================== */
+
   function injectThemeToggle() {
 
     const header = document.querySelector(".md-header__inner");
     if (!header) return;
+
+    /* ---- HARD CLEANUP (prevents duplicates permanently) ---- */
+    document.querySelectorAll("#theme-toggle").forEach(el => el.remove());
+
     if (header.querySelector("#theme-toggle")) return;
 
     const btn = document.createElement("button");
     btn.id = "theme-toggle";
     btn.className = "spec-theme-toggle";
     btn.title = "Toggle theme";
-    btn.innerHTML = "🌙";
+
+    function updateIcon() {
+      const current = document.body.getAttribute("data-md-color-scheme");
+      btn.innerHTML = current === "slate" ? "☀️" : "🌙";
+    }
+
+    /* ---- Initial state ---- */
+    updateIcon();
 
     btn.addEventListener("click", () => {
+
       const body = document.body;
       const current = body.getAttribute("data-md-color-scheme");
 
-      body.setAttribute(
-        "data-md-color-scheme",
-        current === "default" ? "slate" : "default"
-      );
+      const next = current === "default" ? "slate" : "default";
+
+      body.setAttribute("data-md-color-scheme", next);
+      localStorage.setItem("md-color-scheme", next);
+
+      updateIcon();
     });
 
     header.appendChild(btn);
   }
 
+
+  /* =====================================================
+  MERMAID
+  ===================================================== */
 
   function renderMermaid() {
 
@@ -73,6 +100,10 @@ Analytics Tracking Added + Theme Toggle (Refinement)
 
   }
 
+
+  /* =====================================================
+  ANALYTICS
+  ===================================================== */
 
   function setupAnalyticsTracking() {
 
@@ -108,13 +139,16 @@ Analytics Tracking Added + Theme Toggle (Refinement)
   }
 
 
+  /* =====================================================
+  INIT (SAFE FOR MKDOCS NAVIGATION)
+  ===================================================== */
+
   function initializePage() {
     injectSpecBanner();
     injectThemeToggle();
     renderMermaid();
     setupAnalyticsTracking();
   }
-
 
   document.addEventListener("DOMContentLoaded", initializePage);
   document.addEventListener("navigation.end", initializePage);

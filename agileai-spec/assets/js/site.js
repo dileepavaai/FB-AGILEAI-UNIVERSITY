@@ -1,30 +1,23 @@
 /*
 ======================================================
 Agile AI Specification Header + Mermaid Initialization
-Version: 2.4 (Correct Actions Container Injection)
+Version: 2.6 (Correct Material Header Injection)
 ======================================================
 */
 
 (function () {
 
-  /* =====================================================
-  SPEC BANNER
-  ===================================================== */
-
   function injectSpecBanner() {
 
     const container = document.querySelector(".md-content__inner");
     if (!container) return;
-
     if (container.querySelector(".spec-banner")) return;
 
     const banner = document.createElement("div");
     banner.className = "spec-banner";
 
     banner.innerHTML = `
-      <div class="spec-banner-title">
-        Agile AI Specification
-      </div>
+      <div class="spec-banner-title">Agile AI Specification</div>
       <div class="spec-banner-meta">
         <span><strong>Version:</strong> 1.0</span>
         <span><strong>Status:</strong> Canonical</span>
@@ -36,27 +29,17 @@ Version: 2.4 (Correct Actions Container Injection)
   }
 
 
-  /* =====================================================
-  THEME TOGGLE (RIGHT ACTION AREA — CORRECT FIX)
-  ===================================================== */
-
   function injectThemeToggle() {
 
-    // Remove duplicates globally
+    // Remove duplicates
     document.querySelectorAll("#theme-toggle").forEach(el => el.remove());
 
     const header = document.querySelector(".md-header__inner");
     if (!header) return;
 
-    // 🔴 CRITICAL: Find the RIGHT ACTION CONTAINER
-    let actions = header.querySelector(".md-header__option");
-
-    // Fallback (Material variations)
-    if (!actions) {
-      actions = header.querySelector(".md-header__inner");
-    }
-
-    if (!actions) return;
+    // ✅ STRICT: insert inside search container (correct alignment)
+    const search = header.querySelector(".md-search");
+    if (!search) return;
 
     const btn = document.createElement("button");
     btn.id = "theme-toggle";
@@ -65,33 +48,27 @@ Version: 2.4 (Correct Actions Container Injection)
 
     function updateIcon() {
       const current = document.body.getAttribute("data-md-color-scheme");
-      btn.innerHTML = current === "slate" ? "☀️" : "🌙";
+      btn.textContent = current === "slate" ? "☀️" : "🌙";
     }
 
     updateIcon();
 
     btn.addEventListener("click", () => {
-      const body = document.body;
-      const current = body.getAttribute("data-md-color-scheme");
+      const current = document.body.getAttribute("data-md-color-scheme");
       const next = current === "default" ? "slate" : "default";
 
-      body.setAttribute("data-md-color-scheme", next);
+      document.body.setAttribute("data-md-color-scheme", next);
       localStorage.setItem("md-color-scheme", next);
 
       updateIcon();
     });
 
-    // ✅ Insert into correct action group
-    actions.appendChild(btn);
+    // 🔥 CRITICAL: append INSIDE search wrapper
+    search.parentElement.appendChild(btn);
   }
 
 
-  /* =====================================================
-  MERMAID
-  ===================================================== */
-
   function renderMermaid() {
-
     if (typeof mermaid === "undefined") return;
 
     mermaid.initialize({
@@ -100,30 +77,21 @@ Version: 2.4 (Correct Actions Container Injection)
       theme: "default"
     });
 
-    mermaid.run({
-      querySelector: ".language-mermaid"
-    });
-
+    mermaid.run({ querySelector: ".language-mermaid" });
   }
 
-
-  /* =====================================================
-  ANALYTICS
-  ===================================================== */
 
   function setupAnalyticsTracking() {
 
     if (typeof gtag !== "function") return;
 
-    const links = document.querySelectorAll("a");
-
-    links.forEach(link => {
+    document.querySelectorAll("a").forEach(link => {
 
       const href = link.getAttribute("href");
       if (!href) return;
 
       if (href.includes("Agile-AI-Guide")) {
-        link.addEventListener("click", function () {
+        link.addEventListener("click", () => {
           gtag("event", "download_agile_ai_guide", {
             event_category: "publication",
             event_label: "Agile AI Guide"
@@ -132,7 +100,7 @@ Version: 2.4 (Correct Actions Container Injection)
       }
 
       if (href.includes("Agile-AI-Functional-Elements")) {
-        link.addEventListener("click", function () {
+        link.addEventListener("click", () => {
           gtag("event", "download_functional_elements", {
             event_category: "publication",
             event_label: "Agile AI Functional Elements"
@@ -141,13 +109,8 @@ Version: 2.4 (Correct Actions Container Injection)
       }
 
     });
-
   }
 
-
-  /* =====================================================
-  INIT (MKDOCS SAFE)
-  ===================================================== */
 
   function initializePage() {
     injectSpecBanner();

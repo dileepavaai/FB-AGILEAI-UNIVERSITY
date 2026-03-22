@@ -1,28 +1,26 @@
 /* =========================================================
 Agile AI Specification — UI Refinement Layer
-Version: 5.1 (Stability + Dark Mode Correction)
+Version: 5.2 (Stable + Non-Breaking Header Fix)
 Purpose:
-- Reduce visual aggression (banner + accents)
-- Improve readability (light + dark)
-- Maintain authority + calm system feel
+- Preserve Material layout integrity
+- Maintain calm institutional UI
+- Fix theme toggle alignment safely
 - Fully additive, non-breaking
 ========================================================= */
 
 
 /* =========================================================
-INSTITUTIONAL HEADER (PRIMARY)
+INSTITUTIONAL HEADER
 ========================================================= */
 
 .spec-institutional-header {
   position: sticky;
   top: 0;
   z-index: 1000;
-
   width: 100%;
 
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
-
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -41,7 +39,10 @@ INSTITUTIONAL HEADER (PRIMARY)
   justify-content: space-between;
 }
 
-/* Left */
+
+/* =========================================================
+LEFT SIDE
+========================================================= */
 
 .spec-header-left {
   display: flex;
@@ -78,7 +79,9 @@ INSTITUTIONAL HEADER (PRIMARY)
 }
 
 
-/* Right Navigation */
+/* =========================================================
+RIGHT NAVIGATION
+========================================================= */
 
 .spec-header-nav {
   display: flex;
@@ -89,7 +92,6 @@ INSTITUTIONAL HEADER (PRIMARY)
 .spec-header-nav a {
   text-decoration: none;
   color: #334155;
-  position: relative;
   transition: all 0.2s ease;
 }
 
@@ -99,29 +101,15 @@ INSTITUTIONAL HEADER (PRIMARY)
 
 .spec-header-nav a:hover {
   color: #0f172a;
-  transform: translateY(-1px);
 }
 
 [data-md-color-scheme="slate"] .spec-header-nav a:hover {
   color: #ffffff;
 }
 
-/* External link indicator */
-
-.external-link::after {
-  content: " ↗";
-  font-size: 11px;
-  opacity: 0.5;
-  margin-left: 3px;
-}
-
-.external-link:hover::after {
-  opacity: 0.9;
-}
-
 
 /* =========================================================
-CONTEXT BAR (SECTION AWARENESS)
+CONTEXT BAR
 ========================================================= */
 
 .spec-context-bar {
@@ -155,28 +143,15 @@ CONTEXT BAR (SECTION AWARENESS)
 .spec-context-value {
   font-weight: 600;
   color: #334155;
-  letter-spacing: 0.2px;
 }
 
 [data-md-color-scheme="slate"] .spec-context-value {
   color: #e2e8f0;
 }
 
-.spec-context-separator {
-  opacity: 0.4;
-}
-
-.spec-context-page {
-  color: #444;
-}
-
-[data-md-color-scheme="slate"] .spec-context-page {
-  color: #cbd5f5;
-}
-
 
 /* =========================================================
-GLOBAL SPEC BANNER (REFINED + SOFTENED)
+GLOBAL SPEC BANNER
 ========================================================= */
 
 .spec-global-banner {
@@ -187,17 +162,13 @@ GLOBAL SPEC BANNER (REFINED + SOFTENED)
   );
 
   color: #f1f5f9;
-
   padding: 14px 18px;
   margin-bottom: 16px;
-
   border-radius: 6px;
 
   display: flex;
   flex-direction: column;
   gap: 6px;
-
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 [data-md-color-scheme="slate"] .spec-global-banner {
@@ -211,54 +182,36 @@ GLOBAL SPEC BANNER (REFINED + SOFTENED)
 .spec-title {
   font-size: 15.5px;
   font-weight: 600;
-  letter-spacing: 0.2px;
 }
 
 .spec-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-
   font-size: 12.5px;
-  opacity: 0.85;
 }
 
 
 /* =========================================================
-ACTIVE NAVIGATION STATE (CALMER)
+NAVIGATION STATE
 ========================================================= */
 
 .md-tabs__link--active {
   font-weight: 600;
   color: #334155 !important;
-  border-bottom: 2px solid rgba(51, 65, 85, 0.45);
 }
 
 [data-md-color-scheme="slate"] .md-tabs__link--active {
   color: #e2e8f0 !important;
-  border-bottom: 2px solid rgba(226, 232, 240, 0.4);
 }
 
 .md-nav__link--active {
-  color: #334155 !important;
   font-weight: 600;
-}
-
-[data-md-color-scheme="slate"] .md-nav__link--active {
-  color: #e2e8f0 !important;
-}
-
-.md-tabs__link:hover {
-  color: #1e293b;
-}
-
-[data-md-color-scheme="slate"] .md-tabs__link:hover {
-  color: #ffffff;
 }
 
 
 /* =========================================================
-BREADCRUMB POLISH
+BREADCRUMB
 ========================================================= */
 
 .md-path {
@@ -270,22 +223,9 @@ BREADCRUMB POLISH
   color: #94a3b8;
 }
 
-.md-path__item {
-  opacity: 0.8;
-}
-
-.md-path__item--active {
-  font-weight: 600;
-  color: #111;
-}
-
-[data-md-color-scheme="slate"] .md-path__item--active {
-  color: #f1f5f9;
-}
-
 
 /* =========================================================
-LEGACY SUPPORT (DO NOT REMOVE)
+LEGACY SUPPORT
 ========================================================= */
 
 .spec-banner {
@@ -300,21 +240,14 @@ LEGACY SUPPORT (DO NOT REMOVE)
   border-radius: 8px;
 }
 
-.spec-banner-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
 .spec-banner-title {
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 6px;
 }
 
 .spec-banner-meta span {
   margin-right: 20px;
   font-size: 13px;
-  opacity: 0.85;
 }
 
 
@@ -349,4 +282,28 @@ RESPONSIVE
     gap: 4px;
     font-size: 12px;
   }
+}
+
+
+/* =========================================================
+FINAL THEME TOGGLE ALIGNMENT (SAFE)
+========================================================= */
+
+/* Do NOT override Material layout — only style toggle */
+
+.spec-theme-toggle {
+  margin-left: 8px;
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Match Material header button spacing */
+.md-header__button.spec-theme-toggle {
+  padding: 0.4rem;
 }

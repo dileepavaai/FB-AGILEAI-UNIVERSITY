@@ -3,6 +3,10 @@ section: Architecture
 title: Agile AI Capability Model
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Domain</strong> → Capability Model
+</div>
+
 # Agile AI  
 ## Capability Model
 

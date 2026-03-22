@@ -54,7 +54,7 @@
     </div>
   </div>
 
-  <!-- Context Bar (FULLY SAFE) -->
+  <!-- Context Bar (Section Intelligence v2 — SAFE) -->
   <div class="spec-context-bar">
     <div class="spec-context-container">
 
@@ -62,7 +62,11 @@
       <span class="spec-context-label">Section</span>
 
       <span class="spec-context-value">
-        Specification
+        {% if page and page.meta and page.meta.section %}
+          {{ page.meta.section }}
+        {% else %}
+          Specification
+        {% endif %}
       </span>
 
       <!-- Separator -->

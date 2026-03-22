@@ -166,3 +166,105 @@ RESPONSIVE OPTIMIZATION
     font-size: 12px;
   }
 }
+
+/* =====================================
+   SPEC HEADER — REFINEMENT LAYER
+   (Additive, Safe, Non-breaking)
+   ===================================== */
+
+/* Sticky header with subtle glass effect */
+.spec-institutional-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Layout */
+.spec-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 8px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Left */
+.spec-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.spec-brand {
+  font-weight: 600;
+  text-decoration: none;
+  color: #111;
+  transition: opacity 0.2s ease;
+}
+
+.spec-brand:hover {
+  opacity: 0.7;
+}
+
+.spec-divider {
+  opacity: 0.4;
+}
+
+.spec-surface {
+  color: #666;
+}
+
+/* Right Navigation */
+.spec-header-nav {
+  display: flex;
+  gap: 18px;
+  font-size: 13px;
+}
+
+.spec-header-nav a {
+  text-decoration: none;
+  color: #333;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* Subtle hover differentiation */
+.spec-header-nav a:hover {
+  color: #000;
+  transform: translateY(-1px);
+}
+
+/* External link indicator ↗ */
+.external-link::after {
+  content: " ↗";
+  font-size: 11px;
+  opacity: 0.55;
+  margin-left: 3px;
+  transition: opacity 0.2s ease;
+}
+
+.external-link:hover::after {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .spec-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .spec-header-nav {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}

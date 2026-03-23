@@ -3,6 +3,10 @@ section: Reference
 title: Agile AI Reference Library
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Reference</strong> → Reference Library
+</div>
+
 # Agile AI Reference Library
 
 The Agile AI Reference Library contains supporting materials that complement the **Agile AI Specification**.

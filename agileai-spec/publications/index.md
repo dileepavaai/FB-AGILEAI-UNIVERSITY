@@ -5,6 +5,10 @@ description: Official reference publications of the Agile AI ecosystem providing
 image: https://spec.agileai.university/assets/images/og-image.png
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Publications</strong> → Publications
+</div>
+
 # Publications
 
 This section contains official reference publications of the Agile AI ecosystem.

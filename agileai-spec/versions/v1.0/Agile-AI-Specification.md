@@ -1,5 +1,11 @@
+---
 section: Publications
 title: Agile AI Specification v1.0
+---
+
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Publications</strong> → Agile AI Specification v1.0
+</div>
 
 # Agile AI Specification v1.0
 

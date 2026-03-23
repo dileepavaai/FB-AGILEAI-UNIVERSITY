@@ -1,5 +1,11 @@
+---
 section: Architecture
 title: Ecosystem Governance Change Log
+---
+
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Architecture</strong> → Governance Change Log
+</div>
 
 # AGILE AI ECOSYSTEM  
 ## GOVERNANCE CHANGE LOG

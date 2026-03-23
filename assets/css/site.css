@@ -1,134 +1,200 @@
-/* ======================================================
-Agile AI Specification – Global Banner
-Design Authority: Agile AI University
+/* =========================================================
+Agile AI Specification — UI Refinement Layer
+Version: 5.1 (Canonical Stabilization)
 Purpose:
-Provide a consistent specification identity banner
-across all documentation pages.
-Compatible with MkDocs Material theme.
-====================================================== */
+- Calm institutional tone
+- Improve light + dark readability
+- Maintain non-breaking additive behavior
+========================================================= */
 
-/* ======================================================
-SPECIFICATION BANNER CONTAINER
-====================================================== */
+
+/* =========================================================
+SPECIFICATION BANNER (PRIMARY)
+========================================================= */
 
 .spec-banner {
-background: #0b3d91;
-color: #ffffff;
+  background: linear-gradient(
+    90deg,
+    rgba(30, 58, 138, 0.92),
+    rgba(37, 99, 235, 0.88)
+  );
 
-padding: 16px 20px;
-margin-bottom: 26px;
+  color: #f8fafc;
 
-border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 22px;
 
-line-height: 1.45;
-letter-spacing: 0.2px;
+  border-radius: 8px;
 
-box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  line-height: 1.45;
+  letter-spacing: 0.2px;
+
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
 
-/* ======================================================
+/* Dark Mode */
+
+[data-md-color-scheme="slate"] .spec-banner {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.95),
+    rgba(30, 41, 59, 0.92)
+  );
+}
+
+
+/* =========================================================
 SPECIFICATION TITLE
-====================================================== */
+========================================================= */
 
 .spec-banner-title {
-font-size: 16px;
-font-weight: 700;
-
-margin-bottom: 6px;
-
-display: block;
+  font-size: 15.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
 }
 
-/* ======================================================
-SPECIFICATION METADATA ROW
-====================================================== */
+
+/* =========================================================
+SPECIFICATION META
+========================================================= */
 
 .spec-banner-meta {
-font-size: 13px;
-font-weight: 500;
-
-opacity: 0.96;
+  font-size: 12.5px;
+  font-weight: 500;
+  opacity: 0.9;
 }
-
-/* ======================================================
-METADATA FIELD SPACING
-====================================================== */
 
 .spec-banner-meta span {
-margin-right: 18px;
+  margin-right: 16px;
 }
 
-/* ======================================================
-ALIGNMENT WITH MATERIAL THEME CONTENT
-====================================================== */
+
+/* =========================================================
+CONTENT ALIGNMENT
+========================================================= */
 
 .md-content__inner h1:first-of-type {
-margin-top: 0.4rem;
+  margin-top: 0.4rem;
 }
 
 .md-content__inner {
-padding-top: 4px;
+  padding-top: 6px;
 }
 
-/* ======================================================
-IMPROVED VISUAL BALANCE FOR WIDE SCREENS
-====================================================== */
+
+/* =========================================================
+THEME TOGGLE (HEADER CONTROL)
+========================================================= */
+
+.spec-theme-toggle {
+  margin-left: 12px;
+  font-size: 16px;
+
+  background: transparent;
+  border: none;
+
+  cursor: pointer;
+
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.spec-theme-toggle:hover {
+  opacity: 1;
+}
+
+
+/* =========================================================
+ANNOUNCEMENT BAR (CONTROLLED)
+========================================================= */
+
+.md-banner {
+  display: block !important;
+
+  background: linear-gradient(
+    90deg,
+    rgba(30, 58, 138, 0.95),
+    rgba(37, 99, 235, 0.9)
+  ) !important;
+
+  color: #ffffff !important;
+  font-size: 13px;
+  text-align: center;
+}
+
+[data-md-color-scheme="slate"] .md-banner {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.95),
+    rgba(30, 41, 59, 0.92)
+  ) !important;
+}
+
+.md-banner a {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+WIDE SCREEN REFINEMENT
+========================================================= */
 
 @media screen and (min-width: 1200px) {
 
-.spec-banner {
-padding: 18px 22px;
+  .spec-banner {
+    padding: 18px 22px;
+  }
+
+  .spec-banner-title {
+    font-size: 16px;
+  }
 }
 
-.spec-banner-title {
-font-size: 17px;
-}
 
-}
-
-/* ======================================================
+/* =========================================================
 TABLET OPTIMIZATION
-====================================================== */
+========================================================= */
 
 @media screen and (max-width: 1024px) {
 
-.spec-banner {
-padding: 14px 16px;
+  .spec-banner {
+    padding: 14px 16px;
+  }
+
+  .spec-banner-title {
+    font-size: 15px;
+  }
+
+  .spec-banner-meta {
+    font-size: 12px;
+  }
 }
 
-.spec-banner-title {
-font-size: 15px;
-}
 
-.spec-banner-meta {
-font-size: 12.5px;
-}
-
-}
-
-/* ======================================================
+/* =========================================================
 MOBILE OPTIMIZATION
-====================================================== */
+========================================================= */
 
 @media screen and (max-width: 768px) {
 
-.spec-banner {
-padding: 12px 14px;
-border-radius: 6px;
-}
+  .spec-banner {
+    padding: 12px 14px;
+    border-radius: 6px;
+  }
 
-.spec-banner-title {
-font-size: 14.5px;
-}
+  .spec-banner-title {
+    font-size: 14.5px;
+  }
 
-.spec-banner-meta {
-font-size: 12px;
-}
+  .spec-banner-meta {
+    font-size: 11.8px;
+  }
 
-.spec-banner-meta span {
-display: block;
-margin-right: 0;
-margin-bottom: 2px;
-}
-
+  .spec-banner-meta span {
+    display: block;
+    margin-right: 0;
+    margin-bottom: 2px;
+  }
 }

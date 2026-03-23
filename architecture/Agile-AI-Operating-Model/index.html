@@ -26,11 +26,14 @@
     
     
       
-        <title>Operating Model - Agile AI Specification</title>
+        <title>Agile AI Operating Model - Agile AI Specification</title>
       
     
     
       <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -51,6 +54,8 @@
     
       <link rel="stylesheet" href="../../assets/css/site.css">
     
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -61,7 +66,14 @@
   </head>
   
   
-    <body dir="ltr">
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -80,6 +92,86 @@
     </div>
     
     
+
+  <!-- Institutional Header (Spec Layer) -->
+  <div class="spec-institutional-header">
+    <div class="spec-header-container">
+
+      <!-- Left: Institutional Identity -->
+      <div class="spec-header-left">
+        <a href="https://agileai.university"
+           class="spec-brand external-link"
+           target="_blank"
+           rel="noopener">
+          Agile AI University
+        </a>
+
+        <span class="spec-divider">|</span>
+
+        <span class="spec-surface">Specification v1.0</span>
+      </div>
+
+      <!-- Right: Cross-Surface Navigation -->
+      <div class="spec-header-nav">
+
+        <a href="https://assessment.agileai.university"
+           class="external-link"
+           target="_blank"
+           rel="noopener">
+          Assessment
+        </a>
+
+        <a href="https://edu.agileai.university"
+           class="external-link"
+           target="_blank"
+           rel="noopener">
+          Knowledge
+        </a>
+
+        <a href="https://agileai.university/credentials/"
+           class="external-link"
+           target="_blank"
+           rel="noopener">
+          Credentials
+        </a>
+
+        <a href="https://agileai.university/governance"
+           class="external-link"
+           target="_blank"
+           rel="noopener">
+          Governance
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Context Bar -->
+  <div class="spec-context-bar">
+    <div class="spec-context-container">
+
+      <span class="spec-context-label">Section</span>
+
+      <span class="spec-context-value">
+        
+          Architecture
+        
+      </span>
+
+      <span class="spec-context-separator">→</span>
+
+      <span class="spec-context-page">
+        
+          Operating Model
+        
+      </span>
+
+    </div>
+  </div>
+
+  <!-- Material Header (DO NOT REMOVE) -->
+  
       
 
 <header class="md-header" data-md-component="header">
@@ -104,12 +196,38 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Operating Model
+              Agile AI Operating Model
             
           </span>
         </div>
       </div>
     </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
     
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
@@ -159,22 +277,12 @@
       
     
     
-      <div class="md-header__source">
-        <a href="https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY" title="Go to repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
-  </div>
-  <div class="md-source__repository">
-    FB-AGILEAI-UNIVERSITY
-  </div>
-</a>
-      </div>
-    
   </nav>
   
 </header>
     
+
+
     <div class="md-container" data-md-component="container">
       
       
@@ -417,18 +525,6 @@
     Agile AI Specification
   </label>
   
-    <div class="md-nav__source">
-      <a href="https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY" title="Go to repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
-  </div>
-  <div class="md-source__repository">
-    FB-AGILEAI-UNIVERSITY
-  </div>
-</a>
-    </div>
-  
   <ul class="md-nav__list" data-md-scrollfix>
     
       
@@ -651,64 +747,73 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-agile-ai-interaction-model" class="md-nav__link">
+  <a href="#3-agile-ai-operating-model-architecture" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Agile AI Interaction Model
+      3. Agile AI Operating Model Architecture
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-architectural-layers" class="md-nav__link">
+  <a href="#4-agile-ai-interaction-model" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Architectural Layers
+      4. Agile AI Interaction Model
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4. Architectural Layers">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-architectural-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Architectural Layers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Architectural Layers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#41-domain-layer" class="md-nav__link">
+  <a href="#51-domain-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.1 Domain Layer
+      5.1 Domain Layer
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#42-registry-layer" class="md-nav__link">
+  <a href="#52-registry-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.2 Registry Layer
+      5.2 Registry Layer
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#43-capability-layer" class="md-nav__link">
+  <a href="#53-capability-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.3 Capability Layer
+      5.3 Capability Layer
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#44-program-layer" class="md-nav__link">
+  <a href="#54-program-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.4 Program Layer
+      5.4 Program Layer
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#45-credential-layer" class="md-nav__link">
+  <a href="#55-credential-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.5 Credential Layer
+      5.5 Credential Layer
     </span>
   </a>
   
@@ -720,13 +825,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-institutional-roles" class="md-nav__link">
+  <a href="#6-institutional-roles" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Institutional Roles
+      6. Institutional Roles
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="5. Institutional Roles">
+    <nav class="md-nav" aria-label="6. Institutional Roles">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -753,36 +858,45 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-ecosystem-interaction-model" class="md-nav__link">
+  <a href="#7-ecosystem-interaction-model" class="md-nav__link">
     <span class="md-ellipsis">
-      6. Ecosystem Interaction Model
+      7. Ecosystem Interaction Model
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-operational-flow" class="md-nav__link">
+  <a href="#8-operational-flow" class="md-nav__link">
     <span class="md-ellipsis">
-      7. Operational Flow
+      8. Operational Flow
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-long-term-vision" class="md-nav__link">
+  <a href="#9-long-term-vision" class="md-nav__link">
     <span class="md-ellipsis">
-      8. Long-Term Vision
+      9. Long-Term Vision
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#9-governance" class="md-nav__link">
+  <a href="#10-governance" class="md-nav__link">
     <span class="md-ellipsis">
-      9. Governance
+      10. Governance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
     </span>
   </a>
   
@@ -1604,64 +1718,73 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-agile-ai-interaction-model" class="md-nav__link">
+  <a href="#3-agile-ai-operating-model-architecture" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Agile AI Interaction Model
+      3. Agile AI Operating Model Architecture
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-architectural-layers" class="md-nav__link">
+  <a href="#4-agile-ai-interaction-model" class="md-nav__link">
     <span class="md-ellipsis">
-      4. Architectural Layers
+      4. Agile AI Interaction Model
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4. Architectural Layers">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-architectural-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Architectural Layers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Architectural Layers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#41-domain-layer" class="md-nav__link">
+  <a href="#51-domain-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.1 Domain Layer
+      5.1 Domain Layer
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#42-registry-layer" class="md-nav__link">
+  <a href="#52-registry-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.2 Registry Layer
+      5.2 Registry Layer
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#43-capability-layer" class="md-nav__link">
+  <a href="#53-capability-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.3 Capability Layer
+      5.3 Capability Layer
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#44-program-layer" class="md-nav__link">
+  <a href="#54-program-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.4 Program Layer
+      5.4 Program Layer
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#45-credential-layer" class="md-nav__link">
+  <a href="#55-credential-layer" class="md-nav__link">
     <span class="md-ellipsis">
-      4.5 Credential Layer
+      5.5 Credential Layer
     </span>
   </a>
   
@@ -1673,13 +1796,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-institutional-roles" class="md-nav__link">
+  <a href="#6-institutional-roles" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Institutional Roles
+      6. Institutional Roles
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="5. Institutional Roles">
+    <nav class="md-nav" aria-label="6. Institutional Roles">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1706,36 +1829,45 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-ecosystem-interaction-model" class="md-nav__link">
+  <a href="#7-ecosystem-interaction-model" class="md-nav__link">
     <span class="md-ellipsis">
-      6. Ecosystem Interaction Model
+      7. Ecosystem Interaction Model
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-operational-flow" class="md-nav__link">
+  <a href="#8-operational-flow" class="md-nav__link">
     <span class="md-ellipsis">
-      7. Operational Flow
+      8. Operational Flow
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-long-term-vision" class="md-nav__link">
+  <a href="#9-long-term-vision" class="md-nav__link">
     <span class="md-ellipsis">
-      8. Long-Term Vision
+      9. Long-Term Vision
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#9-governance" class="md-nav__link">
+  <a href="#10-governance" class="md-nav__link">
     <span class="md-ellipsis">
-      9. Governance
+      10. Governance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related
     </span>
   </a>
   
@@ -1756,14 +1888,10 @@
                   
 
 
-  
-    <a href="https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY/edit/main/agileai-spec/architecture/Agile-AI-Operating-Model.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
-    </a>
-  
-  
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Architecture</strong> → Operating Model
+</div>
 
 <h1 id="agile-ai-operating-model">Agile AI Operating Model<a class="headerlink" href="#agile-ai-operating-model" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
@@ -1787,27 +1915,72 @@
 <h2 id="2-foundational-expression">2. Foundational Expression<a class="headerlink" href="#2-foundational-expression" title="Permanent link">&para;</a></h2>
 <p>The operating model is built upon the foundational Agile AI expression:</p>
 <p><strong>Agile AI = Adaptive Execution + Machine Intelligence + Accountable Human Judgment</strong></p>
-<p>Each component plays a distinct role within the system.</p>
-<p>Adaptive Execution enables organizations to respond to change.</p>
-<p>Machine Intelligence provides analytical insight and computational capability.</p>
-<p>Accountable Human Judgment ensures responsible interpretation, contextual decision-making, and ethical governance.</p>
-<p>Together these elements form a balanced operational architecture.</p>
+<p>Each component plays a distinct role within the system:</p>
+<ul>
+<li><strong>Adaptive Execution</strong> enables organizations to respond to change  </li>
+<li><strong>Machine Intelligence</strong> provides analytical insight and computational capability  </li>
+<li><strong>Accountable Human Judgment</strong> ensures responsible interpretation, contextual decision-making, and ethical governance  </li>
+</ul>
+<p>Together, these elements form a balanced operational architecture.</p>
 <hr />
-<h2 id="3-agile-ai-interaction-model">3. Agile AI Interaction Model<a class="headerlink" href="#3-agile-ai-interaction-model" title="Permanent link">&para;</a></h2>
+<h2 id="3-agile-ai-operating-model-architecture">3. Agile AI Operating Model Architecture<a class="headerlink" href="#3-agile-ai-operating-model-architecture" title="Permanent link">&para;</a></h2>
+<p>The Agile AI Operating Model can be visualized as a layered architecture connecting conceptual foundations with professional capability systems.</p>
+<pre><code>            ORGANIZATIONAL OUTCOMES
+                    ▲
+            ┌───────────────────┐
+            │     CREDENTIAL    │
+            │  Professional     │
+            │  Recognition      │
+            └───────────────────┘
+                    ▲
+            ┌───────────────────┐
+            │       PROGRAM     │
+            │   P / M / L       │
+            │  Professional     │
+            │  Master           │
+            │  Leadership       │
+            └───────────────────┘
+                    ▲
+            ┌───────────────────┐
+            │     CAPABILITY    │
+            │  Organizational   │
+            │  Capabilities     │
+            └───────────────────┘
+                    ▲
+            ┌───────────────────┐
+            │      REGISTRY     │
+            │  Canonical        │
+            │  Identifiers      │
+            └───────────────────┘
+                    ▲
+            ┌───────────────────┐
+            │       DOMAIN      │
+            │  Conceptual       │
+            │  Foundations      │
+            └───────────────────┘
+</code></pre>
+<p>HUMAN JUDGMENT → ADAPTIVE EXECUTION → MACHINE INTELLIGENCE<br />
+↓<br />
+AI-Enabled Systems<br />
+↓<br />
+ORGANIZATIONAL OUTCOMES  </p>
+<p>This architecture illustrates how conceptual foundations evolve into operational capability systems while maintaining accountable human governance.</p>
+<hr />
+<h2 id="4-agile-ai-interaction-model">4. Agile AI Interaction Model<a class="headerlink" href="#4-agile-ai-interaction-model" title="Permanent link">&para;</a></h2>
 <p>The interaction between humans, execution systems, and machine intelligence forms the core architecture of Agile AI systems.</p>
-<p><strong>Interaction flow</strong></p>
+<p><strong>Interaction flow:</strong></p>
 <p>Human Judgment → Adaptive Execution → Machine Intelligence → AI Systems → Organizational Outcomes</p>
 <p>Human judgment also directly influences organizational outcomes through governance and strategic direction.</p>
 <p>In this model:</p>
 <ul>
-<li>Human judgment provides direction, context, and accountability.</li>
-<li>Adaptive execution enables iterative delivery and learning.</li>
-<li>Machine intelligence augments human capability through analytical and generative systems.</li>
+<li>Human judgment provides direction, context, and accountability  </li>
+<li>Adaptive execution enables iterative delivery and learning  </li>
+<li>Machine intelligence augments human capability through analytical and generative systems  </li>
 </ul>
 <p>These interactions produce organizational outcomes while maintaining responsible governance.</p>
 <hr />
-<h2 id="4-architectural-layers">4. Architectural Layers<a class="headerlink" href="#4-architectural-layers" title="Permanent link">&para;</a></h2>
-<h3 id="41-domain-layer">4.1 Domain Layer<a class="headerlink" href="#41-domain-layer" title="Permanent link">&para;</a></h3>
+<h2 id="5-architectural-layers">5. Architectural Layers<a class="headerlink" href="#5-architectural-layers" title="Permanent link">&para;</a></h2>
+<h3 id="51-domain-layer">5.1 Domain Layer<a class="headerlink" href="#51-domain-layer" title="Permanent link">&para;</a></h3>
 <p>The domain layer defines the intellectual foundations of Agile AI.</p>
 <p>This layer includes:</p>
 <ul>
@@ -1826,7 +1999,7 @@
 </ul>
 <p>This layer is primarily maintained by the <strong>Agile AI Foundation</strong>.</p>
 <hr />
-<h3 id="42-registry-layer">4.2 Registry Layer<a class="headerlink" href="#42-registry-layer" title="Permanent link">&para;</a></h3>
+<h3 id="52-registry-layer">5.2 Registry Layer<a class="headerlink" href="#52-registry-layer" title="Permanent link">&para;</a></h3>
 <p>The registry layer defines stable identifiers for the core elements of the Agile AI ecosystem.</p>
 <p>Registries ensure consistency across documentation, systems, and institutional implementations.</p>
 <p>The following registries are maintained:</p>
@@ -1840,7 +2013,7 @@ Defines recognized professional credentials within the ecosystem.</p>
 Defines structured professional capability programs.</p>
 <p>Registry identifiers are stable once assigned and may be referenced across the ecosystem.</p>
 <hr />
-<h3 id="43-capability-layer">4.3 Capability Layer<a class="headerlink" href="#43-capability-layer" title="Permanent link">&para;</a></h3>
+<h3 id="53-capability-layer">5.3 Capability Layer<a class="headerlink" href="#53-capability-layer" title="Permanent link">&para;</a></h3>
 <p>The capability layer defines the practical organizational capabilities required to implement Agile AI systems.</p>
 <p>These capabilities represent the operational competencies organizations must develop to effectively integrate AI into decision-making and execution.</p>
 <p>Examples include:</p>
@@ -1853,28 +2026,30 @@ Defines structured professional capability programs.</p>
 </ul>
 <p>Capability development is primarily operationalized by <strong>Agile AI University</strong>.</p>
 <hr />
-<h3 id="44-program-layer">4.4 Program Layer<a class="headerlink" href="#44-program-layer" title="Permanent link">&para;</a></h3>
+<h3 id="54-program-layer">5.4 Program Layer<a class="headerlink" href="#54-program-layer" title="Permanent link">&para;</a></h3>
 <p>The program layer defines structured pathways through which individuals and organizations develop Agile AI capability.</p>
 <p>Programs organize learning pathways, capability development, and professional recognition.</p>
 <p>Examples include:</p>
 <ul>
-<li>Agile AI Foundations  </li>
-<li>Agile AI Professional Track  </li>
-<li>Agile AI Leadership Track  </li>
+<li>Agile AI Professional Track (P)  </li>
+<li>Agile AI Master Track (M)  </li>
+<li>Agile AI Leadership Track (L)  </li>
 </ul>
+<p>Each program track may include one or more credentials defined within the <strong>Agile AI Credential Registry</strong>.</p>
 <p>Programs may include associated credentials, assessments, and institutional recognition mechanisms.</p>
 <hr />
-<h3 id="45-credential-layer">4.5 Credential Layer<a class="headerlink" href="#45-credential-layer" title="Permanent link">&para;</a></h3>
+<h3 id="55-credential-layer">5.5 Credential Layer<a class="headerlink" href="#55-credential-layer" title="Permanent link">&para;</a></h3>
 <p>The credential layer provides formal recognition of professional capability within the Agile AI ecosystem.</p>
 <p>Credentials are issued by <strong>Agile AI University</strong> and represent demonstrated capability in applying Agile AI principles in practice.</p>
 <p>Examples include:</p>
 <ul>
-<li>Agile Outcome Practitioner (AOP)  </li>
 <li>Artificial Intelligence Professional Agilist (AIPA)  </li>
+<li>Agentic Artificial Intelligence Agilist (AAIA)  </li>
+<li>Agile Artificial Intelligence Capability Coach (AAICC)  </li>
 </ul>
-<p>Credential identifiers are maintained in the credential registry.</p>
+<p>Credential identifiers are maintained in the <strong>Agile AI Credential Registry</strong>.</p>
 <hr />
-<h2 id="5-institutional-roles">5. Institutional Roles<a class="headerlink" href="#5-institutional-roles" title="Permanent link">&para;</a></h2>
+<h2 id="6-institutional-roles">6. Institutional Roles<a class="headerlink" href="#6-institutional-roles" title="Permanent link">&para;</a></h2>
 <p>The Agile AI ecosystem operates through complementary institutional roles.</p>
 <h3 id="agile-ai-foundation">Agile AI Foundation<a class="headerlink" href="#agile-ai-foundation" title="Permanent link">&para;</a></h3>
 <p>The Agile AI Foundation defines the canonical intellectual architecture of the Agile AI domain.</p>
@@ -1886,7 +2061,7 @@ Defines structured professional capability programs.</p>
 <li>ecosystem governance  </li>
 <li>research direction  </li>
 </ul>
-<p>The Foundation does <strong>not</strong> provide training, certification, or credential issuance.</p>
+<p>The Foundation does <strong>not provide training, certification, or credential issuance</strong>, ensuring a clear separation between domain governance and capability development institutions.</p>
 <hr />
 <h3 id="agile-ai-university">Agile AI University<a class="headerlink" href="#agile-ai-university" title="Permanent link">&para;</a></h3>
 <p>Agile AI University operationalizes the Agile AI domain into structured academic and professional capability systems.</p>
@@ -1900,7 +2075,7 @@ Defines structured professional capability programs.</p>
 </ul>
 <p>The University does <strong>not position itself as a commercial training provider.</strong></p>
 <hr />
-<h2 id="6-ecosystem-interaction-model">6. Ecosystem Interaction Model<a class="headerlink" href="#6-ecosystem-interaction-model" title="Permanent link">&para;</a></h2>
+<h2 id="7-ecosystem-interaction-model">7. Ecosystem Interaction Model<a class="headerlink" href="#7-ecosystem-interaction-model" title="Permanent link">&para;</a></h2>
 <p>The interaction model between the Foundation and the University follows a standards-to-academic implementation pattern.</p>
 <p><strong>Agile AI Foundation</strong><br />
 Defines the conceptual and governance architecture of the domain.</p>
@@ -1908,33 +2083,18 @@ Defines the conceptual and governance architecture of the domain.</p>
 Operationalizes these standards through capability development and professional recognition systems.</p>
 <p>This model is similar to relationships seen in established ecosystems such as standards bodies and academic institutions.</p>
 <hr />
-<h2 id="7-operational-flow">7. Operational Flow<a class="headerlink" href="#7-operational-flow" title="Permanent link">&para;</a></h2>
+<h2 id="8-operational-flow">8. Operational Flow<a class="headerlink" href="#8-operational-flow" title="Permanent link">&para;</a></h2>
 <p>The Agile AI Operating Model can be understood as a structured progression:</p>
 <ol>
-<li>
-<p><strong>Domain Concepts</strong><br />
-   Define the intellectual foundations.</p>
-</li>
-<li>
-<p><strong>Registries</strong><br />
-   Define stable identifiers and system primitives.</p>
-</li>
-<li>
-<p><strong>Capabilities</strong><br />
-   Define operational organizational competencies.</p>
-</li>
-<li>
-<p><strong>Programs</strong><br />
-   Provide structured pathways for capability development.</p>
-</li>
-<li>
-<p><strong>Credentials</strong><br />
-   Recognize demonstrated professional capability.</p>
-</li>
+<li><strong>Domain Concepts</strong> – Define the intellectual foundations  </li>
+<li><strong>Registries</strong> – Define stable identifiers and system primitives  </li>
+<li><strong>Capabilities</strong> – Define operational organizational competencies  </li>
+<li><strong>Programs</strong> – Provide structured pathways for capability development  </li>
+<li><strong>Credentials</strong> – Recognize demonstrated professional capability  </li>
 </ol>
 <p>This layered architecture enables organizations to systematically build and operate Agile AI capability.</p>
 <hr />
-<h2 id="8-long-term-vision">8. Long-Term Vision<a class="headerlink" href="#8-long-term-vision" title="Permanent link">&para;</a></h2>
+<h2 id="9-long-term-vision">9. Long-Term Vision<a class="headerlink" href="#9-long-term-vision" title="Permanent link">&para;</a></h2>
 <p>The Agile AI Operating Model aims to establish a structured institutional framework for the Agile AI domain.</p>
 <p>Over time, the ecosystem may support:</p>
 <ul>
@@ -1946,15 +2106,27 @@ Operationalizes these standards through capability development and professional 
 </ul>
 <p>The long-term goal is to enable organizations to build AI-enabled systems that remain adaptive, reliable, transparent, and responsibly governed.</p>
 <hr />
-<h2 id="9-governance">9. Governance<a class="headerlink" href="#9-governance" title="Permanent link">&para;</a></h2>
+<h2 id="10-governance">10. Governance<a class="headerlink" href="#10-governance" title="Permanent link">&para;</a></h2>
 <p>This operating model is maintained through the Agile AI ecosystem governance framework.</p>
 <p>Updates to the architecture must follow governance procedures defined in the <strong>Design Authority Charter</strong>.</p>
+<hr />
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<p>This document connects with the following components of the Agile AI Specification:</p>
+<ul>
+<li><strong>Domain Model:</strong> <a href="../../domain/Agile-AI-Capability-Model/">Agile AI Capability Model</a>  </li>
+<li><strong>Capability System:</strong> <a href="../../registry/capabilities/Agile-AI-Capability-Registry/">Agile AI Capability Registry</a>  </li>
+<li><strong>Program Structure:</strong> <a href="../../registry/programs/Agile-AI-Program-Registry/">Agile AI Program Registry</a>  </li>
+<li><strong>Ecosystem Architecture:</strong> <a href="../Agile-AI-Ecosystem-Architecture-Map/">Agile AI Ecosystem Architecture Map</a>  </li>
+</ul>
 
 
 
 
 
 
+
+  
+  
 
 
 

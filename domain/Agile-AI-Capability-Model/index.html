@@ -26,11 +26,14 @@
     
     
       
-        <title>Capability Model - Agile AI Specification</title>
+        <title>Agile AI Capability Model - Agile AI Specification</title>
       
     
     
       <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -51,6 +54,8 @@
     
       <link rel="stylesheet" href="../../assets/css/site.css">
     
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -61,7 +66,14 @@
   </head>
   
   
-    <body dir="ltr">
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -80,6 +92,86 @@
     </div>
     
     
+
+  <!-- Institutional Header (Spec Layer) -->
+  <div class="spec-institutional-header">
+    <div class="spec-header-container">
+
+      <!-- Left: Institutional Identity -->
+      <div class="spec-header-left">
+        <a href="https://agileai.university"
+           class="spec-brand external-link"
+           target="_blank"
+           rel="noopener">
+          Agile AI University
+        </a>
+
+        <span class="spec-divider">|</span>
+
+        <span class="spec-surface">Specification v1.0</span>
+      </div>
+
+      <!-- Right: Cross-Surface Navigation -->
+      <div class="spec-header-nav">
+
+        <a href="https://assessment.agileai.university"
+           class="external-link"
+           target="_blank"
+           rel="noopener">
+          Assessment
+        </a>
+
+        <a href="https://edu.agileai.university"
+           class="external-link"
+           target="_blank"
+           rel="noopener">
+          Knowledge
+        </a>
+
+        <a href="https://agileai.university/credentials/"
+           class="external-link"
+           target="_blank"
+           rel="noopener">
+          Credentials
+        </a>
+
+        <a href="https://agileai.university/governance"
+           class="external-link"
+           target="_blank"
+           rel="noopener">
+          Governance
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Context Bar -->
+  <div class="spec-context-bar">
+    <div class="spec-context-container">
+
+      <span class="spec-context-label">Section</span>
+
+      <span class="spec-context-value">
+        
+          Architecture
+        
+      </span>
+
+      <span class="spec-context-separator">→</span>
+
+      <span class="spec-context-page">
+        
+          Capability Model
+        
+      </span>
+
+    </div>
+  </div>
+
+  <!-- Material Header (DO NOT REMOVE) -->
+  
       
 
 <header class="md-header" data-md-component="header">
@@ -104,12 +196,38 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Capability Model
+              Agile AI Capability Model
             
           </span>
         </div>
       </div>
     </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
     
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
@@ -159,22 +277,12 @@
       
     
     
-      <div class="md-header__source">
-        <a href="https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY" title="Go to repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
-  </div>
-  <div class="md-source__repository">
-    FB-AGILEAI-UNIVERSITY
-  </div>
-</a>
-      </div>
-    
   </nav>
   
 </header>
     
+
+
     <div class="md-container" data-md-component="container">
       
       
@@ -416,18 +524,6 @@
     </a>
     Agile AI Specification
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY" title="Go to repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
-  </div>
-  <div class="md-source__repository">
-    FB-AGILEAI-UNIVERSITY
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -756,7 +852,7 @@
         <li class="md-nav__item">
   <a href="#capability-model" class="md-nav__link">
     <span class="md-ellipsis">
-      CAPABILITY MODEL
+      Capability Model
     </span>
   </a>
   
@@ -1441,7 +1537,7 @@
         <li class="md-nav__item">
   <a href="#capability-model" class="md-nav__link">
     <span class="md-ellipsis">
-      CAPABILITY MODEL
+      Capability Model
     </span>
   </a>
   
@@ -1462,37 +1558,37 @@
                   
 
 
-  
-    <a href="https://github.com/dileepaavai/FB-AGILEAI-UNIVERSITY/edit/main/agileai-spec/domain/Agile-AI-Capability-Model.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
-    </a>
-  
-  
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Domain</strong> → Capability Model
+</div>
 
-<h1 id="agile-ai">AGILE AI<a class="headerlink" href="#agile-ai" title="Permanent link">&para;</a></h1>
-<h2 id="capability-model">CAPABILITY MODEL<a class="headerlink" href="#capability-model" title="Permanent link">&para;</a></h2>
-<p>STATUS: CANONICAL
-DATE ESTABLISHED: 2026-03-14</p>
+<h1 id="agile-ai">Agile AI<a class="headerlink" href="#agile-ai" title="Permanent link">&para;</a></h1>
+<h2 id="capability-model">Capability Model<a class="headerlink" href="#capability-model" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> Canonical<br />
+<strong>Date Established:</strong> 2026-03-14</p>
 <hr />
 <h1 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">&para;</a></h1>
 <p>This document defines the <strong>Agile AI Capability Model</strong>.</p>
 <p>The capability model describes the organizational capabilities required to successfully integrate adaptive execution, machine intelligence, and accountable human judgment.</p>
 <p>The model provides the conceptual foundation for:</p>
-<p>• capability assessments
-• organizational diagnostics
-• academic frameworks
-• professional development models</p>
+<ul>
+<li>capability assessments  </li>
+<li>organizational diagnostics  </li>
+<li>academic frameworks  </li>
+<li>professional development models  </li>
+</ul>
 <p>It serves as the structural reference for the evaluation and development of Agile AI capabilities within organizations.</p>
 <hr />
 <h1 id="2-capability-philosophy">2. Capability Philosophy<a class="headerlink" href="#2-capability-philosophy" title="Permanent link">&para;</a></h1>
 <p>The Agile AI domain emphasizes <strong>capability development rather than technology adoption</strong>.</p>
 <p>Organizations do not become intelligent simply by deploying artificial intelligence technologies.</p>
 <p>Sustainable capability emerges from the integration of:</p>
-<p>• adaptive execution frameworks
-• intelligent analytical systems
-• responsible human decision processes</p>
+<ul>
+<li>adaptive execution frameworks  </li>
+<li>intelligent analytical systems  </li>
+<li>responsible human decision processes  </li>
+</ul>
 <p>The capability model therefore focuses on the <strong>organizational systems required to support this integration</strong>.</p>
 <hr />
 <h1 id="3-capability-dimensions">3. Capability Dimensions<a class="headerlink" href="#3-capability-dimensions" title="Permanent link">&para;</a></h1>
@@ -1502,54 +1598,64 @@ DATE ESTABLISHED: 2026-03-14</p>
 <h2 id="31-strategic-alignment">3.1 Strategic Alignment<a class="headerlink" href="#31-strategic-alignment" title="Permanent link">&para;</a></h2>
 <p>Strategic alignment refers to the integration of AI capabilities with organizational strategy and decision-making priorities.</p>
 <p>Organizations with strong strategic alignment:</p>
-<p>• clearly define the role of AI in achieving strategic objectives
-• prioritize AI initiatives based on business impact
-• align leadership understanding with operational capabilities</p>
+<ul>
+<li>clearly define the role of AI in achieving strategic objectives  </li>
+<li>prioritize AI initiatives based on business impact  </li>
+<li>align leadership understanding with operational capabilities  </li>
+</ul>
 <p>Without strategic alignment, AI initiatives risk becoming fragmented or experimental.</p>
 <hr />
 <h2 id="32-intelligent-decision-systems">3.2 Intelligent Decision Systems<a class="headerlink" href="#32-intelligent-decision-systems" title="Permanent link">&para;</a></h2>
 <p>Intelligent decision systems refer to the infrastructure and processes used to generate data-driven insights.</p>
 <p>These systems may include:</p>
-<p>• machine learning models
-• predictive analytics platforms
-• decision-support tools
-• data processing pipelines</p>
+<ul>
+<li>machine learning models  </li>
+<li>predictive analytics platforms  </li>
+<li>decision-support tools  </li>
+<li>data processing pipelines  </li>
+</ul>
 <p>The goal of this dimension is to ensure that organizations can generate reliable insights that support operational and strategic decisions.</p>
 <hr />
 <h2 id="33-adaptive-execution">3.3 Adaptive Execution<a class="headerlink" href="#33-adaptive-execution" title="Permanent link">&para;</a></h2>
 <p>Adaptive execution refers to the ability of teams and operational processes to respond effectively to insights generated by intelligent systems.</p>
 <p>Organizations demonstrating strong adaptive execution typically exhibit:</p>
-<p>• iterative delivery practices
-• continuous learning cycles
-• rapid feedback integration
-• flexible operational structures</p>
+<ul>
+<li>iterative delivery practices  </li>
+<li>continuous learning cycles  </li>
+<li>rapid feedback integration  </li>
+<li>flexible operational structures  </li>
+</ul>
 <p>This dimension ensures that insights can translate into meaningful organizational action.</p>
 <hr />
 <h2 id="34-humanai-collaboration">3.4 Human–AI Collaboration<a class="headerlink" href="#34-humanai-collaboration" title="Permanent link">&para;</a></h2>
 <p>Human–AI collaboration describes the interaction between intelligent systems and human decision-makers.</p>
 <p>Effective collaboration requires:</p>
-<p>• clear roles for human oversight
-• structured interpretation of AI outputs
-• accountability for final decisions</p>
+<ul>
+<li>clear roles for human oversight  </li>
+<li>structured interpretation of AI outputs  </li>
+<li>accountability for final decisions  </li>
+</ul>
 <p>Organizations must ensure that AI insights support, rather than replace, responsible human judgment.</p>
 <hr />
 <h2 id="35-governance-and-responsibility">3.5 Governance and Responsibility<a class="headerlink" href="#35-governance-and-responsibility" title="Permanent link">&para;</a></h2>
 <p>Governance ensures that AI capabilities are applied responsibly and aligned with organizational values and regulatory expectations.</p>
 <p>Governance structures may include:</p>
-<p>• ethical review mechanisms
-• risk management processes
-• accountability frameworks
-• transparency in decision systems</p>
+<ul>
+<li>ethical review mechanisms  </li>
+<li>risk management processes  </li>
+<li>accountability frameworks  </li>
+<li>transparency in decision systems  </li>
+</ul>
 <p>This dimension ensures that AI-enabled operations remain responsible and trustworthy.</p>
 <hr />
 <h1 id="4-capability-maturity">4. Capability Maturity<a class="headerlink" href="#4-capability-maturity" title="Permanent link">&para;</a></h1>
 <p>Organizations may demonstrate varying levels of maturity across each capability dimension.</p>
 <p>Capability maturity generally progresses through stages such as:</p>
 <ol>
-<li>Initial experimentation</li>
-<li>Structured adoption</li>
-<li>Integrated capability</li>
-<li>Institutionalized practice</li>
+<li>Initial experimentation  </li>
+<li>Structured adoption  </li>
+<li>Integrated capability  </li>
+<li>Institutionalized practice  </li>
 </ol>
 <p>The purpose of capability maturity analysis is not to assign labels, but to identify areas where organizations can strengthen their capabilities.</p>
 <hr />
@@ -1557,17 +1663,19 @@ DATE ESTABLISHED: 2026-03-14</p>
 <p>The Agile AI Capability Model provides the conceptual foundation for capability assessments developed within the ecosystem.</p>
 <p>Assessments use structured evaluation methods to measure organizational maturity across the defined capability dimensions.</p>
 <p>Assessment results may be used to:</p>
-<p>• generate insight reports
-• identify development priorities
-• guide capability-building initiatives</p>
+<ul>
+<li>generate insight reports  </li>
+<li>identify development priorities  </li>
+<li>guide capability-building initiatives  </li>
+</ul>
 <p>The capability model itself remains <strong>conceptual and framework-oriented</strong>, while assessments provide <strong>practical measurement tools</strong>.</p>
 <hr />
 <h1 id="6-institutional-stewardship">6. Institutional Stewardship<a class="headerlink" href="#6-institutional-stewardship" title="Permanent link">&para;</a></h1>
 <p>The Agile AI Capability Model is maintained as part of the Agile AI domain architecture.</p>
 <p>Institutional responsibilities include:</p>
-<p>Agile AI Foundation
+<p><strong>Agile AI Foundation</strong><br />
 Responsible for conceptual domain frameworks.</p>
-<p>Agile AI University
+<p><strong>Agile AI University</strong><br />
 Responsible for operationalizing the capability model through assessments, academic frameworks, and professional recognition systems.</p>
 <p>This separation ensures both conceptual clarity and practical application.</p>
 <hr />
@@ -1581,6 +1689,9 @@ Responsible for operationalizing the capability model through assessments, acade
 
 
 
+
+  
+  
 
 
 

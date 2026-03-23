@@ -137,8 +137,10 @@ Each hosting surface maintains its own deployment configuration and shared desig
 
 ---
 
-## Related
+## Continue Reading
 
-- See: [Agile AI Capability Model](../domain/Agile-AI-Capability-Model.md)
-- See: [Agile AI Concept Registry](../registry/concepts/Agile-AI-Concept-Registry.md)
-- See: [Agile AI Ecosystem Principles](../ecosystem/Agile-AI-Ecosystem-Principles.md)
+- → [Operating Model](../architecture/Agile-AI-Operating-Model.md)  
+- → [System Context](../ecosystem/Agile-AI-Ecosystem-System-Context.md)  
+- → [Ecosystem Principles](../ecosystem/Agile-AI-Ecosystem-Principles.md)
+
+<br><br><br>

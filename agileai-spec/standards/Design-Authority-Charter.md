@@ -1,5 +1,11 @@
-section: Architecture
+---
+section: Standards
 title: Design Authority Charter
+---
+
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Standards</strong> → Design Authority Charter
+</div>
 
 # AGILE AI ECOSYSTEM  
 ## DESIGN AUTHORITY CHARTER

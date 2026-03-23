@@ -381,3 +381,90 @@ Active Navigation Authority (Safe + Additive)
 .md-nav__link:hover {
   opacity: 1;
 }
+
+/* =========================================================
+STEP-2: NAVIGATION INTELLIGENCE — CONTENT AWARENESS (TOC)
+Safe, Additive, Non-Breaking
+========================================================= */
+
+/* TOC Container */
+.md-sidebar--secondary {
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+  padding-left: 12px;
+}
+
+/* TOC Title */
+.md-sidebar--secondary .md-nav__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 8px;
+}
+
+/* TOC Links (default) */
+.md-sidebar--secondary .md-nav__link {
+  font-size: 0.82rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  opacity: 0.75;
+}
+
+/* Hover State */
+.md-sidebar--secondary .md-nav__link:hover {
+  background: rgba(0, 0, 0, 0.04);
+  opacity: 1;
+}
+
+/* ACTIVE SECTION — KEY INTELLIGENCE LAYER */
+.md-sidebar--secondary .md-nav__link--active {
+  background: rgba(63, 81, 181, 0.08);
+  color: #3f51b5;
+  font-weight: 600;
+  opacity: 1;
+  position: relative;
+}
+
+/* Active Indicator Bar */
+.md-sidebar--secondary .md-nav__link--active::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  border-radius: 2px;
+  background: #3f51b5;
+}
+
+/* Nested Items (slight hierarchy clarity) */
+.md-sidebar--secondary .md-nav__item .md-nav__link {
+  padding-left: 12px;
+  font-size: 0.78rem;
+  opacity: 0.7;
+}
+
+/* Active nested boost */
+.md-sidebar--secondary .md-nav__item .md-nav__link--active {
+  opacity: 1;
+}
+
+/* Dark Mode Support */
+[data-md-color-scheme="slate"] .md-sidebar--secondary {
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav__link:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav__link--active {
+  background: rgba(140, 158, 255, 0.12);
+  color: #8c9eff;
+}
+
+[data-md-color-scheme="slate"] .md-sidebar--secondary .md-nav__link--active::before {
+  background: #8c9eff;
+}

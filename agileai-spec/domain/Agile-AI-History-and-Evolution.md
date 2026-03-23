@@ -3,6 +3,10 @@ section: Architecture
 title: Agile AI History and Evolution
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Domain</strong> → History and Evolution
+</div>
+
 # Agile AI  
 ## History and Evolution
 

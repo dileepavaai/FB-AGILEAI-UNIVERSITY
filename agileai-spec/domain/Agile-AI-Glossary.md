@@ -3,15 +3,16 @@ section: Architecture
 title: Agile AI Domain Glossary
 ---
 
-# Agile AI  
-## Domain Glossary
+Agile AI Knowledge System → Architecture → Domain Glossary
+
+# Domain Glossary
 
 **Status:** Canonical  
 **Date Established:** 2026-03-14
 
 ---
 
-# 1. Purpose
+## 1. Purpose
 
 This glossary defines the key terminology used within the Agile AI domain.
 
@@ -31,13 +32,13 @@ These definitions apply across the Agile AI ecosystem, including:
 
 ---
 
-# 2. Core Domain Terms
+## 2. Core Domain Terms
 
-## Agile AI
+### Agile AI
 
 Agile AI refers to the integration of adaptive execution, machine intelligence, and accountable human judgment within organizational systems.
 
-**Core definition:**
+**Core expression:**
 
 **Agile AI = Adaptive Execution + Machine Intelligence + Accountable Human Judgment**
 
@@ -45,7 +46,7 @@ This capability enables organizations to continuously adapt and make informed de
 
 ---
 
-## Adaptive Execution
+### Adaptive Execution
 
 Adaptive execution refers to the ability of an organization to modify plans, workflows, and priorities in response to emerging information.
 
@@ -56,11 +57,11 @@ Key characteristics include:
 - rapid learning cycles  
 - cross-functional collaboration  
 
-Adaptive execution ensures that organizations remain responsive to change.
+Adaptive execution ensures responsiveness to change.
 
 ---
 
-## Machine Intelligence
+### Machine Intelligence
 
 Machine intelligence refers to computational systems capable of processing information and generating insights using algorithms and data-driven models.
 
@@ -75,7 +76,7 @@ Machine intelligence extends human analytical capability.
 
 ---
 
-## Accountable Human Judgment
+### Accountable Human Judgment
 
 Accountable human judgment refers to the responsibility of human decision-makers to interpret AI-generated insights and make final decisions.
 
@@ -90,11 +91,11 @@ Artificial intelligence augments human capability but does not replace responsib
 
 ---
 
-# 3. Capability Architecture Terms
+## 3. Capability Architecture Terms
 
-## Capability Architecture
+### Capability Architecture
 
-A capability architecture is a structured model describing the skills, systems, and processes required to achieve a particular organizational capability.
+A capability architecture is a structured model describing the skills, systems, and processes required to achieve a specific organizational capability.
 
 Within the Agile AI domain, capability architectures define how organizations integrate:
 
@@ -104,22 +105,22 @@ Within the Agile AI domain, capability architectures define how organizations in
 
 ---
 
-## Capability Dimension
+### Capability Dimension
 
 A capability dimension represents a major category within a capability architecture.
 
 Each dimension reflects a distinct area of organizational capability development.
 
-Examples may include:
+Examples include:
 
-- strategy alignment  
+- strategic alignment  
 - intelligent decision systems  
-- adaptive execution frameworks  
+- adaptive execution  
 - governance and oversight  
 
 ---
 
-## Capability Assessment
+### Capability Assessment
 
 A capability assessment is a structured evaluation used to measure an organization's maturity across defined capability dimensions.
 
@@ -133,9 +134,9 @@ The purpose is to identify strengths, gaps, and opportunities for capability dev
 
 ---
 
-# 4. Human–AI Collaboration Terms
+## 4. Human–AI Collaboration Terms
 
-## Human–AI Collaboration
+### Human–AI Collaboration
 
 Human–AI collaboration refers to the coordinated interaction between human decision-makers and intelligent systems.
 
@@ -143,11 +144,11 @@ In effective collaboration:
 
 - AI systems generate insights  
 - humans interpret context  
-- decisions incorporate both analytical and experiential knowledge  
+- decisions integrate analytical and experiential knowledge  
 
 ---
 
-## AI-Augmented Decision Making
+### AI-Augmented Decision Making
 
 AI-augmented decision making refers to decision processes that incorporate machine-generated insights to support human judgment.
 
@@ -155,9 +156,9 @@ AI systems provide analytical inputs, while humans retain responsibility for fin
 
 ---
 
-# 5. Organizational Terms
+## 5. Organizational Terms
 
-## Intelligent Organization
+### Intelligent Organization
 
 An intelligent organization is one that systematically integrates data, machine intelligence, and human expertise into operational decision processes.
 
@@ -165,22 +166,22 @@ Such organizations continuously learn and adapt.
 
 ---
 
-## Capability Maturity
+### Capability Maturity
 
-Capability maturity refers to the degree to which an organization has developed structured and repeatable capabilities in a specific domain.
+Capability maturity refers to the degree to which an organization has developed structured and repeatable capabilities within a specific domain.
 
 Higher maturity typically reflects:
 
-- clearer processes  
-- stronger governance  
+- defined processes  
+- established governance  
 - integrated systems  
 - consistent outcomes  
 
 ---
 
-# 6. Ecosystem Institutional Terms
+## 6. Ecosystem Institutional Terms
 
-## Agile AI Foundation
+### Agile AI Foundation
 
 The Agile AI Foundation is the canonical standards authority responsible for defining the conceptual architecture of the Agile AI domain.
 
@@ -194,7 +195,7 @@ The Foundation does not provide training or credentials.
 
 ---
 
-## Agile AI University
+### Agile AI University
 
 Agile AI University operationalizes Agile AI domain standards through structured academic capability systems.
 
@@ -202,16 +203,16 @@ The University provides:
 
 - capability frameworks  
 - assessment systems  
-- professional credentials  
-- knowledge platforms  
+- professional recognition models  
+- knowledge interfaces  
 
-The University operates as an academic and professional body rather than a commercial training provider.
+The University operates as an academic and professional body and is not positioned as a commercial training provider.
 
 ---
 
-# 7. Digital Ecosystem Terms
+## 7. Digital Ecosystem Terms
 
-## Knowledge Surface
+### Knowledge Surface
 
 A knowledge surface is a digital interface designed to present structured knowledge resources related to the Agile AI domain.
 
@@ -220,7 +221,7 @@ edu.agileai.university
 
 ---
 
-## Credential Infrastructure
+### Credential Infrastructure
 
 Credential infrastructure refers to the systems used to issue, manage, and verify professional credentials.
 
@@ -232,13 +233,13 @@ This infrastructure may include:
 
 ---
 
-## Institutional Portal
+### Institutional Portal
 
 An institutional portal provides interactive access to ecosystem services.
 
 Portals may enable:
 
-- learner interaction  
+- user interaction  
 - capability insights  
 - institutional services  
 
@@ -247,9 +248,9 @@ portal.agileai.university
 
 ---
 
-# 8. Governance Terms
+## 8. Governance Terms
 
-## Design Authority
+### Design Authority
 
 Design Authority refers to the governance mechanism responsible for maintaining architectural consistency across the digital ecosystem.
 
@@ -261,21 +262,21 @@ Responsibilities include:
 
 ---
 
-## Design System
+### Design System
 
-A design system is a structured set of design standards, components, and visual rules used to ensure consistent digital interfaces.
+A design system is a structured set of standards, components, and visual rules used to ensure consistent digital interfaces.
 
-Within the Agile AI ecosystem, the design system consists of:
+Within the Agile AI ecosystem:
 
 - site.css — canonical design system  
-- refinement.css — controlled visual refinement layer  
+- refinement.css — controlled refinement layer  
 
 ---
 
-# 9. Terminology Governance
+## 9. Terminology Governance
 
 This glossary serves as the canonical reference for Agile AI domain terminology.
 
-Updates to this glossary must follow ecosystem governance procedures and be recorded in the ecosystem governance log.
+Updates must follow ecosystem governance procedures and be recorded in the governance log.
 
-Maintaining consistent terminology is essential for the long-term clarity and integrity of the Agile AI domain.
+Maintaining consistent terminology is essential for long-term clarity and domain integrity.

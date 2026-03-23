@@ -3,6 +3,10 @@ section: Architecture
 title: Agile AI Research Directions
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Domain</strong> → Research Directions
+</div>
+
 # Agile AI  
 ## Research Directions
 

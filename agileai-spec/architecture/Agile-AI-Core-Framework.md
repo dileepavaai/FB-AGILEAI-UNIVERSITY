@@ -127,7 +127,7 @@ Organizations may implement the framework at varying levels of maturity dependin
 
 ## 6. Relationship to the Capability Model
 
-The Agile AI Core Framework provides the conceptual foundation for the **Agile AI Capability Model**.
+The Agile AI Core Framework provides the conceptual foundation for the **Capability Model**.
 
 The capability model translates this conceptual framework into structured organizational capabilities that can be assessed and developed.
 
@@ -188,3 +188,11 @@ The Agile AI framework represents a structured approach to integrating intellige
 As technological capabilities and organizational practices evolve, the principles underlying the framework remain focused on responsible integration.
 
 Organizations that effectively combine adaptive execution, machine intelligence, and accountable human judgment are better positioned to operate successfully in complex and rapidly changing environments.
+
+---
+
+## Continue Reading
+
+- → [Capability Model](../domain/Agile-AI-Capability-Model.md)  
+- → [Operating Model](../architecture/Agile-AI-Operating-Model.md)  
+- → [Ecosystem Architecture](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)

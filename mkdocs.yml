@@ -77,6 +77,7 @@ extra_css:
 
 extra_javascript:
   - assets/js/site.js
+  - assets/js/scroll-progress.js
 
 nav:
 

@@ -3,7 +3,9 @@ section: Architecture
 title: Agile AI Core Framework
 ---
 
-Agile AI Knowledge System → Architecture → Core Framework
+<div class="spec-orientation-strip">
+    Agile AI Knowledge System → <strong>Architecture</strong> → Core Framework
+</div>
 
 # Core Framework
 

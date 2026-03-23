@@ -311,3 +311,5 @@ Updates to the architecture must follow governance procedures defined in the **D
 - → [Capability Model](../domain/Agile-AI-Capability-Model.md)  
 - → [Program Registry](../registry/programs/Agile-AI-Program-Registry.md)  
 - → [Ecosystem Architecture](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)
+
+<br><br><br>

@@ -87,11 +87,11 @@ nav:
       - Agile AI Specification v1.0: versions/v1.0/Agile-AI-Specification.md
 
   - Architecture:
+      - Core Framework: architecture/Agile-AI-Core-Framework.md
       - Operating Model: architecture/Agile-AI-Operating-Model.md
       - Ecosystem Architecture: architecture/Agile-AI-Ecosystem-Architecture-Map.md
 
   - Domain:
-      - Core Framework: domain/Agile-AI-Core-Framework.md
       - Capability Model: domain/Agile-AI-Capability-Model.md
       - Domain Definition: domain/Agile-AI-Domain-Definition.md
       - Glossary: domain/Agile-AI-Glossary.md

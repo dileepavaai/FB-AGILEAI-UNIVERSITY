@@ -1,9 +1,11 @@
 ---
-section: Architecture
+section: Domain
 title: Agile AI Domain Glossary
 ---
 
-Agile AI Knowledge System → Architecture → Domain Glossary
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Domain</strong> → Domain Glossary
+</div>
 
 # Domain Glossary
 

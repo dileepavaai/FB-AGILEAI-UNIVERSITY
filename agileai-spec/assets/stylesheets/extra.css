@@ -334,3 +334,50 @@ MICRO UX AUTHORITY LAYER (NEW)
 * {
   transition: color 0.15s ease;
 }
+
+/* =========================================================
+NAVIGATION INTELLIGENCE LAYER — STEP 1
+Active Navigation Authority (Safe + Additive)
+========================================================= */
+
+/* Active item — strong visual anchor */
+.md-nav__link--active {
+  color: var(--md-primary-fg-color);
+  font-weight: 600;
+  position: relative;
+}
+
+/* Left border indicator for active item */
+.md-nav__link--active::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 2px;
+  background-color: var(--md-primary-fg-color);
+  opacity: 0.9;
+}
+
+/* Slight background for active item */
+.md-nav__item .md-nav__link--active {
+  background: rgba(255, 255, 255, 0.04);
+  padding-left: 6px;
+  border-radius: 4px;
+}
+
+/* Section parent emphasis (open section) */
+.md-nav__item--active > .md-nav__link {
+  font-weight: 600;
+  opacity: 1;
+}
+
+/* Improve non-active readability */
+.md-nav__link {
+  transition: all 0.2s ease;
+}
+
+.md-nav__link:hover {
+  opacity: 1;
+}

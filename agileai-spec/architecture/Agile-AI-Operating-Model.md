@@ -306,17 +306,6 @@ Updates to the architecture must follow governance procedures defined in the **D
 
 ---
 
-## Related
-
-This document connects with the following components of the Agile AI Specification:
-
-- **Domain Model:** [Agile AI Capability Model](../domain/Agile-AI-Capability-Model.md)  
-- **Capability System:** [Agile AI Capability Registry](../registry/capabilities/Agile-AI-Capability-Registry.md)  
-- **Program Structure:** [Agile AI Program Registry](../registry/programs/Agile-AI-Program-Registry.md)  
-- **Ecosystem Architecture:** [Agile AI Ecosystem Architecture Map](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)  
-
----
-
 ## Continue Reading
 
 - → [Capability Model](../domain/Agile-AI-Capability-Model.md)  

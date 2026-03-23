@@ -314,3 +314,11 @@ This document connects with the following components of the Agile AI Specificati
 - **Capability System:** [Agile AI Capability Registry](../registry/capabilities/Agile-AI-Capability-Registry.md)  
 - **Program Structure:** [Agile AI Program Registry](../registry/programs/Agile-AI-Program-Registry.md)  
 - **Ecosystem Architecture:** [Agile AI Ecosystem Architecture Map](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)  
+
+---
+
+## Continue Reading
+
+- → [Capability Model](../domain/Agile-AI-Capability-Model.md)  
+- → [Program Registry](../registry/programs/Agile-AI-Program-Registry.md)  
+- → [Ecosystem Architecture](../architecture/Agile-AI-Ecosystem-Architecture-Map.md)

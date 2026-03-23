@@ -1,7 +1,11 @@
 ---
-section: Architecture
+section: Ecosystem
 title: Agile AI Ecosystem System Context
 ---
+
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Ecosystem</strong> → System Context
+</div>
 
 # Agile AI Ecosystem  
 ## System Context

@@ -1,7 +1,11 @@
 ---
-section: Architecture
+section: Ecosystem
 title: Agile AI Ecosystem Principles
 ---
+
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Ecosystem</strong> → Principles
+</div>
 
 # Agile AI Ecosystem  
 ## Principles

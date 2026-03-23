@@ -183,3 +183,13 @@ The Agile AI Capability Model is expected to evolve as organizations gain experi
 Future revisions may refine capability dimensions or introduce additional guidance based on emerging practices.
 
 Any changes must be recorded in the ecosystem governance log to preserve historical traceability.
+
+---
+
+## Continue Reading
+
+- → [Core Framework](../domain/Agile-AI-Core-Framework.md)  
+- → [Operating Model](../architecture/Agile-AI-Operating-Model.md)  
+- → [Program Registry](../registry/programs/Agile-AI-Program-Registry.md)
+
+<br><br><br>

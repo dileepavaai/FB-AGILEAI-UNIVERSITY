@@ -3,6 +3,10 @@ section: Registry
 title: Agile AI Concept Registry
 ---
 
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Registry</strong> → Concept Registry
+</div>
+
 # Agile AI Concept Registry
 
 **Status:** Canonical  

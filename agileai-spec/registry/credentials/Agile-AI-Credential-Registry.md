@@ -1,5 +1,11 @@
+---
 section: Registry
 title: Agile AI Credential Registry
+---
+
+<div class="spec-orientation-strip">
+  Agile AI Knowledge System → <strong>Registry</strong> → Credential Registry
+</div>
 
 # Agile AI Credential Registry
 

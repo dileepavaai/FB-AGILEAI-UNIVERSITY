@@ -1,0 +1,200 @@
+/* =========================================================
+Agile AI Specification — UI Refinement Layer
+Version: 5.1 (Canonical Stabilization)
+Purpose:
+- Calm institutional tone
+- Improve light + dark readability
+- Maintain non-breaking additive behavior
+========================================================= */
+
+
+/* =========================================================
+SPECIFICATION BANNER (PRIMARY)
+========================================================= */
+
+.spec-banner {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 58, 138, 0.92),
+    rgba(37, 99, 235, 0.88)
+  );
+
+  color: #f8fafc;
+
+  padding: 16px 20px;
+  margin-bottom: 22px;
+
+  border-radius: 8px;
+
+  line-height: 1.45;
+  letter-spacing: 0.2px;
+
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+/* Dark Mode */
+
+[data-md-color-scheme="slate"] .spec-banner {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.95),
+    rgba(30, 41, 59, 0.92)
+  );
+}
+
+
+/* =========================================================
+SPECIFICATION TITLE
+========================================================= */
+
+.spec-banner-title {
+  font-size: 15.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+
+/* =========================================================
+SPECIFICATION META
+========================================================= */
+
+.spec-banner-meta {
+  font-size: 12.5px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.spec-banner-meta span {
+  margin-right: 16px;
+}
+
+
+/* =========================================================
+CONTENT ALIGNMENT
+========================================================= */
+
+.md-content__inner h1:first-of-type {
+  margin-top: 0.4rem;
+}
+
+.md-content__inner {
+  padding-top: 6px;
+}
+
+
+/* =========================================================
+THEME TOGGLE (HEADER CONTROL)
+========================================================= */
+
+.spec-theme-toggle {
+  margin-left: 12px;
+  font-size: 16px;
+
+  background: transparent;
+  border: none;
+
+  cursor: pointer;
+
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.spec-theme-toggle:hover {
+  opacity: 1;
+}
+
+
+/* =========================================================
+ANNOUNCEMENT BAR (CONTROLLED)
+========================================================= */
+
+.md-banner {
+  display: block !important;
+
+  background: linear-gradient(
+    90deg,
+    rgba(30, 58, 138, 0.95),
+    rgba(37, 99, 235, 0.9)
+  ) !important;
+
+  color: #ffffff !important;
+  font-size: 13px;
+  text-align: center;
+}
+
+[data-md-color-scheme="slate"] .md-banner {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.95),
+    rgba(30, 41, 59, 0.92)
+  ) !important;
+}
+
+.md-banner a {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+WIDE SCREEN REFINEMENT
+========================================================= */
+
+@media screen and (min-width: 1200px) {
+
+  .spec-banner {
+    padding: 18px 22px;
+  }
+
+  .spec-banner-title {
+    font-size: 16px;
+  }
+}
+
+
+/* =========================================================
+TABLET OPTIMIZATION
+========================================================= */
+
+@media screen and (max-width: 1024px) {
+
+  .spec-banner {
+    padding: 14px 16px;
+  }
+
+  .spec-banner-title {
+    font-size: 15px;
+  }
+
+  .spec-banner-meta {
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+MOBILE OPTIMIZATION
+========================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .spec-banner {
+    padding: 12px 14px;
+    border-radius: 6px;
+  }
+
+  .spec-banner-title {
+    font-size: 14.5px;
+  }
+
+  .spec-banner-meta {
+    font-size: 11.8px;
+  }
+
+  .spec-banner-meta span {
+    display: block;
+    margin-right: 0;
+    margin-bottom: 2px;
+  }
+}

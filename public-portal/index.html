@@ -11,12 +11,45 @@
     body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; color:#222; }
     main { padding:40px; }
     h1 { font-size:40px; margin:0 0 20px; }
-    h2 { margin-top:40px; }
-    .btn { display:inline-block; background:#2f80ed; color:white; padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; text-decoration:none; }
+
+    .btn {
+      display:inline-block;
+      background:#2f80ed;
+      color:white;
+      padding:10px 14px;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+      text-decoration:none;
+    }
+
     .btn.gray { background:#6b7280; }
+    .btn.green { background:#10b981; }
+
+    .auth-box {
+      margin-top:20px;
+      max-width:400px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    input {
+      padding:10px;
+      border-radius:6px;
+      border:1px solid #ccc;
+      font-size:14px;
+    }
+
+    .divider {
+      margin:20px 0;
+      color:#888;
+      font-size:14px;
+    }
+
     nav { margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; }
     .note { color:#777; margin-top:22px; font-size:14px;}
-    .card { border:1px solid #ddd; padding:14px; margin-bottom:12px; border-radius:10px; }
   </style>
 </head>
 
@@ -31,27 +64,37 @@
 
   <!-- SIGNED OUT -->
   <div id="signedOutUI">
-    <p>Not signed in</p>
-    <button id="btnSignIn" class="btn">Sign in with Google</button>
+
+    <p id="statusText">Not signed in</p>
+
+    <!-- GOOGLE LOGIN -->
+    <button id="btnGoogle" class="btn">Sign in with Google</button>
+
+    <div class="divider">OR</div>
+
+    <!-- EMAIL LOGIN -->
+    <div class="auth-box">
+      <input id="emailInput" type="email" placeholder="Enter your email" />
+      <button id="btnEmailLink" class="btn">Send Login Link</button>
+      <p id="emailStatus" style="font-size:13px;color:#666;"></p>
+    </div>
+
   </div>
 
   <!-- SIGNED IN -->
   <div id="signedInUI" style="display:none;">
+
     <p><strong id="userName"></strong></p>
     <p id="userEmail" style="color:#555;"></p>
+
     <button id="btnSignOut" class="btn gray">Sign out</button>
 
     <nav>
-      <a href="/assessment.html" class="btn" style="background:#10b981">AI + Agile Assessment</a>
+      <a href="/assessment.html" class="btn green">AI + Agile Assessment</a>
+      <a href="#" class="btn" style="background:#8b5cf6">My Certificates (coming soon)</a>
     </nav>
 
     <p class="note">You are signed in to the Agile AI University Portal.</p>
-
-    <!-- CERTIFICATES SECTION -->
-    <div id="certificatesSection">
-      <h2>My Certificates</h2>
-      <div id="certList">Loading...</div>
-    </div>
 
   </div>
 
@@ -63,92 +106,111 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
-    authDomain: "fb-agileai-university.firebaseapp.com",
-    projectId: "fb-agileai-university",
-    storageBucket: "fb-agileai-university.appspot.com",
-    messagingSenderId: "458881040066",
-    appId: "1:458881040066:web:c832c420f9b4282e76c55b",
-    measurementId: "G-1RMK7HMMLY"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
+  authDomain: "fb-agileai-university.firebaseapp.com",
+  projectId: "fb-agileai-university",
+  storageBucket: "fb-agileai-university.appspot.com",
+  messagingSenderId: "458881040066",
+  appId: "1:458881040066:web:c832c420f9b4282e76c55b"
+};
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  const provider = new firebase.auth.GoogleAuthProvider();
+firebase.initializeApp(firebaseConfig);
 
-  // LOAD CERTIFICATES
-  async function loadCertificates(userEmail) {
-    const container = document.getElementById("certList");
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
 
-    try {
-      const snapshot = await db
-        .collection("credentials")
-        .where("email", "==", userEmail)
-        .get();
 
-      if (snapshot.empty) {
-        container.innerHTML = "<p>No certificates found.</p>";
-        return;
-      }
+// ===============================
+// EMAIL LINK CONFIG
+// ===============================
+const actionCodeSettings = {
+  url: "https://portal.agileai.university",
+  handleCodeInApp: true
+};
 
-      let html = "";
 
-      snapshot.forEach(doc => {
-        const data = doc.data();
+// ===============================
+// HANDLE LOGIN STATE
+// ===============================
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById("signedOutUI").style.display = "none";
+    document.getElementById("signedInUI").style.display = "block";
 
-        html += `
-          <div class="card">
-            <strong>${data.full_name}</strong><br/>
-            ${data.credential_type} (${data.program_code})<br/>
-            ID: ${data.credential_id}<br/>
-            Status: ${data.issued_status}<br/><br/>
-            <a href="/certs/?id=${data.credential_id}" class="btn" style="background:#111;">View Certificate</a>
-          </div>
-        `;
-      });
+    document.getElementById("userName").textContent = user.displayName || user.email;
+    document.getElementById("userEmail").textContent = user.email || '';
+  } else {
+    document.getElementById("signedOutUI").style.display = "block";
+    document.getElementById("signedInUI").style.display = "none";
+  }
+});
 
-      container.innerHTML = html;
 
-    } catch (err) {
-      console.error(err);
-      container.innerHTML = "<p>Error loading certificates.</p>";
-    }
+// ===============================
+// GOOGLE LOGIN
+// ===============================
+document.getElementById("btnGoogle").onclick = () => {
+  auth.signInWithPopup(provider);
+};
+
+
+// ===============================
+// EMAIL LINK LOGIN (SEND)
+// ===============================
+document.getElementById("btnEmailLink").onclick = async () => {
+  const email = document.getElementById("emailInput").value;
+
+  if (!email) {
+    alert("Enter email");
+    return;
   }
 
-  // AUTH STATE
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      document.getElementById("signedOutUI").style.display = "none";
-      document.getElementById("signedInUI").style.display = "block";
+  try {
+    await auth.sendSignInLinkToEmail(email, actionCodeSettings);
+    localStorage.setItem("emailForSignIn", email);
 
-      document.getElementById("userName").textContent = user.displayName || user.email;
-      document.getElementById("userEmail").textContent = user.email || '';
+    document.getElementById("emailStatus").textContent =
+      "Login link sent. Check your email.";
 
-      // 🔥 LOAD CERTIFICATES HERE
-      loadCertificates(user.email);
+  } catch (err) {
+    console.error(err);
+    document.getElementById("emailStatus").textContent =
+      "Error sending email.";
+  }
+};
 
-    } else {
-      document.getElementById("signedOutUI").style.display = "block";
-      document.getElementById("signedInUI").style.display = "none";
-    }
-  });
 
-  // BUTTONS
-  document.getElementById("btnSignIn").onclick = () =>
-    auth.signInWithPopup(provider);
+// ===============================
+// EMAIL LINK LOGIN (COMPLETE)
+// ===============================
+if (auth.isSignInWithEmailLink(window.location.href)) {
+  let email = localStorage.getItem("emailForSignIn");
 
-  document.getElementById("btnSignOut").onclick = () =>
-    auth.signOut();
+  if (!email) {
+    email = prompt("Confirm your email");
+  }
+
+  auth.signInWithEmailLink(email, window.location.href)
+    .then(() => {
+      localStorage.removeItem("emailForSignIn");
+      window.location.href = "/";
+    })
+    .catch(err => console.error(err));
+}
+
+
+// ===============================
+// SIGN OUT
+// ===============================
+document.getElementById("btnSignOut").onclick = () => auth.signOut();
 </script>
 
 <!-- CONTEXT -->
 <script>
-  window.__AAIU_CONTEXT = "portal";
+window.__AAIU_CONTEXT = "portal";
 </script>
 
 <!-- HEADER / FOOTER -->

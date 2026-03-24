@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 
 // 🔴 SAFETY SWITCH
-const DRY_RUN = true;
+const DRY_RUN = false;
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)

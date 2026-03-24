@@ -1,5 +1,5 @@
 /* =====================================================
-   Agile AI University — Secure Verification Client v3.1
+   Agile AI University — Secure Verification Client v3.2
    Canonical Public Verification Surface
    Governance-Aligned · Deterministic · Hardened
 ===================================================== */
@@ -52,6 +52,37 @@ function resetUI() {
 
   if (typeof grecaptcha !== "undefined") {
     grecaptcha.reset();
+  }
+}
+
+/* =====================================================
+   Date Handling (NEW - SAFE)
+===================================================== */
+
+function formatIssueDate(data) {
+  // Priority order (future-proof)
+  const rawDate =
+    data.issue_date ||
+    data.imported_at ||
+    data.created_at ||
+    null;
+
+  if (!rawDate) return "—";
+
+  try {
+    const dateObj = new Date(rawDate);
+
+    if (isNaN(dateObj.getTime())) {
+      return escapeHtml(rawDate); // fallback as-is
+    }
+
+    return dateObj.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return escapeHtml(rawDate);
   }
 }
 
@@ -148,7 +179,7 @@ verifyBtn.addEventListener("click", async () => {
           ${escapeHtml(data.issued_by || "Agile AI University")}
 
           <div class="label">Issue Date</div>
-          ${escapeHtml(data.issue_date || "—")}
+          ${formatIssueDate(data)}
 
           <hr />
 

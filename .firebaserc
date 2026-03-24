@@ -26,11 +26,11 @@
         "admin": [
           "admin-agileai-university"
         ],
-        "portal": [
-          "portal-agileai-university"
-        ],
         "agileai-academy": [
           "agileai-academy"
+        ],
+        "agileai-portal": [
+          "portal-agileai-university"
         ]
       }
     }

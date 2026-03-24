@@ -1,16 +1,7 @@
 ############################
-# MkDocs Build Output (CRITICAL)
+# MkDocs Build Output (ONLY build output)
 ############################
 site/
-public-spec/
-public-site/
-public-portal/
-public-certs/
-public-admin/
-public-assessment/
-public-academy/
-public-learn/
-public-edu/
 
 ############################
 # OS Files

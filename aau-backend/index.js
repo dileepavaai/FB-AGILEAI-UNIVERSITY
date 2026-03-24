@@ -6,12 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Firebase Admin Init (Cloud Run will auto-authenticate)
+// Firebase Admin Init (Cloud Run auto-auth)
 admin.initializeApp();
 
 const db = admin.firestore();
 
-// 🔍 Verification API (IMPORTANT: route must match frontend)
+// 🔍 Credential Verification API
 app.post("/public/verify-credential", async (req, res) => {
   try {
     const { credential_id } = req.body;
@@ -35,23 +35,30 @@ app.post("/public/verify-credential", async (req, res) => {
       });
     }
 
-    const doc = snapshot.docs[0].data();
+    const docSnapshot = snapshot.docs[0];
+    const docData = docSnapshot.data();
 
-    // ✅ THIS FIXES YOUR ISSUE
-    const issue_date =
-      doc.issued_on ||
-      doc.imported_at ||
-      doc.created_at ||
-      null;
+    // ✅ FINAL ISSUE DATE RESOLUTION (ROBUST)
+    let issueDate = null;
+
+    if (docData.issued_on) {
+      issueDate = docData.issued_on;
+    } else if (docData.imported_at) {
+      issueDate = docData.imported_at;
+    } else if (docData.created_at) {
+      issueDate = docData.created_at;
+    } else if (docSnapshot.createTime) {
+      issueDate = docSnapshot.createTime.toDate();
+    }
 
     return res.json({
       status: "valid",
-      full_name: doc.full_name || null,
-      credential_id: doc.credential_id || null,
-      credential_type: doc.credential_type || null,
-      program_code: doc.program_code || null,
-      issued_by: doc.issued_by || "Agile AI University",
-      issue_date: issue_date,
+      full_name: docData.full_name || null,
+      credential_id: docData.credential_id || null,
+      credential_type: docData.credential_type || null,
+      program_code: docData.program_code || null,
+      issued_by: docData.issued_by || "Agile AI University",
+      issue_date: issueDate || null,
     });
 
   } catch (error) {

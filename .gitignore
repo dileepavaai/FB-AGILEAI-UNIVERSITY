@@ -37,7 +37,15 @@ firebase-debug.*.log*
 # .firebaserc
 
 ############################
-# Secrets & Credentials (CRITICAL)
+# 🔴 CRITICAL: Service Account Keys (BLOCK ALL)
+############################
+serviceAccountKey.json
+**/serviceAccountKey.json
+*-firebase-adminsdk-*.json
+**/*-firebase-adminsdk-*.json
+
+############################
+# Other Secrets
 ############################
 service-account.json
 **/service-account.json

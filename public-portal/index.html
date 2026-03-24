@@ -11,27 +11,31 @@
     body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; color:#222; }
     main { padding:40px; }
     h1 { font-size:40px; margin:0 0 20px; }
+    h2 { margin-top:40px; }
     .btn { display:inline-block; background:#2f80ed; color:white; padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; text-decoration:none; }
     .btn.gray { background:#6b7280; }
     nav { margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; }
     .note { color:#777; margin-top:22px; font-size:14px;}
+    .card { border:1px solid #ddd; padding:14px; margin-bottom:12px; border-radius:10px; }
   </style>
 </head>
 
 <body>
 
-<!-- ✅ HEADER -->
+<!-- HEADER -->
 <div id="site-header"></div>
 
 <main>
 
   <h1>Welcome to Agile AI University Portal</h1>
 
+  <!-- SIGNED OUT -->
   <div id="signedOutUI">
-    <p id="statusText">Not signed in</p>
+    <p>Not signed in</p>
     <button id="btnSignIn" class="btn">Sign in with Google</button>
   </div>
 
+  <!-- SIGNED IN -->
   <div id="signedInUI" style="display:none;">
     <p><strong id="userName"></strong></p>
     <p id="userEmail" style="color:#555;"></p>
@@ -39,19 +43,24 @@
 
     <nav>
       <a href="/assessment.html" class="btn" style="background:#10b981">AI + Agile Assessment</a>
-      <a href="#" class="btn" style="background:#8b5cf6">My Certificates (coming soon)</a>
-      <a href="#" class="btn" style="background:#f59e0b">Alumni (coming soon)</a>
     </nav>
 
     <p class="note">You are signed in to the Agile AI University Portal.</p>
+
+    <!-- CERTIFICATES SECTION -->
+    <div id="certificatesSection">
+      <h2>My Certificates</h2>
+      <div id="certList">Loading...</div>
+    </div>
+
   </div>
 
 </main>
 
-<!-- ✅ FOOTER -->
+<!-- FOOTER -->
 <div id="site-footer"></div>
 
-<!-- Firebase scripts -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -69,20 +78,67 @@
 
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
+  const db = firebase.firestore();
   const provider = new firebase.auth.GoogleAuthProvider();
 
+  // LOAD CERTIFICATES
+  async function loadCertificates(userEmail) {
+    const container = document.getElementById("certList");
+
+    try {
+      const snapshot = await db
+        .collection("credentials")
+        .where("email", "==", userEmail)
+        .get();
+
+      if (snapshot.empty) {
+        container.innerHTML = "<p>No certificates found.</p>";
+        return;
+      }
+
+      let html = "";
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+
+        html += `
+          <div class="card">
+            <strong>${data.full_name}</strong><br/>
+            ${data.credential_type} (${data.program_code})<br/>
+            ID: ${data.credential_id}<br/>
+            Status: ${data.issued_status}<br/><br/>
+            <a href="/certs/?id=${data.credential_id}" class="btn" style="background:#111;">View Certificate</a>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+
+    } catch (err) {
+      console.error(err);
+      container.innerHTML = "<p>Error loading certificates.</p>";
+    }
+  }
+
+  // AUTH STATE
   auth.onAuthStateChanged(user => {
     if (user) {
       document.getElementById("signedOutUI").style.display = "none";
       document.getElementById("signedInUI").style.display = "block";
+
       document.getElementById("userName").textContent = user.displayName || user.email;
       document.getElementById("userEmail").textContent = user.email || '';
+
+      // 🔥 LOAD CERTIFICATES HERE
+      loadCertificates(user.email);
+
     } else {
       document.getElementById("signedOutUI").style.display = "block";
       document.getElementById("signedInUI").style.display = "none";
     }
   });
 
+  // BUTTONS
   document.getElementById("btnSignIn").onclick = () =>
     auth.signInWithPopup(provider);
 
@@ -90,12 +146,12 @@
     auth.signOut();
 </script>
 
-<!-- ✅ CONTEXT (CRITICAL) -->
+<!-- CONTEXT -->
 <script>
   window.__AAIU_CONTEXT = "portal";
 </script>
 
-<!-- ✅ HEADER / FOOTER -->
+<!-- HEADER / FOOTER -->
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/footer.js"></script>
 

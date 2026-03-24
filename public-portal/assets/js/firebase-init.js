@@ -124,7 +124,7 @@
     const EMAIL_STORAGE_KEY = "AAIU_EMAIL_FOR_SIGNIN";
 
     const emailLinkActionCodeSettings = {
-      url: "https://portal.agileai.university/portal/",
+      url: "https://portal.agileai.university/",
       handleCodeInApp: true
     };
 

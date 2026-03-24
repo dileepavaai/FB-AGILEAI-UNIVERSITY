@@ -63,7 +63,6 @@
 
 <body>
 
-<!-- HEADER -->
 <div id="site-header"></div>
 
 <main>
@@ -78,10 +77,8 @@
 
 </main>
 
-<!-- FOOTER -->
 <div id="site-footer"></div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -93,8 +90,7 @@
     projectId: "fb-agileai-university",
     storageBucket: "fb-agileai-university.appspot.com",
     messagingSenderId: "458881040066",
-    appId: "1:458881040066:web:c832c420f9b4282e76c55b",
-    measurementId: "G-1RMK7HMMLY"
+    appId: "1:458881040066:web:c832c420f9b4282e76c55b"
   };
 
   firebase.initializeApp(firebaseConfig);
@@ -142,38 +138,48 @@
       return;
     }
 
+    console.log("Logged in user:", user.email);
+
     const container = document.getElementById("credentialsContainer");
+    const emptyState = document.getElementById("emptyState");
 
-    const snapshot = await db.collection("credentials")
-      .where("email", "==", user.email)
-      .get();
+    try {
+      const snapshot = await db.collection("credentials")
+        .where("email", "==", user.email)
+        .get();
 
-    if (snapshot.empty) {
-      document.getElementById("emptyState").style.display = "block";
-      return;
+      console.log("Documents found:", snapshot.size);
+
+      let html = "";
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+
+        console.log("Credential:", data);
+
+        if (data.issued_status !== "finalized") return;
+
+        html += renderCredential(data);
+      });
+
+      if (!html) {
+        emptyState.style.display = "block";
+        return;
+      }
+
+      container.innerHTML = html;
+
+    } catch (err) {
+      console.error("Error loading credentials:", err);
+      emptyState.style.display = "block";
     }
-
-    let html = "";
-
-    snapshot.forEach(doc => {
-      const data = doc.data();
-
-      // Only show finalized credentials
-      if (data.issued_status !== "finalized") return;
-
-      html += renderCredential(data);
-    });
-
-    container.innerHTML = html || "";
   });
 </script>
 
-<!-- CONTEXT (CRITICAL) -->
 <script>
   window.__AAIU_CONTEXT = "portal";
 </script>
 
-<!-- HEADER / FOOTER -->
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/footer.js"></script>
 

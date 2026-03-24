@@ -1,7 +1,6 @@
 const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 
-// 🔴 SAFETY SWITCH
 const DRY_RUN = false;
 
 admin.initializeApp({
@@ -10,7 +9,6 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// Generate AAU ID (8 characters)
 function generateAAUId() {
   return "AAU-" + Math.random().toString(36).substring(2, 10).toUpperCase();
 }
@@ -25,36 +23,34 @@ async function migrate() {
   for (const doc of snapshot.docs) {
     const data = doc.data();
 
-    // Only finalized credentials
     if (data.issued_status !== "finalized") continue;
 
-    const oldId = data.credential_id;
+    const currentId = data.credential_id;
 
-    // Skip if already AAU format
-    if (oldId && oldId.startsWith("AAU-")) {
-      console.log(`⏭️ Skipped (already new): ${oldId}`);
+    // Skip already correct
+    if (currentId && currentId.startsWith("AAU-")) {
+      console.log(`⏭️ Skipped: ${currentId}`);
       continue;
     }
 
     const newId = generateAAUId();
 
-    console.log(`🔄 ${oldId} → ${newId}`);
+    console.log(`🔄 ${currentId} → ${newId}`);
 
     if (!DRY_RUN) {
       await doc.ref.update({
-        credential_id: newId,
-        legacy_credential_id: oldId
+        credential_id: newId
       });
 
       console.log("✅ UPDATED\n");
     } else {
-      console.log("🧪 DRY RUN (no update)\n");
+      console.log("🧪 DRY RUN\n");
     }
 
     count++;
   }
 
-  console.log(`\n🎯 Processed: ${count} records`);
+  console.log(`\n🎯 Processed: ${count}`);
   console.log(DRY_RUN ? "⚠️ DRY RUN MODE" : "🔥 LIVE MODE");
 }
 

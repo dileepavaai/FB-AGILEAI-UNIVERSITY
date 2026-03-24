@@ -1,6 +1,8 @@
 const admin = require("firebase-admin");
+const crypto = require("crypto");
 const serviceAccount = require("./serviceAccountKey.json");
 
+// 🔴 SAFETY SWITCH
 const DRY_RUN = false;
 
 admin.initializeApp({
@@ -9,8 +11,25 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-function generateAAUId() {
-  return "AAU-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+// ✅ Collision-safe AAU ID generator
+async function generateUniqueAAUId(db) {
+  while (true) {
+    const randomPart = crypto.randomBytes(4).toString("hex").toUpperCase(); // 8 chars
+    const newId = "AAU-" + randomPart;
+
+    // Ensure uniqueness in Firestore
+    const snapshot = await db
+      .collection("credentials")
+      .where("credential_id", "==", newId)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return newId;
+    }
+
+    // Retry if collision (extremely rare)
+  }
 }
 
 async function migrate() {
@@ -23,6 +42,7 @@ async function migrate() {
   for (const doc of snapshot.docs) {
     const data = doc.data();
 
+    // Only finalized credentials
     if (data.issued_status !== "finalized") continue;
 
     const currentId = data.credential_id;
@@ -33,7 +53,8 @@ async function migrate() {
       continue;
     }
 
-    const newId = generateAAUId();
+    // ✅ Use collision-safe generator
+    const newId = await generateUniqueAAUId(db);
 
     console.log(`🔄 ${currentId} → ${newId}`);
 

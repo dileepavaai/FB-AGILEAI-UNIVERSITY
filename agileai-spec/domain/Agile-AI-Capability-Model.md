@@ -3,7 +3,9 @@ section: Domain
 title: Agile AI Capability Model
 ---
 
-Agile AI Knowledge System → Domain → Capability Model
+<div class="spec-orientation-strip">
+    Agile AI Knowledge System → <strong>Domain</strong> → Capability Model
+</div>
 
 # Capability Model
 

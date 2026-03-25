@@ -11,7 +11,9 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
-// 🔍 Credential Verification API
+/* =====================================================
+   🔍 Credential Verification API
+===================================================== */
 app.post("/public/verify-credential", async (req, res) => {
   try {
     const { credential_id } = req.body;
@@ -38,17 +40,34 @@ app.post("/public/verify-credential", async (req, res) => {
     const docSnapshot = snapshot.docs[0];
     const docData = docSnapshot.data();
 
-    // ✅ FINAL ISSUE DATE RESOLUTION (ROBUST)
+    /* =====================================================
+       ✅ FINAL ISSUE DATE RESOLUTION (PRODUCTION SAFE)
+    ===================================================== */
+
     let issueDate = null;
 
+    // 1. Preferred: issued_on (string or timestamp)
     if (docData.issued_on) {
-      issueDate = docData.issued_on;
-    } else if (docData.imported_at) {
-      issueDate = docData.imported_at;
-    } else if (docData.created_at) {
-      issueDate = docData.created_at;
-    } else if (docSnapshot.createTime) {
-      issueDate = docSnapshot.createTime.toDate();
+      if (docData.issued_on.toDate) {
+        issueDate = docData.issued_on.toDate().toISOString();
+      } else {
+        issueDate = docData.issued_on;
+      }
+    }
+
+    // 2. imported_at (Firestore timestamp)
+    else if (docData.imported_at && docData.imported_at.toDate) {
+      issueDate = docData.imported_at.toDate().toISOString();
+    }
+
+    // 3. created_at (Firestore timestamp)
+    else if (docData.created_at && docData.created_at.toDate) {
+      issueDate = docData.created_at.toDate().toISOString();
+    }
+
+    // 4. Firestore system timestamp
+    else if (docSnapshot.createTime) {
+      issueDate = docSnapshot.createTime.toDate().toISOString();
     }
 
     return res.json({
@@ -71,11 +90,23 @@ app.post("/public/verify-credential", async (req, res) => {
   }
 });
 
-// Health check
+/* =====================================================
+   Health check
+===================================================== */
 app.get("/", (req, res) => {
   res.send("AAU Credential Verify API is running");
 });
 
+/* =====================================================
+   Optional: GET helper (for browser testing)
+===================================================== */
+app.get("/public/verify-credential", (req, res) => {
+  res.send("Use POST method with JSON body { credential_id }");
+});
+
+/* =====================================================
+   Server Start
+===================================================== */
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,16 +1,19 @@
 /* =====================================================
-   Agile AI University — Verification Client v7.0
-   Final Polish · Status + Signature + QR
+   Agile AI University — Verification Client v8.0
+   FINAL STABLE · QR FIX · PRODUCTION SAFE
 ===================================================== */
 
 const API_ENDPOINT =
   "https://aau-credential-verify-458881040066.asia-south1.run.app/public/verify-credential";
 
+/* =====================================================
+   DOM ELEMENTS
+===================================================== */
+
 const verifyBtn = document.getElementById("verifyBtn");
 const credentialIdInput = document.getElementById("credentialIdInput");
 const resultDiv = document.getElementById("result");
 
-/* Premium Card Elements */
 const resultCard = document.getElementById("resultCard");
 const verificationStatus = document.getElementById("verificationStatus");
 
@@ -21,13 +24,12 @@ const r_program_code = document.getElementById("r_program_code");
 const r_issued_by = document.getElementById("r_issued_by");
 const r_issue_date = document.getElementById("r_issue_date");
 
-/* QR + Share Elements */
 const qrContainer = document.getElementById("qrCode");
 const shareLinkInput = document.getElementById("shareLink");
 const copyBtn = document.getElementById("copyLinkBtn");
 
 /* =====================================================
-   Utilities
+   UTILITIES
 ===================================================== */
 
 function isValidCredentialId(id) {
@@ -35,8 +37,7 @@ function isValidCredentialId(id) {
 }
 
 function safeText(value, fallback = "—") {
-  if (!value) return fallback;
-  return String(value);
+  return value ? String(value) : fallback;
 }
 
 function resetUI() {
@@ -53,7 +54,7 @@ function hideCard() {
 }
 
 /* =====================================================
-   Date Formatting
+   DATE FORMAT
 ===================================================== */
 
 function formatIssueDate(data) {
@@ -80,7 +81,29 @@ function formatIssueDate(data) {
 }
 
 /* =====================================================
-   QR + Share (SIGNED LINK)
+   QR GENERATION (ROBUST)
+===================================================== */
+
+function renderQRCode(url) {
+  if (!qrContainer) return;
+
+  qrContainer.innerHTML = "";
+
+  // Ensure library is loaded
+  if (typeof QRCode === "undefined") {
+    console.warn("QR library not loaded yet");
+    return;
+  }
+
+  new QRCode(qrContainer, {
+    text: url,
+    width: 120,
+    height: 120,
+  });
+}
+
+/* =====================================================
+   SHARE + QR
 ===================================================== */
 
 function generateVerificationAssets(credentialId, signature = null) {
@@ -94,28 +117,32 @@ function generateVerificationAssets(credentialId, signature = null) {
     shareLinkInput.value = url;
   }
 
-  if (qrContainer) {
-    qrContainer.innerHTML = "";
-    new QRCode(qrContainer, {
-      text: url,
-      width: 120,
-      height: 120,
-    });
-  }
+  // Delay ensures QR lib is loaded
+  setTimeout(() => {
+    renderQRCode(url);
+  }, 100);
 }
 
-/* Copy Link */
+/* =====================================================
+   COPY LINK (MODERN + FALLBACK)
+===================================================== */
+
 if (copyBtn) {
-  copyBtn.addEventListener("click", () => {
-    shareLinkInput.select();
-    document.execCommand("copy");
+  copyBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(shareLinkInput.value);
+    } catch {
+      shareLinkInput.select();
+      document.execCommand("copy");
+    }
+
     copyBtn.innerText = "Copied!";
     setTimeout(() => (copyBtn.innerText = "Copy Link"), 2000);
   });
 }
 
 /* =====================================================
-   Error Rendering (WITH STATUS)
+   ERROR UI
 ===================================================== */
 
 function renderError(message) {
@@ -134,7 +161,7 @@ function renderError(message) {
 }
 
 /* =====================================================
-   Success Rendering (WITH STATUS)
+   SUCCESS UI
 ===================================================== */
 
 function renderSuccess(data, signature = null) {
@@ -158,7 +185,7 @@ function renderSuccess(data, signature = null) {
 }
 
 /* =====================================================
-   Safe JSON
+   SAFE JSON
 ===================================================== */
 
 async function safeJson(response) {
@@ -170,7 +197,7 @@ async function safeJson(response) {
 }
 
 /* =====================================================
-   Verification Flow
+   VERIFICATION FLOW
 ===================================================== */
 
 async function runVerification(credentialId, recaptchaToken, signature = null) {
@@ -180,8 +207,8 @@ async function runVerification(credentialId, recaptchaToken, signature = null) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         credential_id: credentialId,
-        recaptchaToken: recaptchaToken,
-        signature: signature,
+        recaptchaToken,
+        signature,
       }),
     });
 
@@ -197,24 +224,15 @@ async function runVerification(credentialId, recaptchaToken, signature = null) {
       return;
     }
 
-    switch (data.status) {
-      case "valid":
-        renderSuccess(data, signature);
-        break;
-
-      case "not_found":
-        renderError(`
-          <strong>Credential Not Found</strong><br/><br/>
-          No matching credential exists in the official registry.
-        `);
-        break;
-
-      case "invalid":
-        renderError("Invalid Credential ID. Please verify and try again.");
-        break;
-
-      default:
-        renderError("Verification service temporarily unavailable.");
+    if (data.status === "valid") {
+      renderSuccess(data, signature);
+    } else if (data.status === "not_found") {
+      renderError(`
+        <strong>Credential Not Found</strong><br/><br/>
+        No matching credential exists in the official registry.
+      `);
+    } else {
+      renderError("Invalid Credential ID or verification failed.");
     }
 
   } catch (error) {
@@ -225,7 +243,10 @@ async function runVerification(credentialId, recaptchaToken, signature = null) {
   }
 }
 
-/* Button Click */
+/* =====================================================
+   BUTTON CLICK
+===================================================== */
+
 verifyBtn.addEventListener("click", async () => {
   const credentialId = credentialIdInput.value.trim().toUpperCase();
   credentialIdInput.value = credentialId;
@@ -258,7 +279,7 @@ verifyBtn.addEventListener("click", async () => {
 });
 
 /* =====================================================
-   AUTO LOAD FROM URL (?id + sig)
+   AUTO LOAD FROM URL
 ===================================================== */
 
 window.addEventListener("DOMContentLoaded", () => {

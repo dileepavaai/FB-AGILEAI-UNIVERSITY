@@ -117,14 +117,15 @@ window.renderLeads = function () {
     if (filter === "blocked" && !blocked) return;
     if (userFilter === "mine" && l.created_by !== currentUserEmail) return;
 
-    const stage = getSafeStage(l);
+    const stage = l.stage || "New"; // ✅ SAFE DEFAULT
 
-    const bg = blocked ? "#ffcccc"
-      : stage === "Converted" ? "#d4edda"
-      : stage === "Qualified" ? "#e6ffe6"
-      : stage === "Engaged" ? "#fff9e6"
-      : stage === "Dropped" ? "#f8d7da"
-      : "#ffffff";
+    const bg =
+      blocked ? "#ffcccc" :
+      stage === "Converted" ? "#d4edda" :
+      stage === "Qualified" ? "#e6ffe6" :
+      stage === "Engaged" ? "#fff9e6" :
+      stage === "Dropped" ? "#f8d7da" :
+      "#ffffff";
 
     body.innerHTML += `
       <tr style="background:${bg}">
@@ -147,6 +148,7 @@ window.renderLeads = function () {
           </select>
         </td>
 
+        <!-- ✅ NEW STAGE COLUMN -->
         <td>
           <select onchange="updateLead('${l.id}', 'stage', this.value)">
             ${["New","Engaged","Qualified","Converted","Dropped"].map(s =>

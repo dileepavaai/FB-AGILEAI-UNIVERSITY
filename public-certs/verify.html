@@ -13,34 +13,6 @@
   <link rel="canonical" href="https://verify.agileai.university/verify.html" />
   <meta name="robots" content="index, follow" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Official Credential Verification | Agile AI University" />
-  <meta property="og:description"
-        content="Verify credentials issued under the Agile AI University Credential Governance Framework." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://verify.agileai.university/verify.html" />
-
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Official Credential Verification",
-    "url": "https://verify.agileai.university/verify.html",
-    "description": "Official portal to verify credentials issued under the Agile AI University Credential Governance Framework.",
-    "isPartOf": {
-      "@type": "EducationalOrganization",
-      "name": "Agile AI University",
-      "url": "https://agileai.university/"
-    }
-  }
-  </script>
-
-  <!-- Cache Control -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-
   <!-- Styles -->
   <link rel="stylesheet" href="shared/design-authority/css/site.css" />
   <link rel="stylesheet" href="assets/css/verify.css" />
@@ -83,7 +55,7 @@
         type="text"
         placeholder="AAU-XXXXXXXX"
         autocomplete="off"
-        maxlength="13"
+        maxlength="20"
       />
 
       <!-- reCAPTCHA -->
@@ -102,7 +74,6 @@
 
         <div id="resultCard" class="verify-card hidden">
 
-          <!-- 🔥 STATUS BANNER -->
           <div id="verificationStatus" class="verify-status success">
             ✔ Credential Verified Successfully
           </div>
@@ -156,18 +127,14 @@
             </div>
           </div>
 
-          <!-- 🔥 UPGRADED FOOTER -->
           <div class="verify-footer">
             This credential has been validated against the official registry maintained by  
             <strong>Agile AI University</strong>.
-
             <br/><br/>
-
             This verification confirms that the credential record exists and matches the
             information issued under the institutional credential governance framework.
           </div>
 
-          <!-- 🔥 TRUST SIGNALS -->
           <div class="verify-trust">
             • Real-time verification<br/>
             • Registry-backed validation<br/>
@@ -185,10 +152,12 @@
 
   <script src="shared/design-authority/js/footer.js"></script>
 
-  <!-- QR -->
+  <!-- ✅ QR LIBRARY -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <script type="module" src="assets/js/verify.js"></script>
+  <!-- ✅ FIXED (NO MODULE) -->
+  <script src="assets/js/verify.js"></script>
+
   <script src="shared/design-authority/js/analytics.js"></script>
 
 </body>

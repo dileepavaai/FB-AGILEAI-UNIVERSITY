@@ -122,6 +122,16 @@
       overflow-y: auto;
       border: 1px solid #ddd;
     }
+
+    /* 🔥 Toolbar refinement */
+    .toolbar select {
+      width: 160px;
+      height: 36px;
+    }
+
+    .toolbar button {
+      height: 36px;
+    }
   </style>
 </head>
 
@@ -186,7 +196,7 @@
       <h2>Lead Intelligence</h2>
 
       <div class="lead-grid">
-        <input id="leadName" placeholder="Name (e.g. John Mathew)">
+        <input id="leadName" placeholder="Name (e.g. John Mathew)" autofocus>
         <input id="leadRole" placeholder="Role (e.g. Scrum Master)">
         <input id="leadCompany" placeholder="Company">
         <input id="leadLocation" placeholder="Location">
@@ -206,8 +216,8 @@
         <input id="leadSourceDetail" placeholder="Source Detail (campaign/ref)">
       </div>
 
-      <!-- 🔥 TOOLBAR FIXED -->
-      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+      <!-- ✅ ONE LINE TOOLBAR -->
+      <div class="toolbar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
         <button onclick="addLead()">Add</button>
 
         <select id="leadFilter" onchange="renderLeads()">

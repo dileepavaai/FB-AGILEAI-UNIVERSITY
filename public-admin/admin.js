@@ -595,3 +595,121 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+/* =========================================================
+   🚀 SPEED LAYER (SAFE ADD-ON — NO EXISTING LOGIC TOUCHED)
+   ========================================================= */
+
+function setupLeadSpeedUX() {
+
+  const fields = [
+    "leadName",
+    "leadRole",
+    "leadCompany",
+    "leadLocation",
+    "leadEmail",
+    "leadPhone",
+    "leadLinkedIn",
+    "leadSource",
+    "leadExperience",
+    "leadSourceDetail"
+  ];
+
+  const inputs = fields
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  // 🔥 ENTER → NEXT FIELD
+  inputs.forEach((el, index) => {
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+
+        if (index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        } else {
+          // LAST FIELD → AUTO ADD
+          if (typeof addLead === "function") {
+            addLead();
+          }
+        }
+      }
+    });
+  });
+
+  // 🔥 AUTOFOCUS FIX (important)
+  setTimeout(() => {
+    const first = document.getElementById("leadName");
+    if (first) first.focus();
+  }, 300);
+}
+
+/* 🔍 SEARCH FILTER */
+window.leadSearchText = "";
+
+window.applyLeadSearch = function (value) {
+  window.leadSearchText = (value || "").toLowerCase();
+  renderLeads();
+};
+
+/* 🎯 CHIP FILTER */
+window.quickFilter = function (type) {
+
+  const filter = document.getElementById("leadFilter");
+  const userFilter = document.getElementById("leadUserFilter");
+
+  if (!filter || !userFilter) return;
+
+  if (type === "high") {
+    filter.value = "priority";
+    userFilter.value = "all";
+  }
+
+  if (type === "converted") {
+    filter.value = "all";
+    userFilter.value = "all";
+    window.quickStage = "Converted";
+  }
+
+  if (type === "mine") {
+    filter.value = "all";
+    userFilter.value = "mine";
+  }
+
+  renderLeads();
+};
+
+/* 🔥 PATCH EXISTING RENDER */
+const originalRenderLeads = window.renderLeads;
+
+window.renderLeads = function () {
+
+  if (!originalRenderLeads) return;
+
+  originalRenderLeads();
+
+  const search = window.leadSearchText || "";
+
+  if (!search) return;
+
+  const rows = document.querySelectorAll("#leadBody tr");
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(search) ? "" : "none";
+  });
+};
+
+/* 🔥 INIT WHEN LEADS VIEW OPENS */
+const observer = new MutationObserver(() => {
+  const leadsView = document.getElementById("leads");
+
+  if (leadsView && !leadsView.classList.contains("hidden")) {
+    setupLeadSpeedUX();
+  }
+});
+
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});

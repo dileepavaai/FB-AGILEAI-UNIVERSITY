@@ -123,7 +123,6 @@
       border: 1px solid #ddd;
     }
 
-    /* 🔥 Toolbar refinement */
     .toolbar select {
       width: 160px;
       height: 36px;
@@ -131,6 +130,33 @@
 
     .toolbar button {
       height: 36px;
+    }
+
+    /* 🔥 NEW: search + chips */
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px;
+    }
+
+    .chip {
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .chip:hover {
+      background: #f3f4f6;
     }
   </style>
 </head>
@@ -216,7 +242,15 @@
         <input id="leadSourceDetail" placeholder="Source Detail (campaign/ref)">
       </div>
 
-      <!-- ✅ ONE LINE TOOLBAR -->
+      <!-- 🔍 SEARCH + FILTER CHIPS -->
+      <div class="search-bar">
+        <input placeholder="Search leads..." oninput="applyLeadSearch(this.value)">
+        <div class="chip" onclick="quickFilter('high')">High</div>
+        <div class="chip" onclick="quickFilter('converted')">Converted</div>
+        <div class="chip" onclick="quickFilter('mine')">My Leads</div>
+      </div>
+
+      <!-- TOOLBAR -->
       <div class="toolbar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
         <button onclick="addLead()">Add</button>
 

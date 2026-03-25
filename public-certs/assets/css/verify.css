@@ -1,6 +1,6 @@
 /* =========================================
    Verification Surface — Theme Compliant
-   FINAL POLISH LAYER ADDED
+   FINAL POLISH (STABLE + PREMIUM SAFE)
 ========================================= */
 
 
@@ -123,7 +123,7 @@ button:disabled {
 
 
 /* =========================
-   Verification Results (Legacy Support)
+   Verification Results (Legacy)
 ========================= */
 
 .result {
@@ -146,7 +146,7 @@ button:disabled {
 
 
 /* =========================
-   🔥 STATUS BANNER (NEW)
+   🔥 STATUS BANNER (DARK MODE SAFE)
 ========================= */
 
 .verify-status {
@@ -158,15 +158,15 @@ button:disabled {
 }
 
 .verify-status.success {
-  background: #ecfdf5;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .verify-status.error {
-  background: #fef2f2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 
@@ -184,6 +184,13 @@ button:disabled {
   border-radius: 12px;
 
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.verify-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
 }
 
 .verify-header {
@@ -192,8 +199,8 @@ button:disabled {
 
 .verify-badge {
   display: inline-block;
-  background: #ecfdf5;
-  color: #166534;
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
   padding: 5px 12px;
   border-radius: 999px;
   font-size: 13px;
@@ -221,6 +228,7 @@ button:disabled {
 .verify-row strong {
   color: var(--text-primary);
   font-weight: 600;
+  word-break: break-all; /* prevents overflow */
 }
 
 

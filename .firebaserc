@@ -31,6 +31,9 @@
         ],
         "agileai-portal": [
           "portal-agileai-university"
+        ],
+        "agileai-admin": [
+          "agileai-admin"
         ]
       }
     }

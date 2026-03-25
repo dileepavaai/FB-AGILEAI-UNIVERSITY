@@ -51,7 +51,6 @@
     .lead-low { background: #ffe6e6; }
     .lead-blocked { background: #ffcccc; }
 
-    /* ✅ NEW: Dashboard Metrics */
     .metrics {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -115,77 +114,55 @@
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- ✅ DASHBOARD UPDATED (SAFE ADDITION ONLY) -->
+    <!-- DASHBOARD (UNCHANGED) -->
     <section id="dashboard" class="view hidden">
       <h2>Dashboard</h2>
       <p>Admin access granted.</p>
 
-      <!-- 🔢 PRIMARY METRICS -->
       <div class="metrics">
-        <div class="metric-card">
-          <h3 id="mTotal">0</h3>
-          <p>Total Leads</p>
-        </div>
-        <div class="metric-card">
-          <h3 id="mEngaged">0</h3>
-          <p>Engaged</p>
-        </div>
-        <div class="metric-card">
-          <h3 id="mQualified">0</h3>
-          <p>Qualified</p>
-        </div>
-        <div class="metric-card">
-          <h3 id="mConverted">0</h3>
-          <p>Converted</p>
-        </div>
+        <div class="metric-card"><h3 id="mTotal">0</h3><p>Total Leads</p></div>
+        <div class="metric-card"><h3 id="mEngaged">0</h3><p>Engaged</p></div>
+        <div class="metric-card"><h3 id="mQualified">0</h3><p>Qualified</p></div>
+        <div class="metric-card"><h3 id="mConverted">0</h3><p>Converted</p></div>
       </div>
 
-      <!-- 💰 REVENUE INTELLIGENCE -->
       <h3 style="margin-top:20px;">Conversion Intelligence</h3>
 
       <div class="metrics">
-        <div class="metric-card">
-          <h3 id="mConvRate">0%</h3>
-          <p>Overall Conversion</p>
-        </div>
-        <div class="metric-card">
-          <h3 id="mQualConvRate">0%</h3>
-          <p>Qualified → Converted</p>
-        </div>
-        <div class="metric-card">
-          <h3 id="mDropRate">0%</h3>
-          <p>Drop-off Rate</p>
-        </div>
+        <div class="metric-card"><h3 id="mConvRate">0%</h3><p>Overall Conversion</p></div>
+        <div class="metric-card"><h3 id="mQualConvRate">0%</h3><p>Qualified → Converted</p></div>
+        <div class="metric-card"><h3 id="mDropRate">0%</h3><p>Drop-off Rate</p></div>
       </div>
     </section>
 
-    <section id="batches" class="view hidden">
-      <h2>Batch Management</h2>
-    </section>
-
-    <section id="credentials" class="view hidden">
-      <h2>Credential Issuance</h2>
-    </section>
-
-    <section id="csv" class="view hidden">
-      <h2>CSV Import</h2>
-    </section>
-
-    <section id="verifications" class="view hidden">
-      <h2>Verification Requests</h2>
-    </section>
-
-    <section id="logs" class="view hidden">
-      <h2>Audit Logs</h2>
-    </section>
-
-    <!-- 🔥 LEAD INTELLIGENCE (UNCHANGED CORE) -->
+    <!-- 🔥 LEAD INTELLIGENCE (FULL CRM UPGRADE) -->
     <section id="leads" class="view hidden">
       <h2>Lead Intelligence</h2>
 
-      <div style="margin-bottom:10px;">
+      <div style="margin-bottom:10px; display:flex; flex-wrap:wrap; gap:8px;">
+
         <input id="leadName" placeholder="Name">
         <input id="leadRole" placeholder="Role">
+
+        <input id="leadCompany" placeholder="Company">
+        <input id="leadLocation" placeholder="Location">
+        <input id="leadExperience" placeholder="Experience">
+
+        <input id="leadEmail" placeholder="Email">
+        <input id="leadPhone" placeholder="Phone">
+
+        <input id="leadLinkedIn" placeholder="LinkedIn URL">
+
+        <select id="leadSource">
+          <option value="Manual">Manual</option>
+          <option value="LinkedIn">LinkedIn</option>
+          <option value="Alumni">Alumni</option>
+          <option value="Referral">Referral</option>
+          <option value="Ads">Ads</option>
+        </select>
+
+        <input id="leadSourceDetail" placeholder="Source Detail">
+
         <button onclick="addLead()">Add</button>
 
         <select id="leadFilter" onchange="renderLeads()">
@@ -205,12 +182,15 @@
           <tr>
             <th>Name</th>
             <th>Role</th>
+            <th>Company</th>
+            <th>Source</th>
+            <th>Owner</th>
+            <th>Contact</th>
             <th>Score</th>
             <th>Status</th>
             <th>Stage</th>
             <th>Next</th>
             <th>Notes</th>
-            <th>Created By</th>
             <th>Flag</th>
           </tr>
         </thead>
@@ -225,7 +205,6 @@
   </main>
 </div>
 
-<!-- 🔥 ONLY SOURCE OF LOGIC -->
 <script type="module" src="/admin.js?v=200"></script>
 
 </body>

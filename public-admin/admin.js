@@ -127,21 +127,40 @@ function getSafeStage(l) {
    ➕ ADD LEAD
    ========================= */
 window.addLead = async function () {
-  const name = document.getElementById("leadName")?.value;
-  const role = document.getElementById("leadRole")?.value;
+  const get = id => document.getElementById(id)?.value || "";
 
+  const name = get("leadName");
   if (!name) return;
 
   await addDoc(collection(db, "leads"), {
+
+    // Identity
     name,
-    role,
+    role: get("leadRole"),
+    company: get("leadCompany"),
+    location: get("leadLocation"),
+    experience: get("leadExperience"),
+    linkedin_url: get("leadLinkedIn"),
+
+    // Contact
+    email: get("leadEmail"),
+    phone: get("leadPhone"),
+
+    // Source
+    source: get("leadSource"),
+    source_detail: get("leadSourceDetail"),
+
+    // Ownership
+    owner: auth.currentUser.email,
+    created_by: auth.currentUser.email,
+
+    // Existing system
     score: 3,
     status: "Warm",
     stage: "New",
     next: "",
     notes: "",
     interactions: 1,
-    created_by: auth.currentUser.email,
     created_at: serverTimestamp()
   });
 };
@@ -159,7 +178,7 @@ window.updateLead = async function (id, field, value) {
 };
 
 /* =========================
-   📊 RENDER LEADS
+   📊 RENDER LEADS (ENHANCED CRM SAFE)
    ========================= */
 window.renderLeads = function () {
   const body = document.getElementById("leadBody");
@@ -174,12 +193,14 @@ window.renderLeads = function () {
 
     const blocked = evaluateLead(l);
 
+    // Existing filters (UNCHANGED)
     if (filter === "priority" && l.score < 4) return;
     if (filter === "blocked" && !blocked) return;
     if (userFilter === "mine" && l.created_by !== currentUserEmail) return;
 
     const stage = getSafeStage(l);
 
+    // Background logic (UNCHANGED)
     const bg =
       blocked ? "#ffcccc" :
       stage === "Converted" ? "#d4edda" :
@@ -190,9 +211,40 @@ window.renderLeads = function () {
 
     body.innerHTML += `
       <tr style="background:${bg}">
-        <td>${l.name}</td>
-        <td>${l.role}</td>
 
+        <!-- NAME + LINKEDIN -->
+        <td>
+          ${l.name || ""}
+          ${l.linkedin_url ? `<br><a href="${l.linkedin_url}" target="_blank" style="font-size:11px;">View Profile</a>` : ""}
+        </td>
+
+        <!-- ROLE -->
+        <td>${l.role || ""}</td>
+
+        <!-- COMPANY + LOCATION -->
+        <td>
+          ${l.company || ""}
+          ${l.location ? `<br><small>${l.location}</small>` : ""}
+        </td>
+
+        <!-- SOURCE -->
+        <td>
+          ${l.source || ""}
+          ${l.source_detail ? `<br><small>${l.source_detail}</small>` : ""}
+        </td>
+
+        <!-- OWNER -->
+        <td style="font-size:12px;color:#555;">
+          ${l.owner || l.created_by || "-"}
+        </td>
+
+        <!-- CONTACT -->
+        <td style="font-size:12px;">
+          ${l.email || ""}
+          ${l.phone ? `<br>${l.phone}` : ""}
+        </td>
+
+        <!-- SCORE -->
         <td>
           <select onchange="updateLead('${l.id}', 'score', this.value)">
             ${[5,4,3,2,1,0].map(s =>
@@ -201,6 +253,7 @@ window.renderLeads = function () {
           </select>
         </td>
 
+        <!-- STATUS -->
         <td>
           <select onchange="updateLead('${l.id}', 'status', this.value)">
             ${["Active","Warm","Neutral","Guarded","Closed"].map(s =>
@@ -209,6 +262,7 @@ window.renderLeads = function () {
           </select>
         </td>
 
+        <!-- STAGE -->
         <td>
           <select onchange="updateLead('${l.id}', 'stage', this.value)">
             ${["New","Engaged","Qualified","Converted","Dropped"].map(s =>
@@ -217,16 +271,23 @@ window.renderLeads = function () {
           </select>
         </td>
 
-        <td><input value="${l.next || ""}" onchange="updateLead('${l.id}', 'next', this.value)"></td>
-        <td><input value="${l.notes || ""}" onchange="updateLead('${l.id}', 'notes', this.value)"></td>
-
-        <td style="font-size:12px;color:#555;">
-          ${l.created_by || "-"}
+        <!-- NEXT -->
+        <td>
+          <input value="${l.next || ""}" 
+                 onchange="updateLead('${l.id}', 'next', this.value)">
         </td>
 
+        <!-- NOTES -->
+        <td>
+          <input value="${l.notes || ""}" 
+                 onchange="updateLead('${l.id}', 'notes', this.value)">
+        </td>
+
+        <!-- FLAG -->
         <td style="color:red;font-weight:bold;">
           ${blocked ? "DO NOT ENGAGE" : ""}
         </td>
+
       </tr>
     `;
   });

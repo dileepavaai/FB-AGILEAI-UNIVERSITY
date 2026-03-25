@@ -1,3 +1,6 @@
+/* =====================================================
+   FIREBASE IMPORTS (UNCHANGED)
+   ===================================================== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
@@ -22,7 +25,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
-   ADMIN CONFIG (LOCKED)
+   ADMIN CONFIG (UNCHANGED)
    ===================================================== */
 const ADMIN_EMAILS = ["dileep@agileai.university"];
 
@@ -41,7 +44,103 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 /* =====================================================
-   DOM READY
+   🔥 LEAD INTELLIGENCE MODULE (ISOLATED)
+   ===================================================== */
+
+let leads = JSON.parse(localStorage.getItem("aa_leads")) || [];
+
+function saveLeads() {
+  localStorage.setItem("aa_leads", JSON.stringify(leads));
+}
+
+function evaluateLead(l) {
+  if (l.score == 0) return true;
+  if (l.interactions >= 3 && l.score <= 1) return true;
+  if (l.notes && l.notes.toLowerCase().includes("no")) return true;
+  return false;
+}
+
+window.addLead = function () {
+  const name = document.getElementById("leadName")?.value;
+  const role = document.getElementById("leadRole")?.value;
+
+  if (!name) return;
+
+  leads.push({
+    name,
+    role,
+    score: 3,
+    status: "Warm",
+    next: "",
+    notes: "",
+    interactions: 1
+  });
+
+  saveLeads();
+  window.renderLeads();
+};
+
+window.updateLead = function (i, field, value) {
+  leads[i][field] = field === "score" ? parseInt(value) : value;
+  leads[i].interactions++;
+  saveLeads();
+};
+
+window.renderLeads = function () {
+  const body = document.getElementById("leadBody");
+  if (!body) return;
+
+  const filter = document.getElementById("leadFilter")?.value || "all";
+  body.innerHTML = "";
+
+  leads.forEach((l, i) => {
+
+    const blocked = evaluateLead(l);
+
+    if (filter === "priority" && l.score < 4) return;
+    if (filter === "blocked" && !blocked) return;
+
+    const bg = blocked ? "#ffcccc"
+      : l.score >= 4 ? "#e6ffe6"
+      : l.score == 3 ? "#fff9e6"
+      : "#ffe6e6";
+
+    body.innerHTML += `
+      <tr style="background:${bg}">
+        <td>${l.name}</td>
+        <td>${l.role}</td>
+
+        <td>
+          <select onchange="updateLead(${i}, 'score', this.value)">
+            ${[5,4,3,2,1,0].map(s =>
+              `<option ${l.score==s?"selected":""}>${s}</option>`
+            ).join("")}
+          </select>
+        </td>
+
+        <td>
+          <select onchange="updateLead(${i}, 'status', this.value)">
+            ${["Active","Warm","Neutral","Guarded","Closed"].map(s =>
+              `<option ${l.status===s?"selected":""}>${s}</option>`
+            ).join("")}
+          </select>
+        </td>
+
+        <td><input value="${l.next}" onchange="updateLead(${i}, 'next', this.value)"></td>
+        <td><input value="${l.notes}" onchange="updateLead(${i}, 'notes', this.value)"></td>
+
+        <td style="color:red;font-weight:bold;">
+          ${blocked ? "DO NOT ENGAGE" : ""}
+        </td>
+      </tr>
+    `;
+  });
+
+  saveLeads();
+};
+
+/* =====================================================
+   DOM READY (UNCHANGED + SAFE ADDITION)
    ===================================================== */
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -70,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeVerificationStatus = null;
 
   /* =====================================================
-     NAVIGATION
+     NAVIGATION (ONLY SAFE ADDITION)
      ===================================================== */
   document.querySelectorAll(".sidebar li").forEach(item => {
     item.addEventListener("click", () => {
@@ -86,11 +185,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (viewId === "verifications") {
         startVerificationListener();
       }
+
+      // 🔥 SAFE ADDITION
+      if (viewId === "leads") {
+        setTimeout(() => {
+          window.renderLeads();
+        }, 50);
+      }
     });
   });
 
   /* =====================================================
-     AUTH
+     AUTH (UNCHANGED)
      ===================================================== */
   loginBtn.addEventListener("click", () =>
     signInWithPopup(auth, provider)
@@ -125,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     BATCH MANAGEMENT
+     BATCH MANAGEMENT (UNCHANGED)
      ===================================================== */
   batchForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -175,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-     VERIFICATION REQUESTS
+     VERIFICATION REQUESTS (UNCHANGED)
      ===================================================== */
   function startVerificationListener() {
     if (verificationUnsubscribe) return;
@@ -216,9 +322,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* =====================================================
-     MODAL — STEP-3.5 FINAL LOGIC
-     ===================================================== */
   async function openVerificationModal(data, docId) {
     activeVerificationDocId = docId;
     activeVerificationStatus = data.status || "new";
@@ -232,12 +335,10 @@ document.addEventListener("DOMContentLoaded", () => {
       : "-";
     document.getElementById("modalCreatedAt").textContent = createdAt;
 
-    // Reset UI
     approveBtn.disabled = true;
     noticeEl.classList.add("hidden");
     noticeEl.textContent = "";
 
-    // Already approved → locked forever
     if (activeVerificationStatus === "approved") {
       noticeEl.textContent =
         "This verification request has already been approved and is locked.";
@@ -246,7 +347,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Must be reviewed first
     if (activeVerificationStatus !== "reviewed") {
       noticeEl.textContent =
         "This request must be reviewed before approval is possible.";
@@ -255,7 +355,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // FINAL SAFETY CHECK — credential must exist & be finalized
     const credQuery = query(
       collection(db, "credentials"),
       where("email", "==", data.email),
@@ -279,9 +378,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("verificationModal").classList.add("hidden");
   };
 
-  /* =====================================================
-     MARK REVIEWED
-     ===================================================== */
   markReviewedBtn?.addEventListener("click", async () => {
     if (!activeVerificationDocId) return;
     if (!confirm("Mark this request as REVIEWED?")) return;
@@ -298,9 +394,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.closeVerificationModal();
   });
 
-  /* =====================================================
-     APPROVE — FINAL & SAFE
-     ===================================================== */
   approveBtn?.addEventListener("click", async () => {
     if (!activeVerificationDocId) return;
     if (approveBtn.disabled) return;

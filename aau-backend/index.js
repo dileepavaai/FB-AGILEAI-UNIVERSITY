@@ -41,32 +41,39 @@ app.post("/public/verify-credential", async (req, res) => {
     const docData = docSnapshot.data();
 
     /* =====================================================
-       ✅ FINAL ISSUE DATE RESOLUTION (PRODUCTION SAFE)
+       ✅ FINAL ISSUE DATE RESOLUTION (FULLY ROBUST)
     ===================================================== */
 
     let issueDate = null;
 
-    // 1. Preferred: issued_on (string or timestamp)
-    if (docData.issued_on) {
-      if (docData.issued_on.toDate) {
-        issueDate = docData.issued_on.toDate().toISOString();
-      } else {
-        issueDate = docData.issued_on;
+    const resolveDate = (value) => {
+      if (!value) return null;
+
+      // Firestore Timestamp
+      if (typeof value.toDate === "function") {
+        return value.toDate().toISOString();
       }
-    }
 
-    // 2. imported_at (Firestore timestamp)
-    else if (docData.imported_at && docData.imported_at.toDate) {
-      issueDate = docData.imported_at.toDate().toISOString();
-    }
+      // JS Date
+      if (value instanceof Date) {
+        return value.toISOString();
+      }
 
-    // 3. created_at (Firestore timestamp)
-    else if (docData.created_at && docData.created_at.toDate) {
-      issueDate = docData.created_at.toDate().toISOString();
-    }
+      // Already string
+      if (typeof value === "string") {
+        return value;
+      }
 
-    // 4. Firestore system timestamp
-    else if (docSnapshot.createTime) {
+      return null;
+    };
+
+    if (docData.issued_on) {
+      issueDate = resolveDate(docData.issued_on);
+    } else if (docData.imported_at) {
+      issueDate = resolveDate(docData.imported_at);
+    } else if (docData.created_at) {
+      issueDate = resolveDate(docData.created_at);
+    } else if (docSnapshot.createTime) {
       issueDate = docSnapshot.createTime.toDate().toISOString();
     }
 

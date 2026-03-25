@@ -54,10 +54,11 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 /* =====================================================
-   🔥 LEAD INTELLIGENCE (FIRESTORE VERSION)
+   🔥 LEAD INTELLIGENCE (ENHANCED)
    ===================================================== */
 
 let leads = [];
+let currentUserEmail = null;
 
 function evaluateLead(l) {
   if (l.score == 0) return true;
@@ -99,6 +100,8 @@ window.renderLeads = function () {
   if (!body) return;
 
   const filter = document.getElementById("leadFilter")?.value || "all";
+  const userFilter = document.getElementById("leadUserFilter")?.value || "all";
+
   body.innerHTML = "";
 
   leads.forEach((l) => {
@@ -107,6 +110,8 @@ window.renderLeads = function () {
 
     if (filter === "priority" && l.score < 4) return;
     if (filter === "blocked" && !blocked) return;
+
+    if (userFilter === "mine" && l.created_by !== currentUserEmail) return;
 
     const bg = blocked ? "#ffcccc"
       : l.score >= 4 ? "#e6ffe6"
@@ -136,6 +141,11 @@ window.renderLeads = function () {
 
         <td><input value="${l.next || ""}" onchange="updateLead('${l.id}', 'next', this.value)"></td>
         <td><input value="${l.notes || ""}" onchange="updateLead('${l.id}', 'notes', this.value)"></td>
+
+        <!-- NEW -->
+        <td style="font-size:12px;color:#555;">
+          ${l.created_by || "-"}
+        </td>
 
         <td style="color:red;font-weight:bold;">
           ${blocked ? "DO NOT ENGAGE" : ""}
@@ -187,14 +197,10 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById(viewId).classList.remove("hidden");
 
       if (viewId === "verifications") startVerificationListener();
-
-      if (viewId === "leads") {
-        startLeadsListener();
-      }
+      if (viewId === "leads") startLeadsListener();
     });
   });
 
-  /* 🔥 LEADS REALTIME */
   function startLeadsListener() {
     if (leadsUnsubscribe) return;
 
@@ -229,6 +235,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    currentUserEmail = user.email;
+
     const role = ADMIN_ACCESS[user.email];
 
     statusEl.innerText = `Welcome ${role === "super_admin" ? "Super Admin" : "Admin"}: ${user.email}`;
@@ -244,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await loadBatchesForCSV();
   });
 
-  /* === REST UNCHANGED (Batch + Verification) === */
+  /* === REST UNCHANGED === */
 
   batchForm.addEventListener("submit", async (e) => {
     e.preventDefault();

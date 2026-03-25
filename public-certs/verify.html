@@ -10,9 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Canonical -->
   <link rel="canonical" href="https://verify.agileai.university/verify.html" />
-
   <meta name="robots" content="index, follow" />
 
   <!-- Open Graph -->
@@ -38,61 +36,34 @@
   }
   </script>
 
-  <!-- Cache Control (Verification must never cache stale results) -->
+  <!-- Cache Control -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- ======================================================
-       DESIGN AUTHORITY — RUNTIME COPY (Surface-Local)
-       DO NOT LINK ROOT SHARED FOLDER
-  ======================================================= -->
+  <!-- Styles -->
   <link rel="stylesheet" href="shared/design-authority/css/site.css" />
   <link rel="stylesheet" href="assets/css/verify.css" />
 
-  <!-- reCAPTCHA v2 -->
+  <!-- reCAPTCHA -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 </head>
 
-<!-- 🔒 CRITICAL:
-     Surface Identity must match surface-config.js condition.
-     "verify" remains distinct for analytics segmentation.
-     Menu logic handled in surface-config.js via:
-     surface === "certs" || surface === "verify"
--->
 <body data-surface="verify">
 
-  <!-- ======================================================
-       HEADER MOUNT (Injected by surface-config.js)
-  ======================================================= -->
   <div id="header"></div>
 
-  <!-- ======================================================
-       SURFACE CONFIGURATION (Header Controller)
-       Must load BEFORE header.js
-  ======================================================= -->
   <script src="assets/js/surface-config.js"></script>
-
-  <!-- ======================================================
-       SHARED DESIGN AUTHORITY INFRASTRUCTURE
-       (Order matters)
-  ======================================================= -->
   <script src="shared/design-authority/js/header.js"></script>
   <script src="shared/design-authority/js/theme.js"></script>
 
-  <!-- ======================================================
-       VERIFICATION CONSOLE
-  ======================================================= -->
   <main class="verify-console">
     <div class="card">
 
-      <!-- Institutional Breadcrumb (Surface-Local Only) -->
-      <nav aria-label="Breadcrumb"
-           style="font-size:0.9rem; margin-bottom:18px;">
+      <nav aria-label="Breadcrumb" style="font-size:0.9rem; margin-bottom:18px;">
         <a href="https://agileai.university/">Agile AI University</a>
-        <span aria-hidden="true"> / </span>
-        <span aria-current="page">Verification</span>
+        <span> / </span>
+        <span>Verification</span>
       </nav>
 
       <h1>Official Credential Verification Portal</h1>
@@ -112,7 +83,6 @@
         type="text"
         placeholder="AAU-XXXXXXXX"
         autocomplete="off"
-        aria-label="Credential ID"
         maxlength="13"
       />
 
@@ -127,33 +97,98 @@
         Verify Credential
       </button>
 
-      <div id="result" aria-live="polite"></div>
+      <!-- RESULT -->
+      <div id="result" aria-live="polite">
+
+        <div id="resultCard" class="verify-card hidden">
+
+          <!-- 🔥 STATUS BANNER -->
+          <div id="verificationStatus" class="verify-status success">
+            ✔ Credential Verified Successfully
+          </div>
+
+          <div class="verify-header">
+            <div class="verify-badge">✔ Verified Credential</div>
+            <div class="verify-sub">Official Registry Record</div>
+          </div>
+
+          <div class="verify-body">
+
+            <div class="verify-row">
+              <span>Full Name</span>
+              <strong id="r_full_name"></strong>
+            </div>
+
+            <div class="verify-row">
+              <span>Credential ID</span>
+              <strong id="r_credential_id"></strong>
+            </div>
+
+            <div class="verify-row">
+              <span>Credential Type</span>
+              <strong id="r_credential_type"></strong>
+            </div>
+
+            <div class="verify-row">
+              <span>Program</span>
+              <strong id="r_program_code"></strong>
+            </div>
+
+            <div class="verify-row">
+              <span>Issued By</span>
+              <strong id="r_issued_by"></strong>
+            </div>
+
+            <div class="verify-row">
+              <span>Issue Date</span>
+              <strong id="r_issue_date"></strong>
+            </div>
+
+          </div>
+
+          <!-- QR + SHARE -->
+          <div class="verify-qr-section">
+            <div id="qrCode"></div>
+
+            <div class="verify-share">
+              <input id="shareLink" readonly />
+              <button id="copyLinkBtn">Copy Link</button>
+            </div>
+          </div>
+
+          <!-- 🔥 UPGRADED FOOTER -->
+          <div class="verify-footer">
+            This credential has been validated against the official registry maintained by  
+            <strong>Agile AI University</strong>.
+
+            <br/><br/>
+
+            This verification confirms that the credential record exists and matches the
+            information issued under the institutional credential governance framework.
+          </div>
+
+          <!-- 🔥 TRUST SIGNALS -->
+          <div class="verify-trust">
+            • Real-time verification<br/>
+            • Registry-backed validation<br/>
+            • Tamper-resistant credential ID
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
   </main>
 
-  <!-- ======================================================
-       FOOTER MOUNT
-  ======================================================= -->
   <div id="footer"></div>
 
-  <!-- Shared Footer Injection -->
   <script src="shared/design-authority/js/footer.js"></script>
 
-  <!-- ======================================================
-       SURFACE-SPECIFIC BUSINESS LOGIC
-       (Must remain module-based)
-  ======================================================= -->
-  <script type="module" src="assets/js/verify.js"></script>
+  <!-- QR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <!-- ======================================================
-       INSTITUTIONAL ANALYTICS ENGINE
-       - Single GA4 Property
-       - Surface-aware tracking
-       - Fail-safe execution
-       - Production-only activation
-       Must always load LAST.
-  ======================================================= -->
+  <script type="module" src="assets/js/verify.js"></script>
   <script src="shared/design-authority/js/analytics.js"></script>
 
 </body>

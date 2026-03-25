@@ -102,6 +102,7 @@ button {
   cursor: pointer;
   background: #ffffff;
   font-size: 14px;
+  transition: all 0.15s ease;
 }
 
 button:hover {
@@ -111,6 +112,17 @@ button:hover {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* 🔥 Primary Action */
+button.primary {
+  background: #111827;
+  color: #fff;
+  border: none;
+}
+
+button.primary:hover {
+  background: #1f2937;
 }
 
 form {
@@ -128,8 +140,20 @@ form label {
 input,
 select {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   margin-top: 4px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* 🔥 Focus UX upgrade */
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
 /* ===============================
@@ -147,10 +171,22 @@ td {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: left;
+  font-size: 14px;
 }
 
 th {
   background: #f0f0f0;
+  font-weight: 600;
+}
+
+/* 🔥 Better readability */
+tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* Hover */
+tbody tr:hover {
+  background: #f1f5f9;
 }
 
 /* Subtle hover cue for clickable rows */
@@ -158,10 +194,61 @@ th {
   background: #f9fafb;
 }
 
-/* =====================================================
-   DETAIL MODAL — VERIFICATION REQUEST
-   STEP-3 READY (Resolution UI)
-   ===================================================== */
+/* ===============================
+   CRM GRID (🔥 NEW)
+   =============================== */
+.lead-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .lead-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===============================
+   METRICS CARDS
+   =============================== */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.metric-card {
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.metric-card h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.metric-card p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ===============================
+   MODAL (UNCHANGED)
+   =============================== */
 .modal {
   position: fixed;
   inset: 0;
@@ -205,7 +292,7 @@ th {
 }
 
 /* ===============================
-   MODAL ACTIONS (STEP-3.1)
+   MODAL ACTIONS
    =============================== */
 .modal-actions {
   margin-top: 20px;
@@ -215,19 +302,7 @@ th {
   justify-content: flex-end;
 }
 
-/* Resolution button semantic hints (UI only) */
-#markReviewedBtn {
-  border-color: #6b7280;
-}
-
-#approveBtn {
-  border-color: #16a34a;
-}
-
-#rejectBtn {
-  border-color: #dc2626;
-}
-
-#clarifyBtn {
-  border-color: #f59e0b;
-}
+#markReviewedBtn { border-color: #6b7280; }
+#approveBtn { border-color: #16a34a; }
+#rejectBtn { border-color: #dc2626; }
+#clarifyBtn { border-color: #f59e0b; }

@@ -23,9 +23,6 @@
         "agileai-certs": [
           "certs-agileai"
         ],
-        "admin": [
-          "admin-agileai-university"
-        ],
         "agileai-academy": [
           "agileai-academy"
         ],
@@ -33,7 +30,7 @@
           "portal-agileai-university"
         ],
         "agileai-admin": [
-          "agileai-admin"
+          "admin-agileai-university"
         ]
       }
     }

@@ -27,7 +27,10 @@ import {
 /* =====================================================
    ADMIN CONFIG (UNCHANGED)
    ===================================================== */
-const ADMIN_EMAILS = ["dileep@agileai.university"];
+const ADMIN_EMAILS = [
+  "dileep@agileai.university",
+  "operations@agileai.university"
+];
 
 const firebaseConfig = {
   apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",

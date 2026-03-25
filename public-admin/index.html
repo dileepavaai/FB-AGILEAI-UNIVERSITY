@@ -46,12 +46,10 @@
       justify-content: flex-end;
     }
 
-    /* Lead Colors */
     .lead-high { background: #e6ffe6; }
     .lead-medium { background: #fff9e6; }
     .lead-low { background: #ffe6e6; }
     .lead-blocked { background: #ffcccc; }
-
   </style>
 </head>
 
@@ -71,7 +69,6 @@
 
 <div class="layout">
 
-  <!-- SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li data-view="dashboard" class="active">Dashboard</li>
@@ -116,7 +113,7 @@
       <h2>Audit Logs</h2>
     </section>
 
-    <!-- 🔥 LEAD INTELLIGENCE -->
+    <!-- 🔥 LEAD INTELLIGENCE (UPDATED SAFE) -->
     <section id="leads" class="view hidden">
       <h2>Lead Intelligence</h2>
 
@@ -130,6 +127,12 @@
           <option value="priority">High Priority</option>
           <option value="blocked">Do Not Engage</option>
         </select>
+
+        <!-- 🔥 NEW -->
+        <select id="leadUserFilter" onchange="renderLeads()">
+          <option value="all">All Leads</option>
+          <option value="mine">My Leads</option>
+        </select>
       </div>
 
       <table width="100%" border="1">
@@ -141,6 +144,7 @@
             <th>Status</th>
             <th>Next</th>
             <th>Notes</th>
+            <th>Created By</th>
             <th>Flag</th>
           </tr>
         </thead>
@@ -148,7 +152,6 @@
       </table>
     </section>
 
-    <!-- EXISTING -->
     <section id="reconciliation" class="view hidden">
       <h2>Reconciliation</h2>
     </section>
@@ -156,101 +159,8 @@
   </main>
 </div>
 
-<!-- SCRIPT -->
-<script type="module" src="/admin.js?v=100"></script>
-
-<script>
-let leads = JSON.parse(localStorage.getItem("aa_leads")) || [];
-
-function saveLeads() {
-  localStorage.setItem("aa_leads", JSON.stringify(leads));
-}
-
-function addLead() {
-  const name = document.getElementById("leadName").value;
-  const role = document.getElementById("leadRole").value;
-
-  if (!name) return;
-
-  leads.push({
-    name,
-    role,
-    score: 3,
-    status: "Warm",
-    next: "",
-    notes: "",
-    interactions: 1
-  });
-
-  saveLeads();
-  renderLeads();
-}
-
-function evaluateLead(l) {
-  if (l.score == 0) return true;
-  if (l.interactions >= 3 && l.score <= 1) return true;
-  if (l.notes && l.notes.toLowerCase().includes("no")) return true;
-  return false;
-}
-
-function renderLeads() {
-  const body = document.getElementById("leadBody");
-  if (!body) return;
-
-  const filter = document.getElementById("leadFilter").value;
-  body.innerHTML = "";
-
-  leads.forEach((l, i) => {
-
-    const blocked = evaluateLead(l);
-
-    if (filter === "priority" && l.score < 4) return;
-    if (filter === "blocked" && !blocked) return;
-
-    let cls = blocked ? "lead-blocked" :
-              l.score >= 4 ? "lead-high" :
-              l.score == 3 ? "lead-medium" : "lead-low";
-
-    body.innerHTML += `
-      <tr class="${cls}">
-        <td>${l.name}</td>
-        <td>${l.role}</td>
-
-        <td>
-          <select onchange="updateLead(${i}, 'score', this.value)">
-            ${[5,4,3,2,1,0].map(s =>
-              `<option ${l.score==s?"selected":""}>${s}</option>`
-            ).join("")}
-          </select>
-        </td>
-
-        <td>
-          <select onchange="updateLead(${i}, 'status', this.value)">
-            ${["Active","Warm","Neutral","Guarded","Closed"].map(s =>
-              `<option ${l.status===s?"selected":""}>${s}</option>`
-            ).join("")}
-          </select>
-        </td>
-
-        <td><input value="${l.next}" onchange="updateLead(${i}, 'next', this.value)"></td>
-        <td><input value="${l.notes}" onchange="updateLead(${i}, 'notes', this.value)"></td>
-
-        <td style="color:red;font-weight:bold;">
-          ${blocked ? "DO NOT ENGAGE" : ""}
-        </td>
-      </tr>
-    `;
-  });
-
-  saveLeads();
-}
-
-function updateLead(i, field, value) {
-  leads[i][field] = field === "score" ? parseInt(value) : value;
-  leads[i].interactions++;
-  saveLeads();
-}
-</script>
+<!-- 🔥 ONLY SOURCE OF LOGIC -->
+<script type="module" src="/admin.js?v=200"></script>
 
 </body>
 </html>

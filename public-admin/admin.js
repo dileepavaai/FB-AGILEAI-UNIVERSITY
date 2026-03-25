@@ -60,6 +60,48 @@ const provider = new GoogleAuthProvider();
 let leads = [];
 let currentUserEmail = null;
 
+/* =========================
+   🧠 METRICS (NEW - SAFE)
+   ========================= */
+function updateLeadMetrics() {
+  const counts = {
+    total: 0,
+    New: 0,
+    Engaged: 0,
+    Qualified: 0,
+    Converted: 0,
+    Dropped: 0
+  };
+
+  leads.forEach(l => {
+    const stage = l.stage || "New";
+    counts.total++;
+
+    if (counts[stage] !== undefined) {
+      counts[stage]++;
+    }
+  });
+
+  // Safe DOM updates (only if present)
+  if (document.getElementById("mTotal"))
+    document.getElementById("mTotal").innerText = counts.total;
+
+  if (document.getElementById("mNew"))
+    document.getElementById("mNew").innerText = counts.New;
+
+  if (document.getElementById("mEngaged"))
+    document.getElementById("mEngaged").innerText = counts.Engaged;
+
+  if (document.getElementById("mQualified"))
+    document.getElementById("mQualified").innerText = counts.Qualified;
+
+  if (document.getElementById("mConverted"))
+    document.getElementById("mConverted").innerText = counts.Converted;
+
+  if (document.getElementById("mDropped"))
+    document.getElementById("mDropped").innerText = counts.Dropped;
+}
+
 function evaluateLead(l) {
   if (l.score == 0) return true;
   if (l.interactions >= 3 && l.score <= 1) return true;
@@ -68,9 +110,12 @@ function evaluateLead(l) {
 }
 
 function getSafeStage(l) {
-  return l.stage || "New"; // ✅ ensures backward compatibility
+  return l.stage || "New";
 }
 
+/* =========================
+   ➕ ADD LEAD
+   ========================= */
 window.addLead = async function () {
   const name = document.getElementById("leadName")?.value;
   const role = document.getElementById("leadRole")?.value;
@@ -82,7 +127,7 @@ window.addLead = async function () {
     role,
     score: 3,
     status: "Warm",
-    stage: "New", // ✅ guaranteed
+    stage: "New",
     next: "",
     notes: "",
     interactions: 1,
@@ -91,6 +136,9 @@ window.addLead = async function () {
   });
 };
 
+/* =========================
+   ✏️ UPDATE LEAD
+   ========================= */
 window.updateLead = async function (id, field, value) {
   const ref = doc(db, "leads", id);
 
@@ -100,6 +148,9 @@ window.updateLead = async function (id, field, value) {
   });
 };
 
+/* =========================
+   📊 RENDER LEADS
+   ========================= */
 window.renderLeads = function () {
   const body = document.getElementById("leadBody");
   if (!body) return;
@@ -117,7 +168,7 @@ window.renderLeads = function () {
     if (filter === "blocked" && !blocked) return;
     if (userFilter === "mine" && l.created_by !== currentUserEmail) return;
 
-    const stage = l.stage || "New"; // ✅ SAFE DEFAULT
+    const stage = getSafeStage(l);
 
     const bg =
       blocked ? "#ffcccc" :
@@ -148,7 +199,6 @@ window.renderLeads = function () {
           </select>
         </td>
 
-        <!-- ✅ NEW STAGE COLUMN -->
         <td>
           <select onchange="updateLead('${l.id}', 'stage', this.value)">
             ${["New","Engaged","Qualified","Converted","Dropped"].map(s =>
@@ -173,7 +223,7 @@ window.renderLeads = function () {
 };
 
 /* =====================================================
-   DOM READY (UNCHANGED)
+   DOM READY (UNCHANGED + METRICS HOOK)
    ===================================================== */
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -227,6 +277,8 @@ document.addEventListener("DOMContentLoaded", () => {
       snap.forEach(docSnap => {
         leads.push({ id: docSnap.id, ...docSnap.data() });
       });
+
+      updateLeadMetrics(); // ✅ NEW
       window.renderLeads();
     });
   }

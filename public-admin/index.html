@@ -50,6 +50,33 @@
     .lead-medium { background: #fff9e6; }
     .lead-low { background: #ffe6e6; }
     .lead-blocked { background: #ffcccc; }
+
+    /* ✅ NEW: Dashboard Metrics */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .metric-card {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+    }
+
+    .metric-card h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .metric-card p {
+      margin: 5px 0 0;
+      font-size: 12px;
+      color: #555;
+    }
   </style>
 </head>
 
@@ -88,9 +115,37 @@
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
+    <!-- ✅ DASHBOARD UPDATED (SAFE ADDITION ONLY) -->
     <section id="dashboard" class="view hidden">
       <h2>Dashboard</h2>
       <p>Admin access granted.</p>
+
+      <div class="metrics">
+        <div class="metric-card">
+          <h3 id="mTotal">0</h3>
+          <p>Total</p>
+        </div>
+        <div class="metric-card">
+          <h3 id="mNew">0</h3>
+          <p>New</p>
+        </div>
+        <div class="metric-card">
+          <h3 id="mEngaged">0</h3>
+          <p>Engaged</p>
+        </div>
+        <div class="metric-card">
+          <h3 id="mQualified">0</h3>
+          <p>Qualified</p>
+        </div>
+        <div class="metric-card">
+          <h3 id="mConverted">0</h3>
+          <p>Converted</p>
+        </div>
+        <div class="metric-card">
+          <h3 id="mDropped">0</h3>
+          <p>Dropped</p>
+        </div>
+      </div>
     </section>
 
     <section id="batches" class="view hidden">
@@ -113,7 +168,7 @@
       <h2>Audit Logs</h2>
     </section>
 
-    <!-- 🔥 LEAD INTELLIGENCE (UPDATED SAFE) -->
+    <!-- 🔥 LEAD INTELLIGENCE (UNCHANGED CORE) -->
     <section id="leads" class="view hidden">
       <h2>Lead Intelligence</h2>
 
@@ -128,7 +183,6 @@
           <option value="blocked">Do Not Engage</option>
         </select>
 
-        <!-- 🔥 NEW -->
         <select id="leadUserFilter" onchange="renderLeads()">
           <option value="all">All Leads</option>
           <option value="mine">My Leads</option>
@@ -142,7 +196,7 @@
             <th>Role</th>
             <th>Score</th>
             <th>Status</th>
-            <th>Stage</th> <!-- ✅ NEW -->
+            <th>Stage</th>
             <th>Next</th>
             <th>Notes</th>
             <th>Created By</th>

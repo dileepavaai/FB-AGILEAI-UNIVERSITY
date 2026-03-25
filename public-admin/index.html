@@ -76,6 +76,30 @@
       font-size: 12px;
       color: #555;
     }
+
+    /* 🔥 NEW: CRM GRID */
+    .lead-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .lead-grid input,
+    .lead-grid select {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+      .lead-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -114,7 +138,7 @@
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- DASHBOARD (UNCHANGED) -->
+    <!-- DASHBOARD -->
     <section id="dashboard" class="view hidden">
       <h2>Dashboard</h2>
       <p>Admin access granted.</p>
@@ -135,24 +159,21 @@
       </div>
     </section>
 
-    <!-- 🔥 LEAD INTELLIGENCE (FULL CRM UPGRADE) -->
+    <!-- 🔥 LEAD INTELLIGENCE (PROFESSIONAL GRID) -->
     <section id="leads" class="view hidden">
       <h2>Lead Intelligence</h2>
 
-      <div style="margin-bottom:10px; display:flex; flex-wrap:wrap; gap:8px;">
-
+      <div class="lead-grid">
         <input id="leadName" placeholder="Name">
         <input id="leadRole" placeholder="Role">
 
         <input id="leadCompany" placeholder="Company">
         <input id="leadLocation" placeholder="Location">
-        <input id="leadExperience" placeholder="Experience">
 
         <input id="leadEmail" placeholder="Email">
         <input id="leadPhone" placeholder="Phone">
 
         <input id="leadLinkedIn" placeholder="LinkedIn URL">
-
         <select id="leadSource">
           <option value="Manual">Manual</option>
           <option value="LinkedIn">LinkedIn</option>
@@ -161,8 +182,11 @@
           <option value="Ads">Ads</option>
         </select>
 
+        <input id="leadExperience" placeholder="Experience">
         <input id="leadSourceDetail" placeholder="Source Detail">
+      </div>
 
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
         <button onclick="addLead()">Add</button>
 
         <select id="leadFilter" onchange="renderLeads()">

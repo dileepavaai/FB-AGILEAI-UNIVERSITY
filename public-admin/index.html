@@ -46,7 +46,7 @@
       justify-content: flex-end;
     }
 
-    /* 🔥 LEAD COLORS */
+    /* Lead Colors */
     .lead-high { background: #e6ffe6; }
     .lead-medium { background: #fff9e6; }
     .lead-low { background: #ffe6e6; }
@@ -80,9 +80,8 @@
       <li data-view="csv">CSV Import</li>
       <li data-view="verifications">Verification Requests</li>
       <li data-view="logs">Audit Logs</li>
-
-      <!-- 🔥 NEW -->
       <li data-view="leads">Lead Intelligence</li>
+      <li data-view="reconciliation">Reconciliation</li>
     </ul>
   </nav>
 
@@ -99,7 +98,6 @@
 
     <section id="batches" class="view hidden">
       <h2>Batch Management</h2>
-      <!-- existing content unchanged -->
     </section>
 
     <section id="credentials" class="view hidden">
@@ -118,7 +116,7 @@
       <h2>Audit Logs</h2>
     </section>
 
-    <!-- 🚀 NEW MODULE -->
+    <!-- 🔥 LEAD INTELLIGENCE -->
     <section id="leads" class="view hidden">
       <h2>Lead Intelligence</h2>
 
@@ -150,11 +148,16 @@
       </table>
     </section>
 
+    <!-- EXISTING -->
+    <section id="reconciliation" class="view hidden">
+      <h2>Reconciliation</h2>
+    </section>
+
   </main>
 </div>
 
 <!-- SCRIPT -->
-<script type="module" src="/admin.js"></script>
+<script type="module" src="/admin.js?v=100"></script>
 
 <script>
 let leads = JSON.parse(localStorage.getItem("aa_leads")) || [];

@@ -81,7 +81,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .lead-grid input,
@@ -100,7 +100,6 @@
       }
     }
 
-    /* 🔥 NEW: LEGEND */
     .lead-legend {
       display: flex;
       gap: 16px;
@@ -118,7 +117,6 @@
     .score-mid { color: #b45309; font-weight: 600; }
     .score-low { color: #b91c1c; font-weight: 600; }
 
-    /* 🔥 NEW: TABLE WRAPPER */
     .table-wrapper {
       max-height: 60vh;
       overflow-y: auto;
@@ -188,13 +186,13 @@
       <h2>Lead Intelligence</h2>
 
       <div class="lead-grid">
-        <input id="leadName" placeholder="Name">
-        <input id="leadRole" placeholder="Role">
+        <input id="leadName" placeholder="Name (e.g. John Mathew)">
+        <input id="leadRole" placeholder="Role (e.g. Scrum Master)">
         <input id="leadCompany" placeholder="Company">
         <input id="leadLocation" placeholder="Location">
         <input id="leadEmail" placeholder="Email">
         <input id="leadPhone" placeholder="Phone">
-        <input id="leadLinkedIn" placeholder="LinkedIn URL">
+        <input id="leadLinkedIn" placeholder="LinkedIn URL (optional)">
 
         <select id="leadSource">
           <option value="Manual">Manual</option>
@@ -204,11 +202,12 @@
           <option value="Ads">Ads</option>
         </select>
 
-        <input id="leadExperience" placeholder="Experience">
-        <input id="leadSourceDetail" placeholder="Source Detail">
+        <input id="leadExperience" placeholder="Experience (years)">
+        <input id="leadSourceDetail" placeholder="Source Detail (campaign/ref)">
       </div>
 
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+      <!-- 🔥 TOOLBAR FIXED -->
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
         <button onclick="addLead()">Add</button>
 
         <select id="leadFilter" onchange="renderLeads()">
@@ -223,14 +222,12 @@
         </select>
       </div>
 
-      <!-- 🔥 NEW LEGEND -->
       <div class="lead-legend">
         <span class="score-high">● High (4–5)</span>
         <span class="score-mid">● Medium (2–3)</span>
         <span class="score-low">● Low (0–1)</span>
       </div>
 
-      <!-- 🔥 WRAPPED TABLE -->
       <div class="table-wrapper">
         <table width="100%" border="1">
           <thead>

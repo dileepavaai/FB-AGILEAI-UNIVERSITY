@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
+const fetch = require("node-fetch");
+const crypto = require("crypto");
 
 const app = express();
 app.use(cors());
@@ -12,11 +14,71 @@ admin.initializeApp();
 const db = admin.firestore();
 
 /* =====================================================
+   🔐 SIMPLE RATE LIMITING
+===================================================== */
+const requestCounts = new Map();
+
+/* =====================================================
+   🔐 reCAPTCHA Validation
+===================================================== */
+async function verifyRecaptcha(token) {
+  if (!token) return false;
+
+  const secret = process.env.RECAPTCHA_SECRET_KEY;
+
+  if (!secret) {
+    console.warn("Missing RECAPTCHA_SECRET_KEY");
+    return false;
+  }
+
+  try {
+    const response = await fetch(
+      "https://www.google.com/recaptcha/api/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `secret=${secret}&response=${token}`,
+      }
+    );
+
+    const data = await response.json();
+    return data.success === true;
+
+  } catch (err) {
+    console.error("reCAPTCHA validation failed:", err);
+    return false;
+  }
+}
+
+/* =====================================================
+   🔐 SIGNATURE (Tamper-proof links)
+===================================================== */
+
+function generateSignature(credentialId) {
+  const secret = process.env.SIGNING_SECRET;
+  if (!secret) return null;
+
+  return crypto
+    .createHmac("sha256", secret)
+    .update(credentialId)
+    .digest("hex");
+}
+
+function verifySignature(credentialId, signature) {
+  if (!signature) return true; // backward compatibility
+
+  const expected = generateSignature(credentialId);
+  return signature === expected;
+}
+
+/* =====================================================
    🔍 Credential Verification API
 ===================================================== */
 app.post("/public/verify-credential", async (req, res) => {
   try {
-    const { credential_id } = req.body;
+    const { credential_id, recaptchaToken, signature } = req.body;
+
+    /* ---------- BASIC VALIDATION ---------- */
 
     if (!credential_id) {
       return res.status(400).json({
@@ -24,6 +86,62 @@ app.post("/public/verify-credential", async (req, res) => {
         message: "credential_id is required",
       });
     }
+
+    /* ---------- RATE LIMITING ---------- */
+
+    const ip =
+      req.headers["x-forwarded-for"] ||
+      req.ip ||
+      "unknown";
+
+    const now = Date.now();
+    const windowMs = 60 * 1000;
+    const limit = 10;
+
+    const record = requestCounts.get(ip) || {
+      count: 0,
+      start: now,
+    };
+
+    if (now - record.start > windowMs) {
+      record.count = 0;
+      record.start = now;
+    }
+
+    record.count++;
+
+    if (record.count > limit) {
+      return res.status(429).json({
+        status: "error",
+        message: "Too many requests. Try again later.",
+      });
+    }
+
+    requestCounts.set(ip, record);
+
+    /* ---------- reCAPTCHA ---------- */
+
+    const isHuman = await verifyRecaptcha(recaptchaToken);
+
+    if (!isHuman) {
+      return res.status(403).json({
+        status: "error",
+        message: "reCAPTCHA validation failed",
+      });
+    }
+
+    /* ---------- SIGNATURE VALIDATION ---------- */
+
+    const isValidSignature = verifySignature(credential_id, signature);
+
+    if (!isValidSignature) {
+      return res.status(403).json({
+        status: "error",
+        message: "Invalid or tampered verification link",
+      });
+    }
+
+    /* ---------- FIRESTORE QUERY ---------- */
 
     const snapshot = await db
       .collection("credentials")
@@ -41,7 +159,7 @@ app.post("/public/verify-credential", async (req, res) => {
     const docData = docSnapshot.data();
 
     /* =====================================================
-       ✅ FINAL ISSUE DATE RESOLUTION (FULLY ROBUST)
+       ✅ ISSUE DATE RESOLUTION
     ===================================================== */
 
     let issueDate = null;
@@ -49,17 +167,14 @@ app.post("/public/verify-credential", async (req, res) => {
     const resolveDate = (value) => {
       if (!value) return null;
 
-      // Firestore Timestamp
       if (typeof value.toDate === "function") {
         return value.toDate().toISOString();
       }
 
-      // JS Date
       if (value instanceof Date) {
         return value.toISOString();
       }
 
-      // Already string
       if (typeof value === "string") {
         return value;
       }
@@ -76,6 +191,8 @@ app.post("/public/verify-credential", async (req, res) => {
     } else if (docSnapshot.createTime) {
       issueDate = docSnapshot.createTime.toDate().toISOString();
     }
+
+    /* ---------- SUCCESS ---------- */
 
     return res.json({
       status: "valid",
@@ -105,7 +222,7 @@ app.get("/", (req, res) => {
 });
 
 /* =====================================================
-   Optional: GET helper (for browser testing)
+   Optional GET helper
 ===================================================== */
 app.get("/public/verify-credential", (req, res) => {
   res.send("Use POST method with JSON body { credential_id }");

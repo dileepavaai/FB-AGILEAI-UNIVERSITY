@@ -306,3 +306,54 @@ tbody tr:hover {
 #approveBtn { border-color: #16a34a; }
 #rejectBtn { border-color: #dc2626; }
 #clarifyBtn { border-color: #f59e0b; }
+
+/* =========================================
+   🚀 CRM SPEED + TABLE UX
+   ========================================= */
+
+/* Sticky header */
+table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f0f0f0;
+}
+
+/* Scrollable table container (optional wrapper ready) */
+.table-wrapper {
+  max-height: 60vh;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+
+/* Inline editable fields */
+.inline-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+}
+
+.inline-input:focus {
+  outline: 1px solid #2563eb;
+  background: #ffffff;
+}
+
+/* Lead score colors (visual intelligence) */
+.score-high { color: #15803d; font-weight: 600; }
+.score-mid { color: #b45309; font-weight: 600; }
+.score-low { color: #b91c1c; font-weight: 600; }
+
+/* Legend */
+.lead-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.lead-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

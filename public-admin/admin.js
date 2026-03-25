@@ -296,7 +296,34 @@ window.renderLeads = function () {
 /* =====================================================
    DOM READY (UNCHANGED + METRICS HOOK)
    ===================================================== */
+/* =========================
+   🚀 FAST ENTRY (SAFE ADD)
+   ========================= */
+function enableFastEntry() {
+  const ids = [
+    "leadName","leadRole","leadCompany","leadLocation",
+    "leadEmail","leadPhone","leadLinkedIn","leadSource",
+    "leadExperience","leadSourceDetail"
+  ];
+
+  const fields = ids.map(id => document.getElementById(id)).filter(Boolean);
+  if (!fields.length) return;
+
+  fields[0].focus();
+
+  fields.forEach((f, i) => {
+    f.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const next = fields[i + 1];
+        if (next) next.focus();
+        else window.addLead();
+      }
+    });
+  });
+}
 document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(enableFastEntry, 500);
 
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");

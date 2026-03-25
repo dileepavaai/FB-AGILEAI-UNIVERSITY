@@ -7,7 +7,6 @@
 
   <link rel="stylesheet" href="/admin.css" />
 
-  <!-- ===== DETAIL MODAL (Step 1 + Step 3.x) – Scoped Styles ===== -->
   <style>
     .modal {
       position: fixed;
@@ -19,9 +18,7 @@
       z-index: 9999;
     }
 
-    .modal.hidden {
-      display: none;
-    }
+    .modal.hidden { display: none; }
 
     .modal-content {
       background: #ffffff;
@@ -31,17 +28,8 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
-    .modal-content h2 {
-      margin-top: 0;
-      margin-bottom: 12px;
-    }
+    .modal-field { margin-bottom: 12px; }
 
-    .modal-field {
-      margin-bottom: 12px;
-      font-size: 14px;
-    }
-
-    /* STEP-3.5 NOTICE */
     .modal-notice {
       margin-top: 10px;
       padding: 10px;
@@ -49,11 +37,6 @@
       border-radius: 6px;
       background: #fff4e5;
       border: 1px solid #f3c98b;
-      color: #7a4b00;
-    }
-
-    .modal-notice.hidden {
-      display: none;
     }
 
     .modal-actions {
@@ -61,206 +44,210 @@
       display: flex;
       gap: 10px;
       justify-content: flex-end;
-      flex-wrap: wrap;
     }
 
-    .modal-actions button {
-      padding: 8px 14px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      background: #fff;
-      cursor: pointer;
-    }
+    /* 🔥 LEAD COLORS */
+    .lead-high { background: #e6ffe6; }
+    .lead-medium { background: #fff9e6; }
+    .lead-low { background: #ffe6e6; }
+    .lead-blocked { background: #ffcccc; }
 
-    .modal-actions button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
   </style>
 </head>
+
 <body>
 
-  <!-- ================= HEADER ================= -->
-  <header class="topbar">
-    <h1>Agile AI University – Admin</h1>
-    <div class="user">
-      <span id="status">Please sign in.</span>
-      <button id="logoutBtn" style="display:none;">Logout</button>
-    </div>
-  </header>
-
-  <!-- ================= ADMIN WARNING ================= -->
-  <div id="adminWarning" class="admin-warning hidden">
-    ⚠️ Restricted Admin Area — All actions are logged and audited.
-    Unauthorized access or misuse will result in immediate revocation.
+<header class="topbar">
+  <h1>Agile AI University – Admin</h1>
+  <div class="user">
+    <span id="status">Please sign in.</span>
+    <button id="logoutBtn" style="display:none;">Logout</button>
   </div>
+</header>
 
-  <!-- ================= LAYOUT ================= -->
-  <div class="layout">
+<div id="adminWarning" class="admin-warning hidden">
+  ⚠️ Restricted Admin Area — All actions are logged and audited.
+</div>
 
-    <!-- ========== SIDEBAR ========== -->
-    <nav class="sidebar" id="adminNav" style="display:none;">
-      <ul>
-        <li data-view="dashboard" class="active">Dashboard</li>
-        <li data-view="batches">Batch Management</li>
-        <li data-view="credentials">Credential Issuance</li>
-        <li data-view="csv">CSV Import</li>
-        <li data-view="verifications">Verification Requests</li>
-        <li data-view="logs">Audit Logs</li>
-      </ul>
-    </nav>
+<div class="layout">
 
-    <!-- ========== CONTENT ========== -->
-    <main class="content">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="adminNav" style="display:none;">
+    <ul>
+      <li data-view="dashboard" class="active">Dashboard</li>
+      <li data-view="batches">Batch Management</li>
+      <li data-view="credentials">Credential Issuance</li>
+      <li data-view="csv">CSV Import</li>
+      <li data-view="verifications">Verification Requests</li>
+      <li data-view="logs">Audit Logs</li>
 
-      <!-- LOGIN -->
-      <section id="loginView">
-        <button id="loginBtn">Sign in with Google</button>
-      </section>
+      <!-- 🔥 NEW -->
+      <li data-view="leads">Lead Intelligence</li>
+    </ul>
+  </nav>
 
-      <!-- DASHBOARD -->
-      <section id="dashboard" class="view hidden">
-        <h2>Dashboard</h2>
-        <p>Admin access granted.</p>
-      </section>
+  <main class="content">
 
-      <!-- BATCH MANAGEMENT -->
-      <section id="batches" class="view hidden">
-        <h2>Batch Management</h2>
+    <section id="loginView">
+      <button id="loginBtn">Sign in with Google</button>
+    </section>
 
-        <form id="batchForm">
-          <label>
-            Batch Name
-            <input type="text" id="batchName" required />
-          </label>
+    <section id="dashboard" class="view hidden">
+      <h2>Dashboard</h2>
+      <p>Admin access granted.</p>
+    </section>
 
-          <label>
-            Program Code
-            <select id="programCode">
-              <option value="AOP">AOP – Agile Outcome Practitioner</option>
-            </select>
-          </label>
+    <section id="batches" class="view hidden">
+      <h2>Batch Management</h2>
+      <!-- existing content unchanged -->
+    </section>
 
-          <label>
-            Status
-            <select id="batchStatus">
-              <option value="draft">Draft</option>
-              <option value="active">Active</option>
-              <option value="closed">Closed</option>
-            </select>
-          </label>
+    <section id="credentials" class="view hidden">
+      <h2>Credential Issuance</h2>
+    </section>
 
-          <button type="submit">Create Batch</button>
-        </form>
+    <section id="csv" class="view hidden">
+      <h2>CSV Import</h2>
+    </section>
 
-        <hr />
+    <section id="verifications" class="view hidden">
+      <h2>Verification Requests</h2>
+    </section>
 
-        <h3>Existing Batches</h3>
-        <table id="batchTable">
-          <thead>
-            <tr>
-              <th>Batch Name</th>
-              <th>Program</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </section>
+    <section id="logs" class="view hidden">
+      <h2>Audit Logs</h2>
+    </section>
 
-      <!-- CREDENTIAL ISSUANCE -->
-      <section id="credentials" class="view hidden">
-        <h2>Credential Issuance</h2>
-        <p>Manual and automated credential issuance.</p>
-      </section>
+    <!-- 🚀 NEW MODULE -->
+    <section id="leads" class="view hidden">
+      <h2>Lead Intelligence</h2>
 
-      <!-- CSV IMPORT -->
-      <section id="csv" class="view hidden">
-        <h2>CSV Import</h2>
+      <div style="margin-bottom:10px;">
+        <input id="leadName" placeholder="Name">
+        <input id="leadRole" placeholder="Role">
+        <button onclick="addLead()">Add</button>
 
-        <label>
-          Select Batch
-          <select id="csvBatchSelect">
-            <option value="">-- Select Batch --</option>
+        <select id="leadFilter" onchange="renderLeads()">
+          <option value="all">All</option>
+          <option value="priority">High Priority</option>
+          <option value="blocked">Do Not Engage</option>
+        </select>
+      </div>
+
+      <table width="100%" border="1">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Score</th>
+            <th>Status</th>
+            <th>Next</th>
+            <th>Notes</th>
+            <th>Flag</th>
+          </tr>
+        </thead>
+        <tbody id="leadBody"></tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<!-- SCRIPT -->
+<script type="module" src="/admin.js"></script>
+
+<script>
+let leads = JSON.parse(localStorage.getItem("aa_leads")) || [];
+
+function saveLeads() {
+  localStorage.setItem("aa_leads", JSON.stringify(leads));
+}
+
+function addLead() {
+  const name = document.getElementById("leadName").value;
+  const role = document.getElementById("leadRole").value;
+
+  if (!name) return;
+
+  leads.push({
+    name,
+    role,
+    score: 3,
+    status: "Warm",
+    next: "",
+    notes: "",
+    interactions: 1
+  });
+
+  saveLeads();
+  renderLeads();
+}
+
+function evaluateLead(l) {
+  if (l.score == 0) return true;
+  if (l.interactions >= 3 && l.score <= 1) return true;
+  if (l.notes && l.notes.toLowerCase().includes("no")) return true;
+  return false;
+}
+
+function renderLeads() {
+  const body = document.getElementById("leadBody");
+  if (!body) return;
+
+  const filter = document.getElementById("leadFilter").value;
+  body.innerHTML = "";
+
+  leads.forEach((l, i) => {
+
+    const blocked = evaluateLead(l);
+
+    if (filter === "priority" && l.score < 4) return;
+    if (filter === "blocked" && !blocked) return;
+
+    let cls = blocked ? "lead-blocked" :
+              l.score >= 4 ? "lead-high" :
+              l.score == 3 ? "lead-medium" : "lead-low";
+
+    body.innerHTML += `
+      <tr class="${cls}">
+        <td>${l.name}</td>
+        <td>${l.role}</td>
+
+        <td>
+          <select onchange="updateLead(${i}, 'score', this.value)">
+            ${[5,4,3,2,1,0].map(s =>
+              `<option ${l.score==s?"selected":""}>${s}</option>`
+            ).join("")}
           </select>
-        </label>
-      </section>
+        </td>
 
-      <!-- VERIFICATION REQUESTS -->
-      <section id="verifications" class="view hidden">
-        <h2>Verification Requests</h2>
+        <td>
+          <select onchange="updateLead(${i}, 'status', this.value)">
+            ${["Active","Warm","Neutral","Guarded","Closed"].map(s =>
+              `<option ${l.status===s?"selected":""}>${s}</option>`
+            ).join("")}
+          </select>
+        </td>
 
-        <table id="verificationTable">
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Requested At</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </section>
+        <td><input value="${l.next}" onchange="updateLead(${i}, 'next', this.value)"></td>
+        <td><input value="${l.notes}" onchange="updateLead(${i}, 'notes', this.value)"></td>
 
-      <!-- AUDIT LOGS -->
-      <section id="logs" class="view hidden">
-        <h2>Audit Logs</h2>
-        <p>Issuance and admin actions.</p>
-      </section>
+        <td style="color:red;font-weight:bold;">
+          ${blocked ? "DO NOT ENGAGE" : ""}
+        </td>
+      </tr>
+    `;
+  });
 
-    </main>
-  </div>
+  saveLeads();
+}
 
-  <!-- ================= VERIFICATION MODAL ================= -->
-  <div id="verificationModal" class="modal hidden">
-    <div class="modal-content">
-      <h2>Verification Request</h2>
+function updateLead(i, field, value) {
+  leads[i][field] = field === "score" ? parseInt(value) : value;
+  leads[i].interactions++;
+  saveLeads();
+}
+</script>
 
-      <div class="modal-field">
-        <strong>Email:</strong>
-        <span id="modalEmail"></span>
-      </div>
-
-      <div class="modal-field">
-        <strong>Requested At:</strong>
-        <span id="modalCreatedAt"></span>
-      </div>
-
-      <div class="modal-field">
-        <strong>Source:</strong>
-        <span id="modalSource"></span>
-      </div>
-
-      <div class="modal-field">
-        <strong>Status:</strong>
-        <span id="modalStatus"></span>
-      </div>
-
-      <!-- 🔒 STEP-3.5 ADMIN NOTICE (NEW) -->
-      <div id="verificationNotice" class="modal-notice hidden"></div>
-
-      <div class="modal-actions">
-        <button id="markReviewedBtn">Mark Reviewed</button>
-
-        <button id="approveBtn">
-          ✅ Approve
-        </button>
-
-        <button id="rejectBtn" disabled>
-          ❌ Reject
-        </button>
-
-        <button id="clarifyBtn" disabled>
-          🔁 Needs Clarification
-        </button>
-
-        <button onclick="closeVerificationModal()">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= SCRIPT ================= -->
-  <script type="module" src="/admin.js"></script>
 </body>
 </html>

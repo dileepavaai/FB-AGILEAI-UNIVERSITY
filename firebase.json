@@ -3,11 +3,7 @@
     {
       "target": "agileai-site",
       "public": "public-site",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**/*.@(css|js)",
@@ -15,6 +11,15 @@
             {
               "key": "Cache-Control",
               "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
             }
           ]
         }
@@ -23,11 +28,7 @@
     {
       "target": "agileai-assessment",
       "public": "public-assessment",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**/*.@(css|js)",
@@ -35,6 +36,15 @@
             {
               "key": "Cache-Control",
               "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
             }
           ]
         }
@@ -43,11 +53,7 @@
     {
       "target": "agileai-education",
       "public": "public-edu",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**/*.@(css|js)",
@@ -55,6 +61,15 @@
             {
               "key": "Cache-Control",
               "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
             }
           ]
         }
@@ -63,11 +78,7 @@
     {
       "target": "agileai-learn",
       "public": "public-learn",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**/*.@(css|js)",
@@ -75,6 +86,15 @@
             {
               "key": "Cache-Control",
               "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
             }
           ]
         }
@@ -83,11 +103,7 @@
     {
       "target": "agileai-certs",
       "public": "public-certs",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**/*.@(css|js)",
@@ -95,6 +111,15 @@
             {
               "key": "Cache-Control",
               "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
             }
           ]
         }
@@ -103,11 +128,7 @@
     {
       "target": "agileai-spec",
       "public": "public-spec",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**/*.@(css|js)",
@@ -115,6 +136,15 @@
             {
               "key": "Cache-Control",
               "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
             }
           ]
         }
@@ -123,13 +153,9 @@
     {
       "target": "agileai-academy",
       "public": "public-academy",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
       "cleanUrls": true,
       "trailingSlash": false,
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**/*.@(css|js)",
@@ -137,6 +163,15 @@
             {
               "key": "Cache-Control",
               "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
             }
           ]
         }
@@ -145,11 +180,7 @@
     {
       "target": "agileai-portal",
       "public": "public-portal",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [
         {
           "source": "**/*.@(css|js)",
@@ -159,10 +190,45 @@
               "value": "public,max-age=31536000,immutable"
             }
           ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "agileai-admin",
+      "public": "public-admin",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**/*.@(css|js)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
         }
       ]
     }
   ],
+
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"

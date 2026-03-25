@@ -77,7 +77,6 @@
       color: #555;
     }
 
-    /* 🔥 NEW: CRM GRID */
     .lead-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -99,6 +98,31 @@
       .lead-grid {
         grid-template-columns: 1fr;
       }
+    }
+
+    /* 🔥 NEW: LEGEND */
+    .lead-legend {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .lead-legend span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .score-high { color: #15803d; font-weight: 600; }
+    .score-mid { color: #b45309; font-weight: 600; }
+    .score-low { color: #b91c1c; font-weight: 600; }
+
+    /* 🔥 NEW: TABLE WRAPPER */
+    .table-wrapper {
+      max-height: 60vh;
+      overflow-y: auto;
+      border: 1px solid #ddd;
     }
   </style>
 </head>
@@ -159,21 +183,19 @@
       </div>
     </section>
 
-    <!-- 🔥 LEAD INTELLIGENCE (PROFESSIONAL GRID) -->
+    <!-- LEADS -->
     <section id="leads" class="view hidden">
       <h2>Lead Intelligence</h2>
 
       <div class="lead-grid">
         <input id="leadName" placeholder="Name">
         <input id="leadRole" placeholder="Role">
-
         <input id="leadCompany" placeholder="Company">
         <input id="leadLocation" placeholder="Location">
-
         <input id="leadEmail" placeholder="Email">
         <input id="leadPhone" placeholder="Phone">
-
         <input id="leadLinkedIn" placeholder="LinkedIn URL">
+
         <select id="leadSource">
           <option value="Manual">Manual</option>
           <option value="LinkedIn">LinkedIn</option>
@@ -201,25 +223,36 @@
         </select>
       </div>
 
-      <table width="100%" border="1">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Company</th>
-            <th>Source</th>
-            <th>Owner</th>
-            <th>Contact</th>
-            <th>Score</th>
-            <th>Status</th>
-            <th>Stage</th>
-            <th>Next</th>
-            <th>Notes</th>
-            <th>Flag</th>
-          </tr>
-        </thead>
-        <tbody id="leadBody"></tbody>
-      </table>
+      <!-- 🔥 NEW LEGEND -->
+      <div class="lead-legend">
+        <span class="score-high">● High (4–5)</span>
+        <span class="score-mid">● Medium (2–3)</span>
+        <span class="score-low">● Low (0–1)</span>
+      </div>
+
+      <!-- 🔥 WRAPPED TABLE -->
+      <div class="table-wrapper">
+        <table width="100%" border="1">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Company</th>
+              <th>Source</th>
+              <th>Owner</th>
+              <th>Contact</th>
+              <th>Score</th>
+              <th>Status</th>
+              <th>Stage</th>
+              <th>Next</th>
+              <th>Notes</th>
+              <th>Flag</th>
+            </tr>
+          </thead>
+          <tbody id="leadBody"></tbody>
+        </table>
+      </div>
+
     </section>
 
     <section id="reconciliation" class="view hidden">

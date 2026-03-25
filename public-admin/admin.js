@@ -25,13 +25,23 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
-   ADMIN CONFIG (UNCHANGED)
+   🔐 ADMIN ACCESS CONTROL (UPGRADED - SAFE)
    ===================================================== */
-const ADMIN_EMAILS = [
-  "dileep@agileai.university",
-  "operations@agileai.university"
-];
 
+// 🔥 Role-ready structure (future-proof)
+const ADMIN_ACCESS = {
+  "dileep@agileai.university": "super_admin",
+  "operations@agileai.university": "admin"
+};
+
+// ✅ Helper (SAFE)
+function isAdmin(email) {
+  return !!ADMIN_ACCESS[email];
+}
+
+/* =====================================================
+   FIREBASE CONFIG (UNCHANGED)
+   ===================================================== */
 const firebaseConfig = {
   apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
   authDomain: "fb-agileai-university.firebaseapp.com",
@@ -47,7 +57,7 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 /* =====================================================
-   🔥 LEAD INTELLIGENCE MODULE (ISOLATED)
+   🔥 LEAD INTELLIGENCE MODULE (UNCHANGED)
    ===================================================== */
 
 let leads = JSON.parse(localStorage.getItem("aa_leads")) || [];
@@ -143,11 +153,10 @@ window.renderLeads = function () {
 };
 
 /* =====================================================
-   DOM READY (UNCHANGED + SAFE ADDITION)
+   DOM READY
    ===================================================== */
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ---------- UI References ---------- */
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
   const statusEl = document.getElementById("status");
@@ -172,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeVerificationStatus = null;
 
   /* =====================================================
-     NAVIGATION (ONLY SAFE ADDITION)
+     NAVIGATION
      ===================================================== */
   document.querySelectorAll(".sidebar li").forEach(item => {
     item.addEventListener("click", () => {
@@ -189,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
         startVerificationListener();
       }
 
-      // 🔥 SAFE ADDITION
       if (viewId === "leads") {
         setTimeout(() => {
           window.renderLeads();
@@ -199,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     AUTH (UNCHANGED)
+     AUTH (UPDATED SAFELY)
      ===================================================== */
   loginBtn.addEventListener("click", () =>
     signInWithPopup(auth, provider)
@@ -214,13 +222,16 @@ document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;
 
-    if (!ADMIN_EMAILS.includes(user.email)) {
+    // 🔥 UPDATED LOGIC (SAFE)
+    if (!isAdmin(user.email)) {
       alert("❌ Admin access only");
       await signOut(auth);
       return;
     }
 
-    statusEl.innerText = `Welcome Admin: ${user.email}`;
+    const role = ADMIN_ACCESS[user.email];
+
+    statusEl.innerText = `Welcome ${role === "super_admin" ? "Super Admin" : "Admin"}: ${user.email}`;
     loginBtn.style.display = "none";
     logoutBtn.style.display = "inline-block";
     adminNav.style.display = "block";
@@ -234,8 +245,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     BATCH MANAGEMENT (UNCHANGED)
+     REST OF FILE (UNCHANGED)
      ===================================================== */
+
   batchForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -283,9 +295,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* =====================================================
-     VERIFICATION REQUESTS (UNCHANGED)
-     ===================================================== */
   function startVerificationListener() {
     if (verificationUnsubscribe) return;
 

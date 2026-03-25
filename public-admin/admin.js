@@ -54,7 +54,7 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 /* =====================================================
-   🔥 LEAD INTELLIGENCE (ENHANCED)
+   🔥 LEAD INTELLIGENCE (PIPELINE SAFE VERSION)
    ===================================================== */
 
 let leads = [];
@@ -65,6 +65,10 @@ function evaluateLead(l) {
   if (l.interactions >= 3 && l.score <= 1) return true;
   if (l.notes && l.notes.toLowerCase().includes("no")) return true;
   return false;
+}
+
+function getSafeStage(l) {
+  return l.stage || "New"; // ✅ ensures backward compatibility
 }
 
 window.addLead = async function () {
@@ -78,6 +82,7 @@ window.addLead = async function () {
     role,
     score: 3,
     status: "Warm",
+    stage: "New", // ✅ guaranteed
     next: "",
     notes: "",
     interactions: 1,
@@ -110,13 +115,16 @@ window.renderLeads = function () {
 
     if (filter === "priority" && l.score < 4) return;
     if (filter === "blocked" && !blocked) return;
-
     if (userFilter === "mine" && l.created_by !== currentUserEmail) return;
 
+    const stage = getSafeStage(l);
+
     const bg = blocked ? "#ffcccc"
-      : l.score >= 4 ? "#e6ffe6"
-      : l.score == 3 ? "#fff9e6"
-      : "#ffe6e6";
+      : stage === "Converted" ? "#d4edda"
+      : stage === "Qualified" ? "#e6ffe6"
+      : stage === "Engaged" ? "#fff9e6"
+      : stage === "Dropped" ? "#f8d7da"
+      : "#ffffff";
 
     body.innerHTML += `
       <tr style="background:${bg}">
@@ -139,10 +147,17 @@ window.renderLeads = function () {
           </select>
         </td>
 
+        <td>
+          <select onchange="updateLead('${l.id}', 'stage', this.value)">
+            ${["New","Engaged","Qualified","Converted","Dropped"].map(s =>
+              `<option ${stage===s?"selected":""}>${s}</option>`
+            ).join("")}
+          </select>
+        </td>
+
         <td><input value="${l.next || ""}" onchange="updateLead('${l.id}', 'next', this.value)"></td>
         <td><input value="${l.notes || ""}" onchange="updateLead('${l.id}', 'notes', this.value)"></td>
 
-        <!-- NEW -->
         <td style="font-size:12px;color:#555;">
           ${l.created_by || "-"}
         </td>
@@ -156,7 +171,7 @@ window.renderLeads = function () {
 };
 
 /* =====================================================
-   DOM READY
+   DOM READY (UNCHANGED)
    ===================================================== */
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -184,7 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeVerificationStatus = null;
   let leadsUnsubscribe = null;
 
-  /* NAVIGATION */
   document.querySelectorAll(".sidebar li").forEach(item => {
     item.addEventListener("click", () => {
       document.querySelectorAll(".sidebar li")
@@ -215,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* AUTH */
   loginBtn.addEventListener("click", () =>
     signInWithPopup(auth, provider)
   );

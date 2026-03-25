@@ -64,11 +64,22 @@ function generateSignature(credentialId) {
     .digest("hex");
 }
 
+function safeCompare(a, b) {
+  if (!a || !b) return false;
+
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+
+  if (bufA.length !== bufB.length) return false;
+
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 function verifySignature(credentialId, signature) {
   if (!signature) return true; // backward compatibility
 
   const expected = generateSignature(credentialId);
-  return signature === expected;
+  return safeCompare(signature, expected);
 }
 
 /* =====================================================
@@ -87,10 +98,12 @@ app.post("/public/verify-credential", async (req, res) => {
       });
     }
 
-    /* ---------- RATE LIMITING ---------- */
+    /* ---------- RATE LIMITING (FIXED IP) ---------- */
 
     const ip =
-      req.headers["x-forwarded-for"] ||
+      (req.headers["x-forwarded-for"] || "")
+        .split(",")[0]
+        .trim() ||
       req.ip ||
       "unknown";
 

@@ -82,24 +82,34 @@ function updateLeadMetrics() {
     }
   });
 
-  // Safe DOM updates (only if present)
-  if (document.getElementById("mTotal"))
-    document.getElementById("mTotal").innerText = counts.total;
+  // Basic counts
+  set("mTotal", counts.total);
+  set("mEngaged", counts.Engaged);
+  set("mQualified", counts.Qualified);
+  set("mConverted", counts.Converted);
 
-  if (document.getElementById("mNew"))
-    document.getElementById("mNew").innerText = counts.New;
+  // 🔥 Revenue Intelligence Calculations
+  const conversionRate = counts.total > 0
+    ? ((counts.Converted / counts.total) * 100).toFixed(1)
+    : 0;
 
-  if (document.getElementById("mEngaged"))
-    document.getElementById("mEngaged").innerText = counts.Engaged;
+  const qualifiedConversionRate = counts.Qualified > 0
+    ? ((counts.Converted / counts.Qualified) * 100).toFixed(1)
+    : 0;
 
-  if (document.getElementById("mQualified"))
-    document.getElementById("mQualified").innerText = counts.Qualified;
+  const dropRate = counts.total > 0
+    ? ((counts.Dropped / counts.total) * 100).toFixed(1)
+    : 0;
 
-  if (document.getElementById("mConverted"))
-    document.getElementById("mConverted").innerText = counts.Converted;
+  set("mConvRate", conversionRate + "%");
+  set("mQualConvRate", qualifiedConversionRate + "%");
+  set("mDropRate", dropRate + "%");
+}
 
-  if (document.getElementById("mDropped"))
-    document.getElementById("mDropped").innerText = counts.Dropped;
+/* helper */
+function set(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.innerText = value;
 }
 
 function evaluateLead(l) {

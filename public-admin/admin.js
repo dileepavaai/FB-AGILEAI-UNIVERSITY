@@ -25,22 +25,19 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
-   🔐 ADMIN ACCESS CONTROL (UPGRADED - SAFE)
+   🔐 ADMIN ACCESS CONTROL
    ===================================================== */
-
-// 🔥 Role-ready structure (future-proof)
 const ADMIN_ACCESS = {
   "dileep@agileai.university": "super_admin",
   "operations@agileai.university": "admin"
 };
 
-// ✅ Helper (SAFE)
 function isAdmin(email) {
   return !!ADMIN_ACCESS[email];
 }
 
 /* =====================================================
-   FIREBASE CONFIG (UNCHANGED)
+   FIREBASE CONFIG
    ===================================================== */
 const firebaseConfig = {
   apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
@@ -57,14 +54,10 @@ const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 /* =====================================================
-   🔥 LEAD INTELLIGENCE MODULE (UNCHANGED)
+   🔥 LEAD INTELLIGENCE (FIRESTORE VERSION)
    ===================================================== */
 
-let leads = JSON.parse(localStorage.getItem("aa_leads")) || [];
-
-function saveLeads() {
-  localStorage.setItem("aa_leads", JSON.stringify(leads));
-}
+let leads = [];
 
 function evaluateLead(l) {
   if (l.score == 0) return true;
@@ -73,30 +66,32 @@ function evaluateLead(l) {
   return false;
 }
 
-window.addLead = function () {
+window.addLead = async function () {
   const name = document.getElementById("leadName")?.value;
   const role = document.getElementById("leadRole")?.value;
 
   if (!name) return;
 
-  leads.push({
+  await addDoc(collection(db, "leads"), {
     name,
     role,
     score: 3,
     status: "Warm",
     next: "",
     notes: "",
-    interactions: 1
+    interactions: 1,
+    created_by: auth.currentUser.email,
+    created_at: serverTimestamp()
   });
-
-  saveLeads();
-  window.renderLeads();
 };
 
-window.updateLead = function (i, field, value) {
-  leads[i][field] = field === "score" ? parseInt(value) : value;
-  leads[i].interactions++;
-  saveLeads();
+window.updateLead = async function (id, field, value) {
+  const ref = doc(db, "leads", id);
+
+  await updateDoc(ref, {
+    [field]: field === "score" ? parseInt(value) : value,
+    interactions: (leads.find(l => l.id === id)?.interactions || 0) + 1
+  });
 };
 
 window.renderLeads = function () {
@@ -106,7 +101,7 @@ window.renderLeads = function () {
   const filter = document.getElementById("leadFilter")?.value || "all";
   body.innerHTML = "";
 
-  leads.forEach((l, i) => {
+  leads.forEach((l) => {
 
     const blocked = evaluateLead(l);
 
@@ -124,7 +119,7 @@ window.renderLeads = function () {
         <td>${l.role}</td>
 
         <td>
-          <select onchange="updateLead(${i}, 'score', this.value)">
+          <select onchange="updateLead('${l.id}', 'score', this.value)">
             ${[5,4,3,2,1,0].map(s =>
               `<option ${l.score==s?"selected":""}>${s}</option>`
             ).join("")}
@@ -132,15 +127,15 @@ window.renderLeads = function () {
         </td>
 
         <td>
-          <select onchange="updateLead(${i}, 'status', this.value)">
+          <select onchange="updateLead('${l.id}', 'status', this.value)">
             ${["Active","Warm","Neutral","Guarded","Closed"].map(s =>
               `<option ${l.status===s?"selected":""}>${s}</option>`
             ).join("")}
           </select>
         </td>
 
-        <td><input value="${l.next}" onchange="updateLead(${i}, 'next', this.value)"></td>
-        <td><input value="${l.notes}" onchange="updateLead(${i}, 'notes', this.value)"></td>
+        <td><input value="${l.next || ""}" onchange="updateLead('${l.id}', 'next', this.value)"></td>
+        <td><input value="${l.notes || ""}" onchange="updateLead('${l.id}', 'notes', this.value)"></td>
 
         <td style="color:red;font-weight:bold;">
           ${blocked ? "DO NOT ENGAGE" : ""}
@@ -148,8 +143,6 @@ window.renderLeads = function () {
       </tr>
     `;
   });
-
-  saveLeads();
 };
 
 /* =====================================================
@@ -179,10 +172,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let verificationUnsubscribe = null;
   let activeVerificationDocId = null;
   let activeVerificationStatus = null;
+  let leadsUnsubscribe = null;
 
-  /* =====================================================
-     NAVIGATION
-     ===================================================== */
+  /* NAVIGATION */
   document.querySelectorAll(".sidebar li").forEach(item => {
     item.addEventListener("click", () => {
       document.querySelectorAll(".sidebar li")
@@ -194,21 +186,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const viewId = item.dataset.view;
       document.getElementById(viewId).classList.remove("hidden");
 
-      if (viewId === "verifications") {
-        startVerificationListener();
-      }
+      if (viewId === "verifications") startVerificationListener();
 
       if (viewId === "leads") {
-        setTimeout(() => {
-          window.renderLeads();
-        }, 50);
+        startLeadsListener();
       }
     });
   });
 
-  /* =====================================================
-     AUTH (UPDATED SAFELY)
-     ===================================================== */
+  /* 🔥 LEADS REALTIME */
+  function startLeadsListener() {
+    if (leadsUnsubscribe) return;
+
+    const q = query(collection(db, "leads"), orderBy("created_at", "desc"));
+
+    leadsUnsubscribe = onSnapshot(q, (snap) => {
+      leads = [];
+      snap.forEach(docSnap => {
+        leads.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      window.renderLeads();
+    });
+  }
+
+  /* AUTH */
   loginBtn.addEventListener("click", () =>
     signInWithPopup(auth, provider)
   );
@@ -222,7 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;
 
-    // 🔥 UPDATED LOGIC (SAFE)
     if (!isAdmin(user.email)) {
       alert("❌ Admin access only");
       await signOut(auth);
@@ -244,9 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await loadBatchesForCSV();
   });
 
-  /* =====================================================
-     REST OF FILE (UNCHANGED)
-     ===================================================== */
+  /* === REST UNCHANGED (Batch + Verification) === */
 
   batchForm.addEventListener("submit", async (e) => {
     e.preventDefault();

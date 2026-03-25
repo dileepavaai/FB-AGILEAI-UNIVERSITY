@@ -180,6 +180,7 @@ window.updateLead = async function (id, field, value) {
 /* =========================
    📊 RENDER LEADS (ENHANCED CRM SAFE)
    ========================= */
+   
 window.renderLeads = function () {
   const body = document.getElementById("leadBody");
   if (!body) return;
@@ -193,101 +194,90 @@ window.renderLeads = function () {
 
     const blocked = evaluateLead(l);
 
-    // Existing filters (UNCHANGED)
     if (filter === "priority" && l.score < 4) return;
     if (filter === "blocked" && !blocked) return;
     if (userFilter === "mine" && l.created_by !== currentUserEmail) return;
 
     const stage = getSafeStage(l);
 
-    // Background logic (UNCHANGED)
-    const bg =
-      blocked ? "#ffcccc" :
-      stage === "Converted" ? "#d4edda" :
-      stage === "Qualified" ? "#e6ffe6" :
-      stage === "Engaged" ? "#fff9e6" :
-      stage === "Dropped" ? "#f8d7da" :
-      "#ffffff";
+    // 🔥 Row color
+    const rowClass =
+      stage === "Converted" ? "row-converted" :
+      stage === "Qualified" ? "row-qualified" :
+      stage === "Engaged" ? "row-engaged" :
+      stage === "Dropped" ? "row-dropped" :
+      "";
+
+    // 🔥 Score color
+    const scoreClass =
+      l.score >= 4 ? "score-high" :
+      l.score >= 2 ? "score-mid" :
+      "score-low";
 
     body.innerHTML += `
-      <tr style="background:${bg}">
-
-        <!-- NAME + LINKEDIN -->
+      <tr class="${rowClass}">
         <td>
           ${l.name || ""}
-          ${l.linkedin_url ? `<br><a href="${l.linkedin_url}" target="_blank" style="font-size:11px;">View Profile</a>` : ""}
+          <br>
+          ${l.linkedin_url ? `<a href="${l.linkedin_url}" target="_blank">Profile</a>` : ""}
         </td>
 
-        <!-- ROLE -->
-        <td>${l.role || ""}</td>
-
-        <!-- COMPANY + LOCATION -->
         <td>
-          ${l.company || ""}
-          ${l.location ? `<br><small>${l.location}</small>` : ""}
+          <input class="inline-input" value="${l.role || ""}"
+          onchange="updateLead('${l.id}', 'role', this.value)">
         </td>
 
-        <!-- SOURCE -->
+        <td>
+          <input class="inline-input" value="${l.company || ""}"
+          onchange="updateLead('${l.id}', 'company', this.value)">
+          <br>
+          <small>${l.location || ""}</small>
+        </td>
+
         <td>
           ${l.source || ""}
-          ${l.source_detail ? `<br><small>${l.source_detail}</small>` : ""}
+          <br>
+          <small>${l.source_detail || ""}</small>
         </td>
 
-        <!-- OWNER -->
-        <td style="font-size:12px;color:#555;">
-          ${l.owner || l.created_by || "-"}
-        </td>
+        <td>${l.owner || l.created_by || "-"}</td>
 
-        <!-- CONTACT -->
-        <td style="font-size:12px;">
-          ${l.email || ""}
-          ${l.phone ? `<br>${l.phone}` : ""}
-        </td>
-
-        <!-- SCORE -->
         <td>
-          <select onchange="updateLead('${l.id}', 'score', this.value)">
-            ${[5,4,3,2,1,0].map(s =>
-              `<option ${l.score==s?"selected":""}>${s}</option>`
-            ).join("")}
-          </select>
+          <input class="inline-input" value="${l.email || ""}"
+          onchange="updateLead('${l.id}', 'email', this.value)">
+          <br>
+          <input class="inline-input" value="${l.phone || ""}"
+          onchange="updateLead('${l.id}', 'phone', this.value)">
         </td>
 
-        <!-- STATUS -->
         <td>
-          <select onchange="updateLead('${l.id}', 'status', this.value)">
-            ${["Active","Warm","Neutral","Guarded","Closed"].map(s =>
-              `<option ${l.status===s?"selected":""}>${s}</option>`
-            ).join("")}
-          </select>
+          <input class="inline-input ${scoreClass}" value="${l.score}"
+          onchange="updateLead('${l.id}', 'score', this.value)">
         </td>
 
-        <!-- STAGE -->
         <td>
-          <select onchange="updateLead('${l.id}', 'stage', this.value)">
-            ${["New","Engaged","Qualified","Converted","Dropped"].map(s =>
-              `<option ${stage===s?"selected":""}>${s}</option>`
-            ).join("")}
-          </select>
+          <input class="inline-input" value="${l.status || ""}"
+          onchange="updateLead('${l.id}', 'status', this.value)">
         </td>
 
-        <!-- NEXT -->
         <td>
-          <input value="${l.next || ""}" 
-                 onchange="updateLead('${l.id}', 'next', this.value)">
+          <input class="inline-input" value="${stage}"
+          onchange="updateLead('${l.id}', 'stage', this.value)">
         </td>
 
-        <!-- NOTES -->
         <td>
-          <input value="${l.notes || ""}" 
-                 onchange="updateLead('${l.id}', 'notes', this.value)">
+          <input class="inline-input" value="${l.next || ""}"
+          onchange="updateLead('${l.id}', 'next', this.value)">
         </td>
 
-        <!-- FLAG -->
+        <td>
+          <input class="inline-input" value="${l.notes || ""}"
+          onchange="updateLead('${l.id}', 'notes', this.value)">
+        </td>
+
         <td style="color:red;font-weight:bold;">
           ${blocked ? "DO NOT ENGAGE" : ""}
         </td>
-
       </tr>
     `;
   });

@@ -377,3 +377,71 @@ button:hover {
 .lead-grid {
   margin-bottom: 14px;
 }
+
+/* ===============================
+   🔥 CRM PRO UPGRADE
+   =============================== */
+
+/* Sticky header */
+table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #f0f0f0;
+}
+
+/* Sticky first column */
+table th:first-child,
+table td:first-child {
+  position: sticky;
+  left: 0;
+  background: #ffffff;
+  z-index: 2;
+  min-width: 180px;
+}
+
+/* Inline editing */
+.inline-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 4px;
+}
+
+.inline-input:focus {
+  outline: 2px solid #2563eb;
+  background: #ffffff;
+}
+
+/* Score highlight */
+.score-high {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.score-mid {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.score-low {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* Row intelligence */
+.row-converted {
+  background: #ecfdf5;
+}
+
+.row-qualified {
+  background: #f0fdf4;
+}
+
+.row-engaged {
+  background: #fffbeb;
+}
+
+.row-dropped {
+  background: #fef2f2;
+}

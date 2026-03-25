@@ -27,13 +27,16 @@ firebase-debug.log*
 firebase-debug.*.log*
 
 ############################
-# Firebase Cache
+# Firebase Cache (STRICTLY LOCAL)
 ############################
 .firebase/
+.firebase/**
 
 ############################
-# Firebase Config (KEEP if shared)
+# Firebase Config (KEEP THIS TRACKED)
 ############################
+# IMPORTANT: Do NOT ignore this file
+# It maps your project and prevents deployment errors
 # .firebaserc
 
 ############################

@@ -282,3 +282,85 @@ tbody tr:hover {
 .row-qualified { background: #f0fdf4; }
 .row-engaged { background: #fffbeb; }
 .row-dropped { background: #fef2f2; }
+
+/* ===============================
+   VISUAL REFINEMENT LAYER (SAFE)
+   =============================== */
+
+/* Section spacing */
+.content h2 {
+  margin-bottom: 16px;
+}
+
+/* Form container feel */
+.lead-grid {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Inputs */
+input, select {
+  background: #fafafa;
+  transition: all 0.15s ease;
+}
+
+input:hover,
+select:hover {
+  border-color: #9ca3af;
+}
+
+input:focus,
+select:focus {
+  background: #ffffff;
+}
+
+/* Buttons spacing */
+button {
+  margin-top: 6px;
+}
+
+/* Toolbar alignment */
+.toolbar {
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+/* Legend spacing */
+.lead-legend {
+  margin: 12px 0;
+}
+
+/* Table container refinement */
+.table-wrapper {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Table header stronger */
+th {
+  font-size: 13px;
+  letter-spacing: 0.3px;
+}
+
+/* Name column emphasis */
+td:first-child {
+  font-weight: 500;
+}
+
+/* Profile link */
+td a {
+  font-size: 13px;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+td a:hover {
+  text-decoration: underline;
+}
+
+/* Smooth scroll feel */
+.table-wrapper {
+  scroll-behavior: smooth;
+}

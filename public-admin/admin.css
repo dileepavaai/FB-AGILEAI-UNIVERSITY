@@ -130,19 +130,63 @@ select:focus {
 }
 
 /* ===============================
-   GRID
+   🔥 LEAD GRID (FINAL FIXED)
    =============================== */
 .lead-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 14px;
-  background: #fff;
-  padding: 16px;
-  border-radius: 10px;
+
+  /* 🔥 KEY FIX */
+  column-gap: 24px;   /* horizontal breathing space */
+  row-gap: 16px;      /* vertical spacing */
+
+  margin-bottom: 20px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
 }
 
+/* Ensure equal sizing */
+.lead-grid > * {
+  width: 100%;
+}
+
+/* Field styling */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Inputs refinement */
+.lead-grid input,
+.lead-grid select {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  transition: all 0.2s ease;
+}
+
+.lead-grid input:hover,
+.lead-grid select:hover {
+  border-color: #9ca3af;
+  background: #ffffff;
+}
+
+.lead-grid input:focus,
+.lead-grid select:focus {
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Mobile */
 @media (max-width: 768px) {
   .lead-grid {
     grid-template-columns: 1fr;
@@ -184,10 +228,8 @@ select:focus {
 }
 
 /* ===============================
-   TABLE (🔥 FINAL FIXED VERSION)
+   TABLE
    =============================== */
-
-/* 🔥 FIX: REMOVE HEIGHT LIMIT */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -196,14 +238,12 @@ select:focus {
   border-radius: 10px;
 }
 
-/* Table expands naturally */
 table {
   width: 100%;
   min-width: 1200px;
   border-collapse: collapse;
 }
 
-/* Cells */
 th,
 td {
   border: 1px solid #ddd;
@@ -211,13 +251,11 @@ td {
   white-space: nowrap;
 }
 
-/* Header */
 th {
   background: #f0f0f0;
   font-weight: 600;
 }
 
-/* Zebra + hover */
 tbody tr:nth-child(even) {
   background: #fafafa;
 }
@@ -266,9 +304,8 @@ tbody tr:hover {
 .row-dropped { background: #fef2f2; }
 
 /* ===============================
-   CRM TOOLBAR FIX (ONE ROW)
+   TOOLBAR ROW
    =============================== */
-
 .toolbar-row {
   display: flex;
   flex-wrap: wrap;
@@ -278,24 +315,20 @@ tbody tr:hover {
   margin-bottom: 12px;
 }
 
-/* Search takes flexible space */
 .toolbar-row .search {
   flex: 1;
   min-width: 220px;
 }
 
-/* Buttons stay compact */
 .toolbar-row button {
   white-space: nowrap;
 }
 
-/* Dropdowns inline */
 .toolbar-row select {
   width: auto;
   min-width: 140px;
 }
 
-/* Quick filters (High / Converted / My Leads) */
 .quick-filters {
   display: flex;
   gap: 8px;
@@ -309,67 +342,4 @@ tbody tr:hover {
 
 .quick-filters button:hover {
   background: #e5e7eb;
-}
-
-/* ===============================
-   FORM PROFESSIONAL UPGRADE
-   =============================== */
-
-/* Improve grid spacing */
-.lead-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px; /* increased spacing */
-  margin-bottom: 20px;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-}
-
-/* Each field block */
-.lead-grid input,
-.lead-grid select {
-  background: #f9fafb;
-  border: 1px solid #d1d5db;
-  transition: all 0.2s ease;
-}
-
-/* Hover feel */
-.lead-grid input:hover,
-.lead-grid select:hover {
-  border-color: #9ca3af;
-  background: #ffffff;
-}
-
-/* Focus feel */
-.lead-grid input:focus,
-.lead-grid select:focus {
-  border-color: #2563eb;
-  background: #ffffff;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-}
-
-/* Fix alignment consistency */
-.lead-grid > * {
-  width: 100%;
-}
-
-/* Mobile improvement */
-@media (max-width: 768px) {
-  .lead-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.field label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #555;
 }

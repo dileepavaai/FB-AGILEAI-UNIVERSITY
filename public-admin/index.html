@@ -40,10 +40,12 @@
 
   <main class="content">
 
+    <!-- LOGIN -->
     <section id="loginView">
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
+    <!-- DASHBOARD -->
     <section id="dashboard" class="view hidden">
       <h2>Dashboard</h2>
       <p>Admin access granted.</p>
@@ -68,27 +70,68 @@
     <section id="leads" class="view hidden">
       <h2>Lead Intelligence</h2>
 
+      <!-- ✅ FIXED PROFESSIONAL GRID -->
       <div class="lead-grid">
-        <input id="leadName" placeholder="Name (e.g. John Mathew)" autofocus>
-        <input id="leadRole" placeholder="Role (e.g. Scrum Master)">
-        <input id="leadCompany" placeholder="Company">
-        <input id="leadLocation" placeholder="Location">
-        <input id="leadEmail" placeholder="Email">
-        <input id="leadPhone" placeholder="Phone">
-        <input id="leadLinkedIn" placeholder="LinkedIn URL (optional)">
 
-        <select id="leadSource">
-          <option value="Manual">Manual</option>
-          <option value="LinkedIn">LinkedIn</option>
-          <option value="Alumni">Alumni</option>
-          <option value="Referral">Referral</option>
-          <option value="Ads">Ads</option>
-        </select>
+        <div class="field">
+          <label>Name</label>
+          <input id="leadName" placeholder="e.g. John Mathew" autofocus>
+        </div>
 
-        <input id="leadExperience" placeholder="Experience (years)">
-        <input id="leadSourceDetail" placeholder="Source Detail (campaign/ref)">
+        <div class="field">
+          <label>Role</label>
+          <input id="leadRole" placeholder="e.g. Scrum Master">
+        </div>
+
+        <div class="field">
+          <label>Company</label>
+          <input id="leadCompany">
+        </div>
+
+        <div class="field">
+          <label>Location</label>
+          <input id="leadLocation">
+        </div>
+
+        <div class="field">
+          <label>Email</label>
+          <input id="leadEmail">
+        </div>
+
+        <div class="field">
+          <label>Phone</label>
+          <input id="leadPhone">
+        </div>
+
+        <div class="field">
+          <label>LinkedIn</label>
+          <input id="leadLinkedIn" placeholder="optional">
+        </div>
+
+        <div class="field">
+          <label>Source</label>
+          <select id="leadSource">
+            <option value="Manual">Manual</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Alumni">Alumni</option>
+            <option value="Referral">Referral</option>
+            <option value="Ads">Ads</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Experience</label>
+          <input id="leadExperience" placeholder="years">
+        </div>
+
+        <div class="field">
+          <label>Source Detail</label>
+          <input id="leadSourceDetail" placeholder="campaign/ref">
+        </div>
+
       </div>
 
+      <!-- SEARCH + QUICK FILTER -->
       <div class="search-bar">
         <input placeholder="Search leads..." oninput="applyLeadSearch(this.value)">
         <div class="chip" onclick="quickFilter('high')">High</div>
@@ -96,6 +139,7 @@
         <div class="chip" onclick="quickFilter('mine')">My Leads</div>
       </div>
 
+      <!-- TOOLBAR -->
       <div class="toolbar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
         <button id="addLeadBtn" onclick="addLead()">Add</button>
         <button onclick="clearLeadForm()">Clear</button>
@@ -112,14 +156,16 @@
         </select>
       </div>
 
+      <!-- LEGEND -->
       <div class="lead-legend">
         <span class="score-high">● High (4–5)</span>
         <span class="score-mid">● Medium (2–3)</span>
         <span class="score-low">● Low (0–1)</span>
       </div>
 
+      <!-- TABLE -->
       <div class="table-wrapper">
-        <table border="1">
+        <table>
           <thead>
             <tr>
               <th style="min-width:200px;">Name</th>

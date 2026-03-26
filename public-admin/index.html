@@ -117,11 +117,22 @@
     .score-mid { color: #b45309; font-weight: 600; }
     .score-low { color: #b91c1c; font-weight: 600; }
 
+    /* 🔥 SAFE UI FIX START */
     .table-wrapper {
       max-height: 60vh;
       overflow-y: auto;
+      overflow-x: auto; /* ✅ horizontal scroll */
       border: 1px solid #ddd;
     }
+
+    table {
+      min-width: 1200px; /* ✅ prevent squeeze */
+    }
+
+    th, td {
+      white-space: nowrap; /* ✅ no text cut */
+    }
+    /* 🔥 SAFE UI FIX END */
 
     .toolbar select {
       width: 160px;
@@ -247,7 +258,6 @@
         <div class="chip" onclick="quickFilter('mine')">My Leads</div>
       </div>
 
-      <!-- 🔥 UPDATED TOOLBAR -->
       <div class="toolbar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
         <button id="addLeadBtn" onclick="addLead()">Add</button>
         <button onclick="clearLeadForm()">Clear</button>
@@ -274,12 +284,12 @@
         <table width="100%" border="1">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Company</th>
-              <th>Source</th>
-              <th>Owner</th>
-              <th>Contact</th>
+              <th style="min-width:200px;">Name</th>
+              <th style="min-width:160px;">Role</th>
+              <th style="min-width:180px;">Company</th>
+              <th style="min-width:140px;">Source</th>
+              <th style="min-width:220px;">Owner</th>
+              <th style="min-width:260px;">Contact</th>
               <th>Score</th>
               <th>Status</th>
               <th>Stage</th>

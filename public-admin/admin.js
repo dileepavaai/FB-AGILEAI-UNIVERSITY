@@ -294,11 +294,13 @@ window.renderLeads = function () {
         <td>${l.owner || l.created_by || "-"}</td>
 
         <td>
-          <input class="inline-input" value="${l.email || ""}"
-          onchange="updateLead('${l.id}', 'email', this.value)">
-          <br>
-          <input class="inline-input" value="${l.phone || ""}"
-          onchange="updateLead('${l.id}', 'phone', this.value)">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <input class="inline-input" style="min-width:220px;" value="${l.email || ""}"
+            onchange="updateLead('${l.id}', 'email', this.value)">
+            
+            <input class="inline-input" style="min-width:160px;" value="${l.phone || ""}"
+            onchange="updateLead('${l.id}', 'phone', this.value)">
+          </div>
         </td>
 
         <td>

@@ -364,3 +364,44 @@ td a:hover {
 .table-wrapper {
   scroll-behavior: smooth;
 }
+
+/* ===============================
+   FINAL LAYOUT FIX
+   =============================== */
+
+/* Force content to use full width */
+.content {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Fix inner section width */
+.content-section {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Fix form stretching */
+.lead-grid {
+  width: 100%;
+}
+
+/* Prevent inputs from overflowing */
+.lead-grid input,
+.lead-grid select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Table should expand naturally */
+.table-wrapper {
+  width: 100%;
+}
+
+/* IMPORTANT: allow table to grow */
+table {
+  width: 100%;
+  min-width: 1200px; /* 🔥 key for CRM feel */
+}

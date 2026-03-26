@@ -129,15 +129,20 @@ function getSafeStage(l) {
 /* =========================
    ➕ ADD LEAD (UPDATED SAFE)
    ========================= */
+let isSaving = false;
 window.addLead = async function () {
-  const get = id => document.getElementById(id)?.value || "";
+
+  if (isSaving) return;   // 🔥 prevent double submit
+  isSaving = true;
+
+  const get = id => document.getElementById(id)?.value.trim() || "";
 
   const name = get("leadName");
 
-  // ✅ Validation (safe)
   if (!name) {
     alert("Name is required");
     document.getElementById("leadName")?.focus();
+    isSaving = false;  // 🔥 IMPORTANT reset
     return;
   }
 
@@ -153,16 +158,16 @@ window.addLead = async function () {
       linkedin_url: get("leadLinkedIn"),
 
       // Contact
-      email: get("leadEmail"),
-      phone: get("leadPhone"),
+      email: get("leadEmail") || null,
+      phone: get("leadPhone") || null,
 
       // Source
-      source: get("leadSource"),
+      source: get("leadSource") || "LinkedIn",
       source_detail: get("leadSourceDetail"),
 
       // Ownership
-      owner: auth.currentUser?.email || "system_unidentified",
-      created_by: auth.currentUser?.email || "system_unidentified",
+      owner: currentUserEmail || "system_unidentified",
+      created_by: currentUserEmail || "system_unidentified",
 
       // Existing system
       score: 3,
@@ -171,19 +176,19 @@ window.addLead = async function () {
       next: "",
       notes: "",
       interactions: 1,
-      created_at: new Date(),
-      created_at_server: serverTimestamp()
+      created_at: serverTimestamp()
     });
 
     // ✅ SUCCESS → Clear + focus
     clearLeadForm();
 
-  } catch (error) {
-    console.error("Error adding lead:", error);
-    alert("Something went wrong. Lead not saved.");
+    } catch (error) {
+    alert("Lead save failed. Check console.");
+    console.error("🔥 FULL ERROR:", error);
+  } finally {
+    isSaving = false;  // 🔥 ALWAYS reset
   }
 };
-
 
 /* =========================
    🧹 CLEAR FORM (GLOBAL FIX)
@@ -207,7 +212,7 @@ window.clearLeadForm = function () {
   });
 
   const source = document.getElementById("leadSource");
-  if (source) source.value = "Manual";
+  if (source) source.value = "LinkedIn";
 
   // 🎯 Focus back to Name
   const nameField = document.getElementById("leadName");
@@ -224,7 +229,7 @@ window.updateLead = async function (id, field, value) {
   const ref = doc(db, "leads", id);
 
   await updateDoc(ref, {
-    [field]: field === "score" ? parseInt(value) : value,
+    [field]: field === "score" ? (parseInt(value) || 0) : value,
     interactions: (leads.find(l => l.id === id)?.interactions || 0) + 1
   });
 };
@@ -287,7 +292,7 @@ window.renderLeads = function () {
         </td>
 
         <td>
-          ${l.source || ""}
+          ${l.source || "LinkedIn"}
           <br>
           <small>${l.source_detail || ""}</small>
         </td>
@@ -377,7 +382,7 @@ function updateBusinessIntelligence() {
 
   leads.forEach(l => {
 
-    const src = l.source || "Manual";
+    const src = l.source || "LinkedIn";
     sourceMap[src] = (sourceMap[src] || 0) + 1;
 
     const owner = l.created_by || "Unknown";
@@ -457,21 +462,47 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function startLeadsListener() {
-    if (leadsUnsubscribe) return;
-
-    const q = query(collection(db, "leads"), orderBy("created_at", "desc"));
-
-    leadsUnsubscribe = onSnapshot(q, (snap) => {
-      leads = [];
-      snap.forEach(docSnap => {
-        leads.push({ id: docSnap.id, ...docSnap.data() });
-      });
-
-      updateLeadMetrics();
-      updateBusinessIntelligence(); // 🔥 ADD THIS
-      window.renderLeads();
-    });
+  if (leadsUnsubscribe) {
+  leadsUnsubscribe();   // 🔥 clean previous listener
   }
+  const q = query(collection(db, "leads"), orderBy("created_at", "desc"));
+
+  leadsUnsubscribe = onSnapshot(q, (snap) => {
+
+    leads = [];
+
+    snap.forEach(docSnap => {
+      leads.push({ id: docSnap.id, ...docSnap.data() });
+    });
+
+    updateLeadMetrics();
+    updateBusinessIntelligence();
+    window.renderLeads();
+
+  }, async (error) => {
+
+    console.error("🔥 Firestore read error:", error);
+
+    // ✅ FALLBACK → manual fetch (this is the real fix)
+    const snap = await getDocs(collection(db, "leads"));
+
+    leads = [];
+    snap.forEach(docSnap => {
+      leads.push({ id: docSnap.id, ...docSnap.data() });
+    });
+
+    // client-side sort
+    leads.sort((a, b) => {
+      const t1 = a.created_at?.seconds || 0;
+      const t2 = b.created_at?.seconds || 0;
+      return t2 - t1;
+    });
+
+    updateLeadMetrics();
+    updateBusinessIntelligence();
+    window.renderLeads();
+  });
+}
 
   loginBtn.addEventListener("click", async () => {
 
@@ -726,21 +757,26 @@ function setupLeadSpeedUX() {
 
   // 🔥 ENTER → NEXT FIELD
   inputs.forEach((el, index) => {
-    el.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
 
-        if (index < inputs.length - 1) {
-          inputs[index + 1].focus();
-        } else {
-          // LAST FIELD → AUTO ADD
-          if (typeof addLead === "function") {
-            addLead();
-          }
+  // 🔥 PREVENT DUPLICATE BINDING
+  if (el.dataset.bound) return;
+  el.dataset.bound = "true";
+
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      } else {
+        if (typeof addLead === "function") {
+          addLead();
         }
       }
-    });
+    }
   });
+
+});
 
   // 🔥 AUTOFOCUS FIX (important)
   setTimeout(() => {

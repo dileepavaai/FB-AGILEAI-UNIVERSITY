@@ -171,7 +171,8 @@ window.addLead = async function () {
       next: "",
       notes: "",
       interactions: 1,
-      created_at: serverTimestamp()
+      created_at: new Date(),
+      created_at_server: serverTimestamp()
     });
 
     // ✅ SUCCESS → Clear + focus

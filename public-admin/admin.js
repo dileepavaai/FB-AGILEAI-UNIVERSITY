@@ -29,7 +29,7 @@ import {
    ===================================================== */
 const ADMIN_ACCESS = {
   "dileep@agileai.university": "super_admin",
-  "operations@agileai.university": "admin"
+  "laau.aaiu@gmail.com": "admin"
 };
 
 function isAdmin(email) {
@@ -180,7 +180,7 @@ window.updateLead = async function (id, field, value) {
 /* =========================
    📊 RENDER LEADS (ENHANCED CRM SAFE)
    ========================= */
-   
+
 window.renderLeads = function () {
   const body = document.getElementById("leadBody");
   if (!body) return;

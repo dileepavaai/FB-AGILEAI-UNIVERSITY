@@ -154,8 +154,8 @@ window.addLead = async function () {
     source_detail: get("leadSourceDetail"),
 
     // Ownership
-    owner: auth.currentUser.email,
-    created_by: auth.currentUser.email,
+    owner: auth.currentUser?.email || "system_unidentified",
+    created_by: auth.currentUser?.email || "system_unidentified",
 
     // Existing system
     score: 3,
@@ -422,9 +422,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  loginBtn.addEventListener("click", () =>
-    signInWithPopup(auth, provider)
-  );
+  loginBtn.addEventListener("click", async () => {
+
+  // 🔥 Force clean session (critical fix)
+  await signOut(auth);
+
+  // 🔥 Create provider fresh each time
+  const provider = new GoogleAuthProvider();
+
+  // 🔥 Force account selection
+  provider.setCustomParameters({
+    prompt: "select_account"
+  });
+
+  // 🔥 Login
+  await signInWithPopup(auth, provider);
+});
 
   logoutBtn.addEventListener("click", async () => {
     stopVerificationListener();

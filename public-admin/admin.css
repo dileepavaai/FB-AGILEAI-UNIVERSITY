@@ -379,7 +379,7 @@ button:hover {
 }
 
 /* ===============================
-   🔥 CRM PRO UPGRADE
+   🔥 CRM PRO UPGRADE (CLEAN FIX)
    =============================== */
 
 /* Sticky header */
@@ -399,6 +399,28 @@ table td:first-child {
   z-index: 2;
   min-width: 180px;
 }
+
+/* Table wrapper (clean unified version) */
+.table-wrapper {
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: auto;   /* ✅ horizontal scroll */
+  border: 1px solid #ddd;
+}
+
+/* Prevent text cutting */
+th, td {
+  white-space: nowrap;
+  padding: 8px;
+}
+
+/* ✅ Smart column sizing */
+th:nth-child(1) { min-width: 180px; } /* Name */
+th:nth-child(2) { min-width: 140px; } /* Role */
+th:nth-child(3) { min-width: 160px; } /* Company */
+th:nth-child(4) { min-width: 120px; } /* Source */
+th:nth-child(5) { min-width: 200px; } /* Owner */
+th:nth-child(6) { min-width: 240px; } /* Contact */
 
 /* Inline editing */
 .inline-input {
@@ -430,28 +452,7 @@ table td:first-child {
 }
 
 /* Row intelligence */
-.row-converted {
-  background: #ecfdf5;
-}
-
-.row-qualified {
-  background: #f0fdf4;
-}
-
-.row-engaged {
-  background: #fffbeb;
-}
-
-.row-dropped {
-  background: #fef2f2;
-}
-
-.table-wrapper {
-  overflow-x: auto;   /* 🔥 ADD THIS */
-  overflow-y: auto;
-}
-
-td, th {
-  white-space: nowrap;   /* 🔥 prevents cutting */
-}
-
+.row-converted { background: #ecfdf5; }
+.row-qualified { background: #f0fdf4; }
+.row-engaged { background: #fffbeb; }
+.row-dropped { background: #fef2f2; }

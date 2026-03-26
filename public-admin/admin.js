@@ -127,49 +127,67 @@ function getSafeStage(l) {
 }
 
 /* =========================
-   ➕ ADD LEAD
+   ➕ ADD LEAD (UPDATED SAFE)
    ========================= */
 window.addLead = async function () {
   const get = id => document.getElementById(id)?.value || "";
 
   const name = get("leadName");
-  if (!name) return;
 
-  await addDoc(collection(db, "leads"), {
-    name,
-    role: get("leadRole"),
-    company: get("leadCompany"),
-    location: get("leadLocation"),
-    experience: get("leadExperience"),
-    linkedin_url: get("leadLinkedIn"),
+  // ✅ Validation (safe)
+  if (!name) {
+    alert("Name is required");
+    document.getElementById("leadName")?.focus();
+    return;
+  }
 
-    email: get("leadEmail"),
-    phone: get("leadPhone"),
+  try {
+    await addDoc(collection(db, "leads"), {
 
-    source: get("leadSource"),
-    source_detail: get("leadSourceDetail"),
+      // Identity
+      name,
+      role: get("leadRole"),
+      company: get("leadCompany"),
+      location: get("leadLocation"),
+      experience: get("leadExperience"),
+      linkedin_url: get("leadLinkedIn"),
 
-    owner: auth.currentUser?.email || "system_unidentified",
-    created_by: auth.currentUser?.email || "system_unidentified",
+      // Contact
+      email: get("leadEmail"),
+      phone: get("leadPhone"),
 
-    score: 3,
-    status: "Warm",
-    stage: "New",
-    next: "",
-    notes: "",
-    interactions: 1,
-    created_at: serverTimestamp()
-  });
+      // Source
+      source: get("leadSource"),
+      source_detail: get("leadSourceDetail"),
 
-  // ✅ ADD THIS LINE (very important)
-  clearLeadForm();
+      // Ownership
+      owner: auth.currentUser?.email || "system_unidentified",
+      created_by: auth.currentUser?.email || "system_unidentified",
+
+      // Existing system
+      score: 3,
+      status: "Warm",
+      stage: "New",
+      next: "",
+      notes: "",
+      interactions: 1,
+      created_at: serverTimestamp()
+    });
+
+    // ✅ SUCCESS → Clear + focus
+    clearLeadForm();
+
+  } catch (error) {
+    console.error("Error adding lead:", error);
+    alert("Something went wrong. Lead not saved.");
+  }
 };
 
 
 /* =========================
-   🧹 CLEAR FORM (ADD HERE)
+   🧹 CLEAR FORM (GLOBAL FIX)
    ========================= */
-function clearLeadForm() {
+window.clearLeadForm = function () {
   const fields = [
     "leadName",
     "leadRole",
@@ -192,8 +210,11 @@ function clearLeadForm() {
 
   // 🎯 Focus back to Name
   const nameField = document.getElementById("leadName");
-  if (nameField) nameField.focus();
-}
+  if (nameField) {
+    nameField.focus();
+    nameField.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+};
 
 /* =========================
    ✏️ UPDATE LEAD

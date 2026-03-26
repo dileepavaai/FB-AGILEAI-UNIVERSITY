@@ -318,3 +318,19 @@ tbody tr:hover {
 .row-qualified { background: #f0fdf4; }
 .row-engaged { background: #fffbeb; }
 .row-dropped { background: #fef2f2; }
+
+/* ===============================
+   FIX: TOOLBAR SELECT LAYOUT
+   =============================== */
+
+.toolbar select {
+  width: auto;         /* 🔥 override 100% */
+  min-width: 140px;    /* keeps it usable */
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}

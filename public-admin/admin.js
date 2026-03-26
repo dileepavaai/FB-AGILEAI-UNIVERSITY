@@ -33,7 +33,7 @@ const ADMIN_ACCESS = {
 };
 
 function isAdmin(email) {
-  return !!ADMIN_ACCESS[email];
+  return !!ADMIN_ACCESS[email?.trim().toLowerCase()];
 }
 
 /* =====================================================
@@ -52,6 +52,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({
+  prompt: "select_account"
+});
 
 /* =====================================================
    🔥 LEAD INTELLIGENCE (PIPELINE SAFE VERSION)
@@ -312,6 +315,53 @@ function enableFastEntry() {
     });
   });
 }
+
+function updateBusinessIntelligence() {
+
+  if (!leads || leads.length === 0) return;
+
+  let sourceMap = {};
+  let ownerMap = {};
+  let sourceConversion = {};
+
+  leads.forEach(l => {
+
+    const src = l.source || "Manual";
+    sourceMap[src] = (sourceMap[src] || 0) + 1;
+
+    const owner = l.created_by || "Unknown";
+    ownerMap[owner] = (ownerMap[owner] || 0) + (l.stage === "Converted" ? 1 : 0);
+
+    if (!sourceConversion[src]) {
+      sourceConversion[src] = { total: 0, converted: 0 };
+    }
+
+    sourceConversion[src].total++;
+    if (l.stage === "Converted") {
+      sourceConversion[src].converted++;
+    }
+
+  });
+
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.innerText = val;
+  };
+
+  set("biLinkedIn", sourceMap.LinkedIn || 0);
+  set("biAlumni", sourceMap.Alumni || 0);
+  set("biReferral", sourceMap.Referral || 0);
+
+  let topOwner = Object.entries(ownerMap).sort((a,b)=>b[1]-a[1])[0];
+  set("biTopOwner", topOwner ? topOwner[0] : "-");
+
+  let bestSource = Object.entries(sourceConversion)
+    .map(([k,v]) => [k, v.converted / v.total || 0])
+    .sort((a,b)=>b[1]-a[1])[0];
+
+  set("biBestSource", bestSource ? bestSource[0] : "-");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(enableFastEntry, 500);
 
@@ -366,7 +416,8 @@ document.addEventListener("DOMContentLoaded", () => {
         leads.push({ id: docSnap.id, ...docSnap.data() });
       });
 
-      updateLeadMetrics(); // ✅ NEW
+      updateLeadMetrics();
+      updateBusinessIntelligence(); // 🔥 ADD THIS
       window.renderLeads();
     });
   }
@@ -392,7 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentUserEmail = user.email;
 
-    const role = ADMIN_ACCESS[user.email];
+    const role = ADMIN_ACCESS[user.email?.trim().toLowerCase()];
 
     statusEl.innerText = `Welcome ${role === "super_admin" ? "Super Admin" : "Admin"}: ${user.email}`;
     loginBtn.style.display = "none";

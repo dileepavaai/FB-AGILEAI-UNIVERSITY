@@ -264,3 +264,49 @@ tbody tr:hover {
 .row-qualified { background: #f0fdf4; }
 .row-engaged { background: #fffbeb; }
 .row-dropped { background: #fef2f2; }
+
+/* ===============================
+   CRM TOOLBAR FIX (ONE ROW)
+   =============================== */
+
+.toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+/* Search takes flexible space */
+.toolbar-row .search {
+  flex: 1;
+  min-width: 220px;
+}
+
+/* Buttons stay compact */
+.toolbar-row button {
+  white-space: nowrap;
+}
+
+/* Dropdowns inline */
+.toolbar-row select {
+  width: auto;
+  min-width: 140px;
+}
+
+/* Quick filters (High / Converted / My Leads) */
+.quick-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.quick-filters button {
+  background: #f3f4f6;
+  color: #111827;
+  border: 1px solid #ddd;
+}
+
+.quick-filters button:hover {
+  background: #e5e7eb;
+}

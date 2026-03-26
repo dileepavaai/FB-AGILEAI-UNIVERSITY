@@ -132,7 +132,6 @@
       height: 36px;
     }
 
-    /* 🔥 NEW: search + chips */
     .search-bar {
       display: flex;
       gap: 10px;
@@ -196,7 +195,6 @@
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- DASHBOARD -->
     <section id="dashboard" class="view hidden">
       <h2>Dashboard</h2>
       <p>Admin access granted.</p>
@@ -242,7 +240,6 @@
         <input id="leadSourceDetail" placeholder="Source Detail (campaign/ref)">
       </div>
 
-      <!-- 🔍 SEARCH + FILTER CHIPS -->
       <div class="search-bar">
         <input placeholder="Search leads..." oninput="applyLeadSearch(this.value)">
         <div class="chip" onclick="quickFilter('high')">High</div>
@@ -250,9 +247,10 @@
         <div class="chip" onclick="quickFilter('mine')">My Leads</div>
       </div>
 
-      <!-- TOOLBAR -->
+      <!-- 🔥 UPDATED TOOLBAR -->
       <div class="toolbar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
-        <button onclick="addLead()">Add</button>
+        <button id="addLeadBtn" onclick="addLead()">Add</button>
+        <button onclick="clearLeadForm()">Clear</button>
 
         <select id="leadFilter" onchange="renderLeads()">
           <option value="all">All</option>

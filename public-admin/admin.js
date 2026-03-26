@@ -136,8 +136,6 @@ window.addLead = async function () {
   if (!name) return;
 
   await addDoc(collection(db, "leads"), {
-
-    // Identity
     name,
     role: get("leadRole"),
     company: get("leadCompany"),
@@ -145,19 +143,15 @@ window.addLead = async function () {
     experience: get("leadExperience"),
     linkedin_url: get("leadLinkedIn"),
 
-    // Contact
     email: get("leadEmail"),
     phone: get("leadPhone"),
 
-    // Source
     source: get("leadSource"),
     source_detail: get("leadSourceDetail"),
 
-    // Ownership
     owner: auth.currentUser?.email || "system_unidentified",
     created_by: auth.currentUser?.email || "system_unidentified",
 
-    // Existing system
     score: 3,
     status: "Warm",
     stage: "New",
@@ -166,7 +160,40 @@ window.addLead = async function () {
     interactions: 1,
     created_at: serverTimestamp()
   });
+
+  // ✅ ADD THIS LINE (very important)
+  clearLeadForm();
 };
+
+
+/* =========================
+   🧹 CLEAR FORM (ADD HERE)
+   ========================= */
+function clearLeadForm() {
+  const fields = [
+    "leadName",
+    "leadRole",
+    "leadCompany",
+    "leadLocation",
+    "leadEmail",
+    "leadPhone",
+    "leadLinkedIn",
+    "leadExperience",
+    "leadSourceDetail"
+  ];
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+
+  const source = document.getElementById("leadSource");
+  if (source) source.value = "Manual";
+
+  // 🎯 Focus back to Name
+  const nameField = document.getElementById("leadName");
+  if (nameField) nameField.focus();
+}
 
 /* =========================
    ✏️ UPDATE LEAD

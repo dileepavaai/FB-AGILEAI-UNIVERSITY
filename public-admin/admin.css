@@ -72,7 +72,6 @@ body {
   padding: 14px 16px;
   cursor: pointer;
   border-bottom: 1px solid #eee;
-  transition: background 0.15s ease;
 }
 
 .sidebar li:hover {
@@ -90,6 +89,8 @@ body {
 .content {
   flex: 1;
   padding: 24px;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .hidden {
@@ -107,15 +108,10 @@ button {
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.15s ease, transform 0.05s ease;
 }
 
 button:hover {
   background: #1d4ed8;
-}
-
-button:active {
-  transform: scale(0.97);
 }
 
 input,
@@ -124,7 +120,6 @@ select {
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 14px;
 }
 
 input:focus,
@@ -142,6 +137,10 @@ select:focus {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 14px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
 }
 
 @media (max-width: 768px) {
@@ -167,17 +166,6 @@ select:focus {
   border: 1px solid #e5e7eb;
 }
 
-.metric-card h3 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.metric-card p {
-  margin: 6px 0 0;
-  font-size: 12px;
-  color: #6b7280;
-}
-
 /* ===============================
    SEARCH + TOOLBAR
    =============================== */
@@ -188,11 +176,6 @@ select:focus {
   margin-bottom: 10px;
 }
 
-.search-bar input {
-  flex: 1;
-  min-width: 200px;
-}
-
 .toolbar {
   display: flex;
   gap: 10px;
@@ -200,27 +183,27 @@ select:focus {
   align-items: center;
 }
 
-.toolbar select {
-  width: auto;
-  min-width: 140px;
-}
-
 /* ===============================
-   TABLE (STABLE VERSION)
+   TABLE (🔥 FINAL FIXED VERSION)
    =============================== */
+
+/* 🔥 FIX: REMOVE HEIGHT LIMIT */
 .table-wrapper {
-  max-height: 60vh;
-  overflow-y: auto;
+  width: 100%;
   overflow-x: auto;
   border: 1px solid #ddd;
   background: #fff;
+  border-radius: 10px;
 }
 
+/* Table expands naturally */
 table {
+  width: 100%;
+  min-width: 1200px;
   border-collapse: collapse;
-  min-width: max-content;
 }
 
+/* Cells */
 th,
 td {
   border: 1px solid #ddd;
@@ -228,14 +211,13 @@ td {
   white-space: nowrap;
 }
 
+/* Header */
 th {
   background: #f0f0f0;
   font-weight: 600;
-  position: sticky;
-  top: 0;
-  z-index: 2;
 }
 
+/* Zebra + hover */
 tbody tr:nth-child(even) {
   background: #fafafa;
 }
@@ -255,7 +237,7 @@ tbody tr:hover {
 
 .inline-input:focus {
   outline: 2px solid #2563eb;
-  background: #ffffff;
+  background: #fff;
 }
 
 /* ===============================
@@ -271,7 +253,7 @@ tbody tr:hover {
 .lead-legend {
   display: flex;
   gap: 16px;
-  margin-top: 10px;
+  margin: 12px 0;
   font-size: 13px;
 }
 
@@ -282,126 +264,3 @@ tbody tr:hover {
 .row-qualified { background: #f0fdf4; }
 .row-engaged { background: #fffbeb; }
 .row-dropped { background: #fef2f2; }
-
-/* ===============================
-   VISUAL REFINEMENT LAYER (SAFE)
-   =============================== */
-
-/* Section spacing */
-.content h2 {
-  margin-bottom: 16px;
-}
-
-/* Form container feel */
-.lead-grid {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-}
-
-/* Inputs */
-input, select {
-  background: #fafafa;
-  transition: all 0.15s ease;
-}
-
-input:hover,
-select:hover {
-  border-color: #9ca3af;
-}
-
-input:focus,
-select:focus {
-  background: #ffffff;
-}
-
-/* Buttons spacing */
-button {
-  margin-top: 6px;
-}
-
-/* Toolbar alignment */
-.toolbar {
-  margin-top: 10px;
-  margin-bottom: 12px;
-}
-
-/* Legend spacing */
-.lead-legend {
-  margin: 12px 0;
-}
-
-/* Table container refinement */
-.table-wrapper {
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-/* Table header stronger */
-th {
-  font-size: 13px;
-  letter-spacing: 0.3px;
-}
-
-/* Name column emphasis */
-td:first-child {
-  font-weight: 500;
-}
-
-/* Profile link */
-td a {
-  font-size: 13px;
-  color: #2563eb;
-  text-decoration: none;
-}
-
-td a:hover {
-  text-decoration: underline;
-}
-
-/* Smooth scroll feel */
-.table-wrapper {
-  scroll-behavior: smooth;
-}
-
-/* ===============================
-   FINAL LAYOUT FIX
-   =============================== */
-
-/* Force content to use full width */
-.content {
-  flex: 1;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-/* Fix inner section width */
-.content-section {
-  width: 100%;
-  max-width: 100%;
-}
-
-/* Fix form stretching */
-.lead-grid {
-  width: 100%;
-}
-
-/* Prevent inputs from overflowing */
-.lead-grid input,
-.lead-grid select {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Table should expand naturally */
-.table-wrapper {
-  width: 100%;
-}
-
-/* IMPORTANT: allow table to grow */
-table {
-  width: 100%;
-  min-width: 1200px; /* 🔥 key for CRM feel */
-}

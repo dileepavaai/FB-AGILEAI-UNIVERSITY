@@ -165,12 +165,6 @@ select:focus {
   border-radius: 10px;
   text-align: center;
   border: 1px solid #e5e7eb;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
 }
 
 .metric-card h3 {
@@ -197,7 +191,6 @@ select:focus {
 .search-bar input {
   flex: 1;
   min-width: 200px;
-  padding: 8px;
 }
 
 .toolbar {
@@ -208,28 +201,13 @@ select:focus {
 }
 
 .toolbar select {
-  height: 36px;
-}
-
-.chip {
-  border: 1px solid #ccc;
-  background: #fff;
-  padding: 6px 10px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background 0.15s ease;
-}
-
-.chip:hover {
-  background: #f3f4f6;
+  width: auto;
+  min-width: 140px;
 }
 
 /* ===============================
-   TABLE (🔥 STABLE VERSION)
+   TABLE (STABLE VERSION)
    =============================== */
-
-/* Wrapper */
 .table-wrapper {
   max-height: 60vh;
   overflow-y: auto;
@@ -238,23 +216,18 @@ select:focus {
   background: #fff;
 }
 
-/* Table */
 table {
   border-collapse: collapse;
   min-width: max-content;
-  width: auto;
 }
 
-/* Cells */
 th,
 td {
   border: 1px solid #ddd;
   padding: 10px;
   white-space: nowrap;
-  font-size: 14px;
 }
 
-/* Header */
 th {
   background: #f0f0f0;
   font-weight: 600;
@@ -263,12 +236,10 @@ th {
   z-index: 2;
 }
 
-/* Zebra */
 tbody tr:nth-child(even) {
   background: #fafafa;
 }
 
-/* Hover */
 tbody tr:hover {
   background: #f1f5f9;
 }
@@ -280,7 +251,6 @@ tbody tr:hover {
   width: 100%;
   border: none;
   background: transparent;
-  font-size: 14px;
 }
 
 .inline-input:focus {
@@ -305,12 +275,6 @@ tbody tr:hover {
   font-size: 13px;
 }
 
-.lead-legend span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 /* ===============================
    ROW STATES
    =============================== */
@@ -318,19 +282,3 @@ tbody tr:hover {
 .row-qualified { background: #f0fdf4; }
 .row-engaged { background: #fffbeb; }
 .row-dropped { background: #fef2f2; }
-
-/* ===============================
-   FIX: TOOLBAR SELECT LAYOUT
-   =============================== */
-
-.toolbar select {
-  width: auto;         /* 🔥 override 100% */
-  min-width: 140px;    /* keeps it usable */
-}
-
-.toolbar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}

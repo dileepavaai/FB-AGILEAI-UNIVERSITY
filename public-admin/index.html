@@ -5,7 +5,6 @@
   <title>Admin – Agile AI University</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- ✅ SINGLE SOURCE OF STYLING -->
   <link rel="stylesheet" href="/admin.css" />
 </head>
 
@@ -25,15 +24,16 @@
 
 <div class="layout">
 
+  <!-- ✅ SIDEBAR (LEAD FIRST) -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
-      <li data-view="dashboard" class="active">Dashboard</li>
+      <li data-view="leads" class="active">Lead Intelligence</li>
+      <li data-view="dashboard">Dashboard</li>
       <li data-view="batches">Batch Management</li>
       <li data-view="credentials">Credential Issuance</li>
       <li data-view="csv">CSV Import</li>
       <li data-view="verifications">Verification Requests</li>
       <li data-view="logs">Audit Logs</li>
-      <li data-view="leads">Lead Intelligence</li>
       <li data-view="reconciliation">Reconciliation</li>
     </ul>
   </nav>
@@ -45,7 +45,7 @@
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- DASHBOARD -->
+    <!-- ❌ DASHBOARD (NOT DEFAULT NOW) -->
     <section id="dashboard" class="view hidden">
       <h2>Dashboard</h2>
       <p>Admin access granted.</p>
@@ -66,11 +66,10 @@
       </div>
     </section>
 
-    <!-- LEADS -->
-    <section id="leads" class="view hidden">
+    <!-- ✅ LEADS (DEFAULT VIEW) -->
+    <section id="leads" class="view">
       <h2>Lead Intelligence</h2>
 
-      <!-- ✅ FIXED PROFESSIONAL GRID -->
       <div class="lead-grid">
 
         <div class="field">
@@ -131,7 +130,6 @@
 
       </div>
 
-      <!-- SEARCH + QUICK FILTER -->
       <div class="search-bar">
         <input placeholder="Search leads..." oninput="applyLeadSearch(this.value)">
         <div class="chip" onclick="quickFilter('high')">High</div>
@@ -139,7 +137,6 @@
         <div class="chip" onclick="quickFilter('mine')">My Leads</div>
       </div>
 
-      <!-- TOOLBAR -->
       <div class="toolbar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
         <button id="addLeadBtn" onclick="addLead()">Add</button>
         <button onclick="clearLeadForm()">Clear</button>
@@ -156,14 +153,12 @@
         </select>
       </div>
 
-      <!-- LEGEND -->
       <div class="lead-legend">
         <span class="score-high">● High (4–5)</span>
         <span class="score-mid">● Medium (2–3)</span>
         <span class="score-low">● Low (0–1)</span>
       </div>
 
-      <!-- TABLE -->
       <div class="table-wrapper">
         <table>
           <thead>

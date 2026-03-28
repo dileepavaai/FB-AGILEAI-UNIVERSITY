@@ -1,9 +1,10 @@
 /* =====================================================
-   🔷 LEAD INTELLIGENCE MODULE (ISOLATED)
-   Depends ONLY on: core.js (db, auth, login)
+   🔷 LEAD INTELLIGENCE MODULE (CLEAN)
+   Depends ONLY on: core.js (db, auth)
+   Auth handled at PAGE LEVEL
    ===================================================== */
 
-import { db, auth, login } from "./core.js";
+import { db, auth } from "./core.js";
 import {
   collection,
   addDoc,
@@ -115,8 +116,8 @@ window.addLead = async function () {
       source: get("leadSource") || "LinkedIn",
       source_detail: get("leadSourceDetail"),
 
-      owner: currentUserEmail || "system",
-      created_by: currentUserEmail || "system",
+      owner: auth.currentUser?.email || "system",
+      created_by: auth.currentUser?.email || "system",
 
       score: 3,
       status: "Warm",
@@ -183,7 +184,7 @@ window.renderLeads = function () {
 
   leads
     .filter(l => {
-      if (userFilter === "mine" && l.created_by !== currentUserEmail) return false;
+      if (userFilter === "mine" && l.created_by !== auth.currentUser?.email) return false;
       if (filter === "priority" && l.score < 4) return false;
       if (filter === "blocked" && !evaluateLead(l)) return false;
 
@@ -251,38 +252,21 @@ window.quickFilter = function (type) {
 function startListener() {
   if (unsubscribe) unsubscribe();
 
-  console.log("🔥 Starting Firestore listener...");
-
   const q = query(collection(db, "leads"), orderBy("created_at", "desc"));
 
   unsubscribe = onSnapshot(q, (snap) => {
-    console.log("🔥 Snapshot received:", snap.size);
-
     leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
     updateLeadMetrics();
     renderLeads();
   }, (err) => {
-    console.error("🔥 Firestore error:", err);
+    console.error("Firestore error:", err);
   });
 }
 
 /* =====================================================
-   🔷 INIT (FIXED AUTH FLOW)
+   🔷 INIT (CALLED AFTER AUTH)
    ===================================================== */
-auth.onAuthStateChanged(async (user) => {
-
-  console.log("🔐 Auth state:", user);
-
-  if (!user) {
-    console.log("🚀 No user → triggering login...");
-    await login();
-    return;
-  }
-
-  console.log("✅ Logged in as:", user.email);
-
-  currentUserEmail = user.email;
-
+document.addEventListener("DOMContentLoaded", () => {
+  currentUserEmail = auth.currentUser?.email || null;
   startListener();
 });

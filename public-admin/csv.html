@@ -10,7 +10,7 @@
 
 <body>
 
-<!-- 🔷 HEADER -->
+<!-- 🔷 HEADER (CENTRALIZED) -->
 <div id="headerContainer"></div>
 
 <div class="layout">
@@ -28,14 +28,14 @@
 
   <main class="content">
 
-    <!-- 🔐 LOGIN -->
+    <!-- 🔐 LOGIN VIEW -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- 🔷 APP -->
+    <!-- 🔷 APP VIEW -->
     <section id="appView" class="hidden">
 
       <h2>CSV Import</h2>
@@ -95,98 +95,12 @@
 <!-- 🔷 FOOTER -->
 <div id="footerContainer"></div>
 
+<!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
 <script type="module">
-import { auth, login, logout, isAdmin } from "./assets/js/core.js";
-import { loadHeader } from "./assets/js/layout/header.js";
-import { loadFooter } from "./assets/js/layout/footer.js";
+import { initAdminApp } from "./assets/js/admin-app.js";
 
-import {
-  onAuthStateChanged,
-  signInWithRedirect,
-  GoogleAuthProvider,
-  getRedirectResult
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-/* ============================================
-   🔷 LOAD LAYOUT
-   ============================================ */
-loadHeader();
-loadFooter();
-
-/* ============================================
-   🔥 INIT AFTER HEADER LOAD
-   ============================================ */
-setTimeout(() => {
-
-  const statusEl = document.getElementById("status");
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loginView = document.getElementById("loginView");
-  const appView = document.getElementById("appView");
-  const nav = document.getElementById("adminNav");
-  const warning = document.getElementById("adminWarning");
-
-  /* 🔥 ACTIVE SIDEBAR */
-  const currentPage = window.location.pathname.split("/").pop();
-  document.querySelectorAll(".sidebar a").forEach(link => {
-    if (link.getAttribute("href") === currentPage) {
-      link.classList.add("active");
-    }
-  });
-
-  /* 🔐 LOGIN */
-  loginBtn.addEventListener("click", async () => {
-    try {
-      await login();
-    } catch (e) {
-      const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
-    }
-  });
-
-  /* 🔓 LOGOUT */
-  logoutBtn.addEventListener("click", async () => {
-    await logout();
-    window.location.reload();
-  });
-
-  /* 🔁 REDIRECT RESULT */
-  getRedirectResult(auth).catch(console.error);
-
-  /* 🔐 AUTH STATE */
-  onAuthStateChanged(auth, async (user) => {
-
-    if (!user) {
-      statusEl.innerText = "Please sign in.";
-      loginView.style.display = "block";
-      appView.style.display = "none";
-      nav.style.display = "none";
-      logoutBtn.style.display = "none";
-      return;
-    }
-
-    if (!isAdmin(user.email)) {
-      statusEl.innerText = "Access denied.";
-      alert("Not authorized.");
-      await logout();
-      return;
-    }
-
-    // ✅ AUTHORIZED
-    statusEl.innerText = user.email;
-    logoutBtn.style.display = "inline-block";
-    nav.style.display = "block";
-    warning.classList.remove("hidden");
-
-    loginView.style.display = "none";
-    appView.style.display = "block";
-
-    // 🔥 LOAD MODULE ONLY AFTER AUTH
-    import("./assets/js/csv.js");
-
-  });
-
-}, 50);
+/* 🔥 ONE LINE CONTROLS EVERYTHING */
+initAdminApp("./assets/js/csv.js");
 </script>
 
 </body>

@@ -1,25 +1,10 @@
-/* =========================================================
-   AGILE AI UNIVERSITY — ADMIN REFINEMENT LAYER
-   File: refinement.css
-   Version: v1.1 (STABLE · GOVERNANCE LOCKED)
-   Date: 29 Mar 2026
+/* =========================
+   LEAD INTELLIGENCE – FINAL PREMIUM LOCKED (3-COLUMN UPGRADE)
+========================= */
 
-   PURPOSE:
-   - Additive visual refinement layer
-   - NO overrides of core system (site.css / admin.css)
-   - SAFE for production (solopreneur model)
-
-   RULES:
-   - Add, do not modify base system styles
-   - Keep layout + behavior intact
-   - All enhancements must be reversible
-
-========================================================= */
-
-
-/* =========================================================
-   1. GLOBAL
-========================================================= */
+/* =========================
+   GLOBAL
+========================= */
 
 .lead-form * {
   box-sizing: border-box;
@@ -30,10 +15,9 @@ body {
   color: #111827;
 }
 
-
-/* =========================================================
-   2. CONTAINER
-========================================================= */
+/* =========================
+   CONTAINER
+========================= */
 
 .content {
   max-width: 1200px;
@@ -41,10 +25,9 @@ body {
   padding: 0 16px;
 }
 
-
-/* =========================================================
-   3. METRICS (LEAD INTELLIGENCE)
-========================================================= */
+/* =========================
+   METRICS
+========================= */
 
 .metrics-row {
   display: grid;
@@ -69,10 +52,9 @@ body {
   margin-top: 4px;
 }
 
-
-/* =========================================================
-   4. CARD
-========================================================= */
+/* =========================
+   CARD
+========================= */
 
 .card {
   background: #ffffff;
@@ -82,10 +64,9 @@ body {
   box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
-
-/* =========================================================
-   5. FORM GRID
-========================================================= */
+/* =========================
+   FORM GRID
+========================= */
 
 .lead-form {
   display: grid;
@@ -93,10 +74,9 @@ body {
   gap: 18px;
 }
 
-
-/* =========================================================
-   6. FORM FIELDS
-========================================================= */
+/* =========================
+   FORM FIELD
+========================= */
 
 .form-field {
   display: flex;
@@ -137,10 +117,9 @@ body {
   grid-column: span 3;
 }
 
-
-/* =========================================================
-   7. BUTTONS
-========================================================= */
+/* =========================
+   BUTTONS
+========================= */
 
 .form-actions {
   grid-column: span 3;
@@ -155,6 +134,7 @@ body {
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .form-actions button:first-child {
@@ -163,42 +143,60 @@ body {
   border: none;
 }
 
+.form-actions button:first-child:hover {
+  background: #000000;
+}
+
 .form-actions button:last-child {
   background: #ffffff;
   color: #111827;
   border: 1px solid #d1d5db;
 }
 
+.form-actions button:last-child:hover {
+  background: #f9fafb;
+}
 
-/* =========================================================
-   8. FILTER BAR
-========================================================= */
+/* =========================
+   FILTER BAR
+========================= */
 
 .filter-bar {
   display: flex;
+  align-items: center;
   gap: 10px;
   margin: 24px 0 12px;
   padding: 10px 12px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
+
+  flex-wrap: nowrap;
   overflow-x: auto;
 }
 
 .filter-bar input {
   flex: 1;
   min-width: 240px;
+  max-width: 420px;
 }
 
+.filter-bar select {
+  width: auto;
+  min-width: 120px;
+  max-width: 150px;
+  flex-shrink: 0;
+}
 
-/* =========================================================
-   9. QUICK FILTERS
-========================================================= */
+/* =========================
+   QUICK FILTERS
+========================= */
 
 .quick-filters {
   display: flex;
   gap: 6px;
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 .quick-filters button {
@@ -206,19 +204,27 @@ body {
   border-radius: 16px;
   background: #f3f4f6;
   border: 1px solid #d1d5db;
+  color: #111827;
   font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.quick-filters button:hover {
+  background: #e5e7eb;
 }
 
 .quick-filters button.active {
   background: #111827;
   color: #ffffff;
+  border-color: #111827;
 }
 
-
-/* =========================================================
-   10. TABLE WRAPPER
-========================================================= */
+/* =========================
+   TABLE
+========================= */
 
 .table-wrapper {
   margin-top: 16px;
@@ -226,6 +232,7 @@ body {
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .table-wrapper table {
@@ -233,143 +240,403 @@ body {
   border-collapse: collapse;
 }
 
-.table-wrapper th,
-.table-wrapper td {
+.table-wrapper th {
+  background: #f9fafb;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.table-wrapper td,
+.table-wrapper th {
   padding: 10px 12px;
   border-bottom: 1px solid #f1f1f1;
 }
 
+/* =========================
+   🌐 ECOSYSTEM MAP (NEW)
+========================= */
 
-/* =========================================================
-   11. ADMIN DASHBOARD METRICS (HOMEPAGE)
-========================================================= */
+.ecosystem-map {
+  margin-top: 30px;
+}
+
+.ecosystem-flow {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.eco-node {
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--surface-muted, #fafafa);
+  min-width: 140px;
+}
+
+.eco-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.eco-sub {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.eco-arrow {
+  opacity: 0.5;
+  font-size: 16px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1024px) {
+
+  .lead-form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-field.full-width {
+    grid-column: span 1;
+  }
+
+  .metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-bar {
+    flex-wrap: wrap;
+  }
+
+  .quick-filters {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .ecosystem-flow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .eco-arrow {
+    display: none;
+  }
+
+  .eco-node {
+    width: 100%;
+  }
+}
+
+/* =========================
+   PILL SELECTOR
+========================= */
+
+.select-hidden {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pill-select {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.pill-option {
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 12px;
+  font-weight: 500;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.pill-option:hover {
+  background: #f3f4f6;
+}
+
+.pill-option.active {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+/* =========================
+   MISC
+========================= */
+
+.form-field.full-width input {
+  height: 40px;
+  font-size: 13px;
+}
+
+.error-text {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+   NEXT ACTION UI
+========================= */
+
+.next-action {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.next-action.urgent {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.next-action.normal {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.next-action.none {
+  color: #9ca3af;
+}
+
+/* =========================================
+   ADMIN DASHBOARD — SAFE ENHANCEMENTS
+   (Additive only — no overrides)
+========================================= */
+
+/* =========================
+   METRICS (Homepage only)
+========================= */
 
 .metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
+  margin-top: 10px;
 }
 
 .metrics > div {
-  background: #fafafa;
-  border: 1px solid #e5e7eb;
+  background: var(--surface-muted, #fafafa);
+  border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 8px;
-  padding: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #6b7280;
 }
 
+.metrics span {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 4px;
+}
 
-/* =========================================================
-   12. ADMIN TABLES
-========================================================= */
+/* =========================
+   ADMIN TABLES ONLY
+========================= */
 
 .content table {
+  border-collapse: collapse;
   width: 100%;
-  border: 1px solid #e5e7eb;
+  margin-top: 10px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.content table tr {
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.content table tr:last-child {
+  border-bottom: none;
+}
+
+.content table td {
+  padding: 10px 12px;
+  font-size: 13px;
 }
 
 .content table td:first-child {
   font-weight: 600;
+  width: 180px;
+  color: #374151;
 }
 
-
-/* =========================================================
-   13. SIDEBAR (MERGED & CLEAN)
-========================================================= */
-
-.sidebar {
-  padding-top: 10px;
-  position: sticky;
-  top: 70px;
-  height: calc(100vh - 70px);
-  overflow-y: auto;
+.content table tr:hover {
+  background: #f9fafb;
 }
 
-.sidebar ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.sidebar li a {
-  display: block;
-  padding: 10px 14px;
-  border-radius: 6px;
-  color: #111827;
+.content table a {
+  color: #2563eb;
   text-decoration: none;
 }
 
+.content table a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   SIDEBAR REFINEMENT — ADMIN (SAFE)
+========================================= */
+
+/* Sidebar container */
+.sidebar {
+  padding-top: 10px;
+}
+
+/* List reset */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Default links */
+.sidebar li a {
+  display: block;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #111827;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+/* Hover */
 .sidebar li a:hover {
   background: #f3f4f6;
 }
 
-.sidebar a.active {
+/* Active (Home etc.) */
+.sidebar li a.active {
   background: #e5e7eb;
   font-weight: 600;
 }
 
+/* =========================
+   SECTION LABELS (auto-detect)
+========================= */
 
-/* =========================================================
-   14. SIDEBAR LABELS (CLASS-BASED — FUTURE SAFE)
-========================================================= */
-
-.sidebar-section-label {
+/* "Ecosystem (Reference)" label */
+.sidebar li[style*="opacity:0.7"] {
   font-size: 11px;
   font-weight: 600;
-  color: #6b7280;
-  padding: 16px 14px 6px;
+  letter-spacing: 0.04em;
+  color: #6b7280 !important;
   text-transform: uppercase;
+  padding: 16px 14px 6px;
+  margin-top: 10px !important;
 }
 
-.sidebar-sub-label {
-  font-size: 11px;
-  color: #9ca3af;
-  padding: 4px 14px;
+/* "Entities" sub-label */
+.sidebar li[style*="font-size:12px"] {
+  font-size: 11px !important;
+  color: #9ca3af !important;
+  padding: 4px 14px 6px;
 }
 
+/* =========================
+   EXTERNAL LINKS
+========================= */
 
-/* =========================================================
-   15. EXTERNAL LINKS
-========================================================= */
+.sidebar a[target="_blank"] {
+  font-size: 13px;
+  color: #374151;
+}
 
+/* subtle arrow alignment */
 .sidebar a[target="_blank"]::after {
   content: " ↗";
   font-size: 11px;
   opacity: 0.6;
 }
 
+/* =========================
+   SPACING BETWEEN GROUPS
+========================= */
 
-/* =========================================================
-   16. STICKY HEADER
-========================================================= */
+.sidebar li + li {
+  margin-top: 2px;
+}
 
+/* =========================================
+   STICKY HEADER — ADMIN (GLOBAL SAFE)
+========================================= */
+
+/* Header container */
 #headerContainer {
   position: sticky;
   top: 0;
   z-index: 1000;
+}
+
+/* Ensure header content stacks correctly */
+#headerContainer > * {
+  position: relative;
+  z-index: 1001;
+}
+
+/* Optional: subtle shadow for depth */
+#headerContainer {
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-
-/* =========================================================
-   17. LAYOUT (MERGED)
-========================================================= */
+/* =========================================
+   CONTENT OFFSET (PREVENT OVERLAP)
+========================================= */
 
 .layout {
-  margin-top: 0;
+  margin-top: 0; /* safe default */
+}
+
+/* If overlap happens (rare), uncomment below */
+/*
+.layout {
+  padding-top: 80px;
+}
+*/
+
+/* =========================================
+   STICKY SIDEBAR — ADMIN (SAFE)
+========================================= */
+
+/* Sidebar container */
+.sidebar {
+  position: sticky;
+  top: 70px; /* adjust if header height differs */
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+}
+
+/* Prevent layout issues */
+.layout {
   align-items: flex-start;
 }
 
-
-/* =========================================================
-   18. RESPONSIVE
-========================================================= */
-
-@media (max-width: 1024px) {
-  .lead-form {
-    grid-template-columns: 1fr;
-  }
-
-  .metrics-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* Active sidebar item */
+.sidebar a.active {
+  background: #e5e7eb;
+  font-weight: 600;
+  color: #111827;
 }

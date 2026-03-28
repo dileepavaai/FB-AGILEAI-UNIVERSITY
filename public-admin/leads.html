@@ -1,124 +1,245 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Lead Intelligence</title>
+  <meta charset="utf-8" />
+  <title>Lead Intelligence – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 
 <body>
 
-  <h1>Lead Intelligence</h1>
+<!-- 🔷 HEADER -->
+<div id="headerContainer"></div>
 
-  <!-- 🔷 METRICS -->
-  <div class="metrics">
-    <div>Total: <span id="mTotal">0</span></div>
-    <div>Engaged: <span id="mEngaged">0</span></div>
-    <div>Qualified: <span id="mQualified">0</span></div>
-    <div>Converted: <span id="mConverted">0</span></div>
-    <div>Conv %: <span id="mConvRate">0%</span></div>
-    <div>Qual→Conv %: <span id="mQualConvRate">0%</span></div>
-    <div>Drop %: <span id="mDropRate">0%</span></div>
-  </div>
+<div class="layout">
 
-  <!-- 🔷 ADD LEAD FORM -->
-  <div class="card">
+  <!-- 🔷 SIDEBAR -->
+  <nav class="sidebar" id="adminNav" style="display:none;">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="leads.html">Lead Intelligence</a></li>
+      <li><a href="batch.html">Batch Management</a></li>
+      <li><a href="csv.html">CSV Import</a></li>
+      <li><a href="reconciliation.html">Reconciliation</a></li>
+    </ul>
+  </nav>
 
-    <div class="row">
-      <input id="leadName" placeholder="Name *" />
-      <input id="leadRole" placeholder="Role" />
-    </div>
+  <main class="content">
 
-    <div class="row">
-      <input id="leadCompany" placeholder="Company" />
-      <input id="leadLocation" placeholder="Location" />
-    </div>
+    <!-- 🔐 LOGIN -->
+    <section id="loginView">
+      <h2>Admin Access</h2>
+      <p>Please sign in with your authorized account.</p>
+      <button id="loginBtn">Sign in with Google</button>
+    </section>
 
-    <div class="row">
-      <input id="leadEmail" placeholder="Email" />
-      <input id="leadPhone" placeholder="Phone" />
-    </div>
+    <!-- 🔷 APP -->
+    <section id="appView" class="hidden">
 
-    <div class="row">
-      <input id="leadLinkedIn" placeholder="LinkedIn URL *" />
-      <select id="leadSource">
-        <option value="LinkedIn">LinkedIn</option>
-        <option value="Referral">Referral</option>
-        <option value="Alumni">Alumni</option>
-      </select>
-    </div>
+      <h2>Lead Intelligence</h2>
 
-    <div class="row">
-      <input id="leadExperience" placeholder="Experience (years)" />
-      <input id="leadSourceDetail" placeholder="Source Detail" />
-    </div>
+      <!-- 🔷 METRICS -->
+      <div class="metrics">
+        <div>Total: <span id="mTotal">0</span></div>
+        <div>Engaged: <span id="mEngaged">0</span></div>
+        <div>Qualified: <span id="mQualified">0</span></div>
+        <div>Converted: <span id="mConverted">0</span></div>
+        <div>Conv %: <span id="mConvRate">0%</span></div>
+        <div>Qual→Conv %: <span id="mQualConvRate">0%</span></div>
+        <div>Drop %: <span id="mDropRate">0%</span></div>
+      </div>
 
-    <div class="actions">
-      <button onclick="addLead()">Add</button>
-      <button onclick="clearLeadForm()">Clear</button>
-    </div>
+      <!-- 🔷 ADD LEAD -->
+      <div class="card">
 
-  </div>
+        <div class="row">
+          <input id="leadName" placeholder="Name *" />
+          <input id="leadRole" placeholder="Role" />
+        </div>
 
-  <!-- 🔷 SEARCH -->
-  <input
-    type="text"
-    placeholder="Search leads..."
-    oninput="applyLeadSearch(this.value)"
-  />
+        <div class="row">
+          <input id="leadCompany" placeholder="Company" />
+          <input id="leadLocation" placeholder="Location" />
+        </div>
 
-  <!-- 🔷 FILTERS -->
-  <div class="filters">
-    <button onclick="quickFilter('high')">High</button>
-    <button onclick="quickFilter('converted')">Converted</button>
-    <button onclick="quickFilter('mine')">My Leads</button>
+        <div class="row">
+          <input id="leadEmail" placeholder="Email" />
+          <input id="leadPhone" placeholder="Phone" />
+        </div>
 
-    <select id="leadFilter" onchange="renderLeads()">
-      <option value="all">All</option>
-      <option value="priority">Priority</option>
-      <option value="blocked">Blocked</option>
-    </select>
+        <div class="row">
+          <input id="leadLinkedIn" placeholder="LinkedIn URL *" />
+          <select id="leadSource">
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Referral">Referral</option>
+            <option value="Alumni">Alumni</option>
+          </select>
+        </div>
 
-    <select id="leadUserFilter" onchange="renderLeads()">
-      <option value="all">All Users</option>
-      <option value="mine">My Leads</option>
-    </select>
-  </div>
+        <div class="row">
+          <input id="leadExperience" placeholder="Experience (years)" />
+          <input id="leadSourceDetail" placeholder="Source Detail" />
+        </div>
 
-  <!-- 🔷 TABLE -->
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Role</th>
-        <th>Company</th>
-        <th>Source</th>
-        <th>Owner</th>
-        <th>Contact</th>
-        <th>Score</th>
-        <th>Status</th>
-        <th>Stage</th>
-        <th>Next</th>
-        <th>Notes</th>
-        <th>Flag</th>
-      </tr>
-    </thead>
+        <div class="actions">
+          <button onclick="addLead()">Add</button>
+          <button onclick="clearLeadForm()">Clear</button>
+        </div>
 
-    <tbody id="leadBody"></tbody>
-  </table>
+      </div>
 
-  <!-- 🔷 BUSINESS INTELLIGENCE -->
-  <div class="metrics">
-    <div>LinkedIn: <span id="biLinkedIn">0</span></div>
-    <div>Alumni: <span id="biAlumni">0</span></div>
-    <div>Referral: <span id="biReferral">0</span></div>
-    <div>Top Owner: <span id="biTopOwner">-</span></div>
-    <div>Best Source: <span id="biBestSource">-</span></div>
-  </div>
+      <!-- 🔷 SEARCH -->
+      <input
+        type="text"
+        placeholder="Search leads..."
+        oninput="applyLeadSearch(this.value)"
+      />
 
-  <!-- 🔷 SCRIPTS -->
-  <script type="module" src="js/core.js"></script>
-  <script type="module" src="js/leads.js"></script>
+      <!-- 🔷 FILTERS -->
+      <div class="filters">
+        <button onclick="quickFilter('high')">High</button>
+        <button onclick="quickFilter('converted')">Converted</button>
+        <button onclick="quickFilter('mine')">My Leads</button>
+
+        <select id="leadFilter" onchange="renderLeads()">
+          <option value="all">All</option>
+          <option value="priority">Priority</option>
+          <option value="blocked">Blocked</option>
+        </select>
+
+        <select id="leadUserFilter" onchange="renderLeads()">
+          <option value="all">All Users</option>
+          <option value="mine">My Leads</option>
+        </select>
+      </div>
+
+      <!-- 🔷 TABLE -->
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Company</th>
+            <th>Source</th>
+            <th>Owner</th>
+            <th>Contact</th>
+            <th>Score</th>
+            <th>Status</th>
+            <th>Stage</th>
+            <th>Next</th>
+            <th>Notes</th>
+            <th>Flag</th>
+          </tr>
+        </thead>
+        <tbody id="leadBody"></tbody>
+      </table>
+
+      <!-- 🔷 BI -->
+      <div class="metrics">
+        <div>LinkedIn: <span id="biLinkedIn">0</span></div>
+        <div>Alumni: <span id="biAlumni">0</span></div>
+        <div>Referral: <span id="biReferral">0</span></div>
+        <div>Top Owner: <span id="biTopOwner">-</span></div>
+        <div>Best Source: <span id="biBestSource">-</span></div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- 🔷 FOOTER -->
+<div id="footerContainer"></div>
+
+<script type="module">
+import { auth, login, logout, isAdmin } from "./assets/js/core.js";
+import { loadHeader } from "./assets/js/layout/header.js";
+import { loadFooter } from "./assets/js/layout/footer.js";
+
+import {
+  onAuthStateChanged,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  getRedirectResult
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* LOAD LAYOUT */
+loadHeader();
+loadFooter();
+
+/* INIT AFTER HEADER */
+setTimeout(() => {
+
+  const statusEl = document.getElementById("status");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginView = document.getElementById("loginView");
+  const appView = document.getElementById("appView");
+  const nav = document.getElementById("adminNav");
+  const warning = document.getElementById("adminWarning");
+
+  /* ACTIVE SIDEBAR */
+  const currentPage = window.location.pathname.split("/").pop();
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    if (link.getAttribute("href") === currentPage) {
+      link.classList.add("active");
+    }
+  });
+
+  /* LOGIN */
+  loginBtn.addEventListener("click", async () => {
+    try {
+      await login();
+    } catch (e) {
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider);
+    }
+  });
+
+  /* LOGOUT */
+  logoutBtn.addEventListener("click", async () => {
+    await logout();
+    window.location.reload();
+  });
+
+  getRedirectResult(auth).catch(console.error);
+
+  /* AUTH */
+  onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+      statusEl.innerText = "Please sign in.";
+      loginView.style.display = "block";
+      appView.style.display = "none";
+      nav.style.display = "none";
+      logoutBtn.style.display = "none";
+      return;
+    }
+
+    if (!isAdmin(user.email)) {
+      statusEl.innerText = "Access denied.";
+      alert("Not authorized.");
+      await logout();
+      return;
+    }
+
+    statusEl.innerText = user.email;
+    logoutBtn.style.display = "inline-block";
+    nav.style.display = "block";
+    warning.classList.remove("hidden");
+
+    loginView.style.display = "none";
+    appView.style.display = "block";
+
+    // 🔥 LOAD MODULE
+    import("./assets/js/leads.js");
+
+  });
+
+}, 50);
+</script>
 
 </body>
 </html>

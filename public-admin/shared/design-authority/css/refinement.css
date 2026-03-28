@@ -6,6 +6,27 @@
    GLOBAL
 ========================= */
 
+/* =========================================
+   🌗 THEME SYSTEM (FINAL)
+========================================= */
+
+:root {
+  --bg: #ffffff;
+  --text: #111827;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+}
+
+/* DARK MODE */
+:root[data-theme="dark"] {
+  --bg: #0f172a;
+  --text: #e5e7eb;
+  --card-bg: #1e293b;
+  --border: #334155;
+  --muted: #9ca3af;
+}
+
 .lead-form * {
   box-sizing: border-box;
 }
@@ -639,4 +660,121 @@ body {
   background: #e5e7eb;
   font-weight: 600;
   color: #111827;
+}
+
+/* =========================================
+   🌗 THEME ALIGNMENT PATCH (SAFE)
+   Non-destructive override layer
+========================================= */
+
+/* Global */
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Cards */
+.card {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+
+/* Metrics */
+.metrics-row span {
+  background: var(--card-bg);
+  border-color: var(--border);
+  color: var(--muted);
+}
+
+.metrics-row strong {
+  color: var(--text);
+}
+
+/* Forms */
+.form-field label {
+  color: var(--muted);
+}
+
+.form-field input,
+.form-field select {
+  background: var(--card-bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* Buttons (secondary) */
+.form-actions button:last-child {
+  background: var(--card-bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* Table wrapper */
+.table-wrapper {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+
+.table-wrapper th {
+  background: var(--card-bg);
+}
+
+.table-wrapper td {
+  color: var(--text);
+}
+
+/* Sidebar */
+.sidebar li a {
+  color: var(--text);
+}
+
+.sidebar li a:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+:root[data-theme="dark"] .sidebar li a:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+/* Filter bar */
+.filter-bar {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+
+/* Quick filters */
+.quick-filters button {
+  background: var(--card-bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.quick-filters button.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* Pills */
+.pill-option {
+  background: var(--card-bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.pill-option.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* Admin tables */
+.content table {
+  border-color: var(--border);
+}
+
+.content table tr:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+:root[data-theme="dark"] .content table tr:hover {
+  background: rgba(255,255,255,0.04);
 }

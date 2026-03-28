@@ -8,18 +8,16 @@
   <!-- BASE -->
   <link rel="stylesheet" href="assets/css/admin.css" />
 
-  <!-- 🔥 CRITICAL: REFINEMENT LAYER -->
+  <!-- 🔥 REFINEMENT -->
   <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
 </head>
 
 <body class="app-loading">
 
-<!-- 🔷 HEADER -->
 <div id="headerContainer"></div>
 
 <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html">Home</a></li>
@@ -32,19 +30,17 @@
 
   <main class="content">
 
-    <!-- 🔐 LOGIN VIEW -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- 🔷 APP VIEW -->
     <section id="appView" class="hidden">
 
       <h2>Lead Intelligence</h2>
 
-      <!-- 🔷 METRICS -->
+      <!-- METRICS -->
       <div class="metrics metrics-row">
         <span><strong id="mTotal">0</strong>Total</span>
         <span><strong id="mEngaged">0</strong>Engaged</span>
@@ -54,35 +50,67 @@
         <span><strong id="mQualConvRate">0%</strong>Qual→Conv %</span>
       </div>
 
-      <!-- 🔷 SPLIT LAYOUT -->
       <div class="split-layout">
 
-        <!-- 🔷 LEFT PANEL -->
+        <!-- LEFT -->
         <div class="left-panel">
 
-          <!-- ADD LEAD -->
           <div class="card">
             <form class="lead-form" onsubmit="return false;">
 
-              <input id="leadName" placeholder="Name *" />
-              <input id="leadRole" placeholder="Role" />
+              <div class="form-field">
+                <label>Name *</label>
+                <input id="leadName" placeholder="Enter name" />
+              </div>
 
-              <input id="leadCompany" placeholder="Company" />
-              <input id="leadLocation" placeholder="Location" />
+              <div class="form-field">
+                <label>Role</label>
+                <input id="leadRole" placeholder="Enter role" />
+              </div>
 
-              <input id="leadEmail" placeholder="Email" />
-              <input id="leadPhone" placeholder="Phone" />
+              <div class="form-field">
+                <label>Company</label>
+                <input id="leadCompany" placeholder="Enter company" />
+              </div>
 
-              <input id="leadLinkedIn" class="full-width" placeholder="LinkedIn URL *" />
+              <div class="form-field">
+                <label>Location</label>
+                <input id="leadLocation" placeholder="Enter location" />
+              </div>
 
-              <select id="leadSource">
-                <option value="LinkedIn">LinkedIn</option>
-                <option value="Referral">Referral</option>
-                <option value="Alumni">Alumni</option>
-              </select>
+              <div class="form-field">
+                <label>Email</label>
+                <input id="leadEmail" placeholder="Enter email" />
+              </div>
 
-              <input id="leadExperience" placeholder="Experience (years)" />
-              <input id="leadSourceDetail" class="full-width" placeholder="Source Detail" />
+              <div class="form-field">
+                <label>Phone</label>
+                <input id="leadPhone" placeholder="Enter phone" />
+              </div>
+
+              <div class="form-field full-width">
+                <label>LinkedIn URL *</label>
+                <input id="leadLinkedIn" placeholder="Paste LinkedIn profile URL" />
+              </div>
+
+              <div class="form-field">
+                <label>Source</label>
+                <select id="leadSource">
+                  <option value="LinkedIn">LinkedIn</option>
+                  <option value="Referral">Referral</option>
+                  <option value="Alumni">Alumni</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label>Experience (years)</label>
+                <input id="leadExperience" placeholder="Enter experience" />
+              </div>
+
+              <div class="form-field full-width">
+                <label>Source Detail</label>
+                <input id="leadSourceDetail" placeholder="Additional context" />
+              </div>
 
               <div class="form-actions">
                 <button type="button" onclick="addLead()">+ Add Lead</button>
@@ -92,13 +120,9 @@
             </form>
           </div>
 
-          <!-- FILTER BAR -->
+          <!-- FILTERS -->
           <div class="filter-bar">
-            <input
-              type="text"
-              placeholder="Search leads..."
-              oninput="applyLeadSearch(this.value)"
-            />
+            <input type="text" placeholder="Search leads..." oninput="applyLeadSearch(this.value)" />
 
             <select id="leadFilter" onchange="renderLeads()">
               <option value="all">All</option>
@@ -112,7 +136,6 @@
             </select>
           </div>
 
-          <!-- QUICK FILTERS -->
           <div class="quick-filters">
             <button onclick="quickFilter('high')">High</button>
             <button onclick="quickFilter('converted')">Converted</button>
@@ -144,7 +167,7 @@
 
         </div>
 
-        <!-- 🔷 RIGHT PANEL -->
+        <!-- RIGHT -->
         <div class="right-panel">
 
           <div class="card insights-card">
@@ -178,25 +201,6 @@
             </div>
           </div>
 
-          <div class="card insights-card">
-            <h3>Source Distribution</h3>
-
-            <div class="insight-item">
-              <span>LinkedIn</span>
-              <strong data-bind="biLinkedIn">0</strong>
-            </div>
-
-            <div class="insight-item">
-              <span>Alumni</span>
-              <strong data-bind="biAlumni">0</strong>
-            </div>
-
-            <div class="insight-item">
-              <span>Referral</span>
-              <strong data-bind="biReferral">0</strong>
-            </div>
-          </div>
-
         </div>
 
       </div>
@@ -206,16 +210,12 @@
   </main>
 </div>
 
-<!-- 🔷 FOOTER -->
 <div id="footerContainer"></div>
 
-<!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
-
 initAdminApp("./assets/js/leads.js");
 
-/* 🔥 SAFE SYNC FOR INSIGHTS PANEL */
 function syncInsights() {
   document.querySelectorAll("[data-bind]").forEach(el => {
     const id = el.getAttribute("data-bind");
@@ -223,8 +223,6 @@ function syncInsights() {
     if (source) el.textContent = source.textContent;
   });
 }
-
-/* Run sync after render */
 setInterval(syncInsights, 500);
 </script>
 

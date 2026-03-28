@@ -50,9 +50,9 @@
   </main>
 </div>
 
-<!-- 🔥 FIX: LOAD SCRIPT AFTER DOM + SAFE BINDING -->
+<!-- 🔥 FIXED SCRIPT -->
 <script type="module">
-import { auth, login, logout, isAdmin } from "./js/core.js";
+import { auth, login, logout, isAdmin } from "./assets/js/core.js"; // ✅ FIXED PATH
 import {
   onAuthStateChanged,
   signInWithRedirect,
@@ -72,12 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const nav = document.getElementById("adminNav");
   const warning = document.getElementById("adminWarning");
 
-  if (!loginBtn) {
-    console.error("❌ loginBtn not found");
-    return;
-  }
-
-  // 🔥 GUARANTEED CLICK HANDLER
   loginBtn.addEventListener("click", async () => {
     console.log("🔥 LOGIN BUTTON CLICKED");
 
@@ -96,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.reload();
   });
 
-  // 🔁 HANDLE REDIRECT RETURN
   getRedirectResult(auth)
     .then((result) => {
       if (result?.user) {
@@ -107,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("🔥 Redirect error:", error);
     });
 
-  // 🔐 AUTH STATE
   onAuthStateChanged(auth, (user) => {
     console.log("Auth state:", user);
 

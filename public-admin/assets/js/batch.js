@@ -1,3 +1,7 @@
+/* =====================================================
+   🔷 BATCH MODULE (CLEAN — NO AUTH DUPLICATION)
+   ===================================================== */
+
 import { auth, db } from "./core.js";
 
 import {
@@ -10,16 +14,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
-   🔐 AUTH GUARD
-   ===================================================== */
-
-auth.onAuthStateChanged((user) => {
-  if (!user) {
-    window.location.href = "index.html";
-  }
-});
-
-/* =====================================================
    🚀 INIT
    ===================================================== */
 
@@ -28,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const batchForm = document.getElementById("batchForm");
   const tableBody = document.querySelector("#batchTable tbody");
 
-  if (!batchForm) return;
+  if (!batchForm || !tableBody) return;
 
   /* =====================================================
      ➕ CREATE BATCH
@@ -46,17 +40,23 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    await addDoc(collection(db, "batches"), {
-      batch_name: name,
-      program_code: program,
-      status: status,
-      type: "equivalency",
-      created_at: serverTimestamp(),
-      created_by: auth.currentUser?.email || "unknown"
-    });
+    try {
+      await addDoc(collection(db, "batches"), {
+        batch_name: name,
+        program_code: program,
+        status: status,
+        type: "equivalency",
+        created_at: serverTimestamp(),
+        created_by: auth.currentUser?.email || "unknown"
+      });
 
-    batchForm.reset();
-    loadBatches();
+      batchForm.reset();
+      await loadBatches();
+
+    } catch (err) {
+      console.error("Batch creation failed:", err);
+      alert("Failed to create batch");
+    }
   });
 
   /* =====================================================
@@ -66,21 +66,29 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadBatches() {
     tableBody.innerHTML = "";
 
-    const snap = await getDocs(
-      query(collection(db, "batches"), orderBy("created_at", "desc"))
-    );
+    try {
+      const snap = await getDocs(
+        query(collection(db, "batches"), orderBy("created_at", "desc"))
+      );
 
-    snap.forEach(docSnap => {
-      const b = docSnap.data();
+      snap.forEach(docSnap => {
+        const b = docSnap.data();
 
-      tableBody.innerHTML += `
-        <tr>
-          <td>${b.batch_name}</td>
-          <td>${b.program_code}</td>
-          <td>${b.status}</td>
-        </tr>
-      `;
-    });
+        const row = `
+          <tr>
+            <td>${b.batch_name || "-"}</td>
+            <td>${b.program_code || "-"}</td>
+            <td>${b.status || "-"}</td>
+          </tr>
+        `;
+
+        tableBody.innerHTML += row;
+      });
+
+    } catch (err) {
+      console.error("Failed to load batches:", err);
+      tableBody.innerHTML = `<tr><td colspan="3">Error loading data</td></tr>`;
+    }
   }
 
   /* =====================================================

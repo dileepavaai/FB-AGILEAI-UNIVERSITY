@@ -112,7 +112,9 @@
 <!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
-initAdminApp("./assets/js/batch.js");
+
+/* ✅ FIXED: Pass only filename (NO path duplication) */
+initAdminApp("batch.js");
 </script>
 
 <!-- 🔗 NAVIGATION -->

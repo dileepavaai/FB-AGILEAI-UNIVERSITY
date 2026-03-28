@@ -1,9 +1,9 @@
 /* =====================================================
    🔷 LEAD INTELLIGENCE MODULE (ISOLATED)
-   Depends ONLY on: core.js (db, auth)
+   Depends ONLY on: core.js (db, auth, login)
    ===================================================== */
 
-import { db, auth } from "./core.js";
+import { db, auth, login } from "./core.js";
 import {
   collection,
   addDoc,
@@ -12,8 +12,7 @@ import {
   onSnapshot,
   serverTimestamp,
   doc,
-  updateDoc,
-  getDocs
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
@@ -185,7 +184,6 @@ window.renderLeads = function () {
   leads
     .filter(l => {
       if (userFilter === "mine" && l.created_by !== currentUserEmail) return false;
-
       if (filter === "priority" && l.score < 4) return false;
       if (filter === "blocked" && !evaluateLead(l)) return false;
 
@@ -197,7 +195,6 @@ window.renderLeads = function () {
       return true;
     })
     .forEach(l => {
-
       const stage = getSafeStage(l);
       const blocked = evaluateLead(l);
 
@@ -254,20 +251,38 @@ window.quickFilter = function (type) {
 function startListener() {
   if (unsubscribe) unsubscribe();
 
+  console.log("🔥 Starting Firestore listener...");
+
   const q = query(collection(db, "leads"), orderBy("created_at", "desc"));
 
   unsubscribe = onSnapshot(q, (snap) => {
+    console.log("🔥 Snapshot received:", snap.size);
+
     leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
     updateLeadMetrics();
     renderLeads();
+  }, (err) => {
+    console.error("🔥 Firestore error:", err);
   });
 }
 
 /* =====================================================
-   🔷 INIT
+   🔷 INIT (FIXED AUTH FLOW)
    ===================================================== */
-auth.onAuthStateChanged((user) => {
-  if (!user) return;
+auth.onAuthStateChanged(async (user) => {
+
+  console.log("🔐 Auth state:", user);
+
+  if (!user) {
+    console.log("🚀 No user → triggering login...");
+    await login();
+    return;
+  }
+
+  console.log("✅ Logged in as:", user.email);
+
   currentUserEmail = user.email;
+
   startListener();
 });

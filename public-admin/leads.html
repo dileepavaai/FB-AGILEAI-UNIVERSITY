@@ -176,7 +176,9 @@ import { initAdminApp } from "./assets/js/admin-app.js";
 initAdminApp("./assets/js/leads.js");
 </script>
 
-<!-- PILL SELECTOR -->
+<!-- =========================
+     UI: PILL SELECTOR
+========================= -->
 <script>
 document.querySelectorAll('.pill-select').forEach(container => {
   const targetId = container.getAttribute('data-target');
@@ -205,7 +207,9 @@ document.querySelectorAll('.pill-select').forEach(container => {
 });
 </script>
 
-<!-- ENTER NAVIGATION -->
+<!-- =========================
+     UX: ENTER NAVIGATION
+========================= -->
 <script>
 const inputs = Array.from(document.querySelectorAll('.lead-form input, .lead-form select'));
 
@@ -223,7 +227,9 @@ inputs.forEach((el, index) => {
 });
 </script>
 
-<!-- LINKEDIN URL AUTO -->
+<!-- =========================
+     LEVEL 1: LINKEDIN URL
+========================= -->
 <script>
 const linkedInInput = document.getElementById("leadLinkedIn");
 
@@ -247,7 +253,9 @@ linkedInInput.addEventListener("blur", () => {
 });
 </script>
 
-<!-- 🔥 LEVEL 2 PARSER -->
+<!-- =========================
+     LEVEL 2: TEXT PARSER
+========================= -->
 <script>
 document.getElementById("leadForm").addEventListener("paste", (e) => {
   const text = (e.clipboardData || window.clipboardData).getData("text");
@@ -280,6 +288,100 @@ document.getElementById("leadForm").addEventListener("paste", (e) => {
 
   if (!leadLocation.value) leadLocation.focus();
 });
+</script>
+
+<!-- =========================
+     LEVEL 3: BULK PARSER
+========================= -->
+<script>
+function splitProfiles(text) {
+  return text.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 20);
+}
+
+function parseProfile(block) {
+  const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+
+  let lead = { name: "", role: "", company: "", experience: "" };
+
+  if (lines[0]) lead.name = lines[0];
+
+  const roleLine = lines.find(l => l.toLowerCase().includes(" at "));
+  if (roleLine) {
+    const parts = roleLine.split(" at ");
+    lead.role = parts[0] || "";
+    lead.company = parts[1] || "";
+  }
+
+  const expLine = lines.find(l => l.toLowerCase().includes("year"));
+  if (expLine) {
+    const match = expLine.match(/\d+/);
+    if (match) lead.experience = match[0];
+  }
+
+  return lead;
+}
+
+document.getElementById("leadForm").addEventListener("paste", (e) => {
+  const text = (e.clipboardData || window.clipboardData).getData("text");
+  if (!text || text.length < 60) return;
+
+  const profiles = splitProfiles(text);
+  if (profiles.length <= 1) return;
+
+  e.preventDefault();
+
+  profiles.forEach(profile => {
+    const parsed = parseProfile(profile);
+    if (!parsed.name) return;
+
+    leadName.value = parsed.name;
+    leadRole.value = parsed.role;
+    leadCompany.value = parsed.company;
+    leadExperience.value = parsed.experience;
+    leadSource.value = "LinkedIn";
+
+    addLead();
+  });
+
+  clearLeadForm();
+  leadName.focus();
+});
+</script>
+
+<!-- =========================
+     VALIDATION
+========================= -->
+<script>
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone) {
+  const cleaned = phone.replace(/\D/g, "");
+  return cleaned.length >= 10 && cleaned.length <= 15;
+}
+
+const originalAddLead = window.addLead;
+
+window.addLead = function () {
+
+  const email = leadEmail.value.trim();
+  const phone = leadPhone.value.trim();
+
+  if (email && !isValidEmail(email)) {
+    alert("Invalid email format");
+    leadEmail.focus();
+    return;
+  }
+
+  if (phone && !isValidPhone(phone)) {
+    alert("Invalid phone number");
+    leadPhone.focus();
+    return;
+  }
+
+  originalAddLead();
+};
 </script>
 
 </body>

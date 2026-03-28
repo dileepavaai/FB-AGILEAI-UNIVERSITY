@@ -5,7 +5,6 @@
   <title>Admin – Agile AI University</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- ✅ FIXED CSS PATH -->
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 
@@ -25,7 +24,6 @@
 
 <div class="layout">
 
-  <!-- 🔷 SIDEBAR (ONLY AFTER LOGIN) -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="leads.html">Lead Intelligence</a></li>
@@ -45,7 +43,7 @@
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- ✅ POST-LOGIN REDIRECT INFO -->
+    <!-- 🔄 REDIRECT VIEW -->
     <section id="redirectView" class="hidden">
       <h2>Redirecting...</h2>
       <p>Taking you to the admin system.</p>
@@ -54,10 +52,14 @@
   </main>
 </div>
 
-<!-- 🔷 AUTH CONTROL SCRIPT -->
 <script type="module">
   import { auth, login, logout, isAdmin } from "./js/core.js";
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    onAuthStateChanged,
+    signInWithRedirect,
+    getRedirectResult,
+    GoogleAuthProvider
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   const statusEl = document.getElementById("status");
   const loginBtn = document.getElementById("loginBtn");
@@ -67,15 +69,38 @@
   const nav = document.getElementById("adminNav");
   const warning = document.getElementById("adminWarning");
 
-  loginBtn.onclick = async () => {
-    await login();
-  };
+  // 🔥 SAFE LOGIN HANDLER (POPUP + FALLBACK)
+  loginBtn.addEventListener("click", async () => {
+    try {
+      console.log("Login clicked");
 
-  logoutBtn.onclick = async () => {
+      await login(); // popup attempt
+
+    } catch (e) {
+      console.warn("Popup failed, switching to redirect:", e);
+
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider); // fallback
+    }
+  });
+
+  logoutBtn.addEventListener("click", async () => {
     await logout();
     window.location.reload();
-  };
+  });
 
+  // 🔁 Handle redirect result (important fallback support)
+  getRedirectResult(auth)
+    .then((result) => {
+      if (result?.user) {
+        console.log("Redirect login success:", result.user.email);
+      }
+    })
+    .catch((error) => {
+      console.error("Redirect error:", error);
+    });
+
+  // 🔐 AUTH STATE
   onAuthStateChanged(auth, (user) => {
     console.log("Auth state:", user);
 
@@ -88,7 +113,6 @@
       return;
     }
 
-    // 🔐 Admin validation
     if (!isAdmin(user.email)) {
       statusEl.innerText = "Access denied.";
       alert("You are not authorized to access this admin system.");
@@ -99,12 +123,10 @@
     logoutBtn.style.display = "inline-block";
     warning.classList.remove("hidden");
 
-    // Show redirect UI
     loginView.style.display = "none";
     redirectView.style.display = "block";
     nav.style.display = "block";
 
-    // 🚀 Redirect to Leads (default module)
     setTimeout(() => {
       window.location.href = "leads.html";
     }, 800);

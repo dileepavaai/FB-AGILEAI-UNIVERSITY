@@ -216,3 +216,40 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDashboard();
   loadUsageIndicators();
 });
+
+/* =========================
+   PILL SELECTOR SYNC
+========================= */
+
+document.querySelectorAll('.pill-select').forEach(container => {
+  const targetId = container.getAttribute('data-target');
+  const select = document.getElementById(targetId);
+
+  if (!select) return;
+
+  // build pills
+  Array.from(select.options).forEach((opt, index) => {
+    const pill = document.createElement('div');
+    pill.className = 'pill-option';
+    pill.textContent = opt.text;
+    pill.dataset.value = opt.value;
+
+    if (index === select.selectedIndex) {
+      pill.classList.add('active');
+    }
+
+    pill.addEventListener('click', () => {
+      // update select
+      select.value = opt.value;
+
+      // update UI
+      container.querySelectorAll('.pill-option').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+
+      // trigger change event (important for existing logic)
+      select.dispatchEvent(new Event('change'));
+    });
+
+    container.appendChild(pill);
+  });
+});

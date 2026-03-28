@@ -279,3 +279,47 @@ body {
     margin-left: 0;
   }
 }
+
+/* =========================
+   PILL SELECTOR (PREMIUM UI)
+========================= */
+
+/* hide native select (but keep functional) */
+.select-hidden {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* pill container */
+.pill-select {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* individual pill */
+.pill-option {
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 12px;
+  font-weight: 500;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* hover */
+.pill-option:hover {
+  background: #f3f4f6;
+}
+
+/* active */
+.pill-option.active {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}

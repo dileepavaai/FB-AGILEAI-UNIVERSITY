@@ -1,5 +1,5 @@
 /* =====================================================
-   🔷 CENTRALIZED HEADER (WITH ROLE SUPPORT)
+   🔷 CENTRALIZED HEADER (WITH ROLE + THEME SUPPORT)
    ===================================================== */
 
 export function loadHeader(user = null, role = null) {
@@ -23,9 +23,16 @@ export function loadHeader(user = null, role = null) {
       <h1>Agile AI University – Admin</h1>
 
       <div class="user">
+
+        <!-- 🌗 THEME TOGGLE -->
+        <button id="themeToggle" title="Toggle Theme">🌞</button>
+
         <span id="status">${email}</span>
         ${roleBadgeHTML}
-        <button id="logoutBtn" style="display:${showLogout};">Logout</button>
+
+        <button id="logoutBtn" style="display:${showLogout};">
+          Logout
+        </button>
       </div>
     </header>
 
@@ -35,4 +42,18 @@ export function loadHeader(user = null, role = null) {
   `;
 
   document.getElementById("headerContainer").innerHTML = header;
+
+  /* =====================================================
+     🔗 LOAD THEME SYSTEM (SAFE, ONCE)
+     ===================================================== */
+
+  if (!window.__themeLoaded) {
+    const script = document.createElement("script");
+    script.src = "assets/js/theme-toggle.js";
+    script.defer = true;
+
+    document.body.appendChild(script);
+
+    window.__themeLoaded = true;
+  }
 }

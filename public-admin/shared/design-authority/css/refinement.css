@@ -237,3 +237,51 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* =========================
+   FILTER BAR – SINGLE ROW PREMIUM
+========================= */
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 24px 0 12px;
+}
+
+/* Search takes max space */
+.filter-bar input {
+  flex: 1;
+  min-width: 260px;
+}
+
+/* Dropdowns fixed width */
+.filter-bar select {
+  min-width: 160px;
+}
+
+/* =========================
+   QUICK FILTERS INLINE
+========================= */
+
+.quick-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto; /* 🔥 pushes chips to right */
+}
+
+/* Buttons style */
+.quick-filters button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.quick-filters button:hover {
+  background: #f3f4f6;
+}

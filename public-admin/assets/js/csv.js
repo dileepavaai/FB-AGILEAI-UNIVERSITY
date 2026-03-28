@@ -21,6 +21,38 @@ auth.onAuthStateChanged((user) => {
 });
 
 /* =====================================================
+   🔷 CREDENTIAL ID GENERATION (AAU FORMAT)
+   ===================================================== */
+
+function generateCredentialId() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return `AAU-${result}`;
+}
+
+async function generateUniqueCredentialId() {
+  let id;
+  let exists = true;
+
+  while (exists) {
+    id = generateCredentialId();
+
+    const snap = await getDocs(
+      query(collection(db, "credentials"), where("credential_id", "==", id))
+    );
+
+    exists = !snap.empty;
+  }
+
+  return id;
+}
+
+/* =====================================================
    📦 STATE
    ===================================================== */
 
@@ -136,7 +168,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!existing.empty) continue;
 
+        // 🔥 GENERATE UNIQUE CREDENTIAL ID
+        const credentialId = await generateUniqueCredentialId();
+
         await addDoc(collection(db, "credentials"), {
+
+          // 🔷 CREDENTIAL ID (FINAL)
+          credential_id: credentialId,
 
           // 🔷 CORE DATA
           full_name: row.full_name,

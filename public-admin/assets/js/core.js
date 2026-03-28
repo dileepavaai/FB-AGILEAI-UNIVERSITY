@@ -2,7 +2,7 @@
    🔷 FIREBASE CORE (FINAL STABLE + ROLE SUPPORT)
    ===================================================== */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
   getAuth,
@@ -27,16 +27,20 @@ const ADMIN_ACCESS = {
   "laau.aaiu@gmail.com": "admin"
 };
 
-export function isAdmin(email) {
-  return !!ADMIN_ACCESS[email?.trim().toLowerCase()];
-}
-
 /* =====================================================
-   🔥 NEW: ROLE FETCHER (SAFE ADDITION)
+   🔐 ACCESS HELPERS
    ===================================================== */
 
+export function normalizeEmail(email) {
+  return email?.trim().toLowerCase() || "";
+}
+
+export function isAdmin(email) {
+  return !!ADMIN_ACCESS[normalizeEmail(email)];
+}
+
 export function getUserRole(email) {
-  return ADMIN_ACCESS[email?.trim().toLowerCase()] || null;
+  return ADMIN_ACCESS[normalizeEmail(email)] || null;
 }
 
 /* =====================================================
@@ -53,10 +57,10 @@ const firebaseConfig = {
 };
 
 /* =====================================================
-   🔷 INITIALIZE
+   🔷 INITIALIZE (SAFE - NO DUPLICATE INIT)
    ===================================================== */
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
@@ -76,19 +80,18 @@ provider.setCustomParameters({
 
 export async function login() {
   try {
-    console.log("🚀 Attempting popup login...");
+    console.log("🚀 Popup login attempt");
     await signInWithPopup(auth, provider);
 
   } catch (error) {
-    console.warn("⚠️ Popup failed, switching to redirect:", error);
+    console.warn("⚠️ Popup blocked → using redirect");
 
-    // 🔥 Fallback for incognito / popup-blocked browsers
     await signInWithRedirect(auth, provider);
   }
 }
 
 /* =====================================================
-   🔷 HANDLE REDIRECT RESULT (CRITICAL)
+   🔷 HANDLE REDIRECT RESULT (RUNS ON LOAD)
    ===================================================== */
 
 getRedirectResult(auth)
@@ -110,7 +113,7 @@ export async function logout() {
 }
 
 /* =====================================================
-   🔷 EXPORT
+   🔷 EXPORT AUTH LISTENER
    ===================================================== */
 
 export { onAuthStateChanged };

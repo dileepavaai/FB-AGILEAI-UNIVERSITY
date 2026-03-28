@@ -324,3 +324,11 @@ tbody tr:hover {
   font-size: 13px;
   line-height: 1.6;
 }
+
+/* 🔷 SIDEBAR ACTIVE LINK */
+
+.sidebar a.active {
+  background: #e8edf7;
+  border-left: 4px solid #2d5bff;
+  font-weight: 600;
+}

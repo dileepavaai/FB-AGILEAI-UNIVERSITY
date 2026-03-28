@@ -1,0 +1,114 @@
+/* =====================================================
+   🔷 UNIVERSAL ADMIN CONTROLLER
+   ===================================================== */
+
+import { auth, login, logout, isAdmin, getUserRole } from "./core.js";
+import { loadHeader } from "./layout/header.js";
+import { loadFooter } from "./layout/footer.js";
+import { highlightActiveSidebar } from "./layout/sidebar.js";
+
+import {
+  onAuthStateChanged,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  getRedirectResult
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* =====================================================
+   🚀 INIT APP
+   ===================================================== */
+
+export function initAdminApp(modulePath = null) {
+
+  // 🔷 Load layout immediately
+  loadHeader(null, null);
+  loadFooter();
+
+  // 🔷 Handle redirect login
+  getRedirectResult(auth).catch(console.error);
+
+  // 🔥 Wait for header injection
+  setTimeout(() => {
+
+    const statusEl = document.getElementById("status");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginView = document.getElementById("loginView");
+    const appView = document.getElementById("appView");
+    const nav = document.getElementById("adminNav");
+    const warning = document.getElementById("adminWarning");
+
+    /* ============================================
+       🔐 LOGIN
+       ============================================ */
+    loginBtn?.addEventListener("click", async () => {
+      try {
+        await login();
+      } catch {
+        const provider = new GoogleAuthProvider();
+        await signInWithRedirect(auth, provider);
+      }
+    });
+
+    /* ============================================
+       🔓 LOGOUT
+       ============================================ */
+    function bindLogout() {
+      const btn = document.getElementById("logoutBtn");
+      if (!btn) return;
+
+      btn.onclick = async () => {
+        await logout();
+        window.location.reload();
+      };
+    }
+
+    /* ============================================
+       🔐 AUTH STATE
+       ============================================ */
+    onAuthStateChanged(auth, async (user) => {
+
+      if (!user) {
+        loadHeader(null, null);
+
+        if (loginView) loginView.style.display = "block";
+        if (appView) appView.style.display = "none";
+        if (nav) nav.style.display = "none";
+
+        if (statusEl) statusEl.innerText = "Please sign in.";
+
+        return;
+      }
+
+      if (!isAdmin(user.email)) {
+        alert("Not authorized.");
+        await logout();
+        return;
+      }
+
+      const role = getUserRole(user.email);
+
+      // 🔥 CENTRAL HEADER FIX
+      loadHeader(user, role);
+      bindLogout();
+
+      // 🔷 UI STATE
+      if (statusEl) statusEl.innerText = user.email;
+      if (nav) nav.style.display = "block";
+      if (warning) warning.classList.remove("hidden");
+
+      if (loginView) loginView.style.display = "none";
+      if (appView) appView.style.display = "block";
+
+      // 🔥 SIDEBAR ACTIVE
+      highlightActiveSidebar();
+
+      // 🔥 LOAD MODULE (IMPORTANT)
+      if (modulePath) {
+        import(modulePath);
+      }
+
+    });
+
+  }, 50);
+}

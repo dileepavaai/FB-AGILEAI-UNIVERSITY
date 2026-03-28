@@ -244,3 +244,17 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* 🔥 HARD FIX – STOP INPUT COLLISION */
+.lead-form * {
+  box-sizing: border-box;
+}
+
+/* Optional stabilization */
+.lead-form {
+  align-items: start;
+}
+
+.form-field {
+  min-width: 0;
+}

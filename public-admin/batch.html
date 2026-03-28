@@ -4,55 +4,190 @@
   <meta charset="utf-8" />
   <title>Batch Management – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 
 <body>
 
-<header class="topbar">
-  <h1>Batch Management</h1>
-  <a href="index.html">← Back to Admin</a>
-</header>
+<!-- 🔷 HEADER -->
+<div id="headerContainer"></div>
 
-<div class="content">
+<div class="layout">
 
-  <h2>Create Batch</h2>
+  <!-- 🔷 SIDEBAR -->
+  <nav class="sidebar" id="adminNav" style="display:none;">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="leads.html">Lead Intelligence</a></li>
+      <li><a href="batch.html">Batch Management</a></li>
+      <li><a href="csv.html">CSV Import</a></li>
+      <li><a href="reconciliation.html">Reconciliation</a></li>
+    </ul>
+  </nav>
 
-  <form id="batchForm">
-    <input id="batchName" placeholder="Batch Name" required />
+  <main class="content">
 
-    <select id="programCode" required>
-      <option value="">Select Program Code</option>
-      <option value="AOP">AOP</option>
-      <option value="AIPA">AIPA</option>
-    </select>
+    <!-- 🔐 LOGIN -->
+    <section id="loginView">
+      <h2>Admin Access</h2>
+      <p>Please sign in with your authorized account.</p>
+      <button id="loginBtn">Sign in with Google</button>
+    </section>
 
-    <select id="batchStatus">
-      <option value="active">Active</option>
-      <option value="closed">Closed</option>
-    </select>
+    <!-- 🔷 APP -->
+    <section id="appView" class="hidden">
 
-    <button type="submit">Create Batch</button>
-  </form>
+      <h2>Batch Management</h2>
 
-  <hr />
+      <!-- ➕ CREATE -->
+      <h3>Create Batch</h3>
 
-  <h2>Batch List</h2>
+      <form id="batchForm">
+        <input id="batchName" placeholder="Batch Name" required />
 
-  <table id="batchTable">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Program</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+        <select id="programCode" required>
+          <option value="">Select Program Code</option>
+          <option value="AOP">AOP</option>
+          <option value="AIPA">AIPA</option>
+        </select>
 
+        <select id="batchStatus">
+          <option value="active">Active</option>
+          <option value="closed">Closed</option>
+        </select>
+
+        <button type="submit">Create Batch</button>
+      </form>
+
+      <hr />
+
+      <!-- 📊 LIST -->
+      <h3>Batch List</h3>
+
+      <table id="batchTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Program</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+    </section>
+
+  </main>
 </div>
 
-<script type="module" src="assets/js/batch.js"></script>
+<!-- 🔷 FOOTER -->
+<div id="footerContainer"></div>
+
+<script type="module">
+import { auth, login, logout, isAdmin } from "./assets/js/core.js";
+import { loadHeader } from "./assets/js/layout/header.js";
+import { loadFooter } from "./assets/js/layout/footer.js";
+
+import {
+  onAuthStateChanged,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  getRedirectResult
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* ============================================
+   🔷 LOAD LAYOUT
+   ============================================ */
+loadHeader();
+loadFooter();
+
+/* ============================================
+   🔥 INIT AFTER HEADER LOAD
+   ============================================ */
+setTimeout(() => {
+
+  const statusEl = document.getElementById("status");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginView = document.getElementById("loginView");
+  const appView = document.getElementById("appView");
+  const nav = document.getElementById("adminNav");
+  const warning = document.getElementById("adminWarning");
+
+  /* ============================================
+     🔥 ACTIVE SIDEBAR
+     ============================================ */
+  const currentPage = window.location.pathname.split("/").pop();
+
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    if (link.getAttribute("href") === currentPage) {
+      link.classList.add("active");
+    }
+  });
+
+  /* ============================================
+     🔐 LOGIN
+     ============================================ */
+  loginBtn.addEventListener("click", async () => {
+    try {
+      await login();
+    } catch (e) {
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider);
+    }
+  });
+
+  /* ============================================
+     🔓 LOGOUT
+     ============================================ */
+  logoutBtn.addEventListener("click", async () => {
+    await logout();
+    window.location.reload();
+  });
+
+  /* ============================================
+     🔁 REDIRECT RESULT
+     ============================================ */
+  getRedirectResult(auth).catch(console.error);
+
+  /* ============================================
+     🔐 AUTH STATE
+     ============================================ */
+  onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+      statusEl.innerText = "Please sign in.";
+      loginView.style.display = "block";
+      appView.style.display = "none";
+      nav.style.display = "none";
+      logoutBtn.style.display = "none";
+      return;
+    }
+
+    if (!isAdmin(user.email)) {
+      statusEl.innerText = "Access denied.";
+      alert("Not authorized.");
+      await logout();
+      return;
+    }
+
+    // ✅ AUTHORIZED
+    statusEl.innerText = user.email;
+    logoutBtn.style.display = "inline-block";
+    nav.style.display = "block";
+    warning.classList.remove("hidden");
+
+    loginView.style.display = "none";
+    appView.style.display = "block";
+
+    // 🔥 LOAD MODULE ONLY AFTER AUTH
+    import("./assets/js/batch.js");
+
+  });
+
+}, 50);
+</script>
 
 </body>
 </html>

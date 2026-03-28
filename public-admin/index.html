@@ -8,66 +8,77 @@
   <!-- Base CSS -->
   <link rel="stylesheet" href="assets/css/admin.css" />
 
-  <!-- ✅ REQUIRED: Refinement Layer -->
+  <!-- Refinement Layer -->
   <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
 </head>
 
 <body class="app-loading">
 
-<!-- 🔷 HEADER -->
+<!-- HEADER -->
 <div id="headerContainer"></div>
 
 <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
+  <!-- SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
-    <ul>
+    <ul class="sidebar-list">
+
+      <!-- Primary Navigation -->
       <li><a href="index.html">Home</a></li>
       <li><a href="leads.html">Lead Intelligence</a></li>
       <li><a href="batch.html">Batch Management</a></li>
       <li><a href="csv.html">CSV Import</a></li>
       <li><a href="reconciliation.html">Reconciliation</a></li>
 
-      <!-- 🌐 ECOSYSTEM (REFERENCE ONLY) -->
-      <li style="margin-top:15px; opacity:0.7;">Ecosystem (Reference)</li>
+      <!-- Ecosystem Section -->
+      <li class="sidebar-section-label" style="margin-top:15px; opacity:0.7;">
+        Ecosystem (Reference)
+      </li>
 
-      <li style="font-size:12px; opacity:0.6;">Entities</li>
+      <li class="sidebar-sub-label" style="font-size:12px; opacity:0.6;">
+        Entities
+      </li>
+
       <li>
         <a href="https://agileai.foundation" target="_blank" rel="noopener">
           Agile AI Foundation ↗
         </a>
       </li>
+
       <li>
         <a href="https://agileai.university" target="_blank" rel="noopener">
           Agile AI University ↗
         </a>
       </li>
+
       <li>
         <a href="https://agileaiacademy.com" target="_blank" rel="noopener">
           Agile AI Academy ↗
         </a>
       </li>
+
     </ul>
   </nav>
 
   <main class="content">
 
-    <!-- 🔐 LOGIN VIEW -->
+    <!-- LOGIN VIEW -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- 🏠 APP VIEW -->
+    <!-- APP VIEW -->
     <section id="appView" class="hidden">
 
       <h2>Welcome to Admin Console</h2>
       <p>Select a module from the left menu.</p>
 
-      <!-- 🔥 SYSTEM METRICS -->
-      <div style="margin-top:20px;">
+      <!-- SYSTEM METRICS -->
+      <div class="admin-section" style="margin-top:20px;">
         <strong>System Metrics</strong>
+
         <div class="metrics">
           <div>Leads: <span id="metricLeads">—</span></div>
           <div>Batches: <span id="metricBatches">—</span></div>
@@ -76,8 +87,8 @@
         </div>
       </div>
 
-      <!-- 🔥 CONVERSION FUNNEL -->
-      <div style="margin-top:30px;">
+      <!-- CONVERSION FUNNEL -->
+      <div class="admin-section" style="margin-top:30px;">
         <strong>Conversion Funnel</strong>
 
         <div class="metrics">
@@ -94,8 +105,8 @@
         </div>
       </div>
 
-      <!-- 💰 REVENUE -->
-      <div style="margin-top:30px;">
+      <!-- REVENUE -->
+      <div class="admin-section" style="margin-top:30px;">
         <strong>Revenue Intelligence</strong>
 
         <div class="metrics">
@@ -106,8 +117,8 @@
         </div>
       </div>
 
-      <!-- 🧠 PROGRAM INTELLIGENCE -->
-      <div style="margin-top:30px;">
+      <!-- PROGRAM -->
+      <div class="admin-section" style="margin-top:30px;">
         <strong>Program Intelligence</strong>
 
         <div class="metrics">
@@ -127,7 +138,7 @@
         </div>
       </div>
 
-      <!-- 🌐 ECOSYSTEM MAP -->
+      <!-- ECOSYSTEM MAP -->
       <div class="ecosystem-map">
         <strong>Agile AI Ecosystem</strong>
 
@@ -155,8 +166,8 @@
         </div>
       </div>
 
-      <!-- 🔷 PLATFORM -->
-      <div style="margin-top:30px;">
+      <!-- PLATFORM -->
+      <div class="admin-section" style="margin-top:30px;">
         <strong>Platform Surfaces</strong>
 
         <table style="margin-top:10px; width:100%; max-width:700px;">
@@ -170,8 +181,8 @@
         </table>
       </div>
 
-      <!-- 🔁 REDIRECT -->
-      <div style="margin-top:30px;">
+      <!-- REDIRECT -->
+      <div class="admin-section" style="margin-top:30px;">
         <strong>Redirect Mapping</strong>
 
         <table style="margin-top:10px; width:100%; max-width:700px;">
@@ -186,8 +197,8 @@
         </table>
       </div>
 
-      <!-- 🔥 USAGE -->
-      <div style="margin-top:30px;">
+      <!-- USAGE -->
+      <div class="admin-section" style="margin-top:30px;">
         <strong>Usage Indicators</strong>
 
         <div class="metrics">
@@ -202,7 +213,7 @@
   </main>
 </div>
 
-<!-- 🔷 FOOTER -->
+<!-- FOOTER -->
 <div id="footerContainer"></div>
 
 <script type="module">

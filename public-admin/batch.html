@@ -5,12 +5,16 @@
   <title>Batch Management – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- 🔷 BASE ADMIN CSS (LOCKED) -->
   <link rel="stylesheet" href="assets/css/admin.css" />
+
+  <!-- 🔷 REFINEMENT LAYER -->
+  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
 </head>
 
 <body class="app-loading">
 
-<!-- 🔷 HEADER (CENTRALIZED) -->
+<!-- 🔷 HEADER -->
 <div id="headerContainer"></div>
 
 <div class="layout">
@@ -20,7 +24,7 @@
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="leads.html">Lead Intelligence</a></li>
-      <li><a href="batch.html">Batch Management</a></li>
+      <li><a href="batch.html" class="active">Batch Management</a></li>
       <li><a href="csv.html">CSV Import</a></li>
       <li><a href="reconciliation.html">Reconciliation</a></li>
     </ul>
@@ -38,44 +42,64 @@
     <!-- 🔷 APP VIEW -->
     <section id="appView" class="hidden">
 
-      <h2>Batch Management</h2>
+      <div class="page-header">
+        <h2>Batch Management</h2>
+        <p class="page-subtitle">Create and manage program batches</p>
+      </div>
 
       <!-- ➕ CREATE -->
-      <h3>Create Batch</h3>
+      <div class="card">
+        <h3>Create Batch</h3>
 
-      <form id="batchForm">
-        <input id="batchName" placeholder="Batch Name" required />
+        <form id="batchForm" class="lead-form">
 
-        <select id="programCode" required>
-          <option value="">Select Program Code</option>
-          <option value="AOP">AOP</option>
-          <option value="AIPA">AIPA</option>
-        </select>
+          <div class="form-field">
+            <label>Batch Name</label>
+            <input id="batchName" required />
+          </div>
 
-        <select id="batchStatus">
-          <option value="active">Active</option>
-          <option value="closed">Closed</option>
-        </select>
+          <div class="form-field">
+            <label>Program Code</label>
+            <select id="programCode" required>
+              <option value="">Select Program Code</option>
+              <option value="AOP">AOP</option>
+              <option value="AIPA">AIPA</option>
+            </select>
+          </div>
 
-        <button type="submit">Create Batch</button>
-      </form>
+          <div class="form-field">
+            <label>Status</label>
+            <select id="batchStatus">
+              <option value="active">Active</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
 
-      <hr />
+          <div class="form-actions">
+            <button type="submit">Create Batch</button>
+          </div>
+
+        </form>
+      </div>
 
       <!-- 📊 LIST -->
-      <h3>Batch List</h3>
+      <div class="card" style="margin-top: 20px;">
+        <h3>Batch List</h3>
 
-      <table id="batchTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Program</th>
-            <th>Status</th>
-            <th>Actions</th> <!-- ✅ NEW -->
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+        <div class="table-wrapper">
+          <table id="batchTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Program</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
 
     </section>
 
@@ -88,12 +112,10 @@
 <!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
-
-/* 🔥 ONE LINE CONTROLS EVERYTHING */
 initAdminApp("./assets/js/batch.js");
 </script>
 
-<!-- ✅ SAFE ADDITION: Navigation Helper -->
+<!-- 🔗 NAVIGATION -->
 <script>
 function openBatch(batchId) {
   window.location.href = `batch-view.html?batch_id=${batchId}`;

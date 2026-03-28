@@ -340,3 +340,16 @@ body.app-loading #appView,
 body.app-loading #adminNav {
   display: none !important;
 }
+
+/* 🔷 SMOOTH APP LOAD */
+
+#appView {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.3s ease;
+}
+
+body:not(.app-loading) #appView {
+  opacity: 1;
+  transform: translateY(0);
+}

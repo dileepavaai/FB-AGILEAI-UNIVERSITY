@@ -41,77 +41,108 @@
       <h2>Welcome to Admin Console</h2>
       <p>Select a module from the left menu.</p>
 
-      <!-- 🔷 SYSTEM STATUS -->
+      <!-- 🔥 SYSTEM METRICS -->
       <div style="margin-top:20px;">
-        <strong>System Status</strong>
-        <ul>
-          <li>✔ Credential Registry Active</li>
-          <li>✔ CSV Import Enabled</li>
-          <li>✔ Batch Management Active</li>
-          <li>✔ Public Verification Live</li>
-        </ul>
+        <strong>System Metrics</strong>
+        <div class="metrics">
+          <div>Leads: <span id="metricLeads">—</span></div>
+          <div>Batches: <span id="metricBatches">—</span></div>
+          <div>Credentials: <span id="metricCredentials">—</span></div>
+          <div>Transactions: <span id="metricTransactions">—</span></div>
+        </div>
       </div>
 
-      <!-- 🔷 PLATFORM OVERVIEW -->
+      <!-- 🔥 CONVERSION FUNNEL -->
+      <div style="margin-top:30px;">
+        <strong>Conversion Funnel</strong>
+
+        <div class="metrics">
+          <div>Leads: <span id="funnelLeads">—</span></div>
+          <div>Qualified: <span id="funnelQualified">—</span></div>
+          <div>Converted: <span id="funnelConverted">—</span></div>
+          <div>Credentials: <span id="funnelCredentials">—</span></div>
+        </div>
+
+        <div class="metrics" style="margin-top:10px;">
+          <div>Lead → Qualified: <span id="funnelLQ">—</span></div>
+          <div>Qualified → Converted: <span id="funnelQC">—</span></div>
+          <div>Lead → Converted: <span id="funnelLC">—</span></div>
+        </div>
+      </div>
+
+      <!-- 💰 REVENUE -->
+      <div style="margin-top:30px;">
+        <strong>Revenue Intelligence</strong>
+
+        <div class="metrics">
+          <div>Total Revenue: <span id="revTotal">—</span></div>
+          <div>Transactions: <span id="revCount">—</span></div>
+          <div>Avg Revenue: <span id="revAvg">—</span></div>
+          <div>Currency: <span id="revCurrency">—</span></div>
+        </div>
+      </div>
+
+      <!-- 🧠 PROGRAM INTELLIGENCE -->
+      <div style="margin-top:30px;">
+        <strong>Program Intelligence</strong>
+
+        <div class="metrics">
+          <div>AOP Credentials: <span id="progAOP">—</span></div>
+          <div>AIPA Credentials: <span id="progAIPA">—</span></div>
+          <div>AAIA Credentials: <span id="progAAIA">—</span></div>
+        </div>
+
+        <div class="metrics" style="margin-top:10px;">
+          <div>AOP Revenue: <span id="revAOP">—</span></div>
+          <div>AIPA Revenue: <span id="revAIPA">—</span></div>
+          <div>AAIA Revenue: <span id="revAAIA">—</span></div>
+        </div>
+
+        <div class="metrics" style="margin-top:10px;">
+          <div>Top Program: <span id="topProgram">—</span></div>
+        </div>
+      </div>
+
+      <!-- 🔷 PLATFORM -->
       <div style="margin-top:30px;">
         <strong>Platform Overview</strong>
 
         <table style="margin-top:10px; width:100%; max-width:700px;">
-          <tr>
-            <td><strong>Institution</strong></td>
-            <td><a href="https://agileai.university" target="_blank">agileai.university</a></td>
-          </tr>
-          <tr>
-            <td><strong>Portal</strong></td>
-            <td><a href="https://portal.agileai.university" target="_blank">portal.agileai.university</a></td>
-          </tr>
-          <tr>
-            <td><strong>Knowledge</strong></td>
-            <td><a href="https://edu.agileai.university" target="_blank">edu.agileai.university</a></td>
-          </tr>
-          <tr>
-            <td><strong>Assessment</strong></td>
-            <td><a href="https://assessment.agileai.university" target="_blank">assessment.agileai.university</a></td>
-          </tr>
-          <tr>
-            <td><strong>Verification</strong></td>
-            <td><a href="https://verify.agileai.university" target="_blank">verify.agileai.university</a></td>
-          </tr>
-          <tr>
-            <td><strong>Specification</strong></td>
-            <td><a href="https://agileai.foundation" target="_blank">agileai.foundation</a></td>
-          </tr>
-          <tr>
-            <td><strong>Standards</strong></td>
-            <td><a href="https://spec.agileai.university" target="_blank">spec.agileai.university</a></td>
-          </tr>
+          <tr><td><strong>Institution</strong></td><td><a href="https://agileai.university" target="_blank">agileai.university</a></td></tr>
+          <tr><td><strong>Portal</strong></td><td><a href="https://portal.agileai.university" target="_blank">portal.agileai.university</a></td></tr>
+          <tr><td><strong>Knowledge</strong></td><td><a href="https://edu.agileai.university" target="_blank">edu.agileai.university</a></td></tr>
+          <tr><td><strong>Assessment</strong></td><td><a href="https://assessment.agileai.university" target="_blank">assessment.agileai.university</a></td></tr>
+          <tr><td><strong>Verification</strong></td><td><a href="https://verify.agileai.university" target="_blank">verify.agileai.university</a></td></tr>
+          <tr><td><strong>Specification</strong></td><td><a href="https://agileai.foundation" target="_blank">agileai.foundation</a></td></tr>
+          <tr><td><strong>Standards</strong></td><td><a href="https://spec.agileai.university" target="_blank">spec.agileai.university</a></td></tr>
         </table>
       </div>
 
-      <!-- 🔁 REDIRECT LAYER -->
+      <!-- 🔁 REDIRECT -->
       <div style="margin-top:30px;">
         <strong>Redirect Mapping</strong>
 
         <table style="margin-top:10px; width:100%; max-width:700px;">
           <tr>
             <td><strong>Learn</strong></td>
-            <td>
-              <a href="https://learn.agileai.university" target="_blank">
-                learn.agileai.university
-              </a>
-              → edu.agileai.university
-            </td>
+            <td><a href="https://learn.agileai.university" target="_blank">learn.agileai.university</a> → edu.agileai.university</td>
           </tr>
           <tr>
             <td><strong>Certs</strong></td>
-            <td>
-              <a href="https://certs.agileai.university" target="_blank">
-                certs.agileai.university
-              </a>
-              → verify.agileai.university
-            </td>
+            <td><a href="https://certs.agileai.university" target="_blank">certs.agileai.university</a> → verify.agileai.university</td>
           </tr>
         </table>
+      </div>
+
+      <!-- 🔥 USAGE -->
+      <div style="margin-top:30px;">
+        <strong>Usage Indicators</strong>
+
+        <div class="metrics">
+          <div>Assessments: <span id="usageAssess">—</span></div>
+          <div>Portal Visits: <span id="usagePortal">—</span></div>
+          <div>Verifications: <span id="usageVerify">—</span></div>
+        </div>
       </div>
 
     </section>
@@ -122,12 +153,9 @@
 <!-- 🔷 FOOTER -->
 <div id="footerContainer"></div>
 
-<!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
-
-/* 🔥 HOME PAGE INIT */
-initAdminApp();
+initAdminApp("./assets/js/dashboard.js");
 </script>
 
 </body>

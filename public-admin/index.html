@@ -5,7 +5,8 @@
   <title>Admin – Agile AI University</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link rel="stylesheet" href="/admin.css" />
+  <!-- ✅ FIXED CSS PATH -->
+  <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 
 <body>
@@ -13,7 +14,7 @@
 <header class="topbar">
   <h1>Agile AI University – Admin</h1>
   <div class="user">
-    <span id="status">Please sign in.</span>
+    <span id="status">Checking authentication...</span>
     <button id="logoutBtn" style="display:none;">Logout</button>
   </div>
 </header>
@@ -24,173 +25,91 @@
 
 <div class="layout">
 
-  <!-- ✅ SIDEBAR (LEAD FIRST) -->
+  <!-- 🔷 SIDEBAR (ONLY AFTER LOGIN) -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
-      <li data-view="leads" class="active">Lead Intelligence</li>
-      <li data-view="dashboard">Dashboard</li>
-      <li data-view="batches">Batch Management</li>
-      <li data-view="credentials">Credential Issuance</li>
-      <li data-view="csv">CSV Import</li>
-      <li data-view="verifications">Verification Requests</li>
-      <li data-view="logs">Audit Logs</li>
-      <li data-view="reconciliation">Reconciliation</li>
+      <li><a href="leads.html">Lead Intelligence</a></li>
+      <li><a href="batch.html">Batch Management</a></li>
+      <li><a href="csv.html">CSV Import</a></li>
+      <li><a href="verification.html">Verification Requests</a></li>
+      <li><a href="reconciliation.html">Reconciliation</a></li>
     </ul>
   </nav>
 
   <main class="content">
 
-    <!-- LOGIN -->
+    <!-- 🔐 LOGIN VIEW -->
     <section id="loginView">
+      <h2>Admin Access</h2>
+      <p>Please sign in with your authorized account.</p>
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- ❌ DASHBOARD (NOT DEFAULT NOW) -->
-    <section id="dashboard" class="view hidden">
-      <h2>Dashboard</h2>
-      <p>Admin access granted.</p>
-
-      <div class="metrics">
-        <div class="metric-card"><h3 id="mTotal">0</h3><p>Total Leads</p></div>
-        <div class="metric-card"><h3 id="mEngaged">0</h3><p>Engaged</p></div>
-        <div class="metric-card"><h3 id="mQualified">0</h3><p>Qualified</p></div>
-        <div class="metric-card"><h3 id="mConverted">0</h3><p>Converted</p></div>
-      </div>
-
-      <h3 style="margin-top:20px;">Conversion Intelligence</h3>
-
-      <div class="metrics">
-        <div class="metric-card"><h3 id="mConvRate">0%</h3><p>Overall Conversion</p></div>
-        <div class="metric-card"><h3 id="mQualConvRate">0%</h3><p>Qualified → Converted</p></div>
-        <div class="metric-card"><h3 id="mDropRate">0%</h3><p>Drop-off Rate</p></div>
-      </div>
-    </section>
-
-    <!-- ✅ LEADS (DEFAULT VIEW) -->
-    <section id="leads" class="view">
-      <h2>Lead Intelligence</h2>
-
-      <div class="lead-grid">
-
-        <div class="field">
-          <label>Name</label>
-          <input id="leadName" placeholder="e.g. John Mathew" autofocus>
-        </div>
-
-        <div class="field">
-          <label>Role</label>
-          <input id="leadRole" placeholder="e.g. Scrum Master">
-        </div>
-
-        <div class="field">
-          <label>Company</label>
-          <input id="leadCompany">
-        </div>
-
-        <div class="field">
-          <label>Location</label>
-          <input id="leadLocation">
-        </div>
-
-        <div class="field">
-          <label>Email</label>
-          <input id="leadEmail">
-        </div>
-
-        <div class="field">
-          <label>Phone</label>
-          <input id="leadPhone">
-        </div>
-
-        <div class="field">
-          <label>LinkedIn</label>
-          <input id="leadLinkedIn" placeholder="optional">
-        </div>
-
-        <div class="field">
-          <label>Source</label>
-          <select id="leadSource">
-            <option value="LinkedIn" selected>LinkedIn</option>
-            <option value="Manual">Manual</option>
-            <option value="Alumni">Alumni</option>
-            <option value="Referral">Referral</option>
-            <option value="Ads">Ads</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Experience</label>
-          <input id="leadExperience" placeholder="years">
-        </div>
-
-        <div class="field">
-          <label>Source Detail</label>
-          <input id="leadSourceDetail" placeholder="campaign/ref">
-        </div>
-
-      </div>
-
-      <div class="search-bar">
-        <input placeholder="Search leads..." oninput="applyLeadSearch(this.value)">
-        <div class="chip" onclick="quickFilter('high')">High</div>
-        <div class="chip" onclick="quickFilter('converted')">Converted</div>
-        <div class="chip" onclick="quickFilter('mine')">My Leads</div>
-      </div>
-
-      <div class="toolbar" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
-        <button id="addLeadBtn" onclick="addLead()">Add</button>
-        <button onclick="clearLeadForm()">Clear</button>
-
-        <select id="leadFilter" onchange="renderLeads()">
-          <option value="all">All</option>
-          <option value="priority">High Priority</option>
-          <option value="blocked">Do Not Engage</option>
-        </select>
-
-        <select id="leadUserFilter" onchange="renderLeads()">
-          <option value="all">All Leads</option>
-          <option value="mine">My Leads</option>
-        </select>
-      </div>
-
-      <div class="lead-legend">
-        <span class="score-high">● High (4–5)</span>
-        <span class="score-mid">● Medium (2–3)</span>
-        <span class="score-low">● Low (0–1)</span>
-      </div>
-
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th style="min-width:200px;">Name</th>
-              <th style="min-width:160px;">Role</th>
-              <th style="min-width:180px;">Company</th>
-              <th style="min-width:140px;">Source</th>
-              <th style="min-width:220px;">Owner</th>
-              <th style="min-width:260px;">Contact</th>
-              <th>Score</th>
-              <th>Status</th>
-              <th>Stage</th>
-              <th>Next</th>
-              <th>Notes</th>
-              <th>Flag</th>
-            </tr>
-          </thead>
-          <tbody id="leadBody"></tbody>
-        </table>
-      </div>
-
-    </section>
-
-    <section id="reconciliation" class="view hidden">
-      <h2>Reconciliation</h2>
+    <!-- ✅ POST-LOGIN REDIRECT INFO -->
+    <section id="redirectView" class="hidden">
+      <h2>Redirecting...</h2>
+      <p>Taking you to the admin system.</p>
     </section>
 
   </main>
 </div>
 
-<script type="module" src="/admin.js?v=200"></script>
+<!-- 🔷 AUTH CONTROL SCRIPT -->
+<script type="module">
+  import { auth, login, logout, isAdmin } from "./js/core.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const statusEl = document.getElementById("status");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginView = document.getElementById("loginView");
+  const redirectView = document.getElementById("redirectView");
+  const nav = document.getElementById("adminNav");
+  const warning = document.getElementById("adminWarning");
+
+  loginBtn.onclick = async () => {
+    await login();
+  };
+
+  logoutBtn.onclick = async () => {
+    await logout();
+    window.location.reload();
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    console.log("Auth state:", user);
+
+    if (!user) {
+      statusEl.innerText = "Please sign in.";
+      loginView.style.display = "block";
+      redirectView.style.display = "none";
+      nav.style.display = "none";
+      logoutBtn.style.display = "none";
+      return;
+    }
+
+    // 🔐 Admin validation
+    if (!isAdmin(user.email)) {
+      statusEl.innerText = "Access denied.";
+      alert("You are not authorized to access this admin system.");
+      return;
+    }
+
+    statusEl.innerText = user.email;
+    logoutBtn.style.display = "inline-block";
+    warning.classList.remove("hidden");
+
+    // Show redirect UI
+    loginView.style.display = "none";
+    redirectView.style.display = "block";
+    nav.style.display = "block";
+
+    // 🚀 Redirect to Leads (default module)
+    setTimeout(() => {
+      window.location.href = "leads.html";
+    }, 800);
+  });
+</script>
 
 </body>
 </html>

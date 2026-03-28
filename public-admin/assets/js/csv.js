@@ -1,3 +1,8 @@
+/* =====================================================
+   🔷 CSV / CREDENTIAL IMPORT MODULE (CLEAN)
+   Auth handled at PAGE LEVEL
+   ===================================================== */
+
 import { auth, db } from "./core.js";
 
 import {
@@ -11,17 +16,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
-   🔐 AUTH GUARD
-   ===================================================== */
-
-auth.onAuthStateChanged((user) => {
-  if (!user) {
-    window.location.href = "index.html";
-  }
-});
-
-/* =====================================================
-   🔷 CREDENTIAL ID GENERATION (AAU FORMAT)
+   🔷 CREDENTIAL ID GENERATION
    ===================================================== */
 
 function generateCredentialId() {
@@ -73,12 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const statusMsg = document.getElementById("statusMsg");
   const batchSelect = document.getElementById("csvBatchSelect");
 
+  if (!fileInput || !parseBtn || !uploadBtn) return;
+
   /* =====================================================
      📥 LOAD BATCHES
      ===================================================== */
 
   async function loadBatches() {
-
     const snap = await getDocs(
       query(collection(db, "batches"), orderBy("created_at", "desc"))
     );
@@ -161,32 +157,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
 
-        // 🔍 Duplicate check (email)
+        // 🔍 Duplicate check
         const existing = await getDocs(
           query(collection(db, "credentials"), where("email", "==", row.email))
         );
 
         if (!existing.empty) continue;
 
-        // 🔥 GENERATE UNIQUE CREDENTIAL ID
         const credentialId = await generateUniqueCredentialId();
 
         await addDoc(collection(db, "credentials"), {
 
-          // 🔷 CREDENTIAL ID (FINAL)
           credential_id: credentialId,
 
-          // 🔷 CORE DATA
           full_name: row.full_name,
           email: row.email,
           credential_type: row.credential_type,
           program_code: row.program_code,
 
-          // 🔷 BATCH MAPPING
           batch_id: selectedBatch.id,
           batch_name: selectedBatch.name,
 
-          // 🔷 SYSTEM FIELDS
           issued_by: row.issued_by || "Agile AI University",
           issued_status: row.issued_status || "issued",
 

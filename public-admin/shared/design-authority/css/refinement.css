@@ -1,16 +1,15 @@
 /* =========================
-   LEAD INTELLIGENCE UI UPGRADE
-   FINAL POLISHED REFINEMENT
+   LEAD INTELLIGENCE UI – FINAL STABLE VERSION
 ========================= */
 
 /* =========================
-   CONTAINER
+   CONTAINER (FIX WIDTH)
 ========================= */
 
 .content {
-  max-width: 1180px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 12px;
+  padding: 0 16px;
 }
 
 /* =========================
@@ -20,13 +19,13 @@
 .metrics-row {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .metrics-row span {
   background: #ffffff;
-  padding: 12px;
+  padding: 14px;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   font-size: 12px;
@@ -46,25 +45,25 @@
 
 .split-layout {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 20px;
-  margin-top: 16px;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 24px;
   align-items: start;
 }
 
 /* =========================
-   LEFT PANEL
+   LEFT PANEL (REMOVE CONSTRAINT)
 ========================= */
 
 .left-panel {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
+/* 🔥 IMPORTANT FIX */
 .left-panel .card {
-  max-width: 760px;
-  padding: 16px;
+  width: 100%;
+  padding: 18px;
 }
 
 /* =========================
@@ -79,8 +78,12 @@
   top: 20px;
 }
 
+/* =========================
+   INSIGHTS
+========================= */
+
 .insights-card {
-  padding: 14px;
+  padding: 16px;
   background: #ffffff;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
@@ -88,7 +91,7 @@
 }
 
 .insights-card h3 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 14px;
   font-weight: 600;
 }
@@ -105,52 +108,45 @@
   border-bottom: none;
 }
 
-.insight-item strong {
-  font-size: 15px;
-  color: #111827;
-}
-
 /* =========================
-   FORM GRID
+   FORM GRID (FIXED)
 ========================= */
 
 .lead-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
-  row-gap: 16px; /* 🔥 KEY FIX */
+  gap: 18px 18px;
 }
 
 /* =========================
-   FORM FIELD (NEW)
+   FORM FIELD (KEY FIX)
 ========================= */
 
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 6px; /* label to input spacing */
+}
+
+/* Label */
+.form-field label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+/* Inputs */
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
 }
 
 /* Full width fields */
 .form-field.full-width {
   grid-column: span 2;
-}
-
-/* Labels */
-.form-field label {
-  font-size: 12px;
-  font-weight: 500;
-  color: #6b7280;
-}
-
-/* Inputs */
-.lead-form input,
-.lead-form select {
-  width: 100%;
-  background: #ffffff;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
 }
 
 /* =========================
@@ -160,15 +156,15 @@
 .form-actions {
   grid-column: span 2;
   display: flex;
-  gap: 10px;
-  margin-top: 8px;
+  gap: 12px;
+  margin-top: 6px;
 }
 
 .form-actions button {
   padding: 10px 16px;
   border-radius: 8px;
-  font-weight: 500;
   border: 1px solid #e5e7eb;
+  font-weight: 500;
 }
 
 .form-actions button:first-child {
@@ -178,7 +174,6 @@
 
 .form-actions button:last-child {
   background: #f3f4f6;
-  color: #111827;
 }
 
 /* =========================
@@ -189,17 +184,16 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  align-items: center;
-  margin: 14px 0;
+  margin: 16px 0;
 }
 
 .filter-bar input {
   flex: 1;
-  min-width: 200px;
+  min-width: 220px;
 }
 
 .filter-bar select {
-  min-width: 140px;
+  min-width: 160px;
 }
 
 /* =========================
@@ -209,7 +203,6 @@
 .quick-filters {
   display: flex;
   gap: 8px;
-  margin-top: 4px;
 }
 
 .quick-filters button {
@@ -225,7 +218,7 @@
 ========================= */
 
 .table-wrapper {
-  margin-top: 12px;
+  margin-top: 14px;
   background: #ffffff;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
@@ -239,8 +232,8 @@
 
 .table-wrapper th {
   background: #f9fafb;
-  font-weight: 600;
   font-size: 12px;
+  font-weight: 600;
 }
 
 .table-wrapper td,
@@ -253,8 +246,8 @@
    MICRO POLISH
 ========================= */
 
-h1, h2 {
-  margin-bottom: 10px;
+h2 {
+  margin-bottom: 12px;
 }
 
 button {
@@ -276,8 +269,8 @@ button:hover {
   }
 
   .right-panel {
-    order: -1;
     position: static;
+    order: -1;
   }
 
   .metrics-row {

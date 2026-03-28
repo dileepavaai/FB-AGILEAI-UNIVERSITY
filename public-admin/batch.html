@@ -71,6 +71,7 @@
             <th>Name</th>
             <th>Program</th>
             <th>Status</th>
+            <th>Actions</th> <!-- ✅ NEW -->
           </tr>
         </thead>
         <tbody></tbody>
@@ -90,6 +91,13 @@ import { initAdminApp } from "./assets/js/admin-app.js";
 
 /* 🔥 ONE LINE CONTROLS EVERYTHING */
 initAdminApp("./assets/js/batch.js");
+</script>
+
+<!-- ✅ SAFE ADDITION: Navigation Helper -->
+<script>
+function openBatch(batchId) {
+  window.location.href = `batch-view.html?batch_id=${batchId}`;
+}
 </script>
 
 </body>

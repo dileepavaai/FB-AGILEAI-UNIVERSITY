@@ -73,12 +73,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       snap.forEach(docSnap => {
         const b = docSnap.data();
+        const batchId = docSnap.id;
 
         const row = `
           <tr>
             <td>${b.batch_name || "-"}</td>
             <td>${b.program_code || "-"}</td>
             <td>${b.status || "-"}</td>
+            <td>
+              <button onclick="openBatch('${batchId}')">Open</button>
+            </td>
           </tr>
         `;
 
@@ -87,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (err) {
       console.error("Failed to load batches:", err);
-      tableBody.innerHTML = `<tr><td colspan="3">Error loading data</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="4">Error loading data</td></tr>`;
     }
   }
 
@@ -98,3 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
   loadBatches();
 
 });
+
+/* =====================================================
+   🔗 NAVIGATION (GLOBAL SAFE FUNCTION)
+   ===================================================== */
+
+window.openBatch = function (batchId) {
+  if (!batchId) return;
+  window.location.href = `batch-view.html?batch_id=${batchId}`;
+};

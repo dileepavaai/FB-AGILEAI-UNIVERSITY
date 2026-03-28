@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Batch View – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Your Admin CSS -->
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div id="header"></div>
+
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <div id="sidebar"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <h2 id="batchTitle">Loading Batch...</h2>
+
+      <!-- Batch Info -->
+      <div class="card">
+        <p><strong>Batch Name:</strong> <span id="batchName"></span></p>
+        <p><strong>Program Code:</strong> <span id="programCode"></span></p>
+        <p><strong>Status:</strong> <span id="batchStatus"></span></p>
+      </div>
+
+      <!-- Learners -->
+      <div class="card" style="margin-top:20px;">
+        <h3>Learners</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="learnerTable">
+            <tr>
+              <td colspan="3">No learners yet</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Layout Scripts -->
+  <script src="assets/js/layout/header.js"></script>
+  <script src="assets/js/layout/sidebar.js"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+
+    // 🔹 Get batch_id from URL
+    const params = new URLSearchParams(window.location.search);
+    const batchId = params.get("batch_id");
+
+    if (!batchId) {
+      alert("No batch selected");
+    }
+
+    // 🔴 IMPORTANT: USE YOUR EXISTING CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
+      authDomain: "fb-agileai-university.firebaseapp.com",
+      projectId: "fb-agileai-university",
+      storageBucket: "fb-agileai-university.appspot.com",
+      messagingSenderId: "458881040066",
+      appId: "1:458881040066:web:c832c420f9b4282e76c55b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 🔹 Load Batch
+    async function loadBatch() {
+      const doc = await db.collection("batches").doc(batchId).get();
+
+      if (!doc.exists) {
+        document.getElementById("batchTitle").innerText = "Batch not found";
+        return;
+      }
+
+      const data = doc.data();
+
+      document.getElementById("batchTitle").innerText = data.batch_name;
+      document.getElementById("batchName").innerText = data.batch_name;
+      document.getElementById("programCode").innerText = data.program_code;
+      document.getElementById("batchStatus").innerText = data.status;
+    }
+
+    // 🔹 Load Learners
+    async function loadLearners() {
+      const snapshot = await db.collection("learners")
+        .where("batch_id", "==", batchId)
+        .get();
+
+      const table = document.getElementById("learnerTable");
+      table.innerHTML = "";
+
+      if (snapshot.empty) {
+        table.innerHTML = `<tr><td colspan="3">No learners yet</td></tr>`;
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const l = doc.data();
+
+        const row = `
+          <tr>
+            <td>${l.full_name || "-"}</td>
+            <td>${l.email || "-"}</td>
+            <td>${l.status || "-"}</td>
+          </tr>
+        `;
+
+        table.innerHTML += row;
+      });
+    }
+
+    // INIT
+    loadBatch();
+    loadLearners();
+
+  </script>
+
+</body>
+</html>

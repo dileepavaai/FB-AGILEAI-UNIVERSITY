@@ -579,3 +579,40 @@ body {
 .sidebar li + li {
   margin-top: 2px;
 }
+
+/* =========================================
+   STICKY HEADER — ADMIN (GLOBAL SAFE)
+========================================= */
+
+/* Header container */
+#headerContainer {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Ensure header content stacks correctly */
+#headerContainer > * {
+  position: relative;
+  z-index: 1001;
+}
+
+/* Optional: subtle shadow for depth */
+#headerContainer {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* =========================================
+   CONTENT OFFSET (PREVENT OVERLAP)
+========================================= */
+
+.layout {
+  margin-top: 0; /* safe default */
+}
+
+/* If overlap happens (rare), uncomment below */
+/*
+.layout {
+  padding-top: 80px;
+}
+*/

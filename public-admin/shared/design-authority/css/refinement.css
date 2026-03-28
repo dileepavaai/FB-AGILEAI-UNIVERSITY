@@ -1,11 +1,8 @@
 /* =========================
-   LEAD INTELLIGENCE – PREMIUM BALANCED UI (FINAL)
+   LEAD INTELLIGENCE – FINAL PREMIUM CLEAN
 ========================= */
 
-/* =========================
-   GLOBAL FIX
-========================= */
-
+/* GLOBAL */
 .lead-form * {
   box-sizing: border-box;
 }
@@ -48,7 +45,7 @@
 }
 
 /* =========================
-   FORM CARD
+   CARD
 ========================= */
 
 .card {
@@ -59,19 +56,14 @@
 }
 
 /* =========================
-   FORM GRID (🔥 FINAL FIX)
+   FORM GRID
 ========================= */
 
 .lead-form {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* ✅ PERFECT BALANCE */
-  gap: 20px 20px;
-  align-items: start;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
-
-/* =========================
-   FORM FIELD
-========================= */
 
 .form-field {
   display: flex;
@@ -85,7 +77,6 @@
   margin-bottom: 6px;
 }
 
-/* 🔥 KEY: identical width behavior */
 .form-field input,
 .form-field select {
   width: 100%;
@@ -94,10 +85,8 @@
   border-radius: 8px;
   border: 1px solid #d1d5db;
   background: #ffffff;
-  transition: all 0.2s ease;
 }
 
-/* subtle premium feel */
 .form-field input:focus,
 .form-field select:focus {
   border-color: #111827;
@@ -105,7 +94,6 @@
   outline: none;
 }
 
-/* full width rows */
 .form-field.full-width {
   grid-column: span 2;
 }
@@ -128,53 +116,48 @@
   cursor: pointer;
 }
 
-/* Primary */
 .form-actions button:first-child {
   background: #111827;
   color: #ffffff;
   border: none;
 }
 
-/* Secondary */
 .form-actions button:last-child {
   background: #ffffff;
-  color: #111827;
   border: 1px solid #d1d5db;
 }
 
 /* =========================
-   FILTER BAR
+   🔥 FILTER BAR (FINAL FIX)
 ========================= */
 
 .filter-bar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   margin: 24px 0 12px;
+  flex-wrap: nowrap; /* 🔥 FORCE SINGLE ROW */
 }
 
-.filter-bar input,
-.filter-bar select {
-  height: 42px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-}
-
+/* Search expands */
 .filter-bar input {
   flex: 1;
-  min-width: 240px;
+  min-width: 280px;
+}
+
+/* Dropdowns fixed */
+.filter-bar select {
+  min-width: 160px;
 }
 
 /* =========================
-   QUICK FILTERS
+   QUICK FILTERS (INLINE RIGHT)
 ========================= */
 
 .quick-filters {
   display: flex;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-left: auto;
 }
 
 .quick-filters button {
@@ -182,7 +165,6 @@
   border-radius: 20px;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
-  color: #111827;
   font-size: 12px;
   cursor: pointer;
 }
@@ -225,6 +207,7 @@
 ========================= */
 
 @media (max-width: 1024px) {
+
   .lead-form {
     grid-template-columns: 1fr;
   }
@@ -236,52 +219,13 @@
   .metrics-row {
     grid-template-columns: repeat(2, 1fr);
   }
-}
 
-/* =========================
-   FILTER BAR – SINGLE ROW PREMIUM
-========================= */
+  /* allow wrapping on mobile */
+  .filter-bar {
+    flex-wrap: wrap;
+  }
 
-.filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 24px 0 12px;
-}
-
-/* Search takes max space */
-.filter-bar input {
-  flex: 1;
-  min-width: 260px;
-}
-
-/* Dropdowns fixed width */
-.filter-bar select {
-  min-width: 160px;
-}
-
-/* =========================
-   QUICK FILTERS INLINE
-========================= */
-
-.quick-filters {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto; /* 🔥 pushes chips to right */
-}
-
-/* Buttons style */
-.quick-filters button {
-  padding: 6px 14px;
-  border-radius: 20px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.quick-filters button:hover {
-  background: #f3f4f6;
+  .quick-filters {
+    margin-left: 0;
+  }
 }

@@ -495,3 +495,87 @@ body {
 .content table a:hover {
   text-decoration: underline;
 }
+
+/* =========================================
+   SIDEBAR REFINEMENT — ADMIN (SAFE)
+========================================= */
+
+/* Sidebar container */
+.sidebar {
+  padding-top: 10px;
+}
+
+/* List reset */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Default links */
+.sidebar li a {
+  display: block;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #111827;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+/* Hover */
+.sidebar li a:hover {
+  background: #f3f4f6;
+}
+
+/* Active (Home etc.) */
+.sidebar li a.active {
+  background: #e5e7eb;
+  font-weight: 600;
+}
+
+/* =========================
+   SECTION LABELS (auto-detect)
+========================= */
+
+/* "Ecosystem (Reference)" label */
+.sidebar li[style*="opacity:0.7"] {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #6b7280 !important;
+  text-transform: uppercase;
+  padding: 16px 14px 6px;
+  margin-top: 10px !important;
+}
+
+/* "Entities" sub-label */
+.sidebar li[style*="font-size:12px"] {
+  font-size: 11px !important;
+  color: #9ca3af !important;
+  padding: 4px 14px 6px;
+}
+
+/* =========================
+   EXTERNAL LINKS
+========================= */
+
+.sidebar a[target="_blank"] {
+  font-size: 13px;
+  color: #374151;
+}
+
+/* subtle arrow alignment */
+.sidebar a[target="_blank"]::after {
+  content: " ↗";
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+/* =========================
+   SPACING BETWEEN GROUPS
+========================= */
+
+.sidebar li + li {
+  margin-top: 2px;
+}

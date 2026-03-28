@@ -10,21 +10,12 @@
 
 <body>
 
-<header class="topbar">
-  <h1>Agile AI University – Admin</h1>
-  <div class="user">
-    <span id="status">Checking authentication...</span>
-    <button id="logoutBtn" style="display:none;">Logout</button>
-  </div>
-</header>
-
-<div id="adminWarning" class="admin-warning hidden">
-  ⚠️ Restricted Admin Area — All actions are logged and audited.
-</div>
+<!-- 🔷 CENTRALIZED HEADER -->
+<div id="headerContainer"></div>
 
 <div class="layout">
 
-  <!-- 🔷 SIDEBAR (CLEAN — NO VERIFICATION) -->
+  <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html" class="active">Home</a></li>
@@ -37,14 +28,14 @@
 
   <main class="content">
 
-    <!-- 🔐 LOGIN VIEW -->
+    <!-- 🔐 LOGIN -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- 🏠 ADMIN HOME -->
+    <!-- 🏠 HOME -->
     <section id="homeView" class="hidden">
       <h2>Welcome to Admin Console</h2>
       <p>Select a module from the left menu.</p>
@@ -71,8 +62,14 @@
   </main>
 </div>
 
+<!-- 🔷 CENTRALIZED FOOTER -->
+<div id="footerContainer"></div>
+
 <script type="module">
 import { auth, login, logout, isAdmin } from "./assets/js/core.js";
+import { loadHeader } from "./assets/js/layout/header.js";
+import { loadFooter } from "./assets/js/layout/footer.js";
+
 import {
   onAuthStateChanged,
   signInWithRedirect,
@@ -82,65 +79,73 @@ import {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const statusEl = document.getElementById("status");
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loginView = document.getElementById("loginView");
-  const homeView = document.getElementById("homeView");
-  const nav = document.getElementById("adminNav");
-  const warning = document.getElementById("adminWarning");
+  // 🔥 LOAD LAYOUT FIRST
+  loadHeader();
+  loadFooter();
 
-  // 🔐 LOGIN
-  loginBtn.addEventListener("click", async () => {
-    try {
-      await login();
-    } catch (e) {
-      console.warn("Popup failed, using redirect");
-      const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
-    }
-  });
+  // 🔥 WAIT A TICK FOR DOM INJECTION (important)
+  setTimeout(() => {
 
-  // 🔓 LOGOUT
-  logoutBtn.addEventListener("click", async () => {
-    await logout();
-    window.location.reload();
-  });
+    const statusEl = document.getElementById("status");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginView = document.getElementById("loginView");
+    const homeView = document.getElementById("homeView");
+    const nav = document.getElementById("adminNav");
+    const warning = document.getElementById("adminWarning");
 
-  // 🔁 HANDLE REDIRECT RETURN
-  getRedirectResult(auth).catch(console.error);
+    // 🔐 LOGIN
+    loginBtn.addEventListener("click", async () => {
+      try {
+        await login();
+      } catch (e) {
+        console.warn("Popup failed, using redirect");
+        const provider = new GoogleAuthProvider();
+        await signInWithRedirect(auth, provider);
+      }
+    });
 
-  // 🔐 AUTH STATE
-  onAuthStateChanged(auth, async (user) => {
+    // 🔓 LOGOUT
+    logoutBtn.addEventListener("click", async () => {
+      await logout();
+      window.location.reload();
+    });
 
-    if (!user) {
-      statusEl.innerText = "Please sign in.";
-      loginView.style.display = "block";
-      homeView.style.display = "none";
-      nav.style.display = "none";
-      logoutBtn.style.display = "none";
-      return;
-    }
+    // 🔁 HANDLE REDIRECT RETURN
+    getRedirectResult(auth).catch(console.error);
 
-    // 🔥 ADMIN CHECK (STRICT)
-    if (!isAdmin(user.email)) {
-      statusEl.innerText = "Access denied.";
-      alert("You are not authorized to access this system.");
+    // 🔐 AUTH STATE
+    onAuthStateChanged(auth, async (user) => {
 
-      await logout(); // 🔥 critical cleanup
-      return;
-    }
+      if (!user) {
+        statusEl.innerText = "Please sign in.";
+        loginView.style.display = "block";
+        homeView.style.display = "none";
+        nav.style.display = "none";
+        logoutBtn.style.display = "none";
+        return;
+      }
 
-    // ✅ LOGGED IN STATE
-    statusEl.innerText = user.email;
-    logoutBtn.style.display = "inline-block";
-    nav.style.display = "block";
-    warning.classList.remove("hidden");
+      // 🔥 ADMIN CHECK
+      if (!isAdmin(user.email)) {
+        statusEl.innerText = "Access denied.";
+        alert("You are not authorized to access this system.");
+        await logout();
+        return;
+      }
 
-    loginView.style.display = "none";
-    homeView.style.display = "block";
+      // ✅ LOGGED IN
+      statusEl.innerText = user.email;
+      logoutBtn.style.display = "inline-block";
+      nav.style.display = "block";
+      warning.classList.remove("hidden");
 
-  });
+      loginView.style.display = "none";
+      homeView.style.display = "block";
+
+    });
+
+  }, 50); // 🔥 small delay ensures header exists
 
 });
 </script>

@@ -36,14 +36,12 @@
 
   <main class="content">
 
-    <!-- 🔐 LOGIN VIEW -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- 🔄 REDIRECT VIEW -->
     <section id="redirectView" class="hidden">
       <h2>Redirecting...</h2>
       <p>Taking you to the admin system.</p>
@@ -52,14 +50,19 @@
   </main>
 </div>
 
+<!-- 🔥 FIX: LOAD SCRIPT AFTER DOM + SAFE BINDING -->
 <script type="module">
-  import { auth, login, logout, isAdmin } from "./js/core.js";
-  import {
-    onAuthStateChanged,
-    signInWithRedirect,
-    getRedirectResult,
-    GoogleAuthProvider
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { auth, login, logout, isAdmin } from "./js/core.js";
+import {
+  onAuthStateChanged,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  getRedirectResult
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  console.log("✅ DOM LOADED");
 
   const statusEl = document.getElementById("status");
   const loginBtn = document.getElementById("loginBtn");
@@ -69,18 +72,22 @@
   const nav = document.getElementById("adminNav");
   const warning = document.getElementById("adminWarning");
 
-  // 🔥 SAFE LOGIN HANDLER (POPUP + FALLBACK)
+  if (!loginBtn) {
+    console.error("❌ loginBtn not found");
+    return;
+  }
+
+  // 🔥 GUARANTEED CLICK HANDLER
   loginBtn.addEventListener("click", async () => {
+    console.log("🔥 LOGIN BUTTON CLICKED");
+
     try {
-      console.log("Login clicked");
-
-      await login(); // popup attempt
-
+      await login();
     } catch (e) {
-      console.warn("Popup failed, switching to redirect:", e);
+      console.warn("Popup failed → redirect fallback");
 
       const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider); // fallback
+      await signInWithRedirect(auth, provider);
     }
   });
 
@@ -89,15 +96,15 @@
     window.location.reload();
   });
 
-  // 🔁 Handle redirect result (important fallback support)
+  // 🔁 HANDLE REDIRECT RETURN
   getRedirectResult(auth)
     .then((result) => {
       if (result?.user) {
-        console.log("Redirect login success:", result.user.email);
+        console.log("✅ Redirect login success:", result.user.email);
       }
     })
     .catch((error) => {
-      console.error("Redirect error:", error);
+      console.error("🔥 Redirect error:", error);
     });
 
   // 🔐 AUTH STATE
@@ -115,7 +122,7 @@
 
     if (!isAdmin(user.email)) {
       statusEl.innerText = "Access denied.";
-      alert("You are not authorized to access this admin system.");
+      alert("You are not authorized.");
       return;
     }
 
@@ -131,6 +138,8 @@
       window.location.href = "leads.html";
     }, 800);
   });
+
+});
 </script>
 
 </body>

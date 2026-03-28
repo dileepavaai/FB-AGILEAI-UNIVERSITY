@@ -1,7 +1,5 @@
 /* =====================================================
-   🔷 LEAD INTELLIGENCE MODULE (CLEAN)
-   Depends ONLY on: core.js (db, auth)
-   Auth handled at PAGE LEVEL
+   🔷 LEAD INTELLIGENCE MODULE (ENHANCED – SAFE)
    ===================================================== */
 
 import { db, auth } from "./core.js";
@@ -18,15 +16,14 @@ import {
 
 /* =====================================================
    🔷 STATE
-   ===================================================== */
+===================================================== */
 let leads = [];
-let currentUserEmail = null;
 let unsubscribe = null;
 let isSaving = false;
 
 /* =====================================================
    🔷 HELPERS
-   ===================================================== */
+===================================================== */
 const get = (id) => document.getElementById(id)?.value.trim() || "";
 
 const set = (id, value) => {
@@ -38,16 +35,45 @@ function getSafeStage(l) {
   return l.stage || "New";
 }
 
-function evaluateLead(l) {
-  if (l.score === 0) return true;
-  if (l.interactions >= 3 && l.score <= 1) return true;
-  if (l.notes?.toLowerCase().includes("no")) return true;
-  return false;
+/* =====================================================
+   🔷 NEXT ACTION ENGINE (🔥 NEW)
+===================================================== */
+function daysSince(dateString) {
+  if (!dateString) return 999;
+  const now = new Date();
+  const past = new Date(dateString);
+  return Math.floor((now - past) / (1000 * 60 * 60 * 24));
+}
+
+function getNextAction(lead) {
+  const days = daysSince(lead.last_contact_date);
+
+  if (lead.stage === "contacted" && days >= 2) {
+    return { label: "Follow up", type: "urgent" };
+  }
+
+  if (lead.last_response_type === "asked_info") {
+    return { label: "Send details", type: "normal" };
+  }
+
+  if (lead.last_response_type === "interested" && days >= 3) {
+    return { label: "Nudge", type: "urgent" };
+  }
+
+  if (lead.last_response_type === "not_now") {
+    return { label: "Nurture", type: "normal" };
+  }
+
+  if (lead.stage === "new") {
+    return { label: "Contact", type: "urgent" };
+  }
+
+  return { label: "-", type: "none" };
 }
 
 /* =====================================================
    🔷 METRICS
-   ===================================================== */
+===================================================== */
 function updateLeadMetrics() {
   const counts = {
     total: 0,
@@ -76,18 +102,13 @@ function updateLeadMetrics() {
     ? ((counts.Converted / counts.Qualified) * 100).toFixed(1)
     : 0;
 
-  const dropRate = counts.total
-    ? ((counts.Dropped / counts.total) * 100).toFixed(1)
-    : 0;
-
   set("mConvRate", conversionRate + "%");
   set("mQualConvRate", qualifiedConversionRate + "%");
-  set("mDropRate", dropRate + "%");
 }
 
 /* =====================================================
-   🔷 ADD LEAD
-   ===================================================== */
+   🔷 ADD LEAD (🔥 UPDATED)
+===================================================== */
 window.addLead = async function () {
   if (isSaving) return;
   isSaving = true;
@@ -102,6 +123,9 @@ window.addLead = async function () {
   }
 
   try {
+
+    const lastContactDate = get("leadLastContactDate") || null;
+
     await addDoc(collection(db, "leads"), {
       name,
       role: get("leadRole"),
@@ -121,10 +145,16 @@ window.addLead = async function () {
 
       score: 3,
       status: "Warm",
-      stage: "New",
+
+      // 🔥 NEW LOGIC
+      stage: lastContactDate ? "contacted" : "new",
+      last_contact_date: lastContactDate,
+      last_response_type: null,
+
       next: "",
       notes: "",
       interactions: 1,
+
       created_at: serverTimestamp()
     });
 
@@ -139,13 +169,14 @@ window.addLead = async function () {
 };
 
 /* =====================================================
-   🔷 CLEAR FORM
-   ===================================================== */
+   🔷 CLEAR FORM (UPDATED)
+===================================================== */
 window.clearLeadForm = function () {
   [
     "leadName","leadRole","leadCompany","leadLocation",
     "leadEmail","leadPhone","leadLinkedIn",
-    "leadExperience","leadSourceDetail"
+    "leadExperience","leadSourceDetail",
+    "leadLastContactDate"
   ].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = "";
@@ -159,7 +190,7 @@ window.clearLeadForm = function () {
 
 /* =====================================================
    🔷 UPDATE LEAD
-   ===================================================== */
+===================================================== */
 window.updateLead = async function (id, field, value) {
   const ref = doc(db, "leads", id);
 
@@ -170,85 +201,48 @@ window.updateLead = async function (id, field, value) {
 };
 
 /* =====================================================
-   🔷 RENDER
-   ===================================================== */
+   🔷 RENDER (🔥 UPDATED WITH NEXT ACTION)
+===================================================== */
 window.renderLeads = function () {
   const body = document.getElementById("leadBody");
   if (!body) return;
 
-  const filter = document.getElementById("leadFilter")?.value || "all";
-  const userFilter = document.getElementById("leadUserFilter")?.value || "all";
-  const search = (window.leadSearchText || "").toLowerCase();
-
   body.innerHTML = "";
 
-  leads
-    .filter(l => {
-      if (userFilter === "mine" && l.created_by !== auth.currentUser?.email) return false;
-      if (filter === "priority" && l.score < 4) return false;
-      if (filter === "blocked" && !evaluateLead(l)) return false;
+  leads.forEach(l => {
 
-      if (search) {
-        const combined = `${l.name} ${l.role} ${l.company} ${l.email}`.toLowerCase();
-        return combined.includes(search);
-      }
+    const stage = getSafeStage(l);
+    const action = getNextAction(l);
 
-      return true;
-    })
-    .forEach(l => {
-      const stage = getSafeStage(l);
-      const blocked = evaluateLead(l);
+    body.innerHTML += `
+      <tr>
+        <td>${l.name || ""}</td>
+        <td><input value="${l.role || ""}" onchange="updateLead('${l.id}','role',this.value)"></td>
+        <td>${l.company || ""}</td>
+        <td>${l.source || ""}</td>
+        <td>${l.owner || ""}</td>
+        <td>${l.email || ""}</td>
+        <td>${l.score}</td>
+        <td>${l.status || ""}</td>
+        <td>${stage}</td>
 
-      body.innerHTML += `
-        <tr>
-          <td>${l.name || ""}</td>
-          <td><input value="${l.role || ""}" onchange="updateLead('${l.id}','role',this.value)"></td>
-          <td>${l.company || ""}</td>
-          <td>${l.source || ""}</td>
-          <td>${l.owner || ""}</td>
-          <td>${l.email || ""}</td>
-          <td>${l.score}</td>
-          <td>${l.status || ""}</td>
-          <td>${stage}</td>
-          <td>${l.next || ""}</td>
-          <td>${l.notes || ""}</td>
-          <td>${blocked ? "⚠️" : ""}</td>
-        </tr>
-      `;
-    });
-};
+        <!-- 🔥 NEXT ACTION -->
+        <td>
+          <span class="next-action ${action.type}">
+            ${action.label}
+          </span>
+        </td>
 
-/* =====================================================
-   🔷 SEARCH + FILTER
-   ===================================================== */
-window.leadSearchText = "";
-
-window.applyLeadSearch = function (value) {
-  window.leadSearchText = value;
-  renderLeads();
-};
-
-window.quickFilter = function (type) {
-  const filter = document.getElementById("leadFilter");
-  const userFilter = document.getElementById("leadUserFilter");
-
-  if (!filter || !userFilter) return;
-
-  if (type === "high") {
-    filter.value = "priority";
-    userFilter.value = "all";
-  }
-
-  if (type === "mine") {
-    userFilter.value = "mine";
-  }
-
-  renderLeads();
+        <td>${l.notes || ""}</td>
+        <td></td>
+      </tr>
+    `;
+  });
 };
 
 /* =====================================================
    🔷 FIRESTORE LISTENER
-   ===================================================== */
+===================================================== */
 function startListener() {
   if (unsubscribe) unsubscribe();
 
@@ -258,15 +252,12 @@ function startListener() {
     leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     updateLeadMetrics();
     renderLeads();
-  }, (err) => {
-    console.error("Firestore error:", err);
   });
 }
 
 /* =====================================================
-   🔷 INIT (CALLED AFTER AUTH)
-   ===================================================== */
+   🔷 INIT
+===================================================== */
 document.addEventListener("DOMContentLoaded", () => {
-  currentUserEmail = auth.currentUser?.email || null;
   startListener();
 });

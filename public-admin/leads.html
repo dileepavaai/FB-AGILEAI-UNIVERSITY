@@ -102,6 +102,11 @@
             <input id="leadExperience" placeholder="Enter experience" />
           </div>
 
+          <div class="form-field">
+            <label>Last Contact Date (optional)</label>
+            <input type="date" id="leadLastContactDate" />
+          </div>
+
           <div class="form-field full-width">
             <label>Source Detail</label>
             <input id="leadSourceDetail" placeholder="Additional context" />
@@ -155,7 +160,7 @@
               <th>Score</th>
               <th>Status</th>
               <th>Stage</th>
-              <th>Next</th>
+              <th>Next Action</th>
               <th>Notes</th>
               <th>Flag</th>
             </tr>
@@ -174,57 +179,6 @@
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 initAdminApp("./assets/js/leads.js");
-</script>
-
-<!-- =========================
-     UI: PILL SELECTOR
-========================= -->
-<script>
-document.querySelectorAll('.pill-select').forEach(container => {
-  const targetId = container.getAttribute('data-target');
-  const select = document.getElementById(targetId);
-
-  if (!select) return;
-
-  Array.from(select.options).forEach((opt, index) => {
-    const pill = document.createElement('div');
-    pill.className = 'pill-option';
-    pill.textContent = opt.text;
-
-    if (index === select.selectedIndex) {
-      pill.classList.add('active');
-    }
-
-    pill.onclick = () => {
-      select.value = opt.value;
-      container.querySelectorAll('.pill-option').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      select.dispatchEvent(new Event('change'));
-    };
-
-    container.appendChild(pill);
-  });
-});
-</script>
-
-<!-- =========================
-     UX: ENTER NAVIGATION
-========================= -->
-<script>
-const inputs = Array.from(document.querySelectorAll('.lead-form input, .lead-form select'));
-
-inputs.forEach((el, index) => {
-  el.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (index < inputs.length - 1) {
-        inputs[index + 1].focus();
-      } else {
-        addLead();
-      }
-    }
-  });
-});
 </script>
 
 <!-- =========================
@@ -294,6 +248,7 @@ document.getElementById("leadForm").addEventListener("paste", (e) => {
      LEVEL 3: BULK PARSER
 ========================= -->
 <script>
+
 function splitProfiles(text) {
   return text.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 20);
 }
@@ -322,6 +277,9 @@ function parseProfile(block) {
 }
 
 document.getElementById("leadForm").addEventListener("paste", (e) => {
+
+  if (e.target.tagName === "INPUT") return; // ✅ moved inside
+
   const text = (e.clipboardData || window.clipboardData).getData("text");
   if (!text || text.length < 60) return;
 
@@ -398,7 +356,7 @@ window.addLead = function () {
     return (text || "").toLowerCase().trim();
   }
 
-  const existingAddLead = window.addLead;
+  const existingAddLead = window.addLead.bind(window);
 
   window.addLead = function () {
 
@@ -407,7 +365,7 @@ window.addLead = function () {
 
     /* --- DUPLICATE CHECK --- */
     const isDuplicate = window.leads?.some(l =>
-      l.linkedin === leadLinkedIn.value ||
+      l.linkedin_url === leadLinkedIn.value ||
       (
         normalize(l.name) === normalize(leadName.value) &&
         normalize(l.company) === normalize(leadCompany.value)
@@ -550,6 +508,71 @@ window.addLead = function () {
 })();
 
 </script>
+
+<script>
+
+/* =========================
+   DUPLICATE DETECTION
+========================= */
+
+function isDuplicateLead(newLead, leads) {
+  return leads.some(l =>
+    l.email && newLead.email &&
+    l.email.toLowerCase() === newLead.email.toLowerCase()
+  );
+}
+
+</script>
+
+<script>
+
+/* =========================
+   NEXT ACTION ENGINE
+========================= */
+
+function daysSince(dateString) {
+  if (!dateString) return 999;
+
+  const now = new Date();
+  const past = new Date(dateString);
+
+  return Math.floor((now - past) / (1000 * 60 * 60 * 24));
+}
+
+function getNextAction(lead) {
+
+  const days = daysSince(lead.last_contact_date);
+
+  // 🟡 Asked info
+  if (lead.last_response_type === "asked_info") {
+    return { label: "Send details", type: "normal" };
+  }
+
+  // 🟡 Interested but silent
+  if (lead.last_response_type === "interested" && days >= 3) {
+    return { label: "Nudge", type: "urgent" };
+  }
+
+  // 🟢 Not now
+  if (lead.last_response_type === "not_now") {
+    return { label: "Nurture", type: "normal" };
+  }
+
+  // 🔴 No response after contact
+  if (lead.stage === "contacted" && days >= 2) {
+    return { label: "Follow up", type: "urgent" };
+  }
+
+  // 🆕 New lead
+  if (lead.stage === "new") {
+    return { label: "Contact", type: "urgent" };
+  }
+
+  return { label: "-", type: "none" };
+}
+</script>
+
+<script src="assets/js/leads-ui.js"></script>
 
 </body>
 </html>

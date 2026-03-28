@@ -24,3 +24,24 @@ export function highlightActiveSidebar() {
   });
 
 }
+
+// ==========================================
+// ACTIVE NAVIGATION (AUTO HIGHLIGHT)
+// ==========================================
+(function () {
+  const path = window.location.pathname.split("/").pop() || "index.html";
+  const links = document.querySelectorAll(".sidebar a");
+
+  links.forEach(link => {
+    const href = link.getAttribute("href");
+    if (!href) return;
+
+    if (href === path) {
+      link.classList.add("active");
+    }
+
+    if (path === "" && href === "index.html") {
+      link.classList.add("active");
+    }
+  });
+})();

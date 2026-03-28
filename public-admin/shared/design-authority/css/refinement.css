@@ -417,3 +417,81 @@ body {
 .next-action.none {
   color: #9ca3af;
 }
+
+/* =========================================
+   ADMIN DASHBOARD — SAFE ENHANCEMENTS
+   (Additive only — no overrides)
+========================================= */
+
+/* =========================
+   METRICS (Homepage only)
+========================= */
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.metrics > div {
+  background: var(--surface-muted, #fafafa);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.metrics span {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 4px;
+}
+
+/* =========================
+   ADMIN TABLES ONLY
+========================= */
+
+.content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 10px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.content table tr {
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.content table tr:last-child {
+  border-bottom: none;
+}
+
+.content table td {
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.content table td:first-child {
+  font-weight: 600;
+  width: 180px;
+  color: #374151;
+}
+
+.content table tr:hover {
+  background: #f9fafb;
+}
+
+.content table a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.content table a:hover {
+  text-decoration: underline;
+}

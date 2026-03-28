@@ -451,13 +451,37 @@ window.addLead = function () {
 <!-- =========================
      UX ENHANCEMENTS (SAFE APPEND)
 ========================= -->
+
 <script>
 
 /* =========================
-   1. REAL-TIME VALIDATION
+   1. REAL-TIME VALIDATION (WITH MESSAGE)
 ========================= */
 
 (function () {
+
+  function showError(el, message) {
+    el.style.borderColor = "#dc2626";
+
+    let msg = el.parentNode.querySelector(".error-text");
+    if (!msg) {
+      msg = document.createElement("div");
+      msg.className = "error-text";
+      msg.style.fontSize = "11px";
+      msg.style.color = "#dc2626";
+      msg.style.marginTop = "4px";
+      el.parentNode.appendChild(msg);
+    }
+
+    msg.innerText = message;
+  }
+
+  function clearError(el) {
+    el.style.borderColor = "";
+
+    const msg = el.parentNode.querySelector(".error-text");
+    if (msg) msg.remove();
+  }
 
   const emailEl = document.getElementById("leadEmail");
   const phoneEl = document.getElementById("leadPhone");
@@ -467,9 +491,9 @@ window.addLead = function () {
       const val = emailEl.value.trim();
 
       if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-        emailEl.style.borderColor = "#dc2626";
+        showError(emailEl, "Enter a valid email (e.g., name@company.com)");
       } else {
-        emailEl.style.borderColor = "";
+        clearError(emailEl);
       }
     });
   }
@@ -479,15 +503,15 @@ window.addLead = function () {
       const cleaned = phoneEl.value.replace(/\D/g, "");
 
       if (phoneEl.value && (cleaned.length < 10 || cleaned.length > 15)) {
-        phoneEl.style.borderColor = "#dc2626";
+        showError(phoneEl, "Enter a valid phone (10–15 digits)");
       } else {
-        phoneEl.style.borderColor = "";
+        clearError(phoneEl);
       }
     });
   }
 
 })();
-
+</script>
 
 /* =========================
    2. SMART AUTOFLOW (SAFE WRAP)

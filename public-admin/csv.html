@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <title>CSV Import – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 
@@ -11,22 +12,42 @@
 
 <header class="topbar">
   <h1>CSV Import</h1>
-  <a href="index.html">← Back to Admin</a>
+  <div class="user">
+    <a href="index.html">← Back to Admin</a>
+  </div>
 </header>
 
 <div class="content">
 
-  <h2>Upload CSV</h2>
+  <!-- 🔷 SECTION: BATCH SELECTION -->
+  <h2>Step 1: Select Batch</h2>
 
-  <input type="file" id="csvFile" accept=".csv" />
-  <button id="parseBtn">Parse</button>
-  <button id="uploadBtn">Upload to Firestore</button>
+  <select id="csvBatchSelect">
+    <option value="">-- Select Batch --</option>
+  </select>
 
-  <p id="statusMsg"></p>
+  <p style="font-size:12px;color:#666;">
+    Batch selection is mandatory. All records will be linked to this batch.
+  </p>
 
   <hr />
 
-  <h2>Preview</h2>
+  <!-- 🔷 SECTION: FILE UPLOAD -->
+  <h2>Step 2: Upload CSV</h2>
+
+  <input type="file" id="csvFile" accept=".csv" />
+
+  <div style="margin-top:10px;">
+    <button id="parseBtn">Parse & Validate</button>
+    <button id="uploadBtn">Upload Valid Records</button>
+  </div>
+
+  <p id="statusMsg" style="margin-top:10px;font-weight:bold;"></p>
+
+  <hr />
+
+  <!-- 🔷 SECTION: PREVIEW -->
+  <h2>Step 3: Preview & Validation</h2>
 
   <table id="previewTable">
     <thead>
@@ -35,11 +56,15 @@
         <th>Email</th>
         <th>Type</th>
         <th>Program</th>
-        <th>Status</th>
+        <th>Status / Errors</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
+
+  <p style="font-size:12px;color:#666;margin-top:10px;">
+    🔴 Invalid rows are highlighted. Only valid records will be uploaded.
+  </p>
 
 </div>
 

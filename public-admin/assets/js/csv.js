@@ -3,10 +3,11 @@ import { auth, db } from "./core.js";
 import {
   collection,
   addDoc,
-  serverTimestamp,
   getDocs,
   query,
-  where
+  where,
+  orderBy,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
@@ -25,6 +26,7 @@ auth.onAuthStateChanged((user) => {
 
 let parsedData = [];
 let validatedData = [];
+let selectedBatch = null;
 
 /* =====================================================
    🚀 INIT
@@ -37,6 +39,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const uploadBtn = document.getElementById("uploadBtn");
   const previewBody = document.querySelector("#previewTable tbody");
   const statusMsg = document.getElementById("statusMsg");
+  const batchSelect = document.getElementById("csvBatchSelect");
+
+  /* =====================================================
+     📥 LOAD BATCHES
+     ===================================================== */
+
+  async function loadBatches() {
+
+    const snap = await getDocs(
+      query(collection(db, "batches"), orderBy("created_at", "desc"))
+    );
+
+    batchSelect.innerHTML = `<option value="">-- Select Batch --</option>`;
+
+    snap.forEach(docSnap => {
+      const b = docSnap.data();
+
+      batchSelect.innerHTML += `
+        <option value="${docSnap.id}">
+          ${b.batch_name} (${b.program_code})
+        </option>
+      `;
+    });
+  }
+
+  batchSelect.addEventListener("change", () => {
+    const selectedOption = batchSelect.options[batchSelect.selectedIndex];
+
+    selectedBatch = {
+      id: batchSelect.value,
+      name: selectedOption.text
+    };
+  });
 
   /* =====================================================
      📄 PARSE CSV
@@ -44,19 +79,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   parseBtn.addEventListener("click", () => {
 
+    if (!batchSelect.value) {
+      alert("Select a batch before parsing");
+      return;
+    }
+
     const file = fileInput.files[0];
 
     if (!file) {
-      alert("Please select a CSV file");
+      alert("Select CSV file");
       return;
     }
 
     const reader = new FileReader();
 
     reader.onload = function (e) {
-      const text = e.target.result;
 
-      parsedData = parseCSV(text);
+      parsedData = parseCSV(e.target.result);
 
       validateData();
       renderPreview();
@@ -69,13 +108,18 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     📤 UPLOAD (ONLY VALID)
+     📤 UPLOAD
      ===================================================== */
 
   uploadBtn.addEventListener("click", async () => {
 
+    if (!selectedBatch?.id) {
+      alert("Batch selection required");
+      return;
+    }
+
     if (!validatedData.length) {
-      alert("No valid data to upload");
+      alert("No valid data");
       return;
     }
 
@@ -85,40 +129,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
 
-        // 🔍 Optional Firestore duplicate check (email)
+        // 🔍 Duplicate check (email)
         const existing = await getDocs(
           query(collection(db, "credentials"), where("email", "==", row.email))
         );
 
-        if (!existing.empty) {
-          console.warn("Duplicate in DB:", row.email);
-          continue;
-        }
+        if (!existing.empty) continue;
 
         await addDoc(collection(db, "credentials"), {
+
+          // 🔷 CORE DATA
           full_name: row.full_name,
           email: row.email,
           credential_type: row.credential_type,
           program_code: row.program_code,
+
+          // 🔷 BATCH MAPPING
+          batch_id: selectedBatch.id,
+          batch_name: selectedBatch.name,
+
+          // 🔷 SYSTEM FIELDS
           issued_by: row.issued_by || "Agile AI University",
           issued_status: row.issued_status || "issued",
+
           created_at: serverTimestamp(),
           created_by: auth.currentUser?.email || "system"
+
         });
 
         success++;
 
       } catch (err) {
-        console.error("Upload error:", err, row);
+        console.error("Upload error:", err);
       }
     }
 
     statusMsg.innerText =
-      `Uploaded ${success} records (Skipped invalid + duplicates)`;
+      `Uploaded ${success} records (Batch: ${selectedBatch.name})`;
   });
 
   /* =====================================================
-     🔍 CSV PARSER
+     🔍 PARSER
      ===================================================== */
 
   function parseCSV(text) {
@@ -127,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const headers = lines[0].split(",").map(h => h.trim());
 
     return lines.slice(1).map(line => {
+
       const values = line.split(",");
       let obj = {};
 
@@ -139,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-     ✅ VALIDATION ENGINE
+     ✅ VALIDATION
      ===================================================== */
 
   function validateData() {
@@ -147,27 +199,22 @@ document.addEventListener("DOMContentLoaded", () => {
     validatedData = [];
     const emailSet = new Set();
 
-    parsedData.forEach((row, index) => {
+    parsedData.forEach(row => {
 
       let errors = [];
 
-      // 🔹 Required fields
       if (!row.full_name) errors.push("Missing Name");
       if (!row.email) errors.push("Missing Email");
       if (!row.program_code) errors.push("Missing Program");
 
-      // 🔹 Email format
       if (row.email && !validateEmail(row.email)) {
         errors.push("Invalid Email");
       }
 
-      // 🔹 Program validation
-      const allowedPrograms = ["AOP", "AIPA"];
-      if (row.program_code && !allowedPrograms.includes(row.program_code)) {
+      if (!["AOP", "AIPA"].includes(row.program_code)) {
         errors.push("Invalid Program");
       }
 
-      // 🔹 Duplicate in file
       if (emailSet.has(row.email)) {
         errors.push("Duplicate in file");
       } else {
@@ -187,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-     👀 PREVIEW (WITH ERRORS)
+     👀 PREVIEW
      ===================================================== */
 
   function renderPreview() {
@@ -212,5 +259,11 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     });
   }
+
+  /* =====================================================
+     🔥 INIT LOAD
+     ===================================================== */
+
+  loadBatches();
 
 });

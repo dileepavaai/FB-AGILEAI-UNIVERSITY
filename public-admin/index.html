@@ -28,15 +28,16 @@
 
   <main class="content">
 
-    <!-- 🔐 LOGIN -->
+    <!-- 🔐 LOGIN VIEW -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <!-- 🏠 HOME -->
-    <section id="homeView" class="hidden">
+    <!-- 🏠 HOME VIEW -->
+    <section id="appView" class="hidden">
+
       <h2>Welcome to Admin Console</h2>
       <p>Select a module from the left menu.</p>
 
@@ -65,124 +66,12 @@
 <!-- 🔷 FOOTER -->
 <div id="footerContainer"></div>
 
+<!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
 <script type="module">
-import { auth, login, logout, isAdmin, getUserRole } from "./assets/js/core.js";
-import { loadHeader } from "./assets/js/layout/header.js";
-import { loadFooter } from "./assets/js/layout/footer.js";
+import { initAdminApp } from "./assets/js/admin-app.js";
 
-import {
-  onAuthStateChanged,
-  signInWithRedirect,
-  GoogleAuthProvider,
-  getRedirectResult
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  // 🔥 LOAD LAYOUT FIRST
-  loadHeader();
-  loadFooter();
-
-  // 🔥 ENSURE HEADER ELEMENTS EXIST
-  setTimeout(() => {
-
-    const statusEl = document.getElementById("status");
-    const roleBadge = document.getElementById("roleBadge");
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const loginView = document.getElementById("loginView");
-    const homeView = document.getElementById("homeView");
-    const nav = document.getElementById("adminNav");
-    const warning = document.getElementById("adminWarning");
-
-    /* ============================================
-       🔥 ACTIVE SIDEBAR (AUTO DETECT)
-       ============================================ */
-    function setActiveSidebar() {
-      const currentPage = window.location.pathname.split("/").pop() || "index.html";
-
-      document.querySelectorAll(".sidebar a").forEach(link => {
-        if (link.getAttribute("href") === currentPage) {
-          link.classList.add("active");
-        } else {
-          link.classList.remove("active");
-        }
-      });
-    }
-
-    setActiveSidebar();
-
-    /* ============================================
-       🔐 LOGIN
-       ============================================ */
-    loginBtn.addEventListener("click", async () => {
-      try {
-        await login();
-      } catch (e) {
-        console.warn("Popup failed, using redirect");
-        const provider = new GoogleAuthProvider();
-        await signInWithRedirect(auth, provider);
-      }
-    });
-
-    /* ============================================
-       🔓 LOGOUT
-       ============================================ */
-    logoutBtn.addEventListener("click", async () => {
-      await logout();
-      window.location.reload();
-    });
-
-    /* ============================================
-       🔁 REDIRECT RESULT
-       ============================================ */
-    getRedirectResult(auth).catch(console.error);
-
-    /* ============================================
-       🔐 AUTH STATE
-       ============================================ */
-    onAuthStateChanged(auth, async (user) => {
-
-      if (!user) {
-        statusEl.innerText = "Please sign in.";
-        loginView.style.display = "block";
-        homeView.style.display = "none";
-        nav.style.display = "none";
-        logoutBtn.style.display = "none";
-        return;
-      }
-
-      /* 🔥 ADMIN CHECK */
-      if (!isAdmin(user.email)) {
-        statusEl.innerText = "Access denied.";
-        alert("You are not authorized to access this system.");
-        await logout();
-        return;
-      }
-
-      /* ✅ LOGGED IN STATE */
-      statusEl.innerText = user.email;
-      logoutBtn.style.display = "inline-block";
-      nav.style.display = "block";
-      warning.classList.remove("hidden");
-
-      loginView.style.display = "none";
-      homeView.style.display = "block";
-
-      /* 🔥 ROLE BADGE */
-      const role = getUserRole(user.email);
-
-      if (roleBadge && role) {
-        roleBadge.innerText = role.replace("_", " ").toUpperCase();
-        roleBadge.classList.add(`role-${role}`);
-        roleBadge.style.display = "inline-block";
-      }
-
-    });
-
-  }, 50);
-
-});
+/* 🔥 NO MODULE (HOME PAGE) */
+initAdminApp();
 </script>
 
 </body>

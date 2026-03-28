@@ -384,5 +384,69 @@ window.addLead = function () {
 };
 </script>
 
+<!-- =========================
+     LEVEL 4: SAFE APPEND (NO OVERRIDE)
+========================= -->
+<script>
+/* =========================
+   LEVEL 4: NON-DESTRUCTIVE INTELLIGENCE
+========================= */
+
+(function () {
+
+  function normalize(text) {
+    return (text || "").toLowerCase().trim();
+  }
+
+  const existingAddLead = window.addLead;
+
+  window.addLead = function () {
+
+    /* --- EXISTING VALIDATION ALREADY RUNS --- */
+    /* We DO NOT duplicate validation logic */
+
+    /* --- DUPLICATE CHECK --- */
+    const isDuplicate = window.leads?.some(l =>
+      l.linkedin === leadLinkedIn.value ||
+      (
+        normalize(l.name) === normalize(leadName.value) &&
+        normalize(l.company) === normalize(leadCompany.value)
+      )
+    );
+
+    if (isDuplicate) {
+      alert("Duplicate lead detected");
+      return;
+    }
+
+    /* --- SMART SCORING (NON-INTRUSIVE) --- */
+    const role = (leadRole.value || "").toLowerCase();
+    const exp = parseInt(leadExperience.value || "0", 10);
+
+    let score = 0;
+
+    if (exp >= 12) score += 30;
+    else if (exp >= 8) score += 20;
+    else if (exp >= 4) score += 10;
+
+    if (role.includes("director") || role.includes("head")) score += 30;
+    else if (role.includes("manager")) score += 20;
+    else if (role.includes("lead")) score += 15;
+
+    if (leadSource.value === "Referral") score += 20;
+    if (leadSource.value === "LinkedIn") score += 10;
+
+    score = Math.min(score, 100);
+
+    /* --- DEBUG (SAFE) --- */
+    console.log("Lead Score:", score);
+
+    /* --- CONTINUE NORMAL FLOW --- */
+    return existingAddLead();
+  };
+
+})();
+</script>
+
 </body>
 </html>

@@ -25,7 +25,9 @@ export function loadHeader(user = null, role = null) {
       <div class="user">
 
         <!-- 🌗 THEME TOGGLE -->
-        <button id="themeToggle" title="Toggle Theme">🌞</button>
+        <button id="themeToggle" title="Toggle Theme" aria-label="Toggle Theme">
+          🌞
+        </button>
 
         <span id="status">${email}</span>
         ${roleBadgeHTML}
@@ -44,13 +46,25 @@ export function loadHeader(user = null, role = null) {
   document.getElementById("headerContainer").innerHTML = header;
 
   /* =====================================================
-     🔗 LOAD THEME SYSTEM (SAFE, ONCE)
+     🔗 LOAD THEME SYSTEM (SAFE, ROOT PATH, ONCE)
      ===================================================== */
 
   if (!window.__themeLoaded) {
+
     const script = document.createElement("script");
-    script.src = "assets/js/theme-toggle.js";
+
+    // ✅ CRITICAL FIX: absolute path (works on all pages)
+    script.src = "/assets/js/theme-toggle.js";
+
     script.defer = true;
+
+    script.onload = () => {
+      console.log("✅ Theme system loaded");
+    };
+
+    script.onerror = () => {
+      console.error("❌ Failed to load theme-toggle.js");
+    };
 
     document.body.appendChild(script);
 

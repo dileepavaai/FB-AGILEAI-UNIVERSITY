@@ -2,176 +2,195 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Reconciliation – Agile AI University</title>
+  <title>Reconciliation – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Reuse canonical admin styles -->
-  <link rel="stylesheet" href="/admin.css" />
-
-  <!-- Firebase SDKs (same pattern as admin) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-  <script src="/admin.js" defer></script>
-  <script src="/reconciliation.js" defer></script>
+  <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 
 <body>
-  <header class="admin-header">
-    <div class="admin-header-left">
-      <strong>Agile AI University – Admin</strong>
-    </div>
-    <div class="admin-header-right">
-      <span id="admin-user"></span>
-      <button id="logoutBtn">Logout</button>
-    </div>
-  </header>
 
-  <div class="admin-container">
-    <aside class="admin-sidebar">
-      <nav>
-        <a href="/index.html">Dashboard</a>
-        <a href="/batch.html">Batch Management</a>
-        <a href="/issuance.html">Credential Issuance</a>
-        <a href="/csv.html">CSV Import</a>
-        <a href="/verifications.html">Verification Requests</a>
-        <a href="/audit.html">Audit Logs</a>
+<!-- 🔷 HEADER -->
+<div id="headerContainer"></div>
 
-        <a href="/reconciliation.html" class="active">Reconciliation</a>
-      </nav>
-    </aside>
+<div class="layout">
 
-    <main class="admin-main" id="reconciliation">
-      <h1>Reconciliation</h1>
+  <!-- 🔷 SIDEBAR -->
+  <nav class="sidebar" id="adminNav" style="display:none;">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="leads.html">Lead Intelligence</a></li>
+      <li><a href="batch.html">Batch Management</a></li>
+      <li><a href="csv.html">CSV Import</a></li>
+      <li><a href="reconciliation.html">Reconciliation</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+
+    <!-- 🔐 LOGIN -->
+    <section id="loginView">
+      <h2>Admin Access</h2>
+      <p>Please sign in with your authorized account.</p>
+      <button id="loginBtn">Sign in with Google</button>
+    </section>
+
+    <!-- 🔷 APP -->
+    <section id="appView" class="hidden">
+
+      <h2>Reconciliation</h2>
       <p class="muted">
         Read-only financial and entitlement reconciliation.
         All records are system-generated and audit-safe.
       </p>
 
-      <!-- =====================================================
-           🔹 PHASE 1 — SUMMARY PANEL (READ-ONLY)
-           ===================================================== -->
-      <section class="recon-summary">
-        <div class="recon-summary-grid">
-          <div>
-            <strong>Date Range</strong>
-            <div id="summary-date-range" class="muted">—</div>
-          </div>
-          <div>
-            <strong>Total Transactions</strong>
-            <div id="summary-total-count">—</div>
-          </div>
-          <div>
-            <strong>Total Amount</strong>
-            <div id="summary-total-amount">—</div>
-          </div>
-          <div>
-            <strong>Failed / Refunded</strong>
-            <div id="summary-failed-amount">—</div>
-          </div>
-          <div>
-            <strong>Currency</strong>
-            <div id="summary-currency">—</div>
-          </div>
-          <div>
-            <strong>Data Source</strong>
-            <div class="muted">Razorpay Orders + Verified Webhooks</div>
-          </div>
-        </div>
-
-        <div class="muted recon-summary-note">
-          Summary reflects currently loaded records.
-        </div>
-      </section>
-
-      <!-- =====================================================
-           🔹 PHASE 2 — FILTERS + EXPORT (VIEW-ONLY)
-           ===================================================== -->
-      <section class="recon-controls">
-        <div class="recon-filters">
-          <span class="muted">Filters:</span>
-
-          <select id="filter-status">
-            <option value="">All Statuses</option>
-            <option value="captured">Captured</option>
-            <option value="failed">Failed</option>
-            <option value="refunded">Refunded</option>
-          </select>
-
-          <select id="filter-currency">
-            <option value="">All Currencies</option>
-            <option value="INR">INR</option>
-            <option value="USD">USD</option>
-          </select>
-
-          <input type="date" id="filter-from" />
-          <input type="date" id="filter-to" />
-
-          <span class="muted small">
-            Filters affect display only. Source data unchanged.
-          </span>
-        </div>
-
-        <div class="recon-exports">
-          <button id="exportCsvBtn">⬇️ Export CSV</button>
-          <button id="exportPdfBtn">⬇️ Export PDF</button>
-        </div>
-      </section>
-
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="advisory">Advisory Insights</button>
-        <button class="tab-btn" data-tab="programs">Programs</button>
+      <!-- 🔷 SUMMARY -->
+      <div class="metrics">
+        <div>Total Transactions: <span id="summary-total-count">—</span></div>
+        <div>Total Amount: <span id="summary-total-amount">—</span></div>
+        <div>Failed / Refunded: <span id="summary-failed-amount">—</span></div>
+        <div>Currency: <span id="summary-currency">—</span></div>
       </div>
 
-      <!-- =====================================================
-           ADVISORY INSIGHTS
-           ===================================================== -->
-      <section id="tab-advisory" class="tab-panel active">
-        <h2>Advisory Insights (Independent Product)</h2>
+      <hr />
 
-        <div class="muted small">
-          Sorted by capture time (system default).
-        </div>
+      <!-- 🔷 FILTERS -->
+      <div class="toolbar">
+        <select id="filter-status">
+          <option value="">All Statuses</option>
+          <option value="captured">Captured</option>
+          <option value="failed">Failed</option>
+          <option value="refunded">Refunded</option>
+        </select>
 
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Order ID (Razorpay)</th>
-              <th>Payment ID</th>
-              <th>Email</th>
-              <th>Artifact</th>
-              <th>Amount (INR)</th>
-              <th>Status</th>
-              <th>Captured At</th>
-            </tr>
-          </thead>
-          <tbody id="advisoryRows">
-            <tr>
-              <td colspan="7" class="muted">Loading…</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+        <select id="filter-currency">
+          <option value="">All Currencies</option>
+          <option value="INR">INR</option>
+          <option value="USD">USD</option>
+        </select>
 
-      <!-- =====================================================
-           PROGRAMS (UNCHANGED)
-           ===================================================== -->
-      <section id="tab-programs" class="tab-panel">
-        <h2>Programs (Institutional)</h2>
-        <p class="muted">
-          Programs are governed through academic and administrative workflows.
-          Payments are not reconciled here.
-        </p>
+        <input type="date" id="filter-from" />
+        <input type="date" id="filter-to" />
 
-        <ul>
-          <li>Professional Track (P)</li>
-          <li>Master Track (M)</li>
-          <li>Leadership & Product Track (L)</li>
-        </ul>
-      </section>
+        <button id="exportCsvBtn">Export CSV</button>
+      </div>
 
-    </main>
-  </div>
+      <hr />
+
+      <!-- 🔷 TABLE -->
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Payment ID</th>
+            <th>Email</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Captured At</th>
+          </tr>
+        </thead>
+        <tbody id="reconBody">
+          <tr>
+            <td colspan="6">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- 🔷 FOOTER -->
+<div id="footerContainer"></div>
+
+<script type="module">
+import { auth, login, logout, isAdmin } from "./assets/js/core.js";
+import { loadHeader } from "./assets/js/layout/header.js";
+import { loadFooter } from "./assets/js/layout/footer.js";
+
+import {
+  onAuthStateChanged,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  getRedirectResult
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* LOAD LAYOUT */
+loadHeader();
+loadFooter();
+
+/* INIT AFTER HEADER */
+setTimeout(() => {
+
+  const statusEl = document.getElementById("status");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginView = document.getElementById("loginView");
+  const appView = document.getElementById("appView");
+  const nav = document.getElementById("adminNav");
+  const warning = document.getElementById("adminWarning");
+
+  /* ACTIVE SIDEBAR */
+  const currentPage = window.location.pathname.split("/").pop();
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    if (link.getAttribute("href") === currentPage) {
+      link.classList.add("active");
+    }
+  });
+
+  /* LOGIN */
+  loginBtn.addEventListener("click", async () => {
+    try {
+      await login();
+    } catch (e) {
+      const provider = new GoogleAuthProvider();
+      await signInWithRedirect(auth, provider);
+    }
+  });
+
+  /* LOGOUT */
+  logoutBtn.addEventListener("click", async () => {
+    await logout();
+    window.location.reload();
+  });
+
+  getRedirectResult(auth).catch(console.error);
+
+  /* AUTH */
+  onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+      statusEl.innerText = "Please sign in.";
+      loginView.style.display = "block";
+      appView.style.display = "none";
+      nav.style.display = "none";
+      logoutBtn.style.display = "none";
+      return;
+    }
+
+    if (!isAdmin(user.email)) {
+      statusEl.innerText = "Access denied.";
+      alert("Not authorized.");
+      await logout();
+      return;
+    }
+
+    statusEl.innerText = user.email;
+    logoutBtn.style.display = "inline-block";
+    nav.style.display = "block";
+    warning.classList.remove("hidden");
+
+    loginView.style.display = "none";
+    appView.style.display = "block";
+
+    // 🔥 LOAD MODULE (you can build later)
+    // import("./assets/js/reconciliation.js");
+
+  });
+
+}, 50);
+</script>
+
 </body>
 </html>

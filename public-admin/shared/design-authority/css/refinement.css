@@ -1,10 +1,18 @@
 /* =========================
-   LEAD INTELLIGENCE – FINAL PREMIUM CLEAN
+   LEAD INTELLIGENCE – FINAL PREMIUM LOCKED
 ========================= */
 
-/* GLOBAL */
+/* =========================
+   GLOBAL
+========================= */
+
 .lead-form * {
   box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111827;
 }
 
 /* =========================
@@ -45,7 +53,7 @@
 }
 
 /* =========================
-   CARD
+   CARD (PREMIUM DEPTH)
 ========================= */
 
 .card {
@@ -53,6 +61,7 @@
   padding: 24px;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 /* =========================
@@ -77,20 +86,29 @@
   margin-bottom: 6px;
 }
 
+/* Inputs */
 .form-field input,
 .form-field select {
   width: 100%;
   height: 44px;
   padding: 10px 14px;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #e5e7eb;
   background: #ffffff;
+  transition: all 0.2s ease;
 }
 
+/* Hover */
+.form-field input:hover,
+.form-field select:hover {
+  border-color: #cbd5e1;
+}
+
+/* Focus */
 .form-field input:focus,
 .form-field select:focus {
   border-color: #111827;
-  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.05);
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
   outline: none;
 }
 
@@ -99,7 +117,7 @@
 }
 
 /* =========================
-   BUTTONS
+   BUTTONS (🔥 FIXED + PREMIUM)
 ========================= */
 
 .form-actions {
@@ -113,22 +131,35 @@
   padding: 10px 18px;
   border-radius: 8px;
   font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
+/* Primary */
 .form-actions button:first-child {
   background: #111827;
   color: #ffffff;
   border: none;
 }
 
+.form-actions button:first-child:hover {
+  background: #000000;
+}
+
+/* Secondary (🔥 FIXED) */
 .form-actions button:last-child {
   background: #ffffff;
+  color: #111827; /* CRITICAL FIX */
   border: 1px solid #d1d5db;
 }
 
+.form-actions button:last-child:hover {
+  background: #f9fafb;
+}
+
 /* =========================
-   🔥 FILTER BAR (FINAL FIX)
+   FILTER BAR (STABLE + PREMIUM)
 ========================= */
 
 .filter-bar {
@@ -136,16 +167,20 @@
   align-items: center;
   gap: 12px;
   margin: 24px 0 12px;
-  flex-wrap: nowrap; /* 🔥 FORCE SINGLE ROW */
+  flex-wrap: wrap; /* 🔥 SAFER than nowrap */
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
 }
 
 /* Search expands */
 .filter-bar input {
   flex: 1;
-  min-width: 280px;
+  min-width: 260px;
 }
 
-/* Dropdowns fixed */
+/* Dropdowns */
 .filter-bar select {
   min-width: 160px;
 }
@@ -163,14 +198,15 @@
 .quick-filters button {
   padding: 6px 14px;
   border-radius: 20px;
-  background: #f9fafb;
+  background: #f3f4f6;
   border: 1px solid #e5e7eb;
   font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
 }
 
 .quick-filters button:hover {
-  background: #f3f4f6;
+  background: #e5e7eb;
 }
 
 /* =========================
@@ -183,6 +219,7 @@
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .table-wrapper table {
@@ -218,11 +255,6 @@
 
   .metrics-row {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  /* allow wrapping on mobile */
-  .filter-bar {
-    flex-wrap: wrap;
   }
 
   .quick-filters {

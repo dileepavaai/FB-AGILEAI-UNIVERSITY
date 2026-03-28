@@ -10,7 +10,7 @@
 
 <body>
 
-<!-- 🔷 CENTRALIZED HEADER -->
+<!-- 🔷 HEADER -->
 <div id="headerContainer"></div>
 
 <div class="layout">
@@ -18,7 +18,7 @@
   <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
-      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="index.html">Home</a></li>
       <li><a href="leads.html">Lead Intelligence</a></li>
       <li><a href="batch.html">Batch Management</a></li>
       <li><a href="csv.html">CSV Import</a></li>
@@ -62,11 +62,11 @@
   </main>
 </div>
 
-<!-- 🔷 CENTRALIZED FOOTER -->
+<!-- 🔷 FOOTER -->
 <div id="footerContainer"></div>
 
 <script type="module">
-import { auth, login, logout, isAdmin } from "./assets/js/core.js";
+import { auth, login, logout, isAdmin, getUserRole } from "./assets/js/core.js";
 import { loadHeader } from "./assets/js/layout/header.js";
 import { loadFooter } from "./assets/js/layout/footer.js";
 
@@ -83,10 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadHeader();
   loadFooter();
 
-  // 🔥 WAIT A TICK FOR DOM INJECTION (important)
+  // 🔥 ENSURE HEADER ELEMENTS EXIST
   setTimeout(() => {
 
     const statusEl = document.getElementById("status");
+    const roleBadge = document.getElementById("roleBadge");
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const loginView = document.getElementById("loginView");
@@ -94,7 +95,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const nav = document.getElementById("adminNav");
     const warning = document.getElementById("adminWarning");
 
-    // 🔐 LOGIN
+    /* ============================================
+       🔥 ACTIVE SIDEBAR (AUTO DETECT)
+       ============================================ */
+    function setActiveSidebar() {
+      const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+      document.querySelectorAll(".sidebar a").forEach(link => {
+        if (link.getAttribute("href") === currentPage) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+      });
+    }
+
+    setActiveSidebar();
+
+    /* ============================================
+       🔐 LOGIN
+       ============================================ */
     loginBtn.addEventListener("click", async () => {
       try {
         await login();
@@ -105,16 +125,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // 🔓 LOGOUT
+    /* ============================================
+       🔓 LOGOUT
+       ============================================ */
     logoutBtn.addEventListener("click", async () => {
       await logout();
       window.location.reload();
     });
 
-    // 🔁 HANDLE REDIRECT RETURN
+    /* ============================================
+       🔁 REDIRECT RESULT
+       ============================================ */
     getRedirectResult(auth).catch(console.error);
 
-    // 🔐 AUTH STATE
+    /* ============================================
+       🔐 AUTH STATE
+       ============================================ */
     onAuthStateChanged(auth, async (user) => {
 
       if (!user) {
@@ -126,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 🔥 ADMIN CHECK
+      /* 🔥 ADMIN CHECK */
       if (!isAdmin(user.email)) {
         statusEl.innerText = "Access denied.";
         alert("You are not authorized to access this system.");
@@ -134,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ LOGGED IN
+      /* ✅ LOGGED IN STATE */
       statusEl.innerText = user.email;
       logoutBtn.style.display = "inline-block";
       nav.style.display = "block";
@@ -143,9 +169,18 @@ document.addEventListener("DOMContentLoaded", () => {
       loginView.style.display = "none";
       homeView.style.display = "block";
 
+      /* 🔥 ROLE BADGE */
+      const role = getUserRole(user.email);
+
+      if (roleBadge && role) {
+        roleBadge.innerText = role.replace("_", " ").toUpperCase();
+        roleBadge.classList.add(`role-${role}`);
+        roleBadge.style.display = "inline-block";
+      }
+
     });
 
-  }, 50); // 🔥 small delay ensures header exists
+  }, 50);
 
 });
 </script>

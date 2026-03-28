@@ -277,3 +277,73 @@ button:hover {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* =========================
+   FINAL VISUAL FIX
+========================= */
+
+/* 🔥 INPUT SEPARATION */
+.form-field {
+  margin-bottom: 4px;
+}
+
+.form-field input,
+.form-field select {
+  height: 42px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+/* Add space between rows */
+.lead-form {
+  row-gap: 18px;
+}
+
+/* 🔥 BUTTON VISIBILITY FIX */
+.form-actions button {
+  border: 1px solid #d1d5db;
+}
+
+/* Primary */
+.form-actions button:first-child {
+  background: #111827;
+  color: #ffffff;
+}
+
+/* Secondary (CLEAR BUTTON FIX) */
+.form-actions button:last-child {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+/* 🔥 QUICK FILTER BUTTONS (FIX INVISIBLE ISSUE) */
+.quick-filters button {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  opacity: 1;
+}
+
+/* Hover for clarity */
+.quick-filters button:hover {
+  background: #f3f4f6;
+}
+
+/* 🔥 FILTER DROPDOWN VISIBILITY */
+.filter-bar select {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+}
+
+/* 🔥 SEARCH BOX FIX */
+.filter-bar input {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+}
+
+/* 🔥 TABLE TOP SPACING */
+.table-wrapper {
+  margin-top: 18px;
+}

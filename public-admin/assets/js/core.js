@@ -1,5 +1,5 @@
 /* =====================================================
-   🔷 FIREBASE CORE (FINAL STABLE VERSION)
+   🔷 FIREBASE CORE (FINAL STABLE + ROLE SUPPORT)
    ===================================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -29,6 +29,14 @@ const ADMIN_ACCESS = {
 
 export function isAdmin(email) {
   return !!ADMIN_ACCESS[email?.trim().toLowerCase()];
+}
+
+/* =====================================================
+   🔥 NEW: ROLE FETCHER (SAFE ADDITION)
+   ===================================================== */
+
+export function getUserRole(email) {
+  return ADMIN_ACCESS[email?.trim().toLowerCase()] || null;
 }
 
 /* =====================================================

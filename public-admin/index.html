@@ -24,20 +24,20 @@
 
 <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
+  <!-- 🔷 SIDEBAR (CLEAN — NO VERIFICATION) -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
+      <li><a href="index.html" class="active">Home</a></li>
       <li><a href="leads.html">Lead Intelligence</a></li>
       <li><a href="batch.html">Batch Management</a></li>
       <li><a href="csv.html">CSV Import</a></li>
-      <li><a href="verification.html">Verification Requests</a></li>
       <li><a href="reconciliation.html">Reconciliation</a></li>
     </ul>
   </nav>
 
   <main class="content">
 
-    <!-- 🔐 LOGIN -->
+    <!-- 🔐 LOGIN VIEW -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
@@ -48,6 +48,24 @@
     <section id="homeView" class="hidden">
       <h2>Welcome to Admin Console</h2>
       <p>Select a module from the left menu.</p>
+
+      <div style="margin-top:20px;">
+        <strong>System Status</strong>
+        <ul>
+          <li>✔ Credential Registry Active</li>
+          <li>✔ CSV Import Enabled</li>
+          <li>✔ Batch Management Active</li>
+          <li>✔ Public Verification Live</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:20px;">
+        <strong>Public Verification</strong><br>
+        <a href="https://verify.agileai.university" target="_blank">
+          https://verify.agileai.university
+        </a>
+      </div>
+
     </section>
 
   </main>
@@ -72,27 +90,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const nav = document.getElementById("adminNav");
   const warning = document.getElementById("adminWarning");
 
-  // LOGIN
+  // 🔐 LOGIN
   loginBtn.addEventListener("click", async () => {
     try {
       await login();
     } catch (e) {
+      console.warn("Popup failed, using redirect");
       const provider = new GoogleAuthProvider();
       await signInWithRedirect(auth, provider);
     }
   });
 
-  // LOGOUT
+  // 🔓 LOGOUT
   logoutBtn.addEventListener("click", async () => {
     await logout();
     window.location.reload();
   });
 
-  // HANDLE REDIRECT RETURN
+  // 🔁 HANDLE REDIRECT RETURN
   getRedirectResult(auth).catch(console.error);
 
-  // AUTH STATE
-  onAuthStateChanged(auth, (user) => {
+  // 🔐 AUTH STATE
+  onAuthStateChanged(auth, async (user) => {
 
     if (!user) {
       statusEl.innerText = "Please sign in.";
@@ -103,13 +122,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // 🔥 ADMIN CHECK (STRICT)
     if (!isAdmin(user.email)) {
       statusEl.innerText = "Access denied.";
-      alert("Not authorized.");
+      alert("You are not authorized to access this system.");
+
+      await logout(); // 🔥 critical cleanup
       return;
     }
 
-    // ✅ Logged in state
+    // ✅ LOGGED IN STATE
     statusEl.innerText = user.email;
     logoutBtn.style.display = "inline-block";
     nav.style.display = "block";

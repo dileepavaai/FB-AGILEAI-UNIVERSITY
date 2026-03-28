@@ -448,5 +448,86 @@ window.addLead = function () {
 })();
 </script>
 
+<!-- =========================
+     UX ENHANCEMENTS (SAFE APPEND)
+========================= -->
+<script>
+
+/* =========================
+   1. REAL-TIME VALIDATION
+========================= */
+
+(function () {
+
+  const emailEl = document.getElementById("leadEmail");
+  const phoneEl = document.getElementById("leadPhone");
+
+  if (emailEl) {
+    emailEl.addEventListener("blur", () => {
+      const val = emailEl.value.trim();
+
+      if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+        emailEl.style.borderColor = "#dc2626";
+      } else {
+        emailEl.style.borderColor = "";
+      }
+    });
+  }
+
+  if (phoneEl) {
+    phoneEl.addEventListener("blur", () => {
+      const cleaned = phoneEl.value.replace(/\D/g, "");
+
+      if (phoneEl.value && (cleaned.length < 10 || cleaned.length > 15)) {
+        phoneEl.style.borderColor = "#dc2626";
+      } else {
+        phoneEl.style.borderColor = "";
+      }
+    });
+  }
+
+})();
+
+
+/* =========================
+   2. SMART AUTOFLOW (SAFE WRAP)
+========================= */
+
+(function () {
+
+  const originalClear = window.clearLeadForm;
+
+  window.clearLeadForm = function () {
+    if (originalClear) originalClear();
+
+    const nameEl = document.getElementById("leadName");
+    if (nameEl) nameEl.focus(); // 🔥 key improvement
+  };
+
+})();
+
+
+/* =========================
+   3. KEYBOARD SPEED (CTRL + ENTER)
+========================= */
+
+(function () {
+
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "Enter") {
+
+      // Prevent accidental trigger inside textarea (future safe)
+      if (document.activeElement.tagName === "TEXTAREA") return;
+
+      if (typeof addLead === "function") {
+        addLead();
+      }
+    }
+  });
+
+})();
+
+</script>
+
 </body>
 </html>

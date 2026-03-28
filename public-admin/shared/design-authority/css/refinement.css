@@ -322,3 +322,9 @@ body {
   color: #ffffff;
   border-color: #111827;
 }
+
+/* Reduce LinkedIn dominance */
+.form-field.full-width input {
+  height: 40px;
+  font-size: 13px;
+}

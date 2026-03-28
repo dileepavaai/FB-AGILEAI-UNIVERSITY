@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Credential Verification – Agile AI University</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="assets/css/admin.css" />
+
+  <style>
+    .verify-box { max-width: 600px; margin: 40px auto; }
+    .result { margin-top: 20px; padding: 15px; border-radius: 6px; }
+    .valid { background: #e6ffe6; }
+    .invalid { background: #ffe6e6; }
+    .pending { background: #fff3cd; }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <h1>Credential Verification</h1>
+  <a href="index.html">← Back to Admin</a>
+</header>
+
+<div class="content verify-box">
+
+  <h2>Verify Credential</h2>
+
+  <input id="credentialInput" placeholder="Enter Credential ID (AAU-XXXXXXX)" />
+  <button id="verifyBtn">Verify</button>
+
+  <div id="result"></div>
+
+</div>
+
+<script type="module" src="assets/js/verification.js"></script>
+
+</body>
+</html>

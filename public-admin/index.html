@@ -24,6 +24,7 @@
 
 <div class="layout">
 
+  <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="leads.html">Lead Intelligence</a></li>
@@ -36,23 +37,24 @@
 
   <main class="content">
 
+    <!-- 🔐 LOGIN -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
       <button id="loginBtn">Sign in with Google</button>
     </section>
 
-    <section id="redirectView" class="hidden">
-      <h2>Redirecting...</h2>
-      <p>Taking you to the admin system.</p>
+    <!-- 🏠 ADMIN HOME -->
+    <section id="homeView" class="hidden">
+      <h2>Welcome to Admin Console</h2>
+      <p>Select a module from the left menu.</p>
     </section>
 
   </main>
 </div>
 
-<!-- 🔥 FIXED SCRIPT -->
 <script type="module">
-import { auth, login, logout, isAdmin } from "./assets/js/core.js"; // ✅ FIXED PATH
+import { auth, login, logout, isAdmin } from "./assets/js/core.js";
 import {
   onAuthStateChanged,
   signInWithRedirect,
@@ -62,51 +64,40 @@ import {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  console.log("✅ DOM LOADED");
-
   const statusEl = document.getElementById("status");
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
   const loginView = document.getElementById("loginView");
-  const redirectView = document.getElementById("redirectView");
+  const homeView = document.getElementById("homeView");
   const nav = document.getElementById("adminNav");
   const warning = document.getElementById("adminWarning");
 
+  // LOGIN
   loginBtn.addEventListener("click", async () => {
-    console.log("🔥 LOGIN BUTTON CLICKED");
-
     try {
       await login();
     } catch (e) {
-      console.warn("Popup failed → redirect fallback");
-
       const provider = new GoogleAuthProvider();
       await signInWithRedirect(auth, provider);
     }
   });
 
+  // LOGOUT
   logoutBtn.addEventListener("click", async () => {
     await logout();
     window.location.reload();
   });
 
-  getRedirectResult(auth)
-    .then((result) => {
-      if (result?.user) {
-        console.log("✅ Redirect login success:", result.user.email);
-      }
-    })
-    .catch((error) => {
-      console.error("🔥 Redirect error:", error);
-    });
+  // HANDLE REDIRECT RETURN
+  getRedirectResult(auth).catch(console.error);
 
+  // AUTH STATE
   onAuthStateChanged(auth, (user) => {
-    console.log("Auth state:", user);
 
     if (!user) {
       statusEl.innerText = "Please sign in.";
       loginView.style.display = "block";
-      redirectView.style.display = "none";
+      homeView.style.display = "none";
       nav.style.display = "none";
       logoutBtn.style.display = "none";
       return;
@@ -114,21 +105,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!isAdmin(user.email)) {
       statusEl.innerText = "Access denied.";
-      alert("You are not authorized.");
+      alert("Not authorized.");
       return;
     }
 
+    // ✅ Logged in state
     statusEl.innerText = user.email;
     logoutBtn.style.display = "inline-block";
+    nav.style.display = "block";
     warning.classList.remove("hidden");
 
     loginView.style.display = "none";
-    redirectView.style.display = "block";
-    nav.style.display = "block";
+    homeView.style.display = "block";
 
-    setTimeout(() => {
-      window.location.href = "leads.html";
-    }, 800);
   });
 
 });

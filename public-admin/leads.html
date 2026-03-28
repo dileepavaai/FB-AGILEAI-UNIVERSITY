@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lead Intelligence</title>
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+
+<body>
+
+  <h1>Lead Intelligence</h1>
+
+  <!-- 🔷 METRICS -->
+  <div class="metrics">
+    <div>Total: <span id="mTotal">0</span></div>
+    <div>Engaged: <span id="mEngaged">0</span></div>
+    <div>Qualified: <span id="mQualified">0</span></div>
+    <div>Converted: <span id="mConverted">0</span></div>
+    <div>Conv %: <span id="mConvRate">0%</span></div>
+    <div>Qual→Conv %: <span id="mQualConvRate">0%</span></div>
+    <div>Drop %: <span id="mDropRate">0%</span></div>
+  </div>
+
+  <!-- 🔷 ADD LEAD FORM -->
+  <div class="card">
+
+    <div class="row">
+      <input id="leadName" placeholder="Name *" />
+      <input id="leadRole" placeholder="Role" />
+    </div>
+
+    <div class="row">
+      <input id="leadCompany" placeholder="Company" />
+      <input id="leadLocation" placeholder="Location" />
+    </div>
+
+    <div class="row">
+      <input id="leadEmail" placeholder="Email" />
+      <input id="leadPhone" placeholder="Phone" />
+    </div>
+
+    <div class="row">
+      <input id="leadLinkedIn" placeholder="LinkedIn URL *" />
+      <select id="leadSource">
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Referral">Referral</option>
+        <option value="Alumni">Alumni</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <input id="leadExperience" placeholder="Experience (years)" />
+      <input id="leadSourceDetail" placeholder="Source Detail" />
+    </div>
+
+    <div class="actions">
+      <button onclick="addLead()">Add</button>
+      <button onclick="clearLeadForm()">Clear</button>
+    </div>
+
+  </div>
+
+  <!-- 🔷 SEARCH -->
+  <input
+    type="text"
+    placeholder="Search leads..."
+    oninput="applyLeadSearch(this.value)"
+  />
+
+  <!-- 🔷 FILTERS -->
+  <div class="filters">
+    <button onclick="quickFilter('high')">High</button>
+    <button onclick="quickFilter('converted')">Converted</button>
+    <button onclick="quickFilter('mine')">My Leads</button>
+
+    <select id="leadFilter" onchange="renderLeads()">
+      <option value="all">All</option>
+      <option value="priority">Priority</option>
+      <option value="blocked">Blocked</option>
+    </select>
+
+    <select id="leadUserFilter" onchange="renderLeads()">
+      <option value="all">All Users</option>
+      <option value="mine">My Leads</option>
+    </select>
+  </div>
+
+  <!-- 🔷 TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Company</th>
+        <th>Source</th>
+        <th>Owner</th>
+        <th>Contact</th>
+        <th>Score</th>
+        <th>Status</th>
+        <th>Stage</th>
+        <th>Next</th>
+        <th>Notes</th>
+        <th>Flag</th>
+      </tr>
+    </thead>
+
+    <tbody id="leadBody"></tbody>
+  </table>
+
+  <!-- 🔷 BUSINESS INTELLIGENCE -->
+  <div class="metrics">
+    <div>LinkedIn: <span id="biLinkedIn">0</span></div>
+    <div>Alumni: <span id="biAlumni">0</span></div>
+    <div>Referral: <span id="biReferral">0</span></div>
+    <div>Top Owner: <span id="biTopOwner">-</span></div>
+    <div>Best Source: <span id="biBestSource">-</span></div>
+  </div>
+
+  <!-- 🔷 SCRIPTS -->
+  <script type="module" src="js/core.js"></script>
+  <script type="module" src="js/leads.js"></script>
+
+</body>
+</html>

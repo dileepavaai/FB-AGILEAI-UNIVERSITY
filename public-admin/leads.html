@@ -8,7 +8,7 @@
   <!-- BASE -->
   <link rel="stylesheet" href="assets/css/admin.css" />
 
-  <!-- 🔥 REFINEMENT -->
+  <!-- REFINEMENT -->
   <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
 </head>
 
@@ -21,7 +21,7 @@
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html">Home</a></li>
-      <li><a href="leads.html">Lead Intelligence</a></li>
+      <li><a href="leads.html" class="active">Lead Intelligence</a></li>
       <li><a href="batch.html">Batch Management</a></li>
       <li><a href="csv.html">CSV Import</a></li>
       <li><a href="reconciliation.html">Reconciliation</a></li>
@@ -50,157 +50,118 @@
         <span><strong id="mQualConvRate">0%</strong>Qual→Conv %</span>
       </div>
 
-      <div class="split-layout">
+      <!-- 🔥 CLEAN SINGLE COLUMN LAYOUT -->
+      <div class="single-layout">
 
-        <!-- LEFT -->
-        <div class="left-panel">
+        <!-- FORM -->
+        <div class="card">
+          <form class="lead-form" onsubmit="return false;">
 
-          <div class="card">
-            <form class="lead-form" onsubmit="return false;">
+            <div class="form-field">
+              <label>Name *</label>
+              <input id="leadName" placeholder="Enter name" />
+            </div>
 
-              <div class="form-field">
-                <label>Name *</label>
-                <input id="leadName" placeholder="Enter name" />
-              </div>
+            <div class="form-field">
+              <label>Role</label>
+              <input id="leadRole" placeholder="Enter role" />
+            </div>
 
-              <div class="form-field">
-                <label>Role</label>
-                <input id="leadRole" placeholder="Enter role" />
-              </div>
+            <div class="form-field">
+              <label>Company</label>
+              <input id="leadCompany" placeholder="Enter company" />
+            </div>
 
-              <div class="form-field">
-                <label>Company</label>
-                <input id="leadCompany" placeholder="Enter company" />
-              </div>
+            <div class="form-field">
+              <label>Location</label>
+              <input id="leadLocation" placeholder="Enter location" />
+            </div>
 
-              <div class="form-field">
-                <label>Location</label>
-                <input id="leadLocation" placeholder="Enter location" />
-              </div>
+            <div class="form-field">
+              <label>Email</label>
+              <input id="leadEmail" placeholder="Enter email" />
+            </div>
 
-              <div class="form-field">
-                <label>Email</label>
-                <input id="leadEmail" placeholder="Enter email" />
-              </div>
+            <div class="form-field">
+              <label>Phone</label>
+              <input id="leadPhone" placeholder="Enter phone" />
+            </div>
 
-              <div class="form-field">
-                <label>Phone</label>
-                <input id="leadPhone" placeholder="Enter phone" />
-              </div>
+            <div class="form-field full-width">
+              <label>LinkedIn URL *</label>
+              <input id="leadLinkedIn" placeholder="Paste LinkedIn profile URL" />
+            </div>
 
-              <div class="form-field full-width">
-                <label>LinkedIn URL *</label>
-                <input id="leadLinkedIn" placeholder="Paste LinkedIn profile URL" />
-              </div>
+            <div class="form-field">
+              <label>Source</label>
+              <select id="leadSource">
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Referral">Referral</option>
+                <option value="Alumni">Alumni</option>
+              </select>
+            </div>
 
-              <div class="form-field">
-                <label>Source</label>
-                <select id="leadSource">
-                  <option value="LinkedIn">LinkedIn</option>
-                  <option value="Referral">Referral</option>
-                  <option value="Alumni">Alumni</option>
-                </select>
-              </div>
+            <div class="form-field">
+              <label>Experience (years)</label>
+              <input id="leadExperience" placeholder="Enter experience" />
+            </div>
 
-              <div class="form-field">
-                <label>Experience (years)</label>
-                <input id="leadExperience" placeholder="Enter experience" />
-              </div>
+            <div class="form-field full-width">
+              <label>Source Detail</label>
+              <input id="leadSourceDetail" placeholder="Additional context" />
+            </div>
 
-              <div class="form-field full-width">
-                <label>Source Detail</label>
-                <input id="leadSourceDetail" placeholder="Additional context" />
-              </div>
+            <div class="form-actions">
+              <button type="button" onclick="addLead()">+ Add Lead</button>
+              <button type="button" onclick="clearLeadForm()">Clear</button>
+            </div>
 
-              <div class="form-actions">
-                <button type="button" onclick="addLead()">+ Add Lead</button>
-                <button type="button" onclick="clearLeadForm()">Clear</button>
-              </div>
-
-            </form>
-          </div>
-
-          <!-- FILTERS -->
-          <div class="filter-bar">
-            <input type="text" placeholder="Search leads..." oninput="applyLeadSearch(this.value)" />
-
-            <select id="leadFilter" onchange="renderLeads()">
-              <option value="all">All</option>
-              <option value="priority">Priority</option>
-              <option value="blocked">Blocked</option>
-            </select>
-
-            <select id="leadUserFilter" onchange="renderLeads()">
-              <option value="all">All Users</option>
-              <option value="mine">My Leads</option>
-            </select>
-          </div>
-
-          <div class="quick-filters">
-            <button onclick="quickFilter('high')">High</button>
-            <button onclick="quickFilter('converted')">Converted</button>
-            <button onclick="quickFilter('mine')">My Leads</button>
-          </div>
-
-          <!-- TABLE -->
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Role</th>
-                  <th>Company</th>
-                  <th>Source</th>
-                  <th>Owner</th>
-                  <th>Contact</th>
-                  <th>Score</th>
-                  <th>Status</th>
-                  <th>Stage</th>
-                  <th>Next</th>
-                  <th>Notes</th>
-                  <th>Flag</th>
-                </tr>
-              </thead>
-              <tbody id="leadBody"></tbody>
-            </table>
-          </div>
-
+          </form>
         </div>
 
-        <!-- RIGHT -->
-        <div class="right-panel">
+        <!-- FILTERS -->
+        <div class="filter-bar">
+          <input type="text" placeholder="Search leads..." oninput="applyLeadSearch(this.value)" />
 
-          <div class="card insights-card">
-            <h3>Quick Insights</h3>
+          <select id="leadFilter" onchange="renderLeads()">
+            <option value="all">All</option>
+            <option value="priority">Priority</option>
+            <option value="blocked">Blocked</option>
+          </select>
 
-            <div class="insight-item">
-              <span>Total Leads</span>
-              <strong data-bind="mTotal">0</strong>
-            </div>
+          <select id="leadUserFilter" onchange="renderLeads()">
+            <option value="all">All Users</option>
+            <option value="mine">My Leads</option>
+          </select>
+        </div>
 
-            <div class="insight-item">
-              <span>Conversion Rate</span>
-              <strong data-bind="mConvRate">0%</strong>
-            </div>
+        <div class="quick-filters">
+          <button onclick="quickFilter('high')">High</button>
+          <button onclick="quickFilter('converted')">Converted</button>
+          <button onclick="quickFilter('mine')">My Leads</button>
+        </div>
 
-            <div class="insight-item">
-              <span>Qualified Leads</span>
-              <strong data-bind="mQualified">0</strong>
-            </div>
-
-            <hr />
-
-            <div class="insight-item">
-              <span>Top Source</span>
-              <strong data-bind="biBestSource">-</strong>
-            </div>
-
-            <div class="insight-item">
-              <span>Top Owner</span>
-              <strong data-bind="biTopOwner">-</strong>
-            </div>
-          </div>
-
+        <!-- TABLE -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Company</th>
+                <th>Source</th>
+                <th>Owner</th>
+                <th>Contact</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Stage</th>
+                <th>Next</th>
+                <th>Notes</th>
+                <th>Flag</th>
+              </tr>
+            </thead>
+            <tbody id="leadBody"></tbody>
+          </table>
         </div>
 
       </div>
@@ -215,15 +176,6 @@
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 initAdminApp("./assets/js/leads.js");
-
-function syncInsights() {
-  document.querySelectorAll("[data-bind]").forEach(el => {
-    const id = el.getAttribute("data-bind");
-    const source = document.getElementById(id);
-    if (source) el.textContent = source.textContent;
-  });
-}
-setInterval(syncInsights, 500);
 </script>
 
 </body>

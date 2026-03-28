@@ -1,5 +1,5 @@
 /* =====================================================
-   🔷 FIREBASE CORE (SHARED ACROSS MODULES)
+   🔷 FIREBASE CORE (FINAL STABLE VERSION)
    ===================================================== */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -8,8 +8,10 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  onAuthStateChanged,
-  signOut
+  signInWithRedirect,
+  getRedirectResult,
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
@@ -52,7 +54,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 /* =====================================================
-   🔷 AUTH HELPERS (OPTIONAL FOR NOW)
+   🔷 PROVIDER
    ===================================================== */
 
 const provider = new GoogleAuthProvider();
@@ -60,12 +62,47 @@ provider.setCustomParameters({
   prompt: "select_account"
 });
 
+/* =====================================================
+   🔷 LOGIN (ROBUST WITH FALLBACK)
+   ===================================================== */
+
 export async function login() {
-  await signInWithPopup(auth, provider);
+  try {
+    console.log("🚀 Attempting popup login...");
+    await signInWithPopup(auth, provider);
+
+  } catch (error) {
+    console.warn("⚠️ Popup failed, switching to redirect:", error);
+
+    // 🔥 Fallback for incognito / popup-blocked browsers
+    await signInWithRedirect(auth, provider);
+  }
 }
+
+/* =====================================================
+   🔷 HANDLE REDIRECT RESULT (CRITICAL)
+   ===================================================== */
+
+getRedirectResult(auth)
+  .then((result) => {
+    if (result?.user) {
+      console.log("✅ Redirect login success:", result.user.email);
+    }
+  })
+  .catch((error) => {
+    console.error("🔥 Redirect login error:", error);
+  });
+
+/* =====================================================
+   🔷 LOGOUT
+   ===================================================== */
 
 export async function logout() {
   await signOut(auth);
 }
+
+/* =====================================================
+   🔷 EXPORT
+   ===================================================== */
 
 export { onAuthStateChanged };

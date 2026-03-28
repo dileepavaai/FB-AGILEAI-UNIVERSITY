@@ -1,5 +1,5 @@
 /* =====================================================
-   🔷 UNIVERSAL ADMIN CONTROLLER
+   🔷 UNIVERSAL ADMIN CONTROLLER (NO FLICKER VERSION)
    ===================================================== */
 
 import { auth, login, logout, isAdmin, getUserRole } from "./core.js";
@@ -20,6 +20,9 @@ import {
 
 export function initAdminApp(modulePath = null) {
 
+  // 🔥 PREVENT FLICKER (LOCK UI)
+  document.body.classList.add("app-loading");
+
   // 🔷 Load layout immediately
   loadHeader(null, null);
   loadFooter();
@@ -32,7 +35,6 @@ export function initAdminApp(modulePath = null) {
 
     const statusEl = document.getElementById("status");
     const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
     const loginView = document.getElementById("loginView");
     const appView = document.getElementById("appView");
     const nav = document.getElementById("adminNav");
@@ -64,10 +66,11 @@ export function initAdminApp(modulePath = null) {
     }
 
     /* ============================================
-       🔐 AUTH STATE
+       🔐 AUTH STATE (NO FLICKER CONTROL)
        ============================================ */
     onAuthStateChanged(auth, async (user) => {
 
+      // 🔴 NOT LOGGED IN
       if (!user) {
         loadHeader(null, null);
 
@@ -77,18 +80,24 @@ export function initAdminApp(modulePath = null) {
 
         if (statusEl) statusEl.innerText = "Please sign in.";
 
+        // 🔥 RELEASE UI LOCK
+        document.body.classList.remove("app-loading");
         return;
       }
 
+      // 🔴 NOT ADMIN
       if (!isAdmin(user.email)) {
         alert("Not authorized.");
         await logout();
+
+        document.body.classList.remove("app-loading");
         return;
       }
 
+      // 🟢 VALID ADMIN
       const role = getUserRole(user.email);
 
-      // 🔥 CENTRAL HEADER FIX
+      // 🔥 LOAD HEADER WITH ROLE
       loadHeader(user, role);
       bindLogout();
 
@@ -103,10 +112,13 @@ export function initAdminApp(modulePath = null) {
       // 🔥 SIDEBAR ACTIVE
       highlightActiveSidebar();
 
-      // 🔥 LOAD MODULE (IMPORTANT)
+      // 🔥 LOAD MODULE
       if (modulePath) {
         import(modulePath);
       }
+
+      // 🔥 RELEASE UI LOCK (MOST IMPORTANT LINE)
+      document.body.classList.remove("app-loading");
 
     });
 

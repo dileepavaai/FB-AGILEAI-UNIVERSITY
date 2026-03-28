@@ -332,3 +332,11 @@ tbody tr:hover {
   border-left: 4px solid #2d5bff;
   font-weight: 600;
 }
+
+/* 🔷 PREVENT AUTH FLICKER */
+
+body.app-loading #loginView,
+body.app-loading #appView,
+body.app-loading #adminNav {
+  display: none !important;
+}

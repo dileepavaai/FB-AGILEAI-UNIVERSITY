@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CSV Import – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+
+<body>
+
+<header class="topbar">
+  <h1>CSV Import</h1>
+  <a href="index.html">← Back to Admin</a>
+</header>
+
+<div class="content">
+
+  <h2>Upload CSV</h2>
+
+  <input type="file" id="csvFile" accept=".csv" />
+  <button id="parseBtn">Parse</button>
+  <button id="uploadBtn">Upload to Firestore</button>
+
+  <p id="statusMsg"></p>
+
+  <hr />
+
+  <h2>Preview</h2>
+
+  <table id="previewTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Type</th>
+        <th>Program</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+</div>
+
+<script type="module" src="assets/js/csv.js"></script>
+
+</body>
+</html>

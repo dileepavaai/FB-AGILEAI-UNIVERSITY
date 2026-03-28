@@ -616,3 +616,20 @@ body {
   padding-top: 80px;
 }
 */
+
+/* =========================================
+   STICKY SIDEBAR — ADMIN (SAFE)
+========================================= */
+
+/* Sidebar container */
+.sidebar {
+  position: sticky;
+  top: 70px; /* adjust if header height differs */
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+}
+
+/* Prevent layout issues */
+.layout {
+  align-items: flex-start;
+}

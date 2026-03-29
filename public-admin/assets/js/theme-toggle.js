@@ -1,9 +1,17 @@
 /* =====================================================
    🌗 THEME SYSTEM — AAU ADMIN
    -----------------------------------------------------
-   Version: v2.0.0 (Stable + Persistent)
-   Scope: Light / Dark only
-   ===================================================== */
+   Version: v2.1.0 (FIXED INIT + DYNAMIC SAFE)
+
+   FIXES:
+   - Removed DOMContentLoaded dependency
+   - Exposed initTheme globally
+   - Works with dynamic header injection
+   - Prevents double binding
+
+   SCOPE:
+   - Light / Dark only
+===================================================== */
 
 (function () {
 
@@ -53,22 +61,26 @@
   }
 
   /* ============================================
-     🔹 INIT
+     🔹 INIT (EXPORTED)
      ============================================ */
   function initTheme() {
+
     const saved = getSavedTheme();
     applyTheme(saved);
     updateToggleUI(saved);
 
     const btn = document.getElementById("themeToggle");
-    if (btn) {
+
+    // 🔥 Prevent multiple bindings
+    if (btn && !btn.__themeBound) {
       btn.onclick = toggleTheme;
+      btn.__themeBound = true;
     }
   }
 
   /* ============================================
-     🚀 BOOTSTRAP (SAFE)
+     🌍 EXPOSE GLOBALLY (CRITICAL FIX)
      ============================================ */
-  document.addEventListener("DOMContentLoaded", initTheme);
+  window.initTheme = initTheme;
 
 })();

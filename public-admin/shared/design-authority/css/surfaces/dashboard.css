@@ -1,0 +1,215 @@
+/* =========================================================
+   Agile AI University — Dashboard Surface
+   ---------------------------------------------------------
+   Version: v1.0.0 (Premium Dashboard UI)
+   Date: 2026-03-29
+
+   PURPOSE:
+   - Dashboard-specific layout polish
+   - Visual hierarchy
+   - Premium spacing system
+   - Works with refinement + admin.css
+
+========================================================= */
+
+
+/* =========================================================
+   🧠 PAGE HEADER (STRONG FIRST IMPRESSION)
+========================================================= */
+
+.dashboard-header {
+  margin-bottom: 28px;
+}
+
+.dashboard-header h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.dashboard-header p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   📊 METRICS GRID (CLEAN + PREMIUM)
+========================================================= */
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  padding: 16px 18px;
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.metric-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.metric-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+
+/* =========================================================
+   📦 SECTION CARDS (GROUPING)
+========================================================= */
+
+.dashboard-section {
+  margin-bottom: 24px;
+}
+
+.dashboard-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.dashboard-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+
+/* =========================================================
+   📈 GRID INSIDE SECTIONS
+========================================================= */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+
+/* =========================================================
+   🔢 DATA ROWS (FOR METRICS TEXT BLOCKS)
+========================================================= */
+
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.data-label {
+  color: var(--text-muted);
+}
+
+.data-value {
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   🔄 FUNNEL VISUAL ALIGNMENT
+========================================================= */
+
+.funnel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 24px;
+}
+
+.funnel span {
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   🌐 PLATFORM TABLE POLISH
+========================================================= */
+
+.platform-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.platform-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.platform-table td:first-child {
+  font-weight: 500;
+  width: 220px;
+}
+
+
+/* =========================================================
+   🔗 LINKS (CLEAN + PREMIUM)
+========================================================= */
+
+.platform-table a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.platform-table a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   📉 EMPTY STATE
+========================================================= */
+
+.empty {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   📏 SECTION SPACING IMPROVEMENT
+========================================================= */
+
+.dashboard-section + .dashboard-section {
+  margin-top: 10px;
+}
+
+
+/* =========================================================
+   📱 RESPONSIVE (IMPORTANT)
+========================================================= */
+
+@media (max-width: 1024px) {
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,190 @@
+/* =========================================================
+   Agile AI University — Common UI (Header + Sidebar)
+   ---------------------------------------------------------
+   Version: v1.0.0 (Premium Navigation Layer)
+   Date: 2026-03-29
+
+   PURPOSE:
+   - Premium header + sidebar
+   - Clean hierarchy
+   - Non-intrusive navigation
+   - Works across all pages
+
+========================================================= */
+
+
+/* =========================================================
+   🧠 HEADER (TOPBAR)
+========================================================= */
+
+.topbar {
+  height: 56px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px;
+}
+
+.topbar h1 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.topbar .user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Email */
+#status {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   🌗 THEME TOGGLE
+========================================================= */
+
+#themeToggle {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-main);
+
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  font-size: 14px;
+}
+
+#themeToggle:hover {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================================================
+   🔘 LOGOUT BUTTON
+========================================================= */
+
+#logoutBtn {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+
+  border: 1px solid var(--border);
+  background: transparent;
+}
+
+#logoutBtn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   ⚠️ ADMIN WARNING
+========================================================= */
+
+.admin-warning {
+  font-size: 12px;
+  padding: 8px 12px;
+}
+
+
+/* =========================================================
+   🧭 SIDEBAR (MAJOR UX IMPROVEMENT)
+========================================================= */
+
+.sidebar {
+  width: 220px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+
+  padding-top: 10px;
+}
+
+
+/* Remove heavy borders */
+.sidebar li {
+  border-bottom: none;
+}
+
+
+/* Navigation links */
+.sidebar a {
+  display: flex;
+  align-items: center;
+
+  padding: 10px 16px;
+  margin: 2px 8px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  color: var(--text-muted);
+
+  transition: all 0.15s ease;
+}
+
+
+/* Hover */
+.sidebar a:hover {
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--text-main);
+}
+
+
+/* Active state (premium highlight) */
+.sidebar a.active {
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--primary);
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   🧱 SECTION LABELS (Ecosystem)
+========================================================= */
+
+.sidebar-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+
+  margin: 14px 16px 4px;
+  text-transform: uppercase;
+}
+
+.sidebar-sub-label {
+  font-size: 10px;
+  color: var(--text-muted);
+
+  margin: 6px 16px;
+}
+
+
+/* =========================================================
+   📦 CONTENT OFFSET (ALIGN WITH HEADER)
+========================================================= */
+
+.layout {
+  margin-top: 0;
+}
+
+
+/* =========================================================
+   📱 RESPONSIVE
+========================================================= */
+
+@media (max-width: 1024px) {
+  .sidebar {
+    display: none;
+  }
+}

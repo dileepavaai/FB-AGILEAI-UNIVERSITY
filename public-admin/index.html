@@ -1,227 +1,151 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Admin – Agile AI University</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 🔷 APP VIEW -->
+<section id="appView" class="hidden">
 
-  <!-- Base CSS -->
-  <link rel="stylesheet" href="assets/css/admin.css" />
+  <!-- 🧠 HEADER -->
+  <div class="dashboard-header section">
+    <h2>Admin Dashboard</h2>
+    <p>System overview and operational intelligence</p>
+  </div>
 
-  <!-- Refinement Layer -->
-  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
-</head>
+  <!-- 📊 SYSTEM METRICS -->
+  <div class="section">
+    <div class="card">
+      <div class="card-title">System Metrics</div>
 
-<body class="app-loading">
+      <div class="metrics">
+        <div class="metric-card">
+          <div class="metric-label">Leads</div>
+          <div class="metric-value" id="metricLeads">—</div>
+        </div>
 
-<!-- HEADER -->
-<div id="headerContainer"></div>
+        <div class="metric-card">
+          <div class="metric-label">Batches</div>
+          <div class="metric-value" id="metricBatches">—</div>
+        </div>
 
-<div class="layout">
+        <div class="metric-card">
+          <div class="metric-label">Credentials</div>
+          <div class="metric-value" id="metricCredentials">—</div>
+        </div>
 
-  <!-- SIDEBAR -->
-  <nav class="sidebar" id="adminNav" style="display:none;">
-    <ul class="sidebar-list">
-
-      <!-- Primary Navigation -->
-      <li><a href="index.html">Home</a></li>
-      <li><a href="leads.html">Lead Intelligence</a></li>
-      <li><a href="batch.html">Batch Management</a></li>
-      <li><a href="csv.html">CSV Import</a></li>
-      <li><a href="reconciliation.html">Reconciliation</a></li>
-
-      <!-- Ecosystem Section -->
-      <li class="sidebar-section-label" style="margin-top:15px; opacity:0.7;">
-        Ecosystem (Reference)
-      </li>
-
-      <li class="sidebar-sub-label" style="font-size:12px; opacity:0.6;">
-        Entities
-      </li>
-
-      <li>
-        <a href="https://agileai.foundation" target="_blank" rel="noopener">
-          Agile AI Foundation
-        </a>
-      </li>
-
-      <li>
-        <a href="https://agileai.university" target="_blank" rel="noopener">
-          Agile AI University
-        </a>
-      </li>
-
-      <li>
-        <a href="https://agileaiacademy.com" target="_blank" rel="noopener">
-          Agile AI Academy
-        </a>
-      </li>
-
-    </ul>
-  </nav>
-
-  <main class="content">
-
-    <!-- LOGIN VIEW -->
-    <section id="loginView">
-      <h2>Admin Access</h2>
-      <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn">Sign in with Google</button>
-    </section>
-
-    <!-- APP VIEW -->
-    <section id="appView" class="hidden">
-
-      <h2>Welcome to Admin Console</h2>
-      <p>Select a module from the left menu.</p>
-
-      <!-- SYSTEM METRICS -->
-      <div class="admin-section" style="margin-top:20px;">
-        <strong>System Metrics</strong>
-
-        <div class="metrics">
-          <div>Leads: <span id="metricLeads">—</span></div>
-          <div>Batches: <span id="metricBatches">—</span></div>
-          <div>Credentials: <span id="metricCredentials">—</span></div>
-          <div>Transactions: <span id="metricTransactions">—</span></div>
+        <div class="metric-card">
+          <div class="metric-label">Transactions</div>
+          <div class="metric-value" id="metricTransactions">—</div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- CONVERSION FUNNEL -->
-      <div class="admin-section" style="margin-top:30px;">
-        <strong>Conversion Funnel</strong>
+  <!-- 🔄 FUNNEL -->
+  <div class="section">
+    <div class="card">
+      <div class="card-title">Conversion Funnel</div>
 
-        <div class="metrics">
-          <div>Leads: <span id="funnelLeads">—</span></div>
-          <div>Qualified: <span id="funnelQualified">—</span></div>
-          <div>Converted: <span id="funnelConverted">—</span></div>
-          <div>Credentials: <span id="funnelCredentials">—</span></div>
-        </div>
+      <div class="grid-2">
 
-        <div class="metrics" style="margin-top:10px;">
-          <div>Lead → Qualified: <span id="funnelLQ">—</span></div>
-          <div>Qualified → Converted: <span id="funnelQC">—</span></div>
-          <div>Lead → Converted: <span id="funnelLC">—</span></div>
-        </div>
-      </div>
-
-      <!-- REVENUE -->
-      <div class="admin-section" style="margin-top:30px;">
-        <strong>Revenue Intelligence</strong>
-
-        <div class="metrics">
-          <div>Total Revenue: <span id="revTotal">—</span></div>
-          <div>Transactions: <span id="revCount">—</span></div>
-          <div>Avg Revenue: <span id="revAvg">—</span></div>
-          <div>Currency: <span id="revCurrency">—</span></div>
-        </div>
-      </div>
-
-      <!-- PROGRAM -->
-      <div class="admin-section" style="margin-top:30px;">
-        <strong>Program Intelligence</strong>
-
-        <div class="metrics">
-          <div>AOP Credentials: <span id="progAOP">—</span></div>
-          <div>AIPA Credentials: <span id="progAIPA">—</span></div>
-          <div>AAIA Credentials: <span id="progAAIA">—</span></div>
-        </div>
-
-        <div class="metrics" style="margin-top:10px;">
-          <div>AOP Revenue: <span id="revAOP">—</span></div>
-          <div>AIPA Revenue: <span id="revAIPA">—</span></div>
-          <div>AAIA Revenue: <span id="revAAIA">—</span></div>
-        </div>
-
-        <div class="metrics" style="margin-top:10px;">
-          <div>Top Program: <span id="topProgram">—</span></div>
-        </div>
-      </div>
-
-      <!-- ECOSYSTEM MAP -->
-      <div class="ecosystem-map">
-        <strong>Agile AI Ecosystem</strong>
-
-        <div class="ecosystem-flow">
-
-          <div class="eco-node">
-            <div class="eco-title">Foundation</div>
-            <div class="eco-sub">Defines Standards</div>
+        <div>
+          <div class="data-row">
+            <span class="data-label">Leads</span>
+            <span id="funnelLeads">—</span>
           </div>
-
-          <div class="eco-arrow">→</div>
-
-          <div class="eco-node">
-            <div class="eco-title">University</div>
-            <div class="eco-sub">Evaluates Capability</div>
+          <div class="data-row">
+            <span class="data-label">Qualified</span>
+            <span id="funnelQualified">—</span>
           </div>
-
-          <div class="eco-arrow">→</div>
-
-          <div class="eco-node">
-            <div class="eco-title">Academy</div>
-            <div class="eco-sub">Enables Application</div>
+          <div class="data-row">
+            <span class="data-label">Converted</span>
+            <span id="funnelConverted">—</span>
           </div>
+        </div>
 
+        <div>
+          <div class="data-row">
+            <span class="data-label">Lead → Qualified</span>
+            <span id="funnelLQ">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Qualified → Converted</span>
+            <span id="funnelQC">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Lead → Converted</span>
+            <span id="funnelLC">—</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 💰 REVENUE -->
+  <div class="section">
+    <div class="card">
+      <div class="card-title">Revenue Intelligence</div>
+
+      <div class="grid-2">
+        <div class="data-row">
+          <span class="data-label">Total Revenue</span>
+          <span id="revTotal">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Transactions</span>
+          <span id="revCount">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Average Revenue</span>
+          <span id="revAvg">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Currency</span>
+          <span id="revCurrency">—</span>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- PLATFORM -->
-      <div class="admin-section" style="margin-top:30px;">
-        <strong>Platform Surfaces</strong>
+  <!-- 📚 PROGRAM -->
+  <div class="section">
+    <div class="card">
+      <div class="card-title">Program Intelligence</div>
 
-        <table style="margin-top:10px; width:100%; max-width:700px;">
-          <tr><td><strong>Institution</strong></td><td><a href="https://agileai.university" target="_blank">agileai.university ↗</a></td></tr>
-          <tr><td><strong>Portal</strong></td><td><a href="https://portal.agileai.university" target="_blank">portal.agileai.university ↗</a></td></tr>
-          <tr><td><strong>Knowledge</strong></td><td><a href="https://edu.agileai.university" target="_blank">edu.agileai.university ↗</a></td></tr>
-          <tr><td><strong>Assessment</strong></td><td><a href="https://assessment.agileai.university" target="_blank">assessment.agileai.university ↗</a></td></tr>
-          <tr><td><strong>Verification</strong></td><td><a href="https://verify.agileai.university" target="_blank">verify.agileai.university ↗</a></td></tr>
-          <tr><td><strong>Specification</strong></td><td><a href="https://agileai.foundation" target="_blank">agileai.foundation ↗</a></td></tr>
-          <tr><td><strong>Standards</strong></td><td><a href="https://spec.agileai.university" target="_blank">spec.agileai.university ↗</a></td></tr>
+      <div class="grid-2">
+        <div class="data-row">
+          <span class="data-label">AOP</span>
+          <span id="progAOP">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">AIPA</span>
+          <span id="progAIPA">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">AAIA</span>
+          <span id="progAAIA">—</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Top Program</span>
+          <span id="topProgram">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🌐 PLATFORM -->
+  <div class="section">
+    <div class="card">
+      <div class="card-title">Platform Surfaces</div>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <tbody>
+            <tr><td>Institution</td><td><a href="https://agileai.university" target="_blank">Open</a></td></tr>
+            <tr><td>Portal</td><td><a href="https://portal.agileai.university" target="_blank">Open</a></td></tr>
+            <tr><td>Knowledge</td><td><a href="https://edu.agileai.university" target="_blank">Open</a></td></tr>
+            <tr><td>Assessment</td><td><a href="https://assessment.agileai.university" target="_blank">Open</a></td></tr>
+            <tr><td>Verification</td><td><a href="https://verify.agileai.university" target="_blank">Open</a></td></tr>
+          </tbody>
         </table>
       </div>
+    </div>
+  </div>
 
-      <!-- REDIRECT -->
-      <div class="admin-section" style="margin-top:30px;">
-        <strong>Redirect Mapping</strong>
-
-        <table style="margin-top:10px; width:100%; max-width:700px;">
-          <tr>
-            <td><strong>Learn</strong></td>
-            <td><a href="https://learn.agileai.university" target="_blank">learn.agileai.university ↗</a> → edu.agileai.university</td>
-          </tr>
-          <tr>
-            <td><strong>Certs</strong></td>
-            <td><a href="https://certs.agileai.university" target="_blank">certs.agileai.university ↗</a> → verify.agileai.university</td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- USAGE -->
-      <div class="admin-section" style="margin-top:30px;">
-        <strong>Usage Indicators</strong>
-
-        <div class="metrics">
-          <div>Assessments: <span id="usageAssess">—</span></div>
-          <div>Portal Visits: <span id="usagePortal">—</span></div>
-          <div>Verifications: <span id="usageVerify">—</span></div>
-        </div>
-      </div>
-
-    </section>
-
-  </main>
-</div>
-
-<!-- FOOTER -->
-<div id="footerContainer"></div>
-
-<script type="module">
-import { initAdminApp } from "./assets/js/admin-app.js";
-
-/* ✅ FIXED: ONLY FILE NAME (NO PATH DUPLICATION) */
-initAdminApp("dashboard.js");
-</script>
-
-</body>
-</html>
+</section>

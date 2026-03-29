@@ -1,16 +1,19 @@
 /* =========================================================
    Agile AI University — Refinement Layer
    ---------------------------------------------------------
-   Version: v2.0.0 (Controlled + Stable)
+   Version: v3.0.0 (Architecture-Aligned)
    Date: 2026-03-29
 
    PURPOSE:
-   - Visual polish ONLY (NO layout overrides)
-   - Theme support (light/dark)
-   - Non-destructive enhancement layer
+   - Theme tokens (light/dark)
+   - Minimal global polish
+   - Zero component overrides
+   - Works with surface-based CSS system
 
    RULE:
-   - MUST NOT override structure from admin.css
+   - NO tables
+   - NO sidebar
+   - NO page-specific styling
 ========================================================= */
 
 
@@ -22,6 +25,7 @@
 :root {
   --bg-main: #f5f6f8;
   --bg-card: #ffffff;
+
   --text-main: #111827;
   --text-muted: #6b7280;
 
@@ -39,6 +43,7 @@
 :root[data-theme="dark"] {
   --bg-main: #0f172a;
   --bg-card: #111827;
+
   --text-main: #f9fafb;
   --text-muted: #9ca3af;
 
@@ -63,7 +68,7 @@ body {
 
 
 /* =========================================================
-   📦 CARD POLISH
+   📦 CARD (LIGHT POLISH ONLY)
 ========================================================= */
 
 .card {
@@ -73,20 +78,16 @@ body {
   transition: all 0.2s ease;
 }
 
-.card:hover {
-  transform: translateY(-1px);
-}
-
 
 /* =========================================================
-   🧾 INPUT POLISH (NO STRUCTURE CHANGE)
+   🧾 INPUT BASE POLISH (NON-OPINIONATED)
 ========================================================= */
 
 input,
 select {
-  border-color: var(--border-strong);
   background: var(--bg-card);
   color: var(--text-main);
+  border-color: var(--border-strong);
 }
 
 input::placeholder {
@@ -96,63 +97,27 @@ input::placeholder {
 input:focus,
 select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
-  background: var(--bg-card);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
 }
 
 
 /* =========================================================
-   🔘 BUTTON POLISH
+   🔘 BUTTON BASE (NEUTRAL ONLY)
 ========================================================= */
 
 button {
-  background: var(--primary);
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
 }
 
 button:hover {
-  background: var(--primary-hover);
+  background: rgba(37, 99, 235, 0.06);
 }
 
 
 /* =========================================================
-   📊 TABLE POLISH
-========================================================= */
-
-.table-wrapper {
-  border-color: var(--border);
-}
-
-th {
-  background: #f9fafb;
-}
-
-:root[data-theme="dark"] th {
-  background: #1f2937;
-}
-
-td,
-th {
-  border-color: var(--border);
-}
-
-tbody tr:hover {
-  background: rgba(37, 99, 235, 0.05);
-}
-
-
-/* =========================================================
-   📈 METRICS
-========================================================= */
-
-.metric-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft);
-}
-
-
-/* =========================================================
-   ⚠️ ADMIN WARNING
+   ⚠️ ADMIN WARNING (GLOBAL SIGNAL)
 ========================================================= */
 
 .admin-warning {
@@ -167,24 +132,6 @@ tbody tr:hover {
 
 
 /* =========================================================
-   🧭 SIDEBAR
-========================================================= */
-
-.sidebar {
-  background: var(--bg-card);
-  border-right: 1px solid var(--border);
-}
-
-.sidebar a {
-  color: var(--text-main);
-}
-
-.sidebar a.active {
-  background: rgba(37, 99, 235, 0.1);
-}
-
-
-/* =========================================================
    🧠 TEXT SYSTEM
 ========================================================= */
 
@@ -194,14 +141,13 @@ tbody tr:hover {
 
 
 /* =========================================================
-   🌗 THEME TRANSITION
+   🌗 TRANSITIONS (SMOOTH EXPERIENCE)
 ========================================================= */
 
 body,
 .card,
 input,
 select,
-table,
-.sidebar {
+button {
   transition: background 0.2s ease, color 0.2s ease, border 0.2s ease;
 }

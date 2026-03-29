@@ -1,578 +1,159 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Lead Intelligence – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<section id="appView" class="hidden">
 
-  <link rel="stylesheet" href="assets/css/admin.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
-</head>
+  <!-- 🧠 HEADER -->
+  <div class="leads-header section">
+    <h2>Lead Intelligence</h2>
+    <p>Capture, qualify, and convert leads</p>
+  </div>
 
-<body class="app-loading">
+  <!-- 📊 METRICS -->
+  <div class="leads-metrics section">
+    <div class="leads-metric">
+      <span class="value" id="mTotal">0</span>
+      <span class="label">Total</span>
+    </div>
+    <div class="leads-metric">
+      <span class="value" id="mEngaged">0</span>
+      <span class="label">Engaged</span>
+    </div>
+    <div class="leads-metric">
+      <span class="value" id="mQualified">0</span>
+      <span class="label">Qualified</span>
+    </div>
+    <div class="leads-metric">
+      <span class="value" id="mConverted">0</span>
+      <span class="label">Converted</span>
+    </div>
+    <div class="leads-metric">
+      <span class="value" id="mConvRate">0%</span>
+      <span class="label">Conv %</span>
+    </div>
+    <div class="leads-metric">
+      <span class="value" id="mQualConvRate">0%</span>
+      <span class="label">Qual → Conv</span>
+    </div>
+  </div>
 
-<div id="headerContainer"></div>
+  <!-- 🧾 FORM -->
+  <div class="leads-form-card">
 
-<div class="layout">
+    <div class="leads-form-title">Add Lead</div>
 
-  <nav class="sidebar" id="adminNav" style="display:none;">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="leads.html" class="active">Lead Intelligence</a></li>
-      <li><a href="batch.html">Batch Management</a></li>
-      <li><a href="csv.html">CSV Import</a></li>
-      <li><a href="reconciliation.html">Reconciliation</a></li>
-    </ul>
-  </nav>
+    <form id="leadForm" class="leads-form-grid" onsubmit="return false;">
 
-  <main class="content">
-
-    <!-- LOGIN -->
-    <section id="loginView">
-      <h2>Admin Access</h2>
-      <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn">Sign in with Google</button>
-    </section>
-
-    <!-- APP -->
-    <section id="appView" class="hidden">
-
-      <h2>Lead Intelligence</h2>
-
-      <!-- METRICS -->
-      <div class="metrics metrics-row">
-        <span><strong id="mTotal">0</strong>Total</span>
-        <span><strong id="mEngaged">0</strong>Engaged</span>
-        <span><strong id="mQualified">0</strong>Qualified</span>
-        <span><strong id="mConverted">0</strong>Converted</span>
-        <span><strong id="mConvRate">0%</strong>Conv %</span>
-        <span><strong id="mQualConvRate">0%</strong>Qual→Conv %</span>
+      <div>
+        <label>Name *</label>
+        <input id="leadName" />
       </div>
 
-      <!-- FORM -->
-      <div class="card">
-        <form class="lead-form" onsubmit="return false;" id="leadForm">
-
-          <div class="form-field">
-            <label>Name *</label>
-            <input id="leadName" placeholder="Enter name" autofocus />
-          </div>
-
-          <div class="form-field">
-            <label>Role</label>
-            <input id="leadRole" placeholder="Enter role" />
-          </div>
-
-          <div class="form-field">
-            <label>Company</label>
-            <input id="leadCompany" placeholder="Enter company" />
-          </div>
-
-          <div class="form-field">
-            <label>Location</label>
-            <input id="leadLocation" placeholder="Enter location" />
-          </div>
-
-          <div class="form-field">
-            <label>Email</label>
-            <input id="leadEmail" placeholder="Enter email" />
-          </div>
-
-          <div class="form-field">
-            <label>Phone</label>
-            <input id="leadPhone" placeholder="Enter phone" />
-          </div>
-
-          <div class="form-field full-width">
-            <label>LinkedIn URL *</label>
-            <input id="leadLinkedIn" placeholder="Paste LinkedIn profile URL" />
-          </div>
-
-          <div class="form-field">
-            <label>Source</label>
-            <select id="leadSource">
-              <option value="LinkedIn">LinkedIn</option>
-              <option value="Referral">Referral</option>
-              <option value="Alumni">Alumni</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label>Experience (years)</label>
-            <input id="leadExperience" placeholder="Enter experience" />
-          </div>
-
-          <div class="form-field">
-            <label>Last Contact Date (optional)</label>
-            <input type="date" id="leadLastContactDate" />
-          </div>
-
-          <div class="form-field full-width">
-            <label>Source Detail</label>
-            <input id="leadSourceDetail" placeholder="Additional context" />
-          </div>
-
-          <div class="form-actions">
-            <button type="button" onclick="addLead()">+ Add Lead</button>
-            <button type="button" onclick="clearLeadForm()">Clear</button>
-          </div>
-
-        </form>
+      <div>
+        <label>Role</label>
+        <input id="leadRole" />
       </div>
 
-      <!-- FILTER BAR -->
-      <div class="filter-bar">
-
-        <input type="text" placeholder="Search leads..." oninput="applyLeadSearch(this.value)" />
-
-        <div class="pill-select" data-target="leadFilter"></div>
-        <select id="leadFilter" class="select-hidden" onchange="renderLeads()">
-          <option value="all">All</option>
-          <option value="priority">Priority</option>
-          <option value="blocked">Blocked</option>
-        </select>
-
-        <div class="pill-select" data-target="leadUserFilter"></div>
-        <select id="leadUserFilter" class="select-hidden" onchange="renderLeads()">
-          <option value="all">All Users</option>
-          <option value="mine">My Leads</option>
-        </select>
-
-        <div class="quick-filters">
-          <button onclick="quickFilter('high')">High</button>
-          <button onclick="quickFilter('converted')">Converted</button>
-          <button onclick="quickFilter('mine')">My Leads</button>
-        </div>
-
+      <div>
+        <label>Company</label>
+        <input id="leadCompany" />
       </div>
 
-      <!-- TABLE -->
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Company</th>
-              <th>Source</th>
-              <th>Owner</th>
-              <th>Contact</th>
-              <th>Score</th>
-              <th>Status</th>
-              <th>Stage</th>
-              <th>Next Action</th>
-              <th>Notes</th>
-              <th>Flag</th>
-            </tr>
-          </thead>
-          <tbody id="leadBody"></tbody>
-        </table>
+      <div>
+        <label>Location</label>
+        <input id="leadLocation" />
       </div>
 
-    </section>
-
-  </main>
-</div>
-
-<div id="footerContainer"></div>
-
-<script type="module">
-import { initAdminApp } from "./assets/js/admin-app.js";
-initAdminApp("./assets/js/leads.js");
-</script>
-
-<!-- =========================
-     LEVEL 1: LINKEDIN URL
-========================= -->
-<script>
-const linkedInInput = document.getElementById("leadLinkedIn");
-
-linkedInInput.addEventListener("blur", () => {
-  const url = linkedInInput.value.trim();
-  if (!url.includes("linkedin.com")) return;
-
-  leadSource.value = "LinkedIn";
-  leadSource.dispatchEvent(new Event("change"));
-
-  if (!leadName.value) {
-    const clean = url.split("/in/")[1]?.split("/")[0];
-    if (clean) {
-      leadName.value = clean
-        .split("-")
-        .filter(p => isNaN(p))
-        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(" ");
-    }
-  }
-});
-</script>
-
-<!-- =========================
-     LEVEL 2: TEXT PARSER
-========================= -->
-<script>
-document.getElementById("leadForm").addEventListener("paste", (e) => {
-  const text = (e.clipboardData || window.clipboardData).getData("text");
-  if (!text || text.length < 30) return;
-
-  const lower = text.toLowerCase();
-  if (!lower.includes("experience") && !lower.includes(" at ")) return;
-
-  const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-
-  if (lines[0] && !leadName.value) leadName.value = lines[0];
-
-  const roleLine = lines.find(l => l.toLowerCase().includes(" at "));
-  if (roleLine) {
-    const parts = roleLine.split(" at ");
-    if (!leadRole.value) leadRole.value = parts[0];
-    if (!leadCompany.value) leadCompany.value = parts[1];
-  }
-
-  const expLine = lines.find(l => l.toLowerCase().includes("year"));
-  if (expLine) {
-    const match = expLine.match(/\d+/);
-    if (match && !leadExperience.value) {
-      leadExperience.value = match[0];
-    }
-  }
-
-  leadSource.value = "LinkedIn";
-  leadSource.dispatchEvent(new Event("change"));
-
-  if (!leadLocation.value) leadLocation.focus();
-});
-</script>
-
-<!-- =========================
-     LEVEL 3: BULK PARSER
-========================= -->
-<script>
-
-function splitProfiles(text) {
-  return text.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 20);
-}
-
-function parseProfile(block) {
-  const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
-
-  let lead = { name: "", role: "", company: "", experience: "" };
-
-  if (lines[0]) lead.name = lines[0];
-
-  const roleLine = lines.find(l => l.toLowerCase().includes(" at "));
-  if (roleLine) {
-    const parts = roleLine.split(" at ");
-    lead.role = parts[0] || "";
-    lead.company = parts[1] || "";
-  }
-
-  const expLine = lines.find(l => l.toLowerCase().includes("year"));
-  if (expLine) {
-    const match = expLine.match(/\d+/);
-    if (match) lead.experience = match[0];
-  }
-
-  return lead;
-}
-
-document.getElementById("leadForm").addEventListener("paste", (e) => {
-
-  if (e.target.tagName === "INPUT") return; // ✅ moved inside
-
-  const text = (e.clipboardData || window.clipboardData).getData("text");
-  if (!text || text.length < 60) return;
-
-  const profiles = splitProfiles(text);
-  if (profiles.length <= 1) return;
-
-  e.preventDefault();
-
-  profiles.forEach(profile => {
-    const parsed = parseProfile(profile);
-    if (!parsed.name) return;
-
-    leadName.value = parsed.name;
-    leadRole.value = parsed.role;
-    leadCompany.value = parsed.company;
-    leadExperience.value = parsed.experience;
-    leadSource.value = "LinkedIn";
-
-    addLead();
-  });
-
-  clearLeadForm();
-  leadName.focus();
-});
-</script>
-
-<!-- =========================
-     VALIDATION
-========================= -->
-<script>
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function isValidPhone(phone) {
-  const cleaned = phone.replace(/\D/g, "");
-  return cleaned.length >= 10 && cleaned.length <= 15;
-}
-
-const originalAddLead = window.addLead;
-
-window.addLead = function () {
-
-  const email = leadEmail.value.trim();
-  const phone = leadPhone.value.trim();
-
-  if (email && !isValidEmail(email)) {
-    alert("Invalid email format");
-    leadEmail.focus();
-    return;
-  }
-
-  if (phone && !isValidPhone(phone)) {
-    alert("Invalid phone number");
-    leadPhone.focus();
-    return;
-  }
-
-  originalAddLead();
-};
-</script>
-
-<!-- =========================
-     LEVEL 4: SAFE APPEND (NO OVERRIDE)
-========================= -->
-<script>
-/* =========================
-   LEVEL 4: NON-DESTRUCTIVE INTELLIGENCE
-========================= */
-
-(function () {
-
-  function normalize(text) {
-    return (text || "").toLowerCase().trim();
-  }
-
-  const existingAddLead = window.addLead.bind(window);
-
-  window.addLead = function () {
-
-    /* --- EXISTING VALIDATION ALREADY RUNS --- */
-    /* We DO NOT duplicate validation logic */
-
-    /* --- DUPLICATE CHECK --- */
-    const isDuplicate = window.leads?.some(l =>
-      l.linkedin_url === leadLinkedIn.value ||
-      (
-        normalize(l.name) === normalize(leadName.value) &&
-        normalize(l.company) === normalize(leadCompany.value)
-      )
-    );
-
-    if (isDuplicate) {
-      alert("Duplicate lead detected");
-      return;
-    }
-
-    /* --- SMART SCORING (NON-INTRUSIVE) --- */
-    const role = (leadRole.value || "").toLowerCase();
-    const exp = parseInt(leadExperience.value || "0", 10);
-
-    let score = 0;
-
-    if (exp >= 12) score += 30;
-    else if (exp >= 8) score += 20;
-    else if (exp >= 4) score += 10;
-
-    if (role.includes("director") || role.includes("head")) score += 30;
-    else if (role.includes("manager")) score += 20;
-    else if (role.includes("lead")) score += 15;
-
-    if (leadSource.value === "Referral") score += 20;
-    if (leadSource.value === "LinkedIn") score += 10;
-
-    score = Math.min(score, 100);
-
-    /* --- DEBUG (SAFE) --- */
-    console.log("Lead Score:", score);
-
-    /* --- CONTINUE NORMAL FLOW --- */
-    return existingAddLead();
-  };
-
-})();
-</script>
-
-<!-- =========================
-     UX ENHANCEMENTS (SAFE APPEND)
-========================= -->
-<script>
-
-/* =========================
-   1. REAL-TIME VALIDATION (WITH MESSAGE)
-========================= */
-
-(function () {
-
-  function showError(el, message) {
-    el.style.borderColor = "#dc2626";
-
-    let msg = el.parentNode.querySelector(".error-text");
-    if (!msg) {
-      msg = document.createElement("div");
-      msg.className = "error-text";
-      msg.style.fontSize = "11px";
-      msg.style.color = "#dc2626";
-      msg.style.marginTop = "4px";
-      el.parentNode.appendChild(msg);
-    }
-
-    msg.innerText = message;
-  }
-
-  function clearError(el) {
-    el.style.borderColor = "";
-
-    const msg = el.parentNode.querySelector(".error-text");
-    if (msg) msg.remove();
-  }
-
-  const emailEl = document.getElementById("leadEmail");
-  const phoneEl = document.getElementById("leadPhone");
-
-  if (emailEl) {
-    emailEl.addEventListener("blur", () => {
-      const val = emailEl.value.trim();
-
-      if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-        showError(emailEl, "Enter a valid email (e.g., name@company.com)");
-      } else {
-        clearError(emailEl);
-      }
-    });
-  }
-
-  if (phoneEl) {
-    phoneEl.addEventListener("blur", () => {
-      const cleaned = phoneEl.value.replace(/\D/g, "");
-
-      if (phoneEl.value && (cleaned.length < 10 || cleaned.length > 15)) {
-        showError(phoneEl, "Enter a valid phone (10–15 digits)");
-      } else {
-        clearError(phoneEl);
-      }
-    });
-  }
-
-})();
-
-/* =========================
-   2. SMART AUTOFLOW (SAFE WRAP)
-========================= */
-
-(function () {
-
-  const originalClear = window.clearLeadForm;
-
-  window.clearLeadForm = function () {
-    if (originalClear) originalClear();
-
-    const nameEl = document.getElementById("leadName");
-    if (nameEl) nameEl.focus(); // 🔥 key improvement
-  };
-
-})();
-
-
-/* =========================
-   3. KEYBOARD SPEED (CTRL + ENTER)
-========================= */
-
-(function () {
-
-  document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.key === "Enter") {
-
-      // Prevent accidental trigger inside textarea (future safe)
-      if (document.activeElement.tagName === "TEXTAREA") return;
-
-      if (typeof addLead === "function") {
-        addLead();
-      }
-    }
-  });
-
-})();
-
-</script>
-
-<script>
-
-/* =========================
-   DUPLICATE DETECTION
-========================= */
-
-function isDuplicateLead(newLead, leads) {
-  return leads.some(l =>
-    l.email && newLead.email &&
-    l.email.toLowerCase() === newLead.email.toLowerCase()
-  );
-}
-
-</script>
-
-<script>
-
-/* =========================
-   NEXT ACTION ENGINE
-========================= */
-
-function daysSince(dateString) {
-  if (!dateString) return 999;
-
-  const now = new Date();
-  const past = new Date(dateString);
-
-  return Math.floor((now - past) / (1000 * 60 * 60 * 24));
-}
-
-function getNextAction(lead) {
-
-  const days = daysSince(lead.last_contact_date);
-
-  // 🟡 Asked info
-  if (lead.last_response_type === "asked_info") {
-    return { label: "Send details", type: "normal" };
-  }
-
-  // 🟡 Interested but silent
-  if (lead.last_response_type === "interested" && days >= 3) {
-    return { label: "Nudge", type: "urgent" };
-  }
-
-  // 🟢 Not now
-  if (lead.last_response_type === "not_now") {
-    return { label: "Nurture", type: "normal" };
-  }
-
-  // 🔴 No response after contact
-  if (lead.stage === "contacted" && days >= 2) {
-    return { label: "Follow up", type: "urgent" };
-  }
-
-  // 🆕 New lead
-  if (lead.stage === "new") {
-    return { label: "Contact", type: "urgent" };
-  }
-
-  return { label: "-", type: "none" };
-}
-</script>
-
-<script src="assets/js/leads-ui.js"></script>
-
-</body>
-</html>
+      <div>
+        <label>Email</label>
+        <input id="leadEmail" />
+      </div>
+
+      <div>
+        <label>Phone</label>
+        <input id="leadPhone" />
+      </div>
+
+      <div class="full">
+        <label>LinkedIn URL *</label>
+        <input id="leadLinkedIn" />
+      </div>
+
+      <div>
+        <label>Source</label>
+        <select id="leadSource"></select>
+      </div>
+
+      <div>
+        <label>Experience</label>
+        <input id="leadExperience" />
+      </div>
+
+      <div>
+        <label>Last Contact</label>
+        <input type="date" id="leadLastContactDate" />
+      </div>
+
+      <div class="full">
+        <label>Source Detail</label>
+        <input id="leadSourceDetail" />
+      </div>
+
+    </form>
+
+    <div class="leads-actions">
+      <button class="btn btn-primary" onclick="addLead()">+ Add Lead</button>
+      <button class="btn btn-secondary" onclick="clearLeadForm()">Clear</button>
+    </div>
+
+  </div>
+
+  <!-- 🔍 FILTERS -->
+  <div class="leads-filters">
+
+    <input class="leads-search" placeholder="Search leads..." oninput="applyLeadSearch(this.value)" />
+
+    <select id="leadFilter" onchange="renderLeads()">
+      <option value="all">All</option>
+      <option value="priority">Priority</option>
+      <option value="blocked">Blocked</option>
+    </select>
+
+    <select id="leadUserFilter" onchange="renderLeads()">
+      <option value="all">All Users</option>
+      <option value="mine">My Leads</option>
+    </select>
+
+    <button class="leads-tab" onclick="quickFilter('high')">High</button>
+    <button class="leads-tab" onclick="quickFilter('converted')">Converted</button>
+    <button class="leads-tab" onclick="quickFilter('mine')">My Leads</button>
+
+  </div>
+
+  <!-- 📊 TABLE -->
+  <div class="card">
+
+    <div class="card-title">Lead List</div>
+
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Company</th>
+            <th>Source</th>
+            <th>Owner</th>
+            <th>Contact</th>
+            <th>Score</th>
+            <th>Status</th>
+            <th>Stage</th>
+            <th>Next Action</th>
+            <th>Notes</th>
+            <th>Flag</th>
+          </tr>
+        </thead>
+        <tbody id="leadBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>

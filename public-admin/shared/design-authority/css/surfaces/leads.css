@@ -1,0 +1,263 @@
+/* =========================================================
+   Agile AI University — Leads Surface
+   ---------------------------------------------------------
+   Version: v1.0.0 (Premium UX)
+   Date: 2026-03-29
+
+   PURPOSE:
+   - Clean form layout (no clutter)
+   - Better grouping
+   - Filter clarity
+   - Visual hierarchy
+   - Works with tables.css + admin.css
+
+========================================================= */
+
+
+/* =========================================================
+   🧠 PAGE HEADER
+========================================================= */
+
+.leads-header {
+  margin-bottom: 24px;
+}
+
+.leads-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.leads-header p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   📊 METRICS ROW (TOP STRIP)
+========================================================= */
+
+.leads-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.leads-metric {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+
+.leads-metric span {
+  display: block;
+}
+
+.leads-metric .value {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.leads-metric .label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   🧾 FORM CARD (BIG FIX FOR YOUR CLUTTER)
+========================================================= */
+
+.leads-form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 24px;
+}
+
+.leads-form-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+
+/* =========================================================
+   📐 FORM GRID (THIS FIXES YOUR CURRENT UI)
+========================================================= */
+
+.leads-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 20px;
+}
+
+.leads-form-grid .full {
+  grid-column: span 3;
+}
+
+.leads-form-grid .half {
+  grid-column: span 2;
+}
+
+
+/* =========================================================
+   🏷️ LABEL IMPROVEMENT
+========================================================= */
+
+.leads-form-grid label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+
+/* =========================================================
+   🔘 FORM ACTIONS
+========================================================= */
+
+.leads-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: rgba(100, 116, 139, 0.08);
+}
+
+
+/* =========================================================
+   🔍 FILTER BAR (MAJOR UX FIX)
+========================================================= */
+
+.leads-filters {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 16px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.leads-filters input,
+.leads-filters select {
+  height: 36px;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 0 10px;
+}
+
+.leads-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+
+/* =========================================================
+   🧭 QUICK FILTER BUTTONS
+========================================================= */
+
+.leads-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.leads-tab {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: transparent;
+}
+
+.leads-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+
+/* =========================================================
+   📋 TABLE SPACING ADJUSTMENT
+========================================================= */
+
+.leads-table {
+  margin-top: 10px;
+}
+
+
+/* =========================================================
+   🎯 SCORE COLORS (VISUAL SIGNAL)
+========================================================= */
+
+.score-high {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.score-mid {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.score-low {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   📉 EMPTY STATE
+========================================================= */
+
+.leads-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   📱 RESPONSIVE
+========================================================= */
+
+@media (max-width: 1024px) {
+  .leads-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .leads-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .leads-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .leads-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

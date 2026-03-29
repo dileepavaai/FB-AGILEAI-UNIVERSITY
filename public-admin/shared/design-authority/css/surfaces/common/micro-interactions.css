@@ -1,0 +1,187 @@
+/* =========================================================
+   Agile AI University — Micro Interactions Layer
+   ---------------------------------------------------------
+   Version: v1.0.0 (Subtle Premium UX)
+   Date: 2026-03-29
+
+   PURPOSE:
+   - Smooth interactions
+   - Better perceived performance
+   - Subtle animations (non-distracting)
+
+========================================================= */
+
+
+/* =========================================================
+   🌗 GLOBAL SMOOTHNESS
+========================================================= */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+
+/* =========================================================
+   🔘 BUTTON INTERACTIONS
+========================================================= */
+
+button {
+  transition: all 0.18s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+
+/* =========================================================
+   📦 CARD INTERACTIONS
+========================================================= */
+
+.card {
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card:active {
+  transform: scale(0.995);
+}
+
+
+/* =========================================================
+   🧭 SIDEBAR INTERACTIONS
+========================================================= */
+
+.sidebar a {
+  transition: all 0.15s ease;
+}
+
+.sidebar a:hover {
+  transform: translateX(2px);
+}
+
+.sidebar a.active {
+  transition: all 0.2s ease;
+}
+
+
+/* =========================================================
+   📊 TABLE ROW INTERACTIONS
+========================================================= */
+
+.table tbody tr {
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.table tbody tr:hover {
+  transform: scale(1.002);
+}
+
+.table tbody tr:active {
+  transform: scale(0.998);
+}
+
+
+/* =========================================================
+   🧾 INPUT FOCUS EXPERIENCE
+========================================================= */
+
+input,
+select {
+  transition: all 0.15s ease;
+}
+
+input:focus,
+select:focus {
+  transform: scale(1.01);
+}
+
+
+/* =========================================================
+   🌗 THEME TRANSITION (SMOOTH SWITCH)
+========================================================= */
+
+html[data-theme] * {
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border 0.25s ease;
+}
+
+
+/* =========================================================
+   🧠 PAGE LOAD (SUBTLE ENTRY)
+========================================================= */
+
+#appView {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.3s ease;
+}
+
+body:not(.app-loading) #appView {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   🔘 ACTION BUTTON FEEDBACK
+========================================================= */
+
+.action-btn,
+.batch-action-btn {
+  transition: all 0.15s ease;
+}
+
+.action-btn:hover,
+.batch-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.action-btn:active,
+.batch-action-btn:active {
+  transform: scale(0.95);
+}
+
+
+/* =========================================================
+   📉 EMPTY STATE FADE
+========================================================= */
+
+.leads-empty,
+.batch-empty,
+.table-empty {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   📏 SCROLL SMOOTHNESS
+========================================================= */
+
+html {
+  scroll-behavior: smooth;
+}

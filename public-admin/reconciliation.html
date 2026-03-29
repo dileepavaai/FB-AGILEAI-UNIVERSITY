@@ -5,12 +5,22 @@
   <title>Reconciliation – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- 🔒 BASE -->
   <link rel="stylesheet" href="assets/css/admin.css" />
+
+  <!-- 🎨 DESIGN SYSTEM -->
+  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
+
+  <!-- 🧩 COMMON -->
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
+
 </head>
 
 <body class="app-loading">
 
-<!-- 🔷 HEADER -->
 <div id="headerContainer"></div>
 
 <div class="layout">
@@ -18,98 +28,128 @@
   <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
-      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html">Dashboard</a></li>
       <li><a href="leads.html">Lead Intelligence</a></li>
       <li><a href="batch.html">Batch Management</a></li>
       <li><a href="csv.html">CSV Import</a></li>
-      <li><a href="reconciliation.html">Reconciliation</a></li>
+      <li><a href="reconciliation.html" class="active">Reconciliation</a></li>
     </ul>
   </nav>
 
   <main class="content">
 
-    <!-- 🔐 LOGIN VIEW -->
+    <!-- 🔐 LOGIN -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn">Sign in with Google</button>
+      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
     </section>
 
-    <!-- 🔷 APP VIEW -->
+    <!-- 🔷 APP -->
     <section id="appView" class="hidden">
 
-      <h2>Reconciliation</h2>
-      <p class="muted">
-        Read-only financial and entitlement reconciliation.
-        All records are system-generated and audit-safe.
-      </p>
-
-      <!-- 🔷 SUMMARY -->
-      <div class="metrics">
-        <div>Total Transactions: <span id="summary-total-count">—</span></div>
-        <div>Total Amount: <span id="summary-total-amount">—</span></div>
-        <div>Failed / Refunded: <span id="summary-failed-amount">—</span></div>
-        <div>Currency: <span id="summary-currency">—</span></div>
+      <!-- 🧠 HEADER -->
+      <div class="section">
+        <h2>Reconciliation</h2>
+        <p class="page-subtitle">
+          Read-only financial and entitlement reconciliation. All records are system-generated and audit-safe.
+        </p>
       </div>
 
-      <hr />
+      <!-- 📊 SUMMARY -->
+      <div class="metrics section">
+        <div class="metric-card">
+          <div class="metric-label">Transactions</div>
+          <div class="metric-value" id="summary-total-count">—</div>
+        </div>
 
-      <!-- 🔷 FILTERS -->
-      <div class="toolbar">
-        <select id="filter-status">
-          <option value="">All Statuses</option>
-          <option value="captured">Captured</option>
-          <option value="failed">Failed</option>
-          <option value="refunded">Refunded</option>
-        </select>
+        <div class="metric-card">
+          <div class="metric-label">Total Amount</div>
+          <div class="metric-value" id="summary-total-amount">—</div>
+        </div>
 
-        <select id="filter-currency">
-          <option value="">All Currencies</option>
-          <option value="INR">INR</option>
-          <option value="USD">USD</option>
-        </select>
+        <div class="metric-card">
+          <div class="metric-label">Failed / Refunded</div>
+          <div class="metric-value" id="summary-failed-amount">—</div>
+        </div>
 
-        <input type="date" id="filter-from" />
-        <input type="date" id="filter-to" />
-
-        <button id="exportCsvBtn">Export CSV</button>
+        <div class="metric-card">
+          <div class="metric-label">Currency</div>
+          <div class="metric-value" id="summary-currency">—</div>
+        </div>
       </div>
 
-      <hr />
+      <!-- 🔍 FILTERS -->
+      <div class="card section">
 
-      <!-- 🔷 TABLE -->
-      <table>
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Payment ID</th>
-            <th>Email</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Captured At</th>
-          </tr>
-        </thead>
-        <tbody id="reconBody">
-          <tr>
-            <td colspan="6">Loading...</td>
-          </tr>
-        </tbody>
-      </table>
+        <div class="card-title">Filters</div>
+
+        <div class="leads-filters">
+
+          <select id="filter-status">
+            <option value="">All Statuses</option>
+            <option value="captured">Captured</option>
+            <option value="failed">Failed</option>
+            <option value="refunded">Refunded</option>
+          </select>
+
+          <select id="filter-currency">
+            <option value="">All Currencies</option>
+            <option value="INR">INR</option>
+            <option value="USD">USD</option>
+          </select>
+
+          <input type="date" id="filter-from" />
+          <input type="date" id="filter-to" />
+
+          <button id="exportCsvBtn" class="btn btn-secondary">
+            Export CSV
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- 📊 TABLE -->
+      <div class="card section">
+
+        <div class="card-title">Transactions</div>
+
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Payment ID</th>
+                <th>Email</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Captured At</th>
+              </tr>
+            </thead>
+            <tbody id="reconBody">
+              <tr>
+                <td colspan="6">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
 
     </section>
 
   </main>
 </div>
 
-<!-- 🔷 FOOTER -->
 <div id="footerContainer"></div>
 
-<!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
+<!-- 🔥 ADMIN -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 
-/* 🔥 ONE LINE CONTROLS EVERYTHING */
-initAdminApp("./assets/js/reconciliation.js");
+/* FIXED PATH */
+initAdminApp("reconciliation.js");
 </script>
 
 </body>

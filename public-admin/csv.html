@@ -5,12 +5,24 @@
   <title>CSV Import – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- 🔒 BASE -->
   <link rel="stylesheet" href="assets/css/admin.css" />
+
+  <!-- 🎨 DESIGN SYSTEM -->
+  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
+
+  <!-- 🧩 COMMON -->
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
+
+  <!-- 🎯 SURFACE -->
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
 </head>
 
 <body class="app-loading">
 
-<!-- 🔷 HEADER (CENTRALIZED) -->
 <div id="headerContainer"></div>
 
 <div class="layout">
@@ -18,89 +30,107 @@
   <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
-      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html">Dashboard</a></li>
       <li><a href="leads.html">Lead Intelligence</a></li>
       <li><a href="batch.html">Batch Management</a></li>
-      <li><a href="csv.html">CSV Import</a></li>
+      <li><a href="csv.html" class="active">CSV Import</a></li>
       <li><a href="reconciliation.html">Reconciliation</a></li>
     </ul>
   </nav>
 
   <main class="content">
 
-    <!-- 🔐 LOGIN VIEW -->
+    <!-- 🔐 LOGIN -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn">Sign in with Google</button>
+      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
     </section>
 
-    <!-- 🔷 APP VIEW -->
+    <!-- 🔷 APP -->
     <section id="appView" class="hidden">
 
-      <h2>CSV Import</h2>
-
-      <!-- 🔷 STEP 1 -->
-      <h3>Step 1: Select Batch</h3>
-
-      <select id="csvBatchSelect">
-        <option value="">-- Select Batch --</option>
-      </select>
-
-      <p style="font-size:12px;color:#666;">
-        Batch selection is mandatory. All records will be linked to this batch.
-      </p>
-
-      <hr />
-
-      <!-- 🔷 STEP 2 -->
-      <h3>Step 2: Upload CSV</h3>
-
-      <input type="file" id="csvFile" accept=".csv" />
-
-      <div style="margin-top:10px;">
-        <button id="parseBtn">Parse & Validate</button>
-        <button id="uploadBtn">Upload Valid Records</button>
+      <!-- 🧠 HEADER -->
+      <div class="section">
+        <h2>CSV Import</h2>
+        <p>Upload and validate credential data before ingestion</p>
       </div>
 
-      <p id="statusMsg" style="margin-top:10px;font-weight:bold;"></p>
+      <!-- 🔷 STEP 1 -->
+      <div class="card section">
 
-      <hr />
+        <div class="card-title">Step 1 — Select Batch</div>
+
+        <select id="csvBatchSelect">
+          <option value="">Select Batch</option>
+        </select>
+
+        <p class="card-subtitle">
+          Batch selection is mandatory. All records will be permanently linked to this batch.
+        </p>
+
+      </div>
+
+      <!-- 🔷 STEP 2 -->
+      <div class="card section">
+
+        <div class="card-title">Step 2 — Upload CSV</div>
+
+        <input type="file" id="csvFile" accept=".csv" />
+
+        <div class="section-tight" style="display:flex; gap:10px; margin-top:12px;">
+          <button id="parseBtn" class="btn btn-secondary">
+            Parse & Validate
+          </button>
+
+          <button id="uploadBtn" class="btn btn-primary">
+            Upload Valid Records
+          </button>
+        </div>
+
+        <p id="statusMsg" class="card-subtitle"></p>
+
+      </div>
 
       <!-- 🔷 STEP 3 -->
-      <h3>Step 3: Preview & Validation</h3>
+      <div class="card section">
 
-      <table id="previewTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Type</th>
-            <th>Program</th>
-            <th>Status / Errors</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+        <div class="card-title">Step 3 — Preview & Validation</div>
 
-      <p style="font-size:12px;color:#666;margin-top:10px;">
-        🔴 Invalid rows are highlighted. Only valid records will be uploaded.
-      </p>
+        <div class="table-wrapper">
+          <table id="previewTable" class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Program</th>
+                <th>Status / Errors</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <p class="card-subtitle">
+          🔴 Invalid rows are highlighted. Only valid records will be uploaded.
+        </p>
+
+      </div>
 
     </section>
 
   </main>
 </div>
 
-<!-- 🔷 FOOTER -->
 <div id="footerContainer"></div>
 
-<!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
+<!-- 🔥 ADMIN -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 
-/* 🔥 ONE LINE CONTROLS EVERYTHING */
-initAdminApp("./assets/js/csv.js");
+/* FIXED PATH */
+initAdminApp("csv.js");
 </script>
 
 </body>

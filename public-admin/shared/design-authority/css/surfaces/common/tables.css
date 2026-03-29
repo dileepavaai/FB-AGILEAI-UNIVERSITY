@@ -1,0 +1,226 @@
+/* =========================================================
+   Agile AI University — Premium Table System
+   ---------------------------------------------------------
+   Version: v1.0.0 (Premium UI Layer)
+   Date: 2026-03-29
+
+   PURPOSE:
+   - Premium table UX
+   - Clean spacing + readability
+   - Subtle interaction (hover, focus)
+   - Theme compatible
+   - NO layout overrides
+
+========================================================= */
+
+
+/* =========================================================
+   🧱 TABLE BASE
+========================================================= */
+
+.table-wrapper {
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   📊 TABLE STRUCTURE
+========================================================= */
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1000px;
+}
+
+
+/* =========================================================
+   🧾 HEADER (PREMIUM LOOK)
+========================================================= */
+
+.table thead th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+
+  padding: 14px 16px;
+  text-align: left;
+
+  background: var(--bg-main);
+  color: var(--text-muted);
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   📄 BODY CELLS
+========================================================= */
+
+.table tbody td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--text-main);
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   🎯 ROW INTERACTION
+========================================================= */
+
+.table tbody tr {
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.table tbody tr:active {
+  transform: scale(0.998);
+}
+
+
+/* =========================================================
+   🎨 STRIPED EFFECT (SUBTLE)
+========================================================= */
+
+.table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+:root[data-theme="dark"] .table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+
+/* =========================================================
+   📌 FIRST COLUMN EMPHASIS
+========================================================= */
+
+.table td:first-child {
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   📐 ALIGNMENT HELPERS
+========================================================= */
+
+.table .text-center {
+  text-align: center;
+}
+
+.table .text-right {
+  text-align: right;
+}
+
+
+/* =========================================================
+   🏷️ STATUS / TAG STYLE
+========================================================= */
+
+.table .tag {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+
+/* STATUS COLORS */
+
+.tag-success {
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+.tag-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+}
+
+.tag-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+.tag-neutral {
+  background: rgba(100, 116, 139, 0.1);
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   ✏️ INLINE EDIT MODE
+========================================================= */
+
+.table .inline-input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.table .inline-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+
+/* =========================================================
+   🧭 ACTION BUTTONS (INSIDE TABLE)
+========================================================= */
+
+.table .action-btn {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+}
+
+.table .action-btn:hover {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================================================
+   📦 EMPTY STATE
+========================================================= */
+
+.table-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   📏 SCROLLBAR (PREMIUM TOUCH)
+========================================================= */
+
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}

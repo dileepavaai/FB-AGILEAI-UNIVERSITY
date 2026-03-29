@@ -5,11 +5,20 @@
   <title>Batch Management – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 🔷 BASE ADMIN CSS (LOCKED) -->
+  <!-- 🔒 BASE -->
   <link rel="stylesheet" href="assets/css/admin.css" />
 
-  <!-- 🔷 REFINEMENT LAYER -->
+  <!-- 🎨 DESIGN SYSTEM -->
   <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
+
+  <!-- 🧩 COMMON -->
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
+
+  <!-- 🎯 SURFACE -->
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/batch.css" />
 </head>
 
 <body class="app-loading">
@@ -22,7 +31,7 @@
   <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
-      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html">Dashboard</a></li>
       <li><a href="leads.html">Lead Intelligence</a></li>
       <li><a href="batch.html" class="active">Batch Management</a></li>
       <li><a href="csv.html">CSV Import</a></li>
@@ -36,30 +45,32 @@
     <section id="loginView">
       <h2>Admin Access</h2>
       <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn">Sign in with Google</button>
+      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
     </section>
 
     <!-- 🔷 APP VIEW -->
     <section id="appView" class="hidden">
 
-      <div class="page-header">
+      <!-- 🧠 HEADER -->
+      <div class="batch-header section">
         <h2>Batch Management</h2>
-        <p class="page-subtitle">Create and manage program batches</p>
+        <p>Create and manage program batches</p>
       </div>
 
       <!-- ➕ CREATE -->
-      <div class="card">
-        <h3>Create Batch</h3>
+      <div class="batch-form-card">
 
-        <form id="batchForm" class="lead-form">
+        <div class="batch-form-title">Create Batch</div>
 
-          <div class="form-field">
-            <label>Batch Name</label>
+        <form id="batchForm" class="batch-form-grid">
+
+          <div>
+            <label>Batch Name *</label>
             <input id="batchName" required />
           </div>
 
-          <div class="form-field">
-            <label>Program Code</label>
+          <div>
+            <label>Program Code *</label>
             <select id="programCode" required>
               <option value="">Select Program Code</option>
               <option value="AOP">AOP</option>
@@ -67,7 +78,7 @@
             </select>
           </div>
 
-          <div class="form-field">
+          <div>
             <label>Status</label>
             <select id="batchStatus">
               <option value="active">Active</option>
@@ -75,19 +86,33 @@
             </select>
           </div>
 
-          <div class="form-actions">
-            <button type="submit">Create Batch</button>
-          </div>
-
         </form>
+
+        <div class="batch-actions">
+          <button type="submit" form="batchForm" class="btn btn-primary">
+            Create Batch
+          </button>
+
+          <button type="button" class="btn btn-secondary"
+            onclick="document.getElementById('batchForm').reset()">
+            Reset
+          </button>
+        </div>
+
+        <!-- ⚠️ GOVERNANCE SAFETY -->
+        <div class="batch-warning">
+          ⚠️ Program Code selection is permanent and cannot be changed after batch creation.
+        </div>
+
       </div>
 
       <!-- 📊 LIST -->
-      <div class="card" style="margin-top: 20px;">
-        <h3>Batch List</h3>
+      <div class="batch-list-card section">
+
+        <div class="batch-list-title">Batch List</div>
 
         <div class="table-wrapper">
-          <table id="batchTable">
+          <table id="batchTable" class="table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -99,6 +124,7 @@
             <tbody></tbody>
           </table>
         </div>
+
       </div>
 
     </section>
@@ -113,7 +139,7 @@
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 
-/* ✅ FINAL (CENTRALIZED MODULE LOADER) */
+/* ✅ KEEP THIS (CORRECT) */
 initAdminApp("batch.js");
 </script>
 

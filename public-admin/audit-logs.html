@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Audit Logs – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- BASE -->
+  <link rel="stylesheet" href="assets/css/admin.css" />
+
+  <!-- DESIGN -->
+  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
+
+  <!-- COMMON -->
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
+</head>
+
+<body class="app-loading">
+
+<div id="headerContainer"></div>
+
+<div class="layout">
+
+  <nav class="sidebar" id="adminNav" style="display:none;">
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="leads.html">Lead Intelligence</a></li>
+      <li><a href="batch.html">Batch Management</a></li>
+      <li><a href="csv.html">CSV Import</a></li>
+      <li><a href="reconciliation.html">Reconciliation</a></li>
+      <li><a href="audit-logs.html" class="active">Audit Logs</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+
+    <section id="loginView">
+      <h2>Admin Access</h2>
+      <button id="loginBtn" class="btn btn-primary">Sign in</button>
+    </section>
+
+    <section id="appView" class="hidden">
+
+      <div class="section">
+        <h2>Audit Logs</h2>
+        <p class="page-subtitle">Immutable history of learner status updates</p>
+      </div>
+
+      <!-- TABLE -->
+      <div class="card section">
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Learner</th>
+                <th>Email</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Updated By</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="auditTable">
+              <tr><td colspan="6">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<div id="footerContainer"></div>
+
+<script type="module">
+import { initAdminApp } from "./assets/js/admin-app.js";
+initAdminApp("audit-logs.js");
+</script>
+
+</body>
+</html>

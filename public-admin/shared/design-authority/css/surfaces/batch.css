@@ -1,0 +1,227 @@
+/* =========================================================
+   Agile AI University — Batch Surface
+   ---------------------------------------------------------
+   Version: v1.0.0 (Operational UX)
+   Date: 2026-03-29
+
+   PURPOSE:
+   - Clear batch creation flow
+   - Reduce admin errors
+   - Improve readability + control
+   - Structured form + list experience
+
+========================================================= */
+
+
+/* =========================================================
+   🧠 PAGE HEADER
+========================================================= */
+
+.batch-header {
+  margin-bottom: 24px;
+}
+
+.batch-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.batch-header p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   📦 CREATE BATCH CARD
+========================================================= */
+
+.batch-form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 24px;
+}
+
+.batch-form-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+
+/* =========================================================
+   📐 FORM GRID (CONTROLLED INPUT FLOW)
+========================================================= */
+
+.batch-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 20px;
+}
+
+.batch-form-grid .full {
+  grid-column: span 3;
+}
+
+.batch-form-grid label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+
+/* =========================================================
+   🔘 ACTION AREA
+========================================================= */
+
+.batch-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.batch-actions button {
+  min-width: 140px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: rgba(100, 116, 139, 0.08);
+}
+
+
+/* =========================================================
+   ⚠️ SAFETY NOTICE (IMPORTANT UX)
+========================================================= */
+
+.batch-warning {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+
+  background: rgba(245, 158, 11, 0.1);
+  color: #92400e;
+}
+
+:root[data-theme="dark"] .batch-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+
+/* =========================================================
+   📊 BATCH LIST CARD
+========================================================= */
+
+.batch-list-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.batch-list-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+
+/* =========================================================
+   📋 TABLE WRAPPER (USES ui-table)
+========================================================= */
+
+.batch-table {
+  margin-top: 10px;
+}
+
+
+/* =========================================================
+   🎯 STATUS TAGS (IMPORTANT VISUAL SIGNAL)
+========================================================= */
+
+.batch-status {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.batch-status.active {
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+.batch-status.closed {
+  background: rgba(100, 116, 139, 0.1);
+  color: var(--text-muted);
+}
+
+.batch-status.cancelled {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   🔘 ACTION BUTTONS (TABLE)
+========================================================= */
+
+.batch-action-btn {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+}
+
+.batch-action-btn:hover {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================================================
+   🧭 EMPTY STATE
+========================================================= */
+
+.batch-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   📱 RESPONSIVE
+========================================================= */
+
+@media (max-width: 1024px) {
+  .batch-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .batch-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .batch-actions {
+    flex-direction: column;
+  }
+}

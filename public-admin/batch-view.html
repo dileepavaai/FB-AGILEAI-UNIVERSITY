@@ -1,141 +1,287 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <title>Batch View – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Your Admin CSS -->
+  <!-- 🔒 BASE -->
   <link rel="stylesheet" href="assets/css/admin.css" />
+
+  <!-- 🎨 DESIGN SYSTEM -->
+  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
+
+  <!-- 🧩 COMMON -->
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
 </head>
 
-<body>
+<body class="app-loading">
 
-  <!-- HEADER -->
-  <div id="header"></div>
+<div id="headerContainer"></div>
 
-  <div class="admin-layout">
+<div class="layout">
 
-    <!-- SIDEBAR -->
-    <div id="sidebar"></div>
+  <nav class="sidebar" id="adminNav" style="display:none;">
+    <ul>
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="leads.html">Lead Intelligence</a></li>
+      <li><a href="batch.html" class="active">Batch Management</a></li>
+      <li><a href="csv.html">CSV Import</a></li>
+      <li><a href="reconciliation.html">Reconciliation</a></li>
+    </ul>
+  </nav>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
+  <main class="content">
 
-      <h2 id="batchTitle">Loading Batch...</h2>
+    <!-- LOGIN -->
+    <section id="loginView">
+      <h2>Admin Access</h2>
+      <p>Please sign in with your authorized account.</p>
+      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
+    </section>
 
-      <!-- Batch Info -->
-      <div class="card">
-        <p><strong>Batch Name:</strong> <span id="batchName"></span></p>
-        <p><strong>Program Code:</strong> <span id="programCode"></span></p>
-        <p><strong>Status:</strong> <span id="batchStatus"></span></p>
+    <!-- APP -->
+    <section id="appView" class="hidden">
+
+      <!-- HEADER -->
+      <div class="section">
+        <h2 id="batchTitle">Loading Batch...</h2>
+        <p class="page-subtitle">Batch details and learner tracking</p>
       </div>
 
-      <!-- Learners -->
-      <div class="card" style="margin-top:20px;">
-        <h3>Learners</h3>
+      <!-- BATCH INFO -->
+      <div class="card section">
+        <div class="card-title">Batch Information</div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="learnerTable">
-            <tr>
-              <td colspan="3">No learners yet</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="grid-2">
+          <div class="data-row">
+            <span class="data-label">Batch Name</span>
+            <span id="batchName"></span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Program Code</span>
+            <span id="programCode"></span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Status</span>
+            <span id="batchStatus"></span>
+          </div>
+        </div>
       </div>
 
-    </div>
-  </div>
+      <!-- 👤 TRAINER ASSIGNMENT -->
+      <div class="card section">
 
-  <!-- Layout Scripts -->
-  <script src="assets/js/layout/header.js"></script>
-  <script src="assets/js/layout/sidebar.js"></script>
+        <div class="card-title">Trainer Assignment</div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+        <div style="display:flex; gap:10px; margin-bottom:12px;">
+          <input id="trainerEmailInput" placeholder="trainer@email.com" />
+          <button class="btn btn-primary" onclick="assignTrainer()">Assign</button>
+        </div>
 
-  <script>
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Trainer</th>
+                <th>Assigned At</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="trainerAssignmentTable">
+              <tr><td colspan="4">No trainers assigned</td></tr>
+            </tbody>
+          </table>
+        </div>
 
-    // 🔹 Get batch_id from URL
-    const params = new URLSearchParams(window.location.search);
-    const batchId = params.get("batch_id");
+      </div>
 
-    if (!batchId) {
-      alert("No batch selected");
-    }
+      <!-- LEARNERS -->
+      <div class="card section">
+        <div class="card-title">Learners</div>
 
-    // 🔴 IMPORTANT: USE YOUR EXISTING CONFIG
-    const firebaseConfig = {
-      apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
-      authDomain: "fb-agileai-university.firebaseapp.com",
-      projectId: "fb-agileai-university",
-      storageBucket: "fb-agileai-university.appspot.com",
-      messagingSenderId: "458881040066",
-      appId: "1:458881040066:web:c832c420f9b4282e76c55b"
-    };
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="learnerTable">
+              <tr>
+                <td colspan="3">No learners yet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+      </div>
 
-    // 🔹 Load Batch
-    async function loadBatch() {
-      const doc = await db.collection("batches").doc(batchId).get();
+    </section>
 
-      if (!doc.exists) {
-        document.getElementById("batchTitle").innerText = "Batch not found";
-        return;
-      }
+  </main>
+</div>
 
-      const data = doc.data();
+<div id="footerContainer"></div>
 
-      document.getElementById("batchTitle").innerText = data.batch_name;
-      document.getElementById("batchName").innerText = data.batch_name;
-      document.getElementById("programCode").innerText = data.program_code;
-      document.getElementById("batchStatus").innerText = data.status;
-    }
+<!-- ADMIN -->
+<script type="module">
+import { initAdminApp } from "./assets/js/admin-app.js";
+initAdminApp();
+</script>
 
-    // 🔹 Load Learners
-    async function loadLearners() {
-      const snapshot = await db.collection("learners")
-        .where("batch_id", "==", batchId)
-        .get();
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-      const table = document.getElementById("learnerTable");
-      table.innerHTML = "";
+<script>
+const params = new URLSearchParams(window.location.search);
+const batchId = params.get("batch_id");
 
-      if (snapshot.empty) {
-        table.innerHTML = `<tr><td colspan="3">No learners yet</td></tr>`;
-        return;
-      }
+if (!batchId) alert("No batch selected");
 
-      snapshot.forEach(doc => {
-        const l = doc.data();
+const firebaseConfig = {
+  apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
+  authDomain: "fb-agileai-university.firebaseapp.com",
+  projectId: "fb-agileai-university",
+  storageBucket: "fb-agileai-university.appspot.com",
+  messagingSenderId: "458881040066",
+  appId: "1:458881040066:web:c832c420f9b4282e76c55b"
+};
 
-        const row = `
-          <tr>
-            <td>${l.full_name || "-"}</td>
-            <td>${l.email || "-"}</td>
-            <td>${l.status || "-"}</td>
-          </tr>
-        `;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-        table.innerHTML += row;
-      });
-    }
+/* =========================
+   LOAD BATCH
+========================= */
+async function loadBatch() {
+  const doc = await db.collection("batches").doc(batchId).get();
 
-    // INIT
-    loadBatch();
-    loadLearners();
+  if (!doc.exists) {
+    document.getElementById("batchTitle").innerText = "Batch not found";
+    return;
+  }
 
-  </script>
+  const data = doc.data();
+
+  document.getElementById("batchTitle").innerText = data.batch_name;
+  document.getElementById("batchName").innerText = data.batch_name;
+  document.getElementById("programCode").innerText = data.program_code;
+  document.getElementById("batchStatus").innerText = data.status;
+}
+
+/* =========================
+   LOAD LEARNERS
+========================= */
+async function loadLearners() {
+  const snapshot = await db.collection("learners")
+    .where("batch_id", "==", batchId)
+    .get();
+
+  const table = document.getElementById("learnerTable");
+  table.innerHTML = "";
+
+  if (snapshot.empty) {
+    table.innerHTML = `<tr><td colspan="3">No learners yet</td></tr>`;
+    return;
+  }
+
+  snapshot.forEach(doc => {
+    const l = doc.data();
+
+    table.innerHTML += `
+      <tr>
+        <td>${l.full_name || "-"}</td>
+        <td>${l.email || "-"}</td>
+        <td>${l.status || "-"}</td>
+      </tr>
+    `;
+  });
+}
+
+/* =========================
+   TRAINER ASSIGNMENT
+========================= */
+async function assignTrainer() {
+
+  const email = document.getElementById("trainerEmailInput").value.trim();
+
+  if (!email) {
+    alert("Enter trainer email");
+    return;
+  }
+
+  await db.collection("trainer_assignments").add({
+    trainer_email: email,
+    batch_id: batchId,
+    assigned_by: "admin",
+    assigned_at: new Date(),
+    status: "active"
+  });
+
+  document.getElementById("trainerEmailInput").value = "";
+  loadTrainerAssignments();
+}
+
+async function loadTrainerAssignments() {
+
+  const snapshot = await db.collection("trainer_assignments")
+    .where("batch_id", "==", batchId)
+    .get();
+
+  const table = document.getElementById("trainerAssignmentTable");
+  table.innerHTML = "";
+
+  if (snapshot.empty) {
+    table.innerHTML = `<tr><td colspan="4">No trainers assigned</td></tr>`;
+    return;
+  }
+
+  snapshot.forEach(doc => {
+
+    const d = doc.data();
+
+    table.innerHTML += `
+      <tr>
+        <td>${d.trainer_email}</td>
+        <td>${new Date(d.assigned_at.seconds * 1000).toLocaleString()}</td>
+        <td>${d.status}</td>
+        <td>
+          ${d.status === "active"
+            ? `<button onclick="revokeTrainer('${doc.id}')">Revoke</button>`
+            : "-"
+          }
+        </td>
+      </tr>
+    `;
+  });
+}
+
+async function revokeTrainer(docId) {
+  await db.collection("trainer_assignments")
+    .doc(docId)
+    .update({ status: "revoked" });
+
+  loadTrainerAssignments();
+}
+
+/* =========================
+   INIT
+========================= */
+loadBatch();
+loadLearners();
+loadTrainerAssignments();
+
+</script>
 
 </body>
 </html>

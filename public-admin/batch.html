@@ -113,8 +113,8 @@
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 
-/* ✅ FIXED: Pass only filename (NO path duplication) */
-initAdminApp("batch.js");
+/* ✅ FINAL FIX: Proper relative module path */
+initAdminApp("./assets/js/batch.js");
 </script>
 
 <!-- 🔗 NAVIGATION -->

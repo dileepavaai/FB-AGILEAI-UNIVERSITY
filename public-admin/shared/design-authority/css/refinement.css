@@ -927,3 +927,55 @@ body {
 #themeToggle:active {
   transform: scale(0.96);
 }
+
+/* =========================================================
+   🌗 FINAL THEME STABILIZER (v1.2.2)
+   Fix visual inconsistency
+========================================================= */
+
+/* Force consistent surfaces */
+.card,
+.table-wrapper,
+.filter-bar,
+.metrics-row span {
+  background: var(--card-bg) !important;
+  border-color: var(--border) !important;
+}
+
+/* Text consistency */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+}
+
+p, label, span {
+  color: var(--muted);
+}
+
+/* =========================================================
+   🧩 FORM BALANCE FIX (v1.2.2)
+========================================================= */
+
+.lead-form {
+  grid-template-columns: 2fr 1fr 1fr; /* give name more space */
+}
+
+.form-field input {
+  min-width: 0;
+}
+
+/* Make first field visually stronger */
+.form-field:first-child input {
+  font-weight: 500;
+}
+
+/* =========================================================
+   🎯 ALIGNMENT POLISH
+========================================================= */
+
+.card {
+  padding: 28px; /* slightly more breathing space */
+}
+
+.page-header {
+  margin-bottom: 16px;
+}

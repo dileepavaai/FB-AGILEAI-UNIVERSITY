@@ -1,5 +1,6 @@
 /* =====================================================
    🔷 UNIVERSAL ADMIN CONTROLLER (NO FLICKER VERSION)
+   Version: v2.1.0 (Centralized Module Loader Fix)
    ===================================================== */
 
 import { auth, login, logout, isAdmin, getUserRole } from "./core.js";
@@ -18,7 +19,7 @@ import {
    🚀 INIT APP
    ===================================================== */
 
-export function initAdminApp(modulePath = null) {
+export function initAdminApp(moduleName = null) {
 
   // 🔥 PREVENT FLICKER (LOCK UI)
   document.body.classList.add("app-loading");
@@ -80,7 +81,6 @@ export function initAdminApp(modulePath = null) {
 
         if (statusEl) statusEl.innerText = "Please sign in.";
 
-        // 🔥 RELEASE UI LOCK
         document.body.classList.remove("app-loading");
         return;
       }
@@ -112,9 +112,19 @@ export function initAdminApp(modulePath = null) {
       // 🔥 SIDEBAR ACTIVE
       highlightActiveSidebar();
 
-      // 🔥 LOAD MODULE
-      if (modulePath) {
-        import(modulePath);
+      /* ============================================
+         📦 MODULE LOADER (FIXED — CENTRALIZED)
+         ============================================ */
+      if (moduleName) {
+        try {
+          const modulePath = `/assets/js/${moduleName}`;
+          console.log("📦 Loading module:", modulePath);
+
+          await import(modulePath);
+
+        } catch (err) {
+          console.error("❌ Module load failed:", moduleName, err);
+        }
       }
 
       // 🔥 RELEASE UI LOCK (MOST IMPORTANT LINE)

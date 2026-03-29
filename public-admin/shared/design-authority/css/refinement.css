@@ -1,261 +1,207 @@
 /* =========================================================
-   Agile AI University — Admin Refinement Layer
+   Agile AI University — Refinement Layer
    ---------------------------------------------------------
-   File: refinement.css
-
-   Version: v2.0.0 (Stabilized + Simplified)
+   Version: v2.0.0 (Controlled + Stable)
    Date: 2026-03-29
 
-   CHANGE TYPE:
-   - FULL CLEAN REWRITE
-   - Removed duplicate layers
-   - Removed conflicting overrides
-   - Removed excessive !important usage
-
    PURPOSE:
-   - Clean light/dark theme system
-   - Minimal override layer
-   - Predictable debugging
+   - Visual polish ONLY (NO layout overrides)
+   - Theme support (light/dark)
+   - Non-destructive enhancement layer
 
-   GOVERNANCE:
-   - admin.css = BASE (authoritative)
-   - refinement.css = VISUAL LAYER ONLY
-   - NO layout breaking allowed
+   RULE:
+   - MUST NOT override structure from admin.css
 ========================================================= */
 
 
 /* =========================================================
-   🌗 THEME TOKENS
+   🎨 THEME TOKENS
 ========================================================= */
 
+/* LIGHT (default) */
 :root {
-  --bg: #ffffff;
-  --text: #111827;
-  --card: #ffffff;
+  --bg-main: #f5f6f8;
+  --bg-card: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+
   --border: #e5e7eb;
-  --muted: #6b7280;
+  --border-strong: #d1d5db;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+
+  --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
+
+/* DARK MODE */
 :root[data-theme="dark"] {
-  --bg: #0f172a;
-  --text: #e5e7eb;
-  --card: #1e293b;
-  --border: #334155;
-  --muted: #9ca3af;
+  --bg-main: #0f172a;
+  --bg-card: #111827;
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+
+  --border: #1f2937;
+  --border-strong: #374151;
+
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
 
 /* =========================================================
-   🌍 GLOBAL THEME APPLICATION
+   🌍 GLOBAL APPLY
 ========================================================= */
 
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: var(--bg-main);
+  color: var(--text-main);
 }
 
 
 /* =========================================================
-   🧱 SURFACE ALIGNMENT
-========================================================= */
-
-.card,
-.table-wrapper,
-.filter-bar,
-.metric-card {
-  background: var(--card);
-  border-color: var(--border);
-}
-
-.content table {
-  border-color: var(--border);
-}
-
-
-/* =========================================================
-   📝 TEXT NORMALIZATION
-========================================================= */
-
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text);
-}
-
-p,
-label,
-span {
-  color: var(--muted);
-}
-
-
-/* =========================================================
-   🧾 FORMS (SAFE OVERRIDES ONLY)
-========================================================= */
-
-.form-field label {
-  color: var(--muted);
-}
-
-.form-field input,
-.form-field select {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-.form-field input:focus,
-.form-field select:focus {
-  border-color: var(--text);
-  box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
-}
-
-
-/* =========================================================
-   📊 TABLES
-========================================================= */
-
-.table-wrapper th {
-  background: var(--card);
-}
-
-.content table tr:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-:root[data-theme="dark"] .content table tr:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-
-/* =========================================================
-   📂 SIDEBAR
-========================================================= */
-
-.sidebar {
-  background: var(--card);
-}
-
-.sidebar a {
-  color: var(--text);
-}
-
-.sidebar a:hover {
-  background: rgba(0,0,0,0.05);
-}
-
-:root[data-theme="dark"] .sidebar a:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-.sidebar a.active {
-  background: var(--border);
-}
-
-
-/* =========================================================
-   🔍 FILTER BAR
-========================================================= */
-
-.filter-bar {
-  background: var(--card);
-  border-color: var(--border);
-}
-
-
-/* =========================================================
-   🎯 BUTTONS (SECONDARY ONLY)
-========================================================= */
-
-.form-actions button:last-child {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-
-/* =========================================================
-   🟢 QUICK FILTERS
-========================================================= */
-
-.quick-filters button {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-.quick-filters button.active {
-  background: var(--text);
-  color: var(--bg);
-}
-
-
-/* =========================================================
-   🟣 PILLS
-========================================================= */
-
-.pill-option {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-.pill-option.active {
-  background: var(--text);
-  color: var(--bg);
-}
-
-
-/* =========================================================
-   🌗 THEME TOGGLE (FINAL CLEAN VERSION)
-========================================================= */
-
-#themeToggle {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-right: 10px;
-  transition: all 0.2s ease;
-}
-
-#themeToggle:hover {
-  background: var(--text);
-  color: var(--bg);
-}
-
-#themeToggle:active {
-  transform: scale(0.96);
-}
-
-
-/* =========================================================
-   📐 SPACING POLISH
+   📦 CARD POLISH
 ========================================================= */
 
 .card {
-  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  transition: all 0.2s ease;
 }
 
-.page-header {
-  margin-bottom: 16px;
+.card:hover {
+  transform: translateY(-1px);
 }
 
 
 /* =========================================================
-   📱 RESPONSIVE SAFETY
+   🧾 INPUT POLISH (NO STRUCTURE CHANGE)
 ========================================================= */
 
-@media (max-width: 1024px) {
-  .lead-form {
-    grid-template-columns: 1fr;
-  }
+input,
+select {
+  border-color: var(--border-strong);
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    position: relative;
-    height: auto;
-  }
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  background: var(--bg-card);
+}
+
+
+/* =========================================================
+   🔘 BUTTON POLISH
+========================================================= */
+
+button {
+  background: var(--primary);
+}
+
+button:hover {
+  background: var(--primary-hover);
+}
+
+
+/* =========================================================
+   📊 TABLE POLISH
+========================================================= */
+
+.table-wrapper {
+  border-color: var(--border);
+}
+
+th {
+  background: #f9fafb;
+}
+
+:root[data-theme="dark"] th {
+  background: #1f2937;
+}
+
+td,
+th {
+  border-color: var(--border);
+}
+
+tbody tr:hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+
+/* =========================================================
+   📈 METRICS
+========================================================= */
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+
+/* =========================================================
+   ⚠️ ADMIN WARNING
+========================================================= */
+
+.admin-warning {
+  background: #fff4e5;
+  color: #7a4b00;
+}
+
+:root[data-theme="dark"] .admin-warning {
+  background: #3a2e1f;
+  color: #fbbf24;
+}
+
+
+/* =========================================================
+   🧭 SIDEBAR
+========================================================= */
+
+.sidebar {
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+}
+
+.sidebar a {
+  color: var(--text-main);
+}
+
+.sidebar a.active {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+
+/* =========================================================
+   🧠 TEXT SYSTEM
+========================================================= */
+
+.page-subtitle {
+  color: var(--text-muted);
+}
+
+
+/* =========================================================
+   🌗 THEME TRANSITION
+========================================================= */
+
+body,
+.card,
+input,
+select,
+table,
+.sidebar {
+  transition: background 0.2s ease, color 0.2s ease, border 0.2s ease;
 }

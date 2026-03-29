@@ -1,23 +1,19 @@
 /* =========================================================
    Agile AI University — Admin Base Styles
    ---------------------------------------------------------
-   File: admin.css
-
-   Version: v1.1.0 (Stability + Layout Fix)
+   Version: v1.2.0 (Stability + UX Refinement)
    Date: 2026-03-29
 
    CHANGE TYPE:
    - Safe full replacement
    - Backward compatible
 
-   PURPOSE:
-   - Stabilize layout across modules
-   - Fix input stretching issue
-   - Prepare for clean refinement layering
-
-   GOVERNANCE:
-   - This is the BASE layer (authoritative)
-   - Refinement must NOT break this
+   IMPROVEMENTS:
+   - Removed duplicate rules
+   - Fixed input inconsistency
+   - Eliminated layout shift
+   - Cleaned spacing system
+   - Stabilized grid behavior
 ========================================================= */
 
 
@@ -102,7 +98,7 @@ body {
 .layout {
   display: flex;
   min-height: calc(100vh - 56px);
-  align-items: flex-start; /* 🔥 FIX: prevents stretch issues */
+  align-items: flex-start;
 }
 
 .sidebar {
@@ -175,59 +171,92 @@ button:hover {
 
 
 /* ===============================
-   INPUTS (🔥 STABILITY FIX)
+   INPUTS (STABLE — NO SHIFT)
 =============================== */
 input,
 select {
   width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  box-sizing: border-box; /* 🔥 CRITICAL FIX */
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  box-sizing: border-box;
+  font-size: 14px;
+  background: #ffffff;
 }
 
 input:focus,
 select:focus {
   outline: none;
-  border: 2px solid #2563eb;
+  border-color: #2563eb;
   background: #eff6ff;
 }
 
 
 /* ===============================
-   FORM FIELD (🔥 CRITICAL FIX)
+   FORM SYSTEM (UNIFIED)
 =============================== */
 .form-field {
   display: flex;
   flex-direction: column;
-  min-width: 0; /* 🔥 prevents overflow stretching */
+  min-width: 0;
 }
 
 .form-field label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 4px;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #6b7280;
+}
+
+.lead-form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 20px;
+}
+
+.form-field.full {
+  grid-column: span 3;
+}
+
+.form-actions {
+  grid-column: span 3;
+  margin-top: 8px;
 }
 
 
 /* ===============================
-   LEAD GRID
+   PAGE STRUCTURE
 =============================== */
-.lead-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 24px;
-  row-gap: 16px;
-  margin-bottom: 20px;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+.page-header {
+  margin-bottom: 24px;
 }
 
-.lead-grid > * {
-  width: 100%;
+.page-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+
+/* ===============================
+   CARD
+=============================== */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  margin-bottom: 16px;
+  font-size: 18px;
 }
 
 
@@ -250,13 +279,21 @@ select:focus {
 
 
 /* ===============================
-   SEARCH + TOOLBAR
+   FILTER BAR
 =============================== */
-.search-bar,
-.toolbar {
+.filter-bar {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.filter-bar select,
+.filter-bar input {
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0 10px;
 }
 
 
@@ -265,6 +302,7 @@ select:focus {
 =============================== */
 .table-wrapper {
   width: 100%;
+  margin-top: 12px;
   overflow-x: auto;
   border: 1px solid #ddd;
   background: #fff;
@@ -342,7 +380,7 @@ tbody tr:hover {
 
 
 /* ===============================
-   APP LOADING (NO FLICKER)
+   APP LOADING
 =============================== */
 body.app-loading #loginView,
 body.app-loading #appView,

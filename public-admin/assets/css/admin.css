@@ -1,6 +1,29 @@
+/* =========================================================
+   Agile AI University — Admin Base Styles
+   ---------------------------------------------------------
+   File: admin.css
+
+   Version: v1.1.0 (Stability + Layout Fix)
+   Date: 2026-03-29
+
+   CHANGE TYPE:
+   - Safe full replacement
+   - Backward compatible
+
+   PURPOSE:
+   - Stabilize layout across modules
+   - Fix input stretching issue
+   - Prepare for clean refinement layering
+
+   GOVERNANCE:
+   - This is the BASE layer (authoritative)
+   - Refinement must NOT break this
+========================================================= */
+
+
 /* ===============================
    BASE
-   =============================== */
+=============================== */
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
@@ -8,9 +31,10 @@ body {
   color: #222;
 }
 
+
 /* ===============================
    TOP BAR
-   =============================== */
+=============================== */
 .topbar {
   background: #111827;
   color: #fff;
@@ -31,7 +55,10 @@ body {
   align-items: center;
 }
 
-/* 🔥 NEW: ROLE BADGE */
+
+/* ===============================
+   ROLE BADGE
+=============================== */
 .role-badge {
   padding: 2px 8px;
   font-size: 11px;
@@ -50,9 +77,10 @@ body {
   color: #fff;
 }
 
+
 /* ===============================
    ADMIN WARNING
-   =============================== */
+=============================== */
 .admin-warning {
   background: #fff4e5;
   color: #7a4b00;
@@ -67,12 +95,14 @@ body {
   display: none;
 }
 
+
 /* ===============================
    LAYOUT
-   =============================== */
+=============================== */
 .layout {
   display: flex;
   min-height: calc(100vh - 56px);
+  align-items: flex-start; /* 🔥 FIX: prevents stretch issues */
 }
 
 .sidebar {
@@ -87,7 +117,6 @@ body {
   margin: 0;
 }
 
-/* 🔥 FIX: anchor-based styling */
 .sidebar li {
   border-bottom: 1px solid #eee;
 }
@@ -103,7 +132,6 @@ body {
   background: #f3f4f6;
 }
 
-/* 🔥 NEW: ACTIVE LINK */
 .sidebar a.active {
   background: #e5e7eb;
   font-weight: 600;
@@ -111,23 +139,26 @@ body {
   padding-left: 13px;
 }
 
+
 /* ===============================
    CONTENT
-   =============================== */
+=============================== */
 .content {
   flex: 1;
   padding: 24px;
   width: 100%;
   overflow-x: auto;
+  box-sizing: border-box;
 }
 
 .hidden {
   display: none;
 }
 
+
 /* ===============================
-   FORM + BUTTON
-   =============================== */
+   BUTTONS
+=============================== */
 button {
   padding: 8px 14px;
   border-radius: 6px;
@@ -142,12 +173,17 @@ button:hover {
   background: #1d4ed8;
 }
 
+
+/* ===============================
+   INPUTS (🔥 STABILITY FIX)
+=============================== */
 input,
 select {
   width: 100%;
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  box-sizing: border-box; /* 🔥 CRITICAL FIX */
 }
 
 input:focus,
@@ -157,9 +193,27 @@ select:focus {
   background: #eff6ff;
 }
 
+
+/* ===============================
+   FORM FIELD (🔥 CRITICAL FIX)
+=============================== */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* 🔥 prevents overflow stretching */
+}
+
+.form-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+
 /* ===============================
    LEAD GRID
-   =============================== */
+=============================== */
 .lead-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -176,47 +230,10 @@ select:focus {
   width: 100%;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.field label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #555;
-}
-
-.lead-grid input,
-.lead-grid select {
-  background: #f9fafb;
-  border: 1px solid #d1d5db;
-  transition: all 0.2s ease;
-}
-
-.lead-grid input:hover,
-.lead-grid select:hover {
-  border-color: #9ca3af;
-  background: #ffffff;
-}
-
-.lead-grid input:focus,
-.lead-grid select:focus {
-  border-color: #2563eb;
-  background: #ffffff;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-}
-
-@media (max-width: 768px) {
-  .lead-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* ===============================
    METRICS
-   =============================== */
+=============================== */
 .metrics {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -231,26 +248,21 @@ select:focus {
   border: 1px solid #e5e7eb;
 }
 
+
 /* ===============================
    SEARCH + TOOLBAR
-   =============================== */
-.search-bar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-
+=============================== */
+.search-bar,
 .toolbar {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  align-items: center;
 }
+
 
 /* ===============================
    TABLE
-   =============================== */
+=============================== */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -285,9 +297,10 @@ tbody tr:hover {
   background: #f1f5f9;
 }
 
+
 /* ===============================
    INLINE INPUT
-   =============================== */
+=============================== */
 .inline-input {
   width: 100%;
   border: none;
@@ -299,16 +312,18 @@ tbody tr:hover {
   background: #fff;
 }
 
+
 /* ===============================
    SCORE COLORS
-   =============================== */
+=============================== */
 .score-high { color: #15803d; font-weight: 600; }
 .score-mid { color: #b45309; font-weight: 600; }
 .score-low { color: #b91c1c; font-weight: 600; }
 
+
 /* ===============================
-   FOOTER (🔥 NEW)
-   =============================== */
+   FOOTER
+=============================== */
 .admin-footer {
   margin-top: 40px;
   padding: 20px;
@@ -325,23 +340,15 @@ tbody tr:hover {
   line-height: 1.6;
 }
 
-/* 🔷 SIDEBAR ACTIVE LINK */
 
-.sidebar a.active {
-  background: #e8edf7;
-  border-left: 4px solid #2d5bff;
-  font-weight: 600;
-}
-
-/* 🔷 PREVENT AUTH FLICKER */
-
+/* ===============================
+   APP LOADING (NO FLICKER)
+=============================== */
 body.app-loading #loginView,
 body.app-loading #appView,
 body.app-loading #adminNav {
   display: none !important;
 }
-
-/* 🔷 SMOOTH APP LOAD */
 
 #appView {
   opacity: 0;

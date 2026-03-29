@@ -3,39 +3,35 @@
    ---------------------------------------------------------
    File: refinement.css
 
-   Version: v1.2.1 (Non-Destructive Theme Fix Layer)
+   Version: v2.0.0 (Stabilized + Simplified)
    Date: 2026-03-29
 
    CHANGE TYPE:
-   - Additive patch (NO breaking changes)
-   - Existing 797 lines preserved
+   - FULL CLEAN REWRITE
+   - Removed duplicate layers
+   - Removed conflicting overrides
+   - Removed excessive !important usage
 
    PURPOSE:
-   - Stabilize light/dark theme
-   - Remove hardcoded color conflicts
-   - Improve toggle UI consistency
+   - Clean light/dark theme system
+   - Minimal override layer
+   - Predictable debugging
 
-   GOVERNANCE (LOCKED):
-   - site.css MUST NOT be modified
-   - This file is additive only
-   - DO NOT remove existing styles
-   - All fixes must be override-based
-
-   THEME ENGINE:
-   - Uses: [data-theme="dark"]
-   - Controlled via theme-toggle.js
-
-   DEBUG RULE:
-   - If UI breaks → check BELOW patch layer first
+   GOVERNANCE:
+   - admin.css = BASE (authoritative)
+   - refinement.css = VISUAL LAYER ONLY
+   - NO layout breaking allowed
 ========================================================= */
+
+
 /* =========================================================
-   🌗 THEME FOUNDATION (SAFE — ADDITIVE)
+   🌗 THEME TOKENS
 ========================================================= */
 
 :root {
   --bg: #ffffff;
   --text: #111827;
-  --card-bg: #ffffff;
+  --card: #ffffff;
   --border: #e5e7eb;
   --muted: #6b7280;
 }
@@ -43,750 +39,82 @@
 :root[data-theme="dark"] {
   --bg: #0f172a;
   --text: #e5e7eb;
-  --card-bg: #1e293b;
+  --card: #1e293b;
   --border: #334155;
   --muted: #9ca3af;
 }
 
-/* Global override */
+
+/* =========================================================
+   🌍 GLOBAL THEME APPLICATION
+========================================================= */
+
 body {
   background: var(--bg);
   color: var(--text);
 }
 
-/* =========================
-   CONTAINER
-========================= */
 
-.content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
+/* =========================================================
+   🧱 SURFACE ALIGNMENT
+========================================================= */
+
+.card,
+.table-wrapper,
+.filter-bar,
+.metric-card {
+  background: var(--card);
+  border-color: var(--border);
 }
 
-/* =========================
-   METRICS
-========================= */
-
-.metrics-row {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
+.content table {
+  border-color: var(--border);
 }
 
-.metrics-row span {
-  background: #ffffff;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  font-size: 12px;
-  color: #6b7280;
+
+/* =========================================================
+   📝 TEXT NORMALIZATION
+========================================================= */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
 }
 
-.metrics-row strong {
-  display: block;
-  font-size: 16px;
-  color: #111827;
-  margin-top: 4px;
+p,
+label,
+span {
+  color: var(--muted);
 }
 
-/* =========================
-   CARD
-========================= */
 
-.card {
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-}
-
-/* =========================
-   FORM GRID
-========================= */
-
-.lead-form {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
-  gap: 18px;
-}
-
-/* =========================
-   FORM FIELD
-========================= */
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
+/* =========================================================
+   🧾 FORMS (SAFE OVERRIDES ONLY)
+========================================================= */
 
 .form-field label {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 6px;
+  color: var(--muted);
 }
 
 .form-field input,
 .form-field select {
-  width: 100%;
-  height: 44px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  transition: all 0.2s ease;
-}
-
-.form-field input:hover,
-.form-field select:hover {
-  border-color: #cbd5e1;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 
 .form-field input:focus,
 .form-field select:focus {
-  border-color: #111827;
-  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
-  outline: none;
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
 }
 
-.form-field.full-width {
-  grid-column: span 3;
-}
 
-/* =========================
-   BUTTONS
-========================= */
-
-.form-actions {
-  grid-column: span 3;
-  display: flex;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.form-actions button {
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.form-actions button:first-child {
-  background: #111827;
-  color: #ffffff;
-  border: none;
-}
-
-.form-actions button:first-child:hover {
-  background: #000000;
-}
-
-.form-actions button:last-child {
-  background: #ffffff;
-  color: #111827;
-  border: 1px solid #d1d5db;
-}
-
-.form-actions button:last-child:hover {
-  background: #f9fafb;
-}
-
-/* =========================
-   FILTER BAR
-========================= */
-
-.filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 24px 0 12px;
-  padding: 10px 12px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-
-  flex-wrap: nowrap;
-  overflow-x: auto;
-}
-
-.filter-bar input {
-  flex: 1;
-  min-width: 240px;
-  max-width: 420px;
-}
-
-.filter-bar select {
-  width: auto;
-  min-width: 120px;
-  max-width: 150px;
-  flex-shrink: 0;
-}
-
-/* =========================
-   QUICK FILTERS
-========================= */
-
-.quick-filters {
-  display: flex;
-  gap: 6px;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.quick-filters button {
-  padding: 6px 12px;
-  border-radius: 16px;
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  color: #111827;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
-.quick-filters button:hover {
-  background: #e5e7eb;
-}
-
-.quick-filters button.active {
-  background: #111827;
-  color: #ffffff;
-  border-color: #111827;
-}
-
-/* =========================
-   TABLE
-========================= */
-
-.table-wrapper {
-  margin-top: 16px;
-  background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-}
-
-.table-wrapper table {
-  width: 100%;
-  border-collapse: collapse;
-}
+/* =========================================================
+   📊 TABLES
+========================================================= */
 
 .table-wrapper th {
-  background: #f9fafb;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.table-wrapper td,
-.table-wrapper th {
-  padding: 10px 12px;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-/* =========================
-   🌐 ECOSYSTEM MAP (NEW)
-========================= */
-
-.ecosystem-map {
-  margin-top: 30px;
-}
-
-.ecosystem-flow {
-  margin-top: 15px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.eco-node {
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 8px;
-  padding: 10px 14px;
-  background: var(--surface-muted, #fafafa);
-  min-width: 140px;
-}
-
-.eco-title {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.eco-sub {
-  font-size: 12px;
-  opacity: 0.6;
-  margin-top: 2px;
-}
-
-.eco-arrow {
-  opacity: 0.5;
-  font-size: 16px;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 1024px) {
-
-  .lead-form {
-    grid-template-columns: 1fr;
-  }
-
-  .form-field.full-width {
-    grid-column: span 1;
-  }
-
-  .metrics-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .filter-bar {
-    flex-wrap: wrap;
-  }
-
-  .quick-filters {
-    margin-left: 0;
-  }
-}
-
-@media (max-width: 768px) {
-
-  .ecosystem-flow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .eco-arrow {
-    display: none;
-  }
-
-  .eco-node {
-    width: 100%;
-  }
-}
-
-/* =========================
-   PILL SELECTOR
-========================= */
-
-.select-hidden {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.pill-select {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.pill-option {
-  padding: 6px 12px;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
-  font-size: 12px;
-  font-weight: 500;
-  color: #111827;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.pill-option:hover {
-  background: #f3f4f6;
-}
-
-.pill-option.active {
-  background: #111827;
-  color: #ffffff;
-  border-color: #111827;
-}
-
-/* =========================
-   MISC
-========================= */
-
-.form-field.full-width input {
-  height: 40px;
-  font-size: 13px;
-}
-
-.error-text {
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-2px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* =========================
-   NEXT ACTION UI
-========================= */
-
-.next-action {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.next-action.urgent {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.next-action.normal {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.next-action.none {
-  color: #9ca3af;
-}
-
-/* =========================================
-   ADMIN DASHBOARD — SAFE ENHANCEMENTS
-   (Additive only — no overrides)
-========================================= */
-
-/* =========================
-   METRICS (Homepage only)
-========================= */
-
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.metrics > div {
-  background: var(--surface-muted, #fafafa);
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.metrics span {
-  display: block;
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-  margin-top: 4px;
-}
-
-/* =========================
-   ADMIN TABLES ONLY
-========================= */
-
-.content table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 10px;
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.content table tr {
-  border-bottom: 1px solid #f1f1f1;
-}
-
-.content table tr:last-child {
-  border-bottom: none;
-}
-
-.content table td {
-  padding: 10px 12px;
-  font-size: 13px;
-}
-
-.content table td:first-child {
-  font-weight: 600;
-  width: 180px;
-  color: #374151;
-}
-
-.content table tr:hover {
-  background: #f9fafb;
-}
-
-.content table a {
-  color: #2563eb;
-  text-decoration: none;
-}
-
-.content table a:hover {
-  text-decoration: underline;
-}
-
-/* =========================================
-   SIDEBAR REFINEMENT — ADMIN (SAFE)
-========================================= */
-
-/* Sidebar container */
-.sidebar {
-  padding-top: 10px;
-}
-
-/* List reset */
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Default links */
-.sidebar li a {
-  display: block;
-  padding: 10px 14px;
-  font-size: 14px;
-  color: #111827;
-  text-decoration: none;
-  border-radius: 6px;
-  transition: background 0.2s ease;
-}
-
-/* Hover */
-.sidebar li a:hover {
-  background: #f3f4f6;
-}
-
-/* Active (Home etc.) */
-.sidebar li a.active {
-  background: #e5e7eb;
-  font-weight: 600;
-}
-
-/* =========================
-   SECTION LABELS (auto-detect)
-========================= */
-
-/* "Ecosystem (Reference)" label */
-.sidebar li[style*="opacity:0.7"] {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: #6b7280 !important;
-  text-transform: uppercase;
-  padding: 16px 14px 6px;
-  margin-top: 10px !important;
-}
-
-/* "Entities" sub-label */
-.sidebar li[style*="font-size:12px"] {
-  font-size: 11px !important;
-  color: #9ca3af !important;
-  padding: 4px 14px 6px;
-}
-
-/* =========================
-   EXTERNAL LINKS
-========================= */
-
-.sidebar a[target="_blank"] {
-  font-size: 13px;
-  color: #374151;
-}
-
-/* subtle arrow alignment */
-.sidebar a[target="_blank"]::after {
-  content: " ↗";
-  font-size: 11px;
-  opacity: 0.6;
-}
-
-/* =========================
-   SPACING BETWEEN GROUPS
-========================= */
-
-.sidebar li + li {
-  margin-top: 2px;
-}
-
-/* =========================================
-   STICKY HEADER — ADMIN (GLOBAL SAFE)
-========================================= */
-
-/* Header container */
-#headerContainer {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-/* Ensure header content stacks correctly */
-#headerContainer > * {
-  position: relative;
-  z-index: 1001;
-}
-
-/* Optional: subtle shadow for depth */
-#headerContainer {
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-/* =========================================
-   CONTENT OFFSET (PREVENT OVERLAP)
-========================================= */
-
-.layout {
-  margin-top: 0; /* safe default */
-}
-
-/* If overlap happens (rare), uncomment below */
-/*
-.layout {
-  padding-top: 80px;
-}
-*/
-
-/* =========================================
-   STICKY SIDEBAR — ADMIN (SAFE)
-========================================= */
-
-/* Sidebar container */
-.sidebar {
-  position: sticky;
-  top: 70px; /* adjust if header height differs */
-  height: calc(100vh - 70px);
-  overflow-y: auto;
-}
-
-/* Prevent layout issues */
-.layout {
-  align-items: flex-start;
-}
-
-/* Active sidebar item */
-.sidebar a.active {
-  background: #e5e7eb;
-  font-weight: 600;
-  color: #111827;
-}
-
-/* =========================================
-   🌗 THEME ALIGNMENT PATCH (SAFE)
-   Non-destructive override layer
-========================================= */
-
-/* Global */
-body {
-  background: var(--bg);
-  color: var(--text);
-}
-
-/* Cards */
-.card {
-  background: var(--card-bg);
-  border-color: var(--border);
-}
-
-/* Metrics */
-.metrics-row span {
-  background: var(--card-bg);
-  border-color: var(--border);
-  color: var(--muted);
-}
-
-.metrics-row strong {
-  color: var(--text);
-}
-
-/* Forms */
-.form-field label {
-  color: var(--muted);
-}
-
-.form-field input,
-.form-field select {
-  background: var(--card-bg);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-/* Buttons (secondary) */
-.form-actions button:last-child {
-  background: var(--card-bg);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-/* Table wrapper */
-.table-wrapper {
-  background: var(--card-bg);
-  border-color: var(--border);
-}
-
-.table-wrapper th {
-  background: var(--card-bg);
-}
-
-.table-wrapper td {
-  color: var(--text);
-}
-
-/* Sidebar */
-.sidebar li a {
-  color: var(--text);
-}
-
-.sidebar li a:hover {
-  background: rgba(0,0,0,0.05);
-}
-
-:root[data-theme="dark"] .sidebar li a:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-/* Filter bar */
-.filter-bar {
-  background: var(--card-bg);
-  border-color: var(--border);
-}
-
-/* Quick filters */
-.quick-filters button {
-  background: var(--card-bg);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-.quick-filters button.active {
-  background: var(--text);
-  color: var(--bg);
-}
-
-/* Pills */
-.pill-option {
-  background: var(--card-bg);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-.pill-option.active {
-  background: var(--text);
-  color: var(--bg);
-}
-
-/* Admin tables */
-.content table {
-  border-color: var(--border);
+  background: var(--card);
 }
 
 .content table tr:hover {
@@ -794,11 +122,94 @@ body {
 }
 
 :root[data-theme="dark"] .content table tr:hover {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.05);
 }
 
+
+/* =========================================================
+   📂 SIDEBAR
+========================================================= */
+
+.sidebar {
+  background: var(--card);
+}
+
+.sidebar a {
+  color: var(--text);
+}
+
+.sidebar a:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+:root[data-theme="dark"] .sidebar a:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.sidebar a.active {
+  background: var(--border);
+}
+
+
+/* =========================================================
+   🔍 FILTER BAR
+========================================================= */
+
+.filter-bar {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+
+/* =========================================================
+   🎯 BUTTONS (SECONDARY ONLY)
+========================================================= */
+
+.form-actions button:last-child {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   🟢 QUICK FILTERS
+========================================================= */
+
+.quick-filters button {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.quick-filters button.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+
+/* =========================================================
+   🟣 PILLS
+========================================================= */
+
+.pill-option {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.pill-option.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+
+/* =========================================================
+   🌗 THEME TOGGLE (FINAL CLEAN VERSION)
+========================================================= */
+
 #themeToggle {
-  background: var(--card-bg);
+  background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
   padding: 6px 10px;
@@ -814,168 +225,37 @@ body {
   color: var(--bg);
 }
 
-/* =========================================================
-   🌗 THEME FIX PATCH LAYER (NON-DESTRUCTIVE)
-   ---------------------------------------------------------
-   This layer overrides hardcoded colors safely
-========================================================= */
-
-/* Cards */
-.card {
-  background: var(--card-bg) !important;
-  border-color: var(--border) !important;
-}
-
-/* Metrics */
-.metrics-row span {
-  background: var(--card-bg) !important;
-  border-color: var(--border) !important;
-  color: var(--muted) !important;
-}
-
-.metrics-row strong {
-  color: var(--text) !important;
-}
-
-/* Forms */
-.form-field label {
-  color: var(--muted) !important;
-}
-
-.form-field input,
-.form-field select {
-  background: var(--card-bg) !important;
-  color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-
-/* Tables */
-.table-wrapper {
-  background: var(--card-bg) !important;
-  border-color: var(--border) !important;
-}
-
-.table-wrapper th {
-  background: var(--card-bg) !important;
-}
-
-.table-wrapper td {
-  color: var(--text) !important;
-}
-
-/* Sidebar */
-.sidebar li a {
-  color: var(--text) !important;
-}
-
-.sidebar li a:hover {
-  background: rgba(0,0,0,0.05) !important;
-}
-
-:root[data-theme="dark"] .sidebar li a:hover {
-  background: rgba(255,255,255,0.05) !important;
-}
-
-/* Filters */
-.filter-bar {
-  background: var(--card-bg) !important;
-  border-color: var(--border) !important;
-}
-
-/* Pills */
-.pill-option {
-  background: var(--card-bg) !important;
-  color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-
-.pill-option.active {
-  background: var(--text) !important;
-  color: var(--bg) !important;
-}
-
-/* Table hover */
-.content table tr:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-:root[data-theme="dark"] .content table tr:hover {
-  background: rgba(255,255,255,0.04);
-}
-
-/* =========================================================
-   🌗 THEME TOGGLE — FINAL UI FIX
-========================================================= */
-
-#themeToggle {
-  background: transparent !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-right: 10px;
-  transition: all 0.2s ease;
-}
-
-#themeToggle:hover {
-  background: var(--text) !important;
-  color: var(--bg) !important;
-}
-
 #themeToggle:active {
   transform: scale(0.96);
 }
 
-/* =========================================================
-   🌗 FINAL THEME STABILIZER (v1.2.2)
-   Fix visual inconsistency
-========================================================= */
-
-/* Force consistent surfaces */
-.card,
-.table-wrapper,
-.filter-bar,
-.metrics-row span {
-  background: var(--card-bg) !important;
-  border-color: var(--border) !important;
-}
-
-/* Text consistency */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text);
-}
-
-p, label, span {
-  color: var(--muted);
-}
 
 /* =========================================================
-   🧩 FORM BALANCE FIX (v1.2.2)
-========================================================= */
-
-.lead-form {
-  grid-template-columns: 2fr 1fr 1fr; /* give name more space */
-}
-
-.form-field input {
-  min-width: 0;
-}
-
-/* Make first field visually stronger */
-.form-field:first-child input {
-  font-weight: 500;
-}
-
-/* =========================================================
-   🎯 ALIGNMENT POLISH
+   📐 SPACING POLISH
 ========================================================= */
 
 .card {
-  padding: 28px; /* slightly more breathing space */
+  padding: 24px;
 }
 
 .page-header {
   margin-bottom: 16px;
+}
+
+
+/* =========================================================
+   📱 RESPONSIVE SAFETY
+========================================================= */
+
+@media (max-width: 1024px) {
+  .lead-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: relative;
+    height: auto;
+  }
 }

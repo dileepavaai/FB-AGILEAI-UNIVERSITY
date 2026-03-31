@@ -1,6 +1,6 @@
 /* =====================================================
-   🔷 LEAD INTELLIGENCE MODULE (STABLE + SAFE)
-   Version: v2.5.0 (Data Load Fix + Safe Sorting)
+   🔷 LEAD INTELLIGENCE MODULE (FINAL STABLE)
+   Version: v2.6.0 (Guaranteed Load + Fallback + Debug)
 ===================================================== */
 
 import { db, auth } from "./core.js";
@@ -177,6 +177,8 @@ window.renderLeads = function () {
   const body = document.getElementById("leadBody");
   if (!body) return;
 
+  console.log("🎯 Rendering leads:", leads.length);
+
   if (!leads.length) {
     body.innerHTML = `
       <tr>
@@ -191,7 +193,6 @@ window.renderLeads = function () {
   let html = "";
 
   leads.forEach(l => {
-
     html += `
       <tr>
         <td>${safe(l.name)}</td>
@@ -211,7 +212,6 @@ window.renderLeads = function () {
       <tr id="lead-expand-${l.id}" class="lead-expand hidden">
         <td colspan="13">
           <div class="lead-expanded-card">
-
             <div>
               <strong>Last Message</strong>
               <p>${safe(l.last_message) || "No message yet"}</p>
@@ -225,7 +225,6 @@ window.renderLeads = function () {
             <button onclick="openMessageModal('${l.id}')">
               + Log Communication
             </button>
-
           </div>
         </td>
       </tr>
@@ -252,19 +251,43 @@ window.toggleLead = async function(id) {
 };
 
 /* =====================================================
-   🔷 LISTENER (🔥 FIXED)
+   🔷 LISTENER + FALLBACK (🔥 FINAL FIX)
 ===================================================== */
-function startListener() {
+async function startListener() {
 
   if (unsubscribe) unsubscribe();
 
-  const q = query(collection(db, "leads")); // ✅ FIXED
+  const q = query(collection(db, "leads"));
 
-  unsubscribe = onSnapshot(q, (snap) => {
+  // 🔥 Realtime
+  unsubscribe = onSnapshot(q,
+    (snap) => {
+      console.log("🔥 onSnapshot:", snap.size);
+
+      leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      leads.sort((a, b) => {
+        const t1 = a.created_at?.seconds || 0;
+        const t2 = b.created_at?.seconds || 0;
+        return t2 - t1;
+      });
+
+      updateLeadMetrics();
+      renderLeads();
+    },
+    (err) => {
+      console.error("❌ Snapshot error:", err);
+    }
+  );
+
+  // 🛟 Fallback
+  try {
+    const snap = await getDocs(q);
+
+    console.log("🛟 Fallback load:", snap.size);
 
     leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    // ✅ SAFE CLIENT-SIDE SORT
     leads.sort((a, b) => {
       const t1 = a.created_at?.seconds || 0;
       const t2 = b.created_at?.seconds || 0;
@@ -273,7 +296,10 @@ function startListener() {
 
     updateLeadMetrics();
     renderLeads();
-  });
+
+  } catch (err) {
+    console.error("❌ Fallback failed:", err);
+  }
 }
 
 /* =====================================================

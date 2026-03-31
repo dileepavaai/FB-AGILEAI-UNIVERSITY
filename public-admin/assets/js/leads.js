@@ -1,5 +1,5 @@
 /* =====================================================
-   🔷 LEAD INTELLIGENCE MODULE (ENHANCED – SAFE)
+   🔷 LEAD INTELLIGENCE MODULE (STABLE + ENHANCED)
    ===================================================== */
 
 import { db, auth } from "./core.js";
@@ -24,7 +24,9 @@ let isSaving = false;
 /* =====================================================
    🔷 HELPERS
 ===================================================== */
-const get = (id) => document.getElementById(id)?.value.trim() || "";
+const get = (id) => document.getElementById(id)?.value?.trim() || "";
+
+const safe = (v) => v ?? "";
 
 const set = (id, value) => {
   const el = document.getElementById(id);
@@ -32,11 +34,11 @@ const set = (id, value) => {
 };
 
 function getSafeStage(l) {
-  return l.stage || "New";
+  return l.stage || "new";
 }
 
 /* =====================================================
-   🔷 NEXT ACTION ENGINE (🔥 NEW)
+   🔷 NEXT ACTION ENGINE (UNCHANGED CORE)
 ===================================================== */
 function daysSince(dateString) {
   if (!dateString) return 999;
@@ -72,51 +74,57 @@ function getNextAction(lead) {
 }
 
 /* =====================================================
-   🔷 METRICS
+   🔷 METRICS (STABLE)
 ===================================================== */
 function updateLeadMetrics() {
+
   const counts = {
     total: 0,
-    Engaged: 0,
-    Qualified: 0,
-    Converted: 0,
-    Dropped: 0
+    engaged: 0,
+    qualified: 0,
+    converted: 0
   };
 
   leads.forEach(l => {
-    const stage = l.stage || "New";
+    const stage = (l.stage || "").toLowerCase();
+
     counts.total++;
-    if (counts[stage] !== undefined) counts[stage]++;
+
+    if (stage === "engaged") counts.engaged++;
+    if (stage === "qualified") counts.qualified++;
+    if (stage === "converted") counts.converted++;
   });
 
   set("mTotal", counts.total);
-  set("mEngaged", counts.Engaged);
-  set("mQualified", counts.Qualified);
-  set("mConverted", counts.Converted);
+  set("mEngaged", counts.engaged);
+  set("mQualified", counts.qualified);
+  set("mConverted", counts.converted);
 
-  const conversionRate = counts.total
-    ? ((counts.Converted / counts.total) * 100).toFixed(1)
+  const convRate = counts.total
+    ? ((counts.converted / counts.total) * 100).toFixed(1)
     : 0;
 
-  const qualifiedConversionRate = counts.Qualified
-    ? ((counts.Converted / counts.Qualified) * 100).toFixed(1)
+  const qualConvRate = counts.qualified
+    ? ((counts.converted / counts.qualified) * 100).toFixed(1)
     : 0;
 
-  set("mConvRate", conversionRate + "%");
-  set("mQualConvRate", qualifiedConversionRate + "%");
+  set("mConvRate", convRate + "%");
+  set("mQualConvRate", qualConvRate + "%");
 }
 
 /* =====================================================
-   🔷 ADD LEAD (🔥 UPDATED)
+   🔷 ADD LEAD (SAFE + STRICT)
 ===================================================== */
 window.addLead = async function () {
+
   if (isSaving) return;
   isSaving = true;
 
   const name = get("leadName");
+  const linkedin = get("leadLinkedIn");
 
-  if (!name) {
-    alert("Name is required");
+  if (!name || !linkedin) {
+    alert("Name and LinkedIn are required");
     document.getElementById("leadName")?.focus();
     isSaving = false;
     return;
@@ -132,7 +140,7 @@ window.addLead = async function () {
       company: get("leadCompany"),
       location: get("leadLocation"),
       experience: get("leadExperience"),
-      linkedin_url: get("leadLinkedIn"),
+      linkedin_url: linkedin,
 
       email: get("leadEmail") || null,
       phone: get("leadPhone") || null,
@@ -146,7 +154,6 @@ window.addLead = async function () {
       score: 3,
       status: "Warm",
 
-      // 🔥 NEW LOGIC
       stage: lastContactDate ? "contacted" : "new",
       last_contact_date: lastContactDate,
       last_response_type: null,
@@ -169,7 +176,7 @@ window.addLead = async function () {
 };
 
 /* =====================================================
-   🔷 CLEAR FORM (UPDATED)
+   🔷 CLEAR FORM
 ===================================================== */
 window.clearLeadForm = function () {
   [
@@ -181,9 +188,6 @@ window.clearLeadForm = function () {
     const el = document.getElementById(id);
     if (el) el.value = "";
   });
-
-  const source = document.getElementById("leadSource");
-  if (source) source.value = "LinkedIn";
 
   document.getElementById("leadName")?.focus();
 };
@@ -201,13 +205,19 @@ window.updateLead = async function (id, field, value) {
 };
 
 /* =====================================================
-   🔷 RENDER (🔥 UPDATED WITH NEXT ACTION)
+   🔷 RENDER (SAFE)
 ===================================================== */
 window.renderLeads = function () {
+
   const body = document.getElementById("leadBody");
   if (!body) return;
 
   body.innerHTML = "";
+
+  if (!leads.length) {
+    body.innerHTML = `<tr><td colspan="12">No leads yet</td></tr>`;
+    return;
+  }
 
   leads.forEach(l => {
 
@@ -216,25 +226,18 @@ window.renderLeads = function () {
 
     body.innerHTML += `
       <tr>
-        <td>${l.name || ""}</td>
-        <td><input value="${l.role || ""}" onchange="updateLead('${l.id}','role',this.value)"></td>
-        <td>${l.company || ""}</td>
-        <td>${l.source || ""}</td>
-        <td>${l.owner || ""}</td>
-        <td>${l.email || ""}</td>
-        <td>${l.score}</td>
-        <td>${l.status || ""}</td>
+        <td>${safe(l.name)}</td>
+        <td><input value="${safe(l.role)}" onchange="updateLead('${l.id}','role',this.value)"></td>
+        <td>${safe(l.company)}</td>
+        <td>${safe(l.source)}</td>
+        <td>${safe(l.owner)}</td>
+        <td>${safe(l.email)}</td>
+        <td>${safe(l.score)}</td>
+        <td>${safe(l.status)}</td>
         <td>${stage}</td>
-
-        <!-- 🔥 NEXT ACTION -->
-        <td>
-          <span class="next-action ${action.type}">
-            ${action.label}
-          </span>
-        </td>
-
-        <td>${l.notes || ""}</td>
-        <td></td>
+        <td><span class="next-action ${action.type}">${action.label}</span></td>
+        <td>${safe(l.notes)}</td>
+        <td>${safe(l.flag)}</td>
       </tr>
     `;
   });
@@ -244,6 +247,7 @@ window.renderLeads = function () {
    🔷 FIRESTORE LISTENER
 ===================================================== */
 function startListener() {
+
   if (unsubscribe) unsubscribe();
 
   const q = query(collection(db, "leads"), orderBy("created_at", "desc"));

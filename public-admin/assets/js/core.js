@@ -1,6 +1,19 @@
 /* =====================================================
-   🔷 FIREBASE CORE (FINAL STABLE + ROLE SUPPORT)
-   ===================================================== */
+   🔷 FIREBASE CORE (RBAC ENABLED + BACKWARD SAFE)
+   -----------------------------------------------------
+   Version: v3.0.0 (RBAC + Fallback Stable)
+   Date: 2026-03-30
+
+   CHANGE TYPE:
+   - Non-breaking upgrade
+   - Added Firestore-based role system
+   - Retained email-based fallback
+
+   FEATURES:
+   - Role resolution (Firestore + fallback)
+   - Admin/trainer separation ready
+   - Future RBAC extensibility
+===================================================== */
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -15,11 +28,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
-  getFirestore
+  getFirestore,
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
 /* =====================================================
-   🔐 ADMIN ACCESS CONTROL
+   🔐 LEGACY ADMIN ACCESS (FALLBACK ONLY)
    ===================================================== */
 
 const ADMIN_ACCESS = {
@@ -27,8 +43,9 @@ const ADMIN_ACCESS = {
   "laau.aaiu@gmail.com": "admin"
 };
 
+
 /* =====================================================
-   🔐 ACCESS HELPERS
+   🔐 HELPERS
    ===================================================== */
 
 export function normalizeEmail(email) {
@@ -39,9 +56,10 @@ export function isAdmin(email) {
   return !!ADMIN_ACCESS[normalizeEmail(email)];
 }
 
-export function getUserRole(email) {
+export function getLegacyRole(email) {
   return ADMIN_ACCESS[normalizeEmail(email)] || null;
 }
+
 
 /* =====================================================
    🔷 FIREBASE CONFIG
@@ -56,8 +74,9 @@ const firebaseConfig = {
   appId: "1:458881040066:web:c832c420f9b4282e76c55b"
 };
 
+
 /* =====================================================
-   🔷 INITIALIZE (SAFE - NO DUPLICATE INIT)
+   🔷 INIT (SAFE)
    ===================================================== */
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
@@ -65,17 +84,61 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
+
+/* =====================================================
+   🔐 🔥 ROLE RESOLUTION (PRIMARY LOGIC)
+===================================================== */
+
+export async function getUserRole(uid, email) {
+
+  try {
+    // 🔍 1. CHECK FIRESTORE (PRIMARY SOURCE)
+    const ref = doc(db, "users", uid);
+    const snap = await getDoc(ref);
+
+    if (snap.exists()) {
+      const role = snap.data().role;
+
+      if (role) {
+        console.log("✅ Role (Firestore):", role);
+        return role;
+      }
+    }
+
+    // 🔁 2. FALLBACK TO EMAIL-BASED ROLE
+    const fallbackRole = getLegacyRole(email);
+
+    if (fallbackRole) {
+      console.log("⚠️ Role (Fallback):", fallbackRole);
+      return fallbackRole;
+    }
+
+    // ❌ 3. NO ROLE
+    console.warn("❌ No role found");
+    return null;
+
+  } catch (err) {
+    console.error("🔥 Role fetch error:", err);
+
+    // 🔁 SAFE FALLBACK
+    return getLegacyRole(email);
+  }
+}
+
+
 /* =====================================================
    🔷 PROVIDER
    ===================================================== */
 
 const provider = new GoogleAuthProvider();
+
 provider.setCustomParameters({
   prompt: "select_account"
 });
 
+
 /* =====================================================
-   🔷 LOGIN (ROBUST WITH FALLBACK)
+   🔷 LOGIN (ROBUST)
    ===================================================== */
 
 export async function login() {
@@ -84,14 +147,14 @@ export async function login() {
     await signInWithPopup(auth, provider);
 
   } catch (error) {
-    console.warn("⚠️ Popup blocked → using redirect");
-
+    console.warn("⚠️ Popup blocked → redirect");
     await signInWithRedirect(auth, provider);
   }
 }
 
+
 /* =====================================================
-   🔷 HANDLE REDIRECT RESULT (RUNS ON LOAD)
+   🔷 REDIRECT HANDLER
    ===================================================== */
 
 getRedirectResult(auth)
@@ -104,6 +167,7 @@ getRedirectResult(auth)
     console.error("🔥 Redirect login error:", error);
   });
 
+
 /* =====================================================
    🔷 LOGOUT
    ===================================================== */
@@ -112,8 +176,9 @@ export async function logout() {
   await signOut(auth);
 }
 
+
 /* =====================================================
-   🔷 EXPORT AUTH LISTENER
+   🔷 EXPORT LISTENER
    ===================================================== */
 
 export { onAuthStateChanged };

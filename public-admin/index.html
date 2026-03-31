@@ -1,5 +1,5 @@
 <!-- 🔷 APP VIEW -->
-<section id="appView" class="hidden">
+<section id="appView">
 
   <!-- 🧠 HEADER -->
   <div class="dashboard-header section">
@@ -36,8 +36,8 @@
     </div>
   </div>
 
-  <!-- 🔄 FUNNEL -->
-  <div class="section">
+  <!-- 🔄 FUNNEL (ADMIN ONLY) -->
+  <div class="section admin-only">
     <div class="card">
       <div class="card-title">Conversion Funnel</div>
 
@@ -77,8 +77,8 @@
     </div>
   </div>
 
-  <!-- 💰 REVENUE -->
-  <div class="section">
+  <!-- 💰 REVENUE (ADMIN ONLY) -->
+  <div class="section admin-only">
     <div class="card">
       <div class="card-title">Revenue Intelligence</div>
 
@@ -149,3 +149,14 @@
   </div>
 
 </section>
+
+<!-- 🔐 ROLE CONTROL SCRIPT -->
+<script>
+  const USER_ROLE = "ops"; // change to "admin" for full access
+
+  if (USER_ROLE !== "admin") {
+    document.querySelectorAll(".admin-only").forEach(el => {
+      el.style.display = "none";
+    });
+  }
+</script>

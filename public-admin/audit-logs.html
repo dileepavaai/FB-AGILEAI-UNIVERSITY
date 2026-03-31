@@ -5,15 +5,16 @@
   <title>Audit Logs – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- BASE -->
+  <!-- 🔒 BASE -->
   <link rel="stylesheet" href="assets/css/admin.css" />
 
-  <!-- DESIGN -->
+  <!-- 🎨 DESIGN SYSTEM -->
   <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
 
-  <!-- COMMON -->
+  <!-- 🧩 COMMON -->
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
 </head>
 
@@ -23,6 +24,7 @@
 
 <div class="layout">
 
+  <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html">Dashboard</a></li>
@@ -36,20 +38,61 @@
 
   <main class="content">
 
+    <!-- 🔐 LOGIN -->
     <section id="loginView">
       <h2>Admin Access</h2>
+      <p class="page-subtitle">Restricted to authorized administrators</p>
       <button id="loginBtn" class="btn btn-primary">Sign in</button>
     </section>
 
+    <!-- 🔷 APP -->
     <section id="appView" class="hidden">
 
+      <!-- 🧠 HEADER -->
       <div class="section">
         <h2>Audit Logs</h2>
-        <p class="page-subtitle">Immutable history of learner status updates</p>
+        <p class="page-subtitle">
+          Immutable history of learner status updates (audit-safe)
+        </p>
       </div>
 
-      <!-- TABLE -->
+      <!-- 🔍 FILTER BAR -->
       <div class="card section">
+
+        <div class="card-title">Filters</div>
+
+        <div class="toolbar">
+
+          <select id="filter-status" onchange="applyAuditFilters()">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="dropped">Dropped</option>
+          </select>
+
+          <input
+            id="filter-email"
+            placeholder="Search by email"
+            oninput="applyAuditFilters()"
+          />
+
+          <button class="btn btn-secondary" onclick="applyAuditFilters()">
+            Apply
+          </button>
+
+          <button class="btn btn-primary" onclick="exportAuditCSV()">
+            Export CSV
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- 📊 TABLE -->
+      <div class="card section">
+
+        <div class="card-title">Audit Trail</div>
+
         <div class="table-wrapper">
           <table class="table">
             <thead>
@@ -62,11 +105,16 @@
                 <th>Time</th>
               </tr>
             </thead>
+
             <tbody id="auditTable">
-              <tr><td colspan="6">Loading...</td></tr>
+              <tr>
+                <td colspan="6">Loading audit logs...</td>
+              </tr>
             </tbody>
+
           </table>
         </div>
+
       </div>
 
     </section>
@@ -76,8 +124,11 @@
 
 <div id="footerContainer"></div>
 
+<!-- 🔥 ADMIN SYSTEM -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
+
+/* ✅ CONNECTED TO AUDIT MODULE */
 initAdminApp("audit-logs.js");
 </script>
 

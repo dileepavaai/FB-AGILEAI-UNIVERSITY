@@ -1,9 +1,21 @@
 /* =====================================================
-   🔷 UNIVERSAL ADMIN CONTROLLER (NO FLICKER VERSION)
-   Version: v2.1.0 (Centralized Module Loader Fix)
-   ===================================================== */
+   🔷 UNIVERSAL APP CONTROLLER (RBAC ENABLED)
+   -----------------------------------------------------
+   Version: v3.0.0 (RBAC + No Flicker Stable)
+   Date: 2026-03-30
 
-import { auth, login, logout, isAdmin, getUserRole } from "./core.js";
+   CHANGE TYPE:
+   - Non-breaking upgrade
+   - Added role-based access control
+   - Supports admin + trainer routing
+
+   FEATURES:
+   - Firestore role resolution
+   - Page-level access enforcement
+   - Centralized module loader
+===================================================== */
+
+import { auth, login, logout, getUserRole } from "./core.js";
 import { loadHeader } from "./layout/header.js";
 import { loadFooter } from "./layout/footer.js";
 import { highlightActiveSidebar } from "./layout/sidebar.js";
@@ -15,13 +27,14 @@ import {
   getRedirectResult
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
 /* =====================================================
    🚀 INIT APP
-   ===================================================== */
+===================================================== */
 
 export function initAdminApp(moduleName = null) {
 
-  // 🔥 PREVENT FLICKER (LOCK UI)
+  // 🔒 PREVENT FLICKER
   document.body.classList.add("app-loading");
 
   // 🔷 Load layout immediately
@@ -31,7 +44,7 @@ export function initAdminApp(moduleName = null) {
   // 🔷 Handle redirect login
   getRedirectResult(auth).catch(console.error);
 
-  // 🔥 Wait for header injection
+  // 🔥 Wait for DOM/header
   setTimeout(() => {
 
     const statusEl = document.getElementById("status");
@@ -43,7 +56,7 @@ export function initAdminApp(moduleName = null) {
 
     /* ============================================
        🔐 LOGIN
-       ============================================ */
+    ============================================ */
     loginBtn?.addEventListener("click", async () => {
       try {
         await login();
@@ -55,7 +68,7 @@ export function initAdminApp(moduleName = null) {
 
     /* ============================================
        🔓 LOGOUT
-       ============================================ */
+    ============================================ */
     function bindLogout() {
       const btn = document.getElementById("logoutBtn");
       if (!btn) return;
@@ -67,11 +80,11 @@ export function initAdminApp(moduleName = null) {
     }
 
     /* ============================================
-       🔐 AUTH STATE (NO FLICKER CONTROL)
-       ============================================ */
+       🔐 AUTH STATE
+    ============================================ */
     onAuthStateChanged(auth, async (user) => {
 
-      // 🔴 NOT LOGGED IN
+      /* 🔴 NOT LOGGED IN */
       if (!user) {
         loadHeader(null, null);
 
@@ -85,36 +98,61 @@ export function initAdminApp(moduleName = null) {
         return;
       }
 
-      // 🔴 NOT ADMIN
-      if (!isAdmin(user.email)) {
-        alert("Not authorized.");
-        await logout();
+      /* =====================================================
+         🔐 ROLE RESOLUTION (NEW CORE LOGIC)
+      ===================================================== */
+      const role = await getUserRole(user.uid, user.email);
 
+      if (!role) {
+        alert("Access not configured.");
+        await logout();
         document.body.classList.remove("app-loading");
         return;
       }
 
-      // 🟢 VALID ADMIN
-      const role = getUserRole(user.email);
+      const path = window.location.pathname;
 
-      // 🔥 LOAD HEADER WITH ROLE
+      const isTrainerPage = path.includes("/trainer/");
+      const isAdminPage = !isTrainerPage;
+
+      /* =====================================================
+         🚫 ACCESS CONTROL
+      ===================================================== */
+
+      // 🔴 Trainer trying to access admin
+      if (isAdminPage && role === "trainer") {
+        alert("Access denied.");
+        window.location.href = "/trainer/trainer-dashboard.html";
+        return;
+      }
+
+      // 🔴 Admin trying to access trainer (optional strict)
+      if (isTrainerPage && role !== "trainer") {
+        alert("Access denied.");
+        window.location.href = "/index.html";
+        return;
+      }
+
+      /* =====================================================
+         🟢 VALID ACCESS
+      ===================================================== */
+
       loadHeader(user, role);
       bindLogout();
 
-      // 🔷 UI STATE
       if (statusEl) statusEl.innerText = user.email;
+
       if (nav) nav.style.display = "block";
-      if (warning) warning.classList.remove("hidden");
+      if (warning && isAdminPage) warning.classList.remove("hidden");
 
       if (loginView) loginView.style.display = "none";
       if (appView) appView.style.display = "block";
 
-      // 🔥 SIDEBAR ACTIVE
       highlightActiveSidebar();
 
-      /* ============================================
-         📦 MODULE LOADER (FIXED — CENTRALIZED)
-         ============================================ */
+      /* =====================================================
+         📦 MODULE LOADER (FIXED + SAFE)
+      ===================================================== */
       if (moduleName) {
         try {
           const modulePath = `/assets/js/${moduleName}`;
@@ -127,7 +165,7 @@ export function initAdminApp(moduleName = null) {
         }
       }
 
-      // 🔥 RELEASE UI LOCK (MOST IMPORTANT LINE)
+      // 🔓 RELEASE UI LOCK
       document.body.classList.remove("app-loading");
 
     });

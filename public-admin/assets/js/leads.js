@@ -1,6 +1,15 @@
 /* =====================================================
-   🔷 LEAD INTELLIGENCE MODULE (STABLE + ENHANCED)
-   ===================================================== */
+   🔷 LEAD INTELLIGENCE MODULE (STABLE + COMMUNICATION READY)
+   Version: v2.2.0
+   CHANGE TYPE:
+   - SAFE FULL REPLACEMENT
+   - Backward compatible
+
+   NEW:
+   - Communication logging (lead_communications)
+   - last_message tracking
+   - Modal handling (open/close/save)
+===================================================== */
 
 import { db, auth } from "./core.js";
 import {
@@ -21,11 +30,13 @@ let leads = [];
 let unsubscribe = null;
 let isSaving = false;
 
+/* 🔥 NEW */
+let currentLeadId = null;
+
 /* =====================================================
    🔷 HELPERS
 ===================================================== */
 const get = (id) => document.getElementById(id)?.value?.trim() || "";
-
 const safe = (v) => v ?? "";
 
 const set = (id, value) => {
@@ -38,7 +49,7 @@ function getSafeStage(l) {
 }
 
 /* =====================================================
-   🔷 NEXT ACTION ENGINE (UNCHANGED CORE)
+   🔷 NEXT ACTION ENGINE (UNCHANGED)
 ===================================================== */
 function daysSince(dateString) {
   if (!dateString) return 999;
@@ -74,22 +85,16 @@ function getNextAction(lead) {
 }
 
 /* =====================================================
-   🔷 METRICS (STABLE)
+   🔷 METRICS (UNCHANGED)
 ===================================================== */
 function updateLeadMetrics() {
 
-  const counts = {
-    total: 0,
-    engaged: 0,
-    qualified: 0,
-    converted: 0
-  };
+  const counts = { total: 0, engaged: 0, qualified: 0, converted: 0 };
 
   leads.forEach(l => {
     const stage = (l.stage || "").toLowerCase();
 
     counts.total++;
-
     if (stage === "engaged") counts.engaged++;
     if (stage === "qualified") counts.qualified++;
     if (stage === "converted") counts.converted++;
@@ -113,7 +118,7 @@ function updateLeadMetrics() {
 }
 
 /* =====================================================
-   🔷 ADD LEAD (SAFE + STRICT)
+   🔷 ADD LEAD (UNCHANGED CORE)
 ===================================================== */
 window.addLead = async function () {
 
@@ -162,6 +167,10 @@ window.addLead = async function () {
       notes: "",
       interactions: 1,
 
+      /* 🔥 NEW */
+      last_message: "",
+      last_message_date: null,
+
       created_at: serverTimestamp()
     });
 
@@ -176,7 +185,7 @@ window.addLead = async function () {
 };
 
 /* =====================================================
-   🔷 CLEAR FORM
+   🔷 CLEAR FORM (UNCHANGED)
 ===================================================== */
 window.clearLeadForm = function () {
   [
@@ -193,7 +202,7 @@ window.clearLeadForm = function () {
 };
 
 /* =====================================================
-   🔷 UPDATE LEAD
+   🔷 UPDATE LEAD (UNCHANGED)
 ===================================================== */
 window.updateLead = async function (id, field, value) {
   const ref = doc(db, "leads", id);
@@ -205,7 +214,63 @@ window.updateLead = async function (id, field, value) {
 };
 
 /* =====================================================
-   🔷 RENDER (SAFE)
+   🔥 COMMUNICATION MODAL HANDLING
+===================================================== */
+
+window.openMessageModal = function(id) {
+  currentLeadId = id;
+  document.getElementById("msgModal").classList.remove("hidden");
+};
+
+window.closeModal = function() {
+  document.getElementById("msgModal").classList.add("hidden");
+  document.getElementById("msgText").value = "";
+};
+
+/* =====================================================
+   🔥 SAVE COMMUNICATION (CORE FEATURE)
+===================================================== */
+window.saveMessage = async function () {
+
+  const message = get("msgText");
+  const channel = get("msgChannel");
+  const direction = get("msgDirection");
+
+  if (!message) {
+    alert("Message required");
+    return;
+  }
+
+  const user = auth.currentUser;
+
+  try {
+
+    /* 🔷 SAVE HISTORY */
+    await addDoc(collection(db, "lead_communications"), {
+      lead_id: currentLeadId,
+      message,
+      channel,
+      direction,
+      created_at: serverTimestamp(),
+      created_by: user?.email || "unknown"
+    });
+
+    /* 🔷 UPDATE LEAD SNAPSHOT */
+    await updateDoc(doc(db, "leads", currentLeadId), {
+      last_message: message,
+      last_message_date: serverTimestamp()
+    });
+
+    closeModal();
+
+  } catch (e) {
+    console.error("🔥 Message save error:", e);
+    alert("Failed to save message");
+  }
+};
+
+/* =====================================================
+   🔷 RENDER (UPDATED WITH MESSAGE COLUMN)
 ===================================================== */
 window.renderLeads = function () {
 
@@ -215,7 +280,7 @@ window.renderLeads = function () {
   body.innerHTML = "";
 
   if (!leads.length) {
-    body.innerHTML = `<tr><td colspan="12">No leads yet</td></tr>`;
+    body.innerHTML = `<tr><td colspan="14">No leads yet</td></tr>`;
     return;
   }
 
@@ -237,6 +302,11 @@ window.renderLeads = function () {
         <td>${stage}</td>
         <td><span class="next-action ${action.type}">${action.label}</span></td>
         <td>${safe(l.notes)}</td>
+
+        <!-- 🔥 NEW -->
+        <td>${l.last_message ? l.last_message.substring(0, 40) + "..." : "-"}</td>
+        <td><button onclick="openMessageModal('${l.id}')">Log</button></td>
+
         <td>${safe(l.flag)}</td>
       </tr>
     `;
@@ -244,7 +314,7 @@ window.renderLeads = function () {
 };
 
 /* =====================================================
-   🔷 FIRESTORE LISTENER
+   🔷 FIRESTORE LISTENER (UNCHANGED)
 ===================================================== */
 function startListener() {
 

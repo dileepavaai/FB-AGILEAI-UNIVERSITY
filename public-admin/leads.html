@@ -142,11 +142,47 @@
                 <th>Stage</th>
                 <th>Next Action</th>
                 <th>Notes</th>
+
+                <!-- 🔥 NEW -->
+                <th>Last Message</th>
+                <th>Action</th>
+
                 <th>Flag</th>
               </tr>
             </thead>
             <tbody id="leadBody"></tbody>
           </table>
+        </div>
+
+      </div>
+
+      <!-- 💬 COMMUNICATION MODAL -->
+      <div id="msgModal" class="modal hidden">
+
+        <div class="modal-content">
+
+          <h3>Log Communication</h3>
+
+          <textarea id="msgText" placeholder="Paste full message..."></textarea>
+
+          <div class="modal-row">
+            <select id="msgChannel">
+              <option value="linkedin">LinkedIn</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="email">Email</option>
+            </select>
+
+            <select id="msgDirection">
+              <option value="outbound">Outbound</option>
+              <option value="inbound">Inbound</option>
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn btn-primary" onclick="saveMessage()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          </div>
+
         </div>
 
       </div>

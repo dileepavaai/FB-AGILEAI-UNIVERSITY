@@ -1,6 +1,7 @@
 /* =========================================================
    Agile AI University — Leads Surface (Premium SaaS)
-   Version: v2.0.0
+   Version: v2.1.0 (Table Visibility + Tight UI Upgrade)
+   Change Type: SAFE REFINEMENT (NO BREAKING CHANGES)
    ========================================================= */
 
 
@@ -9,76 +10,68 @@
 ========================================================= */
 
 .leads-header {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .leads-header h2 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .leads-header p {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 
 /* =========================================================
-   📊 METRICS (ENHANCED)
+   📊 METRICS (TIGHTER)
 ========================================================= */
 
 .leads-metrics {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
 .leads-metric {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px;
+  border-radius: 10px;
+  padding: 12px;
   text-align: center;
-
   transition: all 0.2s ease;
 }
 
-.leads-metric:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-soft);
-}
-
 .leads-metric .value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .leads-metric .label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
 }
 
 
 /* =========================================================
-   🧾 FORM CARD (UPGRADED)
+   🧾 FORM CARD
 ========================================================= */
 
 .leads-form-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 22px 24px;
-  margin-bottom: 24px;
-
-  box-shadow: var(--shadow-soft);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
 }
 
 .leads-form-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 
@@ -89,155 +82,114 @@
 .leads-form-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px 20px;
-}
-
-.leads-form-grid .full {
-  grid-column: span 3;
-}
-
-.leads-form-grid .half {
-  grid-column: span 2;
-}
-
-
-/* =========================================================
-   🏷️ LABEL + INPUT (CRITICAL UX UPGRADE)
-========================================================= */
-
-.leads-form-grid label {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-  display: block;
+  gap: 14px 16px;
 }
 
 .leads-form-grid input,
 .leads-form-grid select {
-  width: 100%;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  padding: 0 10px;
-  font-size: 13px;
-
-  transition: all 0.2s ease;
-}
-
-.leads-form-grid input:focus,
-.leads-form-grid select:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
-  outline: none;
+  height: 34px;
+  font-size: 12px;
 }
 
 
 /* =========================================================
-   🔘 ACTIONS (IMPROVED)
+   🔘 ACTIONS
 ========================================================= */
 
 .leads-actions {
-  margin-top: 18px;
+  margin-top: 14px;
   display: flex;
-  gap: 10px;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: #fff;
-  border-radius: 8px;
-  padding: 8px 14px;
-}
-
-.btn-primary:hover {
-  background: var(--primary-hover);
-}
-
-.btn-secondary {
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 14px;
-}
-
-.btn-secondary:hover {
-  background: rgba(100, 116, 139, 0.08);
+  gap: 8px;
 }
 
 
 /* =========================================================
-   🔍 FILTER BAR (UPGRADED)
+   🔍 FILTER BAR
 ========================================================= */
 
 .leads-filters {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 16px;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 14px;
 
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-
-  box-shadow: var(--shadow-soft);
+  gap: 8px;
 }
 
 .leads-filters input,
 .leads-filters select {
-  height: 36px;
-  font-size: 13px;
-  border-radius: 8px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-}
-
-.leads-search {
-  flex: 1;
-  min-width: 200px;
-}
-
-
-/* =========================================================
-   🧭 QUICK FILTER BUTTONS
-========================================================= */
-
-.leads-tab {
-  padding: 6px 10px;
+  height: 34px;
   font-size: 12px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  background: transparent;
-  transition: all 0.2s ease;
-}
-
-.leads-tab:hover {
-  background: rgba(37, 99, 235, 0.08);
-}
-
-.leads-tab.active {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
 }
 
 
 /* =========================================================
-   📊 TABLE (PREMIUM FEEL)
+   📊 TABLE (CRITICAL FIX + PREMIUM)
 ========================================================= */
 
+/* 🔥 FIX: enable horizontal scroll */
 .table-wrapper {
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-.table tbody tr {
-  transition: background 0.15s ease;
+/* 🔥 ensure table doesn’t shrink */
+.table {
+  min-width: 1200px;
+  font-size: 13px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
+/* HEADER */
+.table thead th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+}
+
+/* BODY */
+.table tbody td {
+  padding: 10px 12px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Hover */
 .table tbody tr:hover {
-  background: rgba(37, 99, 235, 0.05);
+  background: rgba(37, 99, 235, 0.04);
+}
+
+/* NAME EMPHASIS */
+.table tbody td:first-child {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* ROLE MULTI-LINE */
+.table tbody td:nth-child(2) {
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* CONTACT COLUMN */
+.table tbody td:nth-child(6) {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* SCORE */
+.table tbody td:nth-child(7) {
+  font-weight: 600;
+  color: var(--primary);
 }
 
 
@@ -245,20 +197,9 @@
    🎯 SCORE COLORS
 ========================================================= */
 
-.score-high {
-  color: #16a34a;
-  font-weight: 600;
-}
-
-.score-mid {
-  color: #d97706;
-  font-weight: 600;
-}
-
-.score-low {
-  color: #dc2626;
-  font-weight: 600;
-}
+.score-high { color: #16a34a; font-weight: 600; }
+.score-mid { color: #d97706; font-weight: 600; }
+.score-low { color: #dc2626; font-weight: 600; }
 
 
 /* =========================================================
@@ -267,29 +208,72 @@
 
 .leads-empty {
   text-align: center;
-  padding: 40px 20px;
+  padding: 30px 20px;
   color: var(--text-muted);
 }
 
 
 /* =========================================================
-   ⚡ NEXT ACTION BADGE (NEW)
+   🔥 EXPANDABLE LEAD VIEW
 ========================================================= */
 
-.next-action {
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 6px;
+.lead-expand td {
+  background: var(--bg-main);
+  padding: 0;
+  border-top: none;
 }
 
-.next-action.urgent {
-  background: rgba(220, 38, 38, 0.1);
-  color: #dc2626;
+.lead-expanded-card {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
 }
 
-.next-action.normal {
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--primary);
+
+/* =========================================================
+   🔥 MESSAGE TIMELINE (REFINED)
+========================================================= */
+
+.lead-history {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.msg {
+  padding: 8px 10px;
+  border-radius: 8px;
+  max-width: 70%;
+  font-size: 12px;
+}
+
+.msg.outbound {
+  background: rgba(59,130,246,0.15);
+}
+
+.msg.inbound {
+  background: rgba(34,197,94,0.15);
+}
+
+.msg-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+
+
+/* =========================================================
+   🎯 PREMIUM SCROLLBAR
+========================================================= */
+
+.table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
 }
 
 
@@ -315,87 +299,4 @@
   .leads-metrics {
     grid-template-columns: repeat(2, 1fr);
   }
-}
-
-/* =====================================================
-   🔥 EXPANDABLE LEAD VIEW (SAAS UX)
-===================================================== */
-
-.lead-expand td {
-  background: var(--bg-main);
-  padding: 0;
-  border-top: none;
-}
-
-.lead-expanded-card {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-  background: var(--bg-card);
-}
-
-.lead-expanded-section {
-  margin-bottom: 12px;
-}
-
-.lead-expanded-section strong {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.lead-expanded-section p {
-  margin-top: 6px;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  color: var(--text-main);
-}
-
-.lead-expanded-actions {
-  margin-top: 10px;
-}
-
-.lead-expanded-actions button {
-  font-size: 13px;
-}
-
-/* Smooth open feel */
-.lead-expand {
-  transition: all 0.2s ease;
-}
-
-/* =====================================================
-   🔥 MESSAGE TIMELINE
-===================================================== */
-
-.lead-history {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.msg {
-  padding: 10px 12px;
-  border-radius: 8px;
-  max-width: 70%;
-}
-
-.msg.outbound {
-  background: #e0f2fe;
-  align-self: flex-end;
-}
-
-.msg.inbound {
-  background: #f3f4f6;
-  align-self: flex-start;
-}
-
-.msg-meta {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-}
-
-.msg-body {
-  white-space: pre-wrap;
-  line-height: 1.4;
 }

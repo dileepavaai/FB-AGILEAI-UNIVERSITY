@@ -1,162 +1,185 @@
-<!-- 🔷 APP VIEW -->
-<section id="appView">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 🧠 HEADER -->
-  <div class="dashboard-header section">
-    <h2>Admin Dashboard</h2>
-    <p>System overview and operational intelligence</p>
-  </div>
+  <title>Admin – Agile AI University</title>
 
-  <!-- 📊 SYSTEM METRICS -->
-  <div class="section">
-    <div class="card">
-      <div class="card-title">System Metrics</div>
+  <!-- 🔷 DESIGN AUTHORITY (LOCKED) -->
+  <link rel="stylesheet" href="shared/design-authority/css/site.css">
+  <link rel="stylesheet" href="shared/design-authority/css/refinement.css">
 
-      <div class="metrics">
-        <div class="metric-card">
-          <div class="metric-label">Leads</div>
-          <div class="metric-value" id="metricLeads">—</div>
-        </div>
+</head>
 
-        <div class="metric-card">
-          <div class="metric-label">Batches</div>
-          <div class="metric-value" id="metricBatches">—</div>
-        </div>
+<body>
 
-        <div class="metric-card">
-          <div class="metric-label">Credentials</div>
-          <div class="metric-value" id="metricCredentials">—</div>
-        </div>
+  <!-- 🔷 APP VIEW -->
+  <section id="appView">
 
-        <div class="metric-card">
-          <div class="metric-label">Transactions</div>
-          <div class="metric-value" id="metricTransactions">—</div>
+    <!-- 🧠 HEADER -->
+    <div class="dashboard-header section">
+      <h2>Admin Dashboard</h2>
+      <p>System overview and operational intelligence</p>
+    </div>
+
+    <!-- 📊 SYSTEM METRICS -->
+    <div class="section">
+      <div class="card">
+        <div class="card-title">System Metrics</div>
+
+        <div class="metrics">
+          <div class="metric-card">
+            <div class="metric-label">Leads</div>
+            <div class="metric-value" id="metricLeads">—</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Batches</div>
+            <div class="metric-value" id="metricBatches">—</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Credentials</div>
+            <div class="metric-value" id="metricCredentials">—</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Transactions</div>
+            <div class="metric-value" id="metricTransactions">—</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 🔄 FUNNEL (ADMIN ONLY) -->
-  <div class="section admin-only">
-    <div class="card">
-      <div class="card-title">Conversion Funnel</div>
+    <!-- 🔄 FUNNEL (ADMIN ONLY) -->
+    <div class="section admin-only">
+      <div class="card">
+        <div class="card-title">Conversion Funnel</div>
 
-      <div class="grid-2">
+        <div class="grid-2">
 
-        <div>
-          <div class="data-row">
-            <span class="data-label">Leads</span>
-            <span id="funnelLeads">—</span>
+          <div>
+            <div class="data-row">
+              <span class="data-label">Leads</span>
+              <span id="funnelLeads">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Qualified</span>
+              <span id="funnelQualified">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Converted</span>
+              <span id="funnelConverted">—</span>
+            </div>
           </div>
-          <div class="data-row">
-            <span class="data-label">Qualified</span>
-            <span id="funnelQualified">—</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Converted</span>
-            <span id="funnelConverted">—</span>
-          </div>
-        </div>
 
-        <div>
-          <div class="data-row">
-            <span class="data-label">Lead → Qualified</span>
-            <span id="funnelLQ">—</span>
+          <div>
+            <div class="data-row">
+              <span class="data-label">Lead → Qualified</span>
+              <span id="funnelLQ">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Qualified → Converted</span>
+              <span id="funnelQC">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Lead → Converted</span>
+              <span id="funnelLC">—</span>
+            </div>
           </div>
-          <div class="data-row">
-            <span class="data-label">Qualified → Converted</span>
-            <span id="funnelQC">—</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Lead → Converted</span>
-            <span id="funnelLC">—</span>
-          </div>
-        </div>
 
-      </div>
-    </div>
-  </div>
-
-  <!-- 💰 REVENUE (ADMIN ONLY) -->
-  <div class="section admin-only">
-    <div class="card">
-      <div class="card-title">Revenue Intelligence</div>
-
-      <div class="grid-2">
-        <div class="data-row">
-          <span class="data-label">Total Revenue</span>
-          <span id="revTotal">—</span>
-        </div>
-        <div class="data-row">
-          <span class="data-label">Transactions</span>
-          <span id="revCount">—</span>
-        </div>
-        <div class="data-row">
-          <span class="data-label">Average Revenue</span>
-          <span id="revAvg">—</span>
-        </div>
-        <div class="data-row">
-          <span class="data-label">Currency</span>
-          <span id="revCurrency">—</span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 📚 PROGRAM -->
-  <div class="section">
-    <div class="card">
-      <div class="card-title">Program Intelligence</div>
+    <!-- 💰 REVENUE (ADMIN ONLY) -->
+    <div class="section admin-only">
+      <div class="card">
+        <div class="card-title">Revenue Intelligence</div>
 
-      <div class="grid-2">
-        <div class="data-row">
-          <span class="data-label">AOP</span>
-          <span id="progAOP">—</span>
-        </div>
-        <div class="data-row">
-          <span class="data-label">AIPA</span>
-          <span id="progAIPA">—</span>
-        </div>
-        <div class="data-row">
-          <span class="data-label">AAIA</span>
-          <span id="progAAIA">—</span>
-        </div>
-        <div class="data-row">
-          <span class="data-label">Top Program</span>
-          <span id="topProgram">—</span>
+        <div class="grid-2">
+          <div class="data-row">
+            <span class="data-label">Total Revenue</span>
+            <span id="revTotal">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Transactions</span>
+            <span id="revCount">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Average Revenue</span>
+            <span id="revAvg">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Currency</span>
+            <span id="revCurrency">—</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 🌐 PLATFORM -->
-  <div class="section">
-    <div class="card">
-      <div class="card-title">Platform Surfaces</div>
+    <!-- 📚 PROGRAM -->
+    <div class="section">
+      <div class="card">
+        <div class="card-title">Program Intelligence</div>
 
-      <div class="table-wrapper">
-        <table class="table">
-          <tbody>
-            <tr><td>Institution</td><td><a href="https://agileai.university" target="_blank">Open</a></td></tr>
-            <tr><td>Portal</td><td><a href="https://portal.agileai.university" target="_blank">Open</a></td></tr>
-            <tr><td>Knowledge</td><td><a href="https://edu.agileai.university" target="_blank">Open</a></td></tr>
-            <tr><td>Assessment</td><td><a href="https://assessment.agileai.university" target="_blank">Open</a></td></tr>
-            <tr><td>Verification</td><td><a href="https://verify.agileai.university" target="_blank">Open</a></td></tr>
-          </tbody>
-        </table>
+        <div class="grid-2">
+          <div class="data-row">
+            <span class="data-label">AOP</span>
+            <span id="progAOP">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">AIPA</span>
+            <span id="progAIPA">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">AAIA</span>
+            <span id="progAAIA">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Top Program</span>
+            <span id="topProgram">—</span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-</section>
+    <!-- 🌐 PLATFORM -->
+    <div class="section">
+      <div class="card">
+        <div class="card-title">Platform Surfaces</div>
 
-<!-- 🔐 ROLE CONTROL SCRIPT -->
-<script>
-  const USER_ROLE = "ops"; // change to "admin" for full access
+        <div class="table-wrapper">
+          <table class="table">
+            <tbody>
+              <tr><td>Institution</td><td><a href="https://agileai.university" target="_blank">Open</a></td></tr>
+              <tr><td>Portal</td><td><a href="https://portal.agileai.university" target="_blank">Open</a></td></tr>
+              <tr><td>Knowledge</td><td><a href="https://edu.agileai.university" target="_blank">Open</a></td></tr>
+              <tr><td>Assessment</td><td><a href="https://assessment.agileai.university" target="_blank">Open</a></td></tr>
+              <tr><td>Verification</td><td><a href="https://verify.agileai.university" target="_blank">Open</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-  if (USER_ROLE !== "admin") {
-    document.querySelectorAll(".admin-only").forEach(el => {
-      el.style.display = "none";
-    });
-  }
-</script>
+  </section>
+
+  <!-- 🔐 ROLE CONTROL -->
+  <script>
+    const USER_ROLE = "ops"; // change to "admin" for full access
+
+    if (USER_ROLE !== "admin") {
+      document.querySelectorAll(".admin-only").forEach(el => {
+        el.style.display = "none";
+      });
+    }
+  </script>
+
+  <!-- 🔷 CORE JS (SAFE LOAD ORDER) -->
+  <script src="assets/js/core.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+
+</body>
+</html>

@@ -5,19 +5,32 @@
   <title>Lead Intelligence – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 🔒 CORE SYSTEM -->
+  <!-- =====================================================
+       🔒 CORE SYSTEM (LOCKED)
+  ===================================================== -->
   <link rel="stylesheet" href="assets/css/site.css" />
 
-  <!-- 🎨 DESIGN AUTHORITY -->
+  <!-- =====================================================
+       🎨 DESIGN AUTHORITY (LOCKED)
+  ===================================================== -->
   <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
 
-  <!-- 🧩 COMMON -->
+  <!-- =====================================================
+       🧩 COMMON SURFACES
+  ===================================================== -->
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
 
-  <!-- 📊 LEADS SURFACE -->
+  <!-- =====================================================
+       📊 LEADS SURFACE (VERSIONED)
+       Version: v1.1.0
+       Changes:
+       - Added LEFT ACTION COLUMN (💬)
+       - Removed dependency on far-right "View"
+       - Optimized for high-speed operations
+  ===================================================== -->
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/leads.css" />
 </head>
 
@@ -27,7 +40,9 @@
 
 <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
+  <!-- =====================================================
+       🔷 SIDEBAR
+  ===================================================== -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html">Dashboard</a></li>
@@ -41,14 +56,18 @@
 
   <main class="content">
 
-    <!-- 🔐 LOGIN -->
+    <!-- =====================================================
+         🔐 LOGIN VIEW
+    ===================================================== -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p class="page-subtitle">Secure access to lead intelligence system</p>
       <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
     </section>
 
-    <!-- 🔷 APP -->
+    <!-- =====================================================
+         🔷 MAIN APP VIEW
+    ===================================================== -->
     <section id="appView" class="hidden">
 
       <!-- 🧠 HEADER -->
@@ -67,35 +86,33 @@
         <div class="leads-metric"><span class="value" id="mQualConvRate">0%</span><span class="label">Qual → Conv</span></div>
       </div>
 
-      <!-- 🧾 FORM -->
+      <!-- =====================================================
+           🧾 ADD LEAD FORM
+           UX: Compact + Right-aligned actions
+      ===================================================== -->
       <div class="leads-form-card">
 
         <div class="leads-form-title">Add Lead</div>
 
         <form id="leadForm" class="leads-form-grid" onsubmit="return false;">
 
-          <!-- ROW 1 -->
           <div><label>Name *</label><input id="leadName" /></div>
           <div><label>Role</label><input id="leadRole" /></div>
           <div><label>Company</label><input id="leadCompany" /></div>
 
-          <!-- ROW 2 -->
           <div><label>Location</label><input id="leadLocation" /></div>
           <div><label>Email</label><input id="leadEmail" /></div>
           <div><label>Phone</label><input id="leadPhone" /></div>
 
-          <!-- ROW 3 -->
           <div class="full-width">
             <label>LinkedIn URL *</label>
             <input id="leadLinkedIn" />
           </div>
 
-          <!-- ROW 4 -->
           <div><label>Source</label><select id="leadSource"></select></div>
           <div><label>Experience</label><input id="leadExperience" /></div>
           <div><label>Last Contact</label><input type="date" id="leadLastContactDate" /></div>
 
-          <!-- ROW 5 -->
           <div class="full-width">
             <label>Source Detail</label>
             <input id="leadSourceDetail" />
@@ -103,7 +120,7 @@
 
         </form>
 
-        <!-- 🔥 RIGHT-ALIGNED ACTIONS -->
+        <!-- 🔥 RIGHT SIDE ACTIONS -->
         <div class="leads-actions">
           <button class="btn btn-primary" onclick="addLead()">+ Add Lead</button>
           <button class="btn btn-secondary" onclick="clearLeadForm()">Clear</button>
@@ -111,7 +128,9 @@
 
       </div>
 
-      <!-- 🔍 FILTERS -->
+      <!-- =====================================================
+           🔍 FILTERS
+      ===================================================== -->
       <div class="leads-filters">
 
         <input class="leads-search" placeholder="Search leads..." oninput="applyLeadSearch(this.value)" />
@@ -133,7 +152,13 @@
 
       </div>
 
-      <!-- 📊 TABLE -->
+      <!-- =====================================================
+           📊 LEAD TABLE
+           Version: v1.1.0 UX Upgrade
+           KEY CHANGE:
+           - FIRST COLUMN = ACTION (💬)
+           - Eliminates horizontal scrolling dependency
+      ===================================================== -->
       <div class="card">
 
         <div class="card-title">Lead List</div>
@@ -142,6 +167,7 @@
           <table class="table">
             <thead>
               <tr>
+                <th style="width:60px;">💬</th> <!-- 🔥 NEW ACTION COLUMN -->
                 <th>Name</th>
                 <th>Role</th>
                 <th>Company</th>
@@ -154,7 +180,6 @@
                 <th>Next Action</th>
                 <th>Notes</th>
                 <th>Last Message</th>
-                <th>Action</th>
                 <th>Flag</th>
               </tr>
             </thead>
@@ -164,7 +189,10 @@
 
       </div>
 
-      <!-- 💬 MODAL -->
+      <!-- =====================================================
+           💬 COMMUNICATION MODAL
+           (Triggered via 💬 button)
+      ===================================================== -->
       <div id="msgModal" class="modal hidden">
         <div class="modal-content">
 
@@ -200,7 +228,9 @@
 
 <div id="footerContainer"></div>
 
-<!-- 🔥 ADMIN SYSTEM -->
+<!-- =====================================================
+     🔥 ADMIN APP BOOTSTRAP
+===================================================== -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 initAdminApp("leads.js");

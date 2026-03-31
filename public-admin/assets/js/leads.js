@@ -1,6 +1,18 @@
 /* =====================================================
-   🔷 LEAD INTELLIGENCE MODULE (FINAL STABLE)
-   Version: v2.7.1 (Runtime Crash Fix)
+   🔷 LEAD INTELLIGENCE MODULE
+   Version: v1.1.0
+   Date: 2026-03-31
+
+   CHANGE TYPE:
+   - NON-BREAKING UX UPGRADE
+
+   KEY CHANGES:
+   ✅ LEFT ACTION COLUMN (💬)
+   ❌ Removed "View" button dependency
+   ✅ Faster communication access (no horizontal scroll)
+   ✅ Inline expansion preserved
+   ✅ Performance-safe rendering
+
 ===================================================== */
 
 import { db, auth } from "./core.js";
@@ -23,7 +35,6 @@ import {
 let leads = [];
 let unsubscribe = null;
 let isSaving = false;
-let currentLeadId = null;
 
 /* =====================================================
    🔷 HELPERS
@@ -68,7 +79,7 @@ function updateLeadMetrics() {
 }
 
 /* =====================================================
-   🔷 ADD LEAD
+   🔷 ADD LEAD (SAFE)
 ===================================================== */
 window.addLead = async function () {
   if (isSaving) return;
@@ -112,7 +123,6 @@ window.addLead = async function () {
       created_at: serverTimestamp()
     });
 
-    // ✅ SAFE GUARD (CRITICAL FIX)
     if (typeof clearLeadForm === "function") {
       clearLeadForm();
     }
@@ -126,7 +136,7 @@ window.addLead = async function () {
 };
 
 /* =====================================================
-   🔷 HISTORY
+   🔷 HISTORY LOADER
 ===================================================== */
 async function loadHistory(leadId) {
   const container = document.getElementById(`history-${leadId}`);
@@ -173,7 +183,36 @@ async function loadHistory(leadId) {
 }
 
 /* =====================================================
-   🔷 RENDER
+   🔷 ACTION HANDLER (💬)
+===================================================== */
+window.openCommunication = function (leadId) {
+  try {
+    console.log("💬 Open communication:", leadId);
+
+    const expandRow = document.getElementById(`lead-expand-${leadId}`);
+
+    if (!expandRow) return;
+
+    const isHidden = expandRow.classList.contains("hidden");
+
+    // 🔁 Toggle
+    expandRow.classList.toggle("hidden");
+
+    // 🔥 Load history only when opening
+    if (isHidden) {
+      loadHistory(leadId);
+    }
+
+    // 🔁 Scroll into view (UX boost)
+    expandRow.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  } catch (err) {
+    console.error("🔥 openCommunication error:", err);
+  }
+};
+
+/* =====================================================
+   🔷 RENDER LEADS (UPDATED)
 ===================================================== */
 window.renderLeads = function () {
 
@@ -185,7 +224,7 @@ window.renderLeads = function () {
   if (!leads.length) {
     body.innerHTML = `
       <tr>
-        <td colspan="13" style="text-align:center;padding:20px;">
+        <td colspan="14" style="text-align:center;padding:20px;">
           No leads found
         </td>
       </tr>
@@ -198,6 +237,14 @@ window.renderLeads = function () {
   leads.forEach(l => {
     html += `
       <tr>
+
+        <!-- 🔥 ACTION COLUMN (NEW) -->
+        <td>
+          <button class="lead-action-btn" onclick="openCommunication('${l.id}')">
+            💬
+          </button>
+        </td>
+
         <td>${safe(l.name)}</td>
         <td>${safe(l.role)}</td>
         <td>${safe(l.company)}</td>
@@ -207,14 +254,17 @@ window.renderLeads = function () {
         <td>${safe(l.score)}</td>
         <td>${safe(l.status)}</td>
         <td>${safe(l.stage)}</td>
+        <td>${safe(l.next)}</td>
         <td>${safe(l.notes)}</td>
-        <td><button onclick="toggleLead('${l.id}')">View</button></td>
+        <td>${safe(l.last_message) || "-"}</td>
         <td>${safe(l.flag)}</td>
       </tr>
 
+      <!-- 🔥 EXPANDED ROW -->
       <tr id="lead-expand-${l.id}" class="lead-expand hidden">
-        <td colspan="13">
+        <td colspan="14">
           <div class="lead-expanded-card">
+
             <div>
               <strong>Last Message</strong>
               <p>${safe(l.last_message) || "No message yet"}</p>
@@ -228,6 +278,7 @@ window.renderLeads = function () {
             <button onclick="openMessageModal('${l.id}')">
               + Log Communication
             </button>
+
           </div>
         </td>
       </tr>
@@ -238,23 +289,7 @@ window.renderLeads = function () {
 };
 
 /* =====================================================
-   🔷 TOGGLE
-===================================================== */
-window.toggleLead = async function(id) {
-  const el = document.getElementById(`lead-expand-${id}`);
-  if (!el) return;
-
-  const isHidden = el.classList.contains("hidden");
-
-  el.classList.toggle("hidden");
-
-  if (isHidden) {
-    await loadHistory(id);
-  }
-};
-
-/* =====================================================
-   🔷 LISTENER
+   🔷 LISTENER (REALTIME + FALLBACK SAFE)
 ===================================================== */
 async function startListener() {
 
@@ -288,9 +323,8 @@ async function startListener() {
 /* =====================================================
    🔷 INIT
 ===================================================== */
-
 function initLeadsModule() {
-  console.log("🚀 Leads module initializing...");
+  console.log("🚀 Leads module v1.1.0 initializing...");
   startListener();
 }
 

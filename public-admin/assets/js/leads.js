@@ -1,17 +1,18 @@
 /* =====================================================
-   🔷 LEAD INTELLIGENCE MODULE (STABLE + COMMUNICATION READY)
-   Version: v2.2.0
+   🔷 LEAD INTELLIGENCE MODULE (FULL HISTORY ENABLED)
+   Version: v2.3.0
    CHANGE TYPE:
    - SAFE FULL REPLACEMENT
    - Backward compatible
 
    NEW:
-   - Communication logging (lead_communications)
-   - last_message tracking
-   - Modal handling (open/close/save)
+   - Full message history timeline
+   - Lazy loading per lead
+   - Expandable SaaS-style UI
 ===================================================== */
 
 import { db, auth } from "./core.js";
+
 import {
   collection,
   addDoc,
@@ -20,7 +21,9 @@ import {
   onSnapshot,
   serverTimestamp,
   doc,
-  updateDoc
+  updateDoc,
+  getDocs,
+  where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
@@ -29,8 +32,6 @@ import {
 let leads = [];
 let unsubscribe = null;
 let isSaving = false;
-
-/* 🔥 NEW */
 let currentLeadId = null;
 
 /* =====================================================
@@ -49,7 +50,7 @@ function getSafeStage(l) {
 }
 
 /* =====================================================
-   🔷 NEXT ACTION ENGINE (UNCHANGED)
+   🔷 NEXT ACTION ENGINE
 ===================================================== */
 function daysSince(dateString) {
   if (!dateString) return 999;
@@ -85,7 +86,7 @@ function getNextAction(lead) {
 }
 
 /* =====================================================
-   🔷 METRICS (UNCHANGED)
+   🔷 METRICS
 ===================================================== */
 function updateLeadMetrics() {
 
@@ -118,7 +119,7 @@ function updateLeadMetrics() {
 }
 
 /* =====================================================
-   🔷 ADD LEAD (UNCHANGED CORE)
+   🔷 ADD LEAD
 ===================================================== */
 window.addLead = async function () {
 
@@ -130,7 +131,6 @@ window.addLead = async function () {
 
   if (!name || !linkedin) {
     alert("Name and LinkedIn are required");
-    document.getElementById("leadName")?.focus();
     isSaving = false;
     return;
   }
@@ -167,7 +167,6 @@ window.addLead = async function () {
       notes: "",
       interactions: 1,
 
-      /* 🔥 NEW */
       last_message: "",
       last_message_date: null,
 
@@ -177,7 +176,7 @@ window.addLead = async function () {
     clearLeadForm();
 
   } catch (e) {
-    console.error("🔥 Lead save error:", e);
+    console.error(e);
     alert("Failed to save lead");
   } finally {
     isSaving = false;
@@ -185,7 +184,7 @@ window.addLead = async function () {
 };
 
 /* =====================================================
-   🔷 CLEAR FORM (UNCHANGED)
+   🔷 CLEAR FORM
 ===================================================== */
 window.clearLeadForm = function () {
   [
@@ -197,12 +196,10 @@ window.clearLeadForm = function () {
     const el = document.getElementById(id);
     if (el) el.value = "";
   });
-
-  document.getElementById("leadName")?.focus();
 };
 
 /* =====================================================
-   🔷 UPDATE LEAD (UNCHANGED)
+   🔷 UPDATE LEAD
 ===================================================== */
 window.updateLead = async function (id, field, value) {
   const ref = doc(db, "leads", id);
@@ -214,9 +211,8 @@ window.updateLead = async function (id, field, value) {
 };
 
 /* =====================================================
-   🔥 COMMUNICATION MODAL HANDLING
+   🔥 MESSAGE MODAL
 ===================================================== */
-
 window.openMessageModal = function(id) {
   currentLeadId = id;
   document.getElementById("msgModal").classList.remove("hidden");
@@ -228,7 +224,7 @@ window.closeModal = function() {
 };
 
 /* =====================================================
-   🔥 SAVE COMMUNICATION (CORE FEATURE)
+   🔥 SAVE MESSAGE
 ===================================================== */
 window.saveMessage = async function () {
 
@@ -243,34 +239,68 @@ window.saveMessage = async function () {
 
   const user = auth.currentUser;
 
-  try {
+  await addDoc(collection(db, "lead_communications"), {
+    lead_id: currentLeadId,
+    message,
+    channel,
+    direction,
+    created_at: serverTimestamp(),
+    created_by: user?.email || "unknown"
+  });
 
-    /* 🔷 SAVE HISTORY */
-    await addDoc(collection(db, "lead_communications"), {
-      lead_id: currentLeadId,
-      message,
-      channel,
-      direction,
-      created_at: serverTimestamp(),
-      created_by: user?.email || "unknown"
-    });
+  await updateDoc(doc(db, "leads", currentLeadId), {
+    last_message: message,
+    last_message_date: serverTimestamp()
+  });
 
-    /* 🔷 UPDATE LEAD SNAPSHOT */
-    await updateDoc(doc(db, "leads", currentLeadId), {
-      last_message: message,
-      last_message_date: serverTimestamp()
-    });
-
-    closeModal();
-
-  } catch (e) {
-    console.error("🔥 Message save error:", e);
-    alert("Failed to save message");
-  }
+  closeModal();
 };
 
 /* =====================================================
-   🔷 RENDER (UPDATED WITH MESSAGE COLUMN)
+   🔥 LOAD MESSAGE HISTORY
+===================================================== */
+async function loadHistory(leadId) {
+
+  const container = document.getElementById(`history-${leadId}`);
+  if (!container) return;
+
+  container.innerHTML = "Loading...";
+
+  const q = query(
+    collection(db, "lead_communications"),
+    where("lead_id", "==", leadId),
+    orderBy("created_at", "asc")
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    container.innerHTML = "No history yet";
+    return;
+  }
+
+  let html = "";
+
+  snap.forEach(doc => {
+    const m = doc.data();
+
+    const time = m.created_at?.seconds
+      ? new Date(m.created_at.seconds * 1000).toLocaleString()
+      : "-";
+
+    html += `
+      <div class="msg ${m.direction}">
+        <div class="msg-meta">${m.channel} • ${time}</div>
+        <div class="msg-body">${m.message}</div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+/* =====================================================
+   🔷 RENDER (WITH HISTORY PANEL)
 ===================================================== */
 window.renderLeads = function () {
 
@@ -279,19 +309,12 @@ window.renderLeads = function () {
 
   body.innerHTML = "";
 
-  if (!leads.length) {
-    body.innerHTML = `<tr><td colspan="13">No leads yet</td></tr>`;
-    return;
-  }
-
   leads.forEach(l => {
 
     const stage = getSafeStage(l);
     const action = getNextAction(l);
 
     body.innerHTML += `
-
-      <!-- 🔷 MAIN ROW -->
       <tr>
         <td>${safe(l.name)}</td>
         <td><input value="${safe(l.role)}" onchange="updateLead('${l.id}','role',this.value)"></td>
@@ -304,16 +327,10 @@ window.renderLeads = function () {
         <td>${stage}</td>
         <td><span class="next-action ${action.type}">${action.label}</span></td>
         <td>${safe(l.notes)}</td>
-
-        <!-- 🔥 ACTION -->
-        <td>
-          <button onclick="toggleLead('${l.id}')">View</button>
-        </td>
-
+        <td><button onclick="toggleLead('${l.id}')">View</button></td>
         <td>${safe(l.flag)}</td>
       </tr>
 
-      <!-- 🔥 EXPANDABLE ROW -->
       <tr id="lead-expand-${l.id}" class="lead-expand hidden">
         <td colspan="13">
           <div class="lead-expanded-card">
@@ -321,6 +338,11 @@ window.renderLeads = function () {
             <div class="lead-expanded-section">
               <strong>Last Message</strong>
               <p>${safe(l.last_message) || "No message yet"}</p>
+            </div>
+
+            <div class="lead-expanded-section">
+              <strong>Conversation History</strong>
+              <div id="history-${l.id}" class="lead-history"></div>
             </div>
 
             <div class="lead-expanded-actions">
@@ -332,20 +354,28 @@ window.renderLeads = function () {
           </div>
         </td>
       </tr>
-
     `;
   });
 };
 
-window.toggleLead = function(id) {
+/* =====================================================
+   🔷 TOGGLE + LOAD HISTORY
+===================================================== */
+window.toggleLead = async function(id) {
   const el = document.getElementById(`lead-expand-${id}`);
   if (!el) return;
 
+  const isHidden = el.classList.contains("hidden");
+
   el.classList.toggle("hidden");
+
+  if (isHidden) {
+    await loadHistory(id);
+  }
 };
 
 /* =====================================================
-   🔷 FIRESTORE LISTENER (UNCHANGED)
+   🔷 LISTENER
 ===================================================== */
 function startListener() {
 

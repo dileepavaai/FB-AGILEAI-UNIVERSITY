@@ -316,3 +316,48 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* =====================================================
+   🔥 EXPANDABLE LEAD VIEW (SAAS UX)
+===================================================== */
+
+.lead-expand td {
+  background: var(--bg-main);
+  padding: 0;
+  border-top: none;
+}
+
+.lead-expanded-card {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.lead-expanded-section {
+  margin-bottom: 12px;
+}
+
+.lead-expanded-section strong {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.lead-expanded-section p {
+  margin-top: 6px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: var(--text-main);
+}
+
+.lead-expanded-actions {
+  margin-top: 10px;
+}
+
+.lead-expanded-actions button {
+  font-size: 13px;
+}
+
+/* Smooth open feel */
+.lead-expand {
+  transition: all 0.2s ease;
+}

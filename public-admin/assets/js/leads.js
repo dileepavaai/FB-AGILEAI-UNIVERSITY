@@ -280,7 +280,7 @@ window.renderLeads = function () {
   body.innerHTML = "";
 
   if (!leads.length) {
-    body.innerHTML = `<tr><td colspan="14">No leads yet</td></tr>`;
+    body.innerHTML = `<tr><td colspan="13">No leads yet</td></tr>`;
     return;
   }
 
@@ -290,6 +290,8 @@ window.renderLeads = function () {
     const action = getNextAction(l);
 
     body.innerHTML += `
+
+      <!-- 🔷 MAIN ROW -->
       <tr>
         <td>${safe(l.name)}</td>
         <td><input value="${safe(l.role)}" onchange="updateLead('${l.id}','role',this.value)"></td>
@@ -303,14 +305,43 @@ window.renderLeads = function () {
         <td><span class="next-action ${action.type}">${action.label}</span></td>
         <td>${safe(l.notes)}</td>
 
-        <!-- 🔥 NEW -->
-        <td>${l.last_message ? l.last_message.substring(0, 40) + "..." : "-"}</td>
-        <td><button onclick="openMessageModal('${l.id}')">Log</button></td>
+        <!-- 🔥 ACTION -->
+        <td>
+          <button onclick="toggleLead('${l.id}')">View</button>
+        </td>
 
         <td>${safe(l.flag)}</td>
       </tr>
+
+      <!-- 🔥 EXPANDABLE ROW -->
+      <tr id="lead-expand-${l.id}" class="lead-expand hidden">
+        <td colspan="13">
+          <div class="lead-expanded-card">
+
+            <div class="lead-expanded-section">
+              <strong>Last Message</strong>
+              <p>${safe(l.last_message) || "No message yet"}</p>
+            </div>
+
+            <div class="lead-expanded-actions">
+              <button onclick="openMessageModal('${l.id}')">
+                + Log Communication
+              </button>
+            </div>
+
+          </div>
+        </td>
+      </tr>
+
     `;
   });
+};
+
+window.toggleLead = function(id) {
+  const el = document.getElementById(`lead-expand-${id}`);
+  if (!el) return;
+
+  el.classList.toggle("hidden");
 };
 
 /* =====================================================

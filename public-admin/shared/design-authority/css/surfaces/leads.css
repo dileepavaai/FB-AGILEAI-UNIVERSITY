@@ -1,18 +1,21 @@
 /* =========================================================
    Agile AI University — Leads Surface (Premium SaaS)
-   Version: v2.2.0 (Form UX + Premium Tight Layout Upgrade)
-   Change Type: SAFE REFINEMENT (NO BREAKING CHANGES)
+   Version: v2.3.0 (Action UX + Table Optimization Upgrade)
+   Date: 2026-03-31
 
-   WHAT'S NEW:
-   - Right-aligned action buttons (UX upgrade)
-   - Tighter spacing for premium feel
-   - Better form grid alignment
-   - Improved table readability
-   - Preserved ALL existing structure
+   CHANGE TYPE:
+   - SAFE REFINEMENT (NON-BREAKING)
+
+   KEY UPGRADES:
+   ✅ LEFT ACTION COLUMN (💬) support
+   ✅ Table column alignment fix (post-action column)
+   ✅ Improved scan readability
+   ✅ Tighter spacing (premium SaaS feel)
+   ✅ Sticky usability foundation
 
    GOVERNANCE:
    - No structural overrides
-   - No dependency on HTML changes
+   - No dependency on JS logic
    - Fully backward compatible
 ========================================================= */
 
@@ -22,7 +25,7 @@
 ========================================================= */
 
 .leads-header {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .leads-header h2 {
@@ -38,14 +41,14 @@
 
 
 /* =========================================================
-   📊 METRICS (TIGHTER + PREMIUM)
+   📊 METRICS (TIGHTER)
 ========================================================= */
 
 .leads-metrics {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .leads-metric {
@@ -54,7 +57,6 @@
   border-radius: 10px;
   padding: 10px;
   text-align: center;
-  transition: all 0.2s ease;
 }
 
 .leads-metric .value {
@@ -77,27 +79,26 @@
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px 18px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .leads-form-title {
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 
 /* =========================================================
-   📐 FORM GRID (OPTIMIZED)
+   📐 FORM GRID
 ========================================================= */
 
 .leads-form-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px 14px;
+  gap: 10px 12px;
 }
 
-/* INPUT STANDARDIZATION */
 .leads-form-grid input,
 .leads-form-grid select {
   height: 32px;
@@ -105,30 +106,27 @@
   padding: 6px 8px;
 }
 
-/* FULL WIDTH FIELD (LinkedIn etc.) */
 .leads-form-grid .full-width {
   grid-column: span 3;
 }
 
 
 /* =========================================================
-   🔘 ACTIONS (RIGHT-ALIGNED — UX UPGRADE)
+   🔘 ACTIONS (RIGHT SIDE)
 ========================================================= */
 
 .leads-actions {
-  margin-top: 12px;
+  margin-top: 10px;
   display: flex;
-  justify-content: flex-end; /* 🔥 KEY CHANGE */
+  justify-content: flex-end;
   gap: 8px;
 }
 
-/* Primary button */
 .leads-actions .btn-primary {
   padding: 6px 14px;
   font-size: 12px;
 }
 
-/* Secondary button */
 .leads-actions .btn-secondary {
   padding: 6px 12px;
   font-size: 12px;
@@ -137,7 +135,7 @@
 
 
 /* =========================================================
-   🔍 FILTER BAR (TIGHT + CLEAN)
+   🔍 FILTER BAR
 ========================================================= */
 
 .leads-filters {
@@ -145,7 +143,7 @@
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 
   display: flex;
   flex-wrap: wrap;
@@ -161,19 +159,17 @@
 
 
 /* =========================================================
-   📊 TABLE (CRITICAL FIX + PREMIUM)
+   📊 TABLE (UPDATED FOR ACTION COLUMN)
 ========================================================= */
 
-/* Wrapper */
 .table-wrapper {
   border-radius: 12px;
   overflow-x: auto;
-  overflow-y: hidden;
 }
 
-/* Table base */
+/* 🔥 Adjusted width for new column */
 .table {
-  min-width: 1250px; /* 🔥 ensures all columns visible */
+  min-width: 1350px;
   font-size: 12.5px;
   border-collapse: separate;
   border-spacing: 0;
@@ -185,14 +181,14 @@
   text-transform: uppercase;
   letter-spacing: 0.4px;
   color: var(--text-muted);
-  padding: 9px 10px;
+  padding: 8px 10px;
   border-bottom: 1px solid var(--border);
   background: rgba(255,255,255,0.03);
 }
 
 /* BODY */
 .table tbody td {
-  padding: 9px 10px;
+  padding: 8px 10px;
   vertical-align: top;
   border-bottom: 1px solid var(--border);
 }
@@ -202,26 +198,56 @@
   background: rgba(37, 99, 235, 0.05);
 }
 
-/* NAME */
+
+/* =========================================================
+   💬 ACTION COLUMN (NEW — CRITICAL UX)
+========================================================= */
+
 .table tbody td:first-child {
+  width: 50px;
+  text-align: center;
+}
+
+.lead-action-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.lead-action-btn:hover {
+  background: rgba(255,255,255,0.08);
+  transform: scale(1.05);
+}
+
+
+/* =========================================================
+   🧠 COLUMN ALIGNMENT (UPDATED INDEXES)
+========================================================= */
+
+/* NAME (now 2nd column) */
+.table tbody td:nth-child(2) {
   font-weight: 600;
   color: var(--text-main);
 }
 
 /* ROLE */
-.table tbody td:nth-child(2) {
+.table tbody td:nth-child(3) {
   line-height: 1.35;
   color: var(--text-muted);
 }
 
 /* CONTACT */
-.table tbody td:nth-child(6) {
+.table tbody td:nth-child(7) {
   font-size: 11.5px;
   color: var(--text-muted);
 }
 
 /* SCORE */
-.table tbody td:nth-child(7) {
+.table tbody td:nth-child(8) {
   font-weight: 600;
   color: var(--primary);
 }
@@ -237,25 +263,12 @@
 
 
 /* =========================================================
-   📉 EMPTY STATE
-========================================================= */
-
-.leads-empty {
-  text-align: center;
-  padding: 26px 16px;
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-
-/* =========================================================
-   🔥 EXPANDABLE LEAD VIEW
+   🔥 EXPANDED VIEW
 ========================================================= */
 
 .lead-expand td {
   background: var(--bg-main);
   padding: 0;
-  border-top: none;
 }
 
 .lead-expanded-card {
@@ -266,7 +279,7 @@
 
 
 /* =========================================================
-   💬 MESSAGE TIMELINE (REFINED)
+   💬 MESSAGE TIMELINE
 ========================================================= */
 
 .lead-history {

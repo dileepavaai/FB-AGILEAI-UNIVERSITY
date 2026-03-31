@@ -23,7 +23,6 @@
 
 <body class="app-loading">
 
-<!-- 🔷 HEADER -->
 <div id="headerContainer"></div>
 
 <div class="layout">
@@ -127,7 +126,7 @@
 
         <div class="card-title">Lead List</div>
 
-        <div class="table-wrapper">
+        <div class="table-wrapper leads-table-enhanced">
           <table class="table">
             <thead>
               <tr>
@@ -143,7 +142,7 @@
                 <th>Next Action</th>
                 <th>Notes</th>
 
-                <!-- 🔥 NEW -->
+                <!-- 🔥 IMPORTANT -->
                 <th>Last Message</th>
                 <th>Action</th>
 
@@ -156,9 +155,8 @@
 
       </div>
 
-      <!-- 💬 COMMUNICATION MODAL -->
+      <!-- 💬 MODAL -->
       <div id="msgModal" class="modal hidden">
-
         <div class="modal-content">
 
           <h3>Log Communication</h3>
@@ -184,7 +182,6 @@
           </div>
 
         </div>
-
       </div>
 
     </section>
@@ -192,14 +189,11 @@
   </main>
 </div>
 
-<!-- 🔷 FOOTER -->
 <div id="footerContainer"></div>
 
 <!-- 🔥 ADMIN SYSTEM -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
-
-/* ✅ CONNECT LEADS MODULE */
 initAdminApp("leads.js");
 </script>
 

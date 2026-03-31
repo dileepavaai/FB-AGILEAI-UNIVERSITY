@@ -361,3 +361,41 @@
 .lead-expand {
   transition: all 0.2s ease;
 }
+
+/* =====================================================
+   🔥 MESSAGE TIMELINE
+===================================================== */
+
+.lead-history {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msg {
+  padding: 10px 12px;
+  border-radius: 8px;
+  max-width: 70%;
+}
+
+.msg.outbound {
+  background: #e0f2fe;
+  align-self: flex-end;
+}
+
+.msg.inbound {
+  background: #f3f4f6;
+  align-self: flex-start;
+}
+
+.msg-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.msg-body {
+  white-space: pre-wrap;
+  line-height: 1.4;
+}

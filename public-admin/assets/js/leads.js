@@ -1,6 +1,6 @@
 /* =====================================================
    🔷 LEAD INTELLIGENCE MODULE (FINAL STABLE)
-   Version: v2.6.0 (Guaranteed Load + Fallback + Debug)
+   Version: v2.7.1 (Runtime Crash Fix)
 ===================================================== */
 
 import { db, auth } from "./core.js";
@@ -68,7 +68,7 @@ function updateLeadMetrics() {
 }
 
 /* =====================================================
-   🔷 ADD LEAD (UNCHANGED)
+   🔷 ADD LEAD
 ===================================================== */
 window.addLead = async function () {
   if (isSaving) return;
@@ -112,7 +112,10 @@ window.addLead = async function () {
       created_at: serverTimestamp()
     });
 
-    clearLeadForm();
+    // ✅ SAFE GUARD (CRITICAL FIX)
+    if (typeof clearLeadForm === "function") {
+      clearLeadForm();
+    }
 
   } catch (e) {
     console.error(e);
@@ -251,7 +254,7 @@ window.toggleLead = async function(id) {
 };
 
 /* =====================================================
-   🔷 LISTENER + FALLBACK (🔥 FINAL FIX)
+   🔷 LISTENER
 ===================================================== */
 async function startListener() {
 
@@ -259,32 +262,8 @@ async function startListener() {
 
   const q = query(collection(db, "leads"));
 
-  // 🔥 Realtime
-  unsubscribe = onSnapshot(q,
-    (snap) => {
-      console.log("🔥 onSnapshot:", snap.size);
-
-      leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-      leads.sort((a, b) => {
-        const t1 = a.created_at?.seconds || 0;
-        const t2 = b.created_at?.seconds || 0;
-        return t2 - t1;
-      });
-
-      updateLeadMetrics();
-      renderLeads();
-    },
-    (err) => {
-      console.error("❌ Snapshot error:", err);
-    }
-  );
-
-  // 🛟 Fallback
-  try {
-    const snap = await getDocs(q);
-
-    console.log("🛟 Fallback load:", snap.size);
+  unsubscribe = onSnapshot(q, (snap) => {
+    console.log("🔥 onSnapshot:", snap.size);
 
     leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
@@ -296,15 +275,23 @@ async function startListener() {
 
     updateLeadMetrics();
     renderLeads();
+  });
 
-  } catch (err) {
-    console.error("❌ Fallback failed:", err);
-  }
+  const snap = await getDocs(q);
+  console.log("🛟 Fallback:", snap.size);
+
+  leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  updateLeadMetrics();
+  renderLeads();
 }
 
 /* =====================================================
    🔷 INIT
 ===================================================== */
-document.addEventListener("DOMContentLoaded", () => {
+
+function initLeadsModule() {
+  console.log("🚀 Leads module initializing...");
   startListener();
-});
+}
+
+initLeadsModule();

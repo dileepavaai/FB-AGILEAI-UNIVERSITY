@@ -1,6 +1,6 @@
 /* =====================================================
    🔷 LEAD INTELLIGENCE MODULE (STABLE + SAFE)
-   Version: v2.4.0 (Stability + UX Fix)
+   Version: v2.5.0 (Data Load Fix + Safe Sorting)
 ===================================================== */
 
 import { db, auth } from "./core.js";
@@ -9,7 +9,6 @@ import {
   collection,
   addDoc,
   query,
-  orderBy,
   onSnapshot,
   serverTimestamp,
   doc,
@@ -36,10 +35,6 @@ const set = (id, value) => {
   const el = document.getElementById(id);
   if (el) el.innerText = value;
 };
-
-function getSafeStage(l) {
-  return l.stage || "new";
-}
 
 /* =====================================================
    🔷 METRICS
@@ -128,7 +123,7 @@ window.addLead = async function () {
 };
 
 /* =====================================================
-   🔷 HISTORY (FIXED + SAFE)
+   🔷 HISTORY
 ===================================================== */
 async function loadHistory(leadId) {
   const container = document.getElementById(`history-${leadId}`);
@@ -175,7 +170,7 @@ async function loadHistory(leadId) {
 }
 
 /* =====================================================
-   🔷 RENDER (FIXED)
+   🔷 RENDER
 ===================================================== */
 window.renderLeads = function () {
 
@@ -257,16 +252,25 @@ window.toggleLead = async function(id) {
 };
 
 /* =====================================================
-   🔷 LISTENER
+   🔷 LISTENER (🔥 FIXED)
 ===================================================== */
 function startListener() {
 
   if (unsubscribe) unsubscribe();
 
-  const q = query(collection(db, "leads"), orderBy("created_at", "desc"));
+  const q = query(collection(db, "leads")); // ✅ FIXED
 
   unsubscribe = onSnapshot(q, (snap) => {
+
     leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // ✅ SAFE CLIENT-SIDE SORT
+    leads.sort((a, b) => {
+      const t1 = a.created_at?.seconds || 0;
+      const t2 = b.created_at?.seconds || 0;
+      return t2 - t1;
+    });
+
     updateLeadMetrics();
     renderLeads();
   });

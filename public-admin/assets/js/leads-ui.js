@@ -1,59 +1,112 @@
-// =========================
-// PILL SELECTOR
-// =========================
-document.querySelectorAll('.pill-select').forEach(container => {
-  const targetId = container.getAttribute('data-target');
-  const select = document.getElementById(targetId);
+/* =====================================================
+   🔷 FORM UX ENGINE (SAFE + STABLE)
+   Version: v2.1.0
+===================================================== */
 
-  if (!select) return;
+/* =========================
+   PILL SELECTOR (SAFE INIT)
+========================= */
+function initPillSelectors() {
 
-  Array.from(select.options).forEach((opt, index) => {
-    const pill = document.createElement('div');
-    pill.className = 'pill-option';
-    pill.textContent = opt.text;
+  document.querySelectorAll('.pill-select').forEach(container => {
 
-    if (index === select.selectedIndex) {
-      pill.classList.add('active');
-    }
+    // ✅ Prevent duplicate init
+    if (container.dataset.initialized === "true") return;
+    container.dataset.initialized = "true";
 
-    pill.onclick = () => {
-      select.value = opt.value;
-      container.querySelectorAll('.pill-option').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      select.dispatchEvent(new Event('change'));
-    };
+    const targetId = container.getAttribute('data-target');
+    const select = document.getElementById(targetId);
 
-    container.appendChild(pill);
+    if (!select) return;
+
+    container.innerHTML = ""; // ✅ clear old pills
+
+    Array.from(select.options).forEach((opt, index) => {
+
+      const pill = document.createElement('div');
+      pill.className = 'pill-option';
+      pill.textContent = opt.text;
+
+      if (index === select.selectedIndex) {
+        pill.classList.add('active');
+      }
+
+      pill.onclick = () => {
+        select.value = opt.value;
+
+        container.querySelectorAll('.pill-option')
+          .forEach(p => p.classList.remove('active'));
+
+        pill.classList.add('active');
+
+        select.dispatchEvent(new Event('change'));
+      };
+
+      container.appendChild(pill);
+    });
+
   });
-});
+}
 
+/* =========================
+   ENTER NAVIGATION (SAFE)
+========================= */
+function initEnterNavigation() {
 
-// =========================
-// ENTER NAVIGATION
-// =========================
-const inputs = Array.from(document.querySelectorAll('.lead-form input, .lead-form select'));
+  const inputs = Array.from(
+    document.querySelectorAll(
+      '.lead-form input:not([type="hidden"]):not([disabled]), .lead-form select:not([disabled])'
+    )
+  );
 
-inputs.forEach((el, index) => {
-  el.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (index < inputs.length - 1) {
-        inputs[index + 1].focus();
-      } else {
+  inputs.forEach((el, index) => {
+
+    el.addEventListener('keydown', (e) => {
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+
+        if (index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        } else {
+          if (typeof addLead === "function") {
+            addLead();
+          }
+        }
+      }
+
+    });
+
+  });
+}
+
+/* =========================
+   CTRL + ENTER SUBMIT (SAFE)
+========================= */
+function initCtrlEnterSubmit() {
+
+  // ✅ prevent duplicate listener
+  if (window.__ctrlEnterBound) return;
+  window.__ctrlEnterBound = true;
+
+  document.addEventListener("keydown", (e) => {
+
+    if (e.ctrlKey && e.key === "Enter") {
+      if (typeof addLead === "function") {
         addLead();
       }
     }
+
   });
-});
+}
 
+/* =========================
+   INIT
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
 
-// =========================
-// CTRL + ENTER SUBMIT
-// =========================
-document.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.key === "Enter") {
-    if (typeof addLead === "function") {
-      addLead();
-    }
-  }
+  initPillSelectors();
+  initEnterNavigation();
+  initCtrlEnterSubmit();
+
 });

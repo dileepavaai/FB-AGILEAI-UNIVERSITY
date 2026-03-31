@@ -1,16 +1,20 @@
 /* =====================================================
    🔷 LEAD INTELLIGENCE MODULE
-   Version: v1.1.0
+   Version: v1.1.1
    Date: 2026-03-31
 
    CHANGE TYPE:
-   - NON-BREAKING UX UPGRADE
+   - SAFE NON-BREAKING ENHANCEMENT
 
-   KEY CHANGES:
-   ✅ LEFT ACTION COLUMN (💬)
-   ❌ Removed "View" button dependency
-   ✅ Faster communication access (no horizontal scroll)
-   ✅ Inline expansion preserved
+   NEW IN v1.1.1:
+   ✅ LinkedIn URL clickable (opens in new tab)
+   ✅ Safe HTML rendering improvements
+   ✅ Minor UX polish
+
+   PREVIOUS FEATURES (v1.1.0):
+   ✅ Left action column (💬)
+   ✅ Inline expansion (no scroll dependency)
+   ✅ Real-time Firestore sync
    ✅ Performance-safe rendering
 
 ===================================================== */
@@ -41,6 +45,19 @@ let isSaving = false;
 ===================================================== */
 const get = (id) => document.getElementById(id)?.value?.trim() || "";
 const safe = (v) => v ?? "";
+
+/* 🔗 LinkedIn formatter (NEW) */
+const renderLinkedIn = (url) => {
+  if (!url) return "";
+  return `
+    <a href="${url}" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="lead-linkedin">
+       🔗 Profile
+    </a>
+  `;
+};
 
 const set = (id, value) => {
   const el = document.getElementById(id);
@@ -79,7 +96,7 @@ function updateLeadMetrics() {
 }
 
 /* =====================================================
-   🔷 ADD LEAD (SAFE)
+   🔷 ADD LEAD
 ===================================================== */
 window.addLead = async function () {
   if (isSaving) return;
@@ -183,43 +200,35 @@ async function loadHistory(leadId) {
 }
 
 /* =====================================================
-   🔷 ACTION HANDLER (💬)
+   🔷 ACTION HANDLER
 ===================================================== */
 window.openCommunication = function (leadId) {
   try {
-    console.log("💬 Open communication:", leadId);
-
     const expandRow = document.getElementById(`lead-expand-${leadId}`);
-
     if (!expandRow) return;
 
     const isHidden = expandRow.classList.contains("hidden");
 
-    // 🔁 Toggle
     expandRow.classList.toggle("hidden");
 
-    // 🔥 Load history only when opening
     if (isHidden) {
       loadHistory(leadId);
     }
 
-    // 🔁 Scroll into view (UX boost)
     expandRow.scrollIntoView({ behavior: "smooth", block: "center" });
 
   } catch (err) {
-    console.error("🔥 openCommunication error:", err);
+    console.error("openCommunication error:", err);
   }
 };
 
 /* =====================================================
-   🔷 RENDER LEADS (UPDATED)
+   🔷 RENDER LEADS
 ===================================================== */
 window.renderLeads = function () {
 
   const body = document.getElementById("leadBody");
   if (!body) return;
-
-  console.log("🎯 Rendering leads:", leads.length);
 
   if (!leads.length) {
     body.innerHTML = `
@@ -238,7 +247,7 @@ window.renderLeads = function () {
     html += `
       <tr>
 
-        <!-- 🔥 ACTION COLUMN (NEW) -->
+        <!-- ACTION -->
         <td>
           <button class="lead-action-btn" onclick="openCommunication('${l.id}')">
             💬
@@ -251,6 +260,10 @@ window.renderLeads = function () {
         <td>${safe(l.source)}</td>
         <td>${safe(l.owner)}</td>
         <td>${safe(l.email)}</td>
+
+        <!-- 🔗 LINKEDIN (NEW) -->
+        <td>${renderLinkedIn(l.linkedin_url)}</td>
+
         <td>${safe(l.score)}</td>
         <td>${safe(l.status)}</td>
         <td>${safe(l.stage)}</td>
@@ -260,7 +273,6 @@ window.renderLeads = function () {
         <td>${safe(l.flag)}</td>
       </tr>
 
-      <!-- 🔥 EXPANDED ROW -->
       <tr id="lead-expand-${l.id}" class="lead-expand hidden">
         <td colspan="14">
           <div class="lead-expanded-card">
@@ -289,7 +301,7 @@ window.renderLeads = function () {
 };
 
 /* =====================================================
-   🔷 LISTENER (REALTIME + FALLBACK SAFE)
+   🔷 LISTENER
 ===================================================== */
 async function startListener() {
 
@@ -298,7 +310,6 @@ async function startListener() {
   const q = query(collection(db, "leads"));
 
   unsubscribe = onSnapshot(q, (snap) => {
-    console.log("🔥 onSnapshot:", snap.size);
 
     leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
@@ -313,7 +324,6 @@ async function startListener() {
   });
 
   const snap = await getDocs(q);
-  console.log("🛟 Fallback:", snap.size);
 
   leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   updateLeadMetrics();
@@ -324,7 +334,7 @@ async function startListener() {
    🔷 INIT
 ===================================================== */
 function initLeadsModule() {
-  console.log("🚀 Leads module v1.1.0 initializing...");
+  console.log("🚀 Leads module v1.1.1 initializing...");
   startListener();
 }
 

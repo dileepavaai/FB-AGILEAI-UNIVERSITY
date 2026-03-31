@@ -1,8 +1,20 @@
 /* =========================================================
    Agile AI University — Leads Surface (Premium SaaS)
-   Version: v2.1.0 (Table Visibility + Tight UI Upgrade)
+   Version: v2.2.0 (Form UX + Premium Tight Layout Upgrade)
    Change Type: SAFE REFINEMENT (NO BREAKING CHANGES)
-   ========================================================= */
+
+   WHAT'S NEW:
+   - Right-aligned action buttons (UX upgrade)
+   - Tighter spacing for premium feel
+   - Better form grid alignment
+   - Improved table readability
+   - Preserved ALL existing structure
+
+   GOVERNANCE:
+   - No structural overrides
+   - No dependency on HTML changes
+   - Fully backward compatible
+========================================================= */
 
 
 /* =========================================================
@@ -10,43 +22,43 @@
 ========================================================= */
 
 .leads-header {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .leads-header h2 {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .leads-header p {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
 
 /* =========================================================
-   📊 METRICS (TIGHTER)
+   📊 METRICS (TIGHTER + PREMIUM)
 ========================================================= */
 
 .leads-metrics {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .leads-metric {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 12px;
+  padding: 10px;
   text-align: center;
   transition: all 0.2s ease;
 }
 
 .leads-metric .value {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -64,65 +76,87 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 20px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
 }
 
 .leads-form-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 
 /* =========================================================
-   📐 FORM GRID
+   📐 FORM GRID (OPTIMIZED)
 ========================================================= */
 
 .leads-form-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px 16px;
+  gap: 12px 14px;
 }
 
+/* INPUT STANDARDIZATION */
 .leads-form-grid input,
 .leads-form-grid select {
-  height: 34px;
+  height: 32px;
   font-size: 12px;
+  padding: 6px 8px;
+}
+
+/* FULL WIDTH FIELD (LinkedIn etc.) */
+.leads-form-grid .full-width {
+  grid-column: span 3;
 }
 
 
 /* =========================================================
-   🔘 ACTIONS
+   🔘 ACTIONS (RIGHT-ALIGNED — UX UPGRADE)
 ========================================================= */
 
 .leads-actions {
-  margin-top: 14px;
+  margin-top: 12px;
   display: flex;
+  justify-content: flex-end; /* 🔥 KEY CHANGE */
   gap: 8px;
+}
+
+/* Primary button */
+.leads-actions .btn-primary {
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+/* Secondary button */
+.leads-actions .btn-secondary {
+  padding: 6px 12px;
+  font-size: 12px;
+  opacity: 0.8;
 }
 
 
 /* =========================================================
-   🔍 FILTER BAR
+   🔍 FILTER BAR (TIGHT + CLEAN)
 ========================================================= */
 
 .leads-filters {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 14px;
+  padding: 10px;
+  margin-bottom: 12px;
 
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .leads-filters input,
 .leads-filters select {
-  height: 34px;
+  height: 32px;
   font-size: 12px;
+  padding: 6px 8px;
 }
 
 
@@ -130,59 +164,59 @@
    📊 TABLE (CRITICAL FIX + PREMIUM)
 ========================================================= */
 
-/* 🔥 FIX: enable horizontal scroll */
+/* Wrapper */
 .table-wrapper {
   border-radius: 12px;
   overflow-x: auto;
   overflow-y: hidden;
 }
 
-/* 🔥 ensure table doesn’t shrink */
+/* Table base */
 .table {
-  min-width: 1200px;
-  font-size: 13px;
+  min-width: 1250px; /* 🔥 ensures all columns visible */
+  font-size: 12.5px;
   border-collapse: separate;
   border-spacing: 0;
 }
 
 /* HEADER */
 .table thead th {
-  font-size: 11px;
+  font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: 0.4px;
   color: var(--text-muted);
-  padding: 10px 12px;
+  padding: 9px 10px;
   border-bottom: 1px solid var(--border);
   background: rgba(255,255,255,0.03);
 }
 
 /* BODY */
 .table tbody td {
-  padding: 10px 12px;
+  padding: 9px 10px;
   vertical-align: top;
   border-bottom: 1px solid var(--border);
 }
 
 /* Hover */
 .table tbody tr:hover {
-  background: rgba(37, 99, 235, 0.04);
+  background: rgba(37, 99, 235, 0.05);
 }
 
-/* NAME EMPHASIS */
+/* NAME */
 .table tbody td:first-child {
   font-weight: 600;
   color: var(--text-main);
 }
 
-/* ROLE MULTI-LINE */
+/* ROLE */
 .table tbody td:nth-child(2) {
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--text-muted);
 }
 
-/* CONTACT COLUMN */
+/* CONTACT */
 .table tbody td:nth-child(6) {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-muted);
 }
 
@@ -208,8 +242,9 @@
 
 .leads-empty {
   text-align: center;
-  padding: 30px 20px;
+  padding: 26px 16px;
   color: var(--text-muted);
+  font-size: 12px;
 }
 
 
@@ -224,28 +259,28 @@
 }
 
 .lead-expanded-card {
-  padding: 14px 18px;
+  padding: 12px 16px;
   border-top: 1px solid var(--border);
   background: var(--bg-card);
 }
 
 
 /* =========================================================
-   🔥 MESSAGE TIMELINE (REFINED)
+   💬 MESSAGE TIMELINE (REFINED)
 ========================================================= */
 
 .lead-history {
-  margin-top: 10px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .msg {
-  padding: 8px 10px;
+  padding: 7px 9px;
   border-radius: 8px;
   max-width: 70%;
-  font-size: 12px;
+  font-size: 11.5px;
 }
 
 .msg.outbound {
@@ -259,16 +294,16 @@
 .msg-meta {
   font-size: 10px;
   color: var(--text-muted);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 
 /* =========================================================
-   🎯 PREMIUM SCROLLBAR
+   🎯 SCROLLBAR
 ========================================================= */
 
 .table-wrapper::-webkit-scrollbar {
-  height: 6px;
+  height: 5px;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb {

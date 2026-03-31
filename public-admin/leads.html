@@ -74,24 +74,36 @@
 
         <form id="leadForm" class="leads-form-grid" onsubmit="return false;">
 
+          <!-- ROW 1 -->
           <div><label>Name *</label><input id="leadName" /></div>
           <div><label>Role</label><input id="leadRole" /></div>
           <div><label>Company</label><input id="leadCompany" /></div>
 
+          <!-- ROW 2 -->
           <div><label>Location</label><input id="leadLocation" /></div>
           <div><label>Email</label><input id="leadEmail" /></div>
           <div><label>Phone</label><input id="leadPhone" /></div>
 
-          <div class="full"><label>LinkedIn URL *</label><input id="leadLinkedIn" /></div>
+          <!-- ROW 3 -->
+          <div class="full-width">
+            <label>LinkedIn URL *</label>
+            <input id="leadLinkedIn" />
+          </div>
 
+          <!-- ROW 4 -->
           <div><label>Source</label><select id="leadSource"></select></div>
           <div><label>Experience</label><input id="leadExperience" /></div>
           <div><label>Last Contact</label><input type="date" id="leadLastContactDate" /></div>
 
-          <div class="full"><label>Source Detail</label><input id="leadSourceDetail" /></div>
+          <!-- ROW 5 -->
+          <div class="full-width">
+            <label>Source Detail</label>
+            <input id="leadSourceDetail" />
+          </div>
 
         </form>
 
+        <!-- 🔥 RIGHT-ALIGNED ACTIONS -->
         <div class="leads-actions">
           <button class="btn btn-primary" onclick="addLead()">+ Add Lead</button>
           <button class="btn btn-secondary" onclick="clearLeadForm()">Clear</button>
@@ -141,11 +153,8 @@
                 <th>Stage</th>
                 <th>Next Action</th>
                 <th>Notes</th>
-
-                <!-- 🔥 IMPORTANT -->
                 <th>Last Message</th>
                 <th>Action</th>
-
                 <th>Flag</th>
               </tr>
             </thead>

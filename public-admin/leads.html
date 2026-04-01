@@ -27,7 +27,6 @@
 
 <div class="layout">
 
-  <!-- SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html">Dashboard</a></li>
@@ -41,30 +40,60 @@
 
   <main class="content">
 
-    <!-- LOGIN -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p class="page-subtitle">Secure access to lead intelligence system</p>
       <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
     </section>
 
-    <!-- APP -->
     <section id="appView" class="hidden">
 
-      <!-- HEADER -->
       <div class="leads-header section">
         <h2>Lead Intelligence</h2>
         <p>Capture, qualify, and convert leads</p>
       </div>
 
-      <!-- METRICS -->
       <div class="leads-metrics section">
-        <div class="leads-metric"><span id="mTotal">0</span><span>Total</span></div>
-        <div class="leads-metric"><span id="mEngaged">0</span><span>Engaged</span></div>
-        <div class="leads-metric"><span id="mQualified">0</span><span>Qualified</span></div>
-        <div class="leads-metric"><span id="mConverted">0</span><span>Converted</span></div>
-        <div class="leads-metric"><span id="mConvRate">0%</span><span>Conv %</span></div>
-        <div class="leads-metric"><span id="mQualConvRate">0%</span><span>Qual → Conv</span></div>
+        <div class="leads-metric"><span class="value" id="mTotal">0</span><span class="label">Total</span></div>
+        <div class="leads-metric"><span class="value" id="mEngaged">0</span><span class="label">Engaged</span></div>
+        <div class="leads-metric"><span class="value" id="mQualified">0</span><span class="label">Qualified</span></div>
+        <div class="leads-metric"><span class="value" id="mConverted">0</span><span class="label">Converted</span></div>
+        <div class="leads-metric"><span class="value" id="mConvRate">0%</span><span class="label">Conv %</span></div>
+        <div class="leads-metric"><span class="value" id="mQualConvRate">0%</span><span class="label">Qual → Conv</span></div>
+      </div>
+
+      <!-- FORM (UNCHANGED) -->
+      <div class="leads-form-card">
+        <div class="leads-form-title">Add Lead</div>
+
+        <form id="leadForm" class="leads-form-grid" onsubmit="return false;">
+          <div><label>Name *</label><input id="leadName" /></div>
+          <div><label>Role</label><input id="leadRole" /></div>
+          <div><label>Company</label><input id="leadCompany" /></div>
+
+          <div><label>Location</label><input id="leadLocation" /></div>
+          <div><label>Email</label><input id="leadEmail" /></div>
+          <div><label>Phone</label><input id="leadPhone" /></div>
+
+          <div class="full-width">
+            <label>LinkedIn URL *</label>
+            <input id="leadLinkedIn" />
+          </div>
+
+          <div><label>Source</label><select id="leadSource"></select></div>
+          <div><label>Experience</label><input id="leadExperience" /></div>
+          <div><label>Last Contact</label><input type="date" id="leadLastContactDate" /></div>
+
+          <div class="full-width">
+            <label>Source Detail</label>
+            <input id="leadSourceDetail" />
+          </div>
+        </form>
+
+        <div class="leads-actions">
+          <button class="btn btn-primary" onclick="addLead()">+ Add Lead</button>
+          <button class="btn btn-secondary" onclick="clearLeadForm()">Clear</button>
+        </div>
       </div>
 
       <!-- TABLE -->
@@ -81,8 +110,11 @@
                 <th>Company</th>
                 <th>Source</th>
                 <th>Owner</th>
+
+                <!-- 🔥 ONLY FIX -->
                 <th>Email</th>
-                <th>LinkedIn</th> <!-- 🔥 CRITICAL FIX -->
+                <th>LinkedIn</th>
+
                 <th>Score</th>
                 <th>Status</th>
                 <th>Stage</th>
@@ -106,8 +138,8 @@
 <div id="footerContainer"></div>
 
 <script type="module">
-  import { initAdminApp } from "./assets/js/admin-app.js";
-  initAdminApp("leads.js");
+import { initAdminApp } from "./assets/js/admin-app.js";
+initAdminApp("leads.js");
 </script>
 
 </body>

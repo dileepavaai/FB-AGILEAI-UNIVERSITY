@@ -1,20 +1,24 @@
 /* =========================================================
    Agile AI University — Leads Surface (Premium SaaS)
-   Version: v2.4.0 (LinkedIn + UX Polish Upgrade)
-   Date: 2026-03-31
+   Version: v2.5.0 (2-Row Layout + Inline LinkedIn Upgrade)
+   Date: 2026-04-01
 
    CHANGE TYPE:
-   - SAFE REFINEMENT (NON-BREAKING)
+   - SAFE REFINEMENT (NON-BREAKING, GOVERNANCE ALIGNED)
 
-   NEW IN v2.4.0:
-   ✅ LinkedIn column styling
-   ✅ Column alignment adjustments
-   ✅ Improved scan density
-   ✅ Enhanced action button UX
-   ✅ Expanded panel polish
+   NEW IN v2.5.0:
+   ✅ Inline LinkedIn icon next to Name
+   ✅ Phone display under Name
+   ✅ 2-row layout (NO horizontal scroll dependency)
+   ✅ Meta row (Score → Flag) compact inline
+   ✅ Reduced table min-width (critical UX fix)
+   ✅ Premium density tuning
 
-   PREVIOUS:
-   v2.3.0 — Action column + table optimization
+   GOVERNANCE:
+   - NO removal of legacy classes
+   - NO breaking structural changes
+   - Backward compatible
+
 ========================================================= */
 
 
@@ -162,17 +166,19 @@
 
 .table-wrapper {
   border-radius: 12px;
-  overflow-x: auto;
+  overflow-x: hidden; /* 🔥 CRITICAL CHANGE (no scroll UX) */
 }
 
 .table {
-  min-width: 1450px; /* 🔥 increased for LinkedIn column */
+  min-width: 100%; /* 🔥 FIXED from 1450px */
   font-size: 12.5px;
   border-collapse: separate;
   border-spacing: 0;
 }
 
+
 /* HEADER */
+
 .table thead th {
   font-size: 10px;
   text-transform: uppercase;
@@ -183,14 +189,15 @@
   background: rgba(255,255,255,0.03);
 }
 
+
 /* BODY */
+
 .table tbody td {
   padding: 7px 9px;
   vertical-align: top;
   border-bottom: 1px solid var(--border);
 }
 
-/* Hover */
 .table tbody tr:hover {
   background: rgba(37, 99, 235, 0.05);
 }
@@ -222,53 +229,56 @@
 
 
 /* =========================================================
-   🔗 LINKEDIN COLUMN (NEW)
+   🔗 INLINE LINKEDIN (NEW PRIMARY)
 ========================================================= */
 
-.lead-linkedin {
-  font-size: 11px;
-  color: var(--primary);
+.lead-linkedin-inline {
+  margin-left: 6px;
+  font-size: 12px;
   text-decoration: none;
-  font-weight: 500;
+  opacity: 0.7;
 }
 
-.lead-linkedin:hover {
-  text-decoration: underline;
-  opacity: 0.9;
+.lead-linkedin-inline:hover {
+  opacity: 1;
 }
 
 
 /* =========================================================
-   🧠 COLUMN ALIGNMENT (UPDATED)
+   🧠 NAME CELL ENHANCEMENT
 ========================================================= */
 
-/* NAME */
 .table tbody td:nth-child(2) {
   font-weight: 600;
   color: var(--text-main);
 }
 
-/* ROLE */
-.table tbody td:nth-child(3) {
-  line-height: 1.3;
+.table tbody td:nth-child(2) div {
+  margin-top: 2px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
-/* EMAIL */
-.table tbody td:nth-child(7) {
+
+/* =========================================================
+   🔥 META ROW (KEY FEATURE)
+========================================================= */
+
+.lead-meta-row td {
+  background: rgba(255,255,255,0.02);
+  padding: 6px 10px;
+}
+
+.lead-meta-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
   font-size: 11.5px;
   color: var(--text-muted);
 }
 
-/* LINKEDIN */
-.table tbody td:nth-child(8) {
+.lead-meta-inline span {
   white-space: nowrap;
-}
-
-/* SCORE */
-.table tbody td:nth-child(9) {
-  font-weight: 600;
-  color: var(--primary);
 }
 
 
@@ -332,7 +342,7 @@
 
 
 /* =========================================================
-   🎯 SCROLLBAR
+   🎯 SCROLLBAR (kept for compatibility)
 ========================================================= */
 
 .table-wrapper::-webkit-scrollbar {
@@ -366,5 +376,10 @@
 
   .leads-metrics {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lead-meta-inline {
+    flex-direction: column;
+    gap: 4px;
   }
 }

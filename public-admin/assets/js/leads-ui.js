@@ -1,7 +1,17 @@
 /* =====================================================
    🔷 FORM UX ENGINE (SAFE + STABLE)
-   Version: v2.1.0
+   Version: v2.1.1
+   Date: 2026-04-01
+
+   CHANGE TYPE:
+   - NON-BREAKING SAFETY FIX
+
+   IMPROVEMENTS:
+   ✅ Fixed selector mismatch (.lead-form → .leads-form-grid)
+   ✅ Prevent duplicate Enter listeners
+   ✅ Future-safe textarea handling
 ===================================================== */
+
 
 /* =========================
    PILL SELECTOR (SAFE INIT)
@@ -10,7 +20,6 @@ function initPillSelectors() {
 
   document.querySelectorAll('.pill-select').forEach(container => {
 
-    // ✅ Prevent duplicate init
     if (container.dataset.initialized === "true") return;
     container.dataset.initialized = "true";
 
@@ -19,7 +28,7 @@ function initPillSelectors() {
 
     if (!select) return;
 
-    container.innerHTML = ""; // ✅ clear old pills
+    container.innerHTML = "";
 
     Array.from(select.options).forEach((opt, index) => {
 
@@ -48,14 +57,19 @@ function initPillSelectors() {
   });
 }
 
+
 /* =========================
    ENTER NAVIGATION (SAFE)
 ========================= */
 function initEnterNavigation() {
 
+  // ✅ prevent duplicate binding
+  if (window.__enterNavBound) return;
+  window.__enterNavBound = true;
+
   const inputs = Array.from(
     document.querySelectorAll(
-      '.lead-form input:not([type="hidden"]):not([disabled]), .lead-form select:not([disabled])'
+      '.leads-form-grid input:not([type="hidden"]):not([disabled]), .leads-form-grid select:not([disabled])'
     )
   );
 
@@ -63,7 +77,8 @@ function initEnterNavigation() {
 
     el.addEventListener('keydown', (e) => {
 
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && e.target.tagName !== "TEXTAREA") {
+
         e.preventDefault();
 
         if (index < inputs.length - 1) {
@@ -80,12 +95,12 @@ function initEnterNavigation() {
   });
 }
 
+
 /* =========================
    CTRL + ENTER SUBMIT (SAFE)
 ========================= */
 function initCtrlEnterSubmit() {
 
-  // ✅ prevent duplicate listener
   if (window.__ctrlEnterBound) return;
   window.__ctrlEnterBound = true;
 
@@ -99,6 +114,7 @@ function initCtrlEnterSubmit() {
 
   });
 }
+
 
 /* =========================
    INIT

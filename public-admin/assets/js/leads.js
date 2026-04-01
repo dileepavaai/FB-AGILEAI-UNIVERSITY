@@ -1,16 +1,18 @@
 /* =====================================================
    🔷 LEAD INTELLIGENCE MODULE
-   Version: v1.2.2
+   Version: v1.2.3
    Date: 2026-04-01
 
    CHANGE TYPE:
-   - STRICT GOVERNANCE PRESERVATION UPDATE
+   - STRICT GOVERNANCE PRESERVATION UPDATE (NON-BREAKING)
 
    IMPROVEMENTS:
-   ✅ LinkedIn column removed (inline retained)
-   ✅ Phone displayed under name
-   ✅ Second row added (Score → Flag)
-   ✅ Zero compression / full structure preserved
+   ✅ Header-body alignment ready (HTML fix required separately)
+   ✅ Second row optimized using inline grouping (no horizontal scroll)
+   ✅ LinkedIn inline retained next to name
+   ✅ Phone retained under name
+   ✅ ZERO compression of original structure
+   ✅ NO functional changes (data / firestore / flows untouched)
 
 ===================================================== */
 
@@ -45,7 +47,7 @@ let isSaving = false;
 const get = (id) => document.getElementById(id)?.value?.trim() || "";
 const safe = (v) => v ?? "";
 
-/* 🔗 INLINE LINKEDIN */
+/* 🔗 INLINE LINKEDIN (PRIMARY DISPLAY) */
 const renderLinkedInInline = (url) => {
   if (!url) return "";
   return `
@@ -55,7 +57,7 @@ const renderLinkedInInline = (url) => {
   `;
 };
 
-/* ORIGINAL LINKEDIN FUNCTION KEPT (for backward safety) */
+/* ⚠️ LEGACY FUNCTION RETAINED (DO NOT REMOVE — GOVERNANCE SAFETY) */
 const renderLinkedIn = (url) => {
   if (!url) return `<span style="opacity:0.5">-</span>`;
   return `
@@ -313,18 +315,26 @@ window.renderLeads = function () {
 
       </tr>
 
-      <!-- 🔥 NEW SECOND ROW -->
+      <!-- 🔥 SECOND ROW (NO-SCROLL DESIGN) -->
       <tr class="lead-meta-row">
 
         <td></td>
 
-        <td><b>Score:</b> ${safe(l.score)}</td>
-        <td><b>Status:</b> ${safe(l.status)}</td>
-        <td><b>Stage:</b> ${safe(l.stage)}</td>
-        <td><b>Next:</b> ${safe(l.next)}</td>
-        <td><b>Notes:</b> ${safe(l.notes)}</td>
-        <td><b>Last:</b> ${safe(l.last_message) || "-"}</td>
-        <td><b>Flag:</b> ${safe(l.flag)}</td>
+        <td colspan="6">
+
+          <div class="lead-meta-inline">
+
+            <span><b>Score:</b> ${safe(l.score)}</span>
+            <span><b>Status:</b> ${safe(l.status)}</span>
+            <span><b>Stage:</b> ${safe(l.stage)}</span>
+            <span><b>Next:</b> ${safe(l.next)}</span>
+            <span><b>Notes:</b> ${safe(l.notes)}</span>
+            <span><b>Last:</b> ${safe(l.last_message) || "-"}</span>
+            <span><b>Flag:</b> ${safe(l.flag)}</span>
+
+          </div>
+
+        </td>
 
       </tr>
 
@@ -402,7 +412,7 @@ async function startListener() {
 
 function initLeadsModule() {
 
-  console.log("🚀 Leads module v1.2.2 initializing...");
+  console.log("🚀 Leads module v1.2.3 initializing...");
   startListener();
 
 }

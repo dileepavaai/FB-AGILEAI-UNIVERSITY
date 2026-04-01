@@ -48,11 +48,13 @@
 
     <section id="appView" class="hidden">
 
+      <!-- HEADER -->
       <div class="leads-header section">
         <h2>Lead Intelligence</h2>
         <p>Capture, qualify, and convert leads</p>
       </div>
 
+      <!-- METRICS -->
       <div class="leads-metrics section">
         <div class="leads-metric"><span class="value" id="mTotal">0</span><span class="label">Total</span></div>
         <div class="leads-metric"><span class="value" id="mEngaged">0</span><span class="label">Engaged</span></div>
@@ -62,7 +64,7 @@
         <div class="leads-metric"><span class="value" id="mQualConvRate">0%</span><span class="label">Qual → Conv</span></div>
       </div>
 
-      <!-- FORM (UNCHANGED) -->
+      <!-- FORM (UNCHANGED - GOVERNANCE SAFE) -->
       <div class="leads-form-card">
         <div class="leads-form-title">Add Lead</div>
 
@@ -111,17 +113,19 @@
                 <th>Source</th>
                 <th>Owner</th>
 
-                <!-- 🔥 ONLY FIX -->
+                <!-- ✅ KEEP ONLY CORE COLUMNS -->
                 <th>Email</th>
-                <th>LinkedIn</th>
 
-                <th>Score</th>
-                <th>Status</th>
-                <th>Stage</th>
-                <th>Next Action</th>
-                <th>Notes</th>
-                <th>Last Message</th>
-                <th>Flag</th>
+                <!-- ❌ REMOVED (moved to row 2 via JS)
+                     LinkedIn
+                     Score
+                     Status
+                     Stage
+                     Next Action
+                     Notes
+                     Last Message
+                     Flag
+                -->
               </tr>
             </thead>
 

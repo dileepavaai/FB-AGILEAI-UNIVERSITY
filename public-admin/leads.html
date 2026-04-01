@@ -104,32 +104,32 @@
 
         <div class="table-wrapper leads-table-enhanced">
           <table class="table">
+
+            <!-- 🔥 CRITICAL: FIXED COLUMN CONTRACT (7 COLUMNS ONLY) -->
+            <colgroup>
+              <col style="width:60px;">
+              <col>
+              <col>
+              <col>
+              <col>
+              <col>
+              <col>
+            </colgroup>
+
             <thead>
               <tr>
-                <th style="width:60px;">💬</th>
+                <th>💬</th>
                 <th>Name</th>
                 <th>Role</th>
                 <th>Company</th>
                 <th>Source</th>
                 <th>Owner</th>
-
-                <!-- ✅ KEEP ONLY CORE COLUMNS -->
                 <th>Email</th>
-
-                <!-- ❌ REMOVED (moved to row 2 via JS)
-                     LinkedIn
-                     Score
-                     Status
-                     Stage
-                     Next Action
-                     Notes
-                     Last Message
-                     Flag
-                -->
               </tr>
             </thead>
 
             <tbody id="leadBody"></tbody>
+
           </table>
         </div>
       </div>

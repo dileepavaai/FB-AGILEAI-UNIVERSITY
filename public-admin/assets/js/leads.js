@@ -1,22 +1,15 @@
 /* =====================================================
    🔷 LEAD INTELLIGENCE MODULE
-   Version: v1.1.1
-   Date: 2026-03-31
+   Version: v1.1.2
+   Date: 2026-04-01
 
    CHANGE TYPE:
-   - SAFE NON-BREAKING ENHANCEMENT
+   - SAFE NON-BREAKING FIX
 
-   NEW IN v1.1.1:
-   ✅ LinkedIn URL clickable (opens in new tab)
-   ✅ Safe HTML rendering improvements
-   ✅ Minor UX polish
-
-   PREVIOUS FEATURES (v1.1.0):
-   ✅ Left action column (💬)
-   ✅ Inline expansion (no scroll dependency)
-   ✅ Real-time Firestore sync
-   ✅ Performance-safe rendering
-
+   FIXES:
+   ✅ Fixed non-clickable "+ Log Communication"
+   ✅ Removed undefined openMessageModal reference
+   ✅ Reused existing openCommunication handler
 ===================================================== */
 
 import { db, auth } from "./core.js";
@@ -27,8 +20,6 @@ import {
   query,
   onSnapshot,
   serverTimestamp,
-  doc,
-  updateDoc,
   getDocs,
   where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -46,15 +37,11 @@ let isSaving = false;
 const get = (id) => document.getElementById(id)?.value?.trim() || "";
 const safe = (v) => v ?? "";
 
-/* 🔗 LinkedIn formatter (NEW) */
 const renderLinkedIn = (url) => {
   if (!url) return "";
   return `
-    <a href="${url}" 
-       target="_blank" 
-       rel="noopener noreferrer" 
-       class="lead-linkedin">
-       🔗 Profile
+    <a href="${url}" target="_blank" rel="noopener noreferrer" class="lead-linkedin">
+      🔗 Profile
     </a>
   `;
 };
@@ -83,13 +70,8 @@ function updateLeadMetrics() {
   set("mQualified", counts.qualified);
   set("mConverted", counts.converted);
 
-  const convRate = counts.total
-    ? ((counts.converted / counts.total) * 100).toFixed(1)
-    : 0;
-
-  const qualConvRate = counts.qualified
-    ? ((counts.converted / counts.qualified) * 100).toFixed(1)
-    : 0;
+  const convRate = counts.total ? ((counts.converted / counts.total) * 100).toFixed(1) : 0;
+  const qualConvRate = counts.qualified ? ((counts.converted / counts.qualified) * 100).toFixed(1) : 0;
 
   set("mConvRate", convRate + "%");
   set("mQualConvRate", qualConvRate + "%");
@@ -131,7 +113,6 @@ window.addLead = async function () {
       status: "Warm",
       stage: lastContactDate ? "contacted" : "new",
       last_contact_date: lastContactDate,
-      last_response_type: null,
       next: "",
       notes: "",
       interactions: 1,
@@ -246,8 +227,6 @@ window.renderLeads = function () {
   leads.forEach(l => {
     html += `
       <tr>
-
-        <!-- ACTION -->
         <td>
           <button class="lead-action-btn" onclick="openCommunication('${l.id}')">
             💬
@@ -260,10 +239,7 @@ window.renderLeads = function () {
         <td>${safe(l.source)}</td>
         <td>${safe(l.owner)}</td>
         <td>${safe(l.email)}</td>
-
-        <!-- 🔗 LINKEDIN (NEW) -->
         <td>${renderLinkedIn(l.linkedin_url)}</td>
-
         <td>${safe(l.score)}</td>
         <td>${safe(l.status)}</td>
         <td>${safe(l.stage)}</td>
@@ -287,7 +263,8 @@ window.renderLeads = function () {
               <div id="history-${l.id}" class="lead-history"></div>
             </div>
 
-            <button onclick="openMessageModal('${l.id}')">
+            <!-- 🔥 FIXED BUTTON -->
+            <button onclick="openCommunication('${l.id}')">
               + Log Communication
             </button>
 
@@ -310,7 +287,6 @@ async function startListener() {
   const q = query(collection(db, "leads"));
 
   unsubscribe = onSnapshot(q, (snap) => {
-
     leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     leads.sort((a, b) => {
@@ -324,7 +300,6 @@ async function startListener() {
   });
 
   const snap = await getDocs(q);
-
   leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   updateLeadMetrics();
   renderLeads();
@@ -334,7 +309,7 @@ async function startListener() {
    🔷 INIT
 ===================================================== */
 function initLeadsModule() {
-  console.log("🚀 Leads module v1.1.1 initializing...");
+  console.log("🚀 Leads module v1.1.2 initializing...");
   startListener();
 }
 

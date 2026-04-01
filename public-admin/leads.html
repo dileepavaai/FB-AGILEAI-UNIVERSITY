@@ -25,11 +25,6 @@
 
   <!-- =====================================================
        📊 LEADS SURFACE (VERSIONED)
-       Version: v1.1.0
-       Changes:
-       - Added LEFT ACTION COLUMN (💬)
-       - Removed dependency on far-right "View"
-       - Optimized for high-speed operations
   ===================================================== -->
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/leads.css" />
 </head>
@@ -88,7 +83,6 @@
 
       <!-- =====================================================
            🧾 ADD LEAD FORM
-           UX: Compact + Right-aligned actions
       ===================================================== -->
       <div class="leads-form-card">
 
@@ -120,7 +114,7 @@
 
         </form>
 
-        <!-- 🔥 RIGHT SIDE ACTIONS -->
+        <!-- 🔥 ACTIONS -->
         <div class="leads-actions">
           <button class="btn btn-primary" onclick="addLead()">+ Add Lead</button>
           <button class="btn btn-secondary" onclick="clearLeadForm()">Clear</button>
@@ -154,10 +148,6 @@
 
       <!-- =====================================================
            📊 LEAD TABLE
-           Version: v1.1.0 UX Upgrade
-           KEY CHANGE:
-           - FIRST COLUMN = ACTION (💬)
-           - Eliminates horizontal scrolling dependency
       ===================================================== -->
       <div class="card">
 
@@ -167,7 +157,7 @@
           <table class="table">
             <thead>
               <tr>
-                <th style="width:60px;">💬</th> <!-- 🔥 NEW ACTION COLUMN -->
+                <th style="width:60px;">💬</th>
                 <th>Name</th>
                 <th>Role</th>
                 <th>Company</th>
@@ -191,7 +181,6 @@
 
       <!-- =====================================================
            💬 COMMUNICATION MODAL
-           (Triggered via 💬 button)
       ===================================================== -->
       <div id="msgModal" class="modal hidden">
         <div class="modal-content">
@@ -232,8 +221,8 @@
      🔥 ADMIN APP BOOTSTRAP
 ===================================================== -->
 <script type="module">
-import { initAdminApp } from "./assets/js/admin-app.js";
-initAdminApp("leads.js");
+  import { initAdminApp } from "./assets/js/admin-app.js";
+  initAdminApp("leads.js");
 </script>
 
 </body>

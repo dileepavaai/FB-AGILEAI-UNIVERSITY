@@ -1,20 +1,19 @@
 /* =====================================================
    🔷 LEAD INTELLIGENCE MODULE
-   Version: v1.1.3
+   Version: v1.1.4
    Date: 2026-04-01
 
    CHANGE TYPE:
-   - SAFE NON-BREAKING ENHANCEMENT
+   - SAFE NON-BREAKING UI ENHANCEMENT
 
    IMPROVEMENTS:
-   ✅ LinkedIn link always visible (fallback added)
-   ✅ Clickable LinkedIn opens in new tab
-   ✅ UI stability improved for empty fields
-   ✅ Better defensive rendering
-   ✅ No breaking changes to existing data model
+   ✅ LinkedIn icon moved next to Name (inline)
+   ✅ Phone number displayed under Name
+   ✅ No table structure changes
+   ✅ No impact to existing logic or layout
 
    PREVIOUS VERSION:
-   - v1.1.2 (Fix: Log Communication button)
+   - v1.1.3 (LinkedIn clickable + stability fixes)
 
 ===================================================== */
 
@@ -47,7 +46,21 @@ const get = (id) => document.getElementById(id)?.value?.trim() || "";
 // Safe render (prevents undefined/null issues)
 const safe = (v) => v ?? "";
 
-// 🔥 FIXED: LinkedIn renderer (always visible)
+// 🔥 UPDATED: LinkedIn inline icon (for name column)
+const renderLinkedInInline = (url) => {
+  if (!url) return "";
+  return `
+    <a href="${url}" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="lead-linkedin-inline"
+       title="Open LinkedIn Profile">
+      🔗
+    </a>
+  `;
+};
+
+// Existing LinkedIn renderer (unchanged, used in column)
 const renderLinkedIn = (url) => {
   if (!url) {
     return `<span style="opacity:0.5">-</span>`;
@@ -264,7 +277,7 @@ window.openCommunication = function (leadId) {
 };
 
 /* =====================================================
-   🔷 RENDER LEADS (CORE UI ENGINE)
+   🔷 RENDER LEADS (ONLY SAFE ENHANCEMENT APPLIED)
 ===================================================== */
 window.renderLeads = function () {
 
@@ -292,21 +305,28 @@ window.renderLeads = function () {
 
       <tr>
 
-        <!-- 🔥 ACTION BUTTON (LEFT - FAST ACCESS UX) -->
         <td>
           <button class="lead-action-btn" onclick="openCommunication('${l.id}')">
             💬
           </button>
         </td>
 
-        <td>${safe(l.name)}</td>
+        <!-- 🔥 UPDATED NAME CELL (INLINE LINKEDIN + PHONE) -->
+        <td>
+          <strong>${safe(l.name)}</strong>
+          ${renderLinkedInInline(l.linkedin_url)}
+          <div style="font-size:12px;opacity:0.7">
+            ${safe(l.phone) || "-"}
+          </div>
+        </td>
+
         <td>${safe(l.role)}</td>
         <td>${safe(l.company)}</td>
         <td>${safe(l.source)}</td>
         <td>${safe(l.owner)}</td>
         <td>${safe(l.email)}</td>
 
-        <!-- 🔗 LINKEDIN FIX -->
+        <!-- KEEP EXISTING COLUMN -->
         <td>${renderLinkedIn(l.linkedin_url)}</td>
 
         <td>${safe(l.score)}</td>
@@ -319,11 +339,8 @@ window.renderLeads = function () {
 
       </tr>
 
-      <!-- 🔽 EXPANDABLE ROW -->
       <tr id="lead-expand-${l.id}" class="lead-expand hidden">
-
         <td colspan="14">
-
           <div class="lead-expanded-card">
 
             <div>
@@ -341,9 +358,7 @@ window.renderLeads = function () {
             </button>
 
           </div>
-
         </td>
-
       </tr>
     `;
   });
@@ -367,7 +382,6 @@ async function startListener() {
       ...d.data()
     }));
 
-    // 🔥 SORT (latest first)
     leads.sort((a, b) => {
       const t1 = a.created_at?.seconds || 0;
       const t2 = b.created_at?.seconds || 0;
@@ -379,7 +393,6 @@ async function startListener() {
 
   });
 
-  // Initial load fallback
   const snap = await getDocs(q);
 
   leads = snap.docs.map(d => ({
@@ -396,7 +409,7 @@ async function startListener() {
 ===================================================== */
 function initLeadsModule() {
 
-  console.log("🚀 Leads module v1.1.3 initializing...");
+  console.log("🚀 Leads module v1.1.4 initializing...");
   startListener();
 
 }

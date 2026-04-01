@@ -281,7 +281,7 @@ window.renderLeads = function () {
 
     body.innerHTML = `
       <tr>
-        <td colspan="13" style="text-align:center;padding:20px;">
+        <td colspan="7" style="text-align:center;padding:20px;">
           No leads found
         </td>
       </tr>
@@ -325,7 +325,7 @@ window.renderLeads = function () {
 
         <td colspan="6">
 
-          <div class="lead-meta-inline">
+          <div class="lead-meta-grid">
 
             <span><b>Score:</b> ${safe(l.score)}</span>
             <span><b>Status:</b> ${safe(l.status)}</span>
@@ -342,7 +342,7 @@ window.renderLeads = function () {
       </tr>
 
       <tr id="lead-expand-${l.id}" class="lead-expand hidden">
-        <td colspan="13">
+        <td colspan="7">
           <div class="lead-expanded-card">
 
             <div>

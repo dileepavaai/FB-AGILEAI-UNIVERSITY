@@ -1,18 +1,16 @@
 /* =========================================================
    Agile AI University — Leads Surface (Premium SaaS)
-   Version: v2.5.0 (2-Row Layout + Inline LinkedIn Upgrade)
+   Version: v2.5.1 (Meta Grid Fix - STRICT SAFE)
    Date: 2026-04-01
 
    CHANGE TYPE:
    - SAFE REFINEMENT (NON-BREAKING, GOVERNANCE ALIGNED)
 
-   NEW IN v2.5.0:
-   ✅ Inline LinkedIn icon next to Name
-   ✅ Phone display under Name
-   ✅ 2-row layout (NO horizontal scroll dependency)
-   ✅ Meta row (Score → Flag) compact inline
-   ✅ Reduced table min-width (critical UX fix)
-   ✅ Premium density tuning
+   FIX IN v2.5.1:
+   ✅ Converted meta row from flex → grid (fixes 2-row layout)
+   ✅ Ensures Score → Flag fully visible
+   ✅ No structural removal
+   ✅ No layout break risk
 
    GOVERNANCE:
    - NO removal of legacy classes
@@ -166,11 +164,11 @@
 
 .table-wrapper {
   border-radius: 12px;
-  overflow-x: hidden; /* 🔥 CRITICAL CHANGE (no scroll UX) */
+  overflow-x: hidden;
 }
 
 .table {
-  min-width: 100%; /* 🔥 FIXED from 1450px */
+  min-width: 100%;
   font-size: 12.5px;
   border-collapse: separate;
   border-spacing: 0;
@@ -229,7 +227,7 @@
 
 
 /* =========================================================
-   🔗 INLINE LINKEDIN (NEW PRIMARY)
+   🔗 INLINE LINKEDIN
 ========================================================= */
 
 .lead-linkedin-inline {
@@ -245,7 +243,7 @@
 
 
 /* =========================================================
-   🧠 NAME CELL ENHANCEMENT
+   🧠 NAME CELL
 ========================================================= */
 
 .table tbody td:nth-child(2) {
@@ -261,7 +259,7 @@
 
 
 /* =========================================================
-   🔥 META ROW (KEY FEATURE)
+   🔥 META ROW (FIXED)
 ========================================================= */
 
 .lead-meta-row td {
@@ -269,10 +267,11 @@
   padding: 6px 10px;
 }
 
+/* 🔥 ONLY CHANGE: FLEX → GRID */
 .lead-meta-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  gap: 12px 18px;
   font-size: 11.5px;
   color: var(--text-muted);
 }
@@ -342,7 +341,7 @@
 
 
 /* =========================================================
-   🎯 SCROLLBAR (kept for compatibility)
+   🎯 SCROLLBAR
 ========================================================= */
 
 .table-wrapper::-webkit-scrollbar {
@@ -379,7 +378,7 @@
   }
 
   .lead-meta-inline {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 4px;
   }
 }

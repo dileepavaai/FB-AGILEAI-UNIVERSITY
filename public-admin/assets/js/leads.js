@@ -76,6 +76,15 @@ const set = (id, value) => {
   if (el) el.innerText = value;
 };
 
+const escapeHTML = (str) => {
+  if (!str) return "";
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+};
+
 
 /* =====================================================
    🔷 METRICS
@@ -237,7 +246,7 @@ async function loadHistory(leadId) {
 
             <button 
               style="border:none;background:transparent;cursor:pointer;font-size:14px;"
-              onclick="enableInlineEdit('${leadId}', '${doc.id}', \`${m.message || ""}\`)"
+              onclick="enableInlineEdit('${leadId}', '${doc.id}', '${(m.message || "").replace(/'/g, "\\'")}')"
                     >
               ✏️
             </button>
@@ -245,7 +254,7 @@ async function loadHistory(leadId) {
           </div>
 
           <div class="msg-body" id="msg-${doc.id}">
-            ${m.message || ""}
+            ${escapeHTML(m.message)}
             ${m.edit_of ? '<span style="color:orange;font-size:12px;"> (edited)</span>' : ''}
           </div>
 
@@ -435,6 +444,11 @@ async function startListener() {
 
 window.logCommunicationPrompt = function (leadId) {
 
+  if (document.getElementById(`new-msg-box-${leadId}`)) {
+  document.getElementById(`new-msg-${leadId}`)?.focus();
+  return;
+  }
+
   const container = document.getElementById(`history-${leadId}`);
   if (!container) return;
 
@@ -513,10 +527,10 @@ window.enableInlineEdit = function (leadId, docId, oldMessage) {
   if (!el) return;
 
   el.innerHTML = `
-    <textarea id="edit-${docId}" style="width:100%;padding:6px;">${oldMessage}</textarea>
+    <textarea id="edit-${docId}" style="width:100%;padding:6px;">${escapeHTML(oldMessage)}</textarea>
     <div style="margin-top:6px;">
       <button onclick="saveInlineEdit('${leadId}', '${docId}')" style="margin-right:6px;">Save</button>
-      <button onclick="cancelInlineEdit('${docId}', \`${oldMessage}\`)">Cancel</button>
+      <button onclick="cancelInlineEdit('${docId}', \`${escapeHTML(oldMessage)}\`)">Cancel</button>
     </div>
   `;
 };
@@ -559,10 +573,8 @@ window.cancelInlineEdit = function (docId, oldMessage) {
   const el = document.getElementById(`msg-${docId}`);
   if (!el) return;
 
-  el.innerHTML = `
-  ${oldMessage}
-  <span style="color:orange;font-size:12px;"> (edited)</span>
-  `;
+  el.innerHTML = escapeHTML(oldMessage);
+
 };
 
 /* =====================================================

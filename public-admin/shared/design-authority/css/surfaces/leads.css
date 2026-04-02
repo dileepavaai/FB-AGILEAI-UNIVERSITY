@@ -363,3 +363,46 @@
   background: rgba(59,130,246,0.08);
   border-color: rgba(59,130,246,0.2);
 }
+
+/* =========================================
+   🔥 META ROW — FINAL UX POLISH (SAFE)
+========================================= */
+
+.lead-meta-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  padding: 8px 0;
+}
+
+.lead-meta-inline span {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+/* Score */
+.lead-meta-inline span:nth-child(1) {
+  font-weight: 600;
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+}
+
+/* Status */
+.lead-meta-inline span:nth-child(2) {
+  font-weight: 600;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+/* Stage */
+.lead-meta-inline span:nth-child(3) {
+  opacity: 0.85;
+}
+
+/* Next Action highlight */
+.lead-meta-inline span:nth-child(4) {
+  border-style: dashed;
+}

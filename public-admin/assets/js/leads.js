@@ -203,9 +203,11 @@ async function loadHistory(leadId) {
   try {
 
     const q = query(
-      collection(db, "lead_communications"),
-      where("lead_id", "==", leadId)
-    );
+    collection(db, "lead_communications"),
+    where("lead_id", "==", leadId)
+    // add later if index created:
+    // orderBy("created_at", "desc")
+  );
 
     const snap = await getDocs(q);
 
@@ -226,8 +228,16 @@ async function loadHistory(leadId) {
 
       html += `
         <div class="msg ${m.direction || "out"}">
-          <div class="msg-meta">${m.channel || "-"} • ${time}</div>
-          <div class="msg-body">${m.message || ""}</div>
+          <div class="msg-meta">
+            ${m.channel || "-"} • ${time}
+            <button onclick="editCommunicationAudit('${leadId}', '${doc.id}', \`${m.message || ""}\`)">
+              ✏️
+            </button>
+          </div>
+          <div class="msg-body">
+            ${m.message || ""}
+            ${m.edit_of ? '<span style="color:orange;"> (edited)</span>' : ''}
+          </div>
         </div>
       `;
     });
@@ -414,11 +424,10 @@ async function startListener() {
 
 window.logCommunicationPrompt = async function (leadId) {
 
+  const message = prompt("Enter message / interaction:");
+  if (!message) return;
+
   try {
-
-    const message = prompt("Enter message / interaction:");
-
-    if (!message) return;
 
     await addDoc(collection(db, "lead_communications"), {
       lead_id: leadId,
@@ -436,13 +445,37 @@ window.logCommunicationPrompt = async function (leadId) {
 
     loadHistory(leadId);
 
-  } catch (err) {
-    console.error("Log communication failed:", err);
-    alert("Failed to log communication");
+  } catch (e) {
+    console.error("Log communication failed:", e);
+    alert("Failed to save communication");
   }
 
 };
 
+/* =====================================================
+   🔷 AUDIT EDIT COMMUNICATION (NEW)
+===================================================== */
+window.editCommunicationAudit = async function (leadId, originalId, oldMessage) {
+
+  const updated = prompt("Edit message:", oldMessage);
+  if (!updated || updated === oldMessage) return;
+
+  await addDoc(collection(db, "lead_communications"), {
+    lead_id: leadId,
+    message: updated,
+    channel: "Manual",
+    direction: "out",
+    created_at: serverTimestamp(),
+    created_by: auth.currentUser?.email || "system",
+    edit_of: originalId
+  });
+
+  await updateDoc(doc(db, "leads", leadId), {
+    last_message: updated,
+    last_message_date: serverTimestamp()
+  });
+
+};
 
 /* =====================================================
    🔷 INIT

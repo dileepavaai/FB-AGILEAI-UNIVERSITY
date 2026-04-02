@@ -237,13 +237,14 @@ async function loadHistory(leadId) {
 
             <button 
               style="border:none;background:transparent;cursor:pointer;font-size:14px;"
-              onclick="editCommunicationAudit('${leadId}', '${doc.id}', \`${m.message || ""}\`)">
+              onclick="enableInlineEdit('${leadId}', '${doc.id}', \`${m.message || ""}\`)"
+                    >
               ✏️
             </button>
 
           </div>
 
-          <div class="msg-body">
+          <div class="msg-body" id="msg-${doc.id}">
             ${m.message || ""}
             ${m.edit_of ? '<span style="color:orange;font-size:12px;"> (edited)</span>' : ''}
           </div>
@@ -465,26 +466,62 @@ window.logCommunicationPrompt = async function (leadId) {
 /* =====================================================
    🔷 AUDIT EDIT COMMUNICATION (NEW)
 ===================================================== */
-window.editCommunicationAudit = async function (leadId, originalId, oldMessage) {
 
-  const updated = prompt("Edit message:", oldMessage);
-  if (!updated || updated === oldMessage) return;
+window.enableInlineEdit = function (leadId, docId, oldMessage) {
 
-  await addDoc(collection(db, "lead_communications"), {
-    lead_id: leadId,
-    message: updated,
-    channel: "Manual",
-    direction: "out",
-    created_at: serverTimestamp(),
-    created_by: auth.currentUser?.email || "system",
-    edit_of: originalId
-  });
+  const el = document.getElementById(`msg-${docId}`);
+  if (!el) return;
 
-  await updateDoc(doc(db, "leads", leadId), {
-    last_message: updated,
-    last_message_date: serverTimestamp()
-  });
+  el.innerHTML = `
+    <textarea id="edit-${docId}" style="width:100%;padding:6px;">${oldMessage}</textarea>
+    <div style="margin-top:6px;">
+      <button onclick="saveInlineEdit('${leadId}', '${docId}')" style="margin-right:6px;">Save</button>
+      <button onclick="cancelInlineEdit('${docId}', \`${oldMessage}\`)">Cancel</button>
+    </div>
+  `;
+};
 
+window.saveInlineEdit = async function (leadId, docId) {
+
+  const updated = document.getElementById(`edit-${docId}`)?.value;
+  if (!updated || !updated.trim()) {
+  alert("Message cannot be empty");
+  return;
+  }
+
+  try {
+
+    await addDoc(collection(db, "lead_communications"), {
+      lead_id: leadId,
+      message: updated,
+      channel: "Manual",
+      direction: "out",
+      created_at: serverTimestamp(),
+      created_by: auth.currentUser?.email || "system",
+      edit_of: docId
+    });
+
+    await updateDoc(doc(db, "leads", leadId), {
+      last_message: updated,
+      last_message_date: serverTimestamp()
+    });
+
+    loadHistory(leadId);
+
+  } catch (e) {
+    console.error("Inline edit failed:", e);
+    alert("Failed to update message");
+  }
+};
+
+window.cancelInlineEdit = function (docId, oldMessage) {
+
+  const el = document.getElementById(`msg-${docId}`);
+  if (!el) return;
+
+  el.innerHTML = `
+    ${oldMessage}
+  `;
 };
 
 /* =====================================================

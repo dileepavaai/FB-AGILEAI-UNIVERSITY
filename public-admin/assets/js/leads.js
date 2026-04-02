@@ -355,7 +355,7 @@ window.renderLeads = function () {
               <div id="history-${l.id}" class="lead-history"></div>
             </div>
 
-            <button onclick="openCommunication('${l.id}')">
+            <button onclick="logCommunicationPrompt('${l.id}')">
               + Log Communication
             </button>
 
@@ -407,6 +407,41 @@ async function startListener() {
   updateLeadMetrics();
   renderLeads();
 }
+
+/* =====================================================
+   🔷 LOG COMMUNICATION (MINIMAL SAFE IMPLEMENTATION)
+===================================================== */
+
+window.logCommunicationPrompt = async function (leadId) {
+
+  try {
+
+    const message = prompt("Enter message / interaction:");
+
+    if (!message) return;
+
+    await addDoc(collection(db, "lead_communications"), {
+      lead_id: leadId,
+      message,
+      channel: "Manual",
+      direction: "out",
+      created_at: serverTimestamp(),
+      created_by: auth.currentUser?.email || "system"
+    });
+
+    await updateDoc(doc(db, "leads", leadId), {
+      last_message: message,
+      last_message_date: serverTimestamp()
+    });
+
+    loadHistory(leadId);
+
+  } catch (err) {
+    console.error("Log communication failed:", err);
+    alert("Failed to log communication");
+  }
+
+};
 
 
 /* =====================================================

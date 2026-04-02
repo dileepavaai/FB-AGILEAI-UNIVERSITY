@@ -1,18 +1,16 @@
 /* =====================================================
    🔷 UNIVERSAL APP CONTROLLER (RBAC ENABLED)
    -----------------------------------------------------
-   Version: v3.0.0 (RBAC + No Flicker Stable)
-   Date: 2026-03-30
+   Version: v3.1.0 (CACHE-SAFE MODULE LOADER)
+   Date: 2026-04-02
 
    CHANGE TYPE:
-   - Non-breaking upgrade
-   - Added role-based access control
-   - Supports admin + trainer routing
+   - NON-BREAKING UPGRADE
 
-   FEATURES:
-   - Firestore role resolution
-   - Page-level access enforcement
-   - Centralized module loader
+   NEW:
+   ✅ Cache-safe module loading (?v=timestamp)
+   ✅ Prevent stale ES module caching
+   ✅ Zero impact to RBAC / layout / auth
 ===================================================== */
 
 import { auth, login, logout, getUserRole } from "./core.js";
@@ -99,7 +97,7 @@ export function initAdminApp(moduleName = null) {
       }
 
       /* =====================================================
-         🔐 ROLE RESOLUTION (NEW CORE LOGIC)
+         🔐 ROLE RESOLUTION
       ===================================================== */
       const role = await getUserRole(user.uid, user.email);
 
@@ -119,14 +117,12 @@ export function initAdminApp(moduleName = null) {
          🚫 ACCESS CONTROL
       ===================================================== */
 
-      // 🔴 Trainer trying to access admin
       if (isAdminPage && role === "trainer") {
         alert("Access denied.");
         window.location.href = "/trainer/trainer-dashboard.html";
         return;
       }
 
-      // 🔴 Admin trying to access trainer (optional strict)
       if (isTrainerPage && role !== "trainer") {
         alert("Access denied.");
         window.location.href = "/index.html";
@@ -151,11 +147,15 @@ export function initAdminApp(moduleName = null) {
       highlightActiveSidebar();
 
       /* =====================================================
-         📦 MODULE LOADER (FIXED + SAFE)
+         📦 MODULE LOADER (CACHE-SAFE — FINAL FIX)
       ===================================================== */
       if (moduleName) {
         try {
-          const modulePath = `/assets/js/${moduleName}`;
+
+          // 🔥 CACHE BUSTER (CRITICAL FIX)
+          const version = Date.now(); // always fresh
+          const modulePath = `/assets/js/${moduleName}?v=${version}`;
+
           console.log("📦 Loading module:", modulePath);
 
           await import(modulePath);

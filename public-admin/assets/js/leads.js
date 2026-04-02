@@ -159,6 +159,17 @@ window.addLead = async function () {
   }
 };
 
+function formatChannel(channel) {
+  if (!channel) return "manual";
+
+  const c = channel.toLowerCase();
+
+  if (c.includes("whatsapp")) return "whatsapp";
+  if (c.includes("email")) return "email";
+  if (c.includes("call")) return "call";
+
+  return "manual";
+}
 
 /* =====================================================
    🔷 HISTORY LOADER
@@ -200,7 +211,11 @@ async function loadHistory(leadId) {
 
           <div class="msg-meta" style="display:flex; justify-content:space-between;">
 
-            <span>${m.channel || "-"} • ${time}</span>
+            <span class="msg-channel ${formatChannel(m.channel)}">
+              ${m.channel || "Manual"}
+            </span>
+
+            <span>${time}</span>
 
             <button onclick="enableInlineEdit('${leadId}','${doc.id}','${(m.message || "").replace(/'/g, "\\'")}')">
               ✏️

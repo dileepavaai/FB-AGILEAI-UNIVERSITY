@@ -407,3 +407,8 @@
   border-color: var(--primary);
   color: var(--primary);
 }
+
+.msg-channel.manual {
+  background: rgba(107, 114, 128, 0.12);
+  color: #6b7280;
+}

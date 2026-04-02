@@ -1,16 +1,21 @@
 /* =====================================================
    🔷 LEAD INTELLIGENCE MODULE
-   Version: v1.3.0 (INTERACTION LOCK SAFETY)
+   Version: v1.4.0 (CHANNEL + DIRECTION ENABLED)
    Date: 2026-04-02
 
    CHANGE TYPE:
-   - SAFE UX LOCK (NON-BREAKING)
+   - SAFE UX ENHANCEMENT (NON-BREAKING)
 
    NEW:
-   ✅ Single active interaction enforcement
-   ✅ Prevent multiple edit boxes
-   ✅ Prevent multiple new message boxes
-   ✅ Clean cancel/reset behavior
+   ✅ Channel selector (WhatsApp / Email / Call / Manual)
+   ✅ Direction selector (Inbound / Outbound)
+   ✅ Channel-aware rendering
+   ✅ Backward compatible with existing data
+
+   PRESERVED:
+   ✅ Interaction lock system
+   ✅ Inline edit safety
+   ✅ Rendering + listener integrity
 ===================================================== */
 
 import { db, auth } from "./core.js";
@@ -77,6 +82,23 @@ function resetActiveInteraction() {
 
 
 /* =====================================================
+   🔷 CHANNEL FORMATTER
+===================================================== */
+
+function formatChannel(channel) {
+  if (!channel) return "manual";
+
+  const c = channel.toLowerCase();
+
+  if (c.includes("whatsapp")) return "whatsapp";
+  if (c.includes("email")) return "email";
+  if (c.includes("call")) return "call";
+
+  return "manual";
+}
+
+
+/* =====================================================
    🔷 METRICS
 ===================================================== */
 
@@ -105,7 +127,7 @@ function updateLeadMetrics() {
 
 
 /* =====================================================
-   🔷 ADD LEAD
+   🔷 ADD LEAD (UNCHANGED)
 ===================================================== */
 
 window.addLead = async function () {
@@ -159,20 +181,9 @@ window.addLead = async function () {
   }
 };
 
-function formatChannel(channel) {
-  if (!channel) return "manual";
-
-  const c = channel.toLowerCase();
-
-  if (c.includes("whatsapp")) return "whatsapp";
-  if (c.includes("email")) return "email";
-  if (c.includes("call")) return "call";
-
-  return "manual";
-}
 
 /* =====================================================
-   🔷 HISTORY LOADER
+   🔷 HISTORY LOADER (CHANNEL ENABLED)
 ===================================================== */
 
 async function loadHistory(leadId) {
@@ -209,10 +220,10 @@ async function loadHistory(leadId) {
       html += `
         <div class="msg ${m.direction || "out"}">
 
-          <div class="msg-meta" style="display:flex; justify-content:space-between;">
+          <div class="msg-meta">
 
             <span class="msg-channel ${formatChannel(m.channel)}">
-              ${m.channel || "Manual"}
+              ${formatChannel(m.channel).toUpperCase()}
             </span>
 
             <span>${time}</span>
@@ -242,7 +253,7 @@ async function loadHistory(leadId) {
 
 
 /* =====================================================
-   🔷 INTERACTION SAFE LOG
+   🔷 INTERACTION SAFE LOG (UPDATED)
 ===================================================== */
 
 window.logCommunicationPrompt = function (leadId) {
@@ -254,13 +265,28 @@ window.logCommunicationPrompt = function (leadId) {
   const container = document.getElementById(`history-${leadId}`);
   if (!container) return;
 
-  const inputId = `new-msg-${leadId}`;
-
   container.insertAdjacentHTML("beforeend", `
     <div id="new-msg-box-${leadId}">
-      <textarea id="${inputId}" style="width:100%;"></textarea>
+
+      <textarea id="new-msg-${leadId}" style="width:100%; margin-bottom:6px;"></textarea>
+
+      <div style="display:flex; gap:8px; margin-bottom:6px;">
+        <select id="channel-${leadId}">
+          <option value="Manual">Manual</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Email">Email</option>
+          <option value="Call">Call</option>
+        </select>
+
+        <select id="direction-${leadId}">
+          <option value="out">Outbound</option>
+          <option value="in">Inbound</option>
+        </select>
+      </div>
+
       <button onclick="saveNewCommunication('${leadId}')">Save</button>
       <button onclick="cancelNewCommunication('${leadId}')">Cancel</button>
+
     </div>
   `);
 };
@@ -273,6 +299,8 @@ window.cancelNewCommunication = function (leadId) {
 window.saveNewCommunication = async function (leadId) {
 
   const message = document.getElementById(`new-msg-${leadId}`)?.value;
+  const channel = document.getElementById(`channel-${leadId}`)?.value || "Manual";
+  const direction = document.getElementById(`direction-${leadId}`)?.value || "out";
 
   if (!message?.trim()) {
     alert("Message cannot be empty");
@@ -282,8 +310,8 @@ window.saveNewCommunication = async function (leadId) {
   await addDoc(collection(db, "lead_communications"), {
     lead_id: leadId,
     message,
-    channel: "Manual",
-    direction: "out",
+    channel,
+    direction,
     created_at: serverTimestamp(),
     created_by: auth.currentUser?.email || "system"
   });
@@ -299,7 +327,7 @@ window.saveNewCommunication = async function (leadId) {
 
 
 /* =====================================================
-   🔷 INLINE EDIT (SAFE)
+   🔷 INLINE EDIT (UNCHANGED)
 ===================================================== */
 
 window.enableInlineEdit = function (leadId, docId, oldMessage) {

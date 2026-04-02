@@ -323,16 +323,16 @@ window.renderLeads = function () {
 
         <td></td>
 
-        <td colspan="6">
+        <td colspan="7">
 
           <div class="lead-meta-grid">
 
             <span><b>Score:</b> ${safe(l.score)}</span>
             <span><b>Status:</b> ${safe(l.status)}</span>
             <span><b>Stage:</b> ${safe(l.stage)}</span>
-            <span><b>Next:</b> ${safe(l.next)}</span>
+            <span><b>Next Action:</b> ${safe(l.next)}</span>
+            <span><b>Last Message:</b> ${safe(l.last_message)}</span>
             <span><b>Notes:</b> ${safe(l.notes)}</span>
-            <span><b>Last:</b> ${safe(l.last_message)}</span>
             <span><b>Flag:</b> ${safe(l.flag)}</span>
 
           </div>

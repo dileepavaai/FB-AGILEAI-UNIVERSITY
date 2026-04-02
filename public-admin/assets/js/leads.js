@@ -560,7 +560,8 @@ window.cancelInlineEdit = function (docId, oldMessage) {
   if (!el) return;
 
   el.innerHTML = `
-    ${oldMessage}
+  ${oldMessage}
+  <span style="color:orange;font-size:12px;"> (edited)</span>
   `;
 };
 

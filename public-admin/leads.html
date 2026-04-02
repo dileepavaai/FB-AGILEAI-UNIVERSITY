@@ -5,7 +5,13 @@
   <title>Lead Intelligence – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- CORE -->
+  <!-- =====================================================
+       🔷 CORE STYLES
+       Version: v2.2.0 (STRICT GOVERNANCE SAFE)
+       Notes:
+       - No structural CSS changes
+       - Only layout alignment for table contract
+  ===================================================== -->
   <link rel="stylesheet" href="assets/css/site.css" />
 
   <!-- DESIGN -->
@@ -27,6 +33,9 @@
 
 <div class="layout">
 
+  <!-- =====================================================
+       🔷 SIDEBAR (UNCHANGED)
+  ===================================================== -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html">Dashboard</a></li>
@@ -40,12 +49,18 @@
 
   <main class="content">
 
+    <!-- =====================================================
+         🔷 LOGIN VIEW (UNCHANGED)
+    ===================================================== -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p class="page-subtitle">Secure access to lead intelligence system</p>
       <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
     </section>
 
+    <!-- =====================================================
+         🔷 APP VIEW
+    ===================================================== -->
     <section id="appView" class="hidden">
 
       <!-- HEADER -->
@@ -64,7 +79,9 @@
         <div class="leads-metric"><span class="value" id="mQualConvRate">0%</span><span class="label">Qual → Conv</span></div>
       </div>
 
-      <!-- FORM (UNCHANGED - GOVERNANCE SAFE) -->
+      <!-- =====================================================
+           🔷 FORM (GOVERNANCE LOCKED — NO CHANGE)
+      ===================================================== -->
       <div class="leads-form-card">
         <div class="leads-form-title">Add Lead</div>
 
@@ -98,22 +115,29 @@
         </div>
       </div>
 
-      <!-- TABLE -->
+      <!-- =====================================================
+           🔷 TABLE (CRITICAL FIX AREA)
+           Version: v2.2.0
+           FIXES:
+           ✔ Removed LinkedIn column (already done)
+           ✔ Enforced strict 7-column contract
+           ✔ Prepared for 2-row rendering (JS driven)
+      ===================================================== -->
       <div class="card">
         <div class="card-title">Lead List</div>
 
         <div class="table-wrapper leads-table-enhanced">
           <table class="table">
 
-            <!-- 🔥 CRITICAL: FIXED COLUMN CONTRACT (7 COLUMNS ONLY) -->
+            <!-- 🔒 LOCKED COLUMN CONTRACT -->
             <colgroup>
-              <col style="width:60px;">
-              <col>
-              <col>
-              <col>
-              <col>
-              <col>
-              <col>
+              <col style="width:60px;">   <!-- chat -->
+              <col>                      <!-- name -->
+              <col>                      <!-- role -->
+              <col>                      <!-- company -->
+              <col>                      <!-- source -->
+              <col>                      <!-- owner -->
+              <col>                      <!-- email -->
             </colgroup>
 
             <thead>
@@ -128,6 +152,11 @@
               </tr>
             </thead>
 
+            <!-- 🔥 IMPORTANT:
+                 JS MUST RENDER:
+                 1st row → main data
+                 2nd row → meta (colspan=7)
+            -->
             <tbody id="leadBody"></tbody>
 
           </table>
@@ -141,6 +170,9 @@
 
 <div id="footerContainer"></div>
 
+<!-- =====================================================
+     🔷 APP BOOTSTRAP (UNCHANGED)
+===================================================== -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 initAdminApp("leads.js");

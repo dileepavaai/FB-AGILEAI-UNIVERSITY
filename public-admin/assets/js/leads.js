@@ -433,10 +433,45 @@ async function startListener() {
    🔷 LOG COMMUNICATION (MINIMAL SAFE IMPLEMENTATION)
 ===================================================== */
 
-window.logCommunicationPrompt = async function (leadId) {
+window.logCommunicationPrompt = function (leadId) {
 
-  const message = prompt("Enter message / interaction:");
-  if (!message) return;
+  const container = document.getElementById(`history-${leadId}`);
+  if (!container) return;
+
+  const inputId = `new-msg-${leadId}`;
+
+  container.insertAdjacentHTML("beforeend", `
+    <div id="new-msg-box-${leadId}" style="margin-top:10px;">
+      
+      <textarea 
+        id="${inputId}" 
+        placeholder="Type message..."
+        style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;"
+        rows="3"
+      ></textarea>
+
+      <div style="margin-top:6px;display:flex;gap:8px;">
+        <button onclick="saveNewCommunication('${leadId}')">💾 Save</button>
+        <button onclick="cancelNewCommunication('${leadId}')">❌ Cancel</button>
+      </div>
+
+    </div>
+  `);
+
+  setTimeout(() => {
+    document.getElementById(inputId)?.focus();
+  }, 0);
+};
+
+window.saveNewCommunication = async function (leadId) {
+
+  const el = document.getElementById(`new-msg-${leadId}`);
+  const message = el?.value;
+
+  if (!message || !message.trim()) {
+    alert("Message cannot be empty");
+    return;
+  }
 
   try {
 
@@ -457,10 +492,15 @@ window.logCommunicationPrompt = async function (leadId) {
     loadHistory(leadId);
 
   } catch (e) {
-    console.error("Log communication failed:", e);
+    console.error(e);
     alert("Failed to save communication");
   }
+};
 
+window.cancelNewCommunication = function (leadId) {
+
+  const box = document.getElementById(`new-msg-box-${leadId}`);
+  if (box) box.remove();
 };
 
 /* =====================================================

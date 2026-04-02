@@ -228,16 +228,26 @@ async function loadHistory(leadId) {
 
       html += `
         <div class="msg ${m.direction || "out"}">
-          <div class="msg-meta">
-            ${m.channel || "-"} • ${time}
-            <button onclick="editCommunicationAudit('${leadId}', '${doc.id}', \`${m.message || ""}\`)">
+          
+          <div class="msg-meta" style="display:flex; justify-content:space-between; align-items:center;">
+            
+            <span>
+              ${m.channel || "-"} • ${time}
+            </span>
+
+            <button 
+              style="border:none;background:transparent;cursor:pointer;font-size:14px;"
+              onclick="editCommunicationAudit('${leadId}', '${doc.id}', \`${m.message || ""}\`)">
               ✏️
             </button>
+
           </div>
+
           <div class="msg-body">
             ${m.message || ""}
-            ${m.edit_of ? '<span style="color:orange;"> (edited)</span>' : ''}
+            ${m.edit_of ? '<span style="color:orange;font-size:12px;"> (edited)</span>' : ''}
           </div>
+
         </div>
       `;
     });

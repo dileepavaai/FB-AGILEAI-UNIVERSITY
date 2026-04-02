@@ -45,7 +45,9 @@
     <section id="loginView">
       <h2>Admin Access</h2>
       <p class="page-subtitle">Secure access to lead intelligence system</p>
-      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
+      <button id="loginBtn" class="btn btn-primary" type="button">
+        Sign in with Google
+      </button>
     </section>
 
     <!-- APP -->
@@ -59,19 +61,19 @@
 
       <!-- METRICS -->
       <div class="leads-metrics section">
-        <div class="leads-metric"><span id="mTotal">0</span><span>Total</span></div>
-        <div class="leads-metric"><span id="mEngaged">0</span><span>Engaged</span></div>
-        <div class="leads-metric"><span id="mQualified">0</span><span>Qualified</span></div>
-        <div class="leads-metric"><span id="mConverted">0</span><span>Converted</span></div>
-        <div class="leads-metric"><span id="mConvRate">0%</span><span>Conv %</span></div>
-        <div class="leads-metric"><span id="mQualConvRate">0%</span><span>Qual → Conv</span></div>
+        <div class="leads-metric"><span class="value" id="mTotal">0</span><span class="label">Total</span></div>
+        <div class="leads-metric"><span class="value" id="mEngaged">0</span><span class="label">Engaged</span></div>
+        <div class="leads-metric"><span class="value" id="mQualified">0</span><span class="label">Qualified</span></div>
+        <div class="leads-metric"><span class="value" id="mConverted">0</span><span class="label">Converted</span></div>
+        <div class="leads-metric"><span class="value" id="mConvRate">0%</span><span class="label">Conv %</span></div>
+        <div class="leads-metric"><span class="value" id="mQualConvRate">0%</span><span class="label">Qual → Conv</span></div>
       </div>
 
       <!-- FORM -->
       <div class="leads-form-card">
         <div class="leads-form-title">Add Lead</div>
 
-        <form id="leadForm" class="leads-form-grid" onsubmit="return false;">
+        <form id="leadForm" class="leads-form-grid" onsubmit="return false;" autocomplete="off">
           <div><label>Name *</label><input id="leadName" /></div>
           <div><label>Role</label><input id="leadRole" /></div>
           <div><label>Company</label><input id="leadCompany" /></div>
@@ -96,8 +98,8 @@
         </form>
 
         <div class="leads-actions">
-          <button class="btn btn-primary" onclick="addLead()">+ Add Lead</button>
-          <button class="btn btn-secondary" onclick="clearLeadForm()">Clear</button>
+          <button class="btn btn-primary" type="button" onclick="addLead()">+ Add Lead</button>
+          <button class="btn btn-secondary" type="button" onclick="clearLeadForm()">Clear</button>
         </div>
       </div>
 
@@ -108,6 +110,7 @@
         <div class="table-wrapper leads-table-enhanced">
           <table class="table">
 
+            <!-- LOCKED -->
             <colgroup>
               <col style="width:60px;">
               <col>
@@ -143,44 +146,10 @@
 
 <div id="footerContainer"></div>
 
-<!-- =====================================================
-     🔷 🔥 NEW: LOG COMMUNICATION MODAL (SAFE ADD)
-===================================================== -->
-<div id="communicationModal" class="comm-modal" style="display:none;">
-  <div class="comm-modal-content">
-
-    <h3>Log Communication</h3>
-
-    <textarea id="commMessage" placeholder="Enter message..."></textarea>
-
-    <select id="commType">
-      <option value="LinkedIn">LinkedIn</option>
-      <option value="WhatsApp">WhatsApp</option>
-      <option value="Email">Email</option>
-      <option value="Call">Call</option>
-    </select>
-
-    <select id="commDirection">
-      <option value="Outbound">Outbound</option>
-      <option value="Inbound">Inbound</option>
-    </select>
-
-    <div class="comm-actions">
-      <button id="saveComm" class="btn btn-primary">Save</button>
-      <button id="closeComm" class="btn btn-secondary">Cancel</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- APP BOOTSTRAP -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
 initAdminApp("leads.js");
 </script>
-
-<!-- 🔥 NEW INTEL ENGINE -->
-<script type="module" src="./assets/js/leads-intel.js"></script>
 
 </body>
 </html>

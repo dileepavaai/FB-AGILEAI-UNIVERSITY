@@ -7,10 +7,10 @@
 
   <!-- =====================================================
        🔷 CORE STYLES
-       Version: v2.2.0 (STRICT GOVERNANCE SAFE)
-       Notes:
-       - No structural CSS changes
-       - Only layout alignment for table contract
+       Version: v2.2.1 (STRICT GOVERNANCE SAFE)
+       CHANGE:
+       ✔ Table contract aligned with JS (7 columns)
+       ✔ No structural deviation
   ===================================================== -->
   <link rel="stylesheet" href="assets/css/site.css" />
 
@@ -80,7 +80,7 @@
       </div>
 
       <!-- =====================================================
-           🔷 FORM (GOVERNANCE LOCKED — NO CHANGE)
+           🔷 FORM (UNCHANGED — GOVERNANCE LOCKED)
       ===================================================== -->
       <div class="leads-form-card">
         <div class="leads-form-title">Add Lead</div>
@@ -116,12 +116,12 @@
       </div>
 
       <!-- =====================================================
-           🔷 TABLE (CRITICAL FIX AREA)
-           Version: v2.2.0
-           FIXES:
-           ✔ Removed LinkedIn column (already done)
-           ✔ Enforced strict 7-column contract
-           ✔ Prepared for 2-row rendering (JS driven)
+           🔷 TABLE (FINAL CORRECT VERSION)
+           Version: v2.2.1
+           ✔ STRICT 7 COLUMN CONTRACT
+           ✔ MATCHES JS colspan=7
+           ✔ NO LinkedIn column (inline handled)
+           ✔ NO horizontal scroll dependency
       ===================================================== -->
       <div class="card">
         <div class="card-title">Lead List</div>
@@ -129,15 +129,15 @@
         <div class="table-wrapper leads-table-enhanced">
           <table class="table">
 
-            <!-- 🔒 LOCKED COLUMN CONTRACT -->
+            <!-- 🔒 LOCKED STRUCTURE -->
             <colgroup>
-              <col style="width:60px;">   <!-- chat -->
-              <col>                      <!-- name -->
-              <col>                      <!-- role -->
-              <col>                      <!-- company -->
-              <col>                      <!-- source -->
-              <col>                      <!-- owner -->
-              <col>                      <!-- email -->
+              <col style="width:60px;">
+              <col>
+              <col>
+              <col>
+              <col>
+              <col>
+              <col>
             </colgroup>
 
             <thead>
@@ -152,11 +152,6 @@
               </tr>
             </thead>
 
-            <!-- 🔥 IMPORTANT:
-                 JS MUST RENDER:
-                 1st row → main data
-                 2nd row → meta (colspan=7)
-            -->
             <tbody id="leadBody"></tbody>
 
           </table>

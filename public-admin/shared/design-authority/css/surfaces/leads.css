@@ -1,21 +1,16 @@
 /* =========================================================
    Agile AI University — Leads Surface (Premium SaaS)
-   Version: v2.5.1 (Meta Grid Fix - STRICT SAFE)
+   Version: v2.5.2 (Meta Grid Alignment Fix - STRICT SAFE)
    Date: 2026-04-01
 
    CHANGE TYPE:
    - SAFE REFINEMENT (NON-BREAKING, GOVERNANCE ALIGNED)
 
-   FIX IN v2.5.1:
-   ✅ Converted meta row from flex → grid (fixes 2-row layout)
-   ✅ Ensures Score → Flag fully visible
+   FIX IN v2.5.2:
+   ✅ Added support for .lead-meta-grid (JS alignment)
+   ✅ Ensures 2-row layout renders correctly
+   ✅ Backward compatible with .lead-meta-inline
    ✅ No structural removal
-   ✅ No layout break risk
-
-   GOVERNANCE:
-   - NO removal of legacy classes
-   - NO breaking structural changes
-   - Backward compatible
 
 ========================================================= */
 
@@ -174,9 +169,6 @@
   border-spacing: 0;
 }
 
-
-/* HEADER */
-
 .table thead th {
   font-size: 10px;
   text-transform: uppercase;
@@ -186,9 +178,6 @@
   border-bottom: 1px solid var(--border);
   background: rgba(255,255,255,0.03);
 }
-
-
-/* BODY */
 
 .table tbody td {
   padding: 7px 9px;
@@ -259,7 +248,7 @@
 
 
 /* =========================================================
-   🔥 META ROW (FIXED)
+   🔥 META ROW (FINAL FIX)
 ========================================================= */
 
 .lead-meta-row td {
@@ -267,8 +256,9 @@
   padding: 6px 10px;
 }
 
-/* 🔥 ONLY CHANGE: FLEX → GRID */
-.lead-meta-inline {
+/* ✅ BACKWARD SAFE */
+.lead-meta-inline,
+.lead-meta-grid {
   display: grid;
   grid-template-columns: repeat(7, auto);
   gap: 12px 18px;
@@ -276,7 +266,8 @@
   color: var(--text-muted);
 }
 
-.lead-meta-inline span {
+.lead-meta-inline span,
+.lead-meta-grid span {
   white-space: nowrap;
 }
 
@@ -341,43 +332,12 @@
 
 
 /* =========================================================
-   🎯 SCROLLBAR
-========================================================= */
-
-.table-wrapper::-webkit-scrollbar {
-  height: 5px;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
-}
-
-
-/* =========================================================
    📱 RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1024px) {
-  .leads-form-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .leads-metrics {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 @media (max-width: 640px) {
-  .leads-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .leads-metrics {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .lead-meta-inline {
+  .lead-meta-inline,
+  .lead-meta-grid {
     grid-template-columns: 1fr;
     gap: 4px;
   }

@@ -412,3 +412,59 @@
   background: rgba(107, 114, 128, 0.12);
   color: #6b7280;
 }
+
+/* ============================================
+   🎯 PREMIUM COMPACT LOG UI
+============================================ */
+
+.log-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  max-width: 700px;
+}
+
+/* Row containing dropdowns + textarea */
+.log-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Dropdowns compact */
+.log-box select {
+  width: auto;
+  min-width: 110px;
+  max-width: 140px;
+  padding: 6px 8px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* Message box inline feel */
+.log-box textarea {
+  flex: 1;
+  min-height: 36px;
+  max-height: 60px;
+  resize: none;
+  padding: 6px 8px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* Buttons aligned right */
+.log-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.log-actions button {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+}

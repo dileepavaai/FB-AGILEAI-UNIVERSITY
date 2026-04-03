@@ -251,7 +251,6 @@ async function loadHistory(leadId) {
   }
 }
 
-
 /* =====================================================
    🔷 INTERACTION SAFE LOG (UPDATED)
 ===================================================== */
@@ -267,12 +266,18 @@ window.logCommunicationPrompt = function (leadId) {
 
   container.insertAdjacentHTML("beforeend", `
     <div id="new-msg-box-${leadId}" 
-         style="border:1px solid #ddd; padding:10px; margin-top:10px; border-radius:8px; background:#fafafa;">
+         style="margin-top:10px; padding:8px; border:1px solid #e5e7eb; border-radius:8px; background:#fafafa;">
 
-      <!-- ✅ SINGLE CLEAN ROW -->
-      <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap;">
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        flex-wrap:wrap;
+      ">
 
-        <select id="channel-${leadId}" style="padding:6px; min-width:110px;">
+        <!-- Channel -->
+        <select id="channel-${leadId}" 
+                style="padding:6px; min-width:100px;">
           <option value="LinkedIn" selected>LinkedIn</option>
           <option value="WhatsApp">WhatsApp</option>
           <option value="Email">Email</option>
@@ -280,23 +285,32 @@ window.logCommunicationPrompt = function (leadId) {
           <option value="Manual">Manual</option>
         </select>
 
-        <select id="direction-${leadId}" style="padding:6px; min-width:110px;">
+        <!-- Direction -->
+        <select id="direction-${leadId}" 
+                style="padding:6px; min-width:100px;">
           <option value="out">Outbound</option>
           <option value="in">Inbound</option>
         </select>
 
-        <textarea 
+        <!-- Message -->
+        <input 
           id="new-msg-${leadId}" 
-          placeholder="Type message..." 
-          style="flex:1; min-height:36px; max-height:60px; resize:none; padding:6px;">
-        </textarea>
+          type="text"
+          placeholder="Type message..."
+          style="flex:1; padding:6px; min-width:200px;"
+        />
 
-      </div>
+        <!-- Actions -->
+        <button onclick="saveNewCommunication('${leadId}')" 
+                style="padding:6px 10px;">
+          Save
+        </button>
 
-      <!-- ✅ ACTIONS -->
-      <div style="display:flex; justify-content:flex-end; gap:6px;">
-        <button onclick="saveNewCommunication('${leadId}')">Save</button>
-        <button onclick="cancelNewCommunication('${leadId}')">Cancel</button>
+        <button onclick="cancelNewCommunication('${leadId}')" 
+                style="padding:6px 10px;">
+          Cancel
+        </button>
+
       </div>
 
     </div>

@@ -30,7 +30,8 @@ serverTimestamp,
 doc,
 updateDoc,
 getDocs,
-where
+where,
+orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =====================================================
@@ -180,7 +181,8 @@ async function loadHistory(leadId) {
 
     const q = query(
       collection(db, "lead_communications"),
-      where("lead_id", "==", leadId)
+      where("lead_id", "==", leadId),
+      orderBy("created_at", "desc")
     );
 
     const snap = await getDocs(q);
@@ -204,9 +206,7 @@ async function loadHistory(leadId) {
         <div class="msg ${m.direction || "out"}">
 
           <div class="msg-meta">
-            <span class="msg-channel ${formatChannel(m.channel)}">
-              ${formatChannel(m.channel).toUpperCase()}
-            </span>
+            ${getChannelBadge(m.channel)}
             <span>${time}</span>
 
             <button onclick="enableInlineEdit('${leadId}','${docSnap.id}','${(m.message || "").replace(/'/g, "\\'")}')">
@@ -229,6 +229,30 @@ async function loadHistory(leadId) {
     console.error(err);
     container.innerHTML = "⚠️ Failed to load history";
   }
+}
+
+/* =====================================================
+🔷 TO GET CHANNEL BADGE
+===================================================== */
+
+function getChannelBadge(channel) {
+  const ch = formatChannel(channel);
+
+  const map = {
+    linkedin: "channel-linkedin",
+    whatsapp: "channel-whatsapp",
+    email: "channel-email",
+    call: "channel-call",
+    manual: "channel-manual"
+  };
+
+  const label = ch.charAt(0).toUpperCase() + ch.slice(1);
+
+  return `
+    <span class="channel-badge ${map[ch] || "channel-manual"}">
+      ${label}
+    </span>
+  `;
 }
 
 /* =====================================================

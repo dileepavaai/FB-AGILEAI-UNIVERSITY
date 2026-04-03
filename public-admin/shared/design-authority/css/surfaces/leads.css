@@ -468,3 +468,51 @@
   font-size: 13px;
   border-radius: 6px;
 }
+
+/* === Interaction Row (Single Line Layout) === */
+.interaction-row {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap; /* force single row */
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fafafa;
+  margin-top: 10px;
+}
+
+/* Inputs */
+.interaction-field {
+  padding: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* Small dropdowns */
+.interaction-field.small {
+  width: 110px;
+  min-width: 100px;
+}
+
+/* Message input expands */
+.interaction-field.flex {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Buttons */
+.interaction-btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: white;
+  cursor: pointer;
+}
+
+.interaction-btn.primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+}

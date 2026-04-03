@@ -516,3 +516,48 @@
   color: white;
   border: none;
 }
+
+/* =========================================================
+   🎨 CHANNEL BADGES (Premium Visual Layer)
+   SAFE ADDITION — No impact to layout
+========================================================= */
+
+.channel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+/* LinkedIn */
+.channel-linkedin {
+  background: rgba(10,102,194,0.12);
+  color: #0a66c2;
+}
+
+/* WhatsApp */
+.channel-whatsapp {
+  background: rgba(37,211,102,0.12);
+  color: #25d366;
+}
+
+/* Email */
+.channel-email {
+  background: rgba(239,68,68,0.12);
+  color: #ef4444;
+}
+
+/* Call */
+.channel-call {
+  background: rgba(245,158,11,0.12);
+  color: #f59e0b;
+}
+
+/* Manual */
+.channel-manual {
+  background: rgba(107,114,128,0.12);
+  color: #6b7280;
+}

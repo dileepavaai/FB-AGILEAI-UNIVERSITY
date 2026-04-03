@@ -266,11 +266,23 @@ window.logCommunicationPrompt = function (leadId) {
   if (!container) return;
 
   container.insertAdjacentHTML("beforeend", `
-    <div id="new-msg-box-${leadId}">
+  <div id="new-msg-box-${leadId}" style="border:1px solid #ddd; padding:10px; margin-top:10px; border-radius:8px; background:#fafafa;">
 
-      <textarea id="new-msg-${leadId}" style="width:100%; margin-bottom:6px;"></textarea>
+    <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <select id="channel-${leadId}" style="padding:6px;">
+        <option value="Manual">Manual</option>
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="Email">Email</option>
+        <option value="Call">Call</option>
+      </select>
 
-      <div style="display:flex; gap:8px; margin-bottom:6px;">
+      <select id="direction-${leadId}" style="padding:6px;">
+        <option value="out">Outbound</option>
+        <option value="in">Inbound</option>
+      </select>
+    </div>
+
+    <textarea id="new-msg-${leadId}" style="width:100%; margin-bottom:6px;" placeholder="Type message..."></textarea>
         <select id="channel-${leadId}">
           <option value="Manual">Manual</option>
           <option value="WhatsApp">WhatsApp</option>
@@ -420,10 +432,20 @@ window.renderLeads = function () {
 
       <tr id="lead-expand-${l.id}" class="hidden">
         <td colspan="7">
-          <div>
-            <div id="history-${l.id}"></div>
-            <button onclick="logCommunicationPrompt('${l.id}')">+ Log</button>
+
+          <div style="padding:12px; background:#f9fafb; border-top:1px solid #eee;">
+
+            <div id="history-${l.id}" style="margin-bottom:10px;"></div>
+
+            <button 
+              onclick="logCommunicationPrompt('${l.id}')" 
+              style="padding:6px 12px; border-radius:6px; border:1px solid #ccc; background:white; cursor:pointer;"
+            >
+              + Log Interaction
+            </button>
+
           </div>
+
         </td>
       </tr>
     `;

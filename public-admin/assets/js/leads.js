@@ -284,6 +284,7 @@ window.logCommunicationPrompt = function (leadId) {
 
     <textarea id="new-msg-${leadId}" style="width:100%; margin-bottom:6px;" placeholder="Type message..."></textarea>
         <select id="channel-${leadId}">
+          <option value="LinkedIn" selected>LinkedIn</option>
           <option value="Manual">Manual</option>
           <option value="WhatsApp">WhatsApp</option>
           <option value="Email">Email</option>

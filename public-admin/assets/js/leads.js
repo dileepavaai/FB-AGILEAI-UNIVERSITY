@@ -266,78 +266,42 @@ window.logCommunicationPrompt = function (leadId) {
   if (!container) return;
 
   container.insertAdjacentHTML("beforeend", `
-  <div id="new-msg-box-${leadId}" style="border:1px solid #ddd; padding:10px; margin-top:10px; border-radius:8px; background:#fafafa;">
+    <div id="new-msg-box-${leadId}" 
+         style="border:1px solid #ddd; padding:10px; margin-top:10px; border-radius:8px; background:#fafafa;">
 
-    <div style="display:flex; gap:8px; margin-bottom:8px;">
-      <select id="channel-${leadId}" style="padding:6px;">
-        <option value="Manual">Manual</option>
-        <option value="WhatsApp">WhatsApp</option>
-        <option value="Email">Email</option>
-        <option value="Call">Call</option>
-      </select>
+      <!-- ✅ SINGLE CLEAN ROW -->
+      <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap;">
 
-      <select id="direction-${leadId}" style="padding:6px;">
-        <option value="out">Outbound</option>
-        <option value="in">Inbound</option>
-      </select>
-    </div>
-
-    <textarea id="new-msg-${leadId}" style="width:100%; margin-bottom:6px;" placeholder="Type message..."></textarea>
-        <select id="channel-${leadId}">
+        <select id="channel-${leadId}" style="padding:6px; min-width:110px;">
           <option value="LinkedIn" selected>LinkedIn</option>
-          <option value="Manual">Manual</option>
           <option value="WhatsApp">WhatsApp</option>
           <option value="Email">Email</option>
           <option value="Call">Call</option>
+          <option value="Manual">Manual</option>
         </select>
 
-        <select id="direction-${leadId}">
+        <select id="direction-${leadId}" style="padding:6px; min-width:110px;">
           <option value="out">Outbound</option>
           <option value="in">Inbound</option>
         </select>
+
+        <textarea 
+          id="new-msg-${leadId}" 
+          placeholder="Type message..." 
+          style="flex:1; min-height:36px; max-height:60px; resize:none; padding:6px;">
+        </textarea>
+
       </div>
 
-      <button onclick="saveNewCommunication('${leadId}')">Save</button>
-      <button onclick="cancelNewCommunication('${leadId}')">Cancel</button>
+      <!-- ✅ ACTIONS -->
+      <div style="display:flex; justify-content:flex-end; gap:6px;">
+        <button onclick="saveNewCommunication('${leadId}')">Save</button>
+        <button onclick="cancelNewCommunication('${leadId}')">Cancel</button>
+      </div>
 
     </div>
   `);
 };
-
-window.cancelNewCommunication = function (leadId) {
-  document.getElementById(`new-msg-box-${leadId}`)?.remove();
-  resetActiveInteraction();
-};
-
-window.saveNewCommunication = async function (leadId) {
-
-  const message = document.getElementById(`new-msg-${leadId}`)?.value;
-  const channel = document.getElementById(`channel-${leadId}`)?.value || "Manual";
-  const direction = document.getElementById(`direction-${leadId}`)?.value || "out";
-
-  if (!message?.trim()) {
-    alert("Message cannot be empty");
-    return;
-  }
-
-  await addDoc(collection(db, "lead_communications"), {
-    lead_id: leadId,
-    message,
-    channel,
-    direction,
-    created_at: serverTimestamp(),
-    created_by: auth.currentUser?.email || "system"
-  });
-
-  await updateDoc(doc(db, "leads", leadId), {
-    last_message: message,
-    last_message_date: serverTimestamp()
-  });
-
-  resetActiveInteraction();
-  loadHistory(leadId);
-};
-
 
 /* =====================================================
    🔷 INLINE EDIT (UNCHANGED)

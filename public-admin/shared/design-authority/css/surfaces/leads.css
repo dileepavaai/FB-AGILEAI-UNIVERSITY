@@ -469,27 +469,6 @@
   border-radius: 6px;
 }
 
-/* === Interaction Row (Single Line Layout) === */
-.interaction-row {
-  display: flex !important;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: nowrap; /* force single row */
-  padding: 8px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #fafafa;
-  margin-top: 10px;
-}
-
-/* Inputs */
-.interaction-field {
-  padding: 6px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
 /* Small dropdowns */
 .interaction-field.small {
   width: 110px;
@@ -604,51 +583,6 @@
 }
 
 /* =========================================================
-   🎨 CHANNEL BADGE FIX (ACTUAL CLASS USED)
-   Version: v2.8.1
-   Fix: Align CSS with JS (.channel-badge)
-========================================================= */
-
-.channel-badge {
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-weight: 500;
-  display: inline-block;
-  margin-right: 6px;
-}
-
-/* LinkedIn */
-.channel-linkedin {
-  background: rgba(10, 102, 194, 0.12);
-  color: #0a66c2;
-}
-
-/* WhatsApp */
-.channel-whatsapp {
-  background: rgba(37, 211, 102, 0.12);
-  color: #25d366;
-}
-
-/* Email */
-.channel-email {
-  background: rgba(249, 115, 22, 0.12);
-  color: #f97316;
-}
-
-/* Call */
-.channel-call {
-  background: rgba(168, 85, 247, 0.12);
-  color: #a855f7;
-}
-
-/* Manual */
-.channel-manual {
-  background: rgba(100, 116, 139, 0.12);
-  color: #64748b;
-}
-
-/* =========================================================
    🎨 OTHER / OFFLINE CHANNEL
 ========================================================= */
 
@@ -733,32 +667,6 @@
 /* Hover states (premium feel) */
 .interaction-btn:hover {
   opacity: 0.9;
-}
-
-/* =========================================================
-   🌙 DARK MODE FIX — HISTORY CONTAINER
-   (CRITICAL PATCH)
-========================================================= */
-
-.lead-history,
-.lead-history-wrapper,
-.lead-expanded-row td {
-  background: var(--bg-card) !important;
-}
-
-/* Remove any legacy light backgrounds */
-.lead-history * {
-  background-color: transparent;
-}
-
-/* Keep message bubbles intact */
-.msg {
-  background: rgba(59,130,246,0.12);
-}
-
-.msg.in,
-.msg.inbound {
-  background: rgba(34,197,94,0.12);
 }
 
 /* =========================================================

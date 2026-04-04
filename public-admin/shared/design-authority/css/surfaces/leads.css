@@ -760,3 +760,25 @@
 .msg.inbound {
   background: rgba(34,197,94,0.12);
 }
+
+/* =========================================================
+   ✨ INTERACTION ROW POLISH (FINAL TOUCH)
+========================================================= */
+
+.interaction-row {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
+}
+
+.interaction-row:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+}
+
+.interaction-field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%236b7280' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5H5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 16px;
+}

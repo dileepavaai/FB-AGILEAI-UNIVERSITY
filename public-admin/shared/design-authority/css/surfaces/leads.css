@@ -734,3 +734,29 @@
 .interaction-btn:hover {
   opacity: 0.9;
 }
+
+/* =========================================================
+   🌙 DARK MODE FIX — HISTORY CONTAINER
+   (CRITICAL PATCH)
+========================================================= */
+
+.lead-history,
+.lead-history-wrapper,
+.lead-expanded-row td {
+  background: var(--bg-card) !important;
+}
+
+/* Remove any legacy light backgrounds */
+.lead-history * {
+  background-color: transparent;
+}
+
+/* Keep message bubbles intact */
+.msg {
+  background: rgba(59,130,246,0.12);
+}
+
+.msg.in,
+.msg.inbound {
+  background: rgba(34,197,94,0.12);
+}

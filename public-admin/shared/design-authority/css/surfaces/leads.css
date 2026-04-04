@@ -656,3 +656,81 @@
   background: rgba(100, 116, 139, 0.12);
   color: #64748b;
 }
+
+/* =========================================================
+   ✨ INTERACTION UI (DARK MODE SAFE + PREMIUM)
+========================================================= */
+
+.interaction-row {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  padding: 10px;
+
+  border-radius: 10px;
+  margin-top: 10px;
+
+  /* THEME SAFE */
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+/* Prevent wrapping */
+.interaction-row * {
+  white-space: nowrap;
+}
+
+/* Fields */
+.interaction-field {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+
+  /* THEME SAFE */
+  background: var(--bg-input, var(--bg-card));
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+/* Dropdown width */
+.interaction-field.small {
+  width: 120px;
+}
+
+/* Message field */
+.interaction-field.flex {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Buttons */
+.interaction-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  /* THEME SAFE */
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+/* Primary button */
+.interaction-btn.primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+}
+
+/* Cancel button */
+.interaction-btn.cancel {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+/* Hover states (premium feel) */
+.interaction-btn:hover {
+  opacity: 0.9;
+}

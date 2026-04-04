@@ -92,16 +92,17 @@ function getChannelClass(channel) {
 ===================================================== */
 
 function formatChannel(channel) {
-if (!channel) return "manual";
+  if (!channel) return "other";
 
-const c = channel.toLowerCase();
+  const c = channel.toLowerCase();
 
-if (c.includes("whatsapp")) return "whatsapp";
-if (c.includes("email")) return "email";
-if (c.includes("call")) return "call";
-if (c.includes("linkedin")) return "linkedin";
+  if (c.includes("whatsapp")) return "whatsapp";
+  if (c.includes("email")) return "email";
+  if (c.includes("call")) return "call";
+  if (c.includes("linkedin")) return "linkedin";
+  if (c.includes("manual") || c.includes("offline") || c.includes("other")) return "other";
 
-return "manual";
+  return "other";
 }
 
 /* =====================================================
@@ -256,14 +257,20 @@ function getChannelBadge(channel) {
     whatsapp: "channel-whatsapp",
     email: "channel-email",
     call: "channel-call",
-    manual: "channel-manual"
+    other: "channel-other"
   };
 
-  const label = ch.charAt(0).toUpperCase() + ch.slice(1);
+  const labelMap = {
+    linkedin: "LinkedIn",
+    whatsapp: "WhatsApp",
+    email: "Email",
+    call: "Call",
+    other: "Other / Offline"
+  };
 
   return `
-    <span class="channel-badge ${map[ch] || "channel-manual"}">
-      ${label}
+    <span class="channel-badge ${map[ch] || "channel-other"}">
+      ${labelMap[ch]}
     </span>
   `;
 }
@@ -288,7 +295,7 @@ container.insertAdjacentHTML("beforeend", `
       <option value="WhatsApp">WhatsApp</option>
       <option value="Email">Email</option>
       <option value="Call">Call</option>
-      <option value="Manual">Manual</option>
+      <option value="Other / Offline">Other / Offline</option>
     </select>
 
     <select id="direction-${leadId}" class="interaction-field small">

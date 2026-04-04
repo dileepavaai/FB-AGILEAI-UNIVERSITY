@@ -842,3 +842,80 @@
   background: #2563eb;
   color: white;
 }
+
+/* =========================================================
+   🔥 FINAL STABILITY PATCH (NON-DESTRUCTIVE)
+   Fixes:
+   - Dark mode visibility
+   - White background bug
+   - Interaction row shrink issue
+   - Layer conflicts
+========================================================= */
+
+/* FORCE EXPANDED AREA TO FOLLOW THEME */
+.lead-expand td,
+.lead-expanded-row td {
+  background: var(--bg-card) !important;
+}
+
+/* REMOVE ANY HARD WHITE BACKGROUNDS */
+.lead-expanded-row,
+.lead-expanded-row * {
+  background-color: transparent !important;
+}
+
+/* KEEP MESSAGE BUBBLES VISIBLE */
+.msg {
+  background: rgba(59,130,246,0.12) !important;
+}
+
+.msg.in,
+.msg.inbound {
+  background: rgba(34,197,94,0.12) !important;
+}
+
+/* INTERACTION ROW — FINAL CONTROL */
+.interaction-row {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+}
+
+/* PREVENT SHRINK BUG */
+.interaction-row * {
+  flex-shrink: 0;
+}
+
+/* MESSAGE FIELD SHOULD EXPAND ONLY */
+.interaction-field.flex {
+  flex: 1 1 auto !important;
+  min-width: 200px;
+}
+
+/* INPUT VISIBILITY FIX */
+.interaction-field,
+.interaction-field select,
+.interaction-field input {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* PLACEHOLDER FIX */
+.interaction-field input::placeholder {
+  color: var(--text-muted);
+}
+
+/* BUTTON VISIBILITY */
+.interaction-btn {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.interaction-btn.primary {
+  background: #2563eb !important;
+  color: #fff !important;
+  border: none !important;
+}

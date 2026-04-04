@@ -782,3 +782,63 @@
   background-position: right 6px center;
   background-size: 16px;
 }
+
+.msg {
+  border: 1px solid rgba(0,0,0,0.04);
+  backdrop-filter: blur(2px);
+}
+
+/* =========================================================
+   🌙 FINAL DARK MODE FIX — HISTORY + INTERACTION LAYERS
+   (PRODUCTION SAFE)
+========================================================= */
+
+/* 🔹 Fix outer history container */
+.lead-history,
+.lead-expanded-row td {
+  background: var(--bg-card) !important;
+}
+
+/* 🔹 Remove any forced white backgrounds */
+.lead-expanded-row,
+.lead-expanded-row * {
+  background-color: transparent;
+}
+
+/* 🔹 Fix interaction row to adapt to theme */
+.interaction-row {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border);
+}
+
+/* 🔹 Inputs should follow theme */
+.interaction-field {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+/* 🔹 Dropdown + input consistency */
+.interaction-field select,
+.interaction-field input {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+/* 🔹 Placeholder visibility */
+.interaction-field input::placeholder {
+  color: var(--text-muted);
+}
+
+/* 🔹 Cancel button visibility */
+.interaction-btn {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+/* 🔹 Primary button remains strong */
+.interaction-btn.primary {
+  background: #2563eb;
+  color: white;
+}

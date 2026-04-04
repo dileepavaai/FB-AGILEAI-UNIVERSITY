@@ -42,6 +42,7 @@ let leads = [];
 let unsubscribe = null;
 let isSaving = false;
 let activeInteraction = null;
+let activeInteractionLeadId = null;
 
 /* =====================================================
 🔐 HELPERS
@@ -281,44 +282,62 @@ function getChannelBadge(channel) {
 
 window.logCommunicationPrompt = function (leadId) {
 
-if (activeInteraction) return;
-activeInteraction = "new";
+  const container = document.getElementById(`history-${leadId}`);
+  if (!container) return;
 
-const container = document.getElementById(`history-${leadId}`);
-if (!container) return;
+  const existingBox = document.getElementById(`new-msg-box-${leadId}`);
 
-container.insertAdjacentHTML("beforeend", `
-  <div id="new-msg-box-${leadId}" class="interaction-row">
+  // 🔁 TOGGLE SAME LEAD
+  if (activeInteractionLeadId === leadId) {
+    existingBox?.remove();
+    activeInteractionLeadId = null;
+    activeInteraction = null;
+    return;
+  }
 
-    <select id="channel-${leadId}" class="interaction-field small">
-      <option value="LinkedIn" selected>LinkedIn</option>
-      <option value="WhatsApp">WhatsApp</option>
-      <option value="Email">Email</option>
-      <option value="Call">Call</option>
-      <option value="Other / Offline">Other / Offline</option>
-    </select>
+  // 🔥 CLOSE ANY OTHER OPEN INTERACTION
+  if (activeInteractionLeadId !== null) {
+    const prevBox = document.getElementById(`new-msg-box-${activeInteractionLeadId}`);
+    prevBox?.remove();
+  }
 
-    <select id="direction-${leadId}" class="interaction-field small">
-      <option value="out">Outbound</option>
-      <option value="in">Inbound</option>
-    </select>
+  // ✅ SET ACTIVE STATE
+  activeInteractionLeadId = leadId;
+  activeInteraction = "new";
 
-    <input 
-      id="new-msg-${leadId}" 
-      class="interaction-field flex"
-      placeholder="Type message..."
-    />
+  // ✅ RENDER CLEAN UI
+  container.insertAdjacentHTML("beforeend", `
+    <div id="new-msg-box-${leadId}" class="interaction-row">
 
-    <button onclick="saveNewCommunication('${leadId}')" class="interaction-btn primary">
-      Save
-    </button>
+      <select id="channel-${leadId}" class="interaction-field small">
+        <option value="LinkedIn" selected>LinkedIn</option>
+        <option value="WhatsApp">WhatsApp</option>
+        <option value="Email">Email</option>
+        <option value="Call">Call</option>
+        <option value="Other / Offline">Other / Offline</option>
+      </select>
 
-    <button onclick="cancelNewCommunication('${leadId}')" class="interaction-btn">
-      Cancel
-    </button>
+      <select id="direction-${leadId}" class="interaction-field small">
+        <option value="out">Outbound</option>
+        <option value="in">Inbound</option>
+      </select>
 
-  </div>
-`);
+      <input 
+        id="new-msg-${leadId}" 
+        class="interaction-field flex"
+        placeholder="Type message..."
+      />
+
+      <button onclick="saveNewCommunication('${leadId}')" class="interaction-btn primary">
+        Save
+      </button>
+
+      <button onclick="cancelNewCommunication('${leadId}')" class="interaction-btn">
+        Cancel
+      </button>
+
+    </div>
+  `);
 };
 
 /* =====================================================
@@ -326,8 +345,9 @@ container.insertAdjacentHTML("beforeend", `
 ===================================================== */
 
 window.cancelNewCommunication = function (leadId) {
-document.getElementById(`new-msg-box-${leadId}`)?.remove();
-resetActiveInteraction();
+  document.getElementById(`new-msg-box-${leadId}`)?.remove();
+  activeInteraction = null;
+  activeInteractionLeadId = null;
 };
 
 window.saveNewCommunication = async function (leadId) {

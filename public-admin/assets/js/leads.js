@@ -74,6 +74,19 @@ function resetActiveInteraction() {
 activeInteraction = null;
 }
 
+function getChannelClass(channel) {
+  if (!channel) return "channel-manual";
+
+  const c = channel.toLowerCase();
+
+  if (c.includes("linkedin")) return "channel-linkedin";
+  if (c.includes("whatsapp")) return "channel-whatsapp";
+  if (c.includes("email")) return "channel-email";
+  if (c.includes("call")) return "channel-call";
+
+  return "channel-manual";
+}
+
 /* =====================================================
 🔷 CHANNEL FORMATTER
 ===================================================== */

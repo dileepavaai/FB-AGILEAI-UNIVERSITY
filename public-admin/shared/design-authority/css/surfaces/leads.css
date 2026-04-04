@@ -561,3 +561,89 @@
   background: rgba(107,114,128,0.12);
   color: #6b7280;
 }
+
+/* =========================================================
+   🎨 CHANNEL VISUAL ENHANCEMENT (SAFE ADDITION)
+   Version: v2.8.0
+   Type: NON-BREAKING (Visual only)
+========================================================= */
+
+/* Channel badge base */
+.msg-channel {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* Channel colors */
+.channel-linkedin {
+  background: rgba(10, 102, 194, 0.12);
+  color: #0a66c2;
+}
+
+.channel-whatsapp {
+  background: rgba(37, 211, 102, 0.12);
+  color: #25d366;
+}
+
+.channel-email {
+  background: rgba(249, 115, 22, 0.12);
+  color: #f97316;
+}
+
+.channel-call {
+  background: rgba(168, 85, 247, 0.12);
+  color: #a855f7;
+}
+
+.channel-manual {
+  background: rgba(100, 116, 139, 0.12);
+  color: #64748b;
+}
+
+/* =========================================================
+   🎨 CHANNEL BADGE FIX (ACTUAL CLASS USED)
+   Version: v2.8.1
+   Fix: Align CSS with JS (.channel-badge)
+========================================================= */
+
+.channel-badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* LinkedIn */
+.channel-linkedin {
+  background: rgba(10, 102, 194, 0.12);
+  color: #0a66c2;
+}
+
+/* WhatsApp */
+.channel-whatsapp {
+  background: rgba(37, 211, 102, 0.12);
+  color: #25d366;
+}
+
+/* Email */
+.channel-email {
+  background: rgba(249, 115, 22, 0.12);
+  color: #f97316;
+}
+
+/* Call */
+.channel-call {
+  background: rgba(168, 85, 247, 0.12);
+  color: #a855f7;
+}
+
+/* Manual */
+.channel-manual {
+  background: rgba(100, 116, 139, 0.12);
+  color: #64748b;
+}

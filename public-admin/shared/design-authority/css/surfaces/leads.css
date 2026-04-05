@@ -202,7 +202,7 @@
 .lead-expanded-card {
   padding: 16px 18px;
   border-top: 1px solid var(--border);
-  background: var(--bg-card);
+  background: transparent; /* 🔥 KEY FIX */
   border-radius: 0 0 12px 12px;
 }
 
@@ -774,7 +774,8 @@
 
 /* KEEP MESSAGE BUBBLES VISIBLE */
 .msg {
-  background: rgba(59,130,246,0.12) !important;
+  background: rgba(59,130,246,0.16) !important;
+  color: var(--text-primary); /* 🔥 ensures visibility */
 }
 
 .msg.in,
@@ -826,4 +827,10 @@
   background: #2563eb !important;
   color: #fff !important;
   border: none !important;
+}
+
+/* FINAL OVERRIDE — ENSURE NO WHITE FLASH */
+.lead-expanded-row,
+.lead-expanded-row td {
+  background: var(--bg-card) !important;
 }

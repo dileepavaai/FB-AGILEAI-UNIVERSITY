@@ -448,8 +448,8 @@ const body = document.getElementById("leadBody");
 if (!body) return;
 
 if (!leads.length) {
-  body.innerHTML = `<tr><td colspan="7">No leads</td></tr>`;
-  return;
+body.innerHTML = `<tr><td colspan="7">No leads</td></tr>`;
+return;
 }
 
 let html = "";
@@ -457,59 +457,35 @@ let html = "";
 leads.forEach(l => {
 
   html += `
+    <tr>
+      <td><button onclick="openCommunication('${l.id}')">💬</button></td>
+      <td>
+        <strong>${safe(l.name)}</strong>
+        ${renderLinkedInInline(l.linkedin_url)}
+      </td>
+      <td>${safe(l.role)}</td>
+      <td>${safe(l.company)}</td>
+      <td>${safe(l.source)}</td>
+      <td>${safe(l.owner)}</td>
+      <td>${safe(l.email)}</td>
+    </tr>
 
-<!-- ROW 1 -->
-<tr class="lead-row-main">
-  <td rowspan="2">
-    <div class="lead-avatar" onclick="openCommunication('${l.id}')"></div>
-  </td>
+    <tr id="lead-expand-${l.id}" class="hidden">
+      <td colspan="7">
 
-  <td rowspan="2">
-    ${l.name || ''}
-    ${renderLinkedInInline(l.linkedin_url)}
-  </td>
+        <div style="padding:12px; background:#f9fafb; border-top:1px solid #eee;">
 
-  <td>
-    ${(l.role || '').split('|')[0] || ''}
-  </td>
+          <div id="history-${l.id}" style="margin-bottom:10px;"></div>
 
-  <td rowspan="2">${l.company || '-'}</td>
-  <td rowspan="2">${l.source || ''}</td>
-  <td rowspan="2">${l.owner || ''}</td>
-  <td rowspan="2">${l.email || ''}</td>
-</tr>
+          <button onclick="logCommunicationPrompt('${l.id}')">
+            + Log Interaction
+          </button>
 
-<!-- ROW 2 -->
-<tr class="lead-row-secondary">
-  <td>
-    ${(l.role || '').split('|').slice(1).join(' | ') || ''}
-  </td>
-</tr>
+        </div>
 
-<!-- ROW 3 (SAFE INTERACTION ROW) -->
-<tr id="lead-expand-${l.id}" class="lead-expanded-row hidden">
-  <td colspan="7">
-
-    <div class="lead-expanded-card">
-
-      <!-- HISTORY -->
-      <div id="history-${l.id}" class="lead-history">
-        Click icon to load interactions
-      </div>
-
-      <!-- ACTION -->
-      <div style="margin-top:10px;">
-        <button onclick="logCommunicationPrompt('${l.id}')">
-          + Log Interaction
-        </button>
-      </div>
-
-    </div>
-
-  </td>
-</tr>
-
-`;
+      </td>
+    </tr>
+  `;
 
 });
 

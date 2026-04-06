@@ -444,70 +444,67 @@ if (isHidden) loadHistory(leadId);
 
 window.renderLeads = function () {
 
-const body = document.getElementById("leadBody");
-if (!body) return;
+  const body = document.getElementById("leadBody");
+  if (!body) return;
 
-if (!leads.length) {
-  body.innerHTML = `<tr><td colspan="7">No leads</td></tr>`;
-  return;
-}
+  if (!leads.length) {
+    body.innerHTML = `<tr><td colspan="7">No leads</td></tr>`;
+    return;
+  }
 
-let html = "";
+  let html = "";
 
-leads.forEach(l => {
+  leads.forEach(l => {
 
-  const roleParts = (l.role || "").split("|");
+    const roleParts = (l.role || "").split("|").map(r => r.trim());
 
-  html += `
+    html += `
+      <tr class="lead-row-primary">
+        <td rowspan="2">
+          <button onclick="openCommunication('${l.id}')">💬</button>
+        </td>
 
-    <!-- ROW 1 -->
-    <tr>
-      <td rowspan="2">
-        <button onclick="openCommunication('${l.id}')">💬</button>
-      </td>
+        <td rowspan="2">
+          <strong>${safe(l.name)}</strong>
+          ${renderLinkedInInline(l.linkedin_url)}
+        </td>
 
-      <td rowspan="2">
-        <strong>${safe(l.name)}</strong>
-        ${renderLinkedInInline(l.linkedin_url)}
-      </td>
+        <td>
+          ${safe(roleParts[0] || "")}
+        </td>
 
-      <td>${safe(roleParts[0])}</td>
+        <td rowspan="2">${safe(l.company)}</td>
+        <td rowspan="2">${safe(l.source)}</td>
+        <td rowspan="2">${safe(l.owner)}</td>
+        <td rowspan="2">${safe(l.email)}</td>
+      </tr>
 
-      <td rowspan="2">${safe(l.company)}</td>
-      <td rowspan="2">${safe(l.source)}</td>
-      <td rowspan="2">${safe(l.owner)}</td>
-      <td rowspan="2">${safe(l.email)}</td>
-    </tr>
+      <tr class="lead-row-secondary">
+        <td>
+          ${roleParts.length > 1 ? roleParts.slice(1).join(" | ") : ""}
+        </td>
+      </tr>
 
-    <!-- ✅ ROW 2 (NEW - ROLE CONTINUATION ONLY) -->
-    <tr>
-      <td>
-        ${roleParts.length > 1 ? roleParts.slice(1).join(" | ") : ""}
-      </td>
-    </tr>
+      <tr id="lead-expand-${l.id}" class="hidden lead-expand">
+        <td colspan="7">
 
-    <!-- EXISTING INTERACTION ROW (UNCHANGED) -->
-    <tr id="lead-expand-${l.id}" class="hidden">
-      <td colspan="7">
+          <div class="lead-expanded-card">
 
-        <div style="padding:12px; background:#f9fafb; border-top:1px solid #eee;">
+            <div id="history-${l.id}" class="lead-history"></div>
 
-          <div id="history-${l.id}" style="margin-bottom:10px;"></div>
+            <button onclick="logCommunicationPrompt('${l.id}')">
+              + Log Interaction
+            </button>
 
-          <button onclick="logCommunicationPrompt('${l.id}')">
-            + Log Interaction
-          </button>
+          </div>
 
-        </div>
+        </td>
+      </tr>
+    `;
 
-      </td>
-    </tr>
+  });
 
-  `;
-
-});
-
-body.innerHTML = html;
+  body.innerHTML = html;
 };
 
 function initLeadsModule() {

@@ -448,28 +448,43 @@ const body = document.getElementById("leadBody");
 if (!body) return;
 
 if (!leads.length) {
-body.innerHTML = `<tr><td colspan="7">No leads</td></tr>`;
-return;
+  body.innerHTML = `<tr><td colspan="7">No leads</td></tr>`;
+  return;
 }
 
 let html = "";
 
 leads.forEach(l => {
 
+  const roleParts = (l.role || "").split("|");
+
   html += `
+
+    <!-- ROW 1 -->
     <tr>
-      <td><button onclick="openCommunication('${l.id}')">💬</button></td>
-      <td>
+      <td rowspan="2">
+        <button onclick="openCommunication('${l.id}')">💬</button>
+      </td>
+
+      <td rowspan="2">
         <strong>${safe(l.name)}</strong>
         ${renderLinkedInInline(l.linkedin_url)}
       </td>
-      <td>${safe(l.role)}</td>
-      <td>${safe(l.company)}</td>
-      <td>${safe(l.source)}</td>
-      <td>${safe(l.owner)}</td>
-      <td>${safe(l.email)}</td>
+
+      <td>${safe(roleParts[0])}</td>
+
+      <td rowspan="2">${safe(l.company)}</td>
+      <td rowspan="2">${safe(l.source)}</td>
+      <td rowspan="2">${safe(l.owner)}</td>
+      <td rowspan="2">${safe(l.email)}</td>
     </tr>
 
+    <!-- ✅ ROW 2 (NEW - ROLE CONTINUATION ONLY) -->
+    <tr>
+      <td>${safe(roleParts.slice(1).join(" | "))}</td>
+    </tr>
+
+    <!-- EXISTING INTERACTION ROW (UNCHANGED) -->
     <tr id="lead-expand-${l.id}" class="hidden">
       <td colspan="7">
 
@@ -485,6 +500,7 @@ leads.forEach(l => {
 
       </td>
     </tr>
+
   `;
 
 });

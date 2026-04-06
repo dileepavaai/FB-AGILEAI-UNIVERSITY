@@ -850,3 +850,9 @@
 .lead-expanded-row td {
   background: var(--bg-card) !important;
 }
+
+.lead-row-secondary td {
+  padding-top: 2px;
+  color: #6b7280;
+  font-size: 12.5px;
+}

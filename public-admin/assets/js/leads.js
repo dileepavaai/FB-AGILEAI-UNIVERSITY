@@ -481,7 +481,9 @@ leads.forEach(l => {
 
     <!-- ✅ ROW 2 (NEW - ROLE CONTINUATION ONLY) -->
     <tr>
-      <td>${safe(roleParts.slice(1).join(" | "))}</td>
+      <td>
+        ${roleParts.length > 1 ? roleParts.slice(1).join(" | ") : ""}
+      </td>
     </tr>
 
     <!-- EXISTING INTERACTION ROW (UNCHANGED) -->

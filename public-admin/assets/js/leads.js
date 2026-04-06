@@ -448,8 +448,8 @@ const body = document.getElementById("leadBody");
 if (!body) return;
 
 if (!leads.length) {
-body.innerHTML = `<tr><td colspan="7">No leads</td></tr>`;
-return;
+  body.innerHTML = `<tr><td colspan="7">No leads</td></tr>`;
+  return;
 }
 
 let html = "";
@@ -461,11 +461,12 @@ leads.forEach(l => {
 <!-- ROW 1 -->
 <tr class="lead-row-main">
   <td rowspan="2">
-    <div class="lead-avatar"></div>
+    <div class="lead-avatar" onclick="openCommunication('${l.id}')"></div>
   </td>
 
   <td rowspan="2">
     ${l.name || ''}
+    ${renderLinkedInInline(l.linkedin_url)}
   </td>
 
   <td>
@@ -478,19 +479,33 @@ leads.forEach(l => {
   <td rowspan="2">${l.email || ''}</td>
 </tr>
 
-<!-- ROW 2 (RESTORED) -->
+<!-- ROW 2 -->
 <tr class="lead-row-secondary">
   <td>
     ${(l.role || '').split('|').slice(1).join(' | ') || ''}
   </td>
 </tr>
 
-<!-- ROW 3 (EXISTING — KEEP YOUR CURRENT CODE HERE) -->
-<tr class="lead-expanded-row">
+<!-- ROW 3 (SAFE INTERACTION ROW) -->
+<tr id="lead-expand-${l.id}" class="lead-expanded-row hidden">
   <td colspan="7">
+
     <div class="lead-expanded-card">
-      ${renderInteractionSection(l)} 
+
+      <!-- HISTORY -->
+      <div id="history-${l.id}" class="lead-history">
+        Click icon to load interactions
+      </div>
+
+      <!-- ACTION -->
+      <div style="margin-top:10px;">
+        <button onclick="logCommunicationPrompt('${l.id}')">
+          + Log Interaction
+        </button>
+      </div>
+
     </div>
+
   </td>
 </tr>
 

@@ -457,35 +457,44 @@ let html = "";
 leads.forEach(l => {
 
   html += `
-    <tr>
-      <td><button onclick="openCommunication('${l.id}')">💬</button></td>
-      <td>
-        <strong>${safe(l.name)}</strong>
-        ${renderLinkedInInline(l.linkedin_url)}
-      </td>
-      <td>${safe(l.role)}</td>
-      <td>${safe(l.company)}</td>
-      <td>${safe(l.source)}</td>
-      <td>${safe(l.owner)}</td>
-      <td>${safe(l.email)}</td>
-    </tr>
 
-    <tr id="lead-expand-${l.id}" class="hidden">
-      <td colspan="7">
+<!-- ROW 1 -->
+<tr class="lead-row-main">
+  <td rowspan="2">
+    <div class="lead-avatar"></div>
+  </td>
 
-        <div style="padding:12px; background:#f9fafb; border-top:1px solid #eee;">
+  <td rowspan="2">
+    ${l.name || ''}
+  </td>
 
-          <div id="history-${l.id}" style="margin-bottom:10px;"></div>
+  <td>
+    ${(l.role || '').split('|')[0] || ''}
+  </td>
 
-          <button onclick="logCommunicationPrompt('${l.id}')">
-            + Log Interaction
-          </button>
+  <td rowspan="2">${l.company || '-'}</td>
+  <td rowspan="2">${l.source || ''}</td>
+  <td rowspan="2">${l.owner || ''}</td>
+  <td rowspan="2">${l.email || ''}</td>
+</tr>
 
-        </div>
+<!-- ROW 2 (RESTORED) -->
+<tr class="lead-row-secondary">
+  <td>
+    ${(l.role || '').split('|').slice(1).join(' | ') || ''}
+  </td>
+</tr>
 
-      </td>
-    </tr>
-  `;
+<!-- ROW 3 (EXISTING — KEEP YOUR CURRENT CODE HERE) -->
+<tr class="lead-expanded-row">
+  <td colspan="7">
+    <div class="lead-expanded-card">
+      ${renderInteractionSection(l)} 
+    </div>
+  </td>
+</tr>
+
+`;
 
 });
 

@@ -202,10 +202,26 @@
 .lead-expanded-card {
   padding: 16px 18px;
   border-top: 1px solid var(--border);
-  background: transparent; /* 🔥 KEY FIX */
+
+  /* 🔥 FIX: keep theme but restore structure */
+  background: var(--bg-main);
+
   border-radius: 0 0 12px 12px;
 }
 
+/* Ensure expanded area has proper spacing */
+.lead-expanded-row td {
+  padding: 0 !important;
+}
+
+.lead-expanded-card {
+  display: block;
+  width: 100%;
+}
+
+.msg {
+  opacity: 1 !important;
+}
 
 /* =========================================================
    💬 MESSAGE TIMELINE (UPGRADED)

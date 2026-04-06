@@ -480,8 +480,8 @@ window.renderLeads = function () {
       </tr>
 
       <tr class="lead-row-secondary">
-        <td>
-          ${roleParts.length > 1 ? roleParts.slice(1).join(" | ") : ""}
+        <td colspan="7">
+          ${safe(getSecondaryRole(l.role))}
         </td>
       </tr>
 

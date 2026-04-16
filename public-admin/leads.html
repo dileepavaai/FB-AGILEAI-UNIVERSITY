@@ -110,7 +110,6 @@
         <div class="table-wrapper leads-table-enhanced">
           <table class="table">
 
-            <!-- LOCKED -->
             <colgroup>
               <col style="width:60px;">
               <col>
@@ -133,6 +132,7 @@
               </tr>
             </thead>
 
+            <!-- 🔥 CRITICAL: DO NOT TOUCH THIS ID -->
             <tbody id="leadBody"></tbody>
 
           </table>
@@ -146,9 +146,17 @@
 
 <div id="footerContainer"></div>
 
+<!-- 🔥 FIXED INITIALIZATION -->
 <script type="module">
 import { initAdminApp } from "./assets/js/admin-app.js";
-initAdminApp("leads.js");
+
+initAdminApp("leads.js").then(() => {
+  if (typeof window.renderLeads === "function") {
+    window.renderLeads();
+  } else {
+    console.error("renderLeads not found");
+  }
+});
 </script>
 
 </body>

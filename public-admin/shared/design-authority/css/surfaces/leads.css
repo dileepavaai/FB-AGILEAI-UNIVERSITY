@@ -901,38 +901,3 @@
 .lead-row-secondary td:nth-child(1) {
   line-height: 1.6;
 }
-
-/* =========================================================
-   🔥 FINAL ALIGNMENT OVERRIDE (SAFE — ADD ONLY)
-   Forces ALL messages to LEFT (CRM style)
-========================================================= */
-
-.lead-history {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* 🔥 force left */
-}
-
-/* All messages */
-.msg,
-.msg.out,
-.msg.in,
-.msg.outbound,
-.msg.inbound {
-  margin-left: 0 !important;
-  margin-right: auto !important;
-  text-align: left !important;
-  align-self: flex-start !important;
-}
-
-/* Remove any right alignment leftovers */
-.msg.out,
-.msg.outbound {
-  justify-content: flex-start !important;
-}
-
-/* Ensure container doesn't push right */
-.msg-container {
-  display: flex;
-  justify-content: flex-start !important;
-}

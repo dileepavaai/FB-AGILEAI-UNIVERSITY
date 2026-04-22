@@ -1,0 +1,45 @@
+/* CSV SURFACE ALIGNMENT */
+
+.page-header h1 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e6e8eb;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.card-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+input[type="file"] {
+  margin-top: 8px;
+}
+
+.btn {
+  border-radius: 6px;
+}
+
+.table-wrapper {
+  margin-top: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding-left: 0;
+}

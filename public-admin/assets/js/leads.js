@@ -229,7 +229,10 @@ async function loadHistory(leadId) {
 
       html += `
         <div class="msg ${m.direction || "out"}">
-
+          <div style="font-size:11px; opacity:0.6;">
+            ${m.direction === "in" ? "Inbound" : "Outbound"}
+          </div>
+          
           <div class="msg-meta">
             ${getChannelBadge(m.channel)}
             <span>${time}</span>
@@ -480,7 +483,7 @@ window.renderLeads = function () {
       <!-- PRIMARY ROW -->
       <tr class="lead-row-primary">
         <td rowspan="2">
-          <button onclick="openCommunication('${l.id}')">💬</button>
+          <button onclick="openCommunication('${l.id}')">Chat</button>
         </td>
 
         <td rowspan="2">

@@ -936,3 +936,43 @@
   display: flex;
   justify-content: flex-start !important;
 }
+
+/* OUTBOUND (You sent) */
+.msg.out {
+  background: #e0f2fe;
+  border-left: 4px solid #0284c7;
+}
+
+/* INBOUND (They replied) */
+.msg.in {
+  background: #f1f5f9;
+  border-left: 4px solid #64748b;
+}
+
+/* Message container */
+.msg {
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  max-width: 70%;
+}
+
+/* Align both left (your current choice) */
+.lead-history {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.lead-row-primary button {
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.lead-row-primary button:hover {
+  background: #dbeafe;
+}

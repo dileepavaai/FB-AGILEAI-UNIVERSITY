@@ -976,3 +976,13 @@
 .lead-row-primary button:hover {
   background: #dbeafe;
 }
+
+.comm-item.in {
+  background: #e6f7ec;
+  align-self: flex-start;
+}
+
+.comm-item.out {
+  background: #e8f1ff;
+  align-self: flex-end;
+}

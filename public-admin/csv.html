@@ -17,8 +17,8 @@
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
 
-  <!-- 🎯 SURFACE -->
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
+  <!-- 🎯 CSV SURFACE -->
+  <link rel="stylesheet" href="shared/design-authority/css/surfaces/csv.css" />
 </head>
 
 <body class="app-loading">
@@ -50,40 +50,51 @@
     <!-- 🔷 APP -->
     <section id="appView" class="hidden">
 
-      <!-- 🧠 HEADER -->
+      <!-- 🧠 HEADER (ALIGNED WITH DASHBOARD) -->
       <div class="section">
-        <h2>CSV Import</h2>
-        <p>Upload and validate credential data before ingestion</p>
+        <h1>CSV Import</h1>
+        <p class="page-subtitle">
+          Controlled credential ingestion with validation and batch binding
+        </p>
       </div>
 
       <!-- 🔷 STEP 1 -->
       <div class="card section">
 
-        <div class="card-title">Step 1 — Select Batch</div>
+        <div class="card-title">1. Select Batch</div>
 
         <select id="csvBatchSelect">
           <option value="">Select Batch</option>
         </select>
 
-        <p class="card-subtitle">
-          Batch selection is mandatory. All records will be permanently linked to this batch.
-        </p>
+        <div class="card-subtitle" style="margin-top:10px;">
+          ⚠ All uploaded credentials will be permanently linked to this batch.
+        </div>
+
+        <!-- Batch Meta (JS will fill) -->
+        <div id="batchMeta" style="margin-top:10px;"></div>
 
       </div>
 
       <!-- 🔷 STEP 2 -->
-      <div class="card section">
+      <div class="card section" id="step2Card" style="opacity:0.5; pointer-events:none;">
 
-        <div class="card-title">Step 2 — Upload CSV</div>
+        <div class="card-title">2. Upload CSV File</div>
+
+        <p class="card-subtitle" id="step2Hint">
+          Select a batch to enable upload
+        </p>
 
         <input type="file" id="csvFile" accept=".csv" />
 
-        <div class="section-tight" style="display:flex; gap:10px; margin-top:12px;">
+        <p id="fileName" class="card-subtitle" style="margin-top:6px;"></p>
+
+        <div class="section-tight action-row" style="margin-top:12px;">
           <button id="parseBtn" class="btn btn-secondary">
-            Parse & Validate
+            Validate File
           </button>
 
-          <button id="uploadBtn" class="btn btn-primary">
+          <button id="uploadBtn" class="btn btn-primary" style="display:none;">
             Upload Valid Records
           </button>
         </div>
@@ -95,7 +106,10 @@
       <!-- 🔷 STEP 3 -->
       <div class="card section">
 
-        <div class="card-title">Step 3 — Preview & Validation</div>
+        <div class="card-title">3. Review & Validation</div>
+
+        <!-- Validation Summary -->
+        <div id="validationSummary" class="card-subtitle" style="margin-bottom:10px;"></div>
 
         <div class="table-wrapper">
           <table id="previewTable" class="table">
@@ -113,7 +127,7 @@
         </div>
 
         <p class="card-subtitle">
-          🔴 Invalid rows are highlighted. Only valid records will be uploaded.
+          Invalid rows are highlighted. Only valid records will be uploaded.
         </p>
 
       </div>

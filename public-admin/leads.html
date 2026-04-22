@@ -132,7 +132,6 @@
               </tr>
             </thead>
 
-            <!-- 🔥 CRITICAL: DO NOT TOUCH THIS ID -->
             <tbody id="leadBody"></tbody>
 
           </table>
@@ -146,17 +145,9 @@
 
 <div id="footerContainer"></div>
 
-<!-- 🔥 FIXED INITIALIZATION -->
+<!-- 🔥 FINAL FIX: DIRECT MODULE LOAD -->
 <script type="module">
-import { initAdminApp } from "./assets/js/admin-app.js";
-
-initAdminApp("leads.js").then(() => {
-  if (typeof window.renderLeads === "function") {
-    window.renderLeads();
-  } else {
-    console.error("renderLeads not found");
-  }
-});
+  import "./assets/js/leads.js";
 </script>
 
 </body>

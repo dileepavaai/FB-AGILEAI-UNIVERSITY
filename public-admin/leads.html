@@ -5,19 +5,19 @@
   <title>Lead Intelligence – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- CORE -->
+  <!-- 🔒 CORE SYSTEM -->
   <link rel="stylesheet" href="assets/css/site.css" />
 
-  <!-- DESIGN -->
+  <!-- 🎨 DESIGN AUTHORITY -->
   <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
 
-  <!-- COMMON -->
+  <!-- 🧩 COMMON SURFACES -->
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
 
-  <!-- LEADS -->
+  <!-- 🎯 PAGE SURFACE -->
   <link rel="stylesheet" href="shared/design-authority/css/surfaces/leads.css" />
 </head>
 
@@ -27,7 +27,7 @@
 
 <div class="layout">
 
-  <!-- SIDEBAR -->
+  <!-- 🔷 SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html">Dashboard</a></li>
@@ -41,7 +41,7 @@
 
   <main class="content">
 
-    <!-- LOGIN -->
+    <!-- 🔐 LOGIN -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p class="page-subtitle">Secure access to lead intelligence system</p>
@@ -50,16 +50,16 @@
       </button>
     </section>
 
-    <!-- APP -->
+    <!-- 🔷 APP -->
     <section id="appView" class="hidden">
 
-      <!-- HEADER -->
+      <!-- 🧠 HEADER -->
       <div class="leads-header section">
         <h2>Lead Intelligence</h2>
         <p>Capture, qualify, and convert leads</p>
       </div>
 
-      <!-- METRICS -->
+      <!-- 📊 METRICS -->
       <div class="leads-metrics section">
         <div class="leads-metric"><span class="value" id="mTotal">0</span><span class="label">Total</span></div>
         <div class="leads-metric"><span class="value" id="mEngaged">0</span><span class="label">Engaged</span></div>
@@ -69,7 +69,7 @@
         <div class="leads-metric"><span class="value" id="mQualConvRate">0%</span><span class="label">Qual → Conv</span></div>
       </div>
 
-      <!-- FORM -->
+      <!-- 🧾 FORM -->
       <div class="leads-form-card">
         <div class="leads-form-title">Add Lead</div>
 
@@ -103,7 +103,7 @@
         </div>
       </div>
 
-      <!-- TABLE -->
+      <!-- 📋 TABLE -->
       <div class="card">
         <div class="card-title">Lead List</div>
 
@@ -145,9 +145,12 @@
 
 <div id="footerContainer"></div>
 
-<!-- 🔥 FINAL FIX: DIRECT MODULE LOAD -->
+<!-- 🔥 ADMIN BOOTSTRAP (CRITICAL) -->
 <script type="module">
-  import "./assets/js/leads.js";
+  import { initAdminApp } from "./assets/js/admin-app.js";
+
+  /* FIXED PATH */
+  initAdminApp("leads.js");
 </script>
 
 </body>

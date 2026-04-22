@@ -5,6 +5,22 @@
   <title>Lead Intelligence – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- =====================================================
+   🔷 LEADS ADMIN PAGE
+   Version: v2.0.0 (SAFE BASELINE)
+   Type: FULL FILE REPLACEMENT (NON-BREAKING)
+
+   PURPOSE:
+   - Stabilized HTML structure
+   - Future-ready hooks for expandable rows
+   - No behavioral changes to existing JS
+
+   SAFE GUARANTEES:
+   - All IDs preserved
+   - All class dependencies preserved
+   - JS compatibility: 100%
+  ====================================================== -->
+
   <!-- 🔒 CORE SYSTEM -->
   <link rel="stylesheet" href="assets/css/site.css" />
 
@@ -23,11 +39,16 @@
 
 <body class="app-loading">
 
+<!-- =====================================================
+   🔷 HEADER (INJECTED)
+===================================================== -->
 <div id="headerContainer"></div>
 
 <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
+  <!-- =====================================================
+     🔷 SIDEBAR
+  ====================================================== -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
       <li><a href="index.html">Dashboard</a></li>
@@ -41,7 +62,9 @@
 
   <main class="content">
 
-    <!-- 🔐 LOGIN -->
+    <!-- =====================================================
+       🔐 LOGIN VIEW
+    ====================================================== -->
     <section id="loginView">
       <h2>Admin Access</h2>
       <p class="page-subtitle">Secure access to lead intelligence system</p>
@@ -50,7 +73,9 @@
       </button>
     </section>
 
-    <!-- 🔷 APP -->
+    <!-- =====================================================
+       🔷 MAIN APP
+    ====================================================== -->
     <section id="appView" class="hidden">
 
       <!-- 🧠 HEADER -->
@@ -69,7 +94,9 @@
         <div class="leads-metric"><span class="value" id="mQualConvRate">0%</span><span class="label">Qual → Conv</span></div>
       </div>
 
-      <!-- 🧾 FORM -->
+      <!-- =====================================================
+         🧾 ADD LEAD FORM
+      ====================================================== -->
       <div class="leads-form-card">
         <div class="leads-form-title">Add Lead</div>
 
@@ -103,12 +130,17 @@
         </div>
       </div>
 
-      <!-- 📋 TABLE -->
+      <!-- =====================================================
+         📋 LEAD TABLE
+         NOTE:
+         - Rendering fully controlled by leads.js
+         - Supports multi-row + expandable rows
+      ====================================================== -->
       <div class="card">
         <div class="card-title">Lead List</div>
 
         <div class="table-wrapper leads-table-enhanced">
-          <table class="table">
+          <table class="table leads-table" data-expandable="true">
 
             <colgroup>
               <col style="width:60px;">
@@ -132,7 +164,8 @@
               </tr>
             </thead>
 
-            <tbody id="leadBody"></tbody>
+            <!-- 🔥 RENDER TARGET -->
+            <tbody id="leadBody" class="lead-body"></tbody>
 
           </table>
         </div>
@@ -143,13 +176,18 @@
   </main>
 </div>
 
+<!-- =====================================================
+   🔷 FOOTER (INJECTED)
+===================================================== -->
 <div id="footerContainer"></div>
 
-<!-- 🔥 ADMIN BOOTSTRAP (CRITICAL) -->
+<!-- =====================================================
+   🔥 ADMIN BOOTSTRAP (CRITICAL)
+===================================================== -->
 <script type="module">
   import { initAdminApp } from "./assets/js/admin-app.js";
 
-  /* FIXED PATH */
+  /* 🔒 DO NOT CHANGE */
   initAdminApp("leads.js");
 </script>
 

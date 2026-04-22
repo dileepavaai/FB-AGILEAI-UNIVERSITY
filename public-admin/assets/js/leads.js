@@ -443,13 +443,21 @@ loadHistory(leadId);
 ===================================================== */
 
 window.openCommunication = function (leadId) {
-const row = document.getElementById(`lead-expand-${leadId}`);
-if (!row) return;
 
-const isHidden = row.classList.contains("hidden");
-row.classList.toggle("hidden");
+  // Close all others first
+  document.querySelectorAll('[id^="lead-expand-"]').forEach(row => {
+    if (row.id !== `lead-expand-${leadId}`) {
+      row.classList.add("hidden");
+    }
+  });
 
-if (isHidden) loadHistory(leadId);
+  const row = document.getElementById(`lead-expand-${leadId}`);
+  if (!row) return;
+
+  const isHidden = row.classList.contains("hidden");
+  row.classList.toggle("hidden");
+
+  if (isHidden) loadHistory(leadId);
 };
 
 window.renderLeads = function () {

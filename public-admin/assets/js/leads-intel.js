@@ -1,7 +1,6 @@
 /* =====================================================
    🔷 LEADS INTELLIGENCE ENGINE
-   Version: v1.0.0
-   Purpose: Communication Logging + History Tracking
+   Version: v1.1.0 (Direction Fix + UI Clarity)
 ===================================================== */
 
 export function initCommunicationLogging() {
@@ -45,8 +44,8 @@ function openCommunicationModal(leadId) {
         </select>
 
         <select id="commDirection">
-          <option value="Outbound">Outbound</option>
-          <option value="Inbound">Inbound</option>
+          <option value="out">Outbound</option>
+          <option value="in">Inbound</option>
         </select>
 
         <div class="comm-actions">
@@ -85,7 +84,7 @@ function saveCommunication(leadId) {
   const log = {
     message,
     type,
-    direction,
+    direction, // ✅ now "in" or "out"
     timestamp: new Date().toISOString()
   };
 
@@ -125,12 +124,19 @@ export function renderCommunication(leadId) {
     lastMessageEl.innerText = latest.message;
   }
 
-  container.innerHTML = logs.map(l => `
-    <div class="comm-item">
-      <strong>${l.type}</strong> (${l.direction})<br/>
-      ${l.message}
-    </div>
-  `).join("");
+  container.innerHTML = logs.map(l => {
+
+    const dir = l.direction === "in" ? "Inbound" : "Outbound";
+
+    return `
+      <div class="comm-item ${l.direction}">
+        <div style="font-size:11px; opacity:0.6; margin-bottom:4px;">
+          ${dir} • ${l.type}
+        </div>
+        ${l.message}
+      </div>
+    `;
+  }).join("");
 
 }
 

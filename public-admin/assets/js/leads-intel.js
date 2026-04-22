@@ -1,6 +1,6 @@
 /* =====================================================
    🔷 LEADS INTELLIGENCE ENGINE
-   Version: v1.1.0 (Direction Fix + UI Clarity)
+   Version: v1.2.0 (Robust Direction Fix + Backward Compatible)
 ===================================================== */
 
 export function initCommunicationLogging() {
@@ -84,7 +84,7 @@ function saveCommunication(leadId) {
   const log = {
     message,
     type,
-    direction, // ✅ now "in" or "out"
+    direction, // always "in" or "out"
     timestamp: new Date().toISOString()
   };
 
@@ -126,12 +126,21 @@ export function renderCommunication(leadId) {
 
   container.innerHTML = logs.map(l => {
 
-    const dir = l.direction === "in" ? "Inbound" : "Outbound";
+    // 🔥 NORMALIZATION (handles old + new data)
+    const rawDir = (l.direction || "").toLowerCase();
+
+    let dirClass = "out";
+    let dirLabel = "Outbound";
+
+    if (rawDir === "in" || rawDir === "inbound") {
+      dirClass = "in";
+      dirLabel = "Inbound";
+    }
 
     return `
-      <div class="comm-item ${l.direction}">
+      <div class="comm-item ${dirClass}">
         <div style="font-size:11px; opacity:0.6; margin-bottom:4px;">
-          ${dir} • ${l.type}
+          ${dirLabel} • ${l.type}
         </div>
         ${l.message}
       </div>

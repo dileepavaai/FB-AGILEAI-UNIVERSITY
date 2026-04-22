@@ -477,6 +477,7 @@ window.renderLeads = function () {
     const roleParts = (l.role || "").split("|").map(r => r.trim());
 
     html += `
+      <!-- PRIMARY ROW -->
       <tr class="lead-row-primary">
         <td rowspan="2">
           <button onclick="openCommunication('${l.id}')">💬</button>
@@ -487,6 +488,7 @@ window.renderLeads = function () {
           ${renderLinkedInInline(l.linkedin_url)}
         </td>
 
+        <!-- PRIMARY ROLE -->
         <td>
           ${safe(roleParts[0] || "")}
         </td>
@@ -497,12 +499,14 @@ window.renderLeads = function () {
         <td rowspan="2">${safe(l.email)}</td>
       </tr>
 
+      <!-- SECONDARY ROLE (ALIGNED FIX) -->
       <tr class="lead-row-secondary">
-        <td colspan="7">
+        <td class="secondary-role">
           ${safe(getSecondaryRole(l.role))}
         </td>
       </tr>
 
+      <!-- EXPANDED COMMUNICATION -->
       <tr id="lead-expand-${l.id}" class="hidden lead-expand">
         <td colspan="7">
 
@@ -510,9 +514,11 @@ window.renderLeads = function () {
 
             <div id="history-${l.id}" class="lead-history"></div>
 
-            <button onclick="logCommunicationPrompt('${l.id}')">
-              + Log Interaction
-            </button>
+            <div style="margin-top:10px;">
+              <button onclick="logCommunicationPrompt('${l.id}')">
+                + Log Interaction
+              </button>
+            </div>
 
           </div>
 

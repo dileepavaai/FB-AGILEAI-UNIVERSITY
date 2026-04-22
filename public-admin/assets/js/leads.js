@@ -52,6 +52,16 @@ const get = (id) => document.getElementById(id)?.value?.trim() || "";
 
 const safe = (v) => (!v ? "-" : v);
 
+function getSecondaryRole(role) {
+  if (!role) return "-";
+
+  const parts = role.split("|").map(r => r.trim());
+
+  if (parts.length < 2) return "-";
+
+  return parts.slice(1).join(" | ");
+}
+
 const renderLinkedInInline = (url) => {
 if (!url) return "";
 return `<a href="${url}" target="_blank" class="lead-linkedin-inline">🔗</a>`;

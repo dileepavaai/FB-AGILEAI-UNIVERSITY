@@ -67,6 +67,7 @@ let currentUserEmail = null;
    🧠 METRICS (NEW - SAFE)
    ========================= */
 function updateLeadMetrics() {
+
   const counts = {
     total: 0,
     New: 0,
@@ -85,28 +86,51 @@ function updateLeadMetrics() {
     }
   });
 
-  // Basic counts
-  set("mTotal", counts.total);
-  set("mEngaged", counts.Engaged);
-  set("mQualified", counts.Qualified);
-  set("mConverted", counts.Converted);
+  // ✅ DASHBOARD MAPPING (FIXED)
+  set("metricLeads", counts.total);
+  set("funnelLeads", counts.total);
+  set("funnelQualified", counts.Qualified);
+  set("funnelConverted", counts.Converted);
 
-  // 🔥 Revenue Intelligence Calculations
-  const conversionRate = counts.total > 0
-    ? ((counts.Converted / counts.total) * 100).toFixed(1)
-    : 0;
+  // Conversion %
+  const lq = counts.total ? ((counts.Qualified / counts.total) * 100).toFixed(1) : 0;
+  const qc = counts.Qualified ? ((counts.Converted / counts.Qualified) * 100).toFixed(1) : 0;
+  const lc = counts.total ? ((counts.Converted / counts.total) * 100).toFixed(1) : 0;
 
-  const qualifiedConversionRate = counts.Qualified > 0
-    ? ((counts.Converted / counts.Qualified) * 100).toFixed(1)
-    : 0;
+  set("funnelLQ", lq + "%");
+  set("funnelQC", qc + "%");
+  set("funnelLC", lc + "%");
+}
 
-  const dropRate = counts.total > 0
-    ? ((counts.Dropped / counts.total) * 100).toFixed(1)
-    : 0;
+/* =====================================================
+   🔷 DASHBOARD SAFE UPDATE (ADDED v4.1)
+   Purpose: Ensure dashboard updates even without leads view
+===================================================== */
+function updateDashboardSafe() {
 
-  set("mConvRate", conversionRate + "%");
-  set("mQualConvRate", qualifiedConversionRate + "%");
-  set("mDropRate", dropRate + "%");
+  const total = leads.length;
+
+  let qualified = 0;
+  let converted = 0;
+
+  leads.forEach(l => {
+    if (l.stage === "Qualified") qualified++;
+    if (l.stage === "Converted") converted++;
+  });
+
+  // Core dashboard bindings
+  set("metricLeads", total);
+  set("funnelLeads", total);
+  set("funnelQualified", qualified);
+  set("funnelConverted", converted);
+
+  const lq = total ? ((qualified / total) * 100).toFixed(1) : 0;
+  const qc = qualified ? ((converted / qualified) * 100).toFixed(1) : 0;
+  const lc = total ? ((converted / total) * 100).toFixed(1) : 0;
+
+  set("funnelLQ", lq + "%");
+  set("funnelQC", qc + "%");
+  set("funnelLC", lc + "%");
 }
 
 /* helper */
@@ -476,6 +500,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     updateLeadMetrics();
+    updateDashboardSafe(); // 🔥 NEW
     updateBusinessIntelligence();
     window.renderLeads();
 
@@ -507,6 +532,7 @@ try {
   });
 
   updateLeadMetrics();
+  updateDashboardSafe(); // 🔥 NEW
   updateBusinessIntelligence();
   window.renderLeads();
 
@@ -571,7 +597,10 @@ try {
     adminWarning?.classList.remove("hidden");
 
     views.forEach(v => v.classList.add("hidden"));
-    document.getElementById("leads").classList.remove("hidden");
+    // 🔒 v4.1 FIX: Do NOT force leads view (dashboard compatibility)
+    if (document.getElementById("leads")) {
+    // Only show leads if already intended
+    }
 
     // 🔥 Ensure sidebar highlights correctly
     document.querySelectorAll(".sidebar li").forEach(i => i.classList.remove("active"));

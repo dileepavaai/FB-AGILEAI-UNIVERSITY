@@ -150,3 +150,16 @@
 .container {
   overflow-x: hidden;
 }
+
+.webinar-hero {
+  width: 100%;
+  overflow: hidden;
+}
+
+.webinar-banner {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 20px;
+}

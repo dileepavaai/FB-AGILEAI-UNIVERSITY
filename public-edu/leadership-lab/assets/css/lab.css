@@ -1,10 +1,16 @@
 /* =========================================================
    Agile AI Leadership Lab
    Operational Experience Layer
+   Version: 1.1
+   Stabilized Experience Architecture
+========================================================= */
+
+/* =========================================================
+   Hero Section
 ========================================================= */
 
 .lab-hero {
-  padding: 5rem 0 3rem;
+  padding: 4rem 0 3rem;
 }
 
 .lab-label {
@@ -14,6 +20,38 @@
   opacity: 0.7;
   margin-bottom: 1rem;
 }
+
+/* =========================================================
+   Top Environment Navigation
+========================================================= */
+
+.lab-top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin: 2rem 0 3rem;
+}
+
+.lab-top-nav a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(120,120,120,0.18);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  font-size: 0.95rem;
+}
+
+.lab-top-nav a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(120,120,120,0.35);
+  background: rgba(255,255,255,0.04);
+}
+
+/* =========================================================
+   Operational Grid
+========================================================= */
 
 .lab-grid {
   display: grid;
@@ -40,6 +78,10 @@
   margin-bottom: 1rem;
 }
 
+/* =========================================================
+   Operational Signal States
+========================================================= */
+
 .signal-state {
   display: inline-block;
   padding: 0.3rem 0.7rem;
@@ -60,11 +102,19 @@
   background: rgba(255,80,80,0.12);
 }
 
+/* =========================================================
+   Operational Intelligence Panels
+========================================================= */
+
 .operational-panel {
   border-left: 4px solid rgba(120,120,120,0.25);
   padding-left: 1.25rem;
   margin: 2rem 0;
 }
+
+/* =========================================================
+   Operational Flow Architecture
+========================================================= */
 
 .environment-flow {
   display: flex;
@@ -79,6 +129,12 @@
   border: 1px solid rgba(120,120,120,0.2);
   min-width: 180px;
   text-align: center;
+  transition: all 0.25s ease;
+}
+
+.environment-node:hover {
+  transform: translateY(-2px);
+  border-color: rgba(120,120,120,0.35);
 }
 
 .environment-node strong {
@@ -86,8 +142,40 @@
   margin-bottom: 0.5rem;
 }
 
+/* =========================================================
+   Leadership Narrative Highlight
+========================================================= */
+
 .lab-highlight {
   font-size: 1.1rem;
   line-height: 1.7;
   margin: 2rem 0;
+}
+
+/* =========================================================
+   Responsive Stabilization
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .lab-hero {
+    padding: 3rem 0 2rem;
+  }
+
+  .lab-top-nav {
+    gap: 0.7rem;
+  }
+
+  .lab-top-nav a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .environment-flow {
+    flex-direction: column;
+  }
+
+  .environment-node {
+    width: 100%;
+  }
 }

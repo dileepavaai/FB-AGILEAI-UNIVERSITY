@@ -1,0 +1,93 @@
+/* =========================================================
+   Agile AI Leadership Lab
+   Operational Experience Layer
+========================================================= */
+
+.lab-hero {
+  padding: 5rem 0 3rem;
+}
+
+.lab-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.lab-card {
+  border: 1px solid rgba(120,120,120,0.18);
+  border-radius: 14px;
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.03);
+  transition: all 0.25s ease;
+}
+
+.lab-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(120,120,120,0.35);
+}
+
+.lab-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.signal-state {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.signal-state.stable {
+  background: rgba(0,180,120,0.12);
+}
+
+.signal-state.warning {
+  background: rgba(255,180,0,0.12);
+}
+
+.signal-state.critical {
+  background: rgba(255,80,80,0.12);
+}
+
+.operational-panel {
+  border-left: 4px solid rgba(120,120,120,0.25);
+  padding-left: 1.25rem;
+  margin: 2rem 0;
+}
+
+.environment-flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.environment-node {
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(120,120,120,0.2);
+  min-width: 180px;
+  text-align: center;
+}
+
+.environment-node strong {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.lab-highlight {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin: 2rem 0;
+}

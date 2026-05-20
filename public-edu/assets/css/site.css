@@ -1,16 +1,17 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v11.6
+   AgileAI Public Surface — Institutional CSS v11.7
 
    Governance State: STABILIZED
    Upgrade Type: Safe Full Replacement
 
    Institutional Refinement Layer:
    - Softer mobile header separation
-   - Reduced harsh navigation divider visibility
+   - Removed visible mobile divider artifact
    - Improved visual continuity
    - Preserved institutional hierarchy
    - Preserved responsive navigation architecture
    - Preserved operational content rhythm
+   - Improved mobile viewport alignment
 
    Governance Rules:
    - No destructive layout changes
@@ -85,6 +86,8 @@ body {
 
   text-rendering: optimizeLegibility;
 
+  overflow-x: hidden;
+
   transition:
     background var(--transition-speed),
     color var(--transition-speed);
@@ -121,7 +124,7 @@ body.nav-open {
   display: flex;
   align-items: center;
 
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
 .header-inner {
@@ -142,6 +145,7 @@ body.nav-open {
 
   font-size: 1rem;
   font-weight: 400;
+  line-height: 1.45;
 }
 
 
@@ -288,6 +292,11 @@ body.nav-open {
 
 @media (max-width: 768px) {
 
+  .site-header {
+    box-shadow: none;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+
   .header-inner {
     padding: 0 20px;
   }
@@ -322,7 +331,7 @@ body.nav-open {
 
     background: var(--background);
 
-    border-bottom: 1px solid var(--border-soft);
+    border-bottom: none;
 
     max-height: 0;
     overflow: hidden;
@@ -569,12 +578,15 @@ main a {
 @media (max-width: 768px) {
 
   main {
+    margin-top: 92px;
+
     padding-left: 24px;
     padding-right: 24px;
   }
 
   h1 {
     line-height: 1.22;
+    font-size: 2.75rem;
   }
 
   p {

@@ -1,5 +1,5 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v11.8
+   AgileAI Public Surface — Institutional CSS v12.0
 
    Governance State: STABILIZED
    Upgrade Type: Safe Full Replacement
@@ -7,11 +7,18 @@
    Institutional Refinement Layer:
    - Stable viewport compensation
    - Fixed mobile header overlap
-   - Improved desktop/mobile rhythm consistency
+   - Unified desktop/mobile rendering rhythm
    - Preserved institutional hierarchy
    - Preserved navigation architecture
    - Preserved operational spacing model
-   - Improved responsive visibility alignment
+   - Improved first viewport rendering stability
+
+   Architecture Upgrade:
+   - Global fixed-header compensation
+   - Removed excessive manual main offsets
+   - Stabilized mobile hero visibility
+   - Prevented hidden content rendering
+   - Improved responsive alignment consistency
 
    Governance Rules:
    - No destructive layout changes
@@ -76,6 +83,18 @@ html {
 
 body {
   margin: 0;
+
+  /*
+     Institutional Fixed Header Compensation
+     ---------------------------------------
+     Reserves viewport space globally for
+     the fixed institutional header.
+
+     Prevents hidden rendering underneath
+     the header across desktop/mobile views.
+  */
+
+  padding-top: var(--header-height);
 
   background: var(--background);
   color: var(--text-primary);
@@ -381,19 +400,16 @@ body.nav-open {
 ========================= */
 
 /*
-   Institutional Viewport Compensation Layer
-   -----------------------------------------
-   Prevents fixed-header overlap across
-   desktop and mobile rendering environments.
+   Institutional Content Rhythm Layer
+   ----------------------------------
+   Works together with the global
+   body-level fixed header compensation.
 */
 
 main {
   max-width: var(--max-width);
 
-  margin-top: 140px;
-  margin-right: auto;
-  margin-bottom: 100px;
-  margin-left: auto;
+  margin: 60px auto 100px;
 
   padding: 0 32px;
 
@@ -589,14 +605,14 @@ main a {
 @media (max-width: 768px) {
 
   /*
-     Mobile Institutional Compensation Layer
-     ---------------------------------------
-     Handles wrapped institutional brand title
-     and prevents viewport overlap.
+     Mobile Institutional Rhythm Layer
+     ---------------------------------
+     Maintains stable first viewport
+     rendering after global compensation.
   */
 
   main {
-    margin-top: 170px;
+    margin-top: 48px;
 
     padding-left: 24px;
     padding-right: 24px;

@@ -1,17 +1,17 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v11.7
+   AgileAI Public Surface — Institutional CSS v11.8
 
    Governance State: STABILIZED
    Upgrade Type: Safe Full Replacement
 
    Institutional Refinement Layer:
-   - Softer mobile header separation
-   - Removed visible mobile divider artifact
-   - Improved visual continuity
+   - Stable viewport compensation
+   - Fixed mobile header overlap
+   - Improved desktop/mobile rhythm consistency
    - Preserved institutional hierarchy
-   - Preserved responsive navigation architecture
-   - Preserved operational content rhythm
-   - Improved mobile viewport alignment
+   - Preserved navigation architecture
+   - Preserved operational spacing model
+   - Improved responsive visibility alignment
 
    Governance Rules:
    - No destructive layout changes
@@ -380,10 +380,21 @@ body.nav-open {
    LAYOUT
 ========================= */
 
+/*
+   Institutional Viewport Compensation Layer
+   -----------------------------------------
+   Prevents fixed-header overlap across
+   desktop and mobile rendering environments.
+*/
+
 main {
   max-width: var(--max-width);
 
-  margin: 100px auto;
+  margin-top: 140px;
+  margin-right: auto;
+  margin-bottom: 100px;
+  margin-left: auto;
+
   padding: 0 32px;
 
   min-height: calc(100vh - 200px);
@@ -577,8 +588,15 @@ main a {
 
 @media (max-width: 768px) {
 
+  /*
+     Mobile Institutional Compensation Layer
+     ---------------------------------------
+     Handles wrapped institutional brand title
+     and prevents viewport overlap.
+  */
+
   main {
-    margin-top: 92px;
+    margin-top: 170px;
 
     padding-left: 24px;
     padding-right: 24px;

@@ -1,5 +1,5 @@
 /* =========================================
-   AgileAI Public Surface — Institutional CSS v12.0
+   AgileAI Public Surface — Institutional CSS v12.1
 
    Governance State: STABILIZED
    Upgrade Type: Safe Full Replacement
@@ -12,6 +12,8 @@
    - Preserved navigation architecture
    - Preserved operational spacing model
    - Improved first viewport rendering stability
+   - Refined institutional mobile breathing rhythm
+   - Improved editorial hero presentation
 
    Architecture Upgrade:
    - Global fixed-header compensation
@@ -19,6 +21,8 @@
    - Stabilized mobile hero visibility
    - Prevented hidden content rendering
    - Improved responsive alignment consistency
+   - Refined mobile visual calmness
+   - Improved institutional readability
 
    Governance Rules:
    - No destructive layout changes
@@ -399,13 +403,6 @@ body.nav-open {
    LAYOUT
 ========================= */
 
-/*
-   Institutional Content Rhythm Layer
-   ----------------------------------
-   Works together with the global
-   body-level fixed header compensation.
-*/
-
 main {
   max-width: var(--max-width);
 
@@ -605,26 +602,32 @@ main a {
 @media (max-width: 768px) {
 
   /*
-     Mobile Institutional Rhythm Layer
-     ---------------------------------
-     Maintains stable first viewport
-     rendering after global compensation.
+     Mobile Institutional Editorial Layer v12.1
+     ------------------------------------------
+     Refines first viewport readability and
+     editorial spacing for institutional
+     learning surfaces.
+
+     Prevents compressed hero rendering while
+     preserving stabilized header compensation.
   */
 
   main {
-    margin-top: 48px;
+    margin-top: 72px;
 
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 28px;
+    padding-right: 28px;
   }
 
   h1 {
-    line-height: 1.22;
-    font-size: 2.75rem;
+    font-size: 2.45rem;
+
+    line-height: 1.16;
+    letter-spacing: -0.3px;
   }
 
   p {
-    line-height: 1.8;
+    line-height: 1.84;
   }
 
 }

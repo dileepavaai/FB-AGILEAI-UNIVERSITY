@@ -2,19 +2,22 @@
    AgileAI Public Surface — Institutional CSS v11.5
 
    Governance State: STABILIZED
-   Architecture Model: Institutional Experience Layer
+   Upgrade Type: Safe Full Replacement
 
-   SAFE FULL REPLACEMENT
-
-   Objectives:
-   - Preserve structural stability
+   Purpose:
+   - Preserve institutional architecture
    - Preserve typography identity
    - Preserve navigation behavior
-   - Improve institutional rhythm
-   - Improve operational readability
-   - Improve responsive breathing
-   - Maintain governance-safe refinement model
+   - Improve institutional reading rhythm
+   - Improve operational content pacing
+   - Improve section breathing consistency
+   - Improve mobile reading experience
 
+   Architectural Rules:
+   - No destructive layout modifications
+   - No nav logic changes
+   - No structural content changes
+   - No responsive regressions
 ========================================= */
 
 
@@ -72,7 +75,7 @@ body {
 
   font-family: Georgia, "Times New Roman", serif;
   font-size: 18px;
-  line-height: 1.72;
+  line-height: 1.74;
 
   text-rendering: optimizeLegibility;
 
@@ -98,6 +101,9 @@ body.nav-open {
   width: 100%;
   height: var(--header-height);
 
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--background);
+
   position: fixed;
   top: 0;
   left: 0;
@@ -107,9 +113,6 @@ body.nav-open {
 
   display: flex;
   align-items: center;
-
-  background: var(--background);
-  border-bottom: 1px solid var(--border-subtle);
 
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
@@ -127,8 +130,8 @@ body.nav-open {
 }
 
 .brand a {
-  color: var(--text-primary);
   text-decoration: none;
+  color: var(--text-primary);
 
   font-size: 1rem;
   font-weight: 400;
@@ -163,15 +166,14 @@ body.nav-open {
   background: none;
   border: none;
 
-  color: var(--text-primary);
-
   font-family: inherit;
   font-size: 0.87rem;
   font-weight: 400;
   letter-spacing: 0.15px;
 
-  cursor: pointer;
+  color: var(--text-primary);
 
+  cursor: pointer;
   padding: 0;
 
   display: inline-flex;
@@ -190,7 +192,8 @@ body.nav-open {
   content: "▾";
   font-size: 0.7rem;
 
-  transition: transform 180ms var(--motion-standard);
+  transition:
+    transform 180ms var(--motion-standard);
 }
 
 .nav-item.is-open > .nav-toggle::after {
@@ -200,8 +203,8 @@ body.nav-open {
 .sub-menu {
   list-style: none;
 
-  margin: 0;
   padding: 0;
+  margin: 0;
 
   display: flex;
   flex-direction: column;
@@ -221,17 +224,16 @@ body.nav-open {
 
   .nav-item > .sub-menu {
     position: absolute;
-    top: 100%;
     right: 0;
-
-    min-width: 240px;
-
-    padding: 10px 14px;
+    top: 100%;
 
     background: var(--surface-elevated);
 
     border: 1px solid var(--border-subtle);
     border-radius: 4px;
+
+    padding: 10px 14px;
+    min-width: 240px;
 
     box-shadow: 0 10px 28px rgba(0,0,0,0.06);
 
@@ -265,8 +267,8 @@ body.nav-open {
     border: none;
     box-shadow: none;
 
-    margin-top: 6px;
     padding-left: 14px;
+    margin-top: 6px;
 
     border-left: 1px solid var(--border-subtle);
   }
@@ -312,13 +314,13 @@ body.nav-open {
     right: 0;
 
     background: var(--background);
-
     border-bottom: 1px solid var(--border-subtle);
 
     max-height: 0;
     overflow: hidden;
 
-    transition: max-height 260ms var(--motion-standard);
+    transition:
+      max-height 260ms var(--motion-standard);
   }
 
   body.nav-open .main-nav {
@@ -340,8 +342,8 @@ body.nav-open {
 
     overflow: hidden;
 
-    margin-top: 6px;
     padding-left: 14px;
+    margin-top: 6px;
 
     opacity: 0;
 
@@ -364,12 +366,16 @@ body.nav-open {
 main {
   max-width: var(--max-width);
 
-  margin: 120px auto 100px;
-
+  margin: 100px auto;
   padding: 0 32px;
 
   min-height: calc(100vh - 200px);
 }
+
+
+/* =========================
+   SECTION RHYTHM
+========================= */
 
 main section {
   margin-bottom: 84px;
@@ -377,6 +383,10 @@ main section {
 
 main section:last-of-type {
   margin-bottom: 40px;
+}
+
+main > section:first-of-type {
+  margin-bottom: 64px;
 }
 
 
@@ -391,7 +401,7 @@ h1 {
   line-height: 1.18;
   letter-spacing: -0.4px;
 
-  margin-bottom: 30px;
+  margin-bottom: 34px;
 }
 
 h2 {
@@ -409,24 +419,10 @@ h2 {
 
 p {
   margin-top: 0;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 
   max-width: 68ch;
-
   line-height: 1.78;
-}
-
-
-/* =========================
-   HERO RHYTHM
-========================= */
-
-main > section:first-of-type {
-  margin-bottom: 60px;
-}
-
-main > section:first-of-type p:last-of-type {
-  margin-bottom: 40px;
 }
 
 
@@ -436,22 +432,21 @@ main > section:first-of-type p:last-of-type {
 
 main ul {
   margin-top: 18px;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 
   padding-left: 22px;
 }
 
 main ul li {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 
-  line-height: 1.6;
-
+  line-height: 1.68;
   padding-left: 2px;
 }
 
 
 /* =========================
-   CTA BUTTONS
+   CTA
 ========================= */
 
 .btn {
@@ -462,13 +457,14 @@ main ul li {
 
   border-radius: 4px;
 
-  font-size: 0.92rem;
   font-weight: 500;
+  font-size: 0.92rem;
   letter-spacing: 0.2px;
 
   text-decoration: none;
 
-  transition: opacity 160ms ease;
+  transition:
+    opacity 160ms ease;
 }
 
 .btn.primary {
@@ -480,7 +476,6 @@ main ul li {
   background: transparent;
 
   border: 1px solid var(--border-subtle);
-
   color: var(--text-primary);
 }
 
@@ -505,10 +500,9 @@ a {
 
 a:hover {
   color: var(--link-hover);
+  opacity: 0.88;
 
   text-decoration: underline;
-
-  opacity: 0.88;
 }
 
 main a {
@@ -528,11 +522,11 @@ main a {
 }
 
 .site-footer {
-  background: var(--surface-muted);
-
   border-top: 1px solid var(--border-subtle);
 
   padding: 64px 32px;
+
+  background: var(--surface-muted);
 }
 
 .footer-inner {
@@ -541,9 +535,9 @@ main a {
   margin: 0 auto;
 
   font-size: 0.9rem;
-  line-height: 1.78;
-
   color: var(--text-secondary);
+
+  line-height: 1.78;
 }
 
 .footer-inner p {
@@ -561,14 +555,12 @@ main a {
 
 
 /* =========================
-   RESPONSIVE REFINEMENT
+   RESPONSIVE TYPOGRAPHY
 ========================= */
 
 @media (max-width: 768px) {
 
   main {
-    margin-top: 110px;
-
     padding-left: 24px;
     padding-right: 24px;
   }
@@ -578,7 +570,7 @@ main a {
   }
 
   p {
-    line-height: 1.78;
+    line-height: 1.8;
   }
 
 }

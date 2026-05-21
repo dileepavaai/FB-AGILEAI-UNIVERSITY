@@ -1,66 +1,162 @@
 /* =========================================================
-   Classic Incident Simulation Engine
+   Horizontal Expand / Collapse Sections
 ========================================================= */
 
-let completedSteps = [];
+function toggleSection(sectionId, buttonElement) {
 
-/* =========================================================
-   Complete Step
-========================================================= */
+    const section = document.getElementById(sectionId);
 
-function completeStep(stepNumber) {
-
-    if (completedSteps.includes(stepNumber)) {
+    if (!section) {
         return;
     }
 
-    completedSteps.push(stepNumber);
+    const isVisible =
+        section.style.display === "block";
 
-    const stepElement =
-        document.getElementById(`step-${stepNumber}`);
+    /* =====================================================
+       Close All Sections
+    ===================================================== */
 
-    if (stepElement) {
-        stepElement.classList.add("step-completed");
+    const allSections =
+        document.querySelectorAll(
+            ".horizontal-tab-content"
+        );
+
+    allSections.forEach((item) => {
+        item.style.display = "none";
+    });
+
+    /* =====================================================
+       Reset All Buttons
+    ===================================================== */
+
+    const allButtons =
+        document.querySelectorAll(
+            ".horizontal-tab"
+        );
+
+    allButtons.forEach((button) => {
+
+        button.innerHTML =
+            button.innerHTML.replace("−", "+");
+
+    });
+
+    /* =====================================================
+       Toggle Current Section
+    ===================================================== */
+
+    if (!isVisible) {
+
+        section.style.display = "block";
+
+        buttonElement.innerHTML =
+            buttonElement.innerHTML.replace("+", "−");
+
     }
-
-    updateSimulationProgress();
 
 }
 
 /* =========================================================
-   Update Progress
+   Vertical Workspace Tabs
 ========================================================= */
 
-function updateSimulationProgress() {
+function openVerticalTab(panelId) {
 
-    const totalSteps = 5;
+    const panels =
+        document.querySelectorAll(
+            ".workspace-content"
+        );
 
-    const completedCount =
-        completedSteps.length;
+    panels.forEach((panel) => {
+        panel.classList.remove(
+            "active-workspace"
+        );
+    });
 
-    const progressPercentage =
-        (completedCount / totalSteps) * 100;
+    const tabs =
+        document.querySelectorAll(
+            ".vertical-tab"
+        );
 
-    /* =====================================================
-       Progress Text
-    ===================================================== */
+    tabs.forEach((tab) => {
+        tab.classList.remove(
+            "active-vertical-tab"
+        );
+    });
 
-    const progressText =
-        document.getElementById("progress-text");
+    const selectedPanel =
+        document.getElementById(panelId);
 
-    if (progressText) {
+    if (selectedPanel) {
 
-        progressText.innerText =
-            `${completedCount} of ${totalSteps} operational actions completed.`;
+        selectedPanel.classList.add(
+            "active-workspace"
+        );
 
     }
 
-    /* =====================================================
-       Progress Bar
-    ===================================================== */
+    event.target.classList.add(
+        "active-vertical-tab"
+    );
+
+}
+
+/* =========================================================
+   Simulation Progress Engine
+========================================================= */
+
+let completedSteps = 0;
+
+const completedStepSet = new Set();
+
+/* ========================================================= */
+
+function completeStep(stepNumber) {
+
+    if (
+        completedStepSet.has(stepNumber)
+    ) {
+        return;
+    }
+
+    completedStepSet.add(stepNumber);
+
+    completedSteps++;
+
+    const step =
+        document.getElementById(
+            `step-${stepNumber}`
+        );
+
+    if (step) {
+
+        step.classList.add(
+            "completed-step"
+        );
+
+    }
+
+    updateProgress();
+
+}
+
+/* ========================================================= */
+
+function updateProgress() {
+
+    const progressPercentage =
+        (completedSteps / 5) * 100;
 
     const progressBar =
-        document.getElementById("progress-bar");
+        document.getElementById(
+            "progress-bar"
+        );
+
+    const progressText =
+        document.getElementById(
+            "progress-text"
+        );
 
     if (progressBar) {
 
@@ -69,73 +165,39 @@ function updateSimulationProgress() {
 
     }
 
-    /* =====================================================
-       Operational Status
-    ===================================================== */
+    if (progressText) {
 
-    const statusElement =
-        document.getElementById("simulation-status");
-
-    if (statusElement) {
-
-        if (completedCount === 0) {
-
-            statusElement.innerText =
-                "Operational State: Active Incident Monitoring";
-
-        }
-
-        if (completedCount >= 2) {
-
-            statusElement.innerText =
-                "Operational State: Escalation Coordination Active";
-
-        }
-
-        if (completedCount >= 4) {
-
-            statusElement.innerText =
-                "Operational State: Leadership Response In Progress";
-
-        }
-
-        if (completedCount >= 5) {
-
-            statusElement.innerText =
-                "Operational State: Incident Coordination Completed";
-
-        }
+        progressText.innerHTML =
+            `${completedSteps} of 5 operational actions completed.`;
 
     }
 
-    /* =====================================================
-       Completion Banner
-    ===================================================== */
+    if (completedSteps === 5) {
 
-    const completionBanner =
-        document.getElementById("completion-banner");
+        const completionBanner =
+            document.getElementById(
+                "completion-banner"
+            );
 
-    if (
-        completionBanner &&
-        completedCount >= totalSteps
-    ) {
+        if (completionBanner) {
 
-        completionBanner.style.display =
-            "block";
+            completionBanner.style.display =
+                "block";
+
+        }
+
+        const simulationStatus =
+            document.getElementById(
+                "simulation-status"
+            );
+
+        if (simulationStatus) {
+
+            simulationStatus.innerHTML =
+                "Operational State: Incident Stabilized";
+
+        }
 
     }
 
 }
-
-/* =========================================================
-   Initialize
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        updateSimulationProgress();
-
-    }
-);

@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Classic Incident Simulation | Agile AI Leadership Lab</title>
+    <meta charset="UTF-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>
+        Classic Incident Simulation | Agile AI Leadership Lab
+    </title>
 
     <!-- ========================================================= -->
     <!-- Design Authority -->
@@ -40,7 +47,7 @@
     <div id="header-container"></div>
 
     <!-- ========================================================= -->
-    <!-- Simulation -->
+    <!-- Main Simulation -->
     <!-- ========================================================= -->
 
     <main class="page-shell">
@@ -60,19 +67,72 @@
             </h1>
 
             <p class="hero-text">
+
                 Experience how traditional operational environments
-                respond to escalating delivery pressure, coordination
-                dependencies, delayed visibility, and manual execution
-                workflows.
+                respond to escalating delivery pressure,
+                coordination dependency,
+                delayed visibility,
+                and reactive execution systems.
+
             </p>
 
         </section>
 
         <!-- ===================================================== -->
-        <!-- Scenario Overview -->
+        <!-- Horizontal Operational Tabs -->
         <!-- ===================================================== -->
 
         <section class="content-section">
+
+            <div class="horizontal-tabs">
+
+                <button
+                    class="horizontal-tab active-tab"
+                    onclick="openHorizontalTab('scenario-tab')"
+                >
+                    Scenario
+                </button>
+
+                <button
+                    class="horizontal-tab"
+                    onclick="openHorizontalTab('signals-tab')"
+                >
+                    Signals
+                </button>
+
+                <button
+                    class="horizontal-tab"
+                    onclick="openHorizontalTab('teams-tab')"
+                >
+                    Teams
+                </button>
+
+                <button
+                    class="horizontal-tab"
+                    onclick="openHorizontalTab('actions-tab')"
+                >
+                    Actions
+                </button>
+
+                <button
+                    class="horizontal-tab"
+                    onclick="openHorizontalTab('outcomes-tab')"
+                >
+                    Outcomes
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- SCENARIO TAB -->
+        <!-- ===================================================== -->
+
+        <section
+            class="content-section horizontal-tab-content active-content"
+            id="scenario-tab"
+        >
 
             <h2>
                 Operational Scenario
@@ -81,6 +141,7 @@
             <div class="card-grid two-column-grid">
 
                 <article class="info-card">
+
                     <h3>
                         Organization
                     </h3>
@@ -88,9 +149,11 @@
                     <p>
                         Retail Commerce Platform
                     </p>
+
                 </article>
 
                 <article class="info-card">
+
                     <h3>
                         Delivery State
                     </h3>
@@ -98,9 +161,11 @@
                     <p>
                         Sprint 14 Release Stabilization
                     </p>
+
                 </article>
 
                 <article class="info-card">
+
                     <h3>
                         Active Pressure
                     </h3>
@@ -108,9 +173,11 @@
                     <p>
                         Checkout failures increasing during deployment validation.
                     </p>
+
                 </article>
 
                 <article class="info-card">
+
                     <h3>
                         Operational Risk
                     </h3>
@@ -118,6 +185,7 @@
                     <p>
                         Escalation visibility delayed across coordination teams.
                     </p>
+
                 </article>
 
             </div>
@@ -125,75 +193,203 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- Participant Workspace -->
+        <!-- SIGNALS TAB -->
         <!-- ===================================================== -->
 
-        <section class="content-section">
+        <section
+            class="content-section horizontal-tab-content"
+            id="signals-tab"
+        >
+
+            <div class="simulation-layout">
+
+                <!-- ============================================= -->
+                <!-- Vertical Tabs -->
+                <!-- ============================================= -->
+
+                <aside class="vertical-tabs">
+
+                    <button
+                        class="vertical-tab active-vertical-tab"
+                        onclick="openVerticalTab('mail-panel')"
+                    >
+                        Mail Center
+                    </button>
+
+                    <button
+                        class="vertical-tab"
+                        onclick="openVerticalTab('chat-panel')"
+                    >
+                        Team Chat
+                    </button>
+
+                    <button
+                        class="vertical-tab"
+                        onclick="openVerticalTab('jira-panel')"
+                    >
+                        JIRA Board
+                    </button>
+
+                    <button
+                        class="vertical-tab"
+                        onclick="openVerticalTab('queue-panel')"
+                    >
+                        Incident Queue
+                    </button>
+
+                </aside>
+
+                <!-- ============================================= -->
+                <!-- Workspace -->
+                <!-- ============================================= -->
+
+                <div class="workspace-panel">
+
+                    <!-- ========================================= -->
+                    <!-- Mail -->
+                    <!-- ========================================= -->
+
+                    <div
+                        class="workspace-content active-workspace"
+                        id="mail-panel"
+                    >
+
+                        <h2>
+                            Mail Center
+                        </h2>
+
+                        <p>
+                            Multiple escalation emails are awaiting operational review.
+                        </p>
+
+                        <ul>
+                            <li>
+                                Checkout timeout escalation received from QA.
+                            </li>
+
+                            <li>
+                                Deployment rollback concern raised by DevOps.
+                            </li>
+
+                            <li>
+                                Customer escalation visibility delayed.
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <!-- ========================================= -->
+                    <!-- Chat -->
+                    <!-- ========================================= -->
+
+                    <div
+                        class="workspace-content"
+                        id="chat-panel"
+                    >
+
+                        <h2>
+                            Team Chat
+                        </h2>
+
+                        <p>
+                            Delivery coordination teams are actively discussing deployment instability.
+                        </p>
+
+                    </div>
+
+                    <!-- ========================================= -->
+                    <!-- JIRA -->
+                    <!-- ========================================= -->
+
+                    <div
+                        class="workspace-content"
+                        id="jira-panel"
+                    >
+
+                        <h2>
+                            JIRA Board
+                        </h2>
+
+                        <p>
+                            Blocked Sprint tasks affecting deployment stabilization.
+                        </p>
+
+                    </div>
+
+                    <!-- ========================================= -->
+                    <!-- Queue -->
+                    <!-- ========================================= -->
+
+                    <div
+                        class="workspace-content"
+                        id="queue-panel"
+                    >
+
+                        <h2>
+                            Incident Queue
+                        </h2>
+
+                        <p>
+                            Incident escalation queue volume increasing rapidly.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ===================================================== -->
+        <!-- TEAMS TAB -->
+        <!-- ===================================================== -->
+
+        <section
+            class="content-section horizontal-tab-content"
+            id="teams-tab"
+        >
 
             <h2>
-                Participant Workspace
+                Operational Teams
             </h2>
 
             <div class="card-grid three-column-grid">
 
                 <article class="tool-card">
+
                     <h3>
-                        Mail Center
+                        Development Team
                     </h3>
 
                     <p>
-                        Incident escalation emails waiting for review.
+                        Investigating payment timeout behavior.
                     </p>
+
                 </article>
 
                 <article class="tool-card">
+
                     <h3>
-                        Team Chat
+                        QA Team
                     </h3>
 
                     <p>
-                        Multiple delivery teams requesting coordination support.
+                        Validating deployment regression scenarios.
                     </p>
+
                 </article>
 
                 <article class="tool-card">
+
                     <h3>
-                        JIRA Board
+                        DevOps Team
                     </h3>
 
                     <p>
-                        Sprint execution board showing blocked dependencies.
+                        Monitoring infrastructure deployment stability.
                     </p>
-                </article>
 
-                <article class="tool-card">
-                    <h3>
-                        Incident Queue
-                    </h3>
-
-                    <p>
-                        Production validation issues increasing during release checks.
-                    </p>
-                </article>
-
-                <article class="tool-card">
-                    <h3>
-                        Escalation Review
-                    </h3>
-
-                    <p>
-                        Leadership escalation approval pending.
-                    </p>
-                </article>
-
-                <article class="tool-card">
-                    <h3>
-                        Operational Dashboard
-                    </h3>
-
-                    <p>
-                        Delivery visibility delayed by manual reporting cycles.
-                    </p>
                 </article>
 
             </div>
@@ -201,13 +397,16 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- Interactive Simulation -->
+        <!-- ACTIONS TAB -->
         <!-- ===================================================== -->
 
-        <section class="content-section">
+        <section
+            class="content-section horizontal-tab-content"
+            id="actions-tab"
+        >
 
             <h2>
-                Interactive Simulation Flow
+                Interactive Operational Actions
             </h2>
 
             <!-- ================================================= -->
@@ -251,23 +450,17 @@
             </div>
 
             <!-- ================================================= -->
-            <!-- Steps -->
+            <!-- Simulation Steps -->
             <!-- ================================================= -->
 
             <div class="simulation-steps">
-
-                <!-- ============================================= -->
-                <!-- STEP 1 -->
-                <!-- ============================================= -->
 
                 <div
                     class="simulation-step"
                     id="step-1"
                 >
 
-                    <div class="step-number">
-                        1
-                    </div>
+                    <div class="step-number">1</div>
 
                     <div class="step-content">
 
@@ -276,68 +469,54 @@
                         </h3>
 
                         <p>
-                            Analyze incoming operational escalation
-                            notifications from delivery coordination teams.
+                            Analyze incoming escalation notifications.
                         </p>
 
                         <button
                             class="simulation-button"
                             onclick="completeStep(1)"
                         >
-                            Review Escalation
+                            Complete Action
                         </button>
 
                     </div>
 
                 </div>
-
-                <!-- ============================================= -->
-                <!-- STEP 2 -->
-                <!-- ============================================= -->
 
                 <div
                     class="simulation-step"
                     id="step-2"
                 >
 
-                    <div class="step-number">
-                        2
-                    </div>
+                    <div class="step-number">2</div>
 
                     <div class="step-content">
 
                         <h3>
-                            Coordinate Delivery Teams
+                            Coordinate Teams
                         </h3>
 
                         <p>
-                            Validate operational impact severity
-                            across multiple execution teams.
+                            Validate operational severity across delivery teams.
                         </p>
 
                         <button
                             class="simulation-button"
                             onclick="completeStep(2)"
                         >
-                            Coordinate Teams
+                            Complete Action
                         </button>
 
                     </div>
 
                 </div>
 
-                <!-- ============================================= -->
-                <!-- STEP 3 -->
-                <!-- ============================================= -->
-
                 <div
                     class="simulation-step"
                     id="step-3"
                 >
 
-                    <div class="step-number">
-                        3
-                    </div>
+                    <div class="step-number">3</div>
 
                     <div class="step-content">
 
@@ -346,33 +525,26 @@
                         </h3>
 
                         <p>
-                            Review blocked operational dependencies
-                            affecting deployment stability.
+                            Review blocked deployment dependencies.
                         </p>
 
                         <button
                             class="simulation-button"
                             onclick="completeStep(3)"
                         >
-                            Investigate Dependencies
+                            Complete Action
                         </button>
 
                     </div>
 
                 </div>
 
-                <!-- ============================================= -->
-                <!-- STEP 4 -->
-                <!-- ============================================= -->
-
                 <div
                     class="simulation-step"
                     id="step-4"
                 >
 
-                    <div class="step-number">
-                        4
-                    </div>
+                    <div class="step-number">4</div>
 
                     <div class="step-content">
 
@@ -381,33 +553,26 @@
                         </h3>
 
                         <p>
-                            Coordinate escalation visibility
-                            with operational leadership teams.
+                            Coordinate escalation visibility with leadership.
                         </p>
 
                         <button
                             class="simulation-button"
                             onclick="completeStep(4)"
                         >
-                            Escalate Operational Risk
+                            Complete Action
                         </button>
 
                     </div>
 
                 </div>
 
-                <!-- ============================================= -->
-                <!-- STEP 5 -->
-                <!-- ============================================= -->
-
                 <div
                     class="simulation-step"
                     id="step-5"
                 >
 
-                    <div class="step-number">
-                        5
-                    </div>
+                    <div class="step-number">5</div>
 
                     <div class="step-content">
 
@@ -416,15 +581,14 @@
                         </h3>
 
                         <p>
-                            Analyze delayed coordination visibility
-                            impact across enterprise operations.
+                            Analyze operational execution consequences.
                         </p>
 
                         <button
                             class="simulation-button"
                             onclick="completeStep(5)"
                         >
-                            Review Operational Impact
+                            Complete Action
                         </button>
 
                     </div>
@@ -448,10 +612,8 @@
                 </h3>
 
                 <p>
-                    You experienced how traditional operational
-                    environments rely heavily on manual coordination,
-                    delayed visibility, escalation chains, and reactive
-                    operational response structures.
+                    You experienced reactive operational coordination
+                    within a traditional execution-centered environment.
                 </p>
 
             </div>
@@ -459,21 +621,25 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- Leadership Insight -->
+        <!-- OUTCOMES TAB -->
         <!-- ===================================================== -->
 
-        <section class="content-section">
+        <section
+            class="content-section horizontal-tab-content"
+            id="outcomes-tab"
+        >
 
             <h2>
-                Leadership Observation
+                Operational Outcomes
             </h2>
 
             <blockquote class="insight-block">
 
-                Traditional operational systems often rely on
-                sequential coordination layers, delayed reporting
-                cycles, role-dependent approvals, and reactive
-                operational interpretation.
+                Traditional operational systems often struggle
+                with delayed visibility,
+                fragmented coordination,
+                escalation dependency,
+                and reactive operational interpretation.
 
             </blockquote>
 

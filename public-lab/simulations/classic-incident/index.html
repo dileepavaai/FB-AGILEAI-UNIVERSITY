@@ -20,6 +20,15 @@
         href="/shared/design-authority/css/refinement.css?v=1.0"
     />
 
+    <!-- ========================================================= -->
+    <!-- Simulation Styles -->
+    <!-- ========================================================= -->
+
+    <link
+        rel="stylesheet"
+        href="./simulation.css"
+    />
+
 </head>
 
 <body>
@@ -35,6 +44,10 @@
     <!-- ========================================================= -->
 
     <main class="page-shell">
+
+        <!-- ===================================================== -->
+        <!-- Hero -->
+        <!-- ===================================================== -->
 
         <section class="hero-section">
 
@@ -124,42 +137,60 @@
             <div class="card-grid three-column-grid">
 
                 <article class="tool-card">
-                    <h3>Mail Center</h3>
+                    <h3>
+                        Mail Center
+                    </h3>
+
                     <p>
                         Incident escalation emails waiting for review.
                     </p>
                 </article>
 
                 <article class="tool-card">
-                    <h3>Team Chat</h3>
+                    <h3>
+                        Team Chat
+                    </h3>
+
                     <p>
                         Multiple delivery teams requesting coordination support.
                     </p>
                 </article>
 
                 <article class="tool-card">
-                    <h3>JIRA Board</h3>
+                    <h3>
+                        JIRA Board
+                    </h3>
+
                     <p>
                         Sprint execution board showing blocked dependencies.
                     </p>
                 </article>
 
                 <article class="tool-card">
-                    <h3>Incident Queue</h3>
+                    <h3>
+                        Incident Queue
+                    </h3>
+
                     <p>
                         Production validation issues increasing during release checks.
                     </p>
                 </article>
 
                 <article class="tool-card">
-                    <h3>Escalation Review</h3>
+                    <h3>
+                        Escalation Review
+                    </h3>
+
                     <p>
                         Leadership escalation approval pending.
                     </p>
                 </article>
 
                 <article class="tool-card">
-                    <h3>Operational Dashboard</h3>
+                    <h3>
+                        Operational Dashboard
+                    </h3>
+
                     <p>
                         Delivery visibility delayed by manual reporting cycles.
                     </p>
@@ -170,56 +201,258 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- Simulation Steps -->
+        <!-- Interactive Simulation -->
         <!-- ===================================================== -->
 
         <section class="content-section">
 
             <h2>
-                Simulation Flow
+                Interactive Simulation Flow
             </h2>
+
+            <!-- ================================================= -->
+            <!-- Progress Panel -->
+            <!-- ================================================= -->
+
+            <div class="simulation-progress-panel">
+
+                <div class="progress-header">
+
+                    <div>
+
+                        <h3>
+                            Incident Coordination Progress
+                        </h3>
+
+                        <p id="progress-text">
+                            0 of 5 operational actions completed.
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="simulation-status"
+                        id="simulation-status"
+                    >
+                        Operational State: Active Incident Monitoring
+                    </div>
+
+                </div>
+
+                <div class="progress-track">
+
+                    <div
+                        class="progress-bar"
+                        id="progress-bar"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================================= -->
+            <!-- Steps -->
+            <!-- ================================================= -->
 
             <div class="simulation-steps">
 
-                <div class="simulation-step">
-                    <div class="step-number">1</div>
+                <!-- ============================================= -->
+                <!-- STEP 1 -->
+                <!-- ============================================= -->
+
+                <div
+                    class="simulation-step"
+                    id="step-1"
+                >
+
+                    <div class="step-number">
+                        1
+                    </div>
 
                     <div class="step-content">
-                        Review incoming operational escalation signals.
+
+                        <h3>
+                            Review Escalation Signals
+                        </h3>
+
+                        <p>
+                            Analyze incoming operational escalation
+                            notifications from delivery coordination teams.
+                        </p>
+
+                        <button
+                            class="simulation-button"
+                            onclick="completeStep(1)"
+                        >
+                            Review Escalation
+                        </button>
+
                     </div>
+
                 </div>
 
-                <div class="simulation-step">
-                    <div class="step-number">2</div>
+                <!-- ============================================= -->
+                <!-- STEP 2 -->
+                <!-- ============================================= -->
+
+                <div
+                    class="simulation-step"
+                    id="step-2"
+                >
+
+                    <div class="step-number">
+                        2
+                    </div>
 
                     <div class="step-content">
-                        Coordinate with delivery teams to validate impact severity.
+
+                        <h3>
+                            Coordinate Delivery Teams
+                        </h3>
+
+                        <p>
+                            Validate operational impact severity
+                            across multiple execution teams.
+                        </p>
+
+                        <button
+                            class="simulation-button"
+                            onclick="completeStep(2)"
+                        >
+                            Coordinate Teams
+                        </button>
+
                     </div>
+
                 </div>
 
-                <div class="simulation-step">
-                    <div class="step-number">3</div>
+                <!-- ============================================= -->
+                <!-- STEP 3 -->
+                <!-- ============================================= -->
+
+                <div
+                    class="simulation-step"
+                    id="step-3"
+                >
+
+                    <div class="step-number">
+                        3
+                    </div>
 
                     <div class="step-content">
-                        Investigate blocked dependencies affecting deployment.
+
+                        <h3>
+                            Investigate Dependencies
+                        </h3>
+
+                        <p>
+                            Review blocked operational dependencies
+                            affecting deployment stability.
+                        </p>
+
+                        <button
+                            class="simulation-button"
+                            onclick="completeStep(3)"
+                        >
+                            Investigate Dependencies
+                        </button>
+
                     </div>
+
                 </div>
 
-                <div class="simulation-step">
-                    <div class="step-number">4</div>
+                <!-- ============================================= -->
+                <!-- STEP 4 -->
+                <!-- ============================================= -->
+
+                <div
+                    class="simulation-step"
+                    id="step-4"
+                >
+
+                    <div class="step-number">
+                        4
+                    </div>
 
                     <div class="step-content">
-                        Escalate operational risk to leadership coordination teams.
+
+                        <h3>
+                            Escalate Leadership Risk
+                        </h3>
+
+                        <p>
+                            Coordinate escalation visibility
+                            with operational leadership teams.
+                        </p>
+
+                        <button
+                            class="simulation-button"
+                            onclick="completeStep(4)"
+                        >
+                            Escalate Operational Risk
+                        </button>
+
                     </div>
+
                 </div>
 
-                <div class="simulation-step">
-                    <div class="step-number">5</div>
+                <!-- ============================================= -->
+                <!-- STEP 5 -->
+                <!-- ============================================= -->
+
+                <div
+                    class="simulation-step"
+                    id="step-5"
+                >
+
+                    <div class="step-number">
+                        5
+                    </div>
 
                     <div class="step-content">
-                        Review delayed visibility impact across operational execution.
+
+                        <h3>
+                            Review Operational Impact
+                        </h3>
+
+                        <p>
+                            Analyze delayed coordination visibility
+                            impact across enterprise operations.
+                        </p>
+
+                        <button
+                            class="simulation-button"
+                            onclick="completeStep(5)"
+                        >
+                            Review Operational Impact
+                        </button>
+
                     </div>
+
                 </div>
+
+            </div>
+
+            <!-- ================================================= -->
+            <!-- Completion Banner -->
+            <!-- ================================================= -->
+
+            <div
+                class="completion-banner"
+                id="completion-banner"
+                style="display: none;"
+            >
+
+                <h3>
+                    Simulation Completed
+                </h3>
+
+                <p>
+                    You experienced how traditional operational
+                    environments rely heavily on manual coordination,
+                    delayed visibility, escalation chains, and reactive
+                    operational response structures.
+                </p>
 
             </div>
 
@@ -291,6 +524,12 @@
     <script
         src="/shared/design-authority/js/footer.js?v=1.0">
     </script>
+
+    <!-- ========================================================= -->
+    <!-- Simulation Engine -->
+    <!-- ========================================================= -->
+
+    <script src="./simulation.js"></script>
 
 </body>
 </html>

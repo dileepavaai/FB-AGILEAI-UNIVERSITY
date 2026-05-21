@@ -29,6 +29,7 @@
         }
       ]
     },
+
     {
       "target": "agileai-assessment",
       "public": "public-assessment",
@@ -58,6 +59,7 @@
         }
       ]
     },
+
     {
       "target": "agileai-education",
       "public": "public-edu",
@@ -87,6 +89,7 @@
         }
       ]
     },
+
     {
       "target": "agileai-learn",
       "public": "public-learn",
@@ -116,6 +119,7 @@
         }
       ]
     },
+
     {
       "target": "agileai-certs",
       "public": "public-certs",
@@ -145,6 +149,7 @@
         }
       ]
     },
+
     {
       "target": "agileai-spec",
       "public": "public-spec",
@@ -174,6 +179,7 @@
         }
       ]
     },
+
     {
       "target": "agileai-academy",
       "public": "public-academy",
@@ -205,6 +211,7 @@
         }
       ]
     },
+
     {
       "target": "agileai-portal",
       "public": "public-portal",
@@ -234,6 +241,7 @@
         }
       ]
     },
+
     {
       "target": "agileai-admin",
       "public": "public-admin",
@@ -262,12 +270,44 @@
           ]
         }
       ]
+    },
+
+    {
+      "target": "agileai-lab",
+      "public": "public-lab",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(css|js)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        }
+      ]
     }
   ],
+
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+
   "functions": [
     {
       "source": "functions",

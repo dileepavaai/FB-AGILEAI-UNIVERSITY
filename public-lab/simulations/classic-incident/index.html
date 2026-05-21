@@ -79,7 +79,7 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- Horizontal Operational Tabs -->
+        <!-- Interactive Operational Layers -->
         <!-- ===================================================== -->
 
         <section class="content-section">
@@ -87,38 +87,38 @@
             <div class="horizontal-tabs">
 
                 <button
-                    class="horizontal-tab active-tab"
-                    onclick="openHorizontalTab('scenario-tab')"
+                    class="horizontal-tab"
+                    onclick="toggleSection('scenario-tab', this)"
                 >
-                    Scenario
+                    + Scenario
                 </button>
 
                 <button
                     class="horizontal-tab"
-                    onclick="openHorizontalTab('signals-tab')"
+                    onclick="toggleSection('signals-tab', this)"
                 >
-                    Signals
+                    + Signals
                 </button>
 
                 <button
                     class="horizontal-tab"
-                    onclick="openHorizontalTab('teams-tab')"
+                    onclick="toggleSection('teams-tab', this)"
                 >
-                    Teams
+                    + Teams
                 </button>
 
                 <button
                     class="horizontal-tab"
-                    onclick="openHorizontalTab('actions-tab')"
+                    onclick="toggleSection('actions-tab', this)"
                 >
-                    Actions
+                    + Actions
                 </button>
 
                 <button
                     class="horizontal-tab"
-                    onclick="openHorizontalTab('outcomes-tab')"
+                    onclick="toggleSection('outcomes-tab', this)"
                 >
-                    Outcomes
+                    + Outcomes
                 </button>
 
             </div>
@@ -126,12 +126,13 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- SCENARIO TAB -->
+        <!-- SCENARIO -->
         <!-- ===================================================== -->
 
         <section
-            class="content-section horizontal-tab-content active-content"
+            class="content-section horizontal-tab-content"
             id="scenario-tab"
+            style="display: none;"
         >
 
             <h2>
@@ -193,19 +194,16 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- SIGNALS TAB -->
+        <!-- SIGNALS -->
         <!-- ===================================================== -->
 
         <section
             class="content-section horizontal-tab-content"
             id="signals-tab"
+            style="display: none;"
         >
 
             <div class="simulation-layout">
-
-                <!-- ============================================= -->
-                <!-- Vertical Tabs -->
-                <!-- ============================================= -->
 
                 <aside class="vertical-tabs">
 
@@ -239,15 +237,7 @@
 
                 </aside>
 
-                <!-- ============================================= -->
-                <!-- Workspace -->
-                <!-- ============================================= -->
-
                 <div class="workspace-panel">
-
-                    <!-- ========================================= -->
-                    <!-- Mail -->
-                    <!-- ========================================= -->
 
                     <div
                         class="workspace-content active-workspace"
@@ -258,11 +248,8 @@
                             Mail Center
                         </h2>
 
-                        <p>
-                            Multiple escalation emails are awaiting operational review.
-                        </p>
-
                         <ul>
+
                             <li>
                                 Checkout timeout escalation received from QA.
                             </li>
@@ -274,13 +261,10 @@
                             <li>
                                 Customer escalation visibility delayed.
                             </li>
+
                         </ul>
 
                     </div>
-
-                    <!-- ========================================= -->
-                    <!-- Chat -->
-                    <!-- ========================================= -->
 
                     <div
                         class="workspace-content"
@@ -292,14 +276,10 @@
                         </h2>
 
                         <p>
-                            Delivery coordination teams are actively discussing deployment instability.
+                            Delivery coordination teams are discussing deployment instability.
                         </p>
 
                     </div>
-
-                    <!-- ========================================= -->
-                    <!-- JIRA -->
-                    <!-- ========================================= -->
 
                     <div
                         class="workspace-content"
@@ -311,14 +291,10 @@
                         </h2>
 
                         <p>
-                            Blocked Sprint tasks affecting deployment stabilization.
+                            Multiple blocked tasks are impacting release stability.
                         </p>
 
                     </div>
-
-                    <!-- ========================================= -->
-                    <!-- Queue -->
-                    <!-- ========================================= -->
 
                     <div
                         class="workspace-content"
@@ -330,7 +306,7 @@
                         </h2>
 
                         <p>
-                            Incident escalation queue volume increasing rapidly.
+                            Escalation queue volume increasing rapidly.
                         </p>
 
                     </div>
@@ -342,12 +318,13 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- TEAMS TAB -->
+        <!-- TEAMS -->
         <!-- ===================================================== -->
 
         <section
             class="content-section horizontal-tab-content"
             id="teams-tab"
+            style="display: none;"
         >
 
             <h2>
@@ -375,7 +352,7 @@
                     </h3>
 
                     <p>
-                        Validating deployment regression scenarios.
+                        Validating regression scenarios.
                     </p>
 
                 </article>
@@ -387,7 +364,7 @@
                     </h3>
 
                     <p>
-                        Monitoring infrastructure deployment stability.
+                        Monitoring infrastructure stability.
                     </p>
 
                 </article>
@@ -397,21 +374,18 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- ACTIONS TAB -->
+        <!-- ACTIONS -->
         <!-- ===================================================== -->
 
         <section
             class="content-section horizontal-tab-content"
             id="actions-tab"
+            style="display: none;"
         >
 
             <h2>
                 Interactive Operational Actions
             </h2>
-
-            <!-- ================================================= -->
-            <!-- Progress Panel -->
-            <!-- ================================================= -->
 
             <div class="simulation-progress-panel">
 
@@ -449,16 +423,9 @@
 
             </div>
 
-            <!-- ================================================= -->
-            <!-- Simulation Steps -->
-            <!-- ================================================= -->
-
             <div class="simulation-steps">
 
-                <div
-                    class="simulation-step"
-                    id="step-1"
-                >
+                <div class="simulation-step" id="step-1">
 
                     <div class="step-number">1</div>
 
@@ -467,10 +434,6 @@
                         <h3>
                             Review Escalation Signals
                         </h3>
-
-                        <p>
-                            Analyze incoming escalation notifications.
-                        </p>
 
                         <button
                             class="simulation-button"
@@ -483,10 +446,7 @@
 
                 </div>
 
-                <div
-                    class="simulation-step"
-                    id="step-2"
-                >
+                <div class="simulation-step" id="step-2">
 
                     <div class="step-number">2</div>
 
@@ -495,10 +455,6 @@
                         <h3>
                             Coordinate Teams
                         </h3>
-
-                        <p>
-                            Validate operational severity across delivery teams.
-                        </p>
 
                         <button
                             class="simulation-button"
@@ -511,10 +467,7 @@
 
                 </div>
 
-                <div
-                    class="simulation-step"
-                    id="step-3"
-                >
+                <div class="simulation-step" id="step-3">
 
                     <div class="step-number">3</div>
 
@@ -523,10 +476,6 @@
                         <h3>
                             Investigate Dependencies
                         </h3>
-
-                        <p>
-                            Review blocked deployment dependencies.
-                        </p>
 
                         <button
                             class="simulation-button"
@@ -539,10 +488,7 @@
 
                 </div>
 
-                <div
-                    class="simulation-step"
-                    id="step-4"
-                >
+                <div class="simulation-step" id="step-4">
 
                     <div class="step-number">4</div>
 
@@ -551,10 +497,6 @@
                         <h3>
                             Escalate Leadership Risk
                         </h3>
-
-                        <p>
-                            Coordinate escalation visibility with leadership.
-                        </p>
 
                         <button
                             class="simulation-button"
@@ -567,10 +509,7 @@
 
                 </div>
 
-                <div
-                    class="simulation-step"
-                    id="step-5"
-                >
+                <div class="simulation-step" id="step-5">
 
                     <div class="step-number">5</div>
 
@@ -579,10 +518,6 @@
                         <h3>
                             Review Operational Impact
                         </h3>
-
-                        <p>
-                            Analyze operational execution consequences.
-                        </p>
 
                         <button
                             class="simulation-button"
@@ -597,10 +532,6 @@
 
             </div>
 
-            <!-- ================================================= -->
-            <!-- Completion Banner -->
-            <!-- ================================================= -->
-
             <div
                 class="completion-banner"
                 id="completion-banner"
@@ -613,7 +544,7 @@
 
                 <p>
                     You experienced reactive operational coordination
-                    within a traditional execution-centered environment.
+                    inside a traditional execution-centered environment.
                 </p>
 
             </div>
@@ -621,12 +552,13 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- OUTCOMES TAB -->
+        <!-- OUTCOMES -->
         <!-- ===================================================== -->
 
         <section
             class="content-section horizontal-tab-content"
             id="outcomes-tab"
+            style="display: none;"
         >
 
             <h2>

@@ -6,7 +6,7 @@
   <!-- =========================================================
        AGILE AI LEADERSHIP LAB
        Experience Intelligence Layer
-       Version: 3.1
+       Version: 3.2
        Governance State: LAB SURFACE STABILIZED
        Hosting Surface: lab.agileai.university
 
@@ -17,6 +17,7 @@
        - Canonical institutional shell restored
        - Absolute shared asset loading enforced
        - Header/Footer injection standardized
+       - SURFACE_CONFIG restored for shared header engine
   ========================================================= -->
 
   <!-- =========================================================
@@ -619,6 +620,48 @@
   ========================================================= -->
 
   <footer id="site-footer"></footer>
+
+  <!-- =========================================================
+       Shared Surface Configuration
+       Required By Config-Driven Header Engine
+  ========================================================= -->
+
+  <script>
+
+    window.SURFACE_CONFIG = {
+
+      brand: {
+        label: "Agile AI Leadership Lab",
+        href: "https://lab.agileai.university/"
+      },
+
+      navigation: [
+
+        {
+          label: "Institutional Site",
+          href: "https://agileai.university/"
+        },
+
+        {
+          label: "Knowledge Surface",
+          href: "https://edu.agileai.university/"
+        },
+
+        {
+          label: "Leadership Lab",
+          href: "https://lab.agileai.university/"
+        },
+
+        {
+          label: "Portal",
+          href: "https://portal.agileai.university/"
+        }
+
+      ]
+
+    };
+
+  </script>
 
   <!-- =========================================================
        Canonical Institutional Header Injection

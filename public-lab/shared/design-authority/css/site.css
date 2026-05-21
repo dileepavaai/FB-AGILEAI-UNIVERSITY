@@ -1,0 +1,406 @@
+/* =========================================
+   AgileAI Public Surface — Institutional CSS
+   Governance Baseline: v12.0
+   Current Version: v14.5 (reCAPTCHA Structural Width Neutralization)
+   Status: LOCKED
+   Scope: Shared Design Authority Layer
+
+   Summary:
+   - Breadcrumb structural targeting (no class dependency)
+   - Footer institutional stabilization (light + dark)
+   - Hamburger rebuilt using true center transform model
+   - Perfect symmetrical X (no drift / no double-line artifact)
+   - Mobile overlay + backdrop preserved
+   - Mobile padding reduced (32px → 16px)
+   - reCAPTCHA structural width neutralization (no scaling)
+   - Prevents iframe clipping on portrait mobile devices
+   - Preserves intrinsic 304px width
+   - Preserves tap accuracy
+   - No layout, navigation logic, or DOM structure changes
+========================================= */
+
+
+/* =========================
+   ROOT VARIABLES
+========================= */
+
+:root {
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --border-subtle: #e6e6e6;
+  --background: #ffffff;
+  --surface-muted: #f6f6f6;
+  --surface-elevated: rgba(255,255,255,0.96);
+
+  --max-width: 720px;
+  --header-height: 80px;
+
+  --transition-speed-fast: 120ms;
+  --transition-speed-standard: 180ms;
+  --motion-standard: cubic-bezier(.4,0,.2,1);
+
+  --link-color: #2c4f68;
+  --link-hover: #1d3648;
+}
+
+:root[data-theme="dark"] {
+  --text-primary: #f2f2f2;
+  --text-secondary: #c2c7d0;
+  --border-subtle: #2a2a2a;
+  --background: #0f1115;
+  --surface-muted: #161b24;
+  --surface-elevated: rgba(27,31,38,0.96);
+
+  --link-color: #8fb9dd;
+  --link-hover: #b7d4f0;
+}
+
+
+/* =========================
+   BASE
+========================= */
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.72;
+  transition:
+    background var(--transition-speed-standard),
+    color var(--transition-speed-standard);
+}
+
+body.nav-open { overflow: hidden; }
+
+
+/* =========================
+   HEADER
+========================= */
+
+#header { width: 100%; }
+
+.site-header {
+  width: 100%;
+  height: var(--header-height);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--background);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.header-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-header .brand a {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.site-header .brand a:hover { opacity: 0.85; }
+
+
+/* =========================
+   NAVIGATION (DESKTOP)
+========================= */
+
+.main-nav { position: relative; }
+
+.nav-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+
+.main-nav a {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.25px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: opacity var(--transition-speed-fast) var(--motion-standard);
+}
+
+.main-nav a:hover { opacity: 0.8; }
+
+.main-nav a.is-active {
+  font-weight: 600;
+  position: relative;
+}
+
+.main-nav a.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+
+/* =========================
+   LAYOUT
+========================= */
+
+main {
+  max-width: var(--max-width);
+  margin: 140px auto 0;
+  padding: 0 32px 80px;
+}
+
+
+/* =========================
+   BREADCRUMB — Structural Target
+========================= */
+
+main > *:first-child a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  font-size: 0.95rem;
+}
+
+main > *:first-child a:hover {
+  color: var(--text-primary);
+}
+
+:root[data-theme="dark"] main > *:first-child a {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="dark"] main > *:first-child a:hover {
+  color: var(--text-primary);
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.site-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 72px 32px;
+  background: var(--surface-muted);
+}
+
+.footer-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  color: var(--text-secondary);
+}
+
+.site-footer a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color var(--transition-speed-fast);
+}
+
+.site-footer a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+:root[data-theme="dark"] .site-footer {
+  background: rgba(20,26,38,0.95);
+}
+
+
+/* =========================
+   THEME TOGGLE
+========================= */
+
+.theme-control button {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+
+/* =========================
+   HAMBURGER — True Center Model
+========================= */
+
+.site-header .nav-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 28px;
+  height: 24px;
+  position: relative;
+}
+
+.nav-hamburger span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--text-primary);
+  top: 50%;
+  transform-origin: center;
+  transition:
+    transform var(--transition-speed-standard) var(--motion-standard),
+    opacity var(--transition-speed-fast);
+}
+
+.nav-hamburger span:nth-child(1) { transform: translateY(-8px); }
+.nav-hamburger span:nth-child(2) { transform: translateY(0); }
+.nav-hamburger span:nth-child(3) { transform: translateY(8px); }
+
+body.nav-open .nav-hamburger span:nth-child(1) {
+  transform: translateY(0) rotate(45deg);
+}
+
+body.nav-open .nav-hamburger span:nth-child(2) {
+  opacity: 0;
+}
+
+body.nav-open .nav-hamburger span:nth-child(3) {
+  transform: translateY(0) rotate(-45deg);
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+  /*
+     Portrait viewport math:
+
+     Approx mobile width: 360px
+     Original padding: 32px each side → 296px usable
+     reCAPTCHA intrinsic width: 304px
+
+     Adjust padding to 16px per side → 328px usable
+     Neutralizes clipping without scaling or scroll.
+  */
+  main {
+    padding: 0 16px 80px;
+  }
+
+  .header-inner { padding: 0 20px; }
+
+  .site-header .nav-hamburger { display: block; }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.28);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-speed-standard);
+    z-index: 5500;
+  }
+
+  body.nav-open::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .main-nav {
+    position: fixed;
+    top: calc(var(--header-height) - 1px);
+    left: 0;
+    right: 0;
+    width: 100vw;
+    background: var(--surface-elevated);
+    border-top: 1px solid var(--border-subtle);
+    padding: 28px 24px;
+    z-index: 6000;
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition:
+      opacity var(--transition-speed-standard),
+      transform var(--transition-speed-standard);
+  }
+
+  body.nav-open .main-nav {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .nav-tree {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+  }
+
+  .nav-tree li { width: 100%; }
+
+  .nav-tree a {
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .nav-tree a.is-active {
+    font-weight: 600;
+    border-bottom: 1px solid var(--text-primary);
+    padding-bottom: 6px;
+  }
+
+  /*
+     reCAPTCHA — Structural Width Neutralization
+     Expands container beyond padding boundary
+     while preserving intrinsic 304px width.
+  */
+
+  .verify-recaptcha {
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    margin-right: -16px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 4px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .g-recaptcha {
+    min-width: 304px;
+    transform: none !important;
+    position: relative;
+    z-index: 10;
+  }
+
+  body:not(.nav-open)::before {
+    pointer-events: none !important;
+  }
+}

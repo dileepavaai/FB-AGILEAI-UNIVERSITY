@@ -1,0 +1,317 @@
+/* =========================================================
+   Agile AI Leadership Lab
+   Operational Experience Layer
+
+   Version: 1.4
+   Governance State: STABILIZED
+   Refinement State: EXPERIENCE RHYTHM CALIBRATION
+
+   Purpose:
+   - Stabilized operational experience styling
+   - Unified navigation architecture
+   - Institutional interaction consistency
+   - Responsive operational layout refinement
+   - Experience rhythm calibration
+   - Reduced excessive vertical drift
+========================================================= */
+
+/* =========================================================
+   Hero Section
+========================================================= */
+
+.lab-hero {
+
+  /* Reduced excessive top spacing */
+  padding: 2.75rem 0 3rem;
+}
+
+.lab-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+}
+
+/* =========================================================
+   Top Environment Navigation
+   Experience Transition Layer
+========================================================= */
+
+.lab-top-nav,
+.lab-top-navigation {
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 1rem;
+
+  /* Tightened experience rhythm */
+  margin: 0.75rem 0 2.5rem;
+}
+
+.lab-top-nav a,
+.lab-top-navigation a {
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.75rem 1.3rem;
+
+  border-radius: 999px;
+  border: 1px solid rgba(120,120,120,0.18);
+
+  text-decoration: none;
+  color: inherit;
+
+  background: transparent;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease,
+    opacity 0.2s ease;
+
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.lab-top-nav a:hover,
+.lab-top-navigation a:hover {
+
+  transform: translateY(-2px);
+
+  border-color: rgba(120,120,120,0.35);
+
+  background: rgba(255,255,255,0.04);
+}
+
+/* =========================================================
+   Leadership Lab Navigation Links
+   Institutional Navigation Layer
+========================================================= */
+
+.lab-navigation-group {
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 1.5rem;
+
+  margin-top: 2rem;
+}
+
+.lab-navigation-link,
+.lab-nav-link {
+
+  display: inline-block;
+
+  color: inherit;
+  text-decoration: none;
+
+  border-bottom: 1px solid rgba(80,80,80,0.35);
+
+  padding-bottom: 0.15rem;
+
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.lab-navigation-link:hover,
+.lab-nav-link:hover {
+
+  opacity: 0.7;
+
+  border-color: rgba(80,80,80,0.6);
+}
+
+/* =========================================================
+   Operational Grid
+========================================================= */
+
+.lab-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(280px, 1fr));
+
+  gap: 1.5rem;
+
+  margin-top: 2rem;
+}
+
+.lab-card {
+
+  border: 1px solid rgba(120,120,120,0.18);
+
+  border-radius: 14px;
+
+  padding: 1.5rem;
+
+  background: rgba(255,255,255,0.03);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.lab-card:hover {
+
+  transform: translateY(-3px);
+
+  border-color: rgba(120,120,120,0.35);
+}
+
+.lab-card h3 {
+
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* =========================================================
+   Operational Signal States
+========================================================= */
+
+.signal-state {
+
+  display: inline-block;
+
+  padding: 0.3rem 0.7rem;
+
+  border-radius: 999px;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.signal-state.stable {
+  background: rgba(0,180,120,0.12);
+}
+
+.signal-state.warning {
+  background: rgba(255,180,0,0.12);
+}
+
+.signal-state.critical {
+  background: rgba(255,80,80,0.12);
+}
+
+/* =========================================================
+   Operational Intelligence Panels
+========================================================= */
+
+.operational-panel {
+
+  border-left: 4px solid rgba(120,120,120,0.25);
+
+  padding-left: 1.25rem;
+
+  margin: 2rem 0;
+}
+
+/* =========================================================
+   Operational Flow Architecture
+========================================================= */
+
+.environment-flow {
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 1rem;
+
+  margin-top: 2rem;
+}
+
+.environment-node {
+
+  padding: 1rem 1.2rem;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(120,120,120,0.2);
+
+  min-width: 180px;
+
+  text-align: center;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.environment-node:hover {
+
+  transform: translateY(-2px);
+
+  border-color: rgba(120,120,120,0.35);
+}
+
+.environment-node strong {
+
+  display: block;
+
+  margin-bottom: 0.5rem;
+}
+
+/* =========================================================
+   Leadership Narrative Highlight
+========================================================= */
+
+.lab-highlight {
+
+  font-size: 1.1rem;
+
+  line-height: 1.7;
+
+  margin: 2rem 0;
+}
+
+/* =========================================================
+   Responsive Stabilization
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .lab-hero {
+
+    padding: 2.25rem 0 2rem;
+  }
+
+  .lab-top-nav,
+  .lab-top-navigation {
+
+    flex-direction: column;
+
+    gap: 0.8rem;
+
+    margin: 0.75rem 0 2rem;
+  }
+
+  .lab-top-nav a,
+  .lab-top-navigation a {
+
+    width: 100%;
+  }
+
+  .lab-navigation-group {
+
+    flex-direction: column;
+
+    gap: 1rem;
+  }
+
+  .environment-flow {
+
+    flex-direction: column;
+  }
+
+  .environment-node {
+
+    width: 100%;
+  }
+}

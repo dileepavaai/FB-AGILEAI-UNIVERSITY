@@ -335,180 +335,74 @@
             </p>
 
             <!-- ================================================= -->
-            <!-- Signal Cards -->
+            <!-- Signal Accordion -->
             <!-- ================================================= -->
 
-            <div class="card-grid four-column-grid">
+            <div class="signal-accordion">
 
                 <!-- ============================================= -->
                 <!-- Mail Center -->
                 <!-- ============================================= -->
 
-                <article
-                    class="tool-card signal-card"
-                    onclick="openVerticalTab('mail-panel')"
-                >
+                <div class="info-card">
 
-                    <h3>
-                        Mail Center
-                    </h3>
+                    <button
+                        class="accordion-button"
+                        onclick="toggleAccordion('mail-content', this)"
+                    >
+                        + Mail Center
+                    </button>
 
-                    <p>
-                        Customer escalations,
-                        leadership concerns,
-                        and delivery pressure signals.
-                    </p>
+                    <div
+                        class="accordion-content"
+                        id="mail-content"
+                        style="display: none;"
+                    >
 
-                </article>
+                        <div class="info-card">
 
-                <!-- ============================================= -->
-                <!-- Team Chat -->
-                <!-- ============================================= -->
+                            <h3>
+                                Customer Escalation
+                            </h3>
 
-                <article
-                    class="tool-card signal-card"
-                    onclick="openVerticalTab('chat-panel')"
-                >
+                            <p>
 
-                    <h3>
-                        Team Chat
-                    </h3>
+                                Subject:
+                                URGENT — Rollout Delay Impact
 
-                    <p>
-                        Operational coordination discussions
-                        across delivery teams.
-                    </p>
+                            </p>
 
-                </article>
+                            <p>
 
-                <!-- ============================================= -->
-                <!-- JIRA Board -->
-                <!-- ============================================= -->
+                                “The customer onboarding rollout
+                                scheduled for California enterprise clients
+                                has been delayed again.
+                                We require immediate operational visibility
+                                regarding the blocked dependencies.”
 
-                <article
-                    class="tool-card signal-card"
-                    onclick="openVerticalTab('jira-panel')"
-                >
+                            </p>
 
-                    <h3>
-                        JIRA Board
-                    </h3>
+                            <p>
+                                Priority: HIGH
+                            </p>
 
-                    <p>
-                        Delivery dependency blockers
-                        affecting rollout execution timelines.
-                    </p>
+                        </div>
 
-                </article>
+                        <div class="info-card">
 
-                <!-- ============================================= -->
-                <!-- Incident Queue -->
-                <!-- ============================================= -->
+                            <h3>
+                                Leadership Visibility Concern
+                            </h3>
 
-                <article
-                    class="tool-card signal-card"
-                    onclick="openVerticalTab('queue-panel')"
-                >
+                            <p>
 
-                    <h3>
-                        Incident Queue
-                    </h3>
+                                Executive leadership is requesting
+                                operational status clarification
+                                due to increasing escalation volume.
 
-                    <p>
-                        Escalation queue growth
-                        and operational incident pressure visibility.
-                    </p>
+                            </p>
 
-                </article>
-
-            </div>
-
-            <!-- ================================================= -->
-            <!-- Workspace -->
-            <!-- ================================================= -->
-
-            <div class="workspace-panel simulation-workspace">
-
-                <!-- ============================================= -->
-                <!-- Default Workspace -->
-                <!-- ============================================= -->
-
-                <div
-                    class="workspace-content active-workspace"
-                    id="default-panel"
-                >
-
-                    <h3>
-                        Select an Operational Signal
-                    </h3>
-
-                    <p>
-
-                        Click any operational signal card above
-                        to investigate fragmented operational visibility,
-                        escalation pressure,
-                        coordination dependency,
-                        and delivery execution instability.
-
-                    </p>
-
-                </div>
-
-                <!-- ============================================= -->
-                <!-- Mail Center -->
-                <!-- ============================================= -->
-
-                <div
-                    class="workspace-content"
-                    id="mail-panel"
-                >
-
-                    <h2>
-                        Mail Center
-                    </h2>
-
-                    <div class="info-card">
-
-                        <h3>
-                            Customer Escalation
-                        </h3>
-
-                        <p>
-
-                            Subject:
-                            URGENT — Rollout Delay Impact
-
-                        </p>
-
-                        <p>
-
-                            “The customer onboarding rollout
-                            scheduled for California enterprise clients
-                            has been delayed again.
-                            We require immediate operational visibility
-                            regarding the blocked dependencies.”
-
-                        </p>
-
-                        <p>
-                            Priority: HIGH
-                        </p>
-
-                    </div>
-
-                    <div class="info-card">
-
-                        <h3>
-                            Leadership Visibility Concern
-                        </h3>
-
-                        <p>
-
-                            Executive leadership is requesting
-                            operational status clarification
-                            due to increasing escalation volume.
-
-                        </p>
+                        </div>
 
                     </div>
 
@@ -518,44 +412,52 @@
                 <!-- Team Chat -->
                 <!-- ============================================= -->
 
-                <div
-                    class="workspace-content"
-                    id="chat-panel"
-                >
+                <div class="info-card">
 
-                    <h2>
-                        Team Chat
-                    </h2>
+                    <button
+                        class="accordion-button"
+                        onclick="toggleAccordion('chat-content', this)"
+                    >
+                        + Team Chat
+                    </button>
 
-                    <div class="info-card">
+                    <div
+                        class="accordion-content"
+                        id="chat-content"
+                        style="display: none;"
+                    >
 
-                        <h3>
-                            Delivery Coordination Discussion
-                        </h3>
+                        <div class="info-card">
 
-                        <p>
+                            <h3>
+                                Delivery Coordination Discussion
+                            </h3>
 
-                            DevOps:
-                            “Deployment approval pending
-                            due to unresolved infrastructure dependency.”
+                            <p>
 
-                        </p>
+                                DevOps:
+                                “Deployment approval pending
+                                due to unresolved infrastructure dependency.”
 
-                        <p>
+                            </p>
 
-                            QA Team:
-                            “Regression validation delayed
-                            because the release branch is unstable.”
+                            <p>
 
-                        </p>
+                                QA Team:
+                                “Regression validation delayed
+                                because the release branch is unstable.”
 
-                        <p>
+                            </p>
 
-                            Delivery Lead:
-                            “Customer rollout timelines
-                            may slip further if escalation continues.”
+                            <p>
 
-                        </p>
+                                Delivery Lead:
+                                “Customer rollout timelines
+                                may slip further if escalation continues.”
+
+                            </p>
+
+                        </div>
 
                     </div>
 
@@ -565,40 +467,48 @@
                 <!-- JIRA Board -->
                 <!-- ============================================= -->
 
-                <div
-                    class="workspace-content"
-                    id="jira-panel"
-                >
+                <div class="info-card">
 
-                    <h2>
-                        JIRA Board
-                    </h2>
+                    <button
+                        class="accordion-button"
+                        onclick="toggleAccordion('jira-content', this)"
+                    >
+                        + JIRA Board
+                    </button>
 
-                    <div class="info-card">
+                    <div
+                        class="accordion-content"
+                        id="jira-content"
+                        style="display: none;"
+                    >
 
-                        <h3>
-                            Blocked Operational Tasks
-                        </h3>
+                        <div class="info-card">
 
-                        <ul>
+                            <h3>
+                                Blocked Operational Tasks
+                            </h3>
 
-                            <li>
-                                Payment Service Migration — BLOCKED
-                            </li>
+                            <ul>
 
-                            <li>
-                                Customer Rollout Validation — BLOCKED
-                            </li>
+                                <li>
+                                    Payment Service Migration — BLOCKED
+                                </li>
 
-                            <li>
-                                Infrastructure Approval Review — DELAYED
-                            </li>
+                                <li>
+                                    Customer Rollout Validation — BLOCKED
+                                </li>
 
-                            <li>
-                                Release Stabilization Review — IN PROGRESS
-                            </li>
+                                <li>
+                                    Infrastructure Approval Review — DELAYED
+                                </li>
 
-                        </ul>
+                                <li>
+                                    Release Stabilization Review — IN PROGRESS
+                                </li>
+
+                            </ul>
+
+                        </div>
 
                     </div>
 
@@ -608,40 +518,48 @@
                 <!-- Incident Queue -->
                 <!-- ============================================= -->
 
-                <div
-                    class="workspace-content"
-                    id="queue-panel"
-                >
+                <div class="info-card">
 
-                    <h2>
-                        Incident Queue
-                    </h2>
+                    <button
+                        class="accordion-button"
+                        onclick="toggleAccordion('queue-content', this)"
+                    >
+                        + Incident Queue
+                    </button>
 
-                    <div class="info-card">
+                    <div
+                        class="accordion-content"
+                        id="queue-content"
+                        style="display: none;"
+                    >
 
-                        <h3>
-                            Operational Escalation Queue
-                        </h3>
+                        <div class="info-card">
 
-                        <ul>
+                            <h3>
+                                Operational Escalation Queue
+                            </h3>
 
-                            <li>
-                                Delivery escalation queue volume increasing rapidly
-                            </li>
+                            <ul>
 
-                            <li>
-                                Coordination response delays observed
-                            </li>
+                                <li>
+                                    Delivery escalation queue volume increasing rapidly
+                                </li>
 
-                            <li>
-                                Leadership escalation requests pending
-                            </li>
+                                <li>
+                                    Coordination response delays observed
+                                </li>
 
-                            <li>
-                                Customer pressure level elevated
-                            </li>
+                                <li>
+                                    Leadership escalation requests pending
+                                </li>
 
-                        </ul>
+                                <li>
+                                    Customer pressure level elevated
+                                </li>
+
+                            </ul>
+
+                        </div>
 
                     </div>
 

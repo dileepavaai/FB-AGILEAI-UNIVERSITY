@@ -154,46 +154,46 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- Interactive Operational Layers -->
+        <!-- Main Operational Workspace Tabs -->
         <!-- ===================================================== -->
 
         <section class="content-section">
 
-            <div class="horizontal-tabs">
+            <div class="workspace-tab-row">
 
                 <button
-                    class="horizontal-tab"
-                    onclick="toggleSection('scenario-tab', this)"
+                    class="workspace-tab active-workspace-tab"
+                    onclick="openWorkspaceTab('scenario-tab', this)"
                 >
-                    + Scenario
+                    Scenario
                 </button>
 
                 <button
-                    class="horizontal-tab"
-                    onclick="toggleSection('signals-tab', this)"
+                    class="workspace-tab"
+                    onclick="openWorkspaceTab('signals-tab', this)"
                 >
-                    + Signals
+                    Signals
                 </button>
 
                 <button
-                    class="horizontal-tab"
-                    onclick="toggleSection('teams-tab', this)"
+                    class="workspace-tab"
+                    onclick="openWorkspaceTab('teams-tab', this)"
                 >
-                    + Teams
+                    Teams
                 </button>
 
                 <button
-                    class="horizontal-tab"
-                    onclick="toggleSection('actions-tab', this)"
+                    class="workspace-tab"
+                    onclick="openWorkspaceTab('actions-tab', this)"
                 >
-                    + Actions
+                    Actions
                 </button>
 
                 <button
-                    class="horizontal-tab"
-                    onclick="toggleSection('outcomes-tab', this)"
+                    class="workspace-tab"
+                    onclick="openWorkspaceTab('outcomes-tab', this)"
                 >
-                    + Outcomes
+                    Outcomes
                 </button>
 
             </div>
@@ -205,9 +205,8 @@
         <!-- ===================================================== -->
 
         <section
-            class="content-section horizontal-tab-content"
+            class="content-section workspace-panel active-workspace-panel"
             id="scenario-tab"
-            style="display: none;"
         >
 
             <h2>
@@ -304,9 +303,8 @@
         <!-- ===================================================== -->
 
         <section
-            class="content-section horizontal-tab-content"
+            class="content-section workspace-panel"
             id="signals-tab"
-            style="display: none;"
         >
 
             <h2>
@@ -401,136 +399,6 @@
 
             </div>
 
-            <!-- ================================================= -->
-            <!-- Team Chat Workspace -->
-            <!-- ================================================= -->
-
-            <div
-                class="workspace-panel"
-                id="chat-workspace"
-            >
-
-                <div class="info-card">
-
-                    <h3>
-                        Delivery Coordination Discussion
-                    </h3>
-
-                    <p>
-                        <strong>DevOps:</strong>
-                    </p>
-
-                    <p>
-
-                        “Deployment approval pending
-                        due to unresolved infrastructure dependency.”
-
-                    </p>
-
-                    <p>
-                        <strong>QA Team:</strong>
-                    </p>
-
-                    <p>
-
-                        “Regression validation delayed
-                        because the release branch is unstable.”
-
-                    </p>
-
-                    <p>
-                        <strong>Delivery Lead:</strong>
-                    </p>
-
-                    <p>
-
-                        “Customer rollout timelines
-                        may slip further if escalation continues.”
-
-                    </p>
-
-                </div>
-
-            </div>
-
-            <!-- ================================================= -->
-            <!-- JIRA Workspace -->
-            <!-- ================================================= -->
-
-            <div
-                class="workspace-panel"
-                id="jira-workspace"
-            >
-
-                <div class="info-card">
-
-                    <h3>
-                        Blocked Operational Tasks
-                    </h3>
-
-                    <ul>
-
-                        <li>
-                            Payment Service Migration — BLOCKED
-                        </li>
-
-                        <li>
-                            Customer Rollout Validation — BLOCKED
-                        </li>
-
-                        <li>
-                            Infrastructure Approval Review — DELAYED
-                        </li>
-
-                        <li>
-                            Release Stabilization Review — IN PROGRESS
-                        </li>
-
-                    </ul>
-
-                </div>
-
-            </div>
-
-            <!-- ================================================= -->
-            <!-- Incident Queue Workspace -->
-            <!-- ================================================= -->
-
-            <div
-                class="workspace-panel"
-                id="queue-workspace"
-            >
-
-                <div class="info-card">
-
-                    <h3>
-                        Operational Escalation Queue
-                    </h3>
-
-                    <ul>
-
-                        <li>
-                            Delivery escalation queue volume increasing rapidly
-                        </li>
-
-                        <li>
-                            Coordination response delays observed
-                        </li>
-
-                        <li>
-                            Leadership escalation requests pending
-                        </li>
-
-                        <li>
-                            Customer pressure level elevated
-                        </li>
-
-                    </ul>
-
-                </div>
-
-            </div>
-
         </section>
 
         <!-- ===================================================== -->
@@ -538,9 +406,8 @@
         <!-- ===================================================== -->
 
         <section
-            class="content-section horizontal-tab-content"
+            class="content-section workspace-panel"
             id="teams-tab"
-            style="display: none;"
         >
 
             <h2>
@@ -594,9 +461,8 @@
         <!-- ===================================================== -->
 
         <section
-            class="content-section horizontal-tab-content"
+            class="content-section workspace-panel"
             id="actions-tab"
-            style="display: none;"
         >
 
             <h2>
@@ -647,9 +513,8 @@
         <!-- ===================================================== -->
 
         <section
-            class="content-section horizontal-tab-content"
+            class="content-section workspace-panel"
             id="outcomes-tab"
-            style="display: none;"
         >
 
             <h2>

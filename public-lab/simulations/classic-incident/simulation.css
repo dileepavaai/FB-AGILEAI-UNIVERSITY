@@ -44,38 +44,7 @@
 }
 
 /* =========================================================
-   Horizontal Simulation Tabs
-========================================================= */
-
-.horizontal-tabs {
-
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 24px;
-    margin-bottom: 24px;
-
-}
-
-.horizontal-tab {
-
-    padding: 10px 18px;
-    border: 1px solid #222222;
-    background: #f5f5f5;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-}
-
-.horizontal-tab:hover {
-
-    background: #222222;
-    color: #ffffff;
-
-}
-
-/* =========================================================
-   Workspace Tabs
+   Main Workspace Tabs
 ========================================================= */
 
 .workspace-tab-row {
@@ -90,11 +59,13 @@
 
 .workspace-tab {
 
-    padding: 10px 18px;
+    padding: 12px 22px;
     border: 1px solid #222222;
-    background: #f5f5f5;
+    background: #ffffff;
+    color: #111111;
     cursor: pointer;
     transition: all 0.2s ease;
+    font-size: 1rem;
 
 }
 
@@ -134,7 +105,7 @@
 
 .info-card {
 
-    padding: 1.5rem;
+    padding: 1.75rem;
     border: 1px solid #dcdcdc;
     border-radius: 1rem;
     background: #fafafa;
@@ -144,7 +115,7 @@
 
 .tool-card {
 
-    padding: 1.5rem;
+    padding: 1.75rem;
     border: 1px solid #dcdcdc;
     border-radius: 1rem;
     background: #fafafa;
@@ -172,12 +143,25 @@
 }
 
 /* =========================================================
+   Section Introduction
+========================================================= */
+
+.section-intro {
+
+    max-width: 900px;
+    line-height: 1.9;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+
+}
+
+/* =========================================================
    Progress Panel
 ========================================================= */
 
 .simulation-progress-panel {
 
-    padding: 1.5rem;
+    padding: 1.75rem;
     border: 1px solid #dcdcdc;
     border-radius: 1rem;
     background: #fafafa;

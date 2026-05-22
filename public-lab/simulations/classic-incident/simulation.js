@@ -30,7 +30,7 @@ function toggleSection(sectionId, buttonElement) {
     });
 
     /* =====================================================
-       Reset All Buttons
+       Reset All Horizontal Tabs
     ===================================================== */
 
     const allButtons =
@@ -55,6 +55,78 @@ function toggleSection(sectionId, buttonElement) {
 
         buttonElement.innerHTML =
             buttonElement.innerHTML.replace("+", "−");
+
+    }
+
+}
+
+/* =========================================================
+   Operational Workspace Tabs
+========================================================= */
+
+function openWorkspaceTab(
+    panelId,
+    buttonElement
+) {
+
+    /* =====================================================
+       Hide All Workspace Panels
+    ===================================================== */
+
+    const allPanels =
+        document.querySelectorAll(
+            ".workspace-panel"
+        );
+
+    allPanels.forEach((panel) => {
+
+        panel.classList.remove(
+            "active-workspace-panel"
+        );
+
+    });
+
+    /* =====================================================
+       Reset All Workspace Tabs
+    ===================================================== */
+
+    const allTabs =
+        document.querySelectorAll(
+            ".workspace-tab"
+        );
+
+    allTabs.forEach((tab) => {
+
+        tab.classList.remove(
+            "active-workspace-tab"
+        );
+
+    });
+
+    /* =====================================================
+       Activate Selected Workspace Panel
+    ===================================================== */
+
+    const selectedPanel =
+        document.getElementById(panelId);
+
+    if (selectedPanel) {
+
+        selectedPanel.classList.add(
+            "active-workspace-panel"
+        );
+
+    }
+
+    /* =====================================================
+       Activate Selected Workspace Tab
+    ===================================================== */
+
+    if (buttonElement) {
+
+        buttonElement.classList.add(
+            "active-workspace-tab"
+        );
 
     }
 
@@ -208,71 +280,6 @@ function updateProgress() {
                 "Operational State: Incident Stabilized";
 
         }
-
-    }
-
-}
-
-/* =========================================================
-   Operational Signal Accordion Engine
-========================================================= */
-
-function toggleAccordion(
-    contentId,
-    buttonElement
-) {
-
-    const content =
-        document.getElementById(contentId);
-
-    if (!content) {
-        return;
-    }
-
-    const isVisible =
-        content.style.display === "block";
-
-    /* =====================================================
-       Close All Accordion Sections
-    ===================================================== */
-
-    const allContents =
-        document.querySelectorAll(
-            ".accordion-content"
-        );
-
-    allContents.forEach((section) => {
-
-        section.style.display = "none";
-
-    });
-
-    /* =====================================================
-       Reset All Accordion Buttons
-    ===================================================== */
-
-    const allButtons =
-        document.querySelectorAll(
-            ".accordion-button"
-        );
-
-    allButtons.forEach((button) => {
-
-        button.innerHTML =
-            button.innerHTML.replace("−", "+");
-
-    });
-
-    /* =====================================================
-       Open Selected Accordion
-    ===================================================== */
-
-    if (!isVisible) {
-
-        content.style.display = "block";
-
-        buttonElement.innerHTML =
-            buttonElement.innerHTML.replace("+", "−");
 
     }
 

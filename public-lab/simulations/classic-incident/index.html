@@ -327,49 +327,48 @@
             </p>
 
             <!-- ================================================= -->
-            <!-- Horizontal Signal Buttons -->
+            <!-- Workspace Tabs -->
             <!-- ================================================= -->
 
-            <div class="horizontal-tabs">
+            <div class="workspace-tab-row">
 
                 <button
-                    class="accordion-button"
-                    onclick="toggleAccordion('mail-content', this)"
+                    class="workspace-tab active-workspace-tab"
+                    onclick="openWorkspaceTab('mail-workspace', this)"
                 >
-                    + Mail Center
+                    Mail Center
                 </button>
 
                 <button
-                    class="accordion-button"
-                    onclick="toggleAccordion('chat-content', this)"
+                    class="workspace-tab"
+                    onclick="openWorkspaceTab('chat-workspace', this)"
                 >
-                    + Team Chat
+                    Team Chat
                 </button>
 
                 <button
-                    class="accordion-button"
-                    onclick="toggleAccordion('jira-content', this)"
+                    class="workspace-tab"
+                    onclick="openWorkspaceTab('jira-workspace', this)"
                 >
-                    + JIRA Board
+                    JIRA Board
                 </button>
 
                 <button
-                    class="accordion-button"
-                    onclick="toggleAccordion('queue-content', this)"
+                    class="workspace-tab"
+                    onclick="openWorkspaceTab('queue-workspace', this)"
                 >
-                    + Incident Queue
+                    Incident Queue
                 </button>
 
             </div>
 
             <!-- ================================================= -->
-            <!-- Mail Center -->
+            <!-- Mail Workspace -->
             <!-- ================================================= -->
 
             <div
-                class="accordion-content"
-                id="mail-content"
-                style="display: none;"
+                class="workspace-panel active-workspace-panel"
+                id="mail-workspace"
             >
 
                 <div class="info-card">
@@ -388,6 +387,7 @@
                         “The customer onboarding rollout
                         scheduled for California enterprise clients
                         has been delayed again.
+
                         We require immediate operational visibility
                         regarding the blocked dependencies.”
 
@@ -402,13 +402,12 @@
             </div>
 
             <!-- ================================================= -->
-            <!-- Team Chat -->
+            <!-- Team Chat Workspace -->
             <!-- ================================================= -->
 
             <div
-                class="accordion-content"
-                id="chat-content"
-                style="display: none;"
+                class="workspace-panel"
+                id="chat-workspace"
             >
 
                 <div class="info-card">
@@ -455,13 +454,12 @@
             </div>
 
             <!-- ================================================= -->
-            <!-- JIRA Board -->
+            <!-- JIRA Workspace -->
             <!-- ================================================= -->
 
             <div
-                class="accordion-content"
-                id="jira-content"
-                style="display: none;"
+                class="workspace-panel"
+                id="jira-workspace"
             >
 
                 <div class="info-card">
@@ -495,13 +493,12 @@
             </div>
 
             <!-- ================================================= -->
-            <!-- Incident Queue -->
+            <!-- Incident Queue Workspace -->
             <!-- ================================================= -->
 
             <div
-                class="accordion-content"
-                id="queue-content"
-                style="display: none;"
+                class="workspace-panel"
+                id="queue-workspace"
             >
 
                 <div class="info-card">

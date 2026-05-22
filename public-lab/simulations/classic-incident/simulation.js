@@ -4,7 +4,8 @@
 
 function toggleSection(sectionId, buttonElement) {
 
-    const section = document.getElementById(sectionId);
+    const section =
+        document.getElementById(sectionId);
 
     if (!section) {
         return;
@@ -23,7 +24,9 @@ function toggleSection(sectionId, buttonElement) {
         );
 
     allSections.forEach((item) => {
+
         item.style.display = "none";
+
     });
 
     /* =====================================================
@@ -69,9 +72,11 @@ function openVerticalTab(panelId) {
         );
 
     panels.forEach((panel) => {
+
         panel.classList.remove(
             "active-workspace"
         );
+
     });
 
     const tabs =
@@ -80,9 +85,11 @@ function openVerticalTab(panelId) {
         );
 
     tabs.forEach((tab) => {
+
         tab.classList.remove(
             "active-vertical-tab"
         );
+
     });
 
     const selectedPanel =
@@ -110,7 +117,9 @@ let completedSteps = 0;
 
 const completedStepSet = new Set();
 
-/* ========================================================= */
+/* =========================================================
+   Complete Operational Step
+========================================================= */
 
 function completeStep(stepNumber) {
 
@@ -141,7 +150,9 @@ function completeStep(stepNumber) {
 
 }
 
-/* ========================================================= */
+/* =========================================================
+   Update Progress State
+========================================================= */
 
 function updateProgress() {
 
@@ -197,6 +208,71 @@ function updateProgress() {
                 "Operational State: Incident Stabilized";
 
         }
+
+    }
+
+}
+
+/* =========================================================
+   Operational Signal Accordion Engine
+========================================================= */
+
+function toggleAccordion(
+    contentId,
+    buttonElement
+) {
+
+    const content =
+        document.getElementById(contentId);
+
+    if (!content) {
+        return;
+    }
+
+    const isVisible =
+        content.style.display === "block";
+
+    /* =====================================================
+       Close All Accordion Sections
+    ===================================================== */
+
+    const allContents =
+        document.querySelectorAll(
+            ".accordion-content"
+        );
+
+    allContents.forEach((section) => {
+
+        section.style.display = "none";
+
+    });
+
+    /* =====================================================
+       Reset All Accordion Buttons
+    ===================================================== */
+
+    const allButtons =
+        document.querySelectorAll(
+            ".accordion-button"
+        );
+
+    allButtons.forEach((button) => {
+
+        button.innerHTML =
+            button.innerHTML.replace("−", "+");
+
+    });
+
+    /* =====================================================
+       Open Selected Accordion
+    ===================================================== */
+
+    if (!isVisible) {
+
+        content.style.display = "block";
+
+        buttonElement.innerHTML =
+            buttonElement.innerHTML.replace("+", "−");
 
     }
 

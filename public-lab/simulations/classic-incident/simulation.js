@@ -7,68 +7,79 @@
    Main Operational Workspace Tabs
 ========================================================= */
 
-function openMainWorkspaceTab(
-    panelId,
+function toggleSection(
+    sectionId,
     buttonElement
 ) {
 
     /* =====================================================
-       Hide All Main Workspace Panels
+       Main Panels
     ===================================================== */
 
     const allPanels =
         document.querySelectorAll(
-            ".main-workspace-panel"
+            ".horizontal-tab-content"
         );
-
-    allPanels.forEach((panel) => {
-
-        panel.classList.remove(
-            "active-main-workspace-panel"
-        );
-
-    });
 
     /* =====================================================
-       Reset Main Workspace Tabs
+       Main Tabs
     ===================================================== */
 
     const allTabs =
         document.querySelectorAll(
-            ".main-workspace-tab"
+            ".horizontal-tab"
         );
+
+    /* =====================================================
+       Selected Panel
+    ===================================================== */
+
+    const selectedPanel =
+        document.getElementById(
+            sectionId
+        );
+
+    /* =====================================================
+       Hide All Panels
+    ===================================================== */
+
+    allPanels.forEach((panel) => {
+
+        panel.style.display = "none";
+
+    });
+
+    /* =====================================================
+       Reset All Tabs
+    ===================================================== */
 
     allTabs.forEach((tab) => {
 
         tab.classList.remove(
-            "active-main-workspace-tab"
+            "active-horizontal-tab"
         );
 
     });
 
     /* =====================================================
-       Activate Selected Main Workspace Panel
+       Activate Selected Panel
     ===================================================== */
-
-    const selectedPanel =
-        document.getElementById(panelId);
 
     if (selectedPanel) {
 
-        selectedPanel.classList.add(
-            "active-main-workspace-panel"
-        );
+        selectedPanel.style.display =
+            "block";
 
     }
 
     /* =====================================================
-       Activate Selected Main Workspace Tab
+       Activate Selected Tab
     ===================================================== */
 
     if (buttonElement) {
 
         buttonElement.classList.add(
-            "active-main-workspace-tab"
+            "active-horizontal-tab"
         );
 
     }
@@ -85,13 +96,26 @@ function openSignalWorkspaceTab(
 ) {
 
     /* =====================================================
-       Hide All Signal Workspace Panels
+       Signal Workspace Panels
     ===================================================== */
 
     const allPanels =
         document.querySelectorAll(
             ".signal-workspace-panel"
         );
+
+    /* =====================================================
+       Signal Workspace Tabs
+    ===================================================== */
+
+    const allTabs =
+        document.querySelectorAll(
+            ".signal-workspace-tab"
+        );
+
+    /* =====================================================
+       Hide All Panels
+    ===================================================== */
 
     allPanels.forEach((panel) => {
 
@@ -102,13 +126,8 @@ function openSignalWorkspaceTab(
     });
 
     /* =====================================================
-       Reset Signal Workspace Tabs
+       Reset All Tabs
     ===================================================== */
-
-    const allTabs =
-        document.querySelectorAll(
-            ".signal-workspace-tab"
-        );
 
     allTabs.forEach((tab) => {
 
@@ -119,11 +138,13 @@ function openSignalWorkspaceTab(
     });
 
     /* =====================================================
-       Activate Selected Signal Workspace Panel
+       Activate Selected Panel
     ===================================================== */
 
     const selectedPanel =
-        document.getElementById(panelId);
+        document.getElementById(
+            panelId
+        );
 
     if (selectedPanel) {
 
@@ -134,7 +155,7 @@ function openSignalWorkspaceTab(
     }
 
     /* =====================================================
-       Activate Selected Signal Workspace Tab
+       Activate Selected Tab
     ===================================================== */
 
     if (buttonElement) {
@@ -164,10 +185,14 @@ function completeStep(stepNumber) {
     if (
         completedStepSet.has(stepNumber)
     ) {
+
         return;
+
     }
 
-    completedStepSet.add(stepNumber);
+    completedStepSet.add(
+        stepNumber
+    );
 
     completedSteps++;
 
@@ -179,7 +204,7 @@ function completeStep(stepNumber) {
     if (step) {
 
         step.classList.add(
-            "completed-step"
+            "step-completed"
         );
 
     }
@@ -221,6 +246,10 @@ function updateProgress() {
 
     }
 
+    /* =====================================================
+       Completion State
+    ===================================================== */
+
     if (completedSteps === 5) {
 
         const completionBanner =
@@ -252,7 +281,7 @@ function updateProgress() {
 }
 
 /* =========================================================
-   Default Workspace Initialization
+   Default Initialization
 ========================================================= */
 
 document.addEventListener(
@@ -260,12 +289,12 @@ document.addEventListener(
     function () {
 
         /* =================================================
-           Initialize Main Workspace
+           Default Main Workspace
         ================================================= */
 
         const defaultMainTab =
             document.querySelector(
-                ".main-workspace-tab.active-main-workspace-tab"
+                ".horizontal-tab"
             );
 
         if (defaultMainTab) {
@@ -275,12 +304,12 @@ document.addEventListener(
         }
 
         /* =================================================
-           Initialize Signal Workspace
+           Default Signal Workspace
         ================================================= */
 
         const defaultSignalTab =
             document.querySelector(
-                ".signal-workspace-tab.active-signal-workspace-tab"
+                ".signal-workspace-tab"
             );
 
         if (defaultSignalTab) {

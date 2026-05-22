@@ -1,110 +1,48 @@
 /* =========================================================
-   Horizontal Expand / Collapse Sections
+   Main Operational Workspace Tabs
 ========================================================= */
 
-function toggleSection(sectionId, buttonElement) {
-
-    const section =
-        document.getElementById(sectionId);
-
-    if (!section) {
-        return;
-    }
-
-    const isVisible =
-        section.style.display === "block";
-
-    /* =====================================================
-       Close All Sections
-    ===================================================== */
-
-    const allSections =
-        document.querySelectorAll(
-            ".horizontal-tab-content"
-        );
-
-    allSections.forEach((item) => {
-
-        item.style.display = "none";
-
-    });
-
-    /* =====================================================
-       Reset All Horizontal Tabs
-    ===================================================== */
-
-    const allButtons =
-        document.querySelectorAll(
-            ".horizontal-tab"
-        );
-
-    allButtons.forEach((button) => {
-
-        button.innerHTML =
-            button.innerHTML.replace("−", "+");
-
-    });
-
-    /* =====================================================
-       Toggle Current Section
-    ===================================================== */
-
-    if (!isVisible) {
-
-        section.style.display = "block";
-
-        buttonElement.innerHTML =
-            buttonElement.innerHTML.replace("+", "−");
-
-    }
-
-}
-
-/* =========================================================
-   Operational Workspace Tabs
-========================================================= */
-
-function openWorkspaceTab(
+function openMainWorkspaceTab(
     panelId,
     buttonElement
 ) {
 
     /* =====================================================
-       Hide All Workspace Panels
+       Hide All Main Workspace Panels
     ===================================================== */
 
     const allPanels =
         document.querySelectorAll(
-            ".workspace-panel"
+            ".main-workspace-panel"
         );
 
     allPanels.forEach((panel) => {
 
         panel.classList.remove(
-            "active-workspace-panel"
+            "active-main-workspace-panel"
         );
 
     });
 
     /* =====================================================
-       Reset All Workspace Tabs
+       Reset Main Workspace Tabs
     ===================================================== */
 
     const allTabs =
         document.querySelectorAll(
-            ".workspace-tab"
+            ".main-workspace-tab"
         );
 
     allTabs.forEach((tab) => {
 
         tab.classList.remove(
-            "active-workspace-tab"
+            "active-main-workspace-tab"
         );
 
     });
 
     /* =====================================================
-       Activate Selected Workspace Panel
+       Activate Selected Main Workspace Panel
     ===================================================== */
 
     const selectedPanel =
@@ -113,19 +51,19 @@ function openWorkspaceTab(
     if (selectedPanel) {
 
         selectedPanel.classList.add(
-            "active-workspace-panel"
+            "active-main-workspace-panel"
         );
 
     }
 
     /* =====================================================
-       Activate Selected Workspace Tab
+       Activate Selected Main Workspace Tab
     ===================================================== */
 
     if (buttonElement) {
 
         buttonElement.classList.add(
-            "active-workspace-tab"
+            "active-main-workspace-tab"
         );
 
     }
@@ -133,36 +71,51 @@ function openWorkspaceTab(
 }
 
 /* =========================================================
-   Vertical Workspace Tabs
+   Operational Signal Workspace Tabs
 ========================================================= */
 
-function openVerticalTab(panelId) {
+function openSignalWorkspace(
+    panelId,
+    buttonElement
+) {
 
-    const panels =
+    /* =====================================================
+       Hide All Signal Workspace Panels
+    ===================================================== */
+
+    const allPanels =
         document.querySelectorAll(
-            ".workspace-content"
+            ".signal-workspace-panel"
         );
 
-    panels.forEach((panel) => {
+    allPanels.forEach((panel) => {
 
         panel.classList.remove(
-            "active-workspace"
+            "active-signal-workspace-panel"
         );
 
     });
 
-    const tabs =
+    /* =====================================================
+       Reset Signal Workspace Tabs
+    ===================================================== */
+
+    const allTabs =
         document.querySelectorAll(
-            ".vertical-tab"
+            ".signal-workspace-tab"
         );
 
-    tabs.forEach((tab) => {
+    allTabs.forEach((tab) => {
 
         tab.classList.remove(
-            "active-vertical-tab"
+            "active-signal-workspace-tab"
         );
 
     });
+
+    /* =====================================================
+       Activate Selected Signal Workspace Panel
+    ===================================================== */
 
     const selectedPanel =
         document.getElementById(panelId);
@@ -170,14 +123,22 @@ function openVerticalTab(panelId) {
     if (selectedPanel) {
 
         selectedPanel.classList.add(
-            "active-workspace"
+            "active-signal-workspace-panel"
         );
 
     }
 
-    event.target.classList.add(
-        "active-vertical-tab"
-    );
+    /* =====================================================
+       Activate Selected Signal Workspace Tab
+    ===================================================== */
+
+    if (buttonElement) {
+
+        buttonElement.classList.add(
+            "active-signal-workspace-tab"
+        );
+
+    }
 
 }
 

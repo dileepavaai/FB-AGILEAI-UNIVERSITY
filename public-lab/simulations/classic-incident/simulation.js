@@ -169,6 +169,69 @@ function openSignalWorkspaceTab(
 }
 
 /* =========================================================
+   Expandable Operational Insight Panels
+========================================================= */
+
+function toggleMetricInsight(
+    panelId
+) {
+
+    /* =====================================================
+       All Insight Panels
+    ===================================================== */
+
+    const allPanels =
+        document.querySelectorAll(
+            ".metric-insight-panel"
+        );
+
+    /* =====================================================
+       Selected Insight Panel
+    ===================================================== */
+
+    const selectedPanel =
+        document.getElementById(
+            panelId
+        );
+
+    if (!selectedPanel) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Current Visibility State
+    ===================================================== */
+
+    const isVisible =
+        selectedPanel.style.display ===
+        "block";
+
+    /* =====================================================
+       Close All Panels
+    ===================================================== */
+
+    allPanels.forEach((panel) => {
+
+        panel.style.display = "none";
+
+    });
+
+    /* =====================================================
+       Reopen Selected Panel
+    ===================================================== */
+
+    if (!isVisible) {
+
+        selectedPanel.style.display =
+            "block";
+
+    }
+
+}
+
+/* =========================================================
    Simulation Progress Engine
 ========================================================= */
 

@@ -70,16 +70,33 @@
 }
 
 /* =========================================================
-   Phase-1 Metrics Dashboard
+   Phase-1.5 Metrics Dashboard
 ========================================================= */
 
 .metrics-dashboard {
 
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    gap: 1.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 3rem;
+
+}
+
+/* =========================================================
+   Metric Group Titles
+========================================================= */
+
+.metric-group-title {
+
+    grid-column: 1 / -1;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: 1rem;
+    margin-bottom: -0.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #dcdcdc;
+    color: #111111;
 
 }
 
@@ -94,13 +111,39 @@
     border: 1px solid #dcdcdc;
     background: #ffffff;
     transition: all 0.2s ease;
-    min-height: 220px;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
 
 }
 
 .metric-card:hover {
 
     transform: translateY(-2px);
+
+}
+
+/* =========================================================
+   Severity Hierarchy
+========================================================= */
+
+.critical-metric-card {
+
+    border: 1px solid #222222;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+}
+
+.high-metric-card {
+
+    border: 1px solid #cfcfcf;
+
+}
+
+.elevated-metric-card {
+
+    border: 1px solid #e4e4e4;
+    background: #fcfcfc;
 
 }
 
@@ -155,11 +198,13 @@
     font-size: 0.82rem;
     font-weight: 700;
     letter-spacing: 0.04em;
+    width: fit-content;
+    margin-bottom: 1rem;
 
 }
 
 /* =========================================================
-   Severity Levels
+   Severity Labels
 ========================================================= */
 
 .critical-status {
@@ -180,6 +225,53 @@
 
     background: #efefef;
     color: #333333;
+
+}
+
+/* =========================================================
+   Expandable Operational Insights
+========================================================= */
+
+.metric-expand-button {
+
+    margin-top: auto;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d0d0d0;
+    background: #fafafa;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-size: 0.92rem;
+    transition: all 0.2s ease;
+    text-align: left;
+
+}
+
+.metric-expand-button:hover {
+
+    background: #f0f0f0;
+
+}
+
+.metric-insight-panel {
+
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ececec;
+
+}
+
+.metric-insight-panel ul {
+
+    margin: 0;
+    padding-left: 1.2rem;
+
+}
+
+.metric-insight-panel li {
+
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+    color: #444444;
 
 }
 

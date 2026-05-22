@@ -262,16 +262,24 @@
             <!-- ============================================= -->
 
             <!-- ============================================= -->
-            <!-- Phase-1 Operational Metrics Dashboard -->
+            <!-- Phase-1.5 Operational Metrics Dashboard -->
             <!-- ============================================= -->
 
             <div class="metrics-dashboard">
 
                 <!-- ========================================= -->
-                <!-- Delivery Stability Metrics -->
+                <!-- Delivery Stability -->
                 <!-- ========================================= -->
 
-                <article class="metric-card">
+                <div class="metric-group-title">
+                    Delivery Stability
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Release Stability -->
+                <!-- ========================================= -->
+
+                <article class="metric-card critical-metric-card">
 
                     <div class="metric-label">
                         Release Stability Score
@@ -289,9 +297,44 @@
                         CRITICAL
                     </div>
 
+                    <button
+                        class="metric-expand-button"
+                        onclick="toggleMetricInsight('release-stability-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
+
+                    <div
+                        class="metric-insight-panel"
+                        id="release-stability-insight"
+                        style="display: none;"
+                    >
+
+                        <ul>
+
+                            <li>
+                                Regression validation queue increasing
+                            </li>
+
+                            <li>
+                                Deployment rollback risk elevated
+                            </li>
+
+                            <li>
+                                Release approval dependency unresolved
+                            </li>
+
+                        </ul>
+
+                    </div>
+
                 </article>
 
-                <article class="metric-card">
+                <!-- ========================================= -->
+                <!-- Rollout Risk -->
+                <!-- ========================================= -->
+
+                <article class="metric-card high-metric-card">
 
                     <div class="metric-label">
                         Rollout Risk
@@ -309,9 +352,217 @@
                         HIGH
                     </div>
 
+                    <button
+                        class="metric-expand-button"
+                        onclick="toggleMetricInsight('rollout-risk-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
+
+                    <div
+                        class="metric-insight-panel"
+                        id="rollout-risk-insight"
+                        style="display: none;"
+                    >
+
+                        <ul>
+
+                            <li>
+                                Enterprise customer rollout confidence decreasing
+                            </li>
+
+                            <li>
+                                Escalation response delay affecting delivery commitments
+                            </li>
+
+                            <li>
+                                Customer communication review pending
+                            </li>
+
+                        </ul>
+
+                    </div>
+
                 </article>
 
-                <article class="metric-card">
+                <!-- ========================================= -->
+                <!-- Blocked Tasks -->
+                <!-- ========================================= -->
+
+                <article class="metric-card high-metric-card">
+
+                    <div class="metric-label">
+                        Blocked Tasks
+                    </div>
+
+                    <div class="metric-value">
+                        18
+                    </div>
+
+                    <div class="metric-trend negative-trend">
+                        Dependency backlog increasing
+                    </div>
+
+                    <div class="metric-status high-status">
+                        HIGH
+                    </div>
+
+                    <button
+                        class="metric-expand-button"
+                        onclick="toggleMetricInsight('blocked-task-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
+
+                    <div
+                        class="metric-insight-panel"
+                        id="blocked-task-insight"
+                        style="display: none;"
+                    >
+
+                        <ul>
+
+                            <li>
+                                Infrastructure approval dependency pending
+                            </li>
+
+                            <li>
+                                Cross-team coordination queue overloaded
+                            </li>
+
+                            <li>
+                                Validation sign-off delayed
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </article>
+
+                <!-- ========================================= -->
+                <!-- Failed Deployments -->
+                <!-- ========================================= -->
+
+                <article class="metric-card high-metric-card">
+
+                    <div class="metric-label">
+                        Failed Deployments
+                    </div>
+
+                    <div class="metric-value">
+                        7
+                    </div>
+
+                    <div class="metric-trend negative-trend">
+                        Infrastructure instability detected
+                    </div>
+
+                    <div class="metric-status high-status">
+                        HIGH
+                    </div>
+
+                    <button
+                        class="metric-expand-button"
+                        onclick="toggleMetricInsight('deployment-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
+
+                    <div
+                        class="metric-insight-panel"
+                        id="deployment-insight"
+                        style="display: none;"
+                    >
+
+                        <ul>
+
+                            <li>
+                                Deployment rollback frequency increasing
+                            </li>
+
+                            <li>
+                                Validation pipeline unstable
+                            </li>
+
+                            <li>
+                                Infrastructure coordination delays detected
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </article>
+
+                <!-- ========================================= -->
+                <!-- Coordination Health -->
+                <!-- ========================================= -->
+
+                <div class="metric-group-title">
+                    Coordination Health
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Coordination Delay -->
+                <!-- ========================================= -->
+
+                <article class="metric-card critical-metric-card">
+
+                    <div class="metric-label">
+                        Coordination Delay
+                    </div>
+
+                    <div class="metric-value">
+                        31 hrs
+                    </div>
+
+                    <div class="metric-trend negative-trend">
+                        Cross-team wait time breached
+                    </div>
+
+                    <div class="metric-status critical-status">
+                        CRITICAL
+                    </div>
+
+                    <button
+                        class="metric-expand-button"
+                        onclick="toggleMetricInsight('coordination-delay-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
+
+                    <div
+                        class="metric-insight-panel"
+                        id="coordination-delay-insight"
+                        style="display: none;"
+                    >
+
+                        <ul>
+
+                            <li>
+                                Delivery coordination SLA breached
+                            </li>
+
+                            <li>
+                                Approval wait time increasing
+                            </li>
+
+                            <li>
+                                Escalation response cycle slowing down
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </article>
+
+                <!-- ========================================= -->
+                <!-- Active Escalations -->
+                <!-- ========================================= -->
+
+                <article class="metric-card elevated-metric-card">
 
                     <div class="metric-label">
                         Active Escalations
@@ -331,51 +582,11 @@
 
                 </article>
 
-                <article class="metric-card">
-
-                    <div class="metric-label">
-                        Blocked Tasks
-                    </div>
-
-                    <div class="metric-value">
-                        18
-                    </div>
-
-                    <div class="metric-trend negative-trend">
-                        Dependency backlog increasing
-                    </div>
-
-                    <div class="metric-status high-status">
-                        HIGH
-                    </div>
-
-                </article>
-
                 <!-- ========================================= -->
-                <!-- Coordination Metrics -->
+                <!-- Queue Growth -->
                 <!-- ========================================= -->
 
-                <article class="metric-card">
-
-                    <div class="metric-label">
-                        Coordination Delay
-                    </div>
-
-                    <div class="metric-value">
-                        31 hrs
-                    </div>
-
-                    <div class="metric-trend negative-trend">
-                        Cross-team wait time breached
-                    </div>
-
-                    <div class="metric-status critical-status">
-                        CRITICAL
-                    </div>
-
-                </article>
-
-                <article class="metric-card">
+                <article class="metric-card elevated-metric-card">
 
                     <div class="metric-label">
                         Queue Growth Rate
@@ -395,27 +606,19 @@
 
                 </article>
 
-                <article class="metric-card">
+                <!-- ========================================= -->
+                <!-- Customer Impact -->
+                <!-- ========================================= -->
 
-                    <div class="metric-label">
-                        Failed Deployments
-                    </div>
+                <div class="metric-group-title">
+                    Customer Impact
+                </div>
 
-                    <div class="metric-value">
-                        7
-                    </div>
+                <!-- ========================================= -->
+                <!-- SLA Breaches -->
+                <!-- ========================================= -->
 
-                    <div class="metric-trend negative-trend">
-                        Infrastructure instability detected
-                    </div>
-
-                    <div class="metric-status high-status">
-                        HIGH
-                    </div>
-
-                </article>
-
-                <article class="metric-card">
+                <article class="metric-card critical-metric-card">
 
                     <div class="metric-label">
                         SLA Breaches
@@ -433,64 +636,96 @@
                         CRITICAL
                     </div>
 
+                    <button
+                        class="metric-expand-button"
+                        onclick="toggleMetricInsight('sla-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
+
+                    <div
+                        class="metric-insight-panel"
+                        id="sla-insight"
+                        style="display: none;"
+                    >
+
+                        <ul>
+
+                            <li>
+                                Enterprise delivery commitments missed
+                            </li>
+
+                            <li>
+                                Escalation severity increasing among priority accounts
+                            </li>
+
+                            <li>
+                                Customer confidence risk elevated
+                            </li>
+
+                        </ul>
+
+                    </div>
+
                 </article>
 
             </div>
 
-            <div class="info-card">
+            <!-- ============================================= -->
+<!-- Current Operational Challenges -->
+<!-- ============================================= -->
 
-                <h3>
-                    Current Operational Challenges Faced by Nova
-                </h3>
+<div class="info-card">
 
-                <ul>
+    <h3>
+        Current Operational Challenges Faced by Nova
+    </h3>
 
-                    <li>
-                        Fragmented cross-team coordination
-                    </li>
+    <ul>
 
-                    <li>
-                        Delayed escalation visibility
-                    </li>
+        <li>
+            Fragmented cross-team coordination
+        </li>
 
-                    <li>
-                        Manual operational dependency tracking
-                    </li>
+        <li>
+            Delayed escalation visibility
+        </li>
 
-                    <li>
-                        Reactive incident handling
-                    </li>
+        <li>
+            Manual operational dependency tracking
+        </li>
 
-                    <li>
-                        Increasing customer rollout pressure
-                    </li>
+        <li>
+            Reactive incident handling
+        </li>
 
-                    <li>
-                        Delivery timeline instability
-                    </li>
+        <li>
+            Increasing customer rollout pressure
+        </li>
 
-                    <li>
-                        Leadership visibility gaps
-                    </li>
+        <li>
+            Delivery timeline instability
+        </li>
 
-                    <li>
-                        Blocked operational dependencies
-                    </li>
+        <li>
+            Leadership visibility gaps
+        </li>
 
-                    <li>
-                        Slow incident response cycles
-                    </li>
+        <li>
+            Blocked operational dependencies
+        </li>
 
-                    <li>
-                        Operational communication delays
-                    </li>
+        <li>
+            Slow incident response cycles
+        </li>
 
-                </ul>
+        <li>
+            Operational communication delays
+        </li>
 
-            </div>
+    </ul>
 
-        </section>
-
+</div>
         <!-- ===================================================== -->
         <!-- SIGNALS -->
         <!-- ===================================================== -->

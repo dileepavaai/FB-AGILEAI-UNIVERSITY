@@ -1,4 +1,9 @@
 /* =========================================================
+   Classic Incident Simulation Engine
+   Agile AI Leadership Lab
+========================================================= */
+
+/* =========================================================
    Main Operational Workspace Tabs
 ========================================================= */
 
@@ -71,10 +76,10 @@ function openMainWorkspaceTab(
 }
 
 /* =========================================================
-   Operational Signal Workspace Tabs
+   Signal Workspace Tabs
 ========================================================= */
 
-function openSignalWorkspace(
+function openSignalWorkspaceTab(
     panelId,
     buttonElement
 ) {
@@ -245,3 +250,44 @@ function updateProgress() {
     }
 
 }
+
+/* =========================================================
+   Default Workspace Initialization
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =================================================
+           Initialize Main Workspace
+        ================================================= */
+
+        const defaultMainTab =
+            document.querySelector(
+                ".main-workspace-tab.active-main-workspace-tab"
+            );
+
+        if (defaultMainTab) {
+
+            defaultMainTab.click();
+
+        }
+
+        /* =================================================
+           Initialize Signal Workspace
+        ================================================= */
+
+        const defaultSignalTab =
+            document.querySelector(
+                ".signal-workspace-tab.active-signal-workspace-tab"
+            );
+
+        if (defaultSignalTab) {
+
+            defaultSignalTab.click();
+
+        }
+
+    }
+);

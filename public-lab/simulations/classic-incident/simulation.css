@@ -70,6 +70,120 @@
 }
 
 /* =========================================================
+   Phase-1 Metrics Dashboard
+========================================================= */
+
+.metrics-dashboard {
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+
+}
+
+/* =========================================================
+   Metric Cards
+========================================================= */
+
+.metric-card {
+
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid #dcdcdc;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    min-height: 220px;
+
+}
+
+.metric-card:hover {
+
+    transform: translateY(-2px);
+
+}
+
+/* =========================================================
+   Metric Typography
+========================================================= */
+
+.metric-label {
+
+    font-size: 0.95rem;
+    color: #555555;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+
+}
+
+.metric-value {
+
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #111111;
+
+}
+
+.metric-trend {
+
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+
+}
+
+.negative-trend {
+
+    color: #444444;
+
+}
+
+/* =========================================================
+   Metric Status
+========================================================= */
+
+.metric-status {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+
+}
+
+/* =========================================================
+   Severity Levels
+========================================================= */
+
+.critical-status {
+
+    background: #111111;
+    color: #ffffff;
+
+}
+
+.high-status {
+
+    background: #dcdcdc;
+    color: #111111;
+
+}
+
+.elevated-status {
+
+    background: #efefef;
+    color: #333333;
+
+}
+
+/* =========================================================
    Main Workspace Tabs
 ========================================================= */
 
@@ -349,6 +463,16 @@
    Mobile Responsive
 ========================================================= */
 
+@media (max-width: 1024px) {
+
+    .metrics-dashboard {
+
+        grid-template-columns: repeat(2, 1fr);
+
+    }
+
+}
+
 @media (max-width: 768px) {
 
     .simulation-context-top-row {
@@ -364,6 +488,12 @@
     }
 
     .three-column-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .metrics-dashboard {
 
         grid-template-columns: 1fr;
 

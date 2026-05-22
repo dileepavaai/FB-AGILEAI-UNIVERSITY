@@ -317,114 +317,331 @@
             style="display: none;"
         >
 
-            <div class="simulation-layout">
+            <h2>
+                Operational Signals
+            </h2>
 
-                <aside class="vertical-tabs">
+            <p class="section-intro">
 
-                    <button
-                        class="vertical-tab active-vertical-tab"
-                        onclick="openVerticalTab('mail-panel')"
-                    >
+                Operational signals represent fragmented visibility sources
+                across the Nova Retail Commerce Platform ecosystem.
+
+                Participants must interpret operational pressure,
+                coordination dependency,
+                escalation flow,
+                and delivery instability
+                through multiple disconnected operational systems.
+
+            </p>
+
+            <!-- ================================================= -->
+            <!-- Signal Cards -->
+            <!-- ================================================= -->
+
+            <div class="card-grid four-column-grid">
+
+                <!-- ============================================= -->
+                <!-- Mail Center -->
+                <!-- ============================================= -->
+
+                <article
+                    class="tool-card signal-card"
+                    onclick="openVerticalTab('mail-panel')"
+                >
+
+                    <h3>
                         Mail Center
-                    </button>
+                    </h3>
 
-                    <button
-                        class="vertical-tab"
-                        onclick="openVerticalTab('chat-panel')"
-                    >
+                    <p>
+                        Customer escalations,
+                        leadership concerns,
+                        and delivery pressure signals.
+                    </p>
+
+                </article>
+
+                <!-- ============================================= -->
+                <!-- Team Chat -->
+                <!-- ============================================= -->
+
+                <article
+                    class="tool-card signal-card"
+                    onclick="openVerticalTab('chat-panel')"
+                >
+
+                    <h3>
                         Team Chat
-                    </button>
+                    </h3>
 
-                    <button
-                        class="vertical-tab"
-                        onclick="openVerticalTab('jira-panel')"
-                    >
+                    <p>
+                        Operational coordination discussions
+                        across delivery teams.
+                    </p>
+
+                </article>
+
+                <!-- ============================================= -->
+                <!-- JIRA Board -->
+                <!-- ============================================= -->
+
+                <article
+                    class="tool-card signal-card"
+                    onclick="openVerticalTab('jira-panel')"
+                >
+
+                    <h3>
                         JIRA Board
-                    </button>
+                    </h3>
 
-                    <button
-                        class="vertical-tab"
-                        onclick="openVerticalTab('queue-panel')"
-                    >
+                    <p>
+                        Delivery dependency blockers
+                        affecting rollout execution timelines.
+                    </p>
+
+                </article>
+
+                <!-- ============================================= -->
+                <!-- Incident Queue -->
+                <!-- ============================================= -->
+
+                <article
+                    class="tool-card signal-card"
+                    onclick="openVerticalTab('queue-panel')"
+                >
+
+                    <h3>
                         Incident Queue
-                    </button>
+                    </h3>
 
-                </aside>
+                    <p>
+                        Escalation queue growth
+                        and operational incident pressure visibility.
+                    </p>
 
-                <div class="workspace-panel">
+                </article>
 
-                    <div
-                        class="workspace-content active-workspace"
-                        id="mail-panel"
-                    >
+            </div>
 
-                        <h2>
-                            Mail Center
-                        </h2>
+            <!-- ================================================= -->
+            <!-- Workspace -->
+            <!-- ================================================= -->
+
+            <div class="workspace-panel simulation-workspace">
+
+                <!-- ============================================= -->
+                <!-- Default Workspace -->
+                <!-- ============================================= -->
+
+                <div
+                    class="workspace-content active-workspace"
+                    id="default-panel"
+                >
+
+                    <h3>
+                        Select an Operational Signal
+                    </h3>
+
+                    <p>
+
+                        Click any operational signal card above
+                        to investigate fragmented operational visibility,
+                        escalation pressure,
+                        coordination dependency,
+                        and delivery execution instability.
+
+                    </p>
+
+                </div>
+
+                <!-- ============================================= -->
+                <!-- Mail Center -->
+                <!-- ============================================= -->
+
+                <div
+                    class="workspace-content"
+                    id="mail-panel"
+                >
+
+                    <h2>
+                        Mail Center
+                    </h2>
+
+                    <div class="info-card">
+
+                        <h3>
+                            Customer Escalation
+                        </h3>
+
+                        <p>
+
+                            Subject:
+                            URGENT — Rollout Delay Impact
+
+                        </p>
+
+                        <p>
+
+                            “The customer onboarding rollout
+                            scheduled for California enterprise clients
+                            has been delayed again.
+                            We require immediate operational visibility
+                            regarding the blocked dependencies.”
+
+                        </p>
+
+                        <p>
+                            Priority: HIGH
+                        </p>
+
+                    </div>
+
+                    <div class="info-card">
+
+                        <h3>
+                            Leadership Visibility Concern
+                        </h3>
+
+                        <p>
+
+                            Executive leadership is requesting
+                            operational status clarification
+                            due to increasing escalation volume.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- ============================================= -->
+                <!-- Team Chat -->
+                <!-- ============================================= -->
+
+                <div
+                    class="workspace-content"
+                    id="chat-panel"
+                >
+
+                    <h2>
+                        Team Chat
+                    </h2>
+
+                    <div class="info-card">
+
+                        <h3>
+                            Delivery Coordination Discussion
+                        </h3>
+
+                        <p>
+
+                            DevOps:
+                            “Deployment approval pending
+                            due to unresolved infrastructure dependency.”
+
+                        </p>
+
+                        <p>
+
+                            QA Team:
+                            “Regression validation delayed
+                            because the release branch is unstable.”
+
+                        </p>
+
+                        <p>
+
+                            Delivery Lead:
+                            “Customer rollout timelines
+                            may slip further if escalation continues.”
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- ============================================= -->
+                <!-- JIRA Board -->
+                <!-- ============================================= -->
+
+                <div
+                    class="workspace-content"
+                    id="jira-panel"
+                >
+
+                    <h2>
+                        JIRA Board
+                    </h2>
+
+                    <div class="info-card">
+
+                        <h3>
+                            Blocked Operational Tasks
+                        </h3>
 
                         <ul>
 
                             <li>
-                                Customer escalation received regarding rollout delays.
+                                Payment Service Migration — BLOCKED
                             </li>
 
                             <li>
-                                Delivery dependency blockage reported by DevOps.
+                                Customer Rollout Validation — BLOCKED
                             </li>
 
                             <li>
-                                Executive visibility concerns raised by leadership.
+                                Infrastructure Approval Review — DELAYED
+                            </li>
+
+                            <li>
+                                Release Stabilization Review — IN PROGRESS
                             </li>
 
                         </ul>
 
                     </div>
 
-                    <div
-                        class="workspace-content"
-                        id="chat-panel"
-                    >
+                </div>
 
-                        <h2>
-                            Team Chat
-                        </h2>
+                <!-- ============================================= -->
+                <!-- Incident Queue -->
+                <!-- ============================================= -->
 
-                        <p>
-                            Delivery coordination teams
-                            are discussing operational delivery blockers.
-                        </p>
+                <div
+                    class="workspace-content"
+                    id="queue-panel"
+                >
 
-                    </div>
+                    <h2>
+                        Incident Queue
+                    </h2>
 
-                    <div
-                        class="workspace-content"
-                        id="jira-panel"
-                    >
+                    <div class="info-card">
 
-                        <h2>
-                            JIRA Board
-                        </h2>
+                        <h3>
+                            Operational Escalation Queue
+                        </h3>
 
-                        <p>
-                            Multiple blocked tasks
-                            are affecting customer rollout timelines.
-                        </p>
+                        <ul>
 
-                    </div>
+                            <li>
+                                Delivery escalation queue volume increasing rapidly
+                            </li>
 
-                    <div
-                        class="workspace-content"
-                        id="queue-panel"
-                    >
+                            <li>
+                                Coordination response delays observed
+                            </li>
 
-                        <h2>
-                            Incident Queue
-                        </h2>
+                            <li>
+                                Leadership escalation requests pending
+                            </li>
 
-                        <p>
-                            Delivery escalation queue volume
-                            increasing rapidly.
-                        </p>
+                            <li>
+                                Customer pressure level elevated
+                            </li>
+
+                        </ul>
 
                     </div>
 

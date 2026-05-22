@@ -33,7 +33,7 @@
 
     <link
         rel="stylesheet"
-        href="./simulation.css"
+        href="./simulation.css?v=2.0"
     />
 
 </head>
@@ -81,25 +81,58 @@
             <!-- Simulation Context -->
             <!-- ================================================= -->
 
-            <div class="card-grid three-column-grid">
+            <div class="simulation-context-layout">
 
-                <article class="info-card">
+                <!-- ============================================= -->
+                <!-- Top Context Row -->
+                <!-- ============================================= -->
 
-                    <h3>
-                        Platform
-                    </h3>
+                <div class="simulation-context-top-row">
 
-                    <p>
-                        Nova Retail Commerce Platform
-                    </p>
+                    <article class="info-card compact-info-card">
 
-                </article>
+                        <h3>
+                            Platform
+                        </h3>
 
-                <!-- ================================================= -->
+                        <p>
+                            Nova Retail Commerce Platform
+                        </p>
+
+                    </article>
+
+                    <article class="info-card compact-info-card">
+
+                        <h3>
+                            Ongoing Sprint
+                        </h3>
+
+                        <p>
+                            Sprint 14 — Product Delivery Delay
+                        </p>
+
+                    </article>
+
+                    <article class="info-card compact-info-card">
+
+                        <h3>
+                            Sprint Goal
+                        </h3>
+
+                        <p>
+                            Recover delivery coordination
+                            and stabilize customer rollout timelines.
+                        </p>
+
+                    </article>
+
+                </div>
+
+                <!-- ============================================= -->
                 <!-- Enterprise Story Context -->
-                <!-- ================================================= -->
+                <!-- ============================================= -->
 
-                <div class="info-card">
+                <article class="info-card enterprise-context-card">
 
                     <h3>
                         About Nova Retail Commerce Platform
@@ -126,31 +159,6 @@
 
                     </p>
 
-                </div>
-
-                <article class="info-card">
-
-                    <h3>
-                        Ongoing Sprint
-                    </h3>
-
-                    <p>
-                        Sprint 14 — Product Delivery Delay
-                    </p>
-
-                </article>
-
-                <article class="info-card">
-
-                    <h3>
-                        Sprint Goal
-                    </h3>
-
-                    <p>
-                        Recover delivery coordination
-                        and stabilize customer rollout timelines.
-                    </p>
-
                 </article>
 
             </div>
@@ -166,38 +174,38 @@
             <div class="horizontal-tabs">
 
                 <button
-                    class="horizontal-tab"
+                    class="horizontal-tab active-horizontal-tab"
                     onclick="toggleSection('scenario-tab', this)"
                 >
-                    + Scenario
+                    Scenario
                 </button>
 
                 <button
                     class="horizontal-tab"
                     onclick="toggleSection('signals-tab', this)"
                 >
-                    + Signals
+                    Signals
                 </button>
 
                 <button
                     class="horizontal-tab"
                     onclick="toggleSection('teams-tab', this)"
                 >
-                    + Teams
+                    Teams
                 </button>
 
                 <button
                     class="horizontal-tab"
                     onclick="toggleSection('actions-tab', this)"
                 >
-                    + Actions
+                    Actions
                 </button>
 
                 <button
                     class="horizontal-tab"
                     onclick="toggleSection('outcomes-tab', this)"
                 >
-                    + Outcomes
+                    Outcomes
                 </button>
 
             </div>
@@ -211,7 +219,7 @@
         <section
             class="content-section horizontal-tab-content"
             id="scenario-tab"
-            style="display: none;"
+            style="display: block;"
         >
 
             <h2>
@@ -249,9 +257,9 @@
 
             </div>
 
-            <!-- ================================================= -->
+            <!-- ============================================= -->
             <!-- Current Operational Challenges -->
-            <!-- ================================================= -->
+            <!-- ============================================= -->
 
             <div class="info-card">
 
@@ -334,9 +342,9 @@
 
             </p>
 
-            <!-- ================================================= -->
+            <!-- ============================================= -->
             <!-- Signal Workspace Tabs -->
-            <!-- ================================================= -->
+            <!-- ============================================= -->
 
             <div class="workspace-tab-row">
 
@@ -370,9 +378,9 @@
 
             </div>
 
-            <!-- ================================================= -->
+            <!-- ============================================= -->
             <!-- Mail Workspace -->
-            <!-- ================================================= -->
+            <!-- ============================================= -->
 
             <div
                 class="signal-workspace-panel active-signal-workspace-panel"
@@ -409,9 +417,9 @@
 
             </div>
 
-            <!-- ================================================= -->
+            <!-- ============================================= -->
             <!-- Team Chat Workspace -->
-            <!-- ================================================= -->
+            <!-- ============================================= -->
 
             <div
                 class="signal-workspace-panel"
@@ -461,9 +469,9 @@
 
             </div>
 
-            <!-- ================================================= -->
+            <!-- ============================================= -->
             <!-- JIRA Workspace -->
-            <!-- ================================================= -->
+            <!-- ============================================= -->
 
             <div
                 class="signal-workspace-panel"
@@ -500,9 +508,9 @@
 
             </div>
 
-            <!-- ================================================= -->
+            <!-- ============================================= -->
             <!-- Incident Queue Workspace -->
-            <!-- ================================================= -->
+            <!-- ============================================= -->
 
             <div
                 class="signal-workspace-panel"
@@ -865,7 +873,7 @@
     <!-- Simulation Engine -->
     <!-- ========================================================= -->
 
-    <script src="./simulation.js"></script>
+    <script src="./simulation.js?v=2.0"></script>
 
 </body>
 </html>

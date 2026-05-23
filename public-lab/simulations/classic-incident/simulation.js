@@ -533,30 +533,107 @@ function updateAgileRoleState() {
 
 /* =========================================================
    Progressive Transformation Reveal Engine
+   Version: 6.1
+   Governance Update:
+   Dynamic War Room Transformation Injection
+
+   Purpose:
+   Reveal operational transformation comparison
+   directly below War Room activation flow
+   to strengthen guided operational learning.
 ========================================================= */
 
 function revealTransformationComparison() {
+
+    /* =====================================================
+       Transformation Section
+    ===================================================== */
 
     const comparisonSection =
         document.getElementById(
             "transformation-comparison-section"
         );
 
-    if (!comparisonSection) {
+    /* =====================================================
+       War Room Action Button
+    ===================================================== */
+
+    const warRoomButton =
+        document.querySelector(
+            ".simulation-button"
+        );
+
+    /* =====================================================
+       Null Protection
+    ===================================================== */
+
+    if (
+        !comparisonSection ||
+        !warRoomButton
+    ) {
 
         return;
 
     }
 
     /* =====================================================
-       Reveal Hidden Comparison Panel
+       Reveal Hidden Section
     ===================================================== */
 
     comparisonSection.style.display =
         "block";
 
     /* =====================================================
-       Smooth Recovery Reveal Scroll
+       Dynamic Placement
+       Move comparison directly below button
+    ===================================================== */
+
+    warRoomButton.insertAdjacentElement(
+        "afterend",
+        comparisonSection
+    );
+
+    /* =====================================================
+       Button Recovery State
+    ===================================================== */
+
+    warRoomButton.innerText =
+        "✓ War Room Activated";
+
+    warRoomButton.disabled =
+        true;
+
+    warRoomButton.style.opacity =
+        "0.85";
+
+    warRoomButton.style.cursor =
+        "not-allowed";
+
+    /* =====================================================
+       Progressive Reveal Animation
+    ===================================================== */
+
+    comparisonSection.style.opacity =
+        "0";
+
+    comparisonSection.style.transform =
+        "translateY(24px)";
+
+    comparisonSection.style.transition =
+        "all 0.45s ease";
+
+    setTimeout(function () {
+
+        comparisonSection.style.opacity =
+            "1";
+
+        comparisonSection.style.transform =
+            "translateY(0px)";
+
+    }, 120);
+
+    /* =====================================================
+       Guided Scroll Continuity
     ===================================================== */
 
     setTimeout(function () {
@@ -569,7 +646,7 @@ function revealTransformationComparison() {
 
         });
 
-    }, 250);
+    }, 260);
 
 }
 

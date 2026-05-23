@@ -2,17 +2,17 @@
    Classic Incident Simulation Engine
    Agile AI Leadership Lab
 
-   Version: 5.0
+   Version: 6.0
    Governance State: Stable
-   Architecture State: Interactive Operational
-   Transformation Simulation
+   Architecture State: Guided Operational
+   Recovery Simulation
 
    Purpose:
    Simulate enterprise operational instability,
-   escalation growth,
-   delivery coordination pressure,
-   fragmented governance,
-   and Agile recovery orchestration workflows.
+   delivery escalation pressure,
+   fragmented governance systems,
+   operational recovery orchestration,
+   and Agile coordination transformation workflows.
 
    Simulation Capability Layers:
    - Operational Scenario Navigation
@@ -23,6 +23,7 @@
    - Agile Role Awareness Layer
    - Operational State Transition Engine
    - Humanized Enterprise Role Ownership
+   - Progressive Transformation Reveal
    - Comparative Operational Learning
 
 ========================================================= */
@@ -392,6 +393,12 @@ function activateWarRoom() {
     updateAgileRoleState();
 
     /* =====================================================
+       Progressive Transformation Reveal
+    ===================================================== */
+
+    revealTransformationComparison();
+
+    /* =====================================================
        Recovery Notification
     ===================================================== */
 
@@ -521,6 +528,48 @@ function updateAgileRoleState() {
         </p>
 
     `;
+
+}
+
+/* =========================================================
+   Progressive Transformation Reveal Engine
+========================================================= */
+
+function revealTransformationComparison() {
+
+    const comparisonSection =
+        document.getElementById(
+            "transformation-comparison-section"
+        );
+
+    if (!comparisonSection) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Reveal Hidden Comparison Panel
+    ===================================================== */
+
+    comparisonSection.style.display =
+        "block";
+
+    /* =====================================================
+       Smooth Recovery Reveal Scroll
+    ===================================================== */
+
+    setTimeout(function () {
+
+        comparisonSection.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+    }, 250);
 
 }
 

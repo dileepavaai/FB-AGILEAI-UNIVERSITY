@@ -1,7 +1,18 @@
 /* =========================================================
    Classic Incident Simulation
-   Version: 2.2
+
+   Version: 3.0
    Governance State: Stable
+   Architecture State: Comparative Operational Simulation
+
+   Purpose:
+   Visual experience layer supporting:
+   - Operational visibility simulation
+   - Interactive recovery workflows
+   - Agile operational role awareness
+   - Comparative operational transformation learning
+   - Enterprise-grade cognitive flow management
+
 ========================================================= */
 
 /* =========================================================
@@ -12,9 +23,13 @@
 .tool-card {
 
     padding: 1.75rem;
+
     border: 1px solid #dcdcdc;
+
     border-radius: 1rem;
+
     background: #fafafa;
+
     transition: all 0.2s ease;
 
 }
@@ -32,8 +47,11 @@
 .simulation-context-layout {
 
     display: flex;
+
     flex-direction: column;
+
     gap: 2rem;
+
     margin-top: 2rem;
 
 }
@@ -41,7 +59,9 @@
 .simulation-context-top-row {
 
     display: grid;
+
     grid-template-columns: repeat(3, 1fr);
+
     gap: 2rem;
 
 }
@@ -65,7 +85,9 @@
 .card-grid {
 
     display: grid;
+
     gap: 1.5rem;
+
     margin-top: 2rem;
 
 }
@@ -83,15 +105,71 @@
 }
 
 /* =========================================================
+   Operational Transformation Comparison
+========================================================= */
+
+.comparison-layout {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 1.5rem;
+
+    margin-top: 1rem;
+
+}
+
+.comparison-column {
+
+    padding: 1.25rem;
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 0.85rem;
+
+    background: #fcfcfc;
+
+}
+
+.comparison-column h4 {
+
+    margin-bottom: 1rem;
+
+    font-size: 1rem;
+
+}
+
+.comparison-column ul {
+
+    padding-left: 1.2rem;
+
+    margin: 0;
+
+}
+
+.comparison-column li {
+
+    margin-bottom: 0.85rem;
+
+    line-height: 1.6;
+
+}
+
+/* =========================================================
    Phase-1.5 Metrics Dashboard
 ========================================================= */
 
 .metrics-dashboard {
 
     display: grid;
+
     grid-template-columns: repeat(4, 1fr);
+
     gap: 1.75rem;
+
     margin-top: 2.5rem;
+
     margin-bottom: 3rem;
 
 }
@@ -103,12 +181,19 @@
 .metric-group-title {
 
     grid-column: 1 / -1;
+
     font-size: 1.15rem;
+
     font-weight: 700;
+
     margin-top: 1rem;
+
     margin-bottom: -0.25rem;
+
     padding-bottom: 0.75rem;
+
     border-bottom: 1px solid #dcdcdc;
+
     color: #111111;
 
 }
@@ -120,12 +205,19 @@
 .metric-card {
 
     padding: 1.5rem;
+
     border-radius: 1rem;
+
     border: 1px solid #dcdcdc;
+
     background: #ffffff;
+
     transition: all 0.2s ease;
+
     min-height: 260px;
+
     display: flex;
+
     flex-direction: column;
 
 }
@@ -143,6 +235,7 @@
 .critical-metric-card {
 
     border: 1px solid #222222;
+
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
 }
@@ -156,6 +249,7 @@
 .elevated-metric-card {
 
     border: 1px solid #e4e4e4;
+
     background: #fcfcfc;
 
 }
@@ -167,8 +261,11 @@
 .metric-label {
 
     font-size: 0.95rem;
+
     color: #555555;
+
     margin-bottom: 1rem;
+
     line-height: 1.5;
 
 }
@@ -176,9 +273,13 @@
 .metric-value {
 
     font-size: 2rem;
+
     font-weight: 700;
+
     line-height: 1.2;
+
     margin-bottom: 1rem;
+
     color: #111111;
 
 }
@@ -186,7 +287,9 @@
 .metric-trend {
 
     font-size: 0.95rem;
+
     line-height: 1.6;
+
     margin-bottom: 1.25rem;
 
 }
@@ -204,14 +307,23 @@
 .metric-status {
 
     display: inline-flex;
+
     align-items: center;
+
     justify-content: center;
+
     padding: 0.45rem 0.9rem;
+
     border-radius: 999px;
+
     font-size: 0.82rem;
+
     font-weight: 700;
+
     letter-spacing: 0.04em;
+
     width: fit-content;
+
     margin-bottom: 1rem;
 
 }
@@ -223,6 +335,7 @@
 .critical-status {
 
     background: #111111;
+
     color: #ffffff;
 
 }
@@ -230,6 +343,7 @@
 .high-status {
 
     background: #dcdcdc;
+
     color: #111111;
 
 }
@@ -237,6 +351,7 @@
 .elevated-status {
 
     background: #efefef;
+
     color: #333333;
 
 }
@@ -248,13 +363,21 @@
 .metric-expand-button {
 
     margin-top: auto;
+
     padding: 0.75rem 1rem;
+
     border: 1px solid #d0d0d0;
+
     background: #fafafa;
+
     border-radius: 0.75rem;
+
     cursor: pointer;
+
     font-size: 0.92rem;
+
     transition: all 0.2s ease;
+
     text-align: left;
 
 }
@@ -268,7 +391,9 @@
 .metric-insight-panel {
 
     margin-top: 1rem;
+
     padding-top: 1rem;
+
     border-top: 1px solid #ececec;
 
 }
@@ -276,6 +401,7 @@
 .metric-insight-panel ul {
 
     margin: 0;
+
     padding-left: 1.2rem;
 
 }
@@ -283,7 +409,9 @@
 .metric-insight-panel li {
 
     margin-bottom: 0.75rem;
+
     line-height: 1.6;
+
     color: #444444;
 
 }
@@ -295,8 +423,11 @@
 .horizontal-tabs {
 
     display: flex;
+
     gap: 1rem;
+
     flex-wrap: wrap;
+
     margin-top: 2rem;
 
 }
@@ -304,13 +435,21 @@
 .horizontal-tab {
 
     padding: 14px 28px;
+
     border: 1px solid #222222;
+
     background: #ffffff;
+
     color: #111111;
+
     cursor: pointer;
+
     transition: all 0.2s ease;
+
     font-size: 1rem;
+
     border-radius: 0.8rem;
+
     font-weight: 600;
 
 }
@@ -318,6 +457,7 @@
 .horizontal-tab:hover {
 
     background: #222222;
+
     color: #ffffff;
 
 }
@@ -325,6 +465,7 @@
 .active-horizontal-tab {
 
     background: #222222;
+
     color: #ffffff;
 
 }
@@ -346,9 +487,13 @@
 .workspace-tab-row {
 
     display: flex;
+
     gap: 12px;
+
     flex-wrap: wrap;
+
     margin-top: 32px;
+
     margin-bottom: 32px;
 
 }
@@ -356,13 +501,21 @@
 .signal-workspace-tab {
 
     padding: 12px 22px;
+
     border: 1px solid #222222;
+
     background: #ffffff;
+
     color: #111111;
+
     cursor: pointer;
+
     transition: all 0.2s ease;
+
     font-size: 1rem;
+
     border-radius: 0.75rem;
+
     font-weight: 500;
 
 }
@@ -370,6 +523,7 @@
 .signal-workspace-tab:hover {
 
     background: #222222;
+
     color: #ffffff;
 
 }
@@ -377,6 +531,7 @@
 .active-signal-workspace-tab {
 
     background: #222222;
+
     color: #ffffff;
 
 }
@@ -404,8 +559,11 @@
 .section-intro {
 
     max-width: 900px;
+
     line-height: 1.9;
+
     margin-top: 1rem;
+
     margin-bottom: 2rem;
 
 }
@@ -417,10 +575,15 @@
 .role-meta {
 
     font-size: 0.85rem;
+
     opacity: 0.72;
+
     margin-top: -0.35rem;
+
     margin-bottom: 1rem;
+
     line-height: 1.6;
+
     font-weight: 500;
 
 }
@@ -432,8 +595,11 @@
 .tool-card h3 {
 
     display: flex;
+
     align-items: center;
+
     gap: 0.5rem;
+
     margin-bottom: 0.8rem;
 
 }
@@ -445,8 +611,11 @@
 .simulation-progress-panel {
 
     padding: 1.75rem;
+
     border: 1px solid #dcdcdc;
+
     border-radius: 1rem;
+
     background: #fafafa;
 
 }
@@ -454,9 +623,13 @@
 .progress-header {
 
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
+
     gap: 1rem;
+
     margin-bottom: 1rem;
 
 }
@@ -464,9 +637,13 @@
 .simulation-status {
 
     padding: 0.6rem 1rem;
+
     border: 1px solid #dcdcdc;
+
     border-radius: 999px;
+
     background: #ffffff;
+
     font-size: 0.9rem;
 
 }
@@ -474,9 +651,13 @@
 .progress-track {
 
     width: 100%;
+
     height: 12px;
+
     background: #e5e5e5;
+
     border-radius: 999px;
+
     overflow: hidden;
 
 }
@@ -484,8 +665,11 @@
 .progress-bar {
 
     width: 0%;
+
     height: 100%;
+
     background: #111111;
+
     transition: width 0.3s ease;
 
 }
@@ -503,11 +687,17 @@
 .simulation-step {
 
     display: flex;
+
     align-items: center;
+
     gap: 1rem;
+
     padding: 1rem;
+
     margin-bottom: 1rem;
+
     border: 1px solid #e5e5e5;
+
     border-radius: 1rem;
 
 }
@@ -515,13 +705,21 @@
 .step-number {
 
     width: 42px;
+
     height: 42px;
+
     border-radius: 999px;
+
     border: 1px solid #cfcfcf;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     font-weight: bold;
+
     flex-shrink: 0;
 
 }
@@ -535,10 +733,15 @@
 .simulation-button {
 
     padding: 0.8rem 1rem;
+
     border: 1px solid #222222;
+
     background: #ffffff;
+
     cursor: pointer;
+
     border-radius: 0.75rem;
+
     transition: all 0.2s ease;
 
 }
@@ -546,6 +749,7 @@
 .simulation-button:hover {
 
     background: #222222;
+
     color: #ffffff;
 
 }
@@ -553,6 +757,7 @@
 .step-completed {
 
     background: #f4faf4;
+
     border-color: #99c799;
 
 }
@@ -564,10 +769,15 @@
 .completion-banner {
 
     display: none;
+
     margin-top: 2rem;
+
     padding: 1.5rem;
+
     border-radius: 1rem;
+
     border: 1px solid #dcdcdc;
+
     background: #fafafa;
 
 }
@@ -579,8 +789,11 @@
 .insight-block {
 
     padding: 1.5rem;
+
     border-left: 4px solid #222222;
+
     background: #fafafa;
+
     margin-top: 2rem;
 
 }
@@ -592,8 +805,11 @@
 .button-row {
 
     display: flex;
+
     gap: 1rem;
+
     flex-wrap: wrap;
+
     margin-top: 2rem;
 
 }
@@ -632,6 +848,12 @@
 
     }
 
+    .comparison-layout {
+
+        grid-template-columns: 1fr;
+
+    }
+
     .metrics-dashboard {
 
         grid-template-columns: 1fr;
@@ -665,6 +887,7 @@
     .progress-header {
 
         flex-direction: column;
+
         align-items: flex-start;
 
     }
@@ -672,6 +895,7 @@
     .simulation-step {
 
         flex-direction: column;
+
         align-items: flex-start;
 
     }

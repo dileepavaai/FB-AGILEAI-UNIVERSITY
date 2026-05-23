@@ -294,6 +294,13 @@ let warRoomActivated = false;
 
 /* =========================================================
    Activate Operational War Room
+   Version: v2.4
+   Purpose:
+   - Operational recovery activation
+   - Recovery state transitions
+   - Progressive transformation reveal
+   - Timeline activation experience
+   - Agile operational role recovery state
 ========================================================= */
 
 function activateWarRoom() {
@@ -397,6 +404,81 @@ function activateWarRoom() {
     ===================================================== */
 
     revealTransformationComparison();
+
+    /* =====================================================
+       Recovery Experience Animation
+    ===================================================== */
+
+    const timelineCard = document.querySelector(
+        ".timeline-card"
+    );
+
+    if (timelineCard) {
+
+        timelineCard.classList.add(
+            "war-room-activated"
+        );
+
+    }
+
+    const agileRoleCard = document.querySelector(
+        ".agile-role-card"
+    );
+
+    if (agileRoleCard) {
+
+        agileRoleCard.classList.add(
+            "role-recovery-active"
+        );
+
+    }
+
+    /* =====================================================
+       Operational Comparison Auto Scroll
+       Purpose:
+       Guide participant attention toward
+       operational transformation visibility
+    ===================================================== */
+
+    const transformationSection = document.getElementById(
+            "transformation-comparison-section"
+    );
+
+    if (transformationSection) {
+
+        setTimeout(() => {
+
+            transformationSection.scrollIntoView({
+
+                behavior: "smooth",
+                block: "start"
+
+            });
+
+        }, 700);
+
+    }
+
+    /* =====================================================
+       Button Recovery State
+    ===================================================== */
+
+    const warRoomButton = document.getElementById(
+        "activate-war-room-btn"
+    );
+
+    if (warRoomButton) {
+
+        warRoomButton.innerHTML =
+            "✓ War Room Activated";
+
+        warRoomButton.disabled = true;
+
+        warRoomButton.classList.add(
+            "war-room-button-active"
+        );
+
+    }
 
     /* =====================================================
        Recovery Notification

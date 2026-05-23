@@ -2,16 +2,19 @@
    Classic Incident Simulation Engine
    Agile AI Leadership Lab
 
-   Version: 4.0
+   Version: 5.0
    Governance State: Stable
-   Architecture State: Interactive Operational Simulation
+   Architecture State: Interactive Operational
+   Transformation Simulation
 
    Purpose:
-   Simulate traditional operational environments under
-   delivery pressure, escalation growth, coordination
-   fragmentation, and recovery governance workflows.
+   Simulate enterprise operational instability,
+   escalation growth,
+   delivery coordination pressure,
+   fragmented governance,
+   and Agile recovery orchestration workflows.
 
-   Current Simulation Capabilities:
+   Simulation Capability Layers:
    - Operational Scenario Navigation
    - Signal Workspace Simulation
    - Expandable Metric Intelligence
@@ -19,6 +22,8 @@
    - Persistent Operational Timeline
    - Agile Role Awareness Layer
    - Operational State Transition Engine
+   - Humanized Enterprise Role Ownership
+   - Comparative Operational Learning
 
 ========================================================= */
 
@@ -64,12 +69,13 @@ function toggleSection(
 
     allPanels.forEach((panel) => {
 
-        panel.style.display = "none";
+        panel.style.display =
+            "none";
 
     });
 
     /* =====================================================
-       Reset Existing Tabs
+       Reset Existing Navigation Tabs
     ===================================================== */
 
     allTabs.forEach((tab) => {
@@ -104,7 +110,7 @@ function toggleSection(
     }
 
     /* =====================================================
-       Smooth Operational Navigation Continuity
+       Smooth Navigation Continuity
     ===================================================== */
 
     if (selectedPanel) {
@@ -216,7 +222,7 @@ function toggleMetricInsight(
 ) {
 
     /* =====================================================
-       All Metric Insight Panels
+       All Insight Panels
     ===================================================== */
 
     const allPanels =
@@ -225,7 +231,7 @@ function toggleMetricInsight(
         );
 
     /* =====================================================
-       Selected Insight Panel
+       Requested Panel
     ===================================================== */
 
     const selectedPanel =
@@ -257,7 +263,8 @@ function toggleMetricInsight(
 
     allPanels.forEach((panel) => {
 
-        panel.style.display = "none";
+        panel.style.display =
+            "none";
 
     });
 
@@ -275,11 +282,11 @@ function toggleMetricInsight(
 }
 
 /* =========================================================
-   Operational Recovery Decision Engine
+   Operational Recovery Engine
 ========================================================= */
 
 /* =========================================================
-   Operational Recovery State Lock
+   Recovery State Lock
 ========================================================= */
 
 let warRoomActivated = false;
@@ -291,7 +298,7 @@ let warRoomActivated = false;
 function activateWarRoom() {
 
     /* =====================================================
-       Prevent Duplicate Execution
+       Prevent Duplicate Activation
     ===================================================== */
 
     if (warRoomActivated) {
@@ -359,7 +366,7 @@ function activateWarRoom() {
     );
 
     /* =====================================================
-       Customer Delivery Recovery
+       Customer Recovery
     ===================================================== */
 
     updateMetricValue(
@@ -373,13 +380,13 @@ function activateWarRoom() {
     );
 
     /* =====================================================
-       Persistent Operational Timeline
+       Persistent Timeline Update
     ===================================================== */
 
     updateOperationalTimeline();
 
     /* =====================================================
-       Agile Operational Role Awareness
+       Agile Operational Role Update
     ===================================================== */
 
     updateAgileRoleState();
@@ -472,7 +479,7 @@ function updateAgileRoleState() {
         <p>
 
             <strong>
-                Scrum Master:
+                Scrum Master — Elena Martinez:
             </strong>
 
             Coordinating rapid escalation reviews
@@ -483,7 +490,7 @@ function updateAgileRoleState() {
         <p>
 
             <strong>
-                Product Owner:
+                Product Owner — David Chen:
             </strong>
 
             Re-prioritizing enterprise rollout
@@ -494,7 +501,7 @@ function updateAgileRoleState() {
         <p>
 
             <strong>
-                DevOps Lead:
+                DevOps Lead — Priya Raman:
             </strong>
 
             Monitoring infrastructure stabilization
@@ -505,7 +512,7 @@ function updateAgileRoleState() {
         <p>
 
             <strong>
-                Incident Commander:
+                Incident Commander — Michael Foster:
             </strong>
 
             Centralized operational governance
@@ -602,7 +609,7 @@ function updateMetricTrend(
 }
 
 /* =========================================================
-   Operational Recovery Notification Banner
+   Operational Notification Engine
 ========================================================= */
 
 function showOperationalNotification(
@@ -697,7 +704,7 @@ let completedSteps = 0;
 const completedStepSet = new Set();
 
 /* =========================================================
-   Complete Operational Progress Step
+   Complete Simulation Step
 ========================================================= */
 
 function completeStep(stepNumber) {
@@ -734,7 +741,7 @@ function completeStep(stepNumber) {
 }
 
 /* =========================================================
-   Update Simulation Progress State
+   Update Progress State
 ========================================================= */
 
 function updateProgress() {

@@ -1,7 +1,7 @@
 /* =========================================================
    Classic Incident Simulation Engine
    Agile AI Leadership Lab
-   Version: 2.1
+   Version: 3.0
    Governance State: Stable
 ========================================================= */
 
@@ -14,46 +14,26 @@ function toggleSection(
     buttonElement
 ) {
 
-    /* =====================================================
-       Main Panels
-    ===================================================== */
-
     const allPanels =
         document.querySelectorAll(
             ".horizontal-tab-content"
         );
-
-    /* =====================================================
-       Main Tabs
-    ===================================================== */
 
     const allTabs =
         document.querySelectorAll(
             ".horizontal-tab"
         );
 
-    /* =====================================================
-       Selected Panel
-    ===================================================== */
-
     const selectedPanel =
         document.getElementById(
             sectionId
         );
-
-    /* =====================================================
-       Hide All Panels
-    ===================================================== */
 
     allPanels.forEach((panel) => {
 
         panel.style.display = "none";
 
     });
-
-    /* =====================================================
-       Reset All Tabs
-    ===================================================== */
 
     allTabs.forEach((tab) => {
 
@@ -63,20 +43,12 @@ function toggleSection(
 
     });
 
-    /* =====================================================
-       Activate Selected Panel
-    ===================================================== */
-
     if (selectedPanel) {
 
         selectedPanel.style.display =
             "block";
 
     }
-
-    /* =====================================================
-       Activate Selected Tab
-    ===================================================== */
 
     if (buttonElement) {
 
@@ -85,10 +57,6 @@ function toggleSection(
         );
 
     }
-
-    /* =====================================================
-       Smooth Operational Navigation
-    ===================================================== */
 
     if (selectedPanel) {
 
@@ -117,27 +85,15 @@ function openSignalWorkspaceTab(
     buttonElement
 ) {
 
-    /* =====================================================
-       Signal Workspace Panels
-    ===================================================== */
-
     const allPanels =
         document.querySelectorAll(
             ".signal-workspace-panel"
         );
 
-    /* =====================================================
-       Signal Workspace Tabs
-    ===================================================== */
-
     const allTabs =
         document.querySelectorAll(
             ".signal-workspace-tab"
         );
-
-    /* =====================================================
-       Hide All Panels
-    ===================================================== */
 
     allPanels.forEach((panel) => {
 
@@ -147,10 +103,6 @@ function openSignalWorkspaceTab(
 
     });
 
-    /* =====================================================
-       Reset All Tabs
-    ===================================================== */
-
     allTabs.forEach((tab) => {
 
         tab.classList.remove(
@@ -158,10 +110,6 @@ function openSignalWorkspaceTab(
         );
 
     });
-
-    /* =====================================================
-       Activate Selected Panel
-    ===================================================== */
 
     const selectedPanel =
         document.getElementById(
@@ -175,10 +123,6 @@ function openSignalWorkspaceTab(
         );
 
     }
-
-    /* =====================================================
-       Activate Selected Tab
-    ===================================================== */
 
     if (buttonElement) {
 
@@ -198,18 +142,10 @@ function toggleMetricInsight(
     panelId
 ) {
 
-    /* =====================================================
-       All Insight Panels
-    ===================================================== */
-
     const allPanels =
         document.querySelectorAll(
             ".metric-insight-panel"
         );
-
-    /* =====================================================
-       Selected Insight Panel
-    ===================================================== */
 
     const selectedPanel =
         document.getElementById(
@@ -222,17 +158,9 @@ function toggleMetricInsight(
 
     }
 
-    /* =====================================================
-       Current Visibility State
-    ===================================================== */
-
     const isVisible =
         selectedPanel.style.display ===
         "block";
-
-    /* =====================================================
-       Close All Panels
-    ===================================================== */
 
     allPanels.forEach((panel) => {
 
@@ -240,16 +168,275 @@ function toggleMetricInsight(
 
     });
 
-    /* =====================================================
-       Reopen Selected Panel
-    ===================================================== */
-
     if (!isVisible) {
 
         selectedPanel.style.display =
             "block";
 
     }
+
+}
+
+/* =========================================================
+   Operational Decision Engine
+========================================================= */
+
+let warRoomActivated = false;
+
+/* =========================================================
+   Activate Operational War Room
+========================================================= */
+
+function activateWarRoom() {
+
+    /* =====================================================
+       Prevent Duplicate Execution
+    ===================================================== */
+
+    if (warRoomActivated) {
+
+        return;
+
+    }
+
+    warRoomActivated = true;
+
+    /* =====================================================
+       Release Stability Score
+    ===================================================== */
+
+    updateMetricValue(
+        "Release Stability Score",
+        "72 / 100"
+    );
+
+    updateMetricTrend(
+        "Release Stability Score",
+        "↑ +14% stabilization recovery"
+    );
+
+    /* =====================================================
+       Coordination Delay
+    ===================================================== */
+
+    updateMetricValue(
+        "Coordination Delay",
+        "18 hrs"
+    );
+
+    updateMetricTrend(
+        "Coordination Delay",
+        "Response coordination improving"
+    );
+
+    /* =====================================================
+       Active Escalations
+    ===================================================== */
+
+    updateMetricValue(
+        "Active Escalations",
+        "14"
+    );
+
+    updateMetricTrend(
+        "Active Escalations",
+        "Escalation growth stabilizing"
+    );
+
+    /* =====================================================
+       Queue Growth Rate
+    ===================================================== */
+
+    updateMetricValue(
+        "Queue Growth Rate",
+        "+6%"
+    );
+
+    updateMetricTrend(
+        "Queue Growth Rate",
+        "Escalation queue pressure reduced"
+    );
+
+    /* =====================================================
+       SLA Breaches
+    ===================================================== */
+
+    updateMetricValue(
+        "SLA Breaches",
+        "5"
+    );
+
+    updateMetricTrend(
+        "SLA Breaches",
+        "Customer delivery recovery improving"
+    );
+
+    /* =====================================================
+       Operational Notification
+    ===================================================== */
+
+    showOperationalNotification(
+        "Operational War Room activated successfully. Cross-functional coordination recovery initiated."
+    );
+
+}
+
+/* =========================================================
+   Update Metric Value
+========================================================= */
+
+function updateMetricValue(
+    metricLabel,
+    newValue
+) {
+
+    const metricCards =
+        document.querySelectorAll(
+            ".metric-card"
+        );
+
+    metricCards.forEach((card) => {
+
+        const label =
+            card.querySelector(
+                ".metric-label"
+            );
+
+        const value =
+            card.querySelector(
+                ".metric-value"
+            );
+
+        if (
+            label &&
+            value &&
+            label.innerText.trim() ===
+            metricLabel
+        ) {
+
+            value.innerText =
+                newValue;
+
+        }
+
+    });
+
+}
+
+/* =========================================================
+   Update Metric Trend
+========================================================= */
+
+function updateMetricTrend(
+    metricLabel,
+    newTrend
+) {
+
+    const metricCards =
+        document.querySelectorAll(
+            ".metric-card"
+        );
+
+    metricCards.forEach((card) => {
+
+        const label =
+            card.querySelector(
+                ".metric-label"
+            );
+
+        const trend =
+            card.querySelector(
+                ".metric-trend"
+            );
+
+        if (
+            label &&
+            trend &&
+            label.innerText.trim() ===
+            metricLabel
+        ) {
+
+            trend.innerText =
+                newTrend;
+
+        }
+
+    });
+
+}
+
+/* =========================================================
+   Operational Notification Banner
+========================================================= */
+
+function showOperationalNotification(
+    message
+) {
+
+    let notification =
+        document.getElementById(
+            "operational-notification"
+        );
+
+    if (!notification) {
+
+        notification =
+            document.createElement("div");
+
+        notification.id =
+            "operational-notification";
+
+        notification.style.position =
+            "fixed";
+
+        notification.style.bottom =
+            "24px";
+
+        notification.style.right =
+            "24px";
+
+        notification.style.padding =
+            "1rem 1.25rem";
+
+        notification.style.background =
+            "#111111";
+
+        notification.style.color =
+            "#ffffff";
+
+        notification.style.borderRadius =
+            "0.85rem";
+
+        notification.style.zIndex =
+            "9999";
+
+        notification.style.maxWidth =
+            "420px";
+
+        notification.style.lineHeight =
+            "1.6";
+
+        notification.style.boxShadow =
+            "0 6px 18px rgba(0,0,0,0.15)";
+
+        document.body.appendChild(
+            notification
+        );
+
+    }
+
+    notification.innerText =
+        message;
+
+    notification.style.display =
+        "block";
+
+    setTimeout(function () {
+
+        notification.style.display =
+            "none";
+
+    }, 4500);
 
 }
 
@@ -331,38 +518,6 @@ function updateProgress() {
 
     }
 
-    /* =====================================================
-       Completion State
-    ===================================================== */
-
-    if (completedSteps === 5) {
-
-        const completionBanner =
-            document.getElementById(
-                "completion-banner"
-            );
-
-        if (completionBanner) {
-
-            completionBanner.style.display =
-                "block";
-
-        }
-
-        const simulationStatus =
-            document.getElementById(
-                "simulation-status"
-            );
-
-        if (simulationStatus) {
-
-            simulationStatus.innerHTML =
-                "Operational State: Incident Stabilized";
-
-        }
-
-    }
-
 }
 
 /* =========================================================
@@ -372,10 +527,6 @@ function updateProgress() {
 document.addEventListener(
     "DOMContentLoaded",
     function () {
-
-        /* =================================================
-           Default Main Workspace
-        ================================================= */
 
         const defaultMainTab =
             document.querySelector(
@@ -387,10 +538,6 @@ document.addEventListener(
             defaultMainTab.click();
 
         }
-
-        /* =================================================
-           Default Signal Workspace
-        ================================================= */
 
         const defaultSignalTab =
             document.querySelector(

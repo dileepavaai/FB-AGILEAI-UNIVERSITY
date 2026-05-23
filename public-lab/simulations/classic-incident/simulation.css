@@ -1,5 +1,11 @@
 /* =========================================================
    Classic Incident Simulation
+   Version: 2.2
+   Governance State: Stable
+========================================================= */
+
+/* =========================================================
+   Core Cards
 ========================================================= */
 
 .info-card,
@@ -9,6 +15,13 @@
     border: 1px solid #dcdcdc;
     border-radius: 1rem;
     background: #fafafa;
+    transition: all 0.2s ease;
+
+}
+
+.tool-card:hover {
+
+    transform: translateY(-2px);
 
 }
 
@@ -297,6 +310,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 1rem;
+    border-radius: 0.8rem;
+    font-weight: 600;
 
 }
 
@@ -347,6 +362,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 1rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
 
 }
 
@@ -390,6 +407,34 @@
     line-height: 1.9;
     margin-top: 1rem;
     margin-bottom: 2rem;
+
+}
+
+/* =========================================================
+   Operational Role Metadata
+========================================================= */
+
+.role-meta {
+
+    font-size: 0.85rem;
+    opacity: 0.72;
+    margin-top: -0.35rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    font-weight: 500;
+
+}
+
+/* =========================================================
+   Tool Card Headings
+========================================================= */
+
+.tool-card h3 {
+
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
 
 }
 
@@ -493,6 +538,8 @@
     border: 1px solid #222222;
     background: #ffffff;
     cursor: pointer;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
 
 }
 

@@ -1,12 +1,29 @@
 /* =========================================================
    Classic Incident Simulation Engine
    Agile AI Leadership Lab
-   Version: 3.0
+
+   Version: 4.0
    Governance State: Stable
+   Architecture State: Interactive Operational Simulation
+
+   Purpose:
+   Simulate traditional operational environments under
+   delivery pressure, escalation growth, coordination
+   fragmentation, and recovery governance workflows.
+
+   Current Simulation Capabilities:
+   - Operational Scenario Navigation
+   - Signal Workspace Simulation
+   - Expandable Metric Intelligence
+   - Interactive Recovery Actions
+   - Persistent Operational Timeline
+   - Agile Role Awareness Layer
+   - Operational State Transition Engine
+
 ========================================================= */
 
 /* =========================================================
-   Main Operational Workspace Tabs
+   Main Operational Workspace Navigation
 ========================================================= */
 
 function toggleSection(
@@ -14,26 +31,46 @@ function toggleSection(
     buttonElement
 ) {
 
+    /* =====================================================
+       All Workspace Panels
+    ===================================================== */
+
     const allPanels =
         document.querySelectorAll(
             ".horizontal-tab-content"
         );
+
+    /* =====================================================
+       All Navigation Tabs
+    ===================================================== */
 
     const allTabs =
         document.querySelectorAll(
             ".horizontal-tab"
         );
 
+    /* =====================================================
+       Selected Active Panel
+    ===================================================== */
+
     const selectedPanel =
         document.getElementById(
             sectionId
         );
+
+    /* =====================================================
+       Hide Existing Panels
+    ===================================================== */
 
     allPanels.forEach((panel) => {
 
         panel.style.display = "none";
 
     });
+
+    /* =====================================================
+       Reset Existing Tabs
+    ===================================================== */
 
     allTabs.forEach((tab) => {
 
@@ -43,12 +80,20 @@ function toggleSection(
 
     });
 
+    /* =====================================================
+       Activate Selected Panel
+    ===================================================== */
+
     if (selectedPanel) {
 
         selectedPanel.style.display =
             "block";
 
     }
+
+    /* =====================================================
+       Activate Selected Navigation Tab
+    ===================================================== */
 
     if (buttonElement) {
 
@@ -57,6 +102,10 @@ function toggleSection(
         );
 
     }
+
+    /* =====================================================
+       Smooth Operational Navigation Continuity
+    ===================================================== */
 
     if (selectedPanel) {
 
@@ -77,7 +126,7 @@ function toggleSection(
 }
 
 /* =========================================================
-   Signal Workspace Tabs
+   Signal Workspace Navigation
 ========================================================= */
 
 function openSignalWorkspaceTab(
@@ -85,15 +134,27 @@ function openSignalWorkspaceTab(
     buttonElement
 ) {
 
+    /* =====================================================
+       Signal Workspace Panels
+    ===================================================== */
+
     const allPanels =
         document.querySelectorAll(
             ".signal-workspace-panel"
         );
 
+    /* =====================================================
+       Signal Workspace Tabs
+    ===================================================== */
+
     const allTabs =
         document.querySelectorAll(
             ".signal-workspace-tab"
         );
+
+    /* =====================================================
+       Reset Existing Workspace Panels
+    ===================================================== */
 
     allPanels.forEach((panel) => {
 
@@ -103,6 +164,10 @@ function openSignalWorkspaceTab(
 
     });
 
+    /* =====================================================
+       Reset Existing Workspace Tabs
+    ===================================================== */
+
     allTabs.forEach((tab) => {
 
         tab.classList.remove(
@@ -110,6 +175,10 @@ function openSignalWorkspaceTab(
         );
 
     });
+
+    /* =====================================================
+       Activate Selected Workspace Panel
+    ===================================================== */
 
     const selectedPanel =
         document.getElementById(
@@ -124,6 +193,10 @@ function openSignalWorkspaceTab(
 
     }
 
+    /* =====================================================
+       Activate Selected Workspace Tab
+    ===================================================== */
+
     if (buttonElement) {
 
         buttonElement.classList.add(
@@ -135,22 +208,34 @@ function openSignalWorkspaceTab(
 }
 
 /* =========================================================
-   Expandable Operational Insight Panels
+   Expandable Operational Metric Insights
 ========================================================= */
 
 function toggleMetricInsight(
     panelId
 ) {
 
+    /* =====================================================
+       All Metric Insight Panels
+    ===================================================== */
+
     const allPanels =
         document.querySelectorAll(
             ".metric-insight-panel"
         );
 
+    /* =====================================================
+       Selected Insight Panel
+    ===================================================== */
+
     const selectedPanel =
         document.getElementById(
             panelId
         );
+
+    /* =====================================================
+       Null Protection
+    ===================================================== */
 
     if (!selectedPanel) {
 
@@ -158,15 +243,27 @@ function toggleMetricInsight(
 
     }
 
+    /* =====================================================
+       Existing Visibility State
+    ===================================================== */
+
     const isVisible =
         selectedPanel.style.display ===
         "block";
+
+    /* =====================================================
+       Close Existing Panels
+    ===================================================== */
 
     allPanels.forEach((panel) => {
 
         panel.style.display = "none";
 
     });
+
+    /* =====================================================
+       Reopen Requested Panel
+    ===================================================== */
 
     if (!isVisible) {
 
@@ -178,7 +275,11 @@ function toggleMetricInsight(
 }
 
 /* =========================================================
-   Operational Decision Engine
+   Operational Recovery Decision Engine
+========================================================= */
+
+/* =========================================================
+   Operational Recovery State Lock
 ========================================================= */
 
 let warRoomActivated = false;
@@ -202,7 +303,7 @@ function activateWarRoom() {
     warRoomActivated = true;
 
     /* =====================================================
-       Release Stability Score
+       Release Stability Recovery
     ===================================================== */
 
     updateMetricValue(
@@ -216,7 +317,7 @@ function activateWarRoom() {
     );
 
     /* =====================================================
-       Coordination Delay
+       Coordination Delay Recovery
     ===================================================== */
 
     updateMetricValue(
@@ -230,7 +331,7 @@ function activateWarRoom() {
     );
 
     /* =====================================================
-       Active Escalations
+       Escalation Recovery
     ===================================================== */
 
     updateMetricValue(
@@ -244,7 +345,7 @@ function activateWarRoom() {
     );
 
     /* =====================================================
-       Queue Growth Rate
+       Queue Pressure Recovery
     ===================================================== */
 
     updateMetricValue(
@@ -258,7 +359,7 @@ function activateWarRoom() {
     );
 
     /* =====================================================
-       SLA Breaches
+       Customer Delivery Recovery
     ===================================================== */
 
     updateMetricValue(
@@ -272,7 +373,19 @@ function activateWarRoom() {
     );
 
     /* =====================================================
-       Operational Notification
+       Persistent Operational Timeline
+    ===================================================== */
+
+    updateOperationalTimeline();
+
+    /* =====================================================
+       Agile Operational Role Awareness
+    ===================================================== */
+
+    updateAgileRoleState();
+
+    /* =====================================================
+       Recovery Notification
     ===================================================== */
 
     showOperationalNotification(
@@ -282,7 +395,130 @@ function activateWarRoom() {
 }
 
 /* =========================================================
-   Update Metric Value
+   Persistent Operational Timeline Engine
+========================================================= */
+
+function updateOperationalTimeline() {
+
+    const timelinePanel =
+        document.getElementById(
+            "timeline-state-panel"
+        );
+
+    if (!timelinePanel) {
+
+        return;
+
+    }
+
+    timelinePanel.innerHTML = `
+
+        <p>
+
+            <strong>
+                🔴 Initial State:
+            </strong>
+
+            Escalation growth increasing
+            across delivery coordination systems.
+
+        </p>
+
+        <p>
+
+            <strong>
+                ⚡ Action Taken:
+            </strong>
+
+            Operational War Room activated
+            for centralized recovery governance.
+
+        </p>
+
+        <p>
+
+            <strong>
+                🟢 Current Recovery State:
+            </strong>
+
+            Cross-functional operational recovery
+            coordination is now active.
+
+        </p>
+
+    `;
+
+}
+
+/* =========================================================
+   Agile Operational Role Awareness Engine
+========================================================= */
+
+function updateAgileRoleState() {
+
+    const rolePanel =
+        document.getElementById(
+            "agile-role-state-panel"
+        );
+
+    if (!rolePanel) {
+
+        return;
+
+    }
+
+    rolePanel.innerHTML = `
+
+        <p>
+
+            <strong>
+                Scrum Master:
+            </strong>
+
+            Coordinating rapid escalation reviews
+            across sprint delivery teams.
+
+        </p>
+
+        <p>
+
+            <strong>
+                Product Owner:
+            </strong>
+
+            Re-prioritizing enterprise rollout
+            commitments based on customer impact.
+
+        </p>
+
+        <p>
+
+            <strong>
+                DevOps Lead:
+            </strong>
+
+            Monitoring infrastructure stabilization
+            and deployment recovery workflows.
+
+        </p>
+
+        <p>
+
+            <strong>
+                Incident Commander:
+            </strong>
+
+            Centralized operational governance
+            activated through War Room escalation control.
+
+        </p>
+
+    `;
+
+}
+
+/* =========================================================
+   Dynamic Metric Value Engine
 ========================================================= */
 
 function updateMetricValue(
@@ -324,7 +560,7 @@ function updateMetricValue(
 }
 
 /* =========================================================
-   Update Metric Trend
+   Dynamic Metric Trend Engine
 ========================================================= */
 
 function updateMetricTrend(
@@ -366,7 +602,7 @@ function updateMetricTrend(
 }
 
 /* =========================================================
-   Operational Notification Banner
+   Operational Recovery Notification Banner
 ========================================================= */
 
 function showOperationalNotification(
@@ -377,6 +613,10 @@ function showOperationalNotification(
         document.getElementById(
             "operational-notification"
         );
+
+    /* =====================================================
+       Create Notification Container
+    ===================================================== */
 
     if (!notification) {
 
@@ -425,11 +665,19 @@ function showOperationalNotification(
 
     }
 
+    /* =====================================================
+       Activate Notification
+    ===================================================== */
+
     notification.innerText =
         message;
 
     notification.style.display =
         "block";
+
+    /* =====================================================
+       Auto Hide Notification
+    ===================================================== */
 
     setTimeout(function () {
 
@@ -449,7 +697,7 @@ let completedSteps = 0;
 const completedStepSet = new Set();
 
 /* =========================================================
-   Complete Operational Step
+   Complete Operational Progress Step
 ========================================================= */
 
 function completeStep(stepNumber) {
@@ -486,7 +734,7 @@ function completeStep(stepNumber) {
 }
 
 /* =========================================================
-   Update Progress State
+   Update Simulation Progress State
 ========================================================= */
 
 function updateProgress() {
@@ -521,12 +769,16 @@ function updateProgress() {
 }
 
 /* =========================================================
-   Default Initialization
+   Default Simulation Initialization
 ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
+
+        /* =================================================
+           Default Main Workspace
+        ================================================= */
 
         const defaultMainTab =
             document.querySelector(
@@ -538,6 +790,10 @@ document.addEventListener(
             defaultMainTab.click();
 
         }
+
+        /* =================================================
+           Default Signal Workspace
+        ================================================= */
 
         const defaultSignalTab =
             document.querySelector(

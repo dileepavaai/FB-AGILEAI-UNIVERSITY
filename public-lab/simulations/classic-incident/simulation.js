@@ -1,6 +1,8 @@
 /* =========================================================
    Classic Incident Simulation Engine
    Agile AI Leadership Lab
+   Version: 2.1
+   Governance State: Stable
 ========================================================= */
 
 /* =========================================================
@@ -81,6 +83,26 @@ function toggleSection(
         buttonElement.classList.add(
             "active-horizontal-tab"
         );
+
+    }
+
+    /* =====================================================
+       Smooth Operational Navigation
+    ===================================================== */
+
+    if (selectedPanel) {
+
+        setTimeout(function () {
+
+            selectedPanel.scrollIntoView({
+
+                behavior: "smooth",
+
+                block: "start"
+
+            });
+
+        }, 80);
 
     }
 

@@ -903,6 +903,88 @@
 }
 
 /* =========================================================
+   Operational Pulse Engine
+========================================================= */
+
+.operational-pulse-engine {
+
+    margin-top: 2rem;
+
+    padding: 1.5rem;
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 1rem;
+
+    background: #fafafa;
+
+    animation:
+        operationalPulseGlow 2.4s ease infinite;
+
+}
+
+/* =========================================================
+   Pulse Header
+========================================================= */
+
+.pulse-header {
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    margin-bottom: 0.85rem;
+
+    color: #111111;
+
+}
+
+/* =========================================================
+   Pulse Message
+========================================================= */
+
+.pulse-message {
+
+    line-height: 1.7;
+
+    color: #333333;
+
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
+
+}
+
+/* =========================================================
+   Ambient Pulse Animation
+========================================================= */
+
+@keyframes operationalPulseGlow {
+
+    0% {
+
+        box-shadow:
+            0 0 0 rgba(0,0,0,0);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 6px 18px rgba(0,0,0,0.05);
+
+    }
+
+    100% {
+
+        box-shadow:
+            0 0 0 rgba(0,0,0,0);
+
+    }
+
+}
+
+/* =========================================================
    Phase-2 Operational Recovery Experience Layer
    Version: 6.2
    Governance State: Additive Enhancement

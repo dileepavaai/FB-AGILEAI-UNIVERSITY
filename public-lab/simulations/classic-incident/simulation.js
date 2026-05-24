@@ -511,6 +511,8 @@ function activateWarRoom() {
 
     updateOperationalTeamsEvolution();
 
+    startOperationalPulseEngine();
+
     /* =====================================================
        Recovery Experience Animation
     ===================================================== */
@@ -1951,6 +1953,158 @@ function updateOperationalTeamsEvolution() {
         `;
 
     }
+
+}
+
+/* =========================================================
+   Operational Pulse Engine
+========================================================= */
+
+function startOperationalPulseEngine() {
+
+    /* =====================================================
+       Prevent Duplicate Pulse Engine
+    ===================================================== */
+
+    if (
+        document.getElementById(
+            "operational-pulse-engine"
+        )
+    ) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Locate Actions Section
+    ===================================================== */
+
+    const actionsTab =
+        document.getElementById(
+            "actions-tab"
+        );
+
+    if (!actionsTab) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Create Pulse Container
+    ===================================================== */
+
+    const pulseContainer =
+        document.createElement("div");
+
+    pulseContainer.id =
+        "operational-pulse-engine";
+
+    pulseContainer.className =
+        "operational-pulse-engine";
+
+    pulseContainer.innerHTML = `
+
+        <div class="pulse-header">
+
+            ● Operational Recovery Pulse Active
+
+        </div>
+
+        <div
+            id="operational-pulse-message"
+            class="pulse-message"
+        >
+
+            Recovery synchronization active
+            across operational teams
+
+        </div>
+
+    `;
+
+    /* =====================================================
+       Append Pulse Engine
+    ===================================================== */
+
+    actionsTab.appendChild(
+        pulseContainer
+    );
+
+    /* =====================================================
+       Operational Pulse Signals
+    ===================================================== */
+
+    const pulseMessages = [
+
+        "Recovery synchronization active across operational teams",
+
+        "Escalation pressure stabilizing across delivery workflows",
+
+        "Queue recovery coordination progressing",
+
+        "Cross-functional governance alignment improving",
+
+        "Customer impact exposure reducing progressively",
+
+        "Operational visibility synchronization active",
+
+        "Incident recovery routing stabilized",
+
+        "Delivery recovery confidence improving"
+
+    ];
+
+    /* =====================================================
+       Pulse Rotation Engine
+    ===================================================== */
+
+    let pulseIndex = 0;
+
+    setInterval(() => {
+
+        const pulseMessage =
+            document.getElementById(
+                "operational-pulse-message"
+            );
+
+        if (!pulseMessage) {
+
+            return;
+
+        }
+
+        pulseIndex++;
+
+        if (
+            pulseIndex >= pulseMessages.length
+        ) {
+
+            pulseIndex = 0;
+
+        }
+
+        pulseMessage.style.opacity =
+            "0";
+
+        pulseMessage.style.transform =
+            "translateY(8px)";
+
+        setTimeout(() => {
+
+            pulseMessage.innerHTML =
+                pulseMessages[pulseIndex];
+
+            pulseMessage.style.opacity =
+                "1";
+
+            pulseMessage.style.transform =
+                "translateY(0px)";
+
+        }, 250);
+
+    }, 3200);
 
 }
 

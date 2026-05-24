@@ -714,49 +714,119 @@ function updateAgileRoleState() {
 
     rolePanel.innerHTML = `
 
-        <p>
+        <div class="operational-state-transition">
 
-            <strong>
-                Scrum Master — Elena Martinez:
-            </strong>
+            <p>
 
-            Coordinating rapid escalation reviews
-            across sprint delivery teams.
+                <strong>
+                    Previous Operational Coordination:
+                </strong>
 
-        </p>
+            </p>
 
-        <p>
+            <p class="old-operational-state">
 
-            <strong>
-                Product Owner — David Chen:
-            </strong>
+                <strong>
+                    Scrum Master — Elena Martinez:
+                </strong>
 
-            Re-prioritizing enterprise rollout
-            commitments based on customer impact.
+                Coordinating rapid escalation reviews
+                across unstable sprint delivery teams.
 
-        </p>
+            </p>
 
-        <p>
+            <p class="old-operational-state">
 
-            <strong>
-                DevOps Lead — Priya Raman:
-            </strong>
+                <strong>
+                    Product Owner — David Chen:
+                </strong>
 
-            Monitoring infrastructure stabilization
-            and deployment recovery workflows.
+                Managing enterprise rollout pressure
+                under unresolved escalation dependencies.
 
-        </p>
+            </p>
 
-        <p>
+            <p class="old-operational-state">
 
-            <strong>
-                Incident Commander — Michael Foster:
-            </strong>
+                <strong>
+                    DevOps Lead — Priya Raman:
+                </strong>
 
-            Centralized operational governance
-            activated through War Room escalation control.
+                Monitoring deployment instability
+                and rollback exposure risks.
 
-        </p>
+            </p>
+
+            <p class="old-operational-state">
+
+                <strong>
+                    Incident Commander — Michael Foster:
+                </strong>
+
+                Monitoring fragmented operational
+                escalation governance.
+
+            </p>
+
+            <p class="recovery-transition-marker">
+
+                ↓ Agile Recovery Coordination Activated
+
+            </p>
+
+            <p>
+
+                <strong>
+                    Current Operational Coordination:
+                </strong>
+
+            </p>
+
+            <p class="new-operational-state">
+
+                <strong>
+                    Scrum Master — Elena Martinez:
+                </strong>
+
+                Coordinating synchronized recovery
+                operations across sprint delivery teams.
+
+            </p>
+
+            <p class="new-operational-state">
+
+                <strong>
+                    Product Owner — David Chen:
+                </strong>
+
+                Re-prioritizing enterprise rollout
+                stabilization based on customer impact.
+
+            </p>
+
+            <p class="new-operational-state">
+
+                <strong>
+                    DevOps Lead — Priya Raman:
+                </strong>
+
+                Monitoring infrastructure stabilization
+                and deployment recovery workflows.
+
+            </p>
+
+            <p class="new-operational-state">
+
+                <strong>
+                    Incident Commander — Michael Foster:
+                </strong>
+
+                Centralized operational governance
+                activated through War Room escalation control.
+
+            </p>
+
+        </div>
 
     `;
 

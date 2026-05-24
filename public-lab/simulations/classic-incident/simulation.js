@@ -529,6 +529,8 @@ if (recoveryColumn) {
 
     startOperationalPulseEngine();
 
+    startRecoveryTimelineStream();
+
     /* =====================================================
        Recovery Experience Animation
     ===================================================== */
@@ -2121,6 +2123,206 @@ function startOperationalPulseEngine() {
         }, 250);
 
     }, 3200);
+
+}
+
+/* =========================================================
+   Recovery Timeline Stream Engine
+   Version: 1.0
+   Governance State: Stable
+
+   Purpose:
+   Simulate progressive operational recovery
+   chronology after War Room activation.
+
+   Experience Goals:
+   - Add temporal operational realism
+   - Visualize escalation sequencing
+   - Strengthen recovery continuity
+   - Simulate executive coordination flow
+   - Improve experiential learning depth
+
+========================================================= */
+
+function startRecoveryTimelineStream() {
+
+    /* =====================================================
+       Prevent Duplicate Timeline Engine
+    ===================================================== */
+
+    if (
+        document.getElementById(
+            "recovery-timeline-stream"
+        )
+    ) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Locate Actions Tab
+    ===================================================== */
+
+    const actionsTab =
+        document.getElementById(
+            "actions-tab"
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!actionsTab) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Timeline Container
+    ===================================================== */
+
+    const timelineContainer =
+        document.createElement("div");
+
+    timelineContainer.id =
+        "recovery-timeline-stream";
+
+    timelineContainer.className =
+        "recovery-timeline-stream";
+
+    /* =====================================================
+       Initial Timeline Structure
+    ===================================================== */
+
+    timelineContainer.innerHTML = `
+
+        <div class="timeline-stream-header">
+
+            Operational Recovery Timeline
+
+        </div>
+
+        <div
+            id="timeline-stream-events"
+            class="timeline-stream-events"
+        >
+
+        </div>
+
+    `;
+
+    /* =====================================================
+       Append Timeline Container
+    ===================================================== */
+
+    actionsTab.appendChild(
+        timelineContainer
+    );
+
+    /* =====================================================
+       Timeline Events
+    ===================================================== */
+
+    const recoveryEvents = [
+
+        "09:08 AM — War Room coordination activated",
+
+        "09:14 AM — Escalation governance synchronized",
+
+        "09:21 AM — Delivery recovery prioritization aligned",
+
+        "09:29 AM — Infrastructure recovery review initiated",
+
+        "09:36 AM — Queue stabilization progressing",
+
+        "09:44 AM — Cross-functional recovery bridge stabilized",
+
+        "09:51 AM — Customer rollout coordination improving",
+
+        "10:02 AM — Operational visibility recovery active"
+
+    ];
+
+    /* =====================================================
+       Timeline Event Container
+    ===================================================== */
+
+    const eventContainer =
+        document.getElementById(
+            "timeline-stream-events"
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!eventContainer) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Progressive Timeline Injection
+    ===================================================== */
+
+    recoveryEvents.forEach((
+        event,
+        index
+    ) => {
+
+        setTimeout(() => {
+
+            const eventRow =
+                document.createElement("div");
+
+            eventRow.className =
+                "timeline-stream-event";
+
+            eventRow.style.opacity =
+                "0";
+
+            eventRow.style.transform =
+                "translateY(10px)";
+
+            eventRow.style.transition =
+                "all 0.45s ease";
+
+            eventRow.innerHTML = `
+
+                <span class="timeline-indicator">
+
+                    ●
+
+                </span>
+
+                <span class="timeline-event-text">
+
+                    ${event}
+
+                </span>
+
+            `;
+
+            eventContainer.appendChild(
+                eventRow
+            );
+
+            setTimeout(() => {
+
+                eventRow.style.opacity =
+                    "1";
+
+                eventRow.style.transform =
+                    "translateY(0px)";
+
+            }, 80);
+
+        }, index * 850);
+
+    });
 
 }
 

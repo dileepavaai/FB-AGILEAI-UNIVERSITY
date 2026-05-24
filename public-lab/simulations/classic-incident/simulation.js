@@ -490,14 +490,30 @@ function activateWarRoom() {
     revealOperationalRecoveryTransition();
 
     /* =====================================================
-       Progressive Transformation Reveal
-    ===================================================== */
+   Progressive Transformation Reveal
+===================================================== */
 
-    revealTransformationComparison();
+revealTransformationComparison();
 
-    /* =====================================================
-       JIRA Recovery Coordination Update
-    ===================================================== */
+/* =====================================================
+   Recovery State Visibility Activation
+===================================================== */
+
+const recoveryColumn =
+    document.getElementById(
+        "current-recovery-column"
+    );
+
+if (recoveryColumn) {
+
+    recoveryColumn.style.display =
+        "block";
+
+}
+
+/* =====================================================
+   JIRA Recovery Coordination Update
+===================================================== */
 
     updateJiraRecoveryBoard();
 

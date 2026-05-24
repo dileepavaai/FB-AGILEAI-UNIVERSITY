@@ -1474,29 +1474,105 @@ function updateJiraRecoveryBoard() {
 
             <li id="jira-task-1">
 
-                Payment Service Migration —
-                <strong>BLOCKED</strong>
+                <div class="jira-previous-state">
+
+                    Payment Service Migration —
+                    <strong>
+                        <s>BLOCKED</s>
+                    </strong>
+
+                </div>
+
+                <div
+                    id="jira-task-1-recovery"
+                    class="jira-recovery-state"
+                    style="
+                        opacity: 0;
+                        margin-top: 8px;
+                        transform: translateY(10px);
+                        transition: all 0.5s ease;
+                    "
+                >
+
+                </div>
 
             </li>
 
             <li id="jira-task-2">
 
-                Customer Rollout Validation —
-                <strong>BLOCKED</strong>
+                <div class="jira-previous-state">
+
+                    Customer Rollout Validation —
+                    <strong>
+                        <s>BLOCKED</s>
+                    </strong>
+
+                </div>
+
+                <div
+                    id="jira-task-2-recovery"
+                    class="jira-recovery-state"
+                    style="
+                        opacity: 0;
+                        margin-top: 8px;
+                        transform: translateY(10px);
+                        transition: all 0.5s ease;
+                    "
+                >
+
+                </div>
 
             </li>
 
             <li id="jira-task-3">
 
-                Infrastructure Approval Review —
-                <strong>DELAYED</strong>
+                <div class="jira-previous-state">
+
+                    Infrastructure Approval Review —
+                    <strong>
+                        <s>DELAYED</s>
+                    </strong>
+
+                </div>
+
+                <div
+                    id="jira-task-3-recovery"
+                    class="jira-recovery-state"
+                    style="
+                        opacity: 0;
+                        margin-top: 8px;
+                        transform: translateY(10px);
+                        transition: all 0.5s ease;
+                    "
+                >
+
+                </div>
 
             </li>
 
             <li id="jira-task-4">
 
-                Release Stabilization Review —
-                <strong>ESCALATED</strong>
+                <div class="jira-previous-state">
+
+                    Release Stabilization Review —
+                    <strong>
+                        <s>ESCALATED</s>
+                    </strong>
+
+                </div>
+
+                <div
+                    id="jira-task-4-recovery"
+                    class="jira-recovery-state"
+                    style="
+                        opacity: 0;
+                        margin-top: 8px;
+                        transform: translateY(10px);
+                        transition: all 0.5s ease;
+                    "
+                >
+
+                </div>
 
             </li>
 
@@ -1531,19 +1607,27 @@ function updateJiraRecoveryBoard() {
 
     setTimeout(() => {
 
-        const task1 =
+                const task1Recovery =
             document.getElementById(
-                "jira-task-1"
+                "jira-task-1-recovery"
             );
 
-        if (task1) {
+        if (task1Recovery) {
 
-            task1.innerHTML = `
+            task1Recovery.innerHTML = `
 
-                Payment Service Migration —
-                <strong>IN RECOVERY</strong>
+                ↓
+                <strong>
+                    IN RECOVERY
+                </strong>
 
             `;
+
+            task1Recovery.style.opacity =
+                "1";
+
+            task1Recovery.style.transform =
+                "translateY(0px)";
 
         }
 
@@ -1555,19 +1639,27 @@ function updateJiraRecoveryBoard() {
 
     setTimeout(() => {
 
-        const task2 =
+                const task2Recovery =
             document.getElementById(
-                "jira-task-2"
+                "jira-task-2-recovery"
             );
 
-        if (task2) {
+        if (task2Recovery) {
 
-            task2.innerHTML = `
+            task2Recovery.innerHTML = `
 
-                Customer Rollout Validation —
-                <strong>COORDINATED</strong>
+                ↓
+                <strong>
+                    COORDINATED
+                </strong>
 
             `;
+
+            task2Recovery.style.opacity =
+                "1";
+
+            task2Recovery.style.transform =
+                "translateY(0px)";
 
         }
 
@@ -1579,19 +1671,27 @@ function updateJiraRecoveryBoard() {
 
     setTimeout(() => {
 
-        const task3 =
+                const task3Recovery =
             document.getElementById(
-                "jira-task-3"
+                "jira-task-3-recovery"
             );
 
-        if (task3) {
+        if (task3Recovery) {
 
-            task3.innerHTML = `
+            task3Recovery.innerHTML = `
 
-                Infrastructure Approval Review —
-                <strong>PRIORITIZED</strong>
+                ↓
+                <strong>
+                    PRIORITIZED
+                </strong>
 
             `;
+
+            task3Recovery.style.opacity =
+                "1";
+
+            task3Recovery.style.transform =
+                "translateY(0px)";
 
         }
 
@@ -1603,19 +1703,27 @@ function updateJiraRecoveryBoard() {
 
     setTimeout(() => {
 
-        const task4 =
+                const task4Recovery =
             document.getElementById(
-                "jira-task-4"
+                "jira-task-4-recovery"
             );
 
-        if (task4) {
+        if (task4Recovery) {
 
-            task4.innerHTML = `
+            task4Recovery.innerHTML = `
 
-                Release Stabilization Review —
-                <strong>VISIBLE</strong>
+                ↓
+                <strong>
+                    VISIBLE
+                </strong>
 
             `;
+
+            task4Recovery.style.opacity =
+                "1";
+
+            task4Recovery.style.transform =
+                "translateY(0px)";
 
         }
 

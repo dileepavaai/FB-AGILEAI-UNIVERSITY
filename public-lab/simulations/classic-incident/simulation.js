@@ -890,13 +890,77 @@ function updateTeamChatRecoveryState() {
 
     setTimeout(function () {
 
-        teamChatPanel.innerHTML = `
+    teamChatPanel.innerHTML = `
 
-            <h3>
-                Operational Recovery Coordination
-            </h3>
+        <div class="operational-state-transition">
 
             <p>
+
+                <strong>
+                    Previous Operational Coordination:
+                </strong>
+
+            </p>
+
+            <p class="old-operational-state">
+
+                <strong>
+                    DevOps:
+                </strong>
+
+                "Deployment approval pending due to
+                unresolved infrastructure dependency."
+
+            </p>
+
+            <p class="old-operational-state">
+
+                <strong>
+                    QA Team:
+                </strong>
+
+                "Regression validation delayed because
+                the release branch is unstable."
+
+            </p>
+
+            <p class="old-operational-state">
+
+                <strong>
+                    Delivery Lead:
+                </strong>
+
+                "Customer rollout timelines may slip
+                further if escalation continues."
+
+            </p>
+
+            <p class="old-operational-state">
+
+                <strong>
+                    Product Operations:
+                </strong>
+
+                "Operational visibility remains fragmented
+                across escalation channels."
+
+            </p>
+
+            <p class="recovery-transition-marker">
+
+                ↓ Agile Recovery Coordination Activated
+
+            </p>
+
+            <p>
+
+                <strong>
+                    Current Operational Coordination:
+                </strong>
+
+            </p>
+
+            <p class="new-operational-state">
 
                 <strong>
                     Incident Commander — Michael Foster:
@@ -907,7 +971,7 @@ function updateTeamChatRecoveryState() {
 
             </p>
 
-            <p>
+            <p class="new-operational-state">
 
                 <strong>
                     Scrum Master — Elena Martinez:
@@ -918,7 +982,7 @@ function updateTeamChatRecoveryState() {
 
             </p>
 
-            <p>
+            <p class="new-operational-state">
 
                 <strong>
                     DevOps Lead — Priya Raman:
@@ -930,7 +994,7 @@ function updateTeamChatRecoveryState() {
 
             </p>
 
-            <p>
+            <p class="new-operational-state">
 
                 <strong>
                     Product Owner — David Chen:
@@ -941,7 +1005,7 @@ function updateTeamChatRecoveryState() {
 
             </p>
 
-            <p>
+            <p class="new-operational-state">
 
                 <strong>
                     Recovery Status:
@@ -952,19 +1016,21 @@ function updateTeamChatRecoveryState() {
 
             </p>
 
-        `;
+        </div>
 
-        /* =================================================
-           Recovery Animation Completion
-        ================================================= */
+    `;
 
-        teamChatPanel.style.opacity =
-            "1";
+    /* =================================================
+       Recovery Animation Completion
+    ================================================= */
 
-        teamChatPanel.style.transform =
-            "translateY(0px)";
+    teamChatPanel.style.opacity =
+        "1";
 
-    }, 320);
+    teamChatPanel.style.transform =
+        "translateY(0px)";
+
+}, 320);
 
 }
 

@@ -509,6 +509,8 @@ function activateWarRoom() {
 
     updateIncidentQueueEvolution();
 
+    updateOperationalTeamsEvolution();
+
     /* =====================================================
        Recovery Experience Animation
     ===================================================== */
@@ -1737,6 +1739,218 @@ function updateIncidentQueueEvolution() {
             "translateY(0px)";
 
     }, 100);
+
+}
+
+/* =========================================================
+   Operational Teams Recovery Evolution
+========================================================= */
+
+function updateOperationalTeamsEvolution() {
+
+    /* =====================================================
+       Delivery Coordination Recovery
+    ===================================================== */
+
+    const deliveryCard =
+        document.getElementById(
+            "delivery-coordination-card"
+        );
+
+    if (deliveryCard) {
+
+        deliveryCard.innerHTML += `
+
+            <div class="operational-state-transition">
+
+                <hr>
+
+                <p>
+
+                    ↓ Agile Recovery Coordination Activated
+
+                </p>
+
+                <div class="metric-status elevated-status">
+
+                    RECOVERY ACTIVE
+
+                </div>
+
+                <ul>
+
+                    <li>
+                        Dependency coordination centralized
+                    </li>
+
+                    <li>
+                        Sprint escalation ownership aligned
+                    </li>
+
+                    <li>
+                        Rollout approval visibility improved
+                    </li>
+
+                </ul>
+
+            </div>
+
+        `;
+
+    }
+
+    /* =====================================================
+       Incident Response Recovery
+    ===================================================== */
+
+    const incidentCard =
+        document.getElementById(
+            "incident-response-card"
+        );
+
+    if (incidentCard) {
+
+        incidentCard.innerHTML += `
+
+            <div class="operational-state-transition">
+
+                <hr>
+
+                <p>
+
+                    ↓ Incident Recovery Synchronization Active
+
+                </p>
+
+                <div class="metric-status elevated-status">
+
+                    STABILIZING
+
+                </div>
+
+                <ul>
+
+                    <li>
+                        Escalation routing centralized
+                    </li>
+
+                    <li>
+                        Response delay reduction active
+                    </li>
+
+                    <li>
+                        Operational recovery reviews synchronized
+                    </li>
+
+                </ul>
+
+            </div>
+
+        `;
+
+    }
+
+    /* =====================================================
+       Platform Operations Recovery
+    ===================================================== */
+
+    const platformCard =
+        document.getElementById(
+            "platform-operations-card"
+        );
+
+    if (platformCard) {
+
+        platformCard.innerHTML += `
+
+            <div class="operational-state-transition">
+
+                <hr>
+
+                <p>
+
+                    ↓ Infrastructure Recovery Governance Enabled
+
+                </p>
+
+                <div class="metric-status elevated-status">
+
+                    COORDINATED
+
+                </div>
+
+                <ul>
+
+                    <li>
+                        Rollback exposure visibility improved
+                    </li>
+
+                    <li>
+                        Deployment stabilization active
+                    </li>
+
+                    <li>
+                        Infrastructure escalation governance aligned
+                    </li>
+
+                </ul>
+
+            </div>
+
+        `;
+
+    }
+
+    /* =====================================================
+       Executive Escalation Recovery
+    ===================================================== */
+
+    const executiveCard =
+        document.getElementById(
+            "executive-escalation-card"
+        );
+
+    if (executiveCard) {
+
+        executiveCard.innerHTML += `
+
+            <div class="operational-state-transition">
+
+                <hr>
+
+                <p>
+
+                    ↓ Executive Operational Visibility Activated
+
+                </p>
+
+                <div class="metric-status elevated-status">
+
+                    VISIBLE
+
+                </div>
+
+                <ul>
+
+                    <li>
+                        Leadership escalation transparency improved
+                    </li>
+
+                    <li>
+                        SLA recovery governance active
+                    </li>
+
+                    <li>
+                        Customer pressure coordination centralized
+                    </li>
+
+                </ul>
+
+            </div>
+
+        `;
+
+    }
 
 }
 

@@ -623,38 +623,73 @@ function updateOperationalTimeline() {
 
     timelinePanel.innerHTML = `
 
-        <p>
+        <div class="timeline-evolution-container">
 
-            <strong>
-                🔴 Initial State:
-            </strong>
+            <div class="timeline-evolution-stage">
 
-            Escalation growth increasing
-            across delivery coordination systems.
+                <strong>
+                    🔴 Previous Operational State:
+                </strong>
 
-        </p>
+                <div
+                    class="timeline-previous-state"
+                    style="
+                        margin-top: 12px;
+                        opacity: 0.6;
+                        text-decoration: line-through;
+                    "
+                >
 
-        <p>
+                    Escalation growth increasing
+                    across delivery coordination systems.
 
-            <strong>
-                ⚡ Action Taken:
-            </strong>
+                    <br><br>
 
-            Operational War Room activated
-            for centralized recovery governance.
+                    No centralized recovery governance
+                    active across operational teams.
 
-        </p>
+                </div>
 
-        <p>
+            </div>
 
-            <strong>
-                🟢 Current Recovery State:
-            </strong>
+            <div
+                class="timeline-recovery-transition"
+                style="
+                    margin: 24px 0;
+                    font-weight: 700;
+                "
+            >
 
-            Cross-functional operational recovery
-            coordination is now active.
+                ↓ Recovery Coordination Activated
 
-        </p>
+            </div>
+
+            <div class="timeline-evolution-stage">
+
+                <strong>
+                    🟢 Current Operational State:
+                </strong>
+
+                <div
+                    class="timeline-current-state"
+                    style="
+                        margin-top: 12px;
+                    "
+                >
+
+                    Cross-functional operational recovery
+                    coordination is now active.
+
+                    <br><br>
+
+                    Centralized operational governance
+                    enabled through War Room escalation management.
+
+                </div>
+
+            </div>
+
+        </div>
 
     `;
 

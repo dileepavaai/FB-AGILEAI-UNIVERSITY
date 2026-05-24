@@ -1282,107 +1282,194 @@ function updateMailCenterRecoveryState() {
        Enterprise Recovery Communication
     ===================================================== */
 
-    recoveryUpdate.innerHTML = `
+        recoveryUpdate.innerHTML = `
 
         <hr style="
             margin: 32px 0;
             opacity: 0.15;
         ">
 
-        <h3>
-            Recovery Coordination Update
-        </h3>
+        <div class="operational-state-transition">
 
-        <p>
-            <strong>From:</strong>
+            <h3>
+                Previous Operational Escalation State
+            </h3>
 
-            Incident Command Center
-            &lt;incident-command@nova-retailops.com&gt;
-        </p>
+            <div class="old-operational-state">
 
-        <p>
-            <strong>To:</strong>
+                <p>
+                    <strong>From:</strong>
 
-            Delivery Operations,
-            DevOps Recovery Team,
-            QA Coordination,
-            Product Operations
-        </p>
+                    DevOps Escalation Queue
+                </p>
 
-        <p>
-            <strong>CC:</strong>
+                <p>
+                    <strong>Subject:</strong>
 
-            Executive Recovery Governance,
-            Enterprise Customer Operations
-        </p>
+                    Deployment Approval Delayed
+                </p>
 
-        <p>
-            <strong>Subject:</strong>
+                <p>
 
-            War Room Recovery Governance Activated
-        </p>
+                    Infrastructure dependency validation
+                    remains unresolved across release systems.
 
-        <br>
+                </p>
 
-        <p>
-            Delivery and Operations Teams,
-        </p>
+            </div>
 
-        <p>
-            Cross-functional operational recovery
-            governance has now been activated
-            through the centralized Incident
-            Command escalation bridge.
-        </p>
+            <div class="old-operational-state">
 
-        <p>
-            Active coordination is now underway
-            across Delivery, DevOps, QA,
-            and Product Operations to stabilize
-            customer rollout dependencies
-            and reduce escalation pressure.
-        </p>
+                <p>
+                    <strong>From:</strong>
 
-        <p>
-            Priority operational blockers are
-            now being tracked through the
-            War Room recovery governance model.
-        </p>
+                    QA Coordination Team
+                </p>
 
-        <p>
-            Recovery checkpoints will continue
-            at structured coordination intervals
-            until operational stability targets
-            are restored.
-        </p>
+                <p>
+                    <strong>Subject:</strong>
 
-        <p>
-            <strong>
-                Next Recovery Checkpoint:
-            </strong>
+                    Regression Validation Delayed
+                </p>
 
-            2:30 PM PST
-        </p>
+                <p>
 
-        <p>
-            <strong>Status:</strong>
+                    Release stabilization testing blocked
+                    due to operational instability.
 
-            RECOVERY ACTIVE
-        </p>
+                </p>
 
-        <br>
+            </div>
 
-        <p>
-            Regards,
-        </p>
+            <div class="old-operational-state">
 
-        <p>
-            Michael Foster
-            <br>
-            Incident Commander
-            <br>
-            Enterprise Recovery Governance
-        </p>
+                <p>
+                    <strong>From:</strong>
+
+                    Delivery Operations
+                </p>
+
+                <p>
+                    <strong>Subject:</strong>
+
+                    Customer Rollout Escalation Risk
+                </p>
+
+                <p>
+
+                    Enterprise rollout timelines remain
+                    exposed to escalation growth pressure.
+
+                </p>
+
+            </div>
+
+            <p class="recovery-transition-marker">
+
+                ↓ Recovery Governance Communication Activated
+
+            </p>
+
+            <h3>
+                Current Recovery Coordination State
+            </h3>
+
+            <div class="new-operational-state">
+
+                <p>
+                    <strong>From:</strong>
+
+                    Incident Command Center
+                    &lt;incident-command@nova-retailops.com&gt;
+                </p>
+
+                <p>
+                    <strong>To:</strong>
+
+                    Delivery Operations,
+                    DevOps Recovery Team,
+                    QA Coordination,
+                    Product Operations
+                </p>
+
+                <p>
+                    <strong>CC:</strong>
+
+                    Executive Recovery Governance,
+                    Enterprise Customer Operations
+                </p>
+
+                <p>
+                    <strong>Subject:</strong>
+
+                    War Room Recovery Governance Activated
+                </p>
+
+                <br>
+
+                <p>
+                    Delivery and Operations Teams,
+                </p>
+
+                <p>
+                    Cross-functional operational recovery
+                    governance has now been activated
+                    through the centralized Incident
+                    Command escalation bridge.
+                </p>
+
+                <p>
+                    Active coordination is now underway
+                    across Delivery, DevOps, QA,
+                    and Product Operations to stabilize
+                    customer rollout dependencies
+                    and reduce escalation pressure.
+                </p>
+
+                <p>
+                    Priority operational blockers are
+                    now being tracked through the
+                    War Room recovery governance model.
+                </p>
+
+                <p>
+                    Recovery checkpoints will continue
+                    at structured coordination intervals
+                    until operational stability targets
+                    are restored.
+                </p>
+
+                <p>
+                    <strong>
+                        Next Recovery Checkpoint:
+                    </strong>
+
+                    2:30 PM PST
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    RECOVERY ACTIVE
+                </p>
+
+                <br>
+
+                <p>
+                    Regards,
+                </p>
+
+                <p>
+                    Michael Foster
+                    <br>
+                    Incident Commander
+                    <br>
+                    Enterprise Recovery Governance
+                </p>
+
+            </div>
+
+        </div>
 
     `;
 

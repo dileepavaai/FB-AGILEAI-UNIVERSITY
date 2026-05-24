@@ -1476,7 +1476,21 @@ function updateJiraRecoveryBoard() {
 }
 
 /* =========================================================
-   Dynamic Metric Value Engine
+   Dynamic Metric Evolution Engine
+   Version: 8.0
+   Governance State: Stable
+
+   Purpose:
+   Transform static metric replacement into
+   operational recovery evolution visibility.
+
+   Experience Goals:
+   - Preserve historical operational state
+   - Show recovery progression
+   - Visualize stabilization movement
+   - Reduce hard replacement behavior
+   - Improve executive simulation realism
+
 ========================================================= */
 
 function updateMetricValue(
@@ -1508,8 +1522,62 @@ function updateMetricValue(
             metricLabel
         ) {
 
-            value.innerText =
-                newValue;
+            /* =============================================
+               Preserve Existing Operational State
+            ============================================= */
+
+            const previousValue =
+                value.innerText.trim();
+
+            /* =============================================
+               Prevent Duplicate Mutation
+            ============================================= */
+
+            if (
+                previousValue === newValue
+            ) {
+
+                return;
+
+            }
+
+            /* =============================================
+               Operational Recovery Evolution
+            ============================================= */
+
+            value.innerHTML = `
+
+                <span
+                    class="metric-previous-state"
+                    style="
+                        opacity: 0.55;
+                        text-decoration: line-through;
+                        margin-right: 10px;
+                    "
+                >
+                    ${previousValue}
+                </span>
+
+                <span
+                    class="metric-evolution-arrow"
+                    style="
+                        margin-right: 10px;
+                        opacity: 0.7;
+                    "
+                >
+                    →
+                </span>
+
+                <span
+                    class="metric-current-state"
+                    style="
+                        font-weight: 700;
+                    "
+                >
+                    ${newValue}
+                </span>
+
+            `;
 
         }
 

@@ -406,6 +406,8 @@ function activateWarRoom() {
 
         updateTeamChatRecoveryState();
 
+        revealOperationalRecoveryTransition();
+
     /* =====================================================
        Progressive Transformation Reveal
     ===================================================== */
@@ -753,6 +755,65 @@ function updateTeamChatRecoveryState() {
             "translateY(0px)";
 
     }, 320);
+
+}
+
+/* =========================================================
+   Operational Recovery Transition Reveal Engine
+   Version: 7.0
+   Governance State: Stable
+
+   Purpose:
+   Reveal guided operational recovery transition
+   immediately after War Room activation
+   to strengthen transformation storytelling
+   and reduce cognitive overload.
+
+========================================================= */
+
+function revealOperationalRecoveryTransition() {
+
+    /* =====================================================
+       Recovery Transition Panel
+    ===================================================== */
+
+    const transitionPanel =
+        document.getElementById(
+            "operational-recovery-transition"
+        );
+
+    /* =====================================================
+       Null Protection
+    ===================================================== */
+
+    if (!transitionPanel) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Reveal Transition Panel
+    ===================================================== */
+
+    transitionPanel.style.display =
+        "block";
+
+    /* =====================================================
+       Guided Scroll Continuity
+    ===================================================== */
+
+    setTimeout(function () {
+
+        transitionPanel.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+    }, 220);
 
 }
 

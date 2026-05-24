@@ -531,6 +531,8 @@ if (recoveryColumn) {
 
     startRecoveryTimelineStream();
 
+    startStabilizationCounterEngine();
+
     /* =====================================================
        Recovery Experience Animation
     ===================================================== */
@@ -2323,6 +2325,255 @@ function startRecoveryTimelineStream() {
         }, index * 850);
 
     });
+
+}
+
+/* =========================================================
+   Escalation Stabilization Counter Engine
+   Version: 1.0
+   Governance State: Stable
+
+   Purpose:
+   Visualize measurable operational recovery
+   stabilization after War Room activation.
+
+   Experience Goals:
+   - Demonstrate measurable recovery evidence
+   - Show operational stabilization progression
+   - Strengthen executive operational realism
+   - Improve recovery cognition
+   - Reinforce transformation continuity
+
+========================================================= */
+
+function startStabilizationCounterEngine() {
+
+    /* =====================================================
+       Prevent Duplicate Counter Engine
+    ===================================================== */
+
+    if (
+        document.getElementById(
+            "stabilization-counter-engine"
+        )
+    ) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Locate Actions Tab
+    ===================================================== */
+
+    const actionsTab =
+        document.getElementById(
+            "actions-tab"
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!actionsTab) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Counter Container
+    ===================================================== */
+
+    const counterContainer =
+        document.createElement("div");
+
+    counterContainer.id =
+        "stabilization-counter-engine";
+
+    counterContainer.className =
+        "stabilization-counter-engine";
+
+    /* =====================================================
+       Initial Counter Structure
+    ===================================================== */
+
+    counterContainer.innerHTML = `
+
+        <div class="counter-engine-header">
+
+            Escalation Stabilization Metrics
+
+        </div>
+
+        <div class="stabilization-counter-grid">
+
+            <div class="stabilization-counter-card">
+
+                <div class="counter-label">
+
+                    Active Escalations
+
+                </div>
+
+                <div class="counter-value">
+
+                    <span class="counter-previous">
+
+                        26
+
+                    </span>
+
+                    <span class="counter-arrow">
+
+                        →
+
+                    </span>
+
+                    <span class="counter-current">
+
+                        14
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="stabilization-counter-card">
+
+                <div class="counter-label">
+
+                    SLA Breaches
+
+                </div>
+
+                <div class="counter-value">
+
+                    <span class="counter-previous">
+
+                        11
+
+                    </span>
+
+                    <span class="counter-arrow">
+
+                        →
+
+                    </span>
+
+                    <span class="counter-current">
+
+                        5
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="stabilization-counter-card">
+
+                <div class="counter-label">
+
+                    Coordination Delay
+
+                </div>
+
+                <div class="counter-value">
+
+                    <span class="counter-previous">
+
+                        31 hrs
+
+                    </span>
+
+                    <span class="counter-arrow">
+
+                        →
+
+                    </span>
+
+                    <span class="counter-current">
+
+                        18 hrs
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="stabilization-counter-card">
+
+                <div class="counter-label">
+
+                    Queue Pressure
+
+                </div>
+
+                <div class="counter-value">
+
+                    <span class="counter-previous">
+
+                        +18%
+
+                    </span>
+
+                    <span class="counter-arrow">
+
+                        →
+
+                    </span>
+
+                    <span class="counter-current">
+
+                        +6%
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+    /* =====================================================
+       Initial Animation State
+    ===================================================== */
+
+    counterContainer.style.opacity =
+        "0";
+
+    counterContainer.style.transform =
+        "translateY(24px)";
+
+    counterContainer.style.transition =
+        "all 0.55s ease";
+
+    /* =====================================================
+       Append Counter Engine
+    ===================================================== */
+
+    actionsTab.appendChild(
+        counterContainer
+    );
+
+    /* =====================================================
+       Progressive Reveal Animation
+    ===================================================== */
+
+    setTimeout(() => {
+
+        counterContainer.style.opacity =
+            "1";
+
+        counterContainer.style.transform =
+            "translateY(0px)";
+
+    }, 120);
 
 }
 

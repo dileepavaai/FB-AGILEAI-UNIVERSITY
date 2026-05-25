@@ -490,10 +490,10 @@ function activateWarRoom() {
     revealOperationalRecoveryTransition();
 
     /* =====================================================
-   Progressive Transformation Reveal
-===================================================== */
+        Progressive Transformation Reveal
+    ===================================================== */
 
-revealTransformationComparison();
+    revealTransformationComparison();
 
 /* =====================================================
    Recovery State Visibility Activation
@@ -2635,9 +2635,9 @@ function startOutcomeEvolutionLayer() {
     ===================================================== */
 
     const outcomeStatuses =
-        document.querySelectorAll(
-            ".outcome-status"
-        );
+    document.querySelectorAll(
+        ".metric-status"
+    );
 
     /* =====================================================
        Safety Validation

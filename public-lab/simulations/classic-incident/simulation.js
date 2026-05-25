@@ -533,6 +533,8 @@ if (recoveryColumn) {
 
     startStabilizationCounterEngine();
 
+    startOutcomeEvolutionLayer();
+
     /* =====================================================
        Recovery Experience Animation
     ===================================================== */
@@ -2574,6 +2576,152 @@ function startStabilizationCounterEngine() {
             "translateY(0px)";
 
     }, 120);
+
+}
+
+/* =========================================================
+   Outcome Evolution Layer Engine
+   Version: 1.0
+   Governance State: Stable
+
+   Purpose:
+   Progressively evolve operational outcome
+   states after War Room activation.
+
+========================================================= */
+
+function startOutcomeEvolutionLayer() {
+
+    /* =====================================================
+       Prevent Duplicate Evolution
+    ===================================================== */
+
+    if (
+        document.getElementById(
+            "outcome-evolution-active"
+        )
+    ) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Evolution Marker
+    ===================================================== */
+
+    const evolutionMarker =
+        document.createElement("div");
+
+    evolutionMarker.id =
+        "outcome-evolution-active";
+
+    evolutionMarker.style.display =
+        "none";
+
+    document.body.appendChild(
+        evolutionMarker
+    );
+
+    /* =====================================================
+       Locate Outcome Status Elements
+    ===================================================== */
+
+    const outcomeStatuses =
+        document.querySelectorAll(
+            ".metric-status"
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (
+        !outcomeStatuses ||
+        outcomeStatuses.length === 0
+    ) {
+
+        return;
+
+    }
+
+    /* =====================================================
+       Progressive Outcome Evolution
+    ===================================================== */
+
+    const evolvedStates = [
+
+        "IMPROVING",
+
+        "STABILIZING",
+
+        "RECOVERING",
+
+        "ACTIVE"
+
+    ];
+
+    outcomeStatuses.forEach((
+        statusElement,
+        index
+    ) => {
+
+        setTimeout(() => {
+
+            /* =============================================
+               Progressive Transition Animation
+            ============================================= */
+
+            statusElement.style.transition =
+                "all 0.45s ease";
+
+            statusElement.style.transform =
+                "scale(0.92)";
+
+            statusElement.style.opacity =
+                "0.55";
+
+            /* =============================================
+               Evolve Status State
+            ============================================= */
+
+            setTimeout(() => {
+
+                statusElement.innerHTML =
+                    evolvedStates[index] ||
+                    "STABILIZING";
+
+                /* =========================================
+                   Recovery Styling
+                ========================================= */
+
+                statusElement.classList.remove(
+                    "critical-status"
+                );
+
+                statusElement.classList.remove(
+                    "high-status"
+                );
+
+                statusElement.classList.add(
+                    "recovery-status"
+                );
+
+                /* =========================================
+                   Final Visual Recovery
+                ========================================= */
+
+                statusElement.style.transform =
+                    "scale(1)";
+
+                statusElement.style.opacity =
+                    "1";
+
+            }, 260);
+
+        }, index * 550);
+
+    });
 
 }
 

@@ -2579,6 +2579,16 @@ function startStabilizationCounterEngine() {
 
 }
 
+/* =========================================================
+   Outcome Evolution Layer Engine
+   Version: 2.0
+   Governance State: Stable
+
+   Purpose:
+   Progressively evolve operational outcome
+   states and evidence after War Room activation.
+========================================================= */
+
 function startOutcomeEvolutionLayer() {
 
     /* =====================================================
@@ -2613,280 +2623,407 @@ function startOutcomeEvolutionLayer() {
     );
 
     /* =====================================================
-       Locate All Outcome Cards
+       Outcome Status Mapping
     ===================================================== */
 
-    const outcomeCards =
-        document.querySelectorAll(
-            "#operational-outcomes-grid .simulation-card"
-        );
+    const outcomeStatuses = [
+
+        {
+            id: "delivery-outcome-status",
+            previous: "CRITICAL",
+            evolved: "IMPROVING"
+        },
+
+        {
+            id: "escalation-outcome-status",
+            previous: "ELEVATED",
+            evolved: "STABILIZING"
+        },
+
+        {
+            id: "customer-outcome-status",
+            previous: "UNSTABLE",
+            evolved: "RECOVERING"
+        },
+
+        {
+            id: "visibility-outcome-status",
+            previous: "LIMITED",
+            evolved: "ACTIVE"
+        }
+
+    ];
 
     /* =====================================================
-       Safety Validation
+       Progressive Status Evolution
     ===================================================== */
 
-    if (
-        !outcomeCards ||
-        outcomeCards.length === 0
-    ) {
+    outcomeStatuses.forEach((status) => {
 
-        return;
+        const element =
+            document.getElementById(
+                status.id
+            );
+
+        if (!element) {
+
+            return;
+
+        }
+
+        element.innerHTML = `
+
+            <span style="
+                opacity: 0.55;
+                text-decoration: line-through;
+                margin-right: 8px;
+            ">
+
+                ${status.previous}
+
+            </span>
+
+            →
+
+            <strong>
+                ${status.evolved}
+            </strong>
+
+        `;
+
+    });
+
+    /* =====================================================
+       Delivery Evidence Evolution
+    ===================================================== */
+
+    const deliveryEvidence =
+        document.getElementById(
+            "delivery-outcome-evidence"
+        );
+
+    if (deliveryEvidence) {
+
+        deliveryEvidence.innerHTML = `
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Release coordination instability high
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    Release coordination delays reduced by 22%
+                </strong>
+
+            </li>
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Deployment rollback frequency unstable
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    Deployment rollback frequency decreasing
+                </strong>
+
+            </li>
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Validation approval delays increasing
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    Validation approval cycle stabilized
+                </strong>
+
+            </li>
+
+        `;
 
     }
 
     /* =====================================================
-       Progressive Outcome Evolution States
+       Escalation Evidence Evolution
     ===================================================== */
 
-    const evolvedStates = [
+    const escalationEvidence =
+        document.getElementById(
+            "escalation-outcome-evidence"
+        );
 
-        "IMPROVING",
+    if (escalationEvidence) {
 
-        "STABILIZING",
+        escalationEvidence.innerHTML = `
 
-        "RECOVERING",
+            <li>
 
-        "ACTIVE"
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
 
-    ];
+                    Escalation backlog expanding
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    Priority escalation backlog reduced
+                </strong>
+
+            </li>
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Leadership visibility fragmented
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    Leadership visibility improved
+                </strong>
+
+            </li>
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Response coordination delayed
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    Response coordination cycles accelerated
+                </strong>
+
+            </li>
+
+        `;
+
+    }
 
     /* =====================================================
-       Progressive Operational Evidence Evolution
+       Customer Evidence Evolution
     ===================================================== */
 
-    const evolvedBullets = [
+    const customerEvidence =
+        document.getElementById(
+            "customer-outcome-evidence"
+        );
 
-        [
-            "Release coordination delays reduced by 22%",
-            "Deployment rollback frequency decreasing",
-            "Validation approval cycle stabilized"
-        ],
+    if (customerEvidence) {
 
-        [
-            "Priority escalation backlog reduced",
-            "Leadership visibility improved",
-            "Response coordination cycles accelerated"
-        ],
+        customerEvidence.innerHTML = `
 
-        [
-            "SLA recovery workflows active",
-            "Customer communication cadence improved",
-            "Enterprise rollout stabilization progressing"
-        ],
+            <li>
 
-        [
-            "Centralized escalation tracking enabled",
-            "Real-time coordination visibility improved",
-            "Cross-team operational alignment strengthened"
-        ]
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
 
-    ];
+                    SLA recovery process unstable
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    SLA recovery workflows active
+                </strong>
+
+            </li>
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Customer communication inconsistent
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    Customer communication cadence improved
+                </strong>
+
+            </li>
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Rollout stabilization blocked
+
+                </span>
+
+                →
+
+                <strong style="
+                    color: #14532d;
+                ">
+                    Enterprise rollout stabilization progressing
+                </strong>
+
+            </li>
+
+        `;
+
+    }
 
     /* =====================================================
-       Progressive Operational Outcome Evolution
+       Visibility Evidence Evolution
     ===================================================== */
 
-    outcomeCards.forEach((card, index) => {
+    const visibilityEvidence =
+        document.getElementById(
+            "visibility-outcome-evidence"
+        );
 
-        setTimeout(() => {
+    if (visibilityEvidence) {
 
-            /* =============================================
-               Locate Status Element
-            ============================================= */
+        visibilityEvidence.innerHTML = `
 
-            const statusElement =
-                card.querySelector(
-                    ".metric-status"
-                );
+            <li>
 
-            if (!statusElement) {
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
 
-                return;
-
-            }
-
-            /* =============================================
-               Previous Operational State
-            ============================================= */
-
-            const previousState =
-                statusElement.innerText.trim();
-
-            /* =============================================
-               Recovery Evolution State
-            ============================================= */
-
-            const evolvedState =
-                evolvedStates[index];
-
-            /* =============================================
-               Prevent Duplicate Evolution
-            ============================================= */
-
-            if (
-                previousState === evolvedState
-            ) {
-
-                return;
-
-            }
-
-            /* =============================================
-               Progressive Status Transformation
-            ============================================= */
-
-            statusElement.innerHTML = `
-
-                <span
-                    class="outcome-previous-state"
-                    style="
-                        opacity: 0.45;
-                        text-decoration: line-through;
-                        margin-right: 10px;
-                    "
-                >
-
-                    ${previousState}
+                    Escalation tracking fragmented
 
                 </span>
 
-                <span
-                    class="outcome-evolution-arrow"
-                    style="
-                        opacity: 0.7;
-                        margin-right: 10px;
-                    "
-                >
+                →
 
-                    →
+                <strong style="
+                    color: #14532d;
+                ">
+                    Centralized escalation tracking enabled
+                </strong>
+
+            </li>
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Coordination visibility delayed
 
                 </span>
 
-                <span
-                    class="outcome-current-state"
-                    style="
-                        font-weight: 700;
-                    "
-                >
+                →
 
-                    ${evolvedState}
+                <strong style="
+                    color: #14532d;
+                ">
+                    Real-time coordination visibility improved
+                </strong>
+
+            </li>
+
+            <li>
+
+                <span style="
+                    opacity: 0.55;
+                    text-decoration: line-through;
+                    margin-right: 8px;
+                ">
+
+                    Cross-team alignment inconsistent
 
                 </span>
 
-            `;
+                →
 
-            /* =============================================
-               Progressive Reveal Animation
-            ============================================= */
+                <strong style="
+                    color: #14532d;
+                ">
+                    Cross-team operational alignment strengthened
+                </strong>
 
-            statusElement.style.opacity =
-                "0";
+            </li>
 
-            statusElement.style.transform =
-                "translateY(8px)";
+        `;
 
-            statusElement.style.transition =
-                "all 0.45s ease";
-
-            setTimeout(() => {
-
-                statusElement.style.opacity =
-                    "1";
-
-                statusElement.style.transform =
-                    "translateY(0px)";
-
-            }, 80);
-
-            /* =============================================
-               Operational Evidence Evolution
-            ============================================= */
-
-            const bulletItems =
-                card.querySelectorAll("li");
-
-            bulletItems.forEach((
-                item,
-                bulletIndex
-            ) => {
-
-                if (
-                    evolvedBullets[index] &&
-                    evolvedBullets[index][bulletIndex]
-                ) {
-
-                    const previousBullet =
-                        item.innerText.trim();
-
-                    const evolvedBullet =
-                        evolvedBullets[index][bulletIndex];
-
-                    item.style.transition =
-                        "all 0.45s ease";
-
-                    item.style.opacity =
-                        "0.35";
-
-                    item.style.transform =
-                        "translateX(-6px)";
-
-                    setTimeout(() => {
-
-                        item.innerHTML = `
-
-                            <span
-                                class="previous-outcome-bullet"
-                                style="
-                                    opacity: 0.45;
-                                    text-decoration: line-through;
-                                    margin-right: 10px;
-                                "
-                            >
-
-                                ${previousBullet}
-
-                            </span>
-
-                            <span
-                                class="bullet-evolution-arrow"
-                                style="
-                                    opacity: 0.7;
-                                    margin-right: 10px;
-                                "
-                            >
-
-                                →
-
-                            </span>
-
-                            <span
-                                class="evolved-outcome-bullet"
-                                style="
-                                    font-weight: 600;
-                                "
-                            >
-
-                                ${evolvedBullet}
-
-                            </span>
-
-                        `;
-
-                        item.style.opacity =
-                            "1";
-
-                        item.style.transform =
-                            "translateX(0px)";
-
-                    }, 450);
-
-                }
-
-            });
-
-        }, index * 850);
-
-    });
+    }
 
 }
 

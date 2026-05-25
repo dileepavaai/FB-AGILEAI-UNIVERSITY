@@ -2579,24 +2579,6 @@ function startStabilizationCounterEngine() {
 
 }
 
-/* =========================================================
-   Outcome Evolution Layer Engine
-   Version: 2.0
-   Governance State: Stable
-
-   Purpose:
-   Progressively evolve operational outcome
-   states after War Room activation.
-
-   Experience Goals:
-   - Prevent static operational outcomes
-   - Simulate enterprise stabilization maturity
-   - Visualize recovery progression
-   - Improve experiential operational learning
-   - Strengthen transformation continuity
-
-========================================================= */
-
 function startOutcomeEvolutionLayer() {
 
     /* =====================================================
@@ -2631,21 +2613,21 @@ function startOutcomeEvolutionLayer() {
     );
 
     /* =====================================================
-       Locate All Outcome Status Elements
+       Locate All Outcome Cards
     ===================================================== */
 
-    const outcomeStatuses =
-    document.querySelectorAll(
-        ".metric-status"
-    );
+    const outcomeCards =
+        document.querySelectorAll(
+            "#operational-outcomes-grid .simulation-card"
+        );
 
     /* =====================================================
        Safety Validation
     ===================================================== */
 
     if (
-        !outcomeStatuses ||
-        outcomeStatuses.length === 0
+        !outcomeCards ||
+        outcomeCards.length === 0
     ) {
 
         return;
@@ -2668,7 +2650,11 @@ function startOutcomeEvolutionLayer() {
 
     ];
 
-        const evolvedBullets = [
+    /* =====================================================
+       Progressive Operational Evidence Evolution
+    ===================================================== */
+
+    const evolvedBullets = [
 
         [
             "Release coordination delays reduced by 22%",
@@ -2697,15 +2683,27 @@ function startOutcomeEvolutionLayer() {
     ];
 
     /* =====================================================
-       Progressive Operational Outcome Mutation
+       Progressive Operational Outcome Evolution
     ===================================================== */
 
-    outcomeStatuses.forEach((
-        statusElement,
-        index
-    ) => {
+    outcomeCards.forEach((card, index) => {
 
         setTimeout(() => {
+
+            /* =============================================
+               Locate Status Element
+            ============================================= */
+
+            const statusElement =
+                card.querySelector(
+                    ".metric-status"
+                );
+
+            if (!statusElement) {
+
+                return;
+
+            }
 
             /* =============================================
                Previous Operational State
@@ -2719,9 +2717,7 @@ function startOutcomeEvolutionLayer() {
             ============================================= */
 
             const evolvedState =
-                evolvedStates[
-                    index % evolvedStates.length
-                ];
+                evolvedStates[index];
 
             /* =============================================
                Prevent Duplicate Evolution
@@ -2736,7 +2732,7 @@ function startOutcomeEvolutionLayer() {
             }
 
             /* =============================================
-               Progressive Outcome Transformation
+               Progressive Status Transformation
             ============================================= */
 
             statusElement.innerHTML = `
@@ -2802,7 +2798,93 @@ function startOutcomeEvolutionLayer() {
 
             }, 80);
 
-        }, index * 550);
+            /* =============================================
+               Operational Evidence Evolution
+            ============================================= */
+
+            const bulletItems =
+                card.querySelectorAll("li");
+
+            bulletItems.forEach((
+                item,
+                bulletIndex
+            ) => {
+
+                if (
+                    evolvedBullets[index] &&
+                    evolvedBullets[index][bulletIndex]
+                ) {
+
+                    const previousBullet =
+                        item.innerText.trim();
+
+                    const evolvedBullet =
+                        evolvedBullets[index][bulletIndex];
+
+                    item.style.transition =
+                        "all 0.45s ease";
+
+                    item.style.opacity =
+                        "0.35";
+
+                    item.style.transform =
+                        "translateX(-6px)";
+
+                    setTimeout(() => {
+
+                        item.innerHTML = `
+
+                            <span
+                                class="previous-outcome-bullet"
+                                style="
+                                    opacity: 0.45;
+                                    text-decoration: line-through;
+                                    margin-right: 10px;
+                                "
+                            >
+
+                                ${previousBullet}
+
+                            </span>
+
+                            <span
+                                class="bullet-evolution-arrow"
+                                style="
+                                    opacity: 0.7;
+                                    margin-right: 10px;
+                                "
+                            >
+
+                                →
+
+                            </span>
+
+                            <span
+                                class="evolved-outcome-bullet"
+                                style="
+                                    font-weight: 600;
+                                "
+                            >
+
+                                ${evolvedBullet}
+
+                            </span>
+
+                        `;
+
+                        item.style.opacity =
+                            "1";
+
+                        item.style.transform =
+                            "translateX(0px)";
+
+                    }, 450);
+
+                }
+
+            });
+
+        }, index * 850);
 
     });
 

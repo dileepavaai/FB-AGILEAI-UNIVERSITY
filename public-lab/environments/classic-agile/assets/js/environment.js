@@ -1,5 +1,5 @@
 /* =========================================================
-   Classic Incident Simulation Engine
+   Classic Agile Operational Environment
    Agile AI Leadership Lab
 
    Version: 6.0

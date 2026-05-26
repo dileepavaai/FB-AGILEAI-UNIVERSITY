@@ -490,30 +490,49 @@ function activateWarRoom() {
     revealOperationalRecoveryTransition();
 
     /* =====================================================
-        Progressive Transformation Reveal
+       Progressive Transformation Reveal
     ===================================================== */
 
     revealTransformationComparison();
 
-/* =====================================================
-   Recovery State Visibility Activation
-===================================================== */
+    /* =====================================================
+       Recovery State Visibility Activation
+    ===================================================== */
 
-const recoveryColumn =
-    document.getElementById(
-        "current-recovery-column"
-    );
+    const recoveryColumn =
+        document.getElementById(
+            "current-recovery-column"
+        );
 
-if (recoveryColumn) {
+    if (recoveryColumn) {
 
-    recoveryColumn.style.display =
-        "block";
+        recoveryColumn.style.display =
+            "block";
 
-}
+    }
 
-/* =====================================================
-   JIRA Recovery Coordination Update
-===================================================== */
+    /* =====================================================
+       Emerging Operational Intelligence Activation
+       Purpose:
+       Intelligence visibility emerges after
+       centralized recovery governance activation
+    ===================================================== */
+
+    const intelligenceFeed =
+        document.getElementById(
+            "operational-intelligence-feed"
+        );
+
+    if (intelligenceFeed) {
+
+        intelligenceFeed.style.display =
+            "block";
+
+    }
+
+    /* =====================================================
+       JIRA Recovery Coordination Update
+    ===================================================== */
 
     updateJiraRecoveryBoard();
 

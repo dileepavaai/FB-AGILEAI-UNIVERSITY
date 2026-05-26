@@ -903,6 +903,123 @@
 }
 
 /* =========================================================
+   Phase-4 Operational Narrative Transition Layer
+   Version: 8.0
+   Governance State: Additive Enhancement
+   Architecture State:
+   Operational Narrative Continuity
+
+   Purpose:
+   - Visual operational progression continuity
+   - Section-to-section recovery flow
+   - Executive simulation storytelling rhythm
+   - Transition state visibility
+========================================================= */
+
+/* =========================================================
+   Operational Transition Bridge
+========================================================= */
+
+.operational-transition-bridge {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-top: 1.75rem;
+
+    margin-bottom: 2rem;
+
+}
+
+/* =========================================================
+   Narrative Transition Pill
+========================================================= */
+
+.transition-pill {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 0.65rem;
+
+    padding:
+        0.9rem
+        1.35rem;
+
+    border:
+        1px
+        solid
+        #d8d8d8;
+
+    border-radius: 999px;
+
+    background: #fafafa;
+
+    color: #222222;
+
+    font-size: 0.95rem;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    box-shadow:
+        0 4px 14px rgba(0,0,0,0.03);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+/* =========================================================
+   Hover State
+========================================================= */
+
+.transition-pill:hover {
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.05);
+
+}
+
+/* =========================================================
+   Mobile Continuity
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .operational-transition-bridge {
+
+        margin-top: 1.5rem;
+
+        margin-bottom: 1.75rem;
+
+    }
+
+    .transition-pill {
+
+        width: 100%;
+
+        justify-content: center;
+
+        text-align: center;
+
+        font-size: 0.9rem;
+
+        padding:
+            0.85rem
+            1rem;
+
+    }
+
+}
+
+/* =========================================================
    Operational Pulse Engine
 ========================================================= */
 
@@ -1297,6 +1414,90 @@
     .recovery-transition-grid {
 
         grid-template-columns: 1fr;
+
+    }
+
+}
+
+/* =========================================================
+   Narrative Transition Rendering Fix
+========================================================= */
+
+.narrative-transition {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin-top: 3rem;
+
+    margin-bottom: 3rem;
+
+}
+
+.narrative-transition span {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 0.65rem;
+
+    padding:
+        0.95rem
+        1.5rem;
+
+    border:
+        1px
+        solid
+        #d8d8d8;
+
+    border-radius: 999px;
+
+    background: #fafafa;
+
+    color: #222222;
+
+    font-size: 0.95rem;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    text-align: center;
+
+    box-shadow:
+        0 4px 14px rgba(0,0,0,0.03);
+
+}
+
+/* =========================================================
+   Mobile Rendering
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .narrative-transition {
+
+        margin-top: 2rem;
+
+        margin-bottom: 2rem;
+
+        padding-left: 1rem;
+
+        padding-right: 1rem;
+
+    }
+
+    .narrative-transition span {
+
+        width: 100%;
+
+        font-size: 0.9rem;
 
     }
 

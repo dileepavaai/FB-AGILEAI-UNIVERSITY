@@ -1,0 +1,232 @@
+/* =========================================================
+   Agile AI Leadership Lab
+   Environment Narrative Continuity Layer
+   Version: v1.0
+   Purpose:
+   Phase-1 Operational Simulation Continuity
+========================================================= */
+
+/* =========================================================
+   Section Rhythm
+========================================================= */
+
+.horizontal-tab-content {
+    position: relative;
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+}
+
+/* =========================================================
+   Narrative Transition Divider
+========================================================= */
+
+.narrative-transition {
+    margin: 5rem auto;
+    max-width: 920px;
+    text-align: center;
+    position: relative;
+}
+
+.narrative-transition::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: rgba(0,0,0,0.08);
+    position: absolute;
+    top: 50%;
+    left: 0;
+    z-index: 1;
+}
+
+.narrative-transition span {
+    position: relative;
+    z-index: 2;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    background: #f8f8f6;
+
+    padding:
+        0.9rem
+        1.6rem;
+
+    border-radius: 999px;
+
+    border:
+        1px
+        solid
+        rgba(0,0,0,0.08);
+
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    color: rgba(0,0,0,0.65);
+
+    box-shadow:
+        0 4px 18px rgba(0,0,0,0.03);
+}
+
+/* =========================================================
+   Operational Flow Enhancement
+========================================================= */
+
+.info-card,
+.tool-card,
+.metric-card {
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.info-card:hover,
+.tool-card:hover,
+.metric-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 28px rgba(0,0,0,0.05);
+}
+
+/* =========================================================
+   Metrics Dashboard Continuity
+========================================================= */
+
+.metrics-dashboard {
+    position: relative;
+}
+
+.metrics-dashboard::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    left: 24px;
+
+    width: 1px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.05),
+            rgba(0,0,0,0.02)
+        );
+
+    opacity: 0.6;
+}
+
+/* =========================================================
+   Operational Workspace Enhancement
+========================================================= */
+
+.signal-workspace-panel,
+.info-card,
+.tool-card {
+    backdrop-filter: blur(4px);
+}
+
+/* =========================================================
+   Recovery Transition Layer
+========================================================= */
+
+.operational-recovery-transition {
+    margin-top: 2rem;
+
+    border-radius: 28px;
+
+    overflow: hidden;
+
+    border:
+        1px
+        solid
+        rgba(0,0,0,0.06);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.96),
+            rgba(248,248,246,0.96)
+        );
+}
+
+.recovery-transition-header {
+    padding: 1rem 1.5rem;
+
+    border-bottom:
+        1px
+        solid
+        rgba(0,0,0,0.06);
+
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.recovery-transition-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 1.5rem;
+
+    padding: 2rem;
+}
+
+.recovery-transition-card {
+    padding: 1.75rem;
+
+    border-radius: 22px;
+
+    border:
+        1px
+        solid
+        rgba(0,0,0,0.06);
+
+    background: rgba(255,255,255,0.75);
+}
+
+/* =========================================================
+   Environment Continuity Alignment
+========================================================= */
+
+.environment-navigation-shell {
+    margin-top: 6rem !important;
+}
+
+/* =========================================================
+   Mobile Continuity
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .horizontal-tab-content {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+
+    .narrative-transition {
+        margin: 3rem auto;
+    }
+
+    .narrative-transition span {
+        width: 100%;
+        justify-content: center;
+
+        font-size: 0.78rem;
+
+        padding:
+            0.9rem
+            1rem;
+    }
+
+    .recovery-transition-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

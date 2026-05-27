@@ -1,3 +1,4 @@
+```js
 /* =========================================================
    Environment Core Engine
    Agile AI Leadership Lab
@@ -10,7 +11,7 @@
    and shared simulation foundation layer.
 
    Version:
-   v2.2 — Stabilized Runtime Persistence Governance
+   v2.3 — Runtime Diagnostics Governance Stabilization
 
    Architecture Upgrade:
    - Persistent Governance Layer (localStorage)
@@ -19,6 +20,7 @@
    - Runtime Visibility Diagnostics
    - Global Persistence Governance Exposure
    - Runtime Session Validation Stabilization
+   - Persistence Diagnostics Visibility Correction
 
 ========================================================= */
 
@@ -250,7 +252,27 @@ function logEnvironmentRuntimeState() {
 
     console.log(
         "Persistence Governance:",
-        window.environmentPersistenceKeys
+        {
+
+            runtimeSession:
+                sessionStorage.getItem(
+                    environmentPersistenceKeys
+                        .runtimeSession
+                ),
+
+            completionState:
+                localStorage.getItem(
+                    environmentPersistenceKeys
+                        .completionState
+                ),
+
+            warRoomState:
+                localStorage.getItem(
+                    environmentPersistenceKeys
+                        .warRoomState
+                )
+
+        }
     );
 
 }
@@ -387,3 +409,4 @@ document.addEventListener(
 
     }
 );
+```

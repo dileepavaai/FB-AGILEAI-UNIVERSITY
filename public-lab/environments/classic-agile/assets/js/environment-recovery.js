@@ -61,7 +61,12 @@ function activateWarRoom() {
     warRoomActivated = true;
 
     localStorage.setItem(
-        "classicAgileCompleted",
+    environmentPersistenceKeys.completionState,
+    "true"
+    );
+
+    localStorage.setItem(
+        environmentPersistenceKeys.warRoomState,
         "true"
     );
 

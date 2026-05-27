@@ -6,7 +6,17 @@
    Centralized environment bootstrapping,
    lifecycle orchestration,
    runtime initialization,
+   hybrid persistence governance,
    and shared simulation foundation layer.
+
+   Version:
+   v2.0 — Hybrid Persistence Runtime
+
+   Architecture Upgrade:
+   - Persistent Governance Layer (localStorage)
+   - Runtime Session Layer (sessionStorage)
+   - Controlled Reset Governance
+   - Runtime Visibility Diagnostics
 
 ========================================================= */
 
@@ -29,6 +39,9 @@ const environmentRuntimeState = {
         "CLASSIC_AGILE",
 
     recoveryEngineActive:
+        false,
+
+    runtimeSessionActive:
         false
 
 };
@@ -50,6 +63,23 @@ const environmentConfiguration = {
 
     initializationDelay:
         120
+
+};
+
+/* =========================================================
+   Environment Persistence Keys
+========================================================= */
+
+const environmentPersistenceKeys = {
+
+    runtimeSession:
+        "classicAgileRuntimeActive",
+
+    completionState:
+        "classicAgileCompleted",
+
+    warRoomState:
+        "warRoomActivated"
 
 };
 
@@ -116,6 +146,56 @@ function activateDefaultSignalWorkspace() {
 }
 
 /* =========================================================
+   Initialize Runtime Session
+========================================================= */
+
+function initializeRuntimeSession() {
+
+    sessionStorage.setItem(
+        environmentPersistenceKeys
+            .runtimeSession,
+        "true"
+    );
+
+    environmentRuntimeState
+        .runtimeSessionActive = true;
+
+}
+
+/* =========================================================
+   Environment Runtime Visibility
+========================================================= */
+
+function logEnvironmentRuntimeState() {
+
+    console.log(
+        "Environment Runtime Initialized"
+    );
+
+    console.log(
+        "Runtime State:",
+        environmentRuntimeState
+    );
+
+    console.log(
+        "Runtime Session:",
+        sessionStorage.getItem(
+            environmentPersistenceKeys
+                .runtimeSession
+        )
+    );
+
+    console.log(
+        "Persistent Completion:",
+        localStorage.getItem(
+            environmentPersistenceKeys
+                .completionState
+        )
+    );
+
+}
+
+/* =========================================================
    Initialize Environment Runtime
 ========================================================= */
 
@@ -142,23 +222,86 @@ function initializeEnvironmentRuntime() {
     activateDefaultSignalWorkspace();
 
     /* =====================================================
+       Initialize Runtime Session
+    ===================================================== */
+
+    initializeRuntimeSession();
+
+    /* =====================================================
        Runtime Initialization Complete
     ===================================================== */
 
     markEnvironmentInitialized();
 
     /* =====================================================
+       Runtime Visibility Diagnostics
+    ===================================================== */
+
+    logEnvironmentRuntimeState();
+
+}
+
+/* =========================================================
+   Reset Environment Progression
+========================================================= */
+
+function resetEnvironmentProgression() {
+
+    /* =====================================================
+       Persistent Governance Reset
+    ===================================================== */
+
+    localStorage.removeItem(
+        environmentPersistenceKeys
+            .completionState
+    );
+
+    localStorage.removeItem(
+        environmentPersistenceKeys
+            .warRoomState
+    );
+
+    /* =====================================================
+       Runtime Session Reset
+    ===================================================== */
+
+    sessionStorage.removeItem(
+        environmentPersistenceKeys
+            .runtimeSession
+    );
+
+    /* =====================================================
+       Runtime State Reset
+    ===================================================== */
+
+    environmentRuntimeState
+        .environmentInitialized = false;
+
+    environmentRuntimeState
+        .activeWorkspace = null;
+
+    environmentRuntimeState
+        .activeSignalWorkspace = null;
+
+    environmentRuntimeState
+        .recoveryEngineActive = false;
+
+    environmentRuntimeState
+        .runtimeSessionActive = false;
+
+    /* =====================================================
        Console Visibility
     ===================================================== */
 
     console.log(
-        "Environment Runtime Initialized"
+        "Environment Progression Reset"
     );
 
-    console.log(
-        "Runtime State:",
-        environmentRuntimeState
-    );
+    /* =====================================================
+       Reload Environment
+    ===================================================== */
+
+    location.reload();
 
 }
 

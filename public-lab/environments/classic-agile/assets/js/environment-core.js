@@ -1,4 +1,3 @@
-```js
 /* =========================================================
    Environment Core Engine
    Agile AI Leadership Lab
@@ -409,4 +408,3 @@ document.addEventListener(
 
     }
 );
-```

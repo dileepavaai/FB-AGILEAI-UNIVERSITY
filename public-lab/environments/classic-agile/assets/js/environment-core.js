@@ -10,13 +10,14 @@
    and shared simulation foundation layer.
 
    Version:
-   v2.0 — Hybrid Persistence Runtime
+   v2.1 — Global Persistence Governance Runtime
 
    Architecture Upgrade:
    - Persistent Governance Layer (localStorage)
    - Runtime Session Layer (sessionStorage)
    - Controlled Reset Governance
    - Runtime Visibility Diagnostics
+   - Global Persistence Governance Exposure
 
 ========================================================= */
 
@@ -82,6 +83,13 @@ const environmentPersistenceKeys = {
         "warRoomActivated"
 
 };
+
+/* =========================================================
+   Global Persistence Governance Exposure
+========================================================= */
+
+window.environmentPersistenceKeys =
+    environmentPersistenceKeys;
 
 /* =========================================================
    Environment Initialization Guard
@@ -191,6 +199,19 @@ function logEnvironmentRuntimeState() {
             environmentPersistenceKeys
                 .completionState
         )
+    );
+
+    console.log(
+        "War Room State:",
+        localStorage.getItem(
+            environmentPersistenceKeys
+                .warRoomState
+        )
+    );
+
+    console.log(
+        "Persistence Governance:",
+        window.environmentPersistenceKeys
     );
 
 }

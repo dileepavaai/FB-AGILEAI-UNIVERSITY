@@ -1676,3 +1676,25 @@
     }
 
 }
+
+/* =========================================================
+   Preview Governance Message
+========================================================= */
+
+.preview-governance-message {
+
+    margin-top: 1rem;
+
+    padding: 1rem 1.25rem;
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 0.85rem;
+
+    background: #fafafa;
+
+    line-height: 1.8;
+
+    max-width: 720px;
+
+}

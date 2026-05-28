@@ -2,24 +2,53 @@
    Environment UI Engine
    Agile AI Leadership Lab
 
+   File:
+   environment-ui.js
+
+   Version:
+   2.1
+
+   Governance State:
+   Stable
+
+   Architecture Role:
+   UI Interaction Layer
+
    Purpose:
-   Manage environment navigation,
-   panel visibility,
-   workspace interaction,
-   and guided UI continuity.
+   Manage:
+   - workspace navigation
+   - panel visibility
+   - signal workspace routing
+   - operational insight expansion
+   - institutional preview governance
+   - guided interaction continuity
+   - learning credit interaction gating
 
-   Architecture Boundary:
-   This file owns ONLY UI interaction logic.
+   =========================================================
+   ARCHITECTURE BOUNDARY
+   =========================================================
 
-   DOES NOT OWN:
-   - runtime bootstrapping
-   - environment lifecycle initialization
+   THIS FILE OWNS:
+   - UI interaction
+   - navigation state
+   - visibility rendering
+   - preview governance messaging
+   - interaction continuity
+   - session-based interaction routing
+
+   THIS FILE DOES NOT OWN:
+   - environment bootstrapping
+   - runtime lifecycle
    - recovery orchestration
    - metric mutation
-   - stream engines
+   - stream intelligence
+   - environment initialization
 
-   Bootstrap responsibility belongs exclusively to:
+   Bootstrap Ownership:
    environment-core.js
+
+   Recovery Ownership:
+   environment-recovery.js
 
 ========================================================= */
 
@@ -60,6 +89,21 @@ function toggleSection(
         );
 
     /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!selectedPanel) {
+
+        console.warn(
+            "[Environment UI] Invalid section:",
+            sectionId
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
        Hide Existing Panels
     ===================================================== */
 
@@ -86,12 +130,8 @@ function toggleSection(
        Activate Requested Panel
     ===================================================== */
 
-    if (selectedPanel) {
-
-        selectedPanel.style.display =
-            "block";
-
-    }
+    selectedPanel.style.display =
+        "block";
 
     /* =====================================================
        Activate Requested Tab
@@ -109,21 +149,17 @@ function toggleSection(
        Guided Scroll Continuity
     ===================================================== */
 
-    if (selectedPanel) {
+    setTimeout(function () {
 
-        setTimeout(function () {
+        selectedPanel.scrollIntoView({
 
-            selectedPanel.scrollIntoView({
+            behavior: "smooth",
 
-                behavior: "smooth",
+            block: "start"
 
-                block: "start"
+        });
 
-            });
-
-        }, 80);
-
-    }
+    }, 80);
 
 }
 
@@ -155,6 +191,30 @@ function openSignalWorkspaceTab(
         );
 
     /* =====================================================
+       Requested Panel
+    ===================================================== */
+
+    const selectedPanel =
+        document.getElementById(
+            panelId
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!selectedPanel) {
+
+        console.warn(
+            "[Environment UI] Invalid workspace panel:",
+            panelId
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
        Reset Existing Panels
     ===================================================== */
 
@@ -179,25 +239,12 @@ function openSignalWorkspaceTab(
     });
 
     /* =====================================================
-       Requested Panel
-    ===================================================== */
-
-    const selectedPanel =
-        document.getElementById(
-            panelId
-        );
-
-    /* =====================================================
        Activate Requested Panel
     ===================================================== */
 
-    if (selectedPanel) {
-
-        selectedPanel.classList.add(
-            "active-signal-workspace-panel"
-        );
-
-    }
+    selectedPanel.classList.add(
+        "active-signal-workspace-panel"
+    );
 
     /* =====================================================
        Activate Requested Tab
@@ -245,6 +292,11 @@ function toggleMetricInsight(
 
     if (!selectedPanel) {
 
+        console.warn(
+            "[Environment UI] Invalid metric insight:",
+            panelId
+        );
+
         return;
 
     }
@@ -280,3 +332,182 @@ function toggleMetricInsight(
     }
 
 }
+
+/* =========================================================
+   Institutional Preview Governance Layer
+========================================================= */
+
+/* =========================================================
+   Preview Governance Message Toggle
+
+   Purpose:
+   Display institutional preview governance
+   messaging for restricted interaction layers.
+
+   Future Expansion:
+   - Portal entitlement routing
+   - Learning Credit validation
+   - Session-aware governance policies
+   - Capability progression states
+
+========================================================= */
+
+function showPreviewMessage() {
+
+    const message =
+        document.getElementById(
+            "preview-governance-message"
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!message) {
+
+        console.warn(
+            "[Environment UI] Preview governance message missing"
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
+       Visibility Toggle
+    ===================================================== */
+
+    if (
+        message.style.display === "none"
+    ) {
+
+        message.style.display =
+            "block";
+
+    } else {
+
+        message.style.display =
+            "none";
+
+    }
+
+}
+
+/* =========================================================
+   Governance Access Router
+
+   Purpose:
+   Centralized access control routing for
+   institutional preview experiences.
+
+   Current Governance Layer:
+   Session-based preview routing
+
+   Future Governance Expansion:
+   - Learning Credit validation
+   - Portal entitlement orchestration
+   - Institutional progression systems
+   - Capability maturity unlock routing
+
+========================================================= */
+
+function handleWarRoomAccess() {
+
+    /* =====================================================
+       Session-Based Learning Credit Validation
+    ===================================================== */
+
+    const userHasLearningCredits =
+
+        sessionStorage.getItem(
+            "learningCreditsUnlocked"
+        ) === "true";
+
+    /* =====================================================
+       Institutional Preview Mode
+    ===================================================== */
+
+    const previewMode =
+        !userHasLearningCredits;
+
+    /* =====================================================
+       Preview Governance Routing
+    ===================================================== */
+
+    if (previewMode) {
+
+        showPreviewMessage();
+
+        return;
+
+    }
+
+    /* =====================================================
+       Recovery Orchestration Activation
+
+       NOTE:
+       Recovery orchestration ownership belongs to:
+       environment-recovery.js
+
+    ===================================================== */
+
+    if (
+        typeof activateWarRoom ===
+        "function"
+    ) {
+
+        activateWarRoom();
+
+    } else {
+
+        console.error(
+            "[Environment UI] activateWarRoom() unavailable"
+        );
+
+    }
+
+}
+
+/* =========================================================
+   War Room Interaction Binding
+
+   Purpose:
+   Connect operational recovery activation
+   button with institutional governance router.
+
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const activateButton =
+            document.getElementById(
+                "activate-war-room-btn"
+            );
+
+        /* =================================================
+           Safety Validation
+        ================================================= */
+
+        if (!activateButton) {
+
+            console.warn(
+                "[Environment UI] War room button missing"
+            );
+
+            return;
+
+        }
+
+        /* =================================================
+           Governance Interaction Binding
+        ================================================= */
+
+        activateButton.addEventListener(
+            "click",
+            handleWarRoomAccess
+        );
+
+    }
+);

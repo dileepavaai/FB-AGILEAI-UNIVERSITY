@@ -318,36 +318,31 @@
 
             <div class="horizontal-tabs">
 
-                <button
-                    class="horizontal-tab active-horizontal-tab"
+                <button class="preview-locked-btn horizontal-tab active-horizontal-tab"
                     onclick="toggleSection('scenario-tab', this)"
                 >
                     📘 Scenario
                 </button>
 
-                <button
-                    class="horizontal-tab"
+                <button class="preview-locked-btn horizontal-tab"
                     onclick="toggleSection('signals-tab', this)"
                 >
                     📡 Signals
                 </button>
 
-                <button
-                    class="horizontal-tab"
+                <button class="preview-locked-btn horizontal-tab"
                     onclick="toggleSection('teams-tab', this)"
                 >
                     👥 Teams
                 </button>
 
-                <button
-                    class="horizontal-tab"
+                <button class="preview-locked-btn horizontal-tab"
                     onclick="toggleSection('actions-tab', this)"
                 >
                     ⚡ Actions
                 </button>
 
-                <button
-                    class="horizontal-tab"
+                <button class="preview-locked-btn horizontal-tab"
                     onclick="toggleSection('outcomes-tab', this)"
                 >
                     📈 Outcomes
@@ -442,8 +437,7 @@
                         CRITICAL
                     </div>
 
-                    <button
-                        class="metric-expand-button"
+                    <button class="preview-locked-btn metric-expand-button"
                         onclick="toggleMetricInsight('release-stability-insight')"
                     >
                         + View Operational Signals
@@ -497,8 +491,7 @@
                         HIGH
                     </div>
 
-                    <button
-                        class="metric-expand-button"
+                    <button class="preview-locked-btn metric-expand-button"
                         onclick="toggleMetricInsight('rollout-risk-insight')"
                     >
                         + View Operational Signals
@@ -552,8 +545,7 @@
                         HIGH
                     </div>
 
-                    <button
-                        class="metric-expand-button"
+                    <button class="preview-locked-btn metric-expand-button"
                         onclick="toggleMetricInsight('blocked-task-insight')"
                     >
                         + View Operational Signals
@@ -607,8 +599,7 @@
                         HIGH
                     </div>
 
-                    <button
-                        class="metric-expand-button"
+                    <button class="preview-locked-btn metric-expand-button"
                         onclick="toggleMetricInsight('deployment-insight')"
                     >
                         + View Operational Signals
@@ -670,8 +661,7 @@
                         CRITICAL
                     </div>
 
-                    <button
-                        class="metric-expand-button"
+                    <button class="preview-locked-btn metric-expand-button"
                         onclick="toggleMetricInsight('coordination-delay-insight')"
                     >
                         + View Operational Signals
@@ -781,8 +771,7 @@
                         CRITICAL
                     </div>
 
-                    <button
-                        class="metric-expand-button"
+                    <button class="preview-locked-btn metric-expand-button"
                         onclick="toggleMetricInsight('sla-insight')"
                     >
                         + View Operational Signals
@@ -1140,29 +1129,25 @@
 
             <div class="workspace-tab-row">
 
-                <button
-                    class="signal-workspace-tab active-signal-workspace-tab"
+                <button class="preview-locked-btn signal-workspace-tab active-signal-workspace-tab"
                     onclick="openSignalWorkspaceTab('mail-workspace', this)"
                 >
                     Mail Center
                 </button>
 
-                <button
-                    class="signal-workspace-tab"
+                <button class="preview-locked-btn signal-workspace-tab"
                     onclick="openSignalWorkspaceTab('chat-workspace', this)"
                 >
                     Team Chat
                 </button>
 
-                <button
-                    class="signal-workspace-tab"
+                <button class="preview-locked-btn signal-workspace-tab"
                     onclick="openSignalWorkspaceTab('jira-workspace', this)"
                 >
                     JIRA Board
                 </button>
 
-                <button
-                    class="signal-workspace-tab"
+                <button class="preview-locked-btn signal-workspace-tab"
                     onclick="openSignalWorkspaceTab('queue-workspace', this)"
                 >
                     Incident Queue
@@ -1958,15 +1943,26 @@
 
                     </p>
 
-                    <button
-    id="activate-war-room-btn"
-    class="simulation-button"
-    onclick="activateWarRoom()"
->
+                    <button id="activate-war-room-btn"
+                        class="preview-locked-btn simulation-button"
+                    >
 
-    Activate War Room Response
+                        Activate War Room Response
 
-</button>
+                    </button>
+
+        <div
+            id="preview-governance-message"
+            class="preview-governance-message"
+            style="display: none;"
+        >
+
+            Learning Credits are required to access
+            advanced operational recovery orchestration,
+            adaptive coordination workflows,
+            and institutional leadership response systems.
+
+        </div>
 
 <!-- ========================================= -->
 <!-- Operational Recovery Transition Panel -->

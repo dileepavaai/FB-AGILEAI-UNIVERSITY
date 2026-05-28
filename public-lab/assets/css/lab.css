@@ -1,19 +1,21 @@
 /* =========================================================
    Agile AI Leadership Lab
-   Operational Experience Layer
+   Functional Leadership Experience Layer
 
-   Version: 1.6
+   Version: 1.7
    Governance State: STABILIZED
-   Refinement State: INSTITUTIONAL EXPERIENCE POLISH
+   Refinement State: INSTITUTIONAL EXPERIENCE NORMALIZATION
 
    Purpose:
-   - Institutional operational refinement
+   - Institutional functional refinement
    - Leadership ecosystem stabilization
    - Experience hierarchy enhancement
    - Controlled-access environment styling
-   - Progressive operational journey refinement
+   - Progressive leadership journey refinement
    - Visual breathing and readability improvements
    - Balanced institutional grid refinement
+   - Environment alignment normalization
+   - Left-aligned institutional simulation consistency
 ========================================================= */
 
 /* =========================================================
@@ -23,7 +25,44 @@
 .lab-hero {
 
   padding: 6rem 0 4.5rem;
+
+  text-align: left;
 }
+
+/* =========================================================
+   Environment Hero Normalization
+   Ensures Leadership Lab environments maintain
+   institutional alignment consistency
+========================================================= */
+
+.hero-section {
+
+  text-align: left;
+
+  align-items: flex-start;
+}
+
+.hero-section .hero-content {
+
+  text-align: left;
+
+  align-items: flex-start;
+
+  justify-content: flex-start;
+}
+
+.hero-section h1,
+.hero-section h2,
+.hero-section p,
+.hero-section .hero-label,
+.hero-section .hero-description {
+
+  text-align: left;
+}
+
+/* =========================================================
+   Surface Label
+========================================================= */
 
 .surface-label {
 
@@ -35,6 +74,10 @@
 
   margin-bottom: 1.25rem;
 }
+
+/* =========================================================
+   Highlight Narrative
+========================================================= */
 
 .lab-highlight {
 
@@ -186,7 +229,7 @@
 }
 
 /* =========================================================
-   Operational Grid
+   Functional Grid
 ========================================================= */
 
 .lab-grid {
@@ -202,7 +245,7 @@
 }
 
 /* =========================================================
-   Operational Cards
+   Functional Cards
 ========================================================= */
 
 .lab-card {
@@ -245,7 +288,7 @@
 }
 
 /* =========================================================
-   Operational Signal States
+   Functional Signal States
 ========================================================= */
 
 .signal-state {
@@ -277,7 +320,7 @@
 }
 
 /* =========================================================
-   Operational Panels
+   Institutional Panels
 ========================================================= */
 
 .operational-panel {
@@ -292,7 +335,7 @@
 }
 
 /* =========================================================
-   Operational Progression Flow
+   Leadership Progression Flow
 ========================================================= */
 
 .environment-flow {
@@ -418,5 +461,13 @@
   .lab-card {
 
     padding: 1.6rem;
+  }
+
+  .hero-section,
+  .hero-section .hero-content {
+
+    text-align: left;
+
+    align-items: flex-start;
   }
 }

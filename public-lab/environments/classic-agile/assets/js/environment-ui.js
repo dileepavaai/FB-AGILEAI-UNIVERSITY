@@ -6,7 +6,7 @@
    environment-ui.js
 
    Version:
-   2.1
+   3.0
 
    Governance State:
    Stable
@@ -23,6 +23,8 @@
    - institutional preview governance
    - guided interaction continuity
    - learning credit interaction gating
+   - protected interaction governance
+   - unlock-aware orchestration routing
 
    =========================================================
    ARCHITECTURE BOUNDARY
@@ -35,6 +37,7 @@
    - preview governance messaging
    - interaction continuity
    - session-based interaction routing
+   - protected orchestration access gating
 
    THIS FILE DOES NOT OWN:
    - environment bootstrapping
@@ -51,6 +54,66 @@
    environment-recovery.js
 
 ========================================================= */
+
+/* =========================================================
+   Runtime Governance State
+========================================================= */
+
+const userHasLearningCredits =
+
+    sessionStorage.getItem(
+        "learningCreditsUnlocked"
+    ) === "true";
+
+/* =========================================================
+   Institutional Preview State
+========================================================= */
+
+const previewMode =
+    !userHasLearningCredits;
+
+/* =========================================================
+   Global Governance Body State
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =================================================
+           Preview Governance State
+        ================================================= */
+
+        if (previewMode) {
+
+            document.body.classList.add(
+                "preview-mode"
+            );
+
+            console.log(
+                "[Environment UI] Preview mode active"
+            );
+
+        }
+
+        /* =================================================
+           Unlock Governance State
+        ================================================= */
+
+        if (userHasLearningCredits) {
+
+            document.body.classList.add(
+                "learning-credits-unlocked"
+            );
+
+            console.log(
+                "[Environment UI] Learning credits unlocked"
+            );
+
+        }
+
+    }
+);
 
 /* =========================================================
    Main Operational Workspace Navigation
@@ -339,17 +402,6 @@ function toggleMetricInsight(
 
 /* =========================================================
    Preview Governance Message Toggle
-
-   Purpose:
-   Display institutional preview governance
-   messaging for restricted interaction layers.
-
-   Future Expansion:
-   - Portal entitlement routing
-   - Learning Credit validation
-   - Session-aware governance policies
-   - Capability progression states
-
 ========================================================= */
 
 function showPreviewMessage() {
@@ -394,74 +446,49 @@ function showPreviewMessage() {
 }
 
 /* =========================================================
-   Governance Access Router
+   Protected Interaction Governance Router
 
    Purpose:
-   Centralized access control routing for
-   institutional preview experiences.
-
-   Current Governance Layer:
-   Session-based preview routing
-
-   Future Governance Expansion:
-   - Learning Credit validation
-   - Portal entitlement orchestration
-   - Institutional progression systems
-   - Capability maturity unlock routing
+   Centralized governance validation for
+   protected orchestration interactions.
 
 ========================================================= */
 
-function handleWarRoomAccess() {
+function handleProtectedInteraction(
+    protectedAction
+) {
 
     /* =====================================================
-       Session-Based Learning Credit Validation
-    ===================================================== */
-
-    const userHasLearningCredits =
-
-        sessionStorage.getItem(
-            "learningCreditsUnlocked"
-        ) === "true";
-
-    /* =====================================================
-       Institutional Preview Mode
-    ===================================================== */
-
-    const previewMode =
-        !userHasLearningCredits;
-
-    /* =====================================================
-       Preview Governance Routing
+       Institutional Preview Governance
     ===================================================== */
 
     if (previewMode) {
 
         showPreviewMessage();
 
+        console.warn(
+            "[Environment UI] Preview access restricted"
+        );
+
         return;
 
     }
 
     /* =====================================================
-       Recovery Orchestration Activation
-
-       NOTE:
-       Recovery orchestration ownership belongs to:
-       environment-recovery.js
-
+       Execute Protected Action
     ===================================================== */
 
     if (
-        typeof activateWarRoom ===
+        typeof protectedAction ===
         "function"
     ) {
 
-        activateWarRoom();
+        protectedAction();
 
     } else {
 
         console.error(
-            "[Environment UI] activateWarRoom() unavailable"
+            "[Environment UI] Invalid protected action"
         );
 
     }
@@ -469,12 +496,43 @@ function handleWarRoomAccess() {
 }
 
 /* =========================================================
+   Governance Access Router
+========================================================= */
+
+function handleWarRoomAccess() {
+
+    handleProtectedInteraction(
+        function () {
+
+            /* =============================================
+               Recovery Orchestration Activation
+
+               Ownership:
+               environment-recovery.js
+            ============================================= */
+
+            if (
+                typeof activateWarRoom ===
+                "function"
+            ) {
+
+                activateWarRoom();
+
+            } else {
+
+                console.error(
+                    "[Environment UI] activateWarRoom() unavailable"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+/* =========================================================
    War Room Interaction Binding
-
-   Purpose:
-   Connect operational recovery activation
-   button with institutional governance router.
-
 ========================================================= */
 
 document.addEventListener(
@@ -510,4 +568,22 @@ document.addEventListener(
         );
 
     }
+);
+
+/* =========================================================
+   Runtime Diagnostics
+========================================================= */
+
+console.log(
+    "[Environment UI] Engine v3.0 initialized"
+);
+
+console.log(
+    "[Environment UI] Preview Mode:",
+    previewMode
+);
+
+console.log(
+    "[Environment UI] Learning Credits:",
+    userHasLearningCredits
 );

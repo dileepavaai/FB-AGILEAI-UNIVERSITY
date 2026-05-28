@@ -2,7 +2,7 @@
    Agile AI Leadership Lab
    Operational Experience Layer
 
-   Version: 1.5
+   Version: 1.6
    Governance State: STABILIZED
    Refinement State: INSTITUTIONAL EXPERIENCE POLISH
 
@@ -13,6 +13,7 @@
    - Controlled-access environment styling
    - Progressive operational journey refinement
    - Visual breathing and readability improvements
+   - Balanced institutional grid refinement
 ========================================================= */
 
 /* =========================================================
@@ -193,7 +194,7 @@
   display: grid;
 
   grid-template-columns:
-    repeat(auto-fit, minmax(320px, 1fr));
+    repeat(2, minmax(0, 1fr));
 
   gap: 2rem;
 
@@ -261,14 +262,17 @@
 }
 
 .signal-state.stable {
+
   background: rgba(0,180,120,0.12);
 }
 
 .signal-state.warning {
+
   background: rgba(255,180,0,0.12);
 }
 
 .signal-state.critical {
+
   background: rgba(255,80,80,0.12);
 }
 
@@ -343,6 +347,14 @@
 /* =========================================================
    Responsive Stabilization
 ========================================================= */
+
+@media (max-width: 900px) {
+
+  .lab-grid {
+
+    grid-template-columns: 1fr;
+  }
+}
 
 @media (max-width: 768px) {
 

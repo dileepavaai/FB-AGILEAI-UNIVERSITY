@@ -1502,3 +1502,171 @@
     }
 
 }
+
+/* =========================================================
+   Stage-1 Preview Governance Layer
+   Governance State: Institutional Preview Architecture
+   Purpose:
+   - Controlled institutional preview visibility
+   - Leadership progression signaling
+   - Adaptive coordination layer gating
+   - Institutional access atmosphere
+========================================================= */
+
+/* =========================================================
+   Preview Governance Banner
+========================================================= */
+
+.preview-governance-banner {
+
+    margin-top: 2rem;
+
+    margin-bottom: 3rem;
+
+}
+
+.preview-banner-card {
+
+    padding: 1.75rem;
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 1rem;
+
+    background: #fafafa;
+
+}
+
+.preview-banner-card h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 1rem;
+
+    font-size: 1.05rem;
+
+}
+
+.preview-banner-card p {
+
+    margin-bottom: 0;
+
+    line-height: 1.8;
+
+    max-width: 920px;
+
+}
+
+/* =========================================================
+   Preview Locked Section
+========================================================= */
+
+.preview-locked-section {
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+/* =========================================================
+   Institutional Blur Layer
+========================================================= */
+
+.preview-locked-section::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.22)
+        );
+
+    backdrop-filter: blur(2px);
+
+    z-index: 2;
+
+    pointer-events: none;
+
+}
+
+/* =========================================================
+   Preview Overlay
+========================================================= */
+
+.preview-locked-overlay {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 2rem;
+
+    z-index: 3;
+
+}
+
+/* =========================================================
+   Institutional Lock Card
+========================================================= */
+
+.preview-lock-content {
+
+    max-width: 520px;
+
+    padding: 2rem;
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 1rem;
+
+    background: rgba(255,255,255,0.96);
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 24px rgba(0,0,0,0.06);
+
+}
+
+.preview-lock-content h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 1rem;
+
+}
+
+.preview-lock-content p {
+
+    margin-bottom: 0;
+
+    line-height: 1.8;
+
+}
+
+/* =========================================================
+   Mobile Responsive
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .preview-lock-content {
+
+        padding: 1.5rem;
+
+    }
+
+}

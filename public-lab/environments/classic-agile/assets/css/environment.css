@@ -1915,3 +1915,92 @@
     color: #111111;
 
 }
+
+/* =========================================================
+   Investigation Validation Layer
+   Governance State: Guided Analysis Validation
+========================================================= */
+
+#workspace-pending-review {
+
+    margin-top: 1rem;
+
+    margin-bottom: 1rem;
+
+    padding: 0.9rem 1rem;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 0.75rem;
+
+    background: #fafafa;
+
+}
+
+#workspace-pending-review strong {
+
+    display: block;
+
+    margin-bottom: 0.5rem;
+
+    font-size: 0.8rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+
+    color: #666666;
+
+}
+
+#workspace-pending-review ul {
+
+    margin: 0;
+
+    padding-left: 1.2rem;
+
+}
+
+#workspace-pending-review li {
+
+    margin-bottom: 0.35rem;
+
+    line-height: 1.5;
+
+}
+
+#workspace-readiness-status {
+
+    margin-bottom: 1rem;
+
+    padding: 0.9rem 1rem;
+
+    border-radius: 0.75rem;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+}
+
+.readiness-pending {
+
+    border: 1px solid #e5e5e5;
+
+    background: #fafafa;
+
+    color: #444444;
+
+}
+
+.readiness-complete {
+
+    border: 1px solid #dcdcdc;
+
+    background: #f5f5f5;
+
+    color: #111111;
+
+}

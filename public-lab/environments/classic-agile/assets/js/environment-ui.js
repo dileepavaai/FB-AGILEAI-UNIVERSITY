@@ -425,110 +425,221 @@ function openSignalWorkspaceTab(
     }
 
     /* =====================================================
-   Workspace Investigation Progress
-===================================================== */
+        Workspace Investigation Progress
+    ===================================================== */
 
-const workspaceProgressMap = {
+    /* =====================================================
+        Workspace Investigation Progress
+        Governance State:
+        Evidence-Based Investigation Tracking
+    ===================================================== */
 
-    "mail-workspace": {
+    window.visitedSignalWorkspaces =
+        window.visitedSignalWorkspaces ||
+        new Set();
 
-        focus:
+    window.visitedSignalWorkspaces.add(
+        panelId
+    );
+
+    const workspaceFocusMap = {
+
+        "mail-workspace":
             "Review Escalations",
 
-        progress:
-            "25%",
-
-        counter:
-            "1 OF 4 COMPLETED"
-
-    },
-
-    "chat-workspace": {
-
-        focus:
+        "chat-workspace":
             "Observe Coordination Gaps",
 
-        progress:
-            "50%",
-
-        counter:
-            "2 OF 4 COMPLETED"
-
-    },
-
-    "jira-workspace": {
-
-        focus:
+        "jira-workspace":
             "Inspect Delivery Impact",
 
-        progress:
-            "75%",
+        "queue-workspace":
+            "Assess Operational Risk"
 
-        counter:
-            "3 OF 4 COMPLETED"
+    };
 
-    },
+    const workspaceLabels = {
 
-    "queue-workspace": {
+        "mail-workspace":
+            "Mail Center",
 
-        focus:
-            "Assess Operational Risk",
+        "chat-workspace":
+            "Team Chat",
 
-        progress:
-            "100%",
+        "jira-workspace":
+            "JIRA Board",
 
-        counter:
-            "4 OF 4 COMPLETED"
+        "queue-workspace":
+            "Incident Queue"
 
-    }
+    };
 
-};
+    const totalWorkspaces = 4;
 
-const focusElement =
-    document.getElementById(
-        "workspace-focus-text"
-    );
+    const reviewedCount =
+        window
+            .visitedSignalWorkspaces
+            .size;
 
-const counterElement =
-    document.querySelector(
-        ".workspace-progress-counter"
-    );
+    const progressPercentage =
+        (
+            reviewedCount /
+            totalWorkspaces
+        ) * 100;
 
-const progressFill =
-    document.querySelector(
-        ".workspace-progress-fill"
-    );
+    const focusElement =
+        document.getElementById(
+            "workspace-focus-text"
+        );
 
-const selectedWorkspace =
-    workspaceProgressMap[
-        panelId
-    ];
+    const counterElement =
+        document.querySelector(
+            ".workspace-progress-counter"
+        );
 
-if (selectedWorkspace) {
+    const progressFill =
+        document.querySelector(
+            ".workspace-progress-fill"
+        );
 
-    if (focusElement) {
+    const pendingReviewElement =
+        document.getElementById(
+            "workspace-pending-review"
+        );
+
+    const readinessElement =
+        document.getElementById(
+            "workspace-readiness-status"
+        );
+
+    /* =====================================================
+    Current Focus
+    ===================================================== */
+
+    if (
+        focusElement &&
+        workspaceFocusMap[panelId]
+    ) {
 
         focusElement.textContent =
-            selectedWorkspace.focus;
+            workspaceFocusMap[
+                panelId
+            ];
 
     }
+
+    /* =====================================================
+    Progress Counter
+    ===================================================== */
 
     if (counterElement) {
 
         counterElement.textContent =
-            selectedWorkspace.counter;
+            `${reviewedCount} OF ${totalWorkspaces} REVIEWED`;
 
     }
+
+    /* =====================================================
+    Progress Bar
+    ===================================================== */
 
     if (progressFill) {
 
         progressFill.style.width =
-            selectedWorkspace.progress;
+            `${progressPercentage}%`;
 
     }
 
-}
+    /* =====================================================
+    Pending Review
+    ===================================================== */
 
+    if (pendingReviewElement) {
+
+        const pendingWorkspaces =
+            Object.keys(
+                workspaceLabels
+            ).filter(
+                (workspaceId) =>
+                    !window
+                        .visitedSignalWorkspaces
+                        .has(
+                            workspaceId
+                        )
+            );
+
+        if (
+            pendingWorkspaces.length === 0
+        ) {
+
+            pendingReviewElement.innerHTML =
+                `
+                <strong>
+                    PENDING REVIEW
+                </strong>
+                All investigation sources reviewed.
+                `;
+
+        } else {
+
+            pendingReviewElement.innerHTML =
+                `
+                <strong>
+                    PENDING REVIEW
+                </strong>
+                <ul>
+                    ${
+                        pendingWorkspaces
+                            .map(
+                                (
+                                    workspaceId
+                                ) =>
+                                    `<li>${workspaceLabels[workspaceId]}</li>`
+                            )
+                            .join("")
+                    }
+                </ul>
+                `;
+
+        }
+
+    }
+
+    /* =====================================================
+    Decision Readiness
+    ===================================================== */
+
+    if (readinessElement) {
+
+        if (
+            reviewedCount ===
+            totalWorkspaces
+        ) {
+
+            readinessElement.className =
+                "readiness-complete";
+
+            readinessElement.innerHTML =
+                `
+                DECISION READINESS<br>
+                Investigation complete.<br>
+                Ready to proceed.
+                `;
+
+        } else {
+
+            readinessElement.className =
+                "readiness-pending";
+
+            readinessElement.innerHTML =
+                `
+                DECISION READINESS<br>
+                Additional evidence review recommended.
+                `;
+
+        }
+
+    }
 }
 
 /* =========================================================

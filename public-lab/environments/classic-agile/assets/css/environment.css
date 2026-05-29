@@ -1702,18 +1702,25 @@
 /* =========================================================
    Learning Stage Panel
    Governance State: Guided Learning Experience
+   Version: 2.0
+   Purpose:
+   - Learning progression visibility
+   - Context awareness guidance
+   - Low-noise instructional support
+   - Non-dominant navigation aid
 ========================================================= */
 
 #learning-stage-panel {
 
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 1.5rem;
 
-    padding: 1.5rem;
+    margin-bottom: 1.5rem;
 
-    border: 1px solid #dcdcdc;
+    padding: 1rem 1.25rem;
 
-    border-radius: 1rem;
+    border: 1px solid #e5e5e5;
+
+    border-radius: 0.85rem;
 
     background: #fafafa;
 
@@ -1721,29 +1728,31 @@
 
 .learning-stage-header {
 
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 
     font-weight: 600;
 
-    color: #666666;
+    color: #777777;
 
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
 
     text-transform: uppercase;
 
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
 
 }
 
 .learning-stage-focus {
 
-    font-size: 1.4rem;
+    font-size: 1rem;
 
-    font-weight: 700;
+    font-weight: 600;
 
     color: #111111;
 
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+
+    line-height: 1.4;
 
 }
 
@@ -1751,7 +1760,7 @@
 
     width: 100%;
 
-    height: 10px;
+    height: 8px;
 
     background: #e5e5e5;
 
@@ -1770,5 +1779,27 @@
     background: #111111;
 
     border-radius: 999px;
+
+    transition: width 0.3s ease;
+
+}
+
+/* =========================================================
+   Mobile Responsive
+========================================================= */
+
+@media (max-width: 768px) {
+
+    #learning-stage-panel {
+
+        padding: 0.9rem 1rem;
+
+    }
+
+    .learning-stage-focus {
+
+        font-size: 0.95rem;
+
+    }
 
 }

@@ -412,7 +412,7 @@ function openSignalWorkspaceTab(
         "active-signal-workspace-panel"
     );
 
-    /* =====================================================
+        /* =====================================================
        Activate Requested Tab
     ===================================================== */
 
@@ -421,6 +421,43 @@ function openSignalWorkspaceTab(
         buttonElement.classList.add(
             "active-signal-workspace-tab"
         );
+
+    }
+
+    /* =====================================================
+       Workspace Learning Focus
+    ===================================================== */
+
+    const workspaceFocusMap = {
+
+        "mail-workspace":
+            "Review Escalations",
+
+        "chat-workspace":
+            "Observe Coordination Gaps",
+
+        "jira-workspace":
+            "Inspect Delivery Impact",
+
+        "queue-workspace":
+            "Assess Operational Risk"
+
+    };
+
+    const focusElement =
+        document.getElementById(
+            "workspace-focus-text"
+        );
+
+    if (
+        focusElement &&
+        workspaceFocusMap[panelId]
+    ) {
+
+        focusElement.textContent =
+            workspaceFocusMap[
+                panelId
+            ];
 
     }
 

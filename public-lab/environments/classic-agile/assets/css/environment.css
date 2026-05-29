@@ -1803,3 +1803,56 @@
     }
 
 }
+
+/* =========================================================
+   Workspace Learning Focus
+   Governance State: Guided Investigation Experience
+   Version: 1.0
+   Purpose:
+   - Workspace-level learner guidance
+   - Investigation focus visibility
+   - Cognitive load reduction
+   - Context reinforcement
+========================================================= */
+
+#workspace-learning-focus {
+
+    margin-bottom: 1.5rem;
+
+    padding: 1rem 1.25rem;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 0.85rem;
+
+    background: #fcfcfc;
+
+}
+
+.workspace-focus-label {
+
+    font-size: 0.75rem;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.06em;
+
+    color: #777777;
+
+    margin-bottom: 0.35rem;
+
+}
+
+#workspace-focus-text {
+
+    font-size: 0.95rem;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    color: #111111;
+
+}

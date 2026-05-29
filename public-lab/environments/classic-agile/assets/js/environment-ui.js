@@ -195,6 +195,10 @@ function toggleSection(
 
     selectedPanel.style.display =
         "block";
+        
+        updateLearningStage(
+        sectionId
+    );
 
     /* =====================================================
        Activate Requested Tab
@@ -223,6 +227,93 @@ function toggleSection(
         });
 
     }, 80);
+
+}
+
+/* =========================================================
+   Learning Stage Progression
+========================================================= */
+
+function updateLearningStage(
+    sectionId
+) {
+
+    const stageHeader =
+        document.querySelector(
+            ".learning-stage-header"
+        );
+
+    const stageFocus =
+        document.querySelector(
+            ".learning-stage-focus"
+        );
+
+    const stageProgress =
+        document.getElementById(
+            "learning-stage-progress-fill"
+        );
+
+    if (
+        !stageHeader ||
+        !stageFocus ||
+        !stageProgress
+    ) {
+
+        return;
+
+    }
+
+    const stageMap = {
+
+        scenario: {
+            stage: "STAGE 1 OF 5",
+            focus: "Context Awareness",
+            progress: "20%"
+        },
+
+        signals: {
+            stage: "STAGE 2 OF 5",
+            focus: "Situation Diagnosis",
+            progress: "40%"
+        },
+
+        teams: {
+            stage: "STAGE 3 OF 5",
+            focus: "Leadership Ownership",
+            progress: "60%"
+        },
+
+        actions: {
+            stage: "STAGE 4 OF 5",
+            focus: "Recovery Decision Making",
+            progress: "80%"
+        },
+
+        outcomes: {
+            stage: "STAGE 5 OF 5",
+            focus: "Outcome Evaluation",
+            progress: "100%"
+        }
+
+    };
+
+    const selectedStage =
+        stageMap[sectionId];
+
+    if (!selectedStage) {
+
+        return;
+
+    }
+
+    stageHeader.textContent =
+        selectedStage.stage;
+
+    stageFocus.textContent =
+        selectedStage.focus;
+
+    stageProgress.style.width =
+        selectedStage.progress;
 
 }
 

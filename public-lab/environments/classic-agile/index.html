@@ -316,33 +316,61 @@
 
         <section class="content-section">
 
-            <div class="horizontal-tabs">
+            <div
+                class="horizontal-tabs"
+                data-governance-zone="environment-navigation"
+            >
 
-                <button class="preview-locked-btn horizontal-tab active-horizontal-tab"
+                <!-- Scenario -->
+
+                <button
+                    class="preview-locked-btn horizontal-tab active-horizontal-tab"
+                    data-environment-tab="scenario"
+                    data-governance-access="preview"
                     onclick="toggleSection('scenario-tab', this)"
                 >
                     📘 Scenario
                 </button>
 
-                <button class="preview-locked-btn horizontal-tab"
+                <!-- Signals -->
+
+                <button
+                    class="preview-locked-btn horizontal-tab"
+                    data-environment-tab="signals"
+                    data-governance-access="preview"
                     onclick="toggleSection('signals-tab', this)"
                 >
                     📡 Signals
                 </button>
 
-                <button class="preview-locked-btn horizontal-tab"
+                <!-- Teams -->
+
+                <button
+                    class="preview-locked-btn horizontal-tab"
+                    data-environment-tab="teams"
+                    data-governance-access="governed"
                     onclick="toggleSection('teams-tab', this)"
                 >
                     👥 Teams
                 </button>
 
-                <button class="preview-locked-btn horizontal-tab"
+                <!-- Actions -->
+
+                <button
+                    class="preview-locked-btn horizontal-tab"
+                    data-environment-tab="actions"
+                    data-governance-access="governed"
                     onclick="toggleSection('actions-tab', this)"
                 >
                     ⚡ Actions
                 </button>
 
-                <button class="preview-locked-btn horizontal-tab"
+                <!-- Outcomes -->
+
+                <button
+                    class="preview-locked-btn horizontal-tab"
+                    data-environment-tab="outcomes"
+                    data-governance-access="governed"
                     onclick="toggleSection('outcomes-tab', this)"
                 >
                     📈 Outcomes

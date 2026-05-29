@@ -1805,21 +1805,22 @@
 }
 
 /* =========================================================
-   Workspace Learning Focus
+   Workspace Investigation Progress
    Governance State: Guided Investigation Experience
-   Version: 1.0
+   Version: 2.0
+
    Purpose:
    - Workspace-level learner guidance
-   - Investigation focus visibility
+   - Investigation progress visibility
    - Cognitive load reduction
-   - Context reinforcement
+   - Current focus reinforcement
 ========================================================= */
 
 #workspace-learning-focus {
 
     margin-bottom: 1.5rem;
 
-    padding: 1rem 1.25rem;
+    padding: 1.25rem;
 
     border: 1px solid #e5e5e5;
 
@@ -1841,13 +1842,71 @@
 
     color: #777777;
 
+    margin-bottom: 0.5rem;
+
+}
+
+.workspace-progress-counter {
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    color: #666666;
+
+    margin-bottom: 0.75rem;
+
+}
+
+.workspace-progress-bar {
+
+    width: 100%;
+
+    height: 8px;
+
+    background: #e5e5e5;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
+    margin-bottom: 1rem;
+
+}
+
+.workspace-progress-fill {
+
+    width: 25%;
+
+    height: 100%;
+
+    background: #111111;
+
+    border-radius: 999px;
+
+    transition: width 0.3s ease;
+
+}
+
+.workspace-focus-title {
+
+    font-size: 0.8rem;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+
+    color: #777777;
+
     margin-bottom: 0.35rem;
 
 }
 
 #workspace-focus-text {
 
-    font-size: 0.95rem;
+    font-size: 1rem;
 
     font-weight: 600;
 

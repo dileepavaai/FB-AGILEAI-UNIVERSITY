@@ -412,7 +412,7 @@ function openSignalWorkspaceTab(
         "active-signal-workspace-panel"
     );
 
-        /* =====================================================
+    /* =====================================================
        Activate Requested Tab
     ===================================================== */
 
@@ -425,41 +425,109 @@ function openSignalWorkspaceTab(
     }
 
     /* =====================================================
-       Workspace Learning Focus
-    ===================================================== */
+   Workspace Investigation Progress
+===================================================== */
 
-    const workspaceFocusMap = {
+const workspaceProgressMap = {
 
-        "mail-workspace":
+    "mail-workspace": {
+
+        focus:
             "Review Escalations",
 
-        "chat-workspace":
+        progress:
+            "25%",
+
+        counter:
+            "1 OF 4 COMPLETED"
+
+    },
+
+    "chat-workspace": {
+
+        focus:
             "Observe Coordination Gaps",
 
-        "jira-workspace":
+        progress:
+            "50%",
+
+        counter:
+            "2 OF 4 COMPLETED"
+
+    },
+
+    "jira-workspace": {
+
+        focus:
             "Inspect Delivery Impact",
 
-        "queue-workspace":
-            "Assess Operational Risk"
+        progress:
+            "75%",
 
-    };
+        counter:
+            "3 OF 4 COMPLETED"
 
-    const focusElement =
-        document.getElementById(
-            "workspace-focus-text"
-        );
+    },
 
-    if (
-        focusElement &&
-        workspaceFocusMap[panelId]
-    ) {
+    "queue-workspace": {
 
-        focusElement.textContent =
-            workspaceFocusMap[
-                panelId
-            ];
+        focus:
+            "Assess Operational Risk",
+
+        progress:
+            "100%",
+
+        counter:
+            "4 OF 4 COMPLETED"
 
     }
+
+};
+
+const focusElement =
+    document.getElementById(
+        "workspace-focus-text"
+    );
+
+const counterElement =
+    document.querySelector(
+        ".workspace-progress-counter"
+    );
+
+const progressFill =
+    document.querySelector(
+        ".workspace-progress-fill"
+    );
+
+const selectedWorkspace =
+    workspaceProgressMap[
+        panelId
+    ];
+
+if (selectedWorkspace) {
+
+    if (focusElement) {
+
+        focusElement.textContent =
+            selectedWorkspace.focus;
+
+    }
+
+    if (counterElement) {
+
+        counterElement.textContent =
+            selectedWorkspace.counter;
+
+    }
+
+    if (progressFill) {
+
+        progressFill.style.width =
+            selectedWorkspace.progress;
+
+    }
+
+}
 
 }
 

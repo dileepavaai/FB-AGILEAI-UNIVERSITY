@@ -195,7 +195,7 @@ function toggleSection(
 
     selectedPanel.style.display =
         "block";
-        
+
         updateLearningStage(
         sectionId
     );
@@ -297,10 +297,22 @@ function updateLearningStage(
 
     };
 
+    const normalizedSectionId =
+    sectionId
+        .replace("-tab", "")
+        .replace("-panel", "");
+
     const selectedStage =
-        stageMap[sectionId];
+        stageMap[
+            normalizedSectionId
+        ];
 
     if (!selectedStage) {
+
+        console.warn(
+            "[Environment UI] Unknown learning stage:",
+            sectionId
+        );
 
         return;
 

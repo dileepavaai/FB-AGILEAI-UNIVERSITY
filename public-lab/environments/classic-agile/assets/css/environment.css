@@ -432,7 +432,9 @@
 
     gap: 1rem;
 
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+
+    justify-content: space-between;
 
     margin-top: 2rem;
 

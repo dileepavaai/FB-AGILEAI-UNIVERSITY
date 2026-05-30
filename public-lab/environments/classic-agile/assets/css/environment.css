@@ -434,7 +434,7 @@
 
     flex-wrap: nowrap;
 
-    justify-content: space-between;
+    justify-content: flex-start;
 
     margin-top: 2rem;
 
@@ -442,7 +442,9 @@
 
 .horizontal-tab {
 
-    padding: 14px 28px;
+    min-width: 160px;
+
+    height: 64px;
 
     border: 1px solid #222222;
 
@@ -454,11 +456,19 @@
 
     transition: all 0.2s ease;
 
-    font-size: 1rem;
+    font-size: 0.95rem;
 
-    border-radius: 0.8rem;
+    border-radius: 0.75rem;
 
     font-weight: 600;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 0.5rem;
 
 }
 

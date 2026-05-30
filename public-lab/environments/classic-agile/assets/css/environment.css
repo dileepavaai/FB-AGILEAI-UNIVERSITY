@@ -442,9 +442,17 @@
 
 .horizontal-tab {
 
-    min-width: 120px;
+    display: inline-flex;
 
-    padding: 0.85rem 1.5rem;
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 0.5rem;
+
+    min-width: 100px;
+
+    padding: 0.75rem 1rem;
 
     border: 1px solid #222222;
 
@@ -456,19 +464,13 @@
 
     transition: all 0.2s ease;
 
-    font-size: 0.90rem;
-
-    border-radius: 0.75rem;
+    font-size: 0.95rem;
 
     font-weight: 600;
 
-    display: flex;
+    border-radius: 0.75rem;
 
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 0.5rem;
+    white-space: nowrap;
 
 }
 

@@ -501,7 +501,7 @@
 }
 
 /* =========================================================
-   Signal Workspace Tabs
+   Evidence Workspace Tabs
 ========================================================= */
 
 .workspace-tab-row {
@@ -520,7 +520,7 @@
 
 }
 
-.signal-workspace-tab {
+.evidence-workspace-tab {
 
     padding: 12px 22px;
 
@@ -542,7 +542,7 @@
 
 }
 
-.signal-workspace-tab:hover {
+.evidence-workspace-tab:hover {
 
     background: #222222;
 
@@ -550,7 +550,7 @@
 
 }
 
-.active-signal-workspace-tab {
+.active-evidence-workspace-tab {
 
     background: #222222;
 
@@ -559,16 +559,16 @@
 }
 
 /* =========================================================
-   Signal Workspace Panels
+   Evidence Workspace Panels
 ========================================================= */
 
-.signal-workspace-panel {
+.evidence-workspace-panel {
 
     display: none;
 
 }
 
-.active-signal-workspace-panel {
+.active-evidence-workspace-panel {
 
     display: block;
 
@@ -888,7 +888,7 @@
 
     }
 
-    .signal-workspace-tab {
+    .evidence-workspace-tab {
 
         width: 100%;
 
@@ -1132,7 +1132,7 @@
 
    Purpose:
    - Guided operational recovery visibility
-   - War Room activation emphasis
+   - Launch Recovery Coordination emphasis
    - Agile role transition highlighting
    - Progressive transformation reveal
    - Executive-grade animation continuity
@@ -1140,10 +1140,10 @@
 ========================================================= */
 
 /* =========================================================
-   War Room Recovery Activation
+   Launch Recovery Coordination
 ========================================================= */
 
-.war-room-activated {
+.launch-recovery-coordination {
 
     animation:
         operationalRecoveryPulse 1.2s ease;
@@ -1175,7 +1175,7 @@
    Activated War Room Button
 ========================================================= */
 
-.war-room-button-active {
+.launch-recovery-button-active {
 
     background: #111111;
 
@@ -1530,7 +1530,7 @@
    Governance State: Institutional Preview Architecture
    Purpose:
    - Controlled institutional preview visibility
-   - Leadership progression signaling
+   - Leadership progression evidence
    - Adaptive coordination layer gating
    - Institutional access atmosphere
 ========================================================= */

@@ -350,15 +350,15 @@
                     📘 Scenario
                 </button>
 
-                <!-- Signals -->
+                <!-- Evidence -->
 
                 <button
                     class="preview-locked-btn horizontal-tab"
-                    data-environment-tab="signals"
+                    data-environment-tab="evidence"
                     data-governance-access="preview"
-                    onclick="toggleSection('signals-tab', this)"
+                    onclick="toggleSection('evidence-tab', this)"
                 >
-                    📡 Signals
+                    🔍 Evidence
                 </button>
 
                 <!-- Teams -->
@@ -632,7 +632,7 @@
     <p>
 
         More often,
-        they emerge gradually through missed signals,
+        they emerge gradually through missed evidences,
         coordination gaps,
         delayed decisions,
         growing uncertainty,
@@ -707,7 +707,7 @@
 
     <p>
 
-        Learners are expected to investigate available signals,
+        Learners are expected to investigate available evidences,
         understand emerging patterns,
         assess delivery and coordination risks,
         and formulate a leadership response that supports effective
@@ -751,7 +751,7 @@
 
     <p>
 
-        Continue to the Signals workspace to begin investigating
+        Continue to the Evidence workspace to begin investigating
         available evidence and understand how the situation is evolving
         across the organization.
 
@@ -762,17 +762,17 @@
         </section>
 
         <!-- ===================================================== -->
-        <!-- SIGNALS -->
+        <!-- EVIDENCE -->
         <!-- ===================================================== -->
 
         <section
             class="content-section horizontal-tab-content"
-            id="signals-tab"
+            id="evidence-tab"
             style="display: none;"
         >
 
             <h2>
-                Functional Signals
+                Functional Evidence
             </h2>
 
             <p class="section-intro">
@@ -832,21 +832,21 @@
             </div>
 
             <!-- ============================================= -->
-            <!-- Signal Workspace Tabs -->
+            <!-- Evidence Workspace Tabs -->
             <!-- ============================================= -->
 
             <div class="workspace-tab-row">
 
                 <button
-                    class="preview-locked-btn signal-workspace-tab active-signal-workspace-tab"
-                    onclick="openSignalWorkspaceTab('mail-workspace', this)"
+                    class="preview-locked-btn evidence-workspace-tab active-evidence-workspace-tab"
+                    onclick="openEvidenceWorkspaceTab('mail-workspace', this)"
                 >
                     Mail Center
                 </button>
 
                 <button
-                    class="preview-locked-btn signal-workspace-tab"
-                    onclick="openSignalWorkspaceTab('chat-workspace', this)"
+                    class="preview-locked-btn evidence-workspace-tab"
+                    onclick="openEvidenceWorkspaceTab('chat-workspace', this)"
                 >
                     <span class="workspace-title">
                         Team Chat
@@ -855,8 +855,8 @@
                 </button>
 
                 <button
-                    class="preview-locked-btn signal-workspace-tab"
-                    onclick="openSignalWorkspaceTab('jira-workspace', this)"
+                    class="preview-locked-btn evidence-workspace-tab"
+                    onclick="openEvidenceWorkspaceTab('jira-workspace', this)"
                 >
                     <span class="workspace-title">
                         JIRA Board
@@ -865,8 +865,8 @@
                 </button>
 
                 <button
-                    class="preview-locked-btn signal-workspace-tab"
-                    onclick="openSignalWorkspaceTab('queue-workspace', this)"
+                    class="preview-locked-btn evidence-workspace-tab"
+                    onclick="openEvidenceWorkspaceTab('queue-workspace', this)"
                 >
                     <span class="workspace-title">
                         Incident Queue
@@ -881,7 +881,7 @@
             <!-- ============================================= -->
 
             <div
-                class="signal-workspace-panel active-signal-workspace-panel"
+                class="evidence-workspace-panel active-evidence-workspace-panel"
                 id="mail-workspace"
             >
 
@@ -985,7 +985,7 @@
             <!-- ============================================= -->
 
             <div
-                class="signal-workspace-panel"
+                class="evidence-workspace-panel"
                 id="chat-workspace"
             >
 
@@ -1040,7 +1040,7 @@
             <!-- ============================================= -->
 
             <div
-                class="signal-workspace-panel"
+                class="evidence-workspace-panel"
                 id="jira-workspace"
             >
 
@@ -1082,7 +1082,7 @@
             <!-- ============================================= -->
 
             <div
-                class="signal-workspace-panel"
+                class="evidence-workspace-panel"
                 id="queue-workspace"
             >
 
@@ -1732,11 +1732,11 @@
 
                     </p>
 
-                    <button id="activate-war-room-btn"
+                    <button id="launch-recovery-coordination-btn"
                         class="preview-locked-btn simulation-button"
                     >
 
-                        Activate War Room Response
+                        Launch Recovery Coordination
 
                     </button>
 
@@ -1813,7 +1813,7 @@
         <div class="recovery-transition-card recovery-state-card">
 
             <h4>
-                After War Room Activation
+                After Recovery Coordination Launch
             </h4>
 
             <ul>

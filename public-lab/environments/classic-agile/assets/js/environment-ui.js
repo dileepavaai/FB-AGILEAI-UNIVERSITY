@@ -18,7 +18,7 @@
    Manage:
    - workspace navigation
    - panel visibility
-   - signal workspace routing
+   - evidence workspace routing
    - operational insight expansion
    - institutional preview governance
    - guided interaction continuity
@@ -271,7 +271,7 @@ function updateLearningStage(
             progress: "20%"
         },
 
-        signals: {
+        evidence: {
             stage: "STAGE 2 OF 5",
             focus: "Situation Diagnosis",
             progress: "40%"
@@ -330,30 +330,30 @@ function updateLearningStage(
 }
 
 /* =========================================================
-   Signal Workspace Navigation
+   Evidence Workspace Navigation
 ========================================================= */
 
-function openSignalWorkspaceTab(
+function openEvidenceWorkspaceTab(
     panelId,
     buttonElement
 ) {
 
     /* =====================================================
-       Signal Workspace Panels
+       Activate Evidence Workspace Panels
     ===================================================== */
 
     const allPanels =
         document.querySelectorAll(
-            ".signal-workspace-panel"
+            ".evidence-workspace-panel"
         );
 
     /* =====================================================
-       Signal Workspace Tabs
+       Activate Evidence Workspace Tabs
     ===================================================== */
 
     const allTabs =
         document.querySelectorAll(
-            ".signal-workspace-tab"
+            ".evidence-workspace-tab"
         );
 
     /* =====================================================
@@ -387,7 +387,7 @@ function openSignalWorkspaceTab(
     allPanels.forEach((panel) => {
 
         panel.classList.remove(
-            "active-signal-workspace-panel"
+            "active-evidence-workspace-panel"
         );
 
     });
@@ -399,7 +399,7 @@ function openSignalWorkspaceTab(
     allTabs.forEach((tab) => {
 
         tab.classList.remove(
-            "active-signal-workspace-tab"
+            "active-evidence-workspace-tab"
         );
 
     });
@@ -409,7 +409,7 @@ function openSignalWorkspaceTab(
     ===================================================== */
 
     selectedPanel.classList.add(
-        "active-signal-workspace-panel"
+        "active-evidence-workspace-panel"
     );
 
     /* =====================================================
@@ -419,7 +419,7 @@ function openSignalWorkspaceTab(
     if (buttonElement) {
 
         buttonElement.classList.add(
-            "active-signal-workspace-tab"
+            "active-evidence-workspace-tab"
         );
 
     }
@@ -434,11 +434,11 @@ function openSignalWorkspaceTab(
         Evidence-Based Investigation Tracking
     ===================================================== */
 
-    window.visitedSignalWorkspaces =
-        window.visitedSignalWorkspaces ||
+    window.visitedEvidenceWorkspaces =
+        window.visitedEvidenceWorkspaces ||
         new Set();
 
-    window.visitedSignalWorkspaces.add(
+    window.visitedEvidenceWorkspaces.add(
         panelId
     );
 
@@ -478,7 +478,7 @@ function openSignalWorkspaceTab(
 
     const reviewedCount =
         window
-            .visitedSignalWorkspaces
+            .visitedEvidenceWorkspaces
             .size;
 
     const progressPercentage =
@@ -562,7 +562,7 @@ function openSignalWorkspaceTab(
             ).filter(
                 (workspaceId) =>
                     !window
-                        .visitedSignalWorkspaces
+                        .visitedEvidenceWorkspaces
                         .has(
                             workspaceId
                         )
@@ -606,7 +606,7 @@ function openSignalWorkspaceTab(
     }
 
     /* =====================================================
-    Decision Readiness
+        Decision Readiness
     ===================================================== */
 
     if (readinessElement) {
@@ -831,16 +831,16 @@ function handleWarRoomAccess() {
             ============================================= */
 
             if (
-                typeof activateWarRoom ===
+                typeof LaunchRecoveryCoordination ===
                 "function"
             ) {
 
-                activateWarRoom();
+                LaunchRecoveryCoordination();
 
             } else {
 
                 console.error(
-                    "[Environment UI] activateWarRoom() unavailable"
+                    "[Environment UI] LaunchRecoveryCoordination() unavailable"
                 );
 
             }

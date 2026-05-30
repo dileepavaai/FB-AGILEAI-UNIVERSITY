@@ -35,7 +35,7 @@ const environmentRuntimeState = {
     activeWorkspace:
         null,
 
-    activeSignalWorkspace:
+    activeEvidenceWorkspace:
         null,
 
     simulationMode:
@@ -58,8 +58,8 @@ const environmentConfiguration = {
     defaultWorkspaceTab:
         ".horizontal-tab",
 
-    defaultSignalTab:
-        ".signal-workspace-tab",
+    defaultEvidenceTab:
+        ".evidence-workspace-tab",
 
     smoothScrollDelay:
         80,
@@ -81,8 +81,8 @@ const environmentPersistenceKeys = {
     completionState:
         "classicAgileCompleted",
 
-    warRoomState:
-        "warRoomActivated"
+    launchRecoveryState:
+        "recoveryCoordinationLaunched"
 
 };
 
@@ -136,20 +136,20 @@ function activateDefaultWorkspace() {
 }
 
 /* =========================================================
-   Activate Default Signal Workspace
+   Activate Default Evidence Workspace
 ========================================================= */
 
-function activateDefaultSignalWorkspace() {
+function activateDefaultEvidenceWorkspace() {
 
-    const defaultSignalTab =
+    const defaultEvidenceTab =
         document.querySelector(
             environmentConfiguration
-                .defaultSignalTab
+                .defaultEvidenceTab
         );
 
-    if (defaultSignalTab) {
+    if (defaultEvidenceTab) {
 
-        defaultSignalTab.click();
+        defaultEvidenceTab.click();
 
     }
 
@@ -242,10 +242,10 @@ function logEnvironmentRuntimeState() {
     );
 
     console.log(
-        "War Room State:",
+        "Launch Recovery Coordination State:",
         localStorage.getItem(
             environmentPersistenceKeys
-                .warRoomState
+                .launchRecoveryState
         )
     );
 
@@ -265,10 +265,10 @@ function logEnvironmentRuntimeState() {
                         .completionState
                 ),
 
-            warRoomState:
+            launchRecoveryState:
                 localStorage.getItem(
                     environmentPersistenceKeys
-                        .warRoomState
+                        .launchRecoveryState
                 )
 
         }
@@ -300,7 +300,7 @@ function initializeEnvironmentRuntime() {
 
     activateDefaultWorkspace();
 
-    activateDefaultSignalWorkspace();
+    activateDefaultEvidenceWorkspace();
 
     /* =====================================================
        Initialize Runtime Session
@@ -345,7 +345,7 @@ function resetEnvironmentProgression() {
 
     localStorage.removeItem(
         environmentPersistenceKeys
-            .warRoomState
+            .launchRecoveryState
     );
 
     /* =====================================================
@@ -368,7 +368,7 @@ function resetEnvironmentProgression() {
         .activeWorkspace = null;
 
     environmentRuntimeState
-        .activeSignalWorkspace = null;
+        .activeEvidenceWorkspace = null;
 
     environmentRuntimeState
         .recoveryEngineActive = false;

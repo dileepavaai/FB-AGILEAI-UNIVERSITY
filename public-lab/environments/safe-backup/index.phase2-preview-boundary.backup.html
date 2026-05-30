@@ -414,354 +414,758 @@
 
             <div class="card-grid two-column-grid">
 
-    <article class="info-card">
+                <article class="info-card">
 
-        <h3>
-            Active Pressure
-        </h3>
+                    <h3>
+                        Active Pressure
+                    </h3>
 
-        <p>
-            Customer rollout timelines are showing signs of increasing risk,
-            and stakeholder concern is beginning to grow across multiple
-            operational areas.
-        </p>
+                    <p>
+                        Customer rollout timelines are slipping
+                        due to coordination delays
+                        and blocked operational dependencies.
+                    </p>
 
-    </article>
+                </article>
 
-    <article class="info-card">
+                <article class="info-card">
 
-        <h3>
-            Operational Risk
-        </h3>
+                    <h3>
+                        Operational Risk
+                    </h3>
 
-        <p>
-            Visibility into emerging issues is becoming increasingly difficult
-            across delivery coordination teams, making it challenging to assess
-            the true state of execution.
-        </p>
+                    <p>
+                        Escalation visibility delayed
+                        across delivery coordination teams.
+                    </p>
 
-    </article>
+                </article>
 
-</div>
+            </div>
 
-<article class="info-card">
+            <!-- ============================================= -->
+            <!-- Current Operational Challenges -->
+            <!-- ============================================= -->
 
-    <h3>
-        Business Context
-    </h3>
+            <!-- ============================================= -->
+            <!-- Phase-1.5 Operational Metrics Dashboard -->
+            <!-- ============================================= -->
 
-    <p>
+            <div class="metrics-dashboard">
 
-        Nova Retail Commerce Platform is pursuing a strategic transformation
-        initiative intended to improve organizational agility,
-        delivery effectiveness,
-        and operational performance.
+                <!-- ========================================= -->
+                <!-- Delivery Stability -->
+                <!-- ========================================= -->
 
-    </p>
+                <div class="metric-group-title">
+                    Delivery Stability
+                </div>
 
-    <p>
+                <!-- ========================================= -->
+                <!-- Release Stability -->
+                <!-- ========================================= -->
 
-        The initiative supports important business objectives,
-        carries growing stakeholder visibility,
-        and involves multiple teams working across interconnected
-        operational and delivery workflows.
+                <article class="metric-card critical-metric-card">
 
-    </p>
+                    <div class="metric-label">
+                        Release Stability Score
+                    </div>
 
-</article>
+                    <div class="metric-value">
+                        58 / 100
+                    </div>
 
-<article class="info-card">
+                    <div class="metric-trend negative-trend">
+                        ↓ -12% this sprint
+                    </div>
 
-    <h3>
-        Business Tension
-    </h3>
+                    <div class="metric-status critical-status">
+                        CRITICAL
+                    </div>
 
-    <p>
+                    <button class="preview-locked-btn metric-expand-button"
+                        onclick="toggleMetricInsight('release-stability-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
 
-        Nova Retail Commerce Platform is currently supporting a strategic
-        customer engagement that carries significant commercial and
-        operational importance.
+                    <div
+                        class="metric-insight-panel"
+                        id="release-stability-insight"
+                        style="display: none;"
+                    >
 
-    </p>
+                        <ul>
 
-    <p>
+                            <li>
+                                Regression validation queue increasing
+                            </li>
 
-        Recent delivery concerns,
-        coordination challenges,
-        and growing stakeholder escalations have begun to affect confidence
-        in the organization's ability to execute transformation commitments
-        effectively.
+                            <li>
+                                Deployment rollback risk elevated
+                            </li>
 
-    </p>
+                            <li>
+                                Release approval dependency unresolved
+                            </li>
 
-    <p>
+                        </ul>
 
-        Leadership teams are under increasing pressure to maintain
-        delivery commitments while simultaneously advancing
-        transformation objectives.
+                    </div>
 
-    </p>
+                </article>
 
-    <p>
+                <!-- ========================================= -->
+                <!-- Rollout Risk -->
+                <!-- ========================================= -->
 
-        If confidence continues to decline,
-        the organization risks damaging a strategically important
-        customer relationship,
-        impacting future business opportunities,
-        and undermining trust in the broader transformation initiative.
+                <article class="metric-card high-metric-card">
 
-    </p>
+                    <div class="metric-label">
+                        Rollout Risk
+                    </div>
 
-    <p>
+                    <div class="metric-value">
+                        74%
+                    </div>
 
-        The challenge is no longer limited to delivering work.
+                    <div class="metric-trend negative-trend">
+                        ↑ +18% escalation risk
+                    </div>
 
-    </p>
+                    <div class="metric-status high-status">
+                        HIGH
+                    </div>
 
-    <p>
+                    <button class="preview-locked-btn metric-expand-button"
+                        onclick="toggleMetricInsight('rollout-risk-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
 
-        The challenge is determining whether the organization can
-        restore confidence,
-        maintain alignment,
-        and sustain effective execution before a temporary disruption
-        evolves into a larger organizational and business problem.
+                    <div
+                        class="metric-insight-panel"
+                        id="rollout-risk-insight"
+                        style="display: none;"
+                    >
 
-    </p>
+                        <ul>
 
-</article>
+                            <li>
+                                Enterprise customer rollout confidence decreasing
+                            </li>
 
-<article class="info-card">
+                            <li>
+                                Escalation response delay affecting delivery commitments
+                            </li>
 
-    <h3>
-        Emerging Concern
-    </h3>
+                            <li>
+                                Customer communication review pending
+                            </li>
 
-    <p>
+                        </ul>
 
-        Recent developments suggest that delivery confidence
-        may be declining.
+                    </div>
 
-    </p>
+                </article>
 
-    <p>
+                <!-- ========================================= -->
+                <!-- Blocked Tasks -->
+                <!-- ========================================= -->
 
-        While teams remain actively engaged,
-        leadership visibility into the true state of execution appears
-        increasingly fragmented,
-        raising concerns about coordination gaps,
-        emerging organizational dysfunction,
-        weakening organizational connection,
-        and the organization's ability to sustain planned
-        transformation efforts.
+                <article class="metric-card high-metric-card">
 
-    </p>
+                    <div class="metric-label">
+                        Blocked Tasks
+                    </div>
 
-</article>
+                    <div class="metric-value">
+                        18
+                    </div>
 
-<article class="info-card">
+                    <div class="metric-trend negative-trend">
+                        Dependency backlog increasing
+                    </div>
 
-    <h3>
-        Leadership Challenge
-    </h3>
+                    <div class="metric-status high-status">
+                        HIGH
+                    </div>
 
-    <p>
+                    <button class="preview-locked-btn metric-expand-button"
+                        onclick="toggleMetricInsight('blocked-task-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
 
-        Leaders must determine whether the current situation represents
-        a temporary delivery disruption or the early warning signs of a
-        larger organizational problem.
+                    <div
+                        class="metric-insight-panel"
+                        id="blocked-task-insight"
+                        style="display: none;"
+                    >
 
-    </p>
+                        <ul>
 
-    <p>
+                            <li>
+                                Infrastructure approval dependency pending
+                            </li>
 
-        Decisions made now may influence delivery commitments,
-        stakeholder confidence,
-        transformation progress,
-        operational stability,
-        and the organization's ability to execute planned work
-        effectively.
+                            <li>
+                                Cross-team coordination queue overloaded
+                            </li>
 
-    </p>
+                            <li>
+                                Validation sign-off delayed
+                            </li>
 
-</article>
+                        </ul>
 
-<article class="info-card">
+                    </div>
 
-    <h3>
-        Why This Matters
-    </h3>
+                </article>
 
-    <p>
+                <!-- ========================================= -->
+                <!-- Failed Deployments -->
+                <!-- ========================================= -->
 
-        Situations like these are rarely learned from textbooks.
+                <article class="metric-card high-metric-card">
 
-    </p>
+                    <div class="metric-label">
+                        Failed Deployments
+                    </div>
 
-    <p>
+                    <div class="metric-value">
+                        7
+                    </div>
 
-        They are typically encountered through years of project,
-        product,
-        service,
-        delivery,
-        and leadership experience.
+                    <div class="metric-trend negative-trend">
+                        Infrastructure instability detected
+                    </div>
 
-    </p>
+                    <div class="metric-status high-status">
+                        HIGH
+                    </div>
 
-    <p>
+                    <button class="preview-locked-btn metric-expand-button"
+                        onclick="toggleMetricInsight('deployment-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
 
-        This simulation compresses those experiences into a structured
-        environment where learners can practice investigation,
-        diagnosis,
-        decision-making,
-        and recovery before facing similar challenges in
-        real-world organizations.
+                    <div
+                        class="metric-insight-panel"
+                        id="deployment-insight"
+                        style="display: none;"
+                    >
 
-    </p>
+                        <ul>
 
-</article>
+                            <li>
+                                Deployment rollback frequency increasing
+                            </li>
 
-<article class="info-card">
+                            <li>
+                                Validation pipeline unstable
+                            </li>
 
-    <h3>
-        Leadership Reality
-    </h3>
+                            <li>
+                                Infrastructure coordination delays detected
+                            </li>
 
-    <p>
+                        </ul>
 
-        Delivery disruptions rarely begin with a single visible failure.
+                    </div>
 
-    </p>
+                </article>
 
-    <p>
+                <!-- ========================================= -->
+                <!-- Coordination Health -->
+                <!-- ========================================= -->
 
-        More often,
-        they emerge gradually through missed signals,
-        coordination gaps,
-        delayed decisions,
-        growing uncertainty,
-        organizational dysfunction,
-        and weakening connections between teams,
-        stakeholders,
-        and leadership groups.
+                <div class="metric-group-title">
+                    Coordination Health
+                </div>
 
-    </p>
+                <!-- ========================================= -->
+                <!-- Coordination Delay -->
+                <!-- ========================================= -->
 
-    <p>
+                <article class="metric-card critical-metric-card">
 
-        As organizations grow and transformation initiatives accelerate,
-        it can become increasingly difficult for people to maintain
-        shared understanding,
-        alignment,
-        trust,
-        and meaningful connection across the broader system.
+                    <div class="metric-label">
+                        Coordination Delay
+                    </div>
 
-    </p>
+                    <div class="metric-value">
+                        31 hrs
+                    </div>
 
-    <p>
+                    <div class="metric-trend negative-trend">
+                        Cross-team wait time breached
+                    </div>
 
-        For many professionals,
-        the first encounter with situations like these occurs under
-        real organizational pressure—when customer commitments,
-        stakeholder expectations,
-        transformation objectives,
-        delivery responsibilities,
-        and team confidence are already at risk.
+                    <div class="metric-status critical-status">
+                        CRITICAL
+                    </div>
 
-    </p>
+                    <button class="preview-locked-btn metric-expand-button"
+                        onclick="toggleMetricInsight('coordination-delay-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
 
-    <p>
+                    <div
+                        class="metric-insight-panel"
+                        id="coordination-delay-insight"
+                        style="display: none;"
+                    >
 
-        This simulation provides an opportunity to experience and
-        navigate those leadership challenges in a structured environment
-        before encountering them in the real world.
+                        <ul>
 
-    </p>
+                            <li>
+                                Delivery coordination SLA breached
+                            </li>
 
-</article>
+                            <li>
+                                Approval wait time increasing
+                            </li>
 
-<article class="info-card">
+                            <li>
+                                Escalation response cycle slowing down
+                            </li>
 
-    <h3>
-        Learner Objective
-    </h3>
+                        </ul>
 
-    <p>
+                    </div>
 
-        Review available information,
-        assess the situation,
-        identify potential risks,
-        and determine an appropriate leadership response.
+                </article>
 
-    </p>
+                <!-- ========================================= -->
+                <!-- Active Escalations -->
+                <!-- ========================================= -->
 
-</article>
+                <article class="metric-card elevated-metric-card">
 
-<article class="info-card">
+                    <div class="metric-label">
+                        Active Escalations
+                    </div>
 
-    <h3>
-        Expected Result
-    </h3>
+                    <div class="metric-value">
+                        26
+                    </div>
 
-    <p>
+                    <div class="metric-trend negative-trend">
+                        +7 leadership escalations
+                    </div>
 
-        The objective of this environment is not simply to identify
-        isolated issues.
+                    <div class="metric-status elevated-status">
+                        ELEVATED
+                    </div>
 
-    </p>
+                </article>
 
-    <p>
+                <!-- ========================================= -->
+                <!-- Queue Growth -->
+                <!-- ========================================= -->
 
-        Learners are expected to investigate available signals,
-        understand emerging patterns,
-        assess delivery and coordination risks,
-        and formulate a leadership response that supports effective
-        execution,
-        operational recovery,
-        and transformation progress.
+                <article class="metric-card elevated-metric-card">
 
-    </p>
+                    <div class="metric-label">
+                        Queue Growth Rate
+                    </div>
 
-    <p>
+                    <div class="metric-value">
+                        +18%
+                    </div>
 
-        The focus of this Classic Agile Environment is the quality
-        of leadership decisions,
-        coordination effectiveness,
-        and the results achieved through investigation and action.
+                    <div class="metric-trend negative-trend">
+                        Escalation queue expanding
+                    </div>
 
-    </p>
+                    <div class="metric-status elevated-status">
+                        ELEVATED
+                    </div>
 
-</article>
+                </article>
 
-<div class="narrative-transition">
+                <!-- ========================================= -->
+                <!-- Customer Impact -->
+                <!-- ========================================= -->
 
-    <span>
-        🔍 Investigation Required
-    </span>
+                <div class="metric-group-title">
+                    Customer Impact
+                </div>
 
-</div>
+                <!-- ========================================= -->
+                <!-- SLA Breaches -->
+                <!-- ========================================= -->
 
-<article class="info-card">
+                <article class="metric-card critical-metric-card">
 
-    <h3>
-        Continue Investigation
-    </h3>
+                    <div class="metric-label">
+                        SLA Breaches
+                    </div>
 
-    <p>
+                    <div class="metric-value">
+                        9
+                    </div>
 
-        Important information may exist across multiple communication
-        and coordination channels.
+                    <div class="metric-trend negative-trend">
+                        Customer delivery impact increasing
+                    </div>
 
-    </p>
+                    <div class="metric-status critical-status">
+                        CRITICAL
+                    </div>
 
-    <p>
+                    <button class="preview-locked-btn metric-expand-button"
+                        onclick="toggleMetricInsight('sla-insight')"
+                    >
+                        + View Operational Signals
+                    </button>
 
-        Continue to the Signals workspace to begin investigating
-        available evidence and understand how the situation is evolving
-        across the organization.
+                    <div
+                        class="metric-insight-panel"
+                        id="sla-insight"
+                        style="display: none;"
+                    >
 
-    </p>
+                        <ul>
 
-</article>
+                            <li>
+                                Enterprise delivery commitments missed
+                            </li>
+
+                            <li>
+                                Escalation severity increasing among priority accounts
+                            </li>
+
+                            <li>
+                                Customer confidence risk elevated
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+            <!-- ============================================= -->
+            <!-- Operational Intelligence Evolution Bridge -->
+            <!-- ============================================= -->
+
+            <article class="info-card operational-intelligence-bridge">
+
+                <h3>
+                    Emerging Operational Intelligence Evolution
+                </h3>
+
+                <p>
+
+                    As operational complexity increases across enterprise
+                    delivery environments, traditional Agile operational
+                    systems often struggle with fragmented visibility,
+                    delayed escalation awareness,
+                    coordination bottlenecks,
+                    and reactive recovery cycles.
+
+                </p>
+
+                <p>
+
+                    To improve operational recovery maturity,
+                    enterprises increasingly introduce operational
+                    intelligence layers that help leadership teams
+                    identify escalation patterns earlier,
+                    strengthen coordination visibility,
+                    improve governance synchronization,
+                    and support more adaptive recovery workflows.
+
+                </p>
+
+                <p class="transition-note">
+
+                    Nova Retail Commerce Platform is beginning to
+                    introduce operational intelligence capabilities
+                    to improve recovery coordination visibility
+                    across enterprise delivery systems.
+
+                </p>
+
+                <p>
+
+                    This environment now demonstrates the early
+                    operational transition from:
+
+                </p>
+
+                <div class="transition-pill">
+
+                    Classic Agile Operational Governance
+                    →
+                    Emerging Agile AI Operational Intelligence
+
+                </div>
+
+            </article>
+
+            <!-- ============================================= -->
+            <!-- Operational Intelligence Feed -->
+            <!-- ============================================= -->
+
+            <section class="operational-intelligence-feed"
+             id="operational-intelligence-feed"
+                style="display: none;"
+            >
+
+                <h3>
+                    Emerging Operational Intelligence Feed
+                </h3>
+
+                <div class="intelligence-grid">
+
+                    <!-- ========================================= -->
+                    <!-- Escalation Intelligence -->
+                    <!-- ========================================= -->
+
+                    <article class="intelligence-card high-risk-intelligence">
+
+                        <div class="intelligence-pill">
+                            Escalation Risk
+                        </div>
+
+                        <h4>
+                            Escalation Growth Detected
+                        </h4>
+
+                        <p>
+
+                            Repeated coordination delays are increasing
+                            enterprise customer escalation exposure.
+
+                        </p>
+
+                    </article>
+
+                    <!-- ========================================= -->
+                    <!-- Coordination Intelligence -->
+                    <!-- ========================================= -->
+
+                    <article class="intelligence-card elevated-intelligence">
+
+                        <div class="intelligence-pill">
+                            Coordination Visibility
+                        </div>
+
+                        <h4>
+                            Dependency Bottleneck Identified
+                        </h4>
+
+                        <p>
+
+                            Cross-functional approval dependencies
+                            are slowing rollout stabilization workflows.
+
+                        </p>
+
+                    </article>
+
+                    <!-- ========================================= -->
+                    <!-- Recovery Intelligence -->
+                    <!-- ========================================= -->
+
+                    <article class="intelligence-card recovery-intelligence">
+
+                        <div class="intelligence-pill">
+                            Recovery Confidence
+                        </div>
+
+                        <h4>
+                            Recovery Synchronization Improving
+                        </h4>
+
+                        <p>
+
+                            Centralized recovery coordination is beginning
+                            to improve operational stabilization flow.
+
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+            <!-- ============================================= -->
+            <!-- Current Operational Challenges -->
+            <!-- ============================================= -->
+
+            <div class="info-card">
+
+                <h3>
+                    Current Operational Challenges Faced by Nova
+                </h3>
+
+                <div class="operational-evolution-layout">
+
+                    <!-- ========================================= -->
+                    <!-- Previous Operational State -->
+                    <!-- ========================================= -->
+
+                    <div class="operational-evolution-column">
+
+                        <h4>
+                            Previous Operational State
+                        </h4>
+
+                        <ul>
+
+                            <li>
+                                Fragmented cross-team coordination
+                            </li>
+
+                            <li>
+                                Delayed escalation visibility
+                            </li>
+
+                            <li>
+                                Manual operational dependency tracking
+                            </li>
+
+                            <li>
+                                Reactive incident handling
+                            </li>
+
+                            <li>
+                                Increasing customer rollout pressure
+                            </li>
+
+                            <li>
+                                Delivery timeline instability
+                            </li>
+
+                            <li>
+                                Leadership visibility gaps
+                            </li>
+
+                            <li>
+                                Blocked operational dependencies
+                            </li>
+
+                            <li>
+                                Slow incident response cycles
+                            </li>
+
+                            <li>
+                                Operational communication delays
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <!-- ========================================= -->
+                    <!-- Current Recovery State -->
+                    <!-- ========================================= -->
+
+                    <div
+                        class="operational-evolution-column"
+                        id="current-recovery-column"
+                        style="display: none;"
+                    >
+
+                        <h4>
+                            Current Recovery State
+                        </h4>
+
+                        <ul>
+
+                            <li>
+                                Cross-functional coordination governance activated
+                            </li>
+
+                            <li>
+                                Centralized escalation visibility improving
+                            </li>
+
+                            <li>
+                                Shared operational dependency tracking enabled
+                            </li>
+
+                            <li>
+                                Coordinated recovery orchestration active
+                            </li>
+
+                            <li>
+                                Enterprise rollout stabilization progressing
+                            </li>
+
+                            <li>
+                                Delivery recovery alignment improving
+                            </li>
+
+                            <li>
+                                Leadership operational visibility centralized
+                            </li>
+
+                            <li>
+                                Dependency recovery workflows prioritized
+                            </li>
+
+                            <li>
+                                Faster incident coordination cycles enabled
+                            </li>
+
+                            <li>
+                                Operational communication synchronization improving
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+                        </div>
+
+            <!-- ============================================= -->
+            <!-- Operational Narrative Transition -->
+            <!-- ============================================= -->
+
+            <div class="narrative-transition">
+
+                <span>
+                    ⚡ Escalation Visibility Expands Across Operations
+                </span>
+
+            </div>
+            
+            <article class="info-card">
+
+                <h3>
+                    Continue Investigation
+                </h3>
+
+                <p>
+
+                    Operational instability is now visible across
+                    delivery workflows, escalation queues,
+                    and coordination systems.
+
+                </p>
+
+                <p>
+
+                    Continue to Signals to investigate how
+                    these issues are emerging across customer
+                    communications, operational discussions,
+                    blocked work items, and escalation channels.
+
+                </p>
+
+            </article>
 
         </section>
 

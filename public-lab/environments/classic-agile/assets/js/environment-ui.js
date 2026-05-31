@@ -444,37 +444,61 @@ function openEvidenceWorkspaceTab(
 
     const workspaceFocusMap = {
 
-        "mail-workspace":
-            "Review Escalations",
+    "customer-escalations-workspace":
+        "Review Customer Escalations",
 
-        "chat-workspace":
-            "Observe Coordination Gaps",
+    "team-coordination-workspace":
+        "Assess Team Coordination",
 
-        "jira-workspace":
-            "Inspect Delivery Impact",
+    "delivery-status-workspace":
+        "Evaluate Delivery Status",
 
-        "queue-workspace":
-            "Assess Operational Risk"
+    "operational-incidents-workspace":
+        "Assess Operational Incidents",
 
-    };
+    "release-readiness-workspace":
+        "Evaluate Release Readiness",
+
+    "support-operations-workspace":
+        "Assess Support Operations",
+
+    "executive-escalations-workspace":
+        "Review Executive Escalations",
+
+    "dependency-analysis-workspace":
+        "Analyze Dependencies"
+
+};
 
     const workspaceLabels = {
 
-        "mail-workspace":
-            "Mail Center",
+    "customer-escalations-workspace":
+        "Customer Escalations",
 
-        "chat-workspace":
-            "Team Chat",
+    "team-coordination-workspace":
+        "Team Coordination",
 
-        "jira-workspace":
-            "JIRA Board",
+    "delivery-status-workspace":
+        "Delivery Status",
 
-        "queue-workspace":
-            "Incident Queue"
+    "operational-incidents-workspace":
+        "Operational Incidents",
 
-    };
+    "release-readiness-workspace":
+        "Release Readiness",
 
-    const totalWorkspaces = 4;
+    "support-operations-workspace":
+        "Support Operations",
+
+    "executive-escalations-workspace":
+        "Executive Escalations",
+
+    "dependency-analysis-workspace":
+        "Dependency Analysis"
+
+};
+
+    const totalWorkspaces = 8;
 
     const reviewedCount =
         window

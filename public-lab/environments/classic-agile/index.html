@@ -772,7 +772,7 @@
         >
 
             <h2>
-                Functional Evidence
+                Operational Evidence
             </h2>
 
             <p class="section-intro">
@@ -800,7 +800,7 @@
 
                 <div class="workspace-progress-counter">
 
-                    1 OF 4 COMPLETED
+                    1 OF 8 COMPLETED
 
                 </div>
 
@@ -808,7 +808,7 @@
 
                     <div
                         class="workspace-progress-fill"
-                        style="width: 25%;"
+                        style="width: 12.5%;"
                     ></div>
 
                 </div>
@@ -839,39 +839,67 @@
 
                 <button
                     class="preview-locked-btn evidence-workspace-tab active-evidence-workspace-tab"
-                    onclick="openEvidenceWorkspaceTab('mail-workspace', this)"
+                    onclick="openEvidenceWorkspaceTab('customer-escalations-workspace', this)"
                 >
-                    Mail Center
+                    Customer Escalations
                 </button>
 
                 <button
                     class="preview-locked-btn evidence-workspace-tab"
-                    onclick="openEvidenceWorkspaceTab('chat-workspace', this)"
+                    onclick="openEvidenceWorkspaceTab('team-coordination-workspace', this)"
                 >
                     <span class="workspace-title">
-                        Team Chat
+                        Team Coordination
                     </span>
 
                 </button>
 
                 <button
                     class="preview-locked-btn evidence-workspace-tab"
-                    onclick="openEvidenceWorkspaceTab('jira-workspace', this)"
+                    onclick="openEvidenceWorkspaceTab('delivery-status-workspace', this)"
                 >
                     <span class="workspace-title">
-                        JIRA Board
+                        Delivery Status
                     </span>
 
                 </button>
 
                 <button
                     class="preview-locked-btn evidence-workspace-tab"
-                    onclick="openEvidenceWorkspaceTab('queue-workspace', this)"
+                    onclick="openEvidenceWorkspaceTab('operational-incidents-workspace', this)"
                 >
                     <span class="workspace-title">
-                        Incident Queue
+                        Operational Incidents
                     </span>
 
+                </button>
+
+                <button
+                    class="preview-locked-btn evidence-workspace-tab"
+                    onclick="openEvidenceWorkspaceTab('release-readiness-workspace', this)"
+                >
+                    Release Readiness
+                </button>
+
+                <button
+                    class="preview-locked-btn evidence-workspace-tab"
+                    onclick="openEvidenceWorkspaceTab('support-operations-workspace', this)"
+                >
+                    Support Operations
+                </button>
+
+                <button
+                    class="preview-locked-btn evidence-workspace-tab"
+                    onclick="openEvidenceWorkspaceTab('executive-escalations-workspace', this)"
+                >
+                    Executive Escalations
+                </button>
+
+                <button
+                    class="preview-locked-btn evidence-workspace-tab"
+                    onclick="openEvidenceWorkspaceTab('dependency-analysis-workspace', this)"
+                >
+                    Dependency Analysis
                 </button>
 
             </div>
@@ -882,7 +910,7 @@
 
             <div
                 class="evidence-workspace-panel active-evidence-workspace-panel"
-                id="mail-workspace"
+                id="customer-escalations-workspace"
             >
 
                 <div
@@ -986,7 +1014,7 @@
 
             <div
                 class="evidence-workspace-panel"
-                id="chat-workspace"
+                id="team-coordination-workspace"
             >
 
                 <div
@@ -1041,7 +1069,7 @@
 
             <div
                 class="evidence-workspace-panel"
-                id="jira-workspace"
+                id="delivery-status-workspace"
             >
 
                 <div
@@ -1083,7 +1111,7 @@
 
             <div
                 class="evidence-workspace-panel"
-                id="queue-workspace"
+                id="operational-incidents-workspace"
             >
 
                 <div
@@ -1118,6 +1146,116 @@
                 </div>
 
             </div>
+
+            <div
+    class="evidence-workspace-panel"
+    id="release-readiness-workspace"
+>
+
+    <div class="info-card">
+
+        <h3>
+            Release Readiness Review
+        </h3>
+
+        <ul>
+
+            <li>Deployment approval pending</li>
+
+            <li>Regression validation incomplete</li>
+
+            <li>Infrastructure sign-off outstanding</li>
+
+            <li>Rollback strategy under review</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<div
+    class="evidence-workspace-panel"
+    id="support-operations-workspace"
+>
+
+    <div class="info-card">
+
+        <h3>
+            Support Operations Summary
+        </h3>
+
+        <ul>
+
+            <li>Customer support volume increasing</li>
+
+            <li>Escalation tickets trending upward</li>
+
+            <li>SLA response pressure emerging</li>
+
+            <li>Priority support cases awaiting updates</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<div
+    class="evidence-workspace-panel"
+    id="executive-escalations-workspace"
+>
+
+    <div class="info-card">
+
+        <h3>
+            Executive Escalation Summary
+        </h3>
+
+        <ul>
+
+            <li>Leadership requesting recovery visibility</li>
+
+            <li>Customer confidence concerns raised</li>
+
+            <li>Transformation delivery commitments reviewed</li>
+
+            <li>Executive update requested within 24 hours</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<div
+    class="evidence-workspace-panel"
+    id="dependency-analysis-workspace"
+>
+
+    <div class="info-card">
+
+        <h3>
+            Dependency Analysis
+        </h3>
+
+        <ul>
+
+            <li>Infrastructure dependency unresolved</li>
+
+            <li>QA validation blocked by release instability</li>
+
+            <li>Cross-team approval flow delayed</li>
+
+            <li>Recovery ownership remains fragmented</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
 
             <article class="info-card">
 

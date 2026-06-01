@@ -103,6 +103,35 @@ const leadershipDiagnosis = {
 };
 
 /* =========================================================
+   Recovery Leadership Decision Configuration
+========================================================= */
+
+const recoveryDecision = {
+
+    question:
+        "As Recovery Lead, what should be your first stabilization action?",
+
+    options: [
+
+        "Executive Escalation",
+
+        "Establish Recovery Ownership",
+
+        "Freeze All Deployments",
+
+        "Launch Customer Communications"
+
+    ],
+
+    correctAnswer:
+        "Establish Recovery Ownership",
+
+    explanation:
+        "The reviewed evidence consistently points toward fragmented ownership, dependency instability, delayed visibility, and recovery coordination gaps. Before escalation, communications, or deployment controls can be effective, leadership must first establish clear recovery ownership and accountability."
+
+};
+
+/* =========================================================
    Leadership Diagnosis Renderer
 ========================================================= */
 
@@ -290,6 +319,163 @@ function submitDiagnosis() {
                 becomes the primary leadership
                 responsibility.
 
+            </p>
+
+        </div>
+
+    `;
+
+    renderRecoveryDecision();
+
+}
+
+/* =========================================================
+   Recovery Leadership Decision Renderer
+========================================================= */
+
+function renderRecoveryDecision() {
+
+    const container =
+        document.getElementById(
+            "recovery-decision-container"
+        );
+
+    if (!container) {
+
+        return;
+
+    }
+
+    container.style.display =
+        "block";
+
+    container.innerHTML = `
+
+        <div class="info-card">
+
+            <h3>
+                Recovery Leadership Decision
+            </h3>
+
+            <p>
+                ${recoveryDecision.question}
+            </p>
+
+            ${recoveryDecision.options
+                .map(
+                    option => `
+                        <label
+                            style="
+                                display:block;
+                                margin-bottom:12px;
+                            "
+                        >
+
+                            <input
+                                type="radio"
+                                name="recovery-decision"
+                                value="${option}"
+                            >
+
+                            ${option}
+
+                        </label>
+                    `
+                )
+                .join("")
+            }
+
+            <button
+                class="simulation-button"
+                onclick="submitRecoveryDecision()"
+            >
+                Submit Recovery Decision
+            </button>
+
+            <div
+                id="recovery-decision-feedback"
+                style="margin-top:1rem;"
+            ></div>
+
+        </div>
+
+    `;
+
+}
+
+/* =========================================================
+   Recovery Leadership Decision Submission
+========================================================= */
+
+function submitRecoveryDecision() {
+
+    const selectedOption =
+        document.querySelector(
+            'input[name="recovery-decision"]:checked'
+        );
+
+    const feedback =
+        document.getElementById(
+            "recovery-decision-feedback"
+        );
+
+    if (
+        !selectedOption ||
+        !feedback
+    ) {
+
+        return;
+
+    }
+
+    const selectedAnswer =
+        selectedOption.value;
+
+    const isCorrect =
+        selectedAnswer ===
+        recoveryDecision.correctAnswer;
+
+    sessionStorage.setItem(
+        "recoveryDecision",
+        selectedAnswer
+    );
+
+    feedback.innerHTML = `
+
+        <div class="info-card">
+
+            <h3>
+
+                ${
+                    isCorrect
+                        ? "✓ Recommended Recovery Action"
+                        : "Recovery Decision Review"
+                }
+
+            </h3>
+
+            <p>
+
+                Your Decision:
+
+                <strong>
+                    ${selectedAnswer}
+                </strong>
+
+            </p>
+
+            <p>
+
+                Recommended Action:
+
+                <strong>
+                    ${recoveryDecision.correctAnswer}
+                </strong>
+
+            </p>
+
+            <p>
+                ${recoveryDecision.explanation}
             </p>
 
         </div>

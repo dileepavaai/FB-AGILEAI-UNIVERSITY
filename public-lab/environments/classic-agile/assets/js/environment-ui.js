@@ -932,6 +932,63 @@ document.addEventListener(
    Runtime Diagnostics
 ========================================================= */
 
+/* =========================================================
+   Premium Content Loader
+========================================================= */
+
+async function loadPremiumContent(
+    sectionName
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                `./premium-content/${sectionName}/index.html`
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Unable to load ${sectionName}`
+            );
+
+        }
+
+        const html =
+            await response.text();
+
+        const container =
+            document.getElementById(
+                "premium-content-container"
+            );
+
+        if (!container) {
+
+            console.error(
+                "[Premium Loader] Container missing"
+            );
+
+            return;
+
+        }
+
+        container.innerHTML =
+            html;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "[Premium Loader]",
+            error
+        );
+
+    }
+
+}
+
 console.log(
     "[Environment UI] Engine v3.0 initialized"
 );

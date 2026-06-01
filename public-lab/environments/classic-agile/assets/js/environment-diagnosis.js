@@ -6,17 +6,26 @@
    Centralized leadership diagnosis management,
    diagnosis rendering,
    diagnosis persistence,
+   diagnosis learning feedback,
    and outcome diagnosis summary generation.
 
    Version:
-   v1.0 — Initial Governance Stabilization
+   v1.1 — Diagnosis Learning Feedback Stabilization
 
-   Architecture Upgrade:
-   - Diagnosis Governance Layer
-   - Diagnosis Persistence Layer
-   - Outcome Summary Rendering
-   - Runtime Diagnostics Visibility
-   - Architecture Ownership Definition
+   Version History
+
+   v1.0
+   - Initial diagnosis rendering
+   - Diagnosis persistence
+   - Outcome diagnosis summary
+   - Runtime diagnostics
+
+   v1.1
+   - Diagnosis learning feedback layer
+   - Correct diagnosis reinforcement
+   - Incorrect diagnosis coaching
+   - Evidence-based explanation framework
+   - Learner reasoning visibility
 
 ========================================================= */
 
@@ -45,7 +54,51 @@ const leadershipDiagnosis = {
         "Release Coordination Breakdown",
 
     explanation:
-        "The reviewed evidence indicates a Release Coordination Breakdown caused by fragmented ownership, dependency instability, delayed operational visibility, and unresolved recovery coordination."
+        "The reviewed evidence indicates a Release Coordination Breakdown caused by fragmented ownership, dependency instability, delayed operational visibility, and unresolved recovery coordination.",
+
+    diagnosisFeedback: {
+
+        "Customer Demand Increase": {
+
+            review:
+                "Customer-facing pressure is visible through escalations and service concerns. It is reasonable to consider increased demand as a potential source of instability.",
+
+            rationale:
+                "The reviewed evidence does not indicate transaction growth, demand spikes, capacity saturation, or scaling constraints. The stronger pattern involves coordination breakdown across operational teams."
+
+        },
+
+        "Infrastructure Failure": {
+
+            review:
+                "Infrastructure dependencies appear throughout the investigation and contribute to operational disruption.",
+
+            rationale:
+                "The evidence does not indicate a major platform outage or widespread infrastructure collapse. Infrastructure concerns appear as symptoms of broader coordination and dependency management challenges."
+
+        },
+
+        "Release Coordination Breakdown": {
+
+            review:
+                "Multiple evidence sources point to fragmented ownership, unresolved dependencies, delayed operational visibility, escalation coordination challenges, and uncertainty around recovery actions.",
+
+            rationale:
+                "These signals collectively indicate a Release Coordination Breakdown."
+
+        },
+
+        "Resource Shortage": {
+
+            review:
+                "Teams are operating under pressure and delivery timelines are being affected, making resource constraints a reasonable consideration.",
+
+            rationale:
+                "The reviewed evidence does not consistently indicate staffing shortages or insufficient operational capacity. The stronger pattern involves fragmented ownership and recovery coordination gaps."
+
+        }
+
+    }
 
 };
 
@@ -141,6 +194,16 @@ function submitDiagnosis() {
     const selectedAnswer =
         selectedOption.value;
 
+    const isCorrect =
+        selectedAnswer ===
+        leadershipDiagnosis.correctAnswer;
+
+    const diagnosisReview =
+        leadershipDiagnosis
+            .diagnosisFeedback[
+                selectedAnswer
+            ];
+
     sessionStorage.setItem(
         "classicDiagnosis",
         selectedAnswer
@@ -152,17 +215,85 @@ function submitDiagnosis() {
     );
 
     feedback.innerHTML = `
+
         <div class="info-card">
 
-            <strong>
-                ✓ Diagnosis Captured
-            </strong>
+            <h3>
+                Your Diagnosis
+            </h3>
+
+            <p>
+
+                <strong>
+                    ${selectedAnswer}
+                </strong>
+
+            </p>
+
+            <h3>
+                ${
+                    isCorrect
+                        ? "✓ Correct Diagnosis"
+                        : "Diagnosis Review"
+                }
+            </h3>
+
+            <p>
+                ${diagnosisReview.review}
+            </p>
+
+            <p>
+                ${diagnosisReview.rationale}
+            </p>
+
+            <h3>
+                Recommended Diagnosis
+            </h3>
+
+            <p>
+
+                <strong>
+                    ${leadershipDiagnosis.correctAnswer}
+                </strong>
+
+            </p>
+
+            <h3>
+                Why This Diagnosis Fits Best
+            </h3>
 
             <p>
                 ${leadershipDiagnosis.explanation}
             </p>
 
+            <h3>
+                Leadership Interpretation
+            </h3>
+
+            <p>
+
+                Effective operational leaders
+                distinguish between symptoms
+                and root causes.
+
+                While customer pressure,
+                infrastructure concerns,
+                and delivery stress are visible
+                across the environment,
+                the strongest evidence pattern
+                points toward coordination failure.
+
+                Stabilizing ownership,
+                dependencies,
+                visibility,
+                and recovery governance
+                becomes the primary leadership
+                responsibility.
+
+            </p>
+
         </div>
+
     `;
 
 }
@@ -213,6 +344,16 @@ function renderOutcomeDiagnosis() {
 
         <p>
 
+            Recommended Diagnosis:
+
+            <strong>
+                ${leadershipDiagnosis.correctAnswer}
+            </strong>
+
+        </p>
+
+        <p>
+
             Effective leaders investigate
             evidence patterns before initiating
             recovery actions.
@@ -228,9 +369,9 @@ function renderOutcomeDiagnosis() {
 ========================================================= */
 
 console.log(
-    "[Environment Diagnosis] Engine v1.0 initialized"
+    "[Environment Diagnosis] Engine v1.1 initialized"
 );
 
 console.log(
-    "[Environment Diagnosis] Diagnosis Layer Ready"
+    "[Environment Diagnosis] Diagnosis Learning Feedback Active"
 );

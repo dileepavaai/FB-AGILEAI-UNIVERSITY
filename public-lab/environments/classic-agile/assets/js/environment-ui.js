@@ -247,6 +247,8 @@ function toggleSection(
 
 /* =========================================================
    Learning Stage Progression
+   Governance State:
+   Review-Based Completion Tracking
 ========================================================= */
 
 function updateLearningStage(
@@ -282,40 +284,35 @@ function updateLearningStage(
 
         scenario: {
             stage: "STAGE 1 OF 5",
-            focus: "Context Awareness",
-            progress: "20%"
+            focus: "Context Awareness"
         },
 
         evidence: {
             stage: "STAGE 2 OF 5",
-            focus: "Situation Diagnosis",
-            progress: "40%"
+            focus: "Situation Diagnosis"
         },
 
         teams: {
             stage: "STAGE 3 OF 5",
-            focus: "Leadership Ownership",
-            progress: "60%"
+            focus: "Leadership Ownership"
         },
 
         actions: {
             stage: "STAGE 4 OF 5",
-            focus: "Recovery Decision Making",
-            progress: "80%"
+            focus: "Recovery Decision Making"
         },
 
         outcomes: {
             stage: "STAGE 5 OF 5",
-            focus: "Outcome Evaluation",
-            progress: "100%"
+            focus: "Outcome Evaluation"
         }
 
     };
 
     const normalizedSectionId =
-    sectionId
-        .replace("-tab", "")
-        .replace("-panel", "");
+        sectionId
+            .replace("-tab", "")
+            .replace("-panel", "");
 
     const selectedStage =
         stageMap[
@@ -333,14 +330,63 @@ function updateLearningStage(
 
     }
 
+    /* =====================================================
+       Review Tracking Governance
+    ===================================================== */
+
+    window.reviewedLearningStages =
+        window.reviewedLearningStages ||
+        new Set();
+
+    window.reviewedLearningStages.add(
+        normalizedSectionId
+    );
+
+    /* =====================================================
+       Stage Header
+    ===================================================== */
+
     stageHeader.textContent =
         selectedStage.stage;
 
     stageFocus.textContent =
         selectedStage.focus;
 
+    /* =====================================================
+       Review-Based Progress
+    ===================================================== */
+
+    const totalStages = 5;
+
+    const reviewedCount =
+        window
+            .reviewedLearningStages
+            .size;
+
+    const progressPercentage =
+        (
+            reviewedCount /
+            totalStages
+        ) * 100;
+
     stageProgress.style.width =
-        selectedStage.progress;
+        `${progressPercentage}%`;
+
+    /* =====================================================
+       Diagnostics
+    ===================================================== */
+
+    console.log(
+        "[Learning Review]",
+        {
+            reviewed:
+                Array.from(
+                    window.reviewedLearningStages
+                ),
+            reviewedCount,
+            progressPercentage
+        }
+    );
 
 }
 

@@ -423,70 +423,134 @@
 }
 
 /* =========================================================
-   Main Workspace Tabs
+   Executive Pipeline Navigation
 ========================================================= */
 
 .horizontal-tabs {
 
     display: flex;
 
-    gap: 0.75rem;
-
-    flex-wrap: nowrap;
+    align-items: center;
 
     justify-content: center;
 
-    margin-top: 0.5rem;
+    gap: 0;
+
+    margin-top: 0.75rem;
+
+    margin-bottom: 1rem;
+
+    flex-wrap: nowrap;
 
 }
 
 .horizontal-tab {
 
-    display: inline-flex;
+    position: relative;
+
+    display: flex;
 
     align-items: center;
 
     justify-content: center;
 
-    gap: 0.5rem;
+    gap: 0.45rem;
 
-    min-width: 100px;
+    padding: 0.85rem 1rem;
 
-    padding: 0.75rem 1rem;
+    min-width: auto;
 
-    border: 1px solid #222222;
+    background: transparent;
 
-    background: #ffffff;
+    border: none;
 
-    color: #111111;
+    border-radius: 0;
 
-    cursor: pointer;
-
-    transition: all 0.2s ease;
+    color: #666666;
 
     font-size: 0.95rem;
 
     font-weight: 600;
 
-    border-radius: 0.75rem;
+    cursor: pointer;
+
+    transition: all 0.25s ease;
 
     white-space: nowrap;
 
 }
 
-.horizontal-tab:hover {
+/* Pipeline Connector */
 
-    background: #222222;
+.horizontal-tab:not(:last-child)::after {
 
-    color: #ffffff;
+    content: "";
+
+    width: 48px;
+
+    height: 1px;
+
+    background: #cfcfcf;
+
+    display: inline-block;
+
+    margin-left: 16px;
+
+    margin-right: 16px;
 
 }
 
+/* Hover */
+
+.horizontal-tab:hover {
+
+    color: #111111;
+
+    background: transparent;
+
+}
+
+/* Active Stage */
+
 .active-horizontal-tab {
 
-    background: #222222;
+    color: #111111;
 
-    color: #ffffff;
+    font-weight: 700;
+
+}
+
+.active-horizontal-tab::before {
+
+    content: "";
+
+    width: 10px;
+
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: #111111;
+
+    display: inline-block;
+
+}
+
+/* Non-active Stages */
+
+.horizontal-tab:not(.active-horizontal-tab)::before {
+
+    content: "";
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+    border: 1px solid #999999;
+
+    display: inline-block;
 
 }
 
@@ -896,13 +960,23 @@
 
     .horizontal-tabs {
 
-        flex-direction: column;
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 0.75rem;
 
     }
 
     .horizontal-tab {
 
-        width: 100%;
+        width: auto;
+
+    }
+
+    .horizontal-tab::after {
+
+        display: none;
 
     }
 

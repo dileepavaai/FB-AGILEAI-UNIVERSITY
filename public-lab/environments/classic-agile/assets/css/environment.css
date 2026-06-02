@@ -2055,3 +2055,43 @@
     color: #111111;
 
 }
+
+#learning-review-status {
+
+    margin-top: 1rem;
+
+    padding-top: 1rem;
+
+    border-top: 1px solid rgba(0,0,0,0.08);
+
+}
+
+#learning-review-summary {
+
+    margin-top: 0.5rem;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.05em;
+
+}
+
+#learning-review-pending {
+
+    margin-top: 0.75rem;
+
+    font-size: 0.9rem;
+
+    color: #555;
+
+}
+
+#learning-review-pending ul {
+
+    margin-top: 0.5rem;
+
+    padding-left: 1.25rem;
+
+}

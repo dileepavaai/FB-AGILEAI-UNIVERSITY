@@ -636,6 +636,82 @@ function openEvidenceWorkspaceTab(
     }
 
     /* =====================================================
+    Review Status Visibility
+    ===================================================== */
+
+    const reviewSummary =
+        document.getElementById(
+            "learning-review-summary"
+        );
+
+    const reviewPending =
+        document.getElementById(
+            "learning-review-pending"
+        );
+
+    const stageLabels = {
+
+        scenario: "Scenario",
+        evidence: "Evidence",
+        teams: "Teams",
+        actions: "Actions",
+        outcomes: "Outcomes"
+
+    };
+
+    const pendingStages =
+        Object.keys(stageLabels)
+            .filter(
+                stage =>
+                    !window
+                        .reviewedLearningStages
+                        .has(stage)
+            );
+
+    if (reviewSummary) {
+
+        reviewSummary.textContent =
+            `${reviewedCount} OF ${totalStages} REVIEWED`;
+
+    }
+
+    if (reviewPending) {
+
+        if (
+            pendingStages.length === 0
+        ) {
+
+            reviewPending.innerHTML =
+                `
+                All sections reviewed.
+                Leadership experience complete.
+                `;
+
+        } else {
+
+            reviewPending.innerHTML =
+                `
+                <strong>
+                    PENDING REVIEW
+                </strong>
+
+                <ul>
+                    ${
+                        pendingStages
+                            .map(
+                                stage =>
+                                    `<li>${stageLabels[stage]}</li>`
+                            )
+                            .join("")
+                    }
+                </ul>
+                `;
+
+        }
+
+    }
+
+    /* =====================================================
     Pending Review
     ===================================================== */
 

@@ -423,21 +423,17 @@
 }
 
 /* =========================================================
-   Executive Pipeline Navigation
+   Executive Command Bar Navigation
 ========================================================= */
 
 .horizontal-tabs {
 
     display: flex;
-
-    align-items: center;
-
     justify-content: center;
-
-    gap: 0;
+    align-items: center;
+    gap: 0.5rem;
 
     margin-top: 0.75rem;
-
     margin-bottom: 1rem;
 
     flex-wrap: nowrap;
@@ -446,111 +442,53 @@
 
 .horizontal-tab {
 
-    position: relative;
-
-    display: flex;
-
+    display: inline-flex;
     align-items: center;
-
     justify-content: center;
 
     gap: 0.45rem;
 
-    padding: 0.85rem 1rem;
-
-    min-width: auto;
-
-    background: transparent;
+    padding: 0.85rem 1.25rem;
 
     border: none;
-
-    border-radius: 0;
+    background: transparent;
 
     color: #666666;
 
-    font-size: 0.95rem;
-
+    font-size: 1rem;
     font-weight: 600;
+
+    border-radius: 999px;
 
     cursor: pointer;
 
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
 
     white-space: nowrap;
 
 }
 
-/* Pipeline Connector */
-
-.horizontal-tab:not(:last-child)::after {
-
-    content: "";
-
-    width: 48px;
-
-    height: 1px;
-
-    background: #cfcfcf;
-
-    display: inline-block;
-
-    margin-left: 16px;
-
-    margin-right: 16px;
-
-}
-
-/* Hover */
-
 .horizontal-tab:hover {
 
+    background: #f3f3f3;
     color: #111111;
 
-    background: transparent;
-
 }
-
-/* Active Stage */
 
 .active-horizontal-tab {
 
-    color: #111111;
+    background: #111111;
+    color: #ffffff;
 
-    font-weight: 700;
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.08);
 
 }
 
-.active-horizontal-tab::before {
-
-    content: "";
-
-    width: 10px;
-
-    height: 10px;
-
-    border-radius: 50%;
+.active-horizontal-tab:hover {
 
     background: #111111;
-
-    display: inline-block;
-
-}
-
-/* Non-active Stages */
-
-.horizontal-tab:not(.active-horizontal-tab)::before {
-
-    content: "";
-
-    width: 8px;
-
-    height: 8px;
-
-    border-radius: 50%;
-
-    border: 1px solid #999999;
-
-    display: inline-block;
+    color: #ffffff;
 
 }
 

@@ -908,8 +908,8 @@ document.addEventListener(
 
         if (!activateButton) {
 
-            console.warn(
-                "[Environment UI] War room button missing"
+            console.log(
+                "[Environment UI] War room not configured"
             );
 
             return;

@@ -975,6 +975,30 @@ async function loadPremiumContent(
 
         container.innerHTML =
             html;
+        /* =====================================================
+        Dynamic Panel Activation
+
+        Governance State:
+        Premium Content Navigation Handoff
+
+        Purpose:
+        Transfer visibility control from the
+        environment shell to dynamically loaded
+        premium-content modules.
+        ===================================================== */
+
+        const loadedSection =
+            document.getElementById(
+                `${sectionName}-tab`
+            );
+
+        if (loadedSection) {
+
+            toggleSection(
+                `${sectionName}-tab`
+            );
+
+        }
 
     }
 

@@ -988,17 +988,23 @@ async function loadPremiumContent(
         ===================================================== */
 
         const loadedSection =
-            document.getElementById(
-                `${sectionName}-tab`
-            );
+        document.getElementById(
+            `${sectionName}-tab`
+        );
 
-        if (loadedSection) {
+    const correspondingButton =
+        document.querySelector(
+            `[data-environment-tab="${sectionName}"]`
+        );
 
-            toggleSection(
-                `${sectionName}-tab`
-            );
+    if (loadedSection) {
 
-        }
+        toggleSection(
+            `${sectionName}-tab`,
+            correspondingButton
+        );
+
+    }
 
     }
 

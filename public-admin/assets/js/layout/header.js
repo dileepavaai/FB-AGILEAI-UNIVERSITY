@@ -86,7 +86,7 @@ export function loadHeader(user = null, role = null) {
 
   // 🔥 Load script first time
   const script = document.createElement("script");
-  script.src = "./assets/js/theme-toggle.js";
+  script.src = "/assets/js/theme-toggle.js";
   script.defer = true;
 
   script.onload = () => {

@@ -1,3 +1,23 @@
+/* =====================================================
+   Agile AI University
+   Credential Verification Service
+
+   Service Name : aau-credential-verify
+   Version      : 1.0.0
+   Environment  : Google Cloud Run
+   Project      : FB-AgileAI-University
+
+   Purpose:
+   Public credential verification and governance services.
+
+   Primary APIs:
+   - POST /public/verify-credential
+   - POST /admin/credential-registry
+
+   Last Updated:
+   2026-06-03
+===================================================== */
+
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
@@ -12,6 +32,13 @@ app.use(express.json());
 admin.initializeApp();
 
 const db = admin.firestore();
+
+/* =====================================================
+   SERVICE METADATA
+===================================================== */
+
+const SERVICE_NAME = "aau-credential-verify";
+const SERVICE_VERSION = "1.0.0";
 
 /* =====================================================
    🔐 SIMPLE RATE LIMITING
@@ -231,7 +258,9 @@ app.post("/public/verify-credential", async (req, res) => {
    Health check
 ===================================================== */
 app.get("/", (req, res) => {
-  res.send("AAU Credential Verify API is running");
+  res.send(
+    `${SERVICE_NAME} v${SERVICE_VERSION} is running`
+  );
 });
 
 /* =====================================================
@@ -241,9 +270,41 @@ app.get("/public/verify-credential", (req, res) => {
   res.send("Use POST method with JSON body { credential_id }");
 });
 
+/* =====================================================
+   📚 Credential Registry API
+   -----------------------------------------------------
+   API Version : 1.0.0
+   Status      : Placeholder
+   Owner       : Agile AI University
+
+   Purpose:
+   Administrative Credential Registry endpoint reserved
+   for future registry search, governance reporting,
+   credential lookup, and export capabilities.
+
+   Current State:
+   - Endpoint deployed
+   - Endpoint reachable
+   - No Firestore logic implemented
+   - No search capability implemented
+
+   Planned Future Capabilities:
+   - Credential lookup by Credential ID
+   - Search by Program Code
+   - Search by Batch
+   - Governance reporting
+   - Registry analytics
+   - CSV export
+
+   Version History:
+   v1.0.0 - Placeholder endpoint established
+===================================================== */
+
 app.post("/admin/credential-registry", async (req, res) => {
   return res.json({
     status: "placeholder",
+    version: SERVICE_VERSION,
+    api: "credential-registry",
     message: "Credential Registry API not implemented yet"
   });
 });
@@ -252,6 +313,9 @@ app.post("/admin/credential-registry", async (req, res) => {
    Server Start
 ===================================================== */
 const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(
+    `${SERVICE_NAME} v${SERVICE_VERSION} running on port ${PORT}`
+  );
 });

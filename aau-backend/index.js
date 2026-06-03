@@ -241,6 +241,13 @@ app.get("/public/verify-credential", (req, res) => {
   res.send("Use POST method with JSON body { credential_id }");
 });
 
+app.post("/admin/credential-registry", async (req, res) => {
+  return res.json({
+    status: "placeholder",
+    message: "Credential Registry API not implemented yet"
+  });
+});
+
 /* =====================================================
    Server Start
 ===================================================== */

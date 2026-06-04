@@ -78,6 +78,16 @@ try {
 
   credentialData = data.credentials;
 
+  console.log(
+    "Registry Loaded:",
+    credentialData.length
+);
+
+    console.log(
+    "Rendering Records:",
+    credentialData
+    );
+
   renderResults(credentialData);
 
 } catch (error) {

@@ -273,40 +273,72 @@ app.get("/public/verify-credential", (req, res) => {
 /* =====================================================
    📚 Credential Registry API
    -----------------------------------------------------
-   API Version : 1.0.0
-   Status      : Placeholder
+   API Version : 1.1.0
+   Status      : Read Only
    Owner       : Agile AI University
 
    Purpose:
-   Administrative Credential Registry endpoint reserved
-   for future registry search, governance reporting,
-   credential lookup, and export capabilities.
+   Administrative credential registry lookup.
 
-   Current State:
-   - Endpoint deployed
-   - Endpoint reachable
-   - No Firestore logic implemented
-   - No search capability implemented
+   Scope:
+   - Read-only
+   - No updates
+   - No deletes
+   - No writes
 
-   Planned Future Capabilities:
-   - Credential lookup by Credential ID
-   - Search by Program Code
-   - Search by Batch
-   - Governance reporting
-   - Registry analytics
-   - CSV export
+   Data Source:
+   Firestore → credentials
 
    Version History:
-   v1.0.0 - Placeholder endpoint established
+   v1.0.0 - Placeholder endpoint
+   v1.1.0 - Read-only registry endpoint
 ===================================================== */
 
 app.post("/admin/credential-registry", async (req, res) => {
-  return res.json({
-    status: "placeholder",
-    version: SERVICE_VERSION,
-    api: "credential-registry",
-    message: "Credential Registry API not implemented yet"
-  });
+  try {
+
+    const snapshot = await db
+      .collection("credentials")
+      .limit(25)
+      .get();
+
+    const credentials = snapshot.docs.map(doc => {
+
+      const data = doc.data();
+
+      return {
+        credential_id: data.credential_id || "",
+        full_name: data.full_name || "",
+        email: data.email || "",
+        program_code: data.program_code || "",
+        credential_type: data.credential_type || "",
+        issued_status: data.issued_status || "",
+        issued_by: data.issued_by || "",
+      };
+    });
+
+    return res.json({
+      status: "success",
+      version: "1.1.0",
+      api: "credential-registry",
+      total_records: credentials.length,
+      credentials
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Credential Registry Error:",
+      error
+    );
+
+    return res.status(500).json({
+      status: "error",
+      version: "1.1.0",
+      api: "credential-registry",
+      message: "Failed to load credential registry"
+    });
+  }
 });
 
 /* =====================================================

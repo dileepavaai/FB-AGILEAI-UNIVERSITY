@@ -299,7 +299,6 @@ app.post("/admin/credential-registry", async (req, res) => {
 
     const snapshot = await db
       .collection("credentials")
-      .limit(25)
       .get();
 
     const credentials = snapshot.docs.map(doc => {

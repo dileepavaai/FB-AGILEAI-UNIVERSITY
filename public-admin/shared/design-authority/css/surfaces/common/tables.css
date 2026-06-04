@@ -22,9 +22,10 @@
   background: var(--bg-card);
   border-radius: 12px;
   border: 1px solid var(--border);
-  overflow: hidden;
-}
 
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 
 /* =========================================================
    📊 TABLE STRUCTURE

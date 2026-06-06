@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Credential Operations Suite – Admin</title>
+  <title>Certificate Generator – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- 🔒 CORE SYSTEM -->
-  <link rel="stylesheet" href="../assets/css/site.css" />
+  <link rel="stylesheet" href="../../assets/css/site.css" />
 
   <!-- 🎨 DESIGN AUTHORITY -->
-  <link rel="stylesheet" href="../shared/design-authority/css/refinement.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/refinement.css" />
 
   <!-- 🧩 COMMON SURFACES -->
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/typography.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/typography.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link rel="stylesheet" href="../assets/css/certificate-generator.css" />
 </head>
 
 <body class="app-loading">
@@ -28,14 +29,14 @@
     <!-- 🔷 SIDEBAR -->
     <nav class="sidebar" id="adminNav" style="display:none;">
       <ul>
-        <li><a href="../index.html">Dashboard</a></li>
-        <li><a href="../leads.html">Lead Intelligence</a></li>
-        <li><a href="../batch.html">Batch Management</a></li>
-        <li><a href="../csv.html">CSV Import</a></li>
-        <li><a href="credential-generator.html" class="active">Credential Generator</a></li>
-        <li><a href="../credential-registry/credential-registry.html">Credential Registry</a></li>
-        <li><a href="../reconciliation.html">Reconciliation</a></li>
-        <li><a href="../audit-logs.html">Audit Logs</a></li>
+        <li><a href="../../index.html">Dashboard</a></li>
+        <li><a href="../../leads.html">Lead Intelligence</a></li>
+        <li><a href="../../batch.html">Batch Management</a></li>
+        <li><a href="../../csv.html">CSV Import</a></li>
+        <li><a href="../credential-generator.html" class="active">Credential Generator</a></li>
+        <li><a href="../../credential-registry/credential-registry.html">Credential Registry</a></li>
+        <li><a href="../../reconciliation.html">Reconciliation</a></li>
+        <li><a href="../../audit-logs.html">Audit Logs</a></li>
       </ul>
     </nav>
 
@@ -53,117 +54,203 @@
       <!-- 🔷 APP -->
       <section id="appView" class="hidden">
 
-        <!-- PAGE HEADER -->
-        <div class="section">
-          <h2>Credential Operations Suite</h2>
-          <p class="page-subtitle">
-            Unified credential generation, publication, verification, and distribution operations.
-          </p>
-        </div>
+        <div class="cg-container">
 
-        <!-- CREDENTIAL GENERATION -->
-        <div class="section">
-          <div class="card">
+  <header class="cg-page-header">
+    <h1>Certificate Generator</h1>
 
-            <div class="card-title">
-              Credential Generation
-            </div>
+<p>
+  Generate institution-approved certificates from credential records.
+</p>
 
-            <div class="grid-2">
+  </header>
 
-              <div class="data-row">
-                <span class="data-label">Certificate Generator</span>
-                <span>Planned</span>
-              </div>
+  <section class="cg-notice">
+    Certificate Generator · Phase 1 · Governance-Aware UI Shell
+  </section>
 
-              <div class="data-row">
-                <span class="data-label">Badge Generator</span>
-                <span>Planned</span>
-              </div>
+  <section class="cg-card">
 
-            </div>
+<h2>Search Credential</h2>
 
-          </div>
-        </div>
+<div class="cg-search-grid">
 
-        <!-- CREDENTIAL PUBLICATION -->
-        <div class="section">
-          <div class="card">
+  <div class="cg-field-group">
+    <label>Credential ID</label>
+    <input type="text" placeholder="AIPA-2026-000001">
+  </div>
 
-            <div class="card-title">
-              Credential Publication
-            </div>
+  <div class="cg-field-group">
+    <label>Learner Name</label>
+    <input type="text" placeholder="Full Name">
+  </div>
 
-            <div class="data-row">
-              <span class="data-label">Verification Publisher</span>
-              <span>Planned</span>
-            </div>
+  <div class="cg-field-group">
+    <label>Email Address</label>
+    <input type="email" placeholder="email@example.com">
+  </div>
 
-          </div>
-        </div>
+</div>
 
-        <!-- CREDENTIAL DISTRIBUTION -->
-        <div class="section">
-          <div class="card">
+<div class="cg-actions">
+  <button class="cg-btn">Search Credential</button>
+  <button class="cg-btn">Clear</button>
+</div>
 
-            <div class="card-title">
-              Credential Distribution
-            </div>
+  </section>
 
-            <div class="grid-2">
+  <section class="cg-card">
 
-              <div class="data-row">
-                <span class="data-label">Sharing Tools</span>
-                <span>Future Capability</span>
-              </div>
+<h2>Credential Details</h2>
 
-              <div class="data-row">
-                <span class="data-label">Wallet Export</span>
-                <span>Future Capability</span>
-              </div>
+<div class="cg-grid">
 
-            </div>
+  <div class="cg-field">
+    <div class="cg-label">Credential ID</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
 
-          </div>
-        </div>
+  <div class="cg-field">
+    <div class="cg-label">Credential Type</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
 
-        <!-- CREDENTIAL INTELLIGENCE -->
-        <div class="section">
-          <div class="card">
+  <div class="cg-field">
+    <div class="cg-label">Credential Family</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
 
-            <div class="card-title">
-              Credential Intelligence
-            </div>
+  <div class="cg-field">
+    <div class="cg-label">Program Code</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
 
-            <div class="data-row">
-              <span class="data-label">Metadata Builder</span>
-              <span>Future Capability</span>
-            </div>
+  <div class="cg-field">
+    <div class="cg-label">Program Name</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
 
-          </div>
-        </div>
+  <div class="cg-field">
+    <div class="cg-label">Template Key</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
 
-        <!-- GOVERNANCE NOTICE -->
-        <div class="section">
-          <div class="card">
+  <div class="cg-field">
+    <div class="cg-label">Issue Date</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
 
-            <div class="card-title">
-              Governance Notice
-            </div>
+  <div class="cg-field">
+    <div class="cg-label">Credential Status</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
 
-            <p>
-              Credential Operations Suite is an administrative environment used
-              for credential generation, publication, verification, and
-              distribution.
-            </p>
+</div>
 
-            <p>
-              All operations are governed by Agile AI University credential
-              policies, operational controls, and audit requirements.
-            </p>
+  </section>
 
-          </div>
-        </div>
+  <section class="cg-card">
+
+<h2>Lifecycle Information</h2>
+
+<div class="cg-grid">
+
+  <div class="cg-field">
+    <div class="cg-label">Lifecycle State</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
+
+  <div class="cg-field">
+    <div class="cg-label">Successor Program</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
+
+  <div class="cg-field">
+    <div class="cg-label">Bridge Required</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
+
+  <div class="cg-field">
+    <div class="cg-label">Bridge Completion Status</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
+
+</div>
+
+  </section>
+
+  <section class="cg-card">
+
+<h2>Recognition Information</h2>
+
+<div class="cg-grid">
+
+  <div class="cg-field">
+    <div class="cg-label">Original Credential</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
+
+  <div class="cg-field">
+    <div class="cg-label">Current Recognition</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
+
+  <div class="cg-field">
+    <div class="cg-label">Recognition Status</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
+
+  <div class="cg-field">
+    <div class="cg-label">Recognition Effective Date</div>
+    <div class="cg-value">Not Loaded</div>
+  </div>
+
+</div>
+
+  </section>
+
+  <section class="cg-card">
+
+<h2>Certificate Preview</h2>
+
+<div class="cg-preview">
+
+  <div>
+
+    <h3>Preview Placeholder</h3>
+
+    <p>
+      Certificate preview will appear here after
+      credential loading and rendering services
+      are implemented.
+    </p>
+
+  </div>
+
+</div>
+
+  </section>
+
+  <section class="cg-card">
+
+<h2>Actions</h2>
+
+<div class="cg-actions">
+
+  <button class="cg-btn cg-btn-disabled" disabled>
+    Generate PDF
+  </button>
+
+  <button class="cg-btn cg-btn-disabled" disabled>
+    Download Certificate
+  </button>
+
+</div>
+
+  </section>
+
+</div>
+
 
       </section>
 
@@ -176,7 +263,7 @@
 
   <!-- 🔥 ADMIN APP BOOTSTRAP -->
   <script type="module">
-    import { initAdminApp } from "../assets/js/admin-app.js";
+    import { initAdminApp } from "../../assets/js/admin-app.js";
 
     /*
       Credential Operations Suite

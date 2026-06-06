@@ -190,7 +190,7 @@ if (!records || records.length === 0) {
 
   tableBody.innerHTML = `
     <tr>
-      <td colspan="7" style="text-align:center;">
+      <td colspan="8" style="text-align:center;">
         No records found.
       </td>
     </tr>
@@ -199,23 +199,28 @@ if (!records || records.length === 0) {
   return;
 }
 
-tableBody.innerHTML = records.map(record => `
-  <tr>
-    <td>${record.credential_id || "-"}</td>
-    <td>${record.full_name || "-"}</td>
-    <td>${record.email || "-"}</td>
-    <td>${record.program_code || "-"}</td>
-    <td>-</td>
-    <td>${record.issued_status || "-"}</td>
-    <td>
-      <button
-        class="btn btn-secondary"
-        disabled>
-        View
-      </button>
-    </td>
-  </tr>
-`).join("");
+tableBody.innerHTML = records.map(record => {
+
+  const issueDate =
+    record.imported_at?._seconds
+      ? new Date(
+          record.imported_at._seconds * 1000
+        ).toLocaleDateString()
+      : "-";
+
+  return `
+    <tr>
+      <td>${record.credential_id || "-"}</td>
+      <td>${record.full_name || "-"}</td>
+      <td>${record.program_code || "-"}</td>
+      <td>${record.credential_type || "-"}</td>
+      <td>${record.batch_name || "-"}</td>
+      <td>${record.approval_status || "-"}</td>
+      <td>${issueDate}</td>
+      <td>${record.issued_status || "-"}</td>
+    </tr>
+  `;
+}).join("");
 
 }
 

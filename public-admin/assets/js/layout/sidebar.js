@@ -1,6 +1,13 @@
 /* =====================================================
    🔷 SIDEBAR AUTO HIGHLIGHT
-   ===================================================== */
+   -----------------------------------------------------
+   Governance-Aware Navigation
+
+   Supports:
+   - Exact page matching
+   - Credential Generator sub-surfaces
+   - Future nested modules
+===================================================== */
 
 export function highlightActiveSidebar() {
 
@@ -8,40 +15,60 @@ export function highlightActiveSidebar() {
 
   if (!links.length) return;
 
-  // Get current page (e.g., "leads.html")
-  const currentPath = window.location.pathname.split("/").pop();
+  const pathname = window.location.pathname;
 
   links.forEach(link => {
-    const linkPath = link.getAttribute("href");
 
-    // Remove existing active
     link.classList.remove("active");
 
-    // Match current page
-    if (linkPath === currentPath) {
+    const href = link.getAttribute("href");
+
+    if (!href) return;
+
+    /* ==========================================
+       Credential Generator Family
+    ========================================== */
+
+    if (
+      pathname.includes("/credential-generator/")
+      && href.includes("credential-generator.html")
+    ) {
+      link.classList.add("active");
+      return;
+    }
+
+    /* ==========================================
+       Credential Registry
+    ========================================== */
+
+    if (
+      pathname.includes("/credential-registry/")
+      && href.includes("credential-registry.html")
+    ) {
+      link.classList.add("active");
+      return;
+    }
+
+    /* ==========================================
+       Standard Exact Match
+    ========================================== */
+
+    const currentPage =
+      pathname.split("/").pop() || "index.html";
+
+    const targetPage =
+      href.split("/").pop();
+
+    if (currentPage === targetPage) {
       link.classList.add("active");
     }
+
   });
 
 }
 
-// ==========================================
-// ACTIVE NAVIGATION (AUTO HIGHLIGHT)
-// ==========================================
-(function () {
-  const path = window.location.pathname.split("/").pop() || "index.html";
-  const links = document.querySelectorAll(".sidebar a");
+/* ==========================================
+   Auto Highlight
+========================================== */
 
-  links.forEach(link => {
-    const href = link.getAttribute("href");
-    if (!href) return;
-
-    if (href === path) {
-      link.classList.add("active");
-    }
-
-    if (path === "" && href === "index.html") {
-      link.classList.add("active");
-    }
-  });
-})();
+highlightActiveSidebar();

@@ -313,7 +313,12 @@ app.post("/admin/credential-registry", async (req, res) => {
         credential_type: data.credential_type || "",
         issued_status: data.issued_status || "",
         issued_by: data.issued_by || "",
+
+        batch_name: data.batch_name || "",
+        approval_status: data.approval_status || "",
+        imported_at: data.imported_at || null
       };
+      
     });
 
     return res.json({

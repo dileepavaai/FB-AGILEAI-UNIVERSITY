@@ -78,17 +78,22 @@ try {
 
   credentialData = data.credentials;
 
-  console.log(
+    console.log(
     "Registry Loaded:",
     credentialData.length
-);
+    );
+
+    console.log(
+    "Sample Credential Record:",
+    credentialData[0]
+    );
 
     console.log(
     "Rendering Records:",
     credentialData
     );
 
-  renderResults(credentialData);
+    renderResults(credentialData);
 
 } catch (error) {
 

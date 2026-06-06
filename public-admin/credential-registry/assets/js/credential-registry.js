@@ -104,7 +104,7 @@ try {
 
   tableBody.innerHTML = `
     <tr>
-      <td colspan="7" style="text-align:center;">
+      <td colspan="6" style="text-align:center;">
         Failed to load credential registry.
       </td>
     </tr>
@@ -190,7 +190,7 @@ if (!records || records.length === 0) {
 
   tableBody.innerHTML = `
     <tr>
-      <td colspan="8" style="text-align:center;">
+      <td colspan="6" style="text-align:center;">
         No records found.
       </td>
     </tr>
@@ -214,8 +214,6 @@ tableBody.innerHTML = records.map(record => {
       <td>${record.full_name || "-"}</td>
       <td>${record.program_code || "-"}</td>
       <td>${record.credential_type || "-"}</td>
-      <td>${record.batch_name || "-"}</td>
-      <td>${record.approval_status || "-"}</td>
       <td>${issueDate}</td>
       <td>${record.issued_status || "-"}</td>
     </tr>
@@ -234,7 +232,7 @@ if (!tableBody) return;
 
 tableBody.innerHTML = `
   <tr>
-    <td colspan="7" style="text-align:center;">
+    <td colspan="6" style="text-align:center;">
       Loading...
     </td>
   </tr>

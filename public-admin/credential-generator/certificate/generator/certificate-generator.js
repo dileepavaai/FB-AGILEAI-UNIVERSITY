@@ -448,6 +448,9 @@ function getDisplayCredentialTitle(record) {
 
 function disablePdfButton() {
 
+  const generatePdfBtn =
+    document.getElementById("generatePdfBtn");
+
   if (!generatePdfBtn) return;
 
   generatePdfBtn.disabled = true;
@@ -460,6 +463,9 @@ function disablePdfButton() {
 
 function enablePdfButton() {
 
+  const generatePdfBtn =
+    document.getElementById("generatePdfBtn");
+
   if (!generatePdfBtn) return;
 
   generatePdfBtn.disabled = false;
@@ -469,4 +475,3 @@ function enablePdfButton() {
   );
 
 }
-

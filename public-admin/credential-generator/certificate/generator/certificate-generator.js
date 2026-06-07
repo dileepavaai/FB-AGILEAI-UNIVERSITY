@@ -424,21 +424,37 @@ function getDisplayCredentialTitle(record) {
     }
 
   /* =====================================================
-     Events
-  ===================================================== */
+    Events
+    ===================================================== */
 
-  searchBtn?.addEventListener(
-    "click",
-    searchCredential
-  );
+searchBtn?.addEventListener(
+  "click",
+  searchCredential
+);
 
-  clearBtn?.addEventListener(
-    "click",
-    clearForm
-  );
+clearBtn?.addEventListener(
+  "click",
+  clearForm
+);
 
-  loadRegistry();
-  disablePdfButton();
+generatePdfBtn?.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      typeof window.generateCertificatePdf ===
+      "function"
+    ) {
+
+      await window.generateCertificatePdf();
+
+    }
+
+  }
+);
+
+    loadRegistry();
+    disablePdfButton();
 
   console.log(
     "Certificate Generator Controller v1.3.0 loaded"

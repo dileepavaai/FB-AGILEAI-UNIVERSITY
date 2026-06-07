@@ -294,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
 
       const response = await fetch(
-        "../template/certificate-template.html"
+        "./template/certificate-template.html"
       );
 
       const template =

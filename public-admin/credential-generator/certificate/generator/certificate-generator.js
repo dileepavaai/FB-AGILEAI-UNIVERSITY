@@ -2,20 +2,22 @@
 Agile AI University
 Certificate Generator Controller
 
-Version: 1.2.0
-Phase: Phase-1B
+Version: 1.3.0
+Phase: Phase-1C
 
 Purpose:
 - Search Credential Records
 - Load Registry Data
 - Populate Read-Only Metadata Fields
 - Render Certificate Preview
+- Apply Recognition Display Governance
 
 Governance:
 - Read Only
 - No Registry Writes
 - No Certificate Generation
 - No PDF Generation
+- AOP → AIPA Recognition Display Enforcement
 
 Data Source:
 Existing Credential Registry API
@@ -335,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (credentialType) {
         credentialType.textContent =
-          record.credential_type || "-";
+          getDisplayCredentialTitle(record);
       }
 
       if (programCode) {
@@ -363,6 +365,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
   }
+
+  /* =====================================================
+   Recognition Display Governance
+===================================================== */
+
+function getDisplayCredentialTitle(record) {
+
+  if (record.program_code === "AOP") {
+
+    return (
+      "Artificial Intelligence Professional Agilist (AIPA)"
+    );
+
+  }
+
+  return (
+    record.current_recognition ||
+    record.credential_type ||
+    "-"
+  );
+
+}
 
   /* =====================================================
      Format Date
@@ -409,7 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadRegistry();
 
   console.log(
-    "Certificate Generator Controller v1.2.0 loaded"
+    "Certificate Generator Controller v1.3.0 loaded"
   );
 
 });

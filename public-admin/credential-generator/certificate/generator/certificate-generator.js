@@ -61,6 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearBtn =
     document.getElementById("clearSearchBtn");
 
+  const generatePdfBtn =
+    document.getElementById("generatePdfBtn");
+
   /* =====================================================
      Preview Container
   ===================================================== */
@@ -226,6 +229,8 @@ document.addEventListener("DOMContentLoaded", () => {
     populateFields(record);
 
     renderCertificatePreview(record);
+
+    enablePdfButton();
 
   }
 
@@ -414,7 +419,9 @@ function getDisplayCredentialTitle(record) {
     learnerNameInput.value = "";
     emailInput.value = "";
 
-  }
+    disablePdfButton();
+
+    }
 
   /* =====================================================
      Events
@@ -431,9 +438,35 @@ function getDisplayCredentialTitle(record) {
   );
 
   loadRegistry();
+  disablePdfButton();
 
   console.log(
     "Certificate Generator Controller v1.3.0 loaded"
   );
 
 });
+
+function disablePdfButton() {
+
+  if (!generatePdfBtn) return;
+
+  generatePdfBtn.disabled = true;
+
+  generatePdfBtn.classList.add(
+    "cg-btn-disabled"
+  );
+
+}
+
+function enablePdfButton() {
+
+  if (!generatePdfBtn) return;
+
+  generatePdfBtn.disabled = false;
+
+  generatePdfBtn.classList.remove(
+    "cg-btn-disabled"
+  );
+
+}
+

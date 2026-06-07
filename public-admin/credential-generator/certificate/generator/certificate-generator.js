@@ -2,13 +2,14 @@
 Agile AI University
 Certificate Generator Controller
 
-Version: 1.1.0
-Phase: Phase-1A
+Version: 1.2.0
+Phase: Phase-1B
 
 Purpose:
 - Search Credential Records
 - Load Registry Data
 - Populate Read-Only Metadata Fields
+- Render Certificate Preview
 
 Governance:
 - Read Only
@@ -18,6 +19,9 @@ Governance:
 
 Data Source:
 Existing Credential Registry API
+
+Template Authority:
+certificate-template.html
 
 Cost Model:
 - Reuses Existing Cloud Run Endpoint
@@ -54,6 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const clearBtn =
     document.getElementById("clearSearchBtn");
+
+  /* =====================================================
+     Preview Container
+  ===================================================== */
+
+  const certificatePreview =
+    document.getElementById("certificatePreview");
 
   /* =====================================================
      Field Mapping
@@ -212,6 +223,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     populateFields(record);
 
+    renderCertificatePreview(record);
+
   }
 
   /* =====================================================
@@ -244,8 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
     issueDateValue.textContent =
       formatDate(record.imported_at);
 
-    /* Lifecycle */
-
     lifecycleStateValue.textContent =
       record.lifecycle_state || "-";
 
@@ -258,8 +269,6 @@ document.addEventListener("DOMContentLoaded", () => {
     bridgeCompletionStatusValue.textContent =
       record.bridge_completion_status || "-";
 
-    /* Recognition */
-
     originalCredentialValue.textContent =
       record.original_credential || "-";
 
@@ -271,6 +280,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
     recognitionEffectiveDateValue.textContent =
       record.recognition_effective_date || "-";
+
+  }
+
+  /* =====================================================
+     Certificate Preview
+  ===================================================== */
+
+  async function renderCertificatePreview(record) {
+
+    if (!certificatePreview) return;
+
+    try {
+
+      const response = await fetch(
+        "../template/certificate-template.html"
+      );
+
+      const template =
+        await response.text();
+
+      certificatePreview.innerHTML =
+        template;
+
+      const learnerName =
+        certificatePreview.querySelector(
+          "#certLearnerName"
+        );
+
+      const credentialType =
+        certificatePreview.querySelector(
+          "#certCredentialType"
+        );
+
+      const programCode =
+        certificatePreview.querySelector(
+          "#certProgramCode"
+        );
+
+      const credentialId =
+        certificatePreview.querySelector(
+          "#certCredentialId"
+        );
+
+      const issueDate =
+        certificatePreview.querySelector(
+          "#certIssueDate"
+        );
+
+      if (learnerName) {
+        learnerName.textContent =
+          record.full_name || "-";
+      }
+
+      if (credentialType) {
+        credentialType.textContent =
+          record.credential_type || "-";
+      }
+
+      if (programCode) {
+        programCode.textContent =
+          record.program_code || "-";
+      }
+
+      if (credentialId) {
+        credentialId.textContent =
+          record.credential_id || "-";
+      }
+
+      if (issueDate) {
+        issueDate.textContent =
+          formatDate(record.imported_at);
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Certificate Preview Error:",
+        error
+      );
+
+    }
 
   }
 
@@ -319,7 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadRegistry();
 
   console.log(
-    "Certificate Generator Controller v1.1.0 loaded"
+    "Certificate Generator Controller v1.2.0 loaded"
   );
 
 });

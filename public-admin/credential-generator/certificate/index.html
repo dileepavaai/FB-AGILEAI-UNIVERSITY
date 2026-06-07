@@ -5,6 +5,25 @@
   <title>Certificate Generator – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- =====================================================
+       Agile AI University
+       Certificate Generator
+       Version: 1.1.0
+       Phase: Phase-1A Foundation
+
+       Purpose:
+       - Credential Search
+       - Credential Loading
+       - Metadata Inspection
+       - Certificate Rendering Preparation
+
+       Governance:
+       - Read-only operations
+       - No credential mutation
+       - No registry writes
+       - No certificate issuance
+       ===================================================== -->
+
   <!-- 🔒 CORE SYSTEM -->
   <link rel="stylesheet" href="../../assets/css/site.css" />
 
@@ -46,6 +65,7 @@
       <section id="loginView">
         <h2>Admin Access</h2>
         <p>Please sign in with your authorized account.</p>
+
         <button id="loginBtn" class="btn btn-primary">
           Sign in with Google
         </button>
@@ -56,201 +76,254 @@
 
         <div class="cg-container">
 
-  <header class="cg-page-header">
-    <h1>Certificate Generator</h1>
+          <header class="cg-page-header">
 
-<p>
-  Generate institution-approved certificates from credential records.
-</p>
+            <h1>Certificate Generator</h1>
 
-  </header>
+            <p>
+              Generate institution-approved certificates from credential records.
+            </p>
 
-  <section class="cg-notice">
-    Certificate Generator · Phase 1 · Governance-Aware UI Shell
-  </section>
+          </header>
 
-  <section class="cg-card">
+          <section class="cg-notice">
+            Certificate Generator · Phase 1 · Governance-Aware UI Shell
+          </section>
 
-<h2>Search Credential</h2>
+          <!-- =====================================================
+               Credential Search
+               ===================================================== -->
 
-<div class="cg-search-grid">
+          <section class="cg-card">
 
-  <div class="cg-field-group">
-    <label>Credential ID</label>
-    <input type="text" placeholder="AAU-XXXXXXXX">
-  </div>
+            <h2>Search Credential</h2>
 
-  <div class="cg-field-group">
-    <label>Learner Name</label>
-    <input type="text" placeholder="Full Name">
-  </div>
+            <div class="cg-search-grid">
 
-  <div class="cg-field-group">
-    <label>Email Address</label>
-    <input type="email" placeholder="email@example.com">
-  </div>
+              <div class="cg-field-group">
+                <label>Credential ID</label>
 
-</div>
+                <input
+                  id="searchCredentialId"
+                  type="text"
+                  placeholder="AAU-XXXXXXXX">
+              </div>
 
-<div class="cg-actions">
-  <button class="cg-btn">Search Credential</button>
-  <button class="cg-btn">Clear</button>
-</div>
+              <div class="cg-field-group">
+                <label>Learner Name</label>
 
-  </section>
+                <input
+                  id="searchLearnerName"
+                  type="text"
+                  placeholder="Full Name">
+              </div>
 
-  <section class="cg-card">
+              <div class="cg-field-group">
+                <label>Email Address</label>
 
-<h2>Credential Details</h2>
+                <input
+                  id="searchEmail"
+                  type="email"
+                  placeholder="email@example.com">
+              </div>
 
-<div class="cg-grid">
+            </div>
 
-  <div class="cg-field">
-    <div class="cg-label">Credential ID</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+            <div class="cg-actions">
 
-  <div class="cg-field">
-    <div class="cg-label">Credential Type</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <button
+                id="searchCredentialBtn"
+                class="cg-btn">
+                Search Credential
+              </button>
 
-  <div class="cg-field">
-    <div class="cg-label">Credential Family</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <button
+                id="clearSearchBtn"
+                class="cg-btn">
+                Clear
+              </button>
 
-  <div class="cg-field">
-    <div class="cg-label">Program Code</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+            </div>
 
-  <div class="cg-field">
-    <div class="cg-label">Program Name</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+          </section>
 
-  <div class="cg-field">
-    <div class="cg-label">Template Key</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+          <!-- =====================================================
+               Credential Details
+               ===================================================== -->
 
-  <div class="cg-field">
-    <div class="cg-label">Issue Date</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+          <section class="cg-card">
 
-  <div class="cg-field">
-    <div class="cg-label">Credential Status</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+            <h2>Credential Details</h2>
 
-</div>
+            <div class="cg-grid">
 
-  </section>
+              <div class="cg-field">
+                <div class="cg-label">Credential ID</div>
+                <div id="credentialIdValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  <section class="cg-card">
+              <div class="cg-field">
+                <div class="cg-label">Credential Type</div>
+                <div id="credentialTypeValue" class="cg-value">Not Loaded</div>
+              </div>
 
-<h2>Lifecycle Information</h2>
+              <div class="cg-field">
+                <div class="cg-label">Credential Family</div>
+                <div id="credentialFamilyValue" class="cg-value">Not Loaded</div>
+              </div>
 
-<div class="cg-grid">
+              <div class="cg-field">
+                <div class="cg-label">Program Code</div>
+                <div id="programCodeValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  <div class="cg-field">
-    <div class="cg-label">Lifecycle State</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <div class="cg-field">
+                <div class="cg-label">Program Name</div>
+                <div id="programNameValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  <div class="cg-field">
-    <div class="cg-label">Successor Program</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <div class="cg-field">
+                <div class="cg-label">Template Key</div>
+                <div id="templateKeyValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  <div class="cg-field">
-    <div class="cg-label">Bridge Required</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <div class="cg-field">
+                <div class="cg-label">Issue Date</div>
+                <div id="issueDateValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  <div class="cg-field">
-    <div class="cg-label">Bridge Completion Status</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <div class="cg-field">
+                <div class="cg-label">Credential Status</div>
+                <div id="credentialStatusValue" class="cg-value">Not Loaded</div>
+              </div>
 
-</div>
+            </div>
 
-  </section>
+          </section>
 
-  <section class="cg-card">
+          <!-- =====================================================
+               Lifecycle
+               ===================================================== -->
 
-<h2>Recognition Information</h2>
+          <section class="cg-card">
 
-<div class="cg-grid">
+            <h2>Lifecycle Information</h2>
 
-  <div class="cg-field">
-    <div class="cg-label">Original Credential</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+            <div class="cg-grid">
 
-  <div class="cg-field">
-    <div class="cg-label">Current Recognition</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <div class="cg-field">
+                <div class="cg-label">Lifecycle State</div>
+                <div id="lifecycleStateValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  <div class="cg-field">
-    <div class="cg-label">Recognition Status</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <div class="cg-field">
+                <div class="cg-label">Successor Program</div>
+                <div id="successorProgramValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  <div class="cg-field">
-    <div class="cg-label">Recognition Effective Date</div>
-    <div class="cg-value">Not Loaded</div>
-  </div>
+              <div class="cg-field">
+                <div class="cg-label">Bridge Required</div>
+                <div id="bridgeRequiredValue" class="cg-value">Not Loaded</div>
+              </div>
 
-</div>
+              <div class="cg-field">
+                <div class="cg-label">Bridge Completion Status</div>
+                <div id="bridgeCompletionStatusValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  </section>
+            </div>
 
-  <section class="cg-card">
+          </section>
 
-<h2>Certificate Preview</h2>
+          <!-- =====================================================
+               Recognition
+               ===================================================== -->
 
-<div class="cg-preview">
+          <section class="cg-card">
 
-  <div>
+            <h2>Recognition Information</h2>
 
-    <h3>Preview Placeholder</h3>
+            <div class="cg-grid">
 
-    <p>
-      Certificate preview will appear here after
-      credential loading and rendering services
-      are implemented.
-    </p>
+              <div class="cg-field">
+                <div class="cg-label">Original Credential</div>
+                <div id="originalCredentialValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  </div>
+              <div class="cg-field">
+                <div class="cg-label">Current Recognition</div>
+                <div id="currentRecognitionValue" class="cg-value">Not Loaded</div>
+              </div>
 
-</div>
+              <div class="cg-field">
+                <div class="cg-label">Recognition Status</div>
+                <div id="recognitionStatusValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  </section>
+              <div class="cg-field">
+                <div class="cg-label">Recognition Effective Date</div>
+                <div id="recognitionEffectiveDateValue" class="cg-value">Not Loaded</div>
+              </div>
 
-  <section class="cg-card">
+            </div>
 
-<h2>Actions</h2>
+          </section>
 
-<div class="cg-actions">
+          <!-- =====================================================
+               Preview
+               ===================================================== -->
 
-  <button class="cg-btn cg-btn-disabled" disabled>
-    Generate PDF
-  </button>
+          <section class="cg-card">
 
-  <button class="cg-btn cg-btn-disabled" disabled>
-    Download Certificate
-  </button>
+            <h2>Certificate Preview</h2>
 
-</div>
+            <div id="certificatePreview" class="cg-preview">
 
-  </section>
+              <div>
 
-</div>
+                <h3>Preview Placeholder</h3>
 
+                <p>
+                  Certificate preview will appear here after
+                  credential loading and rendering services
+                  are implemented.
+                </p>
+
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- =====================================================
+               Actions
+               ===================================================== -->
+
+          <section class="cg-card">
+
+            <h2>Actions</h2>
+
+            <div class="cg-actions">
+
+              <button
+                id="generatePdfBtn"
+                class="cg-btn cg-btn-disabled"
+                disabled>
+                Generate PDF
+              </button>
+
+              <button
+                id="downloadCertificateBtn"
+                class="cg-btn cg-btn-disabled"
+                disabled>
+                Download Certificate
+              </button>
+
+            </div>
+
+          </section>
+
+        </div>
 
       </section>
 
@@ -265,13 +338,10 @@
   <script type="module">
     import { initAdminApp } from "../../assets/js/admin-app.js";
 
-    /*
-      Credential Operations Suite
-      Phase-1 Landing Page
-    */
-
     initAdminApp();
   </script>
+
+  <script src="generator/certificate-generator.js"></script>
 
 </body>
 </html>

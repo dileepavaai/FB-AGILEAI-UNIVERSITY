@@ -34,22 +34,21 @@ window.generateCertificatePdf = async function () {
             jsPDF
         } = window.jspdf;
 
-        const pdf =
-            new jsPDF(
-                "portrait",
-                "mm",
-                "a4"
-            );
-
-        const pdfWidth =
-            pdf.internal.pageSize.getWidth();
+        const pdfWidth = 210;
 
         const pdfHeight =
-            (
-                canvas.height *
-                pdfWidth
-            ) /
+        (
+            canvas.height *
+            pdfWidth
+        ) /
             canvas.width;
+
+        const pdf =
+        new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: [pdfWidth, pdfHeight]
+        });
 
         pdf.addImage(
             imageData,
@@ -67,9 +66,7 @@ window.generateCertificatePdf = async function () {
     }
     catch (error) {
 
-        console.error(
-            error
-        );
+        console.error(error);
 
         alert(
             "PDF generation failed."

@@ -230,7 +230,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderCertificatePreview(record);
 
+    if (isCertificateReady(record)) {
+
     enablePdfButton();
+
+    } else {
+
+    disablePdfButton();
+
+    alert(
+        "Credential is not eligible for certificate generation."
+    );
+
+    }
 
   }
 
@@ -434,8 +446,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-   Recognition Display Governance
-===================================================== */
+        Recognition Display Governance
+    ===================================================== */
 
 function getDisplayCredentialTitle(record) {
 
@@ -452,6 +464,33 @@ function getDisplayCredentialTitle(record) {
     record.credential_type ||
     "-"
   );
+
+}
+
+/* =====================================================
+   Certificate Readiness Validation
+===================================================== */
+
+function isCertificateReady(record) {
+
+  if (!record) return false;
+
+  if (!record.credential_id) return false;
+
+  if (!record.full_name) return false;
+
+  if (!record.credential_type) return false;
+
+  if (!record.program_code) return false;
+
+  if (
+    (record.issued_status || "")
+      .toLowerCase() !== "finalized"
+  ) {
+    return false;
+  }
+
+  return true;
 
 }
 

@@ -231,27 +231,9 @@
     Certificate Canvas Standard v1.0
     STATUS: LOCKED
 
-    Orientation:
-    Landscape
-
-    Reference Standard:
-    ISO A4 Landscape
-
-    Ratio:
-    297 : 210
-
-    Preview Canvas:
-    1100px × 778px
-
-    Governance:
-    All future certificate templates
-    must conform to this canvas.
-
-    No template-specific dimensions
-    permitted.
-
-    Locked:
-    March 2026
+    Inner Frame Test
+    STATUS: EXPERIMENTAL
+    NOT YET LOCKED
     ==========================================
     */
 
@@ -262,27 +244,28 @@
     padding: 40px;
 
     background: #ffffff;
+    text-align: center;
 
-    /*
-    ==========================================
-    Certificate Visual Standard v1.1
+    box-sizing: border-box;
 
-    Purpose:
-    Professional document framing
+    position: relative;
+}
 
-    Style:
-    Neutral academic border
+.certificate-template::before {
 
-    Governance:
-    Applies to all certificate templates
+    content: "";
 
-    Locked:
-    June 2026
-    ==========================================
-    */
+    position: absolute;
+
+    top: 16px;
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+
     border: 2px solid #d1d5db;
 
-    text-align: center;
+    pointer-events: none;
+
     box-sizing: border-box;
 }
 

@@ -3,8 +3,8 @@ window.generateCertificatePdf = async function () {
     try {
 
         const certificateElement =
-            document.getElementById(
-                "certificatePreview"
+            document.querySelector(
+                ".certificate-template"
             );
 
         if (!certificateElement) {

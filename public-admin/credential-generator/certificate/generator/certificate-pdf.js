@@ -4,7 +4,7 @@ window.generateCertificatePdf = async function () {
 
         const certificateElement =
             document.querySelector(
-                ".certificate-template"
+                "#pdfRenderContainer .certificate-template"
             );
 
         if (!certificateElement) {

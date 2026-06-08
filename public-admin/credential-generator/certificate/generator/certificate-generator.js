@@ -307,8 +307,45 @@ document.addEventListener("DOMContentLoaded", () => {
       const template =
         await response.text();
 
-      certificatePreview.innerHTML =
+        certificatePreview.innerHTML =
         template;
+
+        const pdfRenderContainer =
+        document.getElementById(
+            "pdfRenderContainer"
+        );
+
+        if (pdfRenderContainer) {
+
+        pdfRenderContainer.innerHTML =
+            template;
+
+        }
+
+      const pdfLearnerName =
+        pdfRenderContainer?.querySelector(
+            "#certLearnerName"
+        );
+
+    const pdfCredentialType =
+    pdfRenderContainer?.querySelector(
+        "#certCredentialType"
+    );
+
+    const pdfProgramCode =
+    pdfRenderContainer?.querySelector(
+        "#certProgramCode"
+    );
+
+    const pdfCredentialId =
+    pdfRenderContainer?.querySelector(
+        "#certCredentialId"
+    );
+
+    const pdfIssueDate =
+    pdfRenderContainer?.querySelector(
+        "#certIssueDate"
+    );
 
       const learnerName =
         certificatePreview.querySelector(
@@ -337,28 +374,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (learnerName) {
         learnerName.textContent =
-          record.full_name || "-";
-      }
+            record.full_name || "-";
+        }
+
+        if (pdfLearnerName) {
+        pdfLearnerName.textContent =
+            record.full_name || "-";
+        }
 
       if (credentialType) {
         credentialType.textContent =
-          getDisplayCredentialTitle(record);
-      }
+            getDisplayCredentialTitle(record);
+        }
+
+        if (pdfCredentialType) {
+        pdfCredentialType.textContent =
+            getDisplayCredentialTitle(record);
+        }
 
       if (programCode) {
         programCode.textContent =
           record.program_code || "-";
       }
 
+      if (pdfProgramCode) {
+        pdfProgramCode.textContent =
+            record.program_code || "-";
+        }
+
       if (credentialId) {
         credentialId.textContent =
-          record.credential_id || "-";
-      }
+            record.credential_id || "-";
+        }
+
+        if (pdfCredentialId) {
+        pdfCredentialId.textContent =
+            record.credential_id || "-";
+        }
 
       if (issueDate) {
         issueDate.textContent =
-          formatDate(record.imported_at);
-      }
+            formatDate(record.imported_at);
+        }
+
+        if (pdfIssueDate) {
+        pdfIssueDate.textContent =
+            formatDate(record.imported_at);
+        }
 
     } catch (error) {
 

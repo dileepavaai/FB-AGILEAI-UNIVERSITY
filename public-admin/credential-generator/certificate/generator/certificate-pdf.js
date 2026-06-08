@@ -21,8 +21,15 @@ window.generateCertificatePdf = async function () {
             await html2canvas(
                 certificateElement,
                 {
-                    scale: 2
+                    scale: 1,
+                    useCORS: true,
+                    backgroundColor: "#ffffff"
                 }
+            );
+            console.log(
+                "PDF Canvas:",
+                canvas.width,
+                canvas.height
             );
 
         const imageData =

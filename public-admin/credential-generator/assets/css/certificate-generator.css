@@ -260,7 +260,28 @@
 
     margin: 0 auto;
     padding: 40px;
+
     background: #ffffff;
+
+    /*
+    ==========================================
+    Certificate Visual Standard v1.1
+
+    Purpose:
+    Professional document framing
+
+    Style:
+    Neutral academic border
+
+    Governance:
+    Applies to all certificate templates
+
+    Locked:
+    June 2026
+    ==========================================
+    */
+    border: 2px solid #d1d5db;
+
     text-align: center;
     box-sizing: border-box;
 }

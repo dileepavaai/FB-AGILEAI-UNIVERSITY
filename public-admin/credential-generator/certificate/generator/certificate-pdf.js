@@ -17,20 +17,29 @@ window.generateCertificatePdf = async function () {
 
         }
 
-        const canvas =
-            await html2canvas(
-                certificateElement,
-                {
-                    scale: 1,
-                    useCORS: true,
-                    backgroundColor: "#ffffff"
-                }
-            );
-            console.log(
-                "PDF Canvas:",
-                canvas.width,
-                canvas.height
-            );
+        console.log(
+    "CERT DIMENSIONS",
+    certificateElement.offsetWidth,
+    certificateElement.offsetHeight,
+    certificateElement.scrollWidth,
+    certificateElement.scrollHeight
+);
+
+const canvas =
+await html2canvas(
+    certificateElement,
+    {
+        scale: 1,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+    }
+);
+
+console.log(
+    "CANVAS DIMENSIONS",
+    canvas.width,
+    canvas.height
+);
 
         const imageData =
             canvas.toDataURL(

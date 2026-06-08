@@ -238,6 +238,7 @@ Status: ACTIVE
 .certificate-template {
     width: 1100px;
     max-width: none;
+    min-height: 1500px;
     margin: 0 auto;
     padding: 40px;
     background: #ffffff;

@@ -1,3 +1,31 @@
+/*
+==================================================
+Agile AI University
+Credential Operations Suite
+
+Certificate Generator
+PDF Export Engine
+
+Version: 1.1.0
+
+Purpose:
+- Generate PDF from Certificate Template
+- Enforce ISO A4 Landscape Standard
+- Governance-Compliant Certificate Export
+
+Governance Lock:
+- PDF Format: ISO A4 Landscape
+- Page Size: 297mm × 210mm
+- No Dynamic Page Sizing
+- No Portrait Rendering
+- Single Source Rendering:
+  certificate-template.html
+
+Locked:
+March 2026
+==================================================
+*/
+
 window.generateCertificatePdf = async function () {
 
     try {
@@ -18,28 +46,28 @@ window.generateCertificatePdf = async function () {
         }
 
         console.log(
-    "CERT DIMENSIONS",
-    certificateElement.offsetWidth,
-    certificateElement.offsetHeight,
-    certificateElement.scrollWidth,
-    certificateElement.scrollHeight
-);
+            "CERT DIMENSIONS",
+            certificateElement.offsetWidth,
+            certificateElement.offsetHeight,
+            certificateElement.scrollWidth,
+            certificateElement.scrollHeight
+        );
 
-const canvas =
-await html2canvas(
-    certificateElement,
-    {
-        scale: 1,
-        useCORS: true,
-        backgroundColor: "#ffffff"
-    }
-);
+        const canvas =
+            await html2canvas(
+                certificateElement,
+                {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: "#ffffff"
+                }
+            );
 
-console.log(
-    "CANVAS DIMENSIONS",
-    canvas.width,
-    canvas.height
-);
+        console.log(
+            "CANVAS DIMENSIONS",
+            canvas.width,
+            canvas.height
+        );
 
         const imageData =
             canvas.toDataURL(
@@ -50,29 +78,31 @@ console.log(
             jsPDF
         } = window.jspdf;
 
-        const pdfWidth = 210;
+        /*
+        ==========================================
+        ISO A4 Landscape Governance Lock
 
-        const pdfHeight =
-        (
-            canvas.height *
-            pdfWidth
-        ) /
-            canvas.width;
+        Width  = 297 mm
+        Height = 210 mm
+
+        No dynamic sizing permitted.
+        ==========================================
+        */
 
         const pdf =
-        new jsPDF({
-            orientation: "portrait",
-            unit: "mm",
-            format: [pdfWidth, pdfHeight]
-        });
+            new jsPDF({
+                orientation: "landscape",
+                unit: "mm",
+                format: "a4"
+            });
 
         pdf.addImage(
             imageData,
             "PNG",
             0,
             0,
-            pdfWidth,
-            pdfHeight
+            297,
+            210
         );
 
         pdf.save(

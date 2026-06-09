@@ -36,7 +36,6 @@ June 2026
 
 document.addEventListener("DOMContentLoaded", () => {
 
-```
 const badgePreview =
     document.getElementById(
         "badgePreview"
@@ -50,7 +49,7 @@ async function renderBadgePreview() {
 
         const response =
             await fetch(
-                "./template/badge-template.html"
+                "../template/badge-template.html"
             );
 
         const template =
@@ -112,6 +111,5 @@ renderBadgePreview();
 console.log(
     "Badge Generator Controller v1.1.0 loaded"
 );
-```
 
 });

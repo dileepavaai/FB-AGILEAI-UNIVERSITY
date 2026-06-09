@@ -114,8 +114,8 @@ async function renderBadgePreview() {
 
         if (credentialTitle) {
 
-            credentialTitle.textContent =
-                "Artificial Intelligence Professional Agilist (AIPA)";
+            credentialTitle.innerHTML =
+                "Artificial Intelligence<br>Professional Agilist";
 
         } else {
 

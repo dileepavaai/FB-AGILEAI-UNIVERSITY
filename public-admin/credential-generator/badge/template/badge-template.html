@@ -6,7 +6,7 @@ Credential Operations Suite
 
 Professional Recognition Badge
 
-Badge Visual Standard v2.1
+Badge Visual Standard v3.0
 
 Purpose:
 Provide a governed visual representation
@@ -34,8 +34,10 @@ Governance Rules:
   sharing, and profile display.
 - Badge generated only from
   authoritative credential records.
-- Credential Code display is permitted
-  to improve recognition and portability.
+- Credential Code is the primary
+  recognition identifier.
+- Verification information must remain
+  visible on all badge exports.
 
 Authoritative Source:
 Credential Registry
@@ -44,86 +46,88 @@ Rendering Authority:
 Credential Operations Suite
 
 Status:
-LOCKED
+CANDIDATE
 
 Version:
-2.1
+3.0
 
 Governance Lock:
-June 2026
+Pending Approval
 ==================================================
 -->
 
 <div class="badge-template">
 
-<!-- ===================================== -->
-<!-- Badge Header                          -->
-<!-- ===================================== -->
+    <!-- ===================================== -->
+    <!-- Badge Header                          -->
+    <!-- ===================================== -->
 
-<div class="badge-header">
+    <div class="badge-header">
 
-    <img
-        src="/credential-generator/assets/images/aau-emblem.png"
-        alt="Agile AI University Emblem"
-        class="badge-emblem"
-    >
+        <img
+            src="/credential-generator/assets/images/aau-emblem.png"
+            alt="Agile AI University Emblem"
+            class="badge-emblem"
+        >
 
-    <h1>
-        Agile AI University
-    </h1>
+        <div class="badge-institution">
 
-</div>
+            Agile AI University
 
-<!-- ===================================== -->
-<!-- Badge Body                            -->
-<!-- ===================================== -->
-
-<div class="badge-body">
-
-    <div class="badge-type">
-
-        Professional Recognition Badge
+        </div>
 
     </div>
 
-    <h2
-        id="badgeCredentialTitle"
-        class="badge-credential-title"
-    >
-        Artificial Intelligence Professional Agilist (AIPA)
-    </h2>
+    <!-- ===================================== -->
+    <!-- Badge Body                            -->
+    <!-- ===================================== -->
 
-    <h1
-        id="badgeCredentialCode"
-        class="badge-credential-code"
-    >
-        AIPA
-    </h1>
+    <div class="badge-body">
 
-</div>
+        <h1
+            id="badgeCredentialCode"
+            class="badge-credential-code"
+        >
+            AIPA
+        </h1>
 
-<!-- ===================================== -->
-<!-- Badge Footer                          -->
-<!-- ===================================== -->
+        <div
+            id="badgeCredentialTitle"
+            class="badge-credential-title"
+        >
+            Artificial Intelligence Professional Agilist
+        </div>
 
-<div class="badge-footer">
+        <div class="badge-type">
 
-    <p class="badge-credential-id">
+            Professional Recognition Badge
 
-        <strong>Credential ID:</strong>
+        </div>
 
-        <span id="badgeCredentialId">
-            AAU-XXXXXX
-        </span>
+    </div>
 
-    </p>
+    <!-- ===================================== -->
+    <!-- Badge Footer                          -->
+    <!-- ===================================== -->
 
-    <p class="badge-verification-url">
+    <div class="badge-footer">
 
-        verify.agileai.university
+        <p class="badge-credential-id">
 
-    </p>
+            <strong>Credential ID:</strong>
 
-</div>
+            <span id="badgeCredentialId">
+                AAU-XXXXXX
+            </span>
+
+        </p>
+
+        <p class="badge-verification-url">
+
+            verify.agileai.university
+
+        </p>
+
+    </div>
 
 </div>

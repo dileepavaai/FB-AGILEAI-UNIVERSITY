@@ -52,6 +52,7 @@ if (!badgePreview) {
     );
 
     return;
+
 }
 
 async function renderBadgePreview() {
@@ -64,7 +65,7 @@ async function renderBadgePreview() {
 
         const response =
             await fetch(
-                "../template/badge-template.html"
+                "./template/badge-template.html"
             );
 
         console.log(

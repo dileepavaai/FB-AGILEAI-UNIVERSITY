@@ -43,9 +43,9 @@ Pending Approval
 
 .badge-template {
 
-    width: 800px;
+    width: 650px;
 
-    min-height: 420px;
+    min-height: 650px;
 
     margin: 0 auto;
 
@@ -76,18 +76,6 @@ Pending Approval
     height: auto;
 
     margin-bottom: 12px;
-
-}
-
-.badge-institution {
-
-    font-size: 0.95rem;
-
-    font-weight: 500;
-
-    color: #6b7280;
-
-    letter-spacing: 0.5px;
 
 }
 

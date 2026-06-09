@@ -6,7 +6,7 @@ Credential Operations Suite
 
 Professional Recognition Badge
 
-Badge Visual Standard v3.0
+Badge Visual Standard v3.1
 
 Purpose:
 Provide a governed visual rendering
@@ -21,6 +21,17 @@ Design Objectives:
 - Verification Focused
 - Social Sharing Friendly
 - PNG Export Ready
+- LinkedIn Friendly
+- Circular Badge Identity
+
+Visual Standard Updates (v3.1):
+
+- Increased emblem prominence
+- Reduced vertical whitespace
+- Circular recognition boundary added
+- Improved visual balance
+- Improved social-sharing presentation
+- Maintains distinction from certificates
 
 Governance Rules:
 
@@ -29,19 +40,27 @@ Governance Rules:
 - Badge content must remain concise
 - Badge optimized for PNG export
 - Fixed rendering surface required
+- Credential Code remains primary identifier
+- Verification information must remain visible
 
 Status:
 CANDIDATE
 
 Version:
-3.0
+3.1
 
 Governance Lock:
 Pending Approval
+
+Rendering Authority:
+Credential Operations Suite
+
 ==================================================
 */
 
 .badge-template {
+
+    position: relative;
 
     width: 650px;
 
@@ -61,27 +80,58 @@ Pending Approval
 
     text-align: center;
 
+    overflow: hidden;
+
+}
+
+/* =====================================
+   Circular Recognition Boundary
+   Badge Visual Standard v3.1
+===================================== */
+
+.badge-template::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 560px;
+
+    height: 560px;
+
+    border: 3px solid #d1d5db;
+
+    border-radius: 50%;
+
+    top: 35px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    pointer-events: none;
+
 }
 
 .badge-header {
 
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 
 }
 
 .badge-emblem {
 
-    width: 90px;
+    width: 100px;
 
     height: auto;
 
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 
 }
 
 .badge-body {
 
-    margin-top: 0;
+    margin-top: -4px;
 
     margin-bottom: 20px;
 

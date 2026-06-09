@@ -4,12 +4,13 @@ Credential Operations Suite
 
 Badge Generator Controller
 
-Version: 1.0.0
+Version: 1.1.0
 
 Purpose:
 
 * Render Badge Preview
 * Populate Badge Template
+* Support Badge Visual Standard v2.1
 * Prepare PNG Export Workflow
 
 Governance:
@@ -20,12 +21,22 @@ Governance:
 * Professional Recognition Badge Only
 
 Badge Standard:
-v1.0
+v2.1
+
+Rendering Authority:
+Credential Operations Suite
+
+Status:
+LOCKED
+
+Governance Lock:
+June 2026
 
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
+```
 const badgePreview =
     document.getElementById(
         "badgePreview"
@@ -53,6 +64,11 @@ async function renderBadgePreview() {
                 "#badgeCredentialTitle"
             );
 
+        const credentialCode =
+            badgePreview.querySelector(
+                "#badgeCredentialCode"
+            );
+
         const credentialId =
             badgePreview.querySelector(
                 "#badgeCredentialId"
@@ -62,6 +78,13 @@ async function renderBadgePreview() {
 
             credentialTitle.textContent =
                 "Artificial Intelligence Professional Agilist (AIPA)";
+
+        }
+
+        if (credentialCode) {
+
+            credentialCode.textContent =
+                "AIPA";
 
         }
 
@@ -87,7 +110,8 @@ async function renderBadgePreview() {
 renderBadgePreview();
 
 console.log(
-    "Badge Generator Controller v1.0.0 loaded"
+    "Badge Generator Controller v1.1.0 loaded"
 );
+```
 
 });

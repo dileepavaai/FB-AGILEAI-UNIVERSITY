@@ -53,6 +53,10 @@ window.generateCertificatePdf = async function () {
             certificateElement.scrollHeight
         );
 
+        console.log(
+                "certificate.generate.started"
+            );
+
         const canvas =
             await html2canvas(
                 certificateElement,
@@ -105,8 +109,16 @@ window.generateCertificatePdf = async function () {
             210
         );
 
+        console.log(
+            "certificate.generate.completed"
+        );
+
         pdf.save(
             "certificate.pdf"
+        );
+
+        console.log(
+            "certificate.download.completed"
         );
 
     }

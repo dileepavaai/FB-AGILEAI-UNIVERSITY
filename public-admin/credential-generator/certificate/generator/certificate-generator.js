@@ -469,6 +469,21 @@ function getDisplayCredentialTitle(record) {
 
 /* =====================================================
    Certificate Readiness Validation
+
+   Governance Lock:
+   June 2026
+
+   Requirements:
+
+   - Credential ID required
+   - Learner Name required
+   - Credential Type required
+   - Program Code required
+   - Status must equal finalized
+
+   Certificate generation is prohibited
+   if validation fails.
+
 ===================================================== */
 
 function isCertificateReady(record) {

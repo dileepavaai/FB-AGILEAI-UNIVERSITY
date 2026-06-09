@@ -1,0 +1,119 @@
+/*
+
+Agile AI University
+
+Professional Recognition Badge
+
+Badge Canvas Standard v1.0
+
+Purpose:
+Fixed badge rendering surface for
+preview and PNG export.
+
+Governance Lock:
+June 2026
+=========
+
+*/
+
+.badge-template {
+
+width: 800px;
+
+min-height: 450px;
+
+margin: 0 auto;
+
+padding: 40px;
+
+background: #ffffff;
+
+border: 2px solid #d1d5db;
+
+border-radius: 12px;
+
+box-sizing: border-box;
+
+text-align: center;
+
+}
+
+.badge-header {
+
+margin-bottom: 30px;
+
+}
+
+.badge-emblem {
+
+width: 120px;
+
+height: auto;
+
+margin-bottom: 20px;
+
+}
+
+.badge-header h1 {
+
+margin: 0;
+
+}
+
+.badge-header h2 {
+
+margin-top: 10px;
+
+font-size: 1.25rem;
+
+}
+
+.badge-body {
+
+margin-top: 30px;
+
+margin-bottom: 30px;
+
+}
+
+.badge-body h3 {
+
+font-size: 1.75rem;
+
+margin-bottom: 15px;
+
+}
+
+.badge-recognition-text {
+
+max-width: 600px;
+
+margin: 0 auto;
+
+}
+
+.badge-footer {
+
+margin-top: 30px;
+
+font-size: 0.95rem;
+
+}
+
+.badge-verification-url {
+
+font-weight: 600;
+
+}
+
+.badge-issued-by {
+
+margin-top: 20px;
+
+}
+
+.badge-authority {
+
+margin-top: 8px;
+
+}

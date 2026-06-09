@@ -65,13 +65,13 @@ Pending Approval
 
 .badge-header {
 
-    margin-bottom: 20px;
+    margin-bottom: 8px;
 
 }
 
 .badge-emblem {
 
-    width: 72px;
+    width: 90px;
 
     height: auto;
 
@@ -81,7 +81,7 @@ Pending Approval
 
 .badge-body {
 
-    margin-top: 10px;
+    margin-top: 0;
 
     margin-bottom: 20px;
 

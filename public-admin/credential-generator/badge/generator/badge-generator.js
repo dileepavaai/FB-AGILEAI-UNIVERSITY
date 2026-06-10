@@ -194,6 +194,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const record = credentialData.find(item => {
 
+      console.log("Search Started");
+
+      console.log(
+        "Credential ID:",
+        credentialId
+      );
+
+      console.log(
+        "Registry Records:",
+        credentialData.length
+      );  
+
       const credentialMatch =
         !credentialId ||
         (item.credential_id || "")
@@ -603,4 +615,4 @@ function enablePngButton() {
     "cg-btn-disabled"
   );
 
-}
+}       

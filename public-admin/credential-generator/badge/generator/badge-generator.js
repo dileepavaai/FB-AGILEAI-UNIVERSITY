@@ -428,7 +428,7 @@ async function renderBadgePreview(record) {
     if (badgeCredentialCode) {
 
       badgeCredentialCode.textContent =
-        record.program_code || "-";
+        getDisplayCredentialCode(record);
 
     }
 
@@ -453,7 +453,7 @@ async function renderBadgePreview(record) {
     if (pngBadgeCredentialCode) {
 
       pngBadgeCredentialCode.textContent =
-        record.program_code || "-";
+        getDisplayCredentialCode(record);
 
     }
 
@@ -492,6 +492,21 @@ function getDisplayCredentialTitle(record) {
   return (
     record.current_recognition ||
     record.credential_type ||
+    "-"
+  );
+
+}
+
+function getDisplayCredentialCode(record) {
+
+  if (record.program_code === "AOP") {
+
+    return "AIPA";
+
+  }
+
+  return (
+    record.program_code ||
     "-"
   );
 

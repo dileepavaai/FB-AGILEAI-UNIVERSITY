@@ -484,7 +484,7 @@ function getDisplayCredentialTitle(record) {
   if (record.program_code === "AOP") {
 
     return (
-      "Artificial Intelligence Professional Agilist (AIPA)"
+      "Artificial Intelligence Professional Agilist"
     );
 
   }

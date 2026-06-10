@@ -191,6 +191,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const email =
       emailInput?.value.trim().toLowerCase() || "";
+    
+    if (
+    !credentialId &&
+    !learnerName &&
+    !email
+    ) {
+
+        alert(
+            "Please enter at least one search criteria."
+        );
+
+        clearForm();
+
+        return;
+
+    }
 
     const record = credentialData.find(item => {
 
@@ -234,10 +250,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!record) {
 
-      alert("No matching credential found.");
+    clearForm();
 
-      return;
-    }
+    alert(
+        "No matching credential found."
+    );
+
+    return;
+
+  }
 
     populateFields(record);
 

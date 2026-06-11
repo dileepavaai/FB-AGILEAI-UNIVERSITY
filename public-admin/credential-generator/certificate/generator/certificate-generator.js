@@ -526,18 +526,75 @@ function isCertificateReady(record) {
   }
 
   /* =====================================================
-     Reset
-  ===================================================== */
+    Reset
+    ===================================================== */
 
-  function clearForm() {
+    function clearForm() {
 
     credentialIdInput.value = "";
     learnerNameInput.value = "";
     emailInput.value = "";
 
-    disablePdfButton();
+    /* ==========================================
+        Reset Metadata
+    ========================================== */
+
+    credentialIdValue.textContent = "Not Loaded";
+    credentialTypeValue.textContent = "Not Loaded";
+    credentialFamilyValue.textContent = "Not Loaded";
+    programCodeValue.textContent = "Not Loaded";
+    programNameValue.textContent = "Not Loaded";
+    templateKeyValue.textContent = "Not Loaded";
+    issueDateValue.textContent = "Not Loaded";
+    credentialStatusValue.textContent = "Not Loaded";
+
+    lifecycleStateValue.textContent = "Not Loaded";
+    successorProgramValue.textContent = "Not Loaded";
+    bridgeRequiredValue.textContent = "Not Loaded";
+    bridgeCompletionStatusValue.textContent = "Not Loaded";
+
+    originalCredentialValue.textContent = "Not Loaded";
+    currentRecognitionValue.textContent = "Not Loaded";
+    recognitionStatusValue.textContent = "Not Loaded";
+    recognitionEffectiveDateValue.textContent = "Not Loaded";
+
+    /* ==========================================
+        Reset Preview
+    ========================================== */
+
+    if (certificatePreview) {
+
+        certificatePreview.innerHTML = `
+        <div>
+            <h3>Preview Placeholder</h3>
+            <p>
+            Certificate preview will appear here after
+            credential loading and rendering services
+            are implemented.
+            </p>
+        </div>
+        `;
 
     }
+
+    /* ==========================================
+        Clear Hidden PDF Surface
+    ========================================== */
+
+    const pdfRenderContainer =
+        document.getElementById(
+        "pdfRenderContainer"
+        );
+
+    if (pdfRenderContainer) {
+
+        pdfRenderContainer.innerHTML = "";
+
+    }
+
+    disablePdfButton();
+
+}
 
   /* =====================================================
     Events

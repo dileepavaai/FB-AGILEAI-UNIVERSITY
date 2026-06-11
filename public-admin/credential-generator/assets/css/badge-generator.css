@@ -285,9 +285,8 @@ Credential Operations Suite
 
     letter-spacing: 1px;
 
-    color: #6b7280;
-
-}
+    color: #111827;
+}   
 
 .badge-footer {
 
@@ -368,4 +367,24 @@ Credential Operations Suite
 .bg-preview h3 {
 
     margin-bottom: 12px;
+}
+
+.badge-credential-code {
+    color: #111827;
+}
+
+.badge-credential-title {
+    color: #111827;
+}
+
+.badge-footer {
+    color: #111827;
+}
+
+.badge-credential-id {
+    color: #111827;
+}
+
+.badge-verification-url {
+    color: #111827;
 }

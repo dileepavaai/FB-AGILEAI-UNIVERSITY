@@ -530,10 +530,15 @@ function isCertificateReady(record) {
     ===================================================== */
 
     function clearForm() {
+    
+    console.log("CLEAR STARTED");
+    console.log("RESETTING METADATA");
 
     credentialIdInput.value = "";
     learnerNameInput.value = "";
     emailInput.value = "";
+
+    console.log("RESETTING PREVIEW");
 
     /* ==========================================
         Reset Metadata
@@ -557,6 +562,8 @@ function isCertificateReady(record) {
     currentRecognitionValue.textContent = "Not Loaded";
     recognitionStatusValue.textContent = "Not Loaded";
     recognitionEffectiveDateValue.textContent = "Not Loaded";
+
+    console.log("RESETTING PREVIEW");
 
     /* ==========================================
         Reset Preview
@@ -591,6 +598,8 @@ function isCertificateReady(record) {
         pdfRenderContainer.innerHTML = "";
 
     }
+
+    console.log("CLEAR COMPLETED");
 
     disablePdfButton();
 

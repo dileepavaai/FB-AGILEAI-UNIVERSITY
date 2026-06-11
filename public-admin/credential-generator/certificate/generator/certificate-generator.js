@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
   let credentialData = [];
+  let loadedCredential = null;
 
   /* =====================================================
      Search Controls
@@ -177,6 +178,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
+   Search State Invalidation
+===================================================== */
+
+function invalidateLoadedCredentialState() {
+
+  if (!loadedCredential) {
+    return;
+  }
+
+  resetLoadedCredentialState();
+
+}
+
+  /* =====================================================
      Search
   ===================================================== */
 
@@ -225,6 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       return;
     }
+
+    loadedCredential = record;
 
     populateFields(record);
 
@@ -525,6 +542,57 @@ function isCertificateReady(record) {
 
   }
 
+  function resetLoadedCredentialState() {
+
+  loadedCredential = null;
+
+  credentialIdValue.textContent = "Not Loaded";
+  credentialTypeValue.textContent = "Not Loaded";
+  credentialFamilyValue.textContent = "Not Loaded";
+  programCodeValue.textContent = "Not Loaded";
+  programNameValue.textContent = "Not Loaded";
+  templateKeyValue.textContent = "Not Loaded";
+  issueDateValue.textContent = "Not Loaded";
+  credentialStatusValue.textContent = "Not Loaded";
+
+  lifecycleStateValue.textContent = "Not Loaded";
+  successorProgramValue.textContent = "Not Loaded";
+  bridgeRequiredValue.textContent = "Not Loaded";
+  bridgeCompletionStatusValue.textContent = "Not Loaded";
+
+  originalCredentialValue.textContent = "Not Loaded";
+  currentRecognitionValue.textContent = "Not Loaded";
+  recognitionStatusValue.textContent = "Not Loaded";
+  recognitionEffectiveDateValue.textContent = "Not Loaded";
+
+  if (certificatePreview) {
+
+    certificatePreview.innerHTML = `
+      <div>
+        <h3>Preview Placeholder</h3>
+        <p>
+          Certificate preview will appear here after
+          credential loading and rendering services
+          are implemented.
+        </p>
+      </div>
+    `;
+
+  }
+
+  const pdfRenderContainer =
+    document.getElementById(
+      "pdfRenderContainer"
+    );
+
+  if (pdfRenderContainer) {
+    pdfRenderContainer.innerHTML = "";
+  }
+
+  disablePdfButton();
+
+}
+
   /* =====================================================
     Reset
     ===================================================== */
@@ -604,6 +672,21 @@ function isCertificateReady(record) {
     disablePdfButton();
 
 }
+
+credentialIdInput?.addEventListener(
+  "input",
+  invalidateLoadedCredentialState
+);
+
+learnerNameInput?.addEventListener(
+  "input",
+  invalidateLoadedCredentialState
+);
+
+emailInput?.addEventListener(
+  "input",
+  invalidateLoadedCredentialState
+);
 
   /* =====================================================
     Events

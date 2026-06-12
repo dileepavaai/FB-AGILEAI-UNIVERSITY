@@ -304,19 +304,31 @@
     color: #6b7280;
 }
 
-#certLearnerName {
+#trainercertLearnerName {
     font-size: 2rem;
     margin: 16px 0;
     color: #111827;
 }
 
-#certCredentialType {
+#trainercertCredentialType {
     font-size: 1.8rem;
     margin: 16px 0;
     color: #111827;
 }
 
-#certProgramCode {
+#trainercertProgramCode {
+    margin-top: 8px;
+    font-size: 1.2rem;
+    color: #111827;
+}
+
+#trainercertCredentialId {
+    margin-top: 8px;
+    font-size: 1.2rem;
+    color: #111827;
+}
+
+#trainercertIssueDate {
     margin-top: 8px;
     font-size: 1.2rem;
     color: #111827;

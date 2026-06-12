@@ -141,7 +141,7 @@
 ========================================== */
 
 .tcg-preview {
-    min-height: 500px;
+    min-height: 350px;
     border: 2px dashed var(--cg-border);
     border-radius: 12px;
     background: #fafafa;

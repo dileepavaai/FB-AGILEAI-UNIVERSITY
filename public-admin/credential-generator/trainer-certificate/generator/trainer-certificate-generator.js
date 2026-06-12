@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ===================================================== */
 
   const trainercertificatePreview =
-    document.getElementById("trainerCertificatePreview");
+    document.getElementById("renderTrainerCertificatePreview");
 
   /* =====================================================
      Field Mapping
@@ -195,7 +195,7 @@ function invalidateLoadedCredentialState() {
      Search
   ===================================================== */
 
-  function searchCredential() {
+  async function searchCredential() {
 
     const credentialId =
       credentialIdInput?.value.trim().toLowerCase() || "";
@@ -245,7 +245,7 @@ function invalidateLoadedCredentialState() {
 
     populateFields(record);
 
-    renderCertificatePreview(record);
+    await renderTrainerCertificatePreview(record);
 
     if (isCertificateReady(record)) {
 
@@ -323,7 +323,7 @@ function invalidateLoadedCredentialState() {
      Trainer Certificate Preview
   ===================================================== */
 
-  async function renderCertificatePreview(record) {
+  async function renderTrainerCertificatePreview(record) {
 
     if (!trainercertificatePreview) return;
 

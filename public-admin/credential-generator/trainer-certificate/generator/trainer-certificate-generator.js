@@ -353,52 +353,52 @@ function invalidateLoadedCredentialState() {
 
       const pdfLearnerName =
         pdfRenderContainer?.querySelector(
-            "#certLearnerName"
+            "#trainercertLearnerName"
         );
 
     const pdfCredentialType =
     pdfRenderContainer?.querySelector(
-        "#certCredentialType"
+        "#trainercertCredentialType"
     );
 
     const pdfProgramCode =
     pdfRenderContainer?.querySelector(
-        "#certProgramCode"
+        "#trainercertProgramCode"
     );
 
     const pdfCredentialId =
     pdfRenderContainer?.querySelector(
-        "#certCredentialId"
+        "#trainercertCredentialId"
     );
 
     const pdfIssueDate =
     pdfRenderContainer?.querySelector(
-        "#certIssueDate"
+        "#trainercertIssueDate"
     );
 
       const learnerName =
         trainercertificatePreview.querySelector(
-          "#certLearnerName"
+          "#trainercertLearnerName"
         );
 
       const credentialType =
         trainercertificatePreview.querySelector(
-          "#certCredentialType"
+          "#trainercertCredentialType"
         );
 
       const programCode =
         trainercertificatePreview.querySelector(
-          "#certProgramCode"
+          "#trainercertProgramCode"
         );
 
       const credentialId =
         trainercertificatePreview.querySelector(
-          "#certCredentialId"
+          "#trainercertCredentialId"
         );
 
       const issueDate =
         trainercertificatePreview.querySelector(
-          "#certIssueDate"
+          "#trainercertIssueDate"
         );
 
       if (learnerName) {

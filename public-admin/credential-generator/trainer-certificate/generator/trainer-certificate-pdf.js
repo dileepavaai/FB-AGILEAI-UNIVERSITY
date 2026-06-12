@@ -61,7 +61,7 @@ try {
 
     const certificateElement =
         document.querySelector(
-            "#pdfRenderContainer .trainer-certificate-template"
+            "#pdfRenderContainer.trainer-certificate-template"
         );
 
     if (!certificateElement) {

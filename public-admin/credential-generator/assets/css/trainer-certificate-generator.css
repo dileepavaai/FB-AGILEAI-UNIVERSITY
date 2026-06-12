@@ -330,3 +330,9 @@
 .issuer-line {
     margin: 8px 0;
 }
+
+.credential-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

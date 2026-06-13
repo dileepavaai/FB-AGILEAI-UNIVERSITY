@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Trainer Registry – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔒 CORE SYSTEM -->
+  <link rel="stylesheet" href="../../assets/css/site.css" />
+
+  <!-- 🎨 DESIGN AUTHORITY -->
+  <link rel="stylesheet" href="../../shared/design-authority/css/refinement.css" />
+
+  <!-- 🧩 COMMON SURFACES -->
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/typography.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+</head>
+
+<body class="app-loading">
+
+  <div id="headerContainer"></div>
+
+  <div class="layout">
+
+    <main class="content">
+
+      <!-- PAGE HEADER -->
+      <div class="section">
+
+        <h2>Trainer Registry</h2>
+
+        <p class="page-subtitle">
+          Search and review accredited trainers authorized under the Agile AI University Trainer Governance Framework.
+        </p>
+
+      </div>
+
+      <!-- SEARCH -->
+      <div class="section">
+
+        <div class="card">
+
+          <div class="card-title">
+            Search Registry
+          </div>
+
+          <div>
+
+            <div>
+              <label>Trainer ID</label>
+              <input
+                type="text"
+                id="searchTrainerId"
+                placeholder="Enter Trainer ID"
+              />
+            </div>
+
+            <div>
+              <label>Trainer Name</label>
+              <input
+                type="text"
+                id="searchTrainerName"
+                placeholder="Enter Trainer Name"
+              />
+            </div>
+
+            <div>
+              <label>Email</label>
+              <input
+                type="text"
+                id="searchTrainerEmail"
+                placeholder="Enter Email"
+              />
+            </div>
+
+            <div>
+              <label>Status</label>
+
+              <select id="searchTrainerStatus">
+                <option value="">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="suspended">Suspended</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div>
+
+            <button
+              id="searchBtn"
+              class="btn btn-primary">
+              Search
+            </button>
+
+            <button
+              id="resetBtn"
+              class="btn btn-secondary">
+              Reset
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- GOVERNANCE NOTICE -->
+      <div class="section">
+
+        <div class="card">
+
+          <div class="card-title">
+            Governance Notice
+          </div>
+
+          <p>
+            The Trainer Registry serves as the authoritative record of accredited trainers authorized to issue trainer-delivered credentials within the Agile AI University ecosystem.
+          </p>
+
+        </div>
+
+      </div>
+
+      <!-- RESULTS -->
+      <div class="section">
+
+        <div class="card">
+
+          <div class="card-title">
+            Trainer Results
+          </div>
+
+          <div class="table-wrapper">
+
+            <table class="table">
+
+              <thead>
+                <tr>
+                  <th>Trainer ID</th>
+                  <th>Trainer Name</th>
+                  <th>Email</th>
+                  <th>Designation</th>
+                  <th>Status</th>
+                  <th>Accreditation Date</th>
+                </tr>
+              </thead>
+
+              <tbody id="trainerRegistryBody">
+
+                <tr>
+                  <td colspan="6">
+                    No trainer records available.
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div id="footerContainer"></div>
+
+  <script type="module">
+    import { initAdminApp } from "../../assets/js/admin-app.js";
+
+    /*
+      TRAINER MANAGEMENT
+      REGISTRY SURFACE
+
+      Firestore Collection:
+      trainerRegistry
+
+      Status:
+      Phase-1 Placeholder
+    */
+
+    initAdminApp();
+  </script>
+
+</body>
+</html>

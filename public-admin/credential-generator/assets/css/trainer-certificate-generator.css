@@ -141,18 +141,20 @@
 ========================================== */
 
 .tcg-preview {
+
     min-height: 400px;
+
     border: 2px dashed var(--cg-border);
     border-radius: 12px;
+
     background: #fafafa;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow-x: auto;
+    overflow-y: auto;
 
-    text-align: center;
-    padding: 32px;
-    color: var(--cg-muted);
+    padding: 24px;
+
+    display: block;
 }
 
 .tcg-preview h3 {
@@ -342,3 +344,8 @@
 .issuer-line {
     margin: 8px 0;
 }
+
+.trainer-certificate-template {
+    overflow: hidden;
+}
+

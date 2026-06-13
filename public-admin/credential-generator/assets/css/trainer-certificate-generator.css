@@ -239,8 +239,8 @@
     ==========================================
     */
 
-    width: 1100px;
-    height: 778px;
+    width: 1123px;
+    height: 794px;
 
     margin: 0 auto;
     padding: 40px;
@@ -337,7 +337,7 @@
 }
 
 .trainer-certificate-footer {
-    margin-top: 40px;
+    margin-top: auto;
 }
 
 .trainer-certificate-metadata p,
@@ -346,6 +346,7 @@
 }
 
 .trainer-certificate-template {
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 

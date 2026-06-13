@@ -86,15 +86,22 @@ try {
         "TRAINER CERTIFICATE GENERATION STARTED"
     );
 
-    const canvas =
-        await html2canvas(
-            certificateElement,
-            {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: "#ffffff"
-            }
-        );
+    console.log(
+    "PDF ELEMENT SIZE",
+    certificateElement.offsetWidth,
+    certificateElement.offsetHeight
+);
+
+const canvas =
+    await html2canvas(
+        certificateElement,
+        {
+            scale: 3,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: false
+        }
+    );
 
     console.log(
         "CANVAS DIMENSIONS",

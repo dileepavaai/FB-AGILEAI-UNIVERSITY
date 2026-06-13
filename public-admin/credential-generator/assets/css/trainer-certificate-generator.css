@@ -149,7 +149,7 @@
 
     background: #fafafa;
 
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: auto;
 
     padding: 24px;

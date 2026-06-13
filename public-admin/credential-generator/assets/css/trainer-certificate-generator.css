@@ -28,7 +28,7 @@
 .tcg-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 32px;
+    padding: 16px;
 }
 
 .tcg-page-header {
@@ -150,6 +150,9 @@
     text-align: center;
 
     padding: 32px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
 
     border: 2px dashed var(--cg-border);
     border-radius: 12px;

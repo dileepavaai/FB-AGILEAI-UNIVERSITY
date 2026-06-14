@@ -1,128 +1,254 @@
 <!doctype html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8" />
+
   <title>Trainer Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1" />
 
   <!-- 🔒 BASE -->
-  <link rel="stylesheet" href="../../assets/css/admin.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../assets/css/admin.css" />
 
   <!-- 🎨 DESIGN SYSTEM -->
-  <link rel="stylesheet" href="../../shared/design-authority/css/refinement.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/refinement.css" />
 
   <!-- 🧩 COMMON -->
-  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
-  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/typography.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/common/common.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/common/tables.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/common/typography.css" />
 
   <!-- 🎯 OPTIONAL (future) -->
-  <!-- <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/trainer.css" /> -->
+
+  <!--
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/trainer.css" />
+  -->
 
 </head>
 
 <body class="app-loading">
 
-<div id="headerContainer"></div>
+  <!-- 🔷 HEADER -->
 
-<div class="layout">
+  <div id="headerContainer"></div>
 
-  <!-- 🔷 TRAINER SIDEBAR -->
-  <nav class="sidebar" id="adminNav" style="display:none;">
-    <ul>
-      <li><a href="../dashboard/index.html" class="active">Dashboard</a></li>
-      <li><a href="../registry/index.html">Trainer Registry</a></li>
-      <li><a href="../batch-issuance/index.html">Batch Issuance</a></li>
-      <li><a href="../batch-view/index.html">Batch View</a></li>
-      <li><a href="../accreditation/index.html">Accreditation</a></li>
-      <li><a href="../approvals/index.html">Approvals</a></li>
-      <li><a href="../reports/index.html">Reports</a></li>
-      <li><a href="../audit-logs/index.html">Audit Logs</a></li>
-      <li><a href="../settings/index.html">Settings</a></li>
-    </ul>
-  </nav>
+  <div class="layout">
 
-  <main class="content">
+    <!-- 🔷 SHARED TRAINER SIDEBAR -->
 
-    <!-- 🔐 LOGIN -->
-    <section id="loginView">
-      <h2>Trainer Access</h2>
-      <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
-    </section>
+    <div id="trainerSidebarContainer"></div>
 
-    <!-- 🔷 APP -->
-    <section id="appView" class="hidden">
+    <main class="content">
 
-      <!-- 🧠 HEADER -->
-      <div class="section">
-        <h2>Trainer Dashboard</h2>
-        <p class="page-subtitle">Overview of assigned batches and learners</p>
-      </div>
+      <!-- 🔐 LOGIN -->
 
-      <!-- 📊 METRICS -->
-      <div class="metrics section">
-        <div class="metric-card">
-          <div class="metric-label">Assigned Batches</div>
-          <div class="metric-value" id="tBatches">—</div>
+      <section id="loginView">
+
+        <h2>Trainer Access</h2>
+
+        <p>
+          Please sign in with your authorized account.
+        </p>
+
+        <button
+          id="loginBtn"
+          class="btn btn-primary">
+
+          Sign in with Google
+
+        </button>
+
+      </section>
+
+      <!-- 🔷 APP -->
+
+      <section
+        id="appView"
+        class="hidden">
+
+        <!-- 🧠 HEADER -->
+
+        <div class="section">
+
+          <h2>Trainer Dashboard</h2>
+
+          <p class="page-subtitle">
+            Overview of assigned batches and learners
+          </p>
+
         </div>
 
-        <div class="metric-card">
-          <div class="metric-label">Learners</div>
-          <div class="metric-value" id="tLearners">—</div>
+        <!-- 📊 METRICS -->
+
+        <div class="metrics section">
+
+          <div class="metric-card">
+
+            <div class="metric-label">
+              Assigned Batches
+            </div>
+
+            <div
+              class="metric-value"
+              id="tBatches">
+
+              —
+
+            </div>
+
+          </div>
+
+          <div class="metric-card">
+
+            <div class="metric-label">
+              Learners
+            </div>
+
+            <div
+              class="metric-value"
+              id="tLearners">
+
+              —
+
+            </div>
+
+          </div>
+
+          <div class="metric-card">
+
+            <div class="metric-label">
+              Active
+            </div>
+
+            <div
+              class="metric-value"
+              id="tActive">
+
+              —
+
+            </div>
+
+          </div>
+
+          <div class="metric-card">
+
+            <div class="metric-label">
+              Completed
+            </div>
+
+            <div
+              class="metric-value"
+              id="tCompleted">
+
+              —
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div class="metric-card">
-          <div class="metric-label">Active</div>
-          <div class="metric-value" id="tActive">—</div>
+        <!-- 📦 BATCH LIST -->
+
+        <div class="card section">
+
+          <div class="card-title">
+            My Batches
+          </div>
+
+          <div class="table-wrapper">
+
+            <table class="table">
+
+              <thead>
+
+                <tr>
+                  <th>Batch</th>
+                  <th>Program</th>
+                  <th>Status</th>
+                  <th>Learners</th>
+                  <th>Action</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="trainerBatchTable">
+
+                <tr>
+
+                  <td colspan="5">
+                    Loading...
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
         </div>
 
-        <div class="metric-card">
-          <div class="metric-label">Completed</div>
-          <div class="metric-value" id="tCompleted">—</div>
-        </div>
-      </div>
+      </section>
 
-      <!-- 📦 BATCH LIST -->
-      <div class="card section">
-        <div class="card-title">My Batches</div>
+    </main>
 
-        <div class="table-wrapper">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Batch</th>
-                <th>Program</th>
-                <th>Status</th>
-                <th>Learners</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="trainerBatchTable">
-              <tr>
-                <td colspan="5">Loading...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  </div>
 
-      </div>
+  <!-- 🔷 FOOTER -->
 
-    </section>
+  <div id="footerContainer"></div>
 
-  </main>
-</div>
+  <!-- 🔥 TRAINER MANAGEMENT SYSTEM -->
 
-<div id="footerContainer"></div>
+  <script type="module">
 
-<!-- 🔥 ADMIN SYSTEM -->
-<script type="module">
-import { initAdminApp } from "../../assets/js/admin-app.js";
+    import { initAdminApp }
+      from "../../assets/js/admin-app.js";
 
-/* ✅ CONNECTED TO DATA LAYER */
-initAdminApp("trainer-dashboard.js");
-</script>
+    import { loadTrainerSidebar }
+      from "../../shared/design-authority/js/trainer-sidebar.js";
+
+    /*
+    ==================================================
+    TRAINER MANAGEMENT
+    DASHBOARD SURFACE
+    ==================================================
+    */
+
+    loadTrainerSidebar("dashboard");
+
+    initAdminApp("trainer-dashboard.js");
+
+  </script>
 
 </body>
+
 </html>

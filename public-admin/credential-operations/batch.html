@@ -6,19 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- 🔒 BASE -->
-  <link rel="stylesheet" href="assets/css/site.css" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
 
   <!-- 🎨 DESIGN SYSTEM -->
-  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/refinement.css" />
 
   <!-- 🧩 COMMON -->
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/typography.css" />
 
   <!-- 🎯 SURFACE -->
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/batch.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/batch.css" />
 </head>
 
 <body class="app-loading">
@@ -28,20 +28,54 @@
 
 <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
-  <nav class="sidebar" id="adminNav" style="display:none;">
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="leads.html">Lead Intelligence</a></li> 
-      <li><a href="/credential-operations/batch.html" class="active">Batch Management</a></li>
-      <li><a href="csv.html">CSV Import</a></li>
-      <li><a href="credential-operations/credential-generator/credential-generator.html">Credential Generator</a></li>
-      <li><a href="credential-operations/credential-registry/credential-registry.html">Credential Registry</a></li>
-      <li><a href="trainer-management/dashboard/index.html">Trainer Management</a></li>
-      <li><a href="reconciliation.html">Reconciliation</a></li>
-      <li><a href="audit-logs.html">Audit Logs</a></li>
-    </ul>
-  </nav>
+    <!-- 🔷 SIDEBAR -->
+    <nav class="sidebar" id="adminNav" style="display:none;">
+      <ul>
+        <li><a href="/index.html">Dashboard</a></li>
+
+  <li><a href="/leads.html">Lead Intelligence</a></li>
+
+  <li>
+    <a href="/credential-operations/batch.html"
+      class="active">
+      Batch Management
+    </a>
+  </li>
+
+  <li>
+    <a href="/credential-operations/csv.html">
+      CSV Import
+    </a>
+  </li>
+
+  <li>
+    <a href="/credential-operations/credential-generator/credential-generator.html">
+      Credential Generator
+    </a>
+  </li>
+
+  <li>
+    <a href="/credential-operations/credential-registry/credential-registry.html">
+      Credential Registry
+    </a>
+  </li>
+
+  <li>
+    <a href="/trainer-management/dashboard/index.html">
+      Trainer Management
+    </a>
+  </li>
+
+  <li><a href="/reconciliation.html">Reconciliation</a></li>
+
+        <li><a href="/audit-logs.html">Audit Logs</a></li>
+        <li><a href="/credential-operations/credential-generator/credential-generator.html">Credential Generator</a></li>
+        <li><a href="/credential-operations/credential-registry/credential-registry.html">Credential Registry</a></li>
+        <li><a href="/trainer-management/dashboard/index.html">Trainer Management</a></li>
+        <li><a href="/reconciliation.html">Reconciliation</a></li>
+        <li><a href="/audit-logs.html">Audit Logs</a></li>
+      </ul>
+    </nav>
 
   <main class="content">
 
@@ -141,10 +175,10 @@
 
 <!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
 <script type="module">
-import { initAdminApp } from "./assets/js/admin-app.js";
+import { initAdminApp }
+  from "../assets/js/admin-app.js";
 
-/* ✅ KEEP THIS (CORRECT) */
-initAdminApp("credential-operations/batch.js");
+initAdminApp("batch.js");
 </script>
 
 <!-- 🔗 NAVIGATION -->

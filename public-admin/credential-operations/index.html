@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Credential Operations – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 🔒 CORE SYSTEM -->
+  <link rel="stylesheet" href="../assets/css/site.css" />
+
+  <!-- 🎨 DESIGN AUTHORITY -->
+  <link rel="stylesheet" href="../shared/design-authority/css/refinement.css" />
+
+  <!-- 🧩 COMMON SURFACES -->
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/typography.css" />
+  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+
+  <!-- ==========================================
+  Credential Operations Gateway
+  Version: 1.0.0
+  Status: LOCKED
+
+  Purpose
+  ------------------------------------------
+  Credential Operations serves as the
+  authoritative administrative gateway for
+  credential lifecycle and credential
+  operations administration.
+
+  Architecture
+  ------------------------------------------
+  Admin
+    ↓
+  Credential Operations
+    ↓
+  Operational Surface
+
+  Operational Administration
+  ------------------------------------------
+  - Batch Management
+  - CSV Import
+  - Credential Generator
+  - Credential Registry
+
+  Future Capability
+  ------------------------------------------
+  - Verification Publisher
+  - Distribution Services
+  - Wallet Export
+
+  Governance
+  ------------------------------------------
+  - No Firebase changes
+  - No RBAC changes
+  - No URL changes
+  - No file movement
+  ========================================== -->
+
+  <link rel="stylesheet"
+        href="./assets/css/credential-generator.css" />
+</head>
+
+<body class="app-loading">
+
+  <!-- 🔷 HEADER -->
+  <div id="headerContainer"></div>
+
+  <div class="layout">
+
+    <!-- 🔷 SIDEBAR -->
+    <nav class="sidebar" id="adminNav" style="display:none;">
+      <ul>
+        <li><a href="../index.html">Dashboard</a></li>
+        <li><a href="../leads.html">Lead Intelligence</a></li>
+        <li><a href="index.html" class="active">Credential Operations</a></li>
+        <li><a href="../trainer-management/dashboard/index.html">Trainer Management</a></li>
+        <li><a href="../reconciliation.html">Reconciliation</a></li>
+        <li><a href="../audit-logs.html">Audit Logs</a></li>
+      </ul>
+    </nav>
+
+    <main class="content">
+
+      <!-- 🔐 LOGIN -->
+      <section id="loginView">
+        <h2>Admin Access</h2>
+        <p>Please sign in with your authorized account.</p>
+
+        <button id="loginBtn" class="btn btn-primary">
+          Sign in with Google
+        </button>
+      </section>
+
+      <!-- 🔷 APP -->
+      <section id="appView" class="hidden">
+
+        <!-- PAGE HEADER -->
+        <div class="section">
+          <h2>Credential Operations</h2>
+
+          <p class="page-subtitle">
+            Centralized administration for credential lifecycle management,
+            batch operations, issuance workflows, registry administration,
+            and future credential services.
+          </p>
+        </div>
+
+        <!-- OPERATIONAL ADMINISTRATION -->
+        <div class="section">
+          <div class="card">
+
+            <div class="card-title">
+              Operational Administration
+            </div>
+
+            <div class="credential-generator-grid">
+
+              <div class="data-row">
+                <span class="data-label">Batch Management</span>
+                <a href="./batch.html">Launch →</a>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">CSV Import</span>
+                <a href="./csv.html">Launch →</a>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Credential Generator</span>
+                <a href="./credential-generator/">Launch →</a>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Credential Registry</span>
+                <a href="./credential-registry/">Launch →</a>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- FUTURE CAPABILITY -->
+        <div class="section">
+          <div class="card">
+
+            <div class="card-title">
+              Future Capability
+            </div>
+
+            <div class="grid-2">
+
+              <div class="data-row">
+                <span class="data-label">Verification Publisher</span>
+                <span>Planned</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Distribution Services</span>
+                <span>Planned</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Wallet Export</span>
+                <span>Planned</span>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- GOVERNANCE NOTICE -->
+        <div class="section">
+          <div class="card">
+
+            <div class="card-title">
+              Governance Notice
+            </div>
+
+            <p>
+              Credential Operations is the authoritative administrative
+              gateway for credential lifecycle and operational administration
+              activities within Agile AI University.
+            </p>
+
+            <p>
+              Operational surfaces are intentionally accessed through this
+              gateway to support governance consistency, auditability,
+              navigation simplicity, and future platform scalability.
+            </p>
+
+            <p>
+              Existing operational URLs remain canonical and unchanged.
+              This gateway introduces no changes to credential issuance,
+              registry records, batch processing, or platform security
+              controls.
+            </p>
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- 🔷 FOOTER -->
+  <div id="footerContainer"></div>
+
+  <!-- 🔥 ADMIN APP BOOTSTRAP -->
+  <script type="module">
+    import { initAdminApp } from "../assets/js/admin-app.js";
+
+    /*
+      Credential Operations Gateway
+      Version: 1.0.0
+
+      Architecture:
+      Admin
+        ↓
+      Credential Operations
+        ↓
+      Operational Surface
+    */
+
+    initAdminApp();
+  </script>
+
+</body>
+</html>

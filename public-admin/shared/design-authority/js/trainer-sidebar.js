@@ -9,20 +9,24 @@ Status: LOCKED
 import { TRAINER_MENU }
   from "./trainer-menu.js";
 
-export function loadTrainerSidebar(activeId = "") {
+export function loadTrainerSidebar(
+  activeId = ""
+) {
 
   const container =
     document.getElementById(
       "trainerSidebarContainer"
     );
 
-  if (!container) return;
+  if (!container) {
+    return;
+  }
 
   let html =
     `
     <nav
       class="sidebar"
-      id="adminNav"
+      id="trainerNav"
       style="display:block;">
 
       <ul>
@@ -32,10 +36,15 @@ export function loadTrainerSidebar(activeId = "") {
 
     if (item.children) {
 
-      html += `
+      html +=
+        `
         <li>
-          <span class="sidebar-group">
+
+          <span
+            class="sidebar-group">
+
             ${item.label}
+
           </span>
 
           <ul>
@@ -43,7 +52,8 @@ export function loadTrainerSidebar(activeId = "") {
 
       item.children.forEach(child => {
 
-        html += `
+        html +=
+          `
           <li>
 
             <a
@@ -63,14 +73,17 @@ export function loadTrainerSidebar(activeId = "") {
 
       });
 
-      html += `
+      html +=
+        `
           </ul>
+
         </li>
       `;
 
     } else {
 
-      html += `
+      html +=
+        `
         <li>
 
           <a
@@ -92,8 +105,10 @@ export function loadTrainerSidebar(activeId = "") {
 
   });
 
-  html += `
+  html +=
+    `
       </ul>
+
     </nav>
   `;
 

@@ -6,19 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- 🔒 BASE -->
-  <link rel="stylesheet" href="../assets/css/admin.css" />
+  <link rel="stylesheet" href="../../assets/css/admin.css" />
 
   <!-- 🎨 DESIGN SYSTEM -->
-  <link rel="stylesheet" href="../shared/design-authority/css/refinement.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/refinement.css" />
 
   <!-- 🧩 COMMON -->
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/typography.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/common.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/tables.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/typography.css" />
 
   <!-- 🎯 OPTIONAL (future) -->
-  <!-- <link rel="stylesheet" href="../shared/design-authority/css/surfaces/trainer.css" /> -->
+  <!-- <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/trainer.css" /> -->
 
 </head>
 
@@ -31,8 +31,15 @@
   <!-- 🔷 TRAINER SIDEBAR -->
   <nav class="sidebar" id="adminNav" style="display:none;">
     <ul>
-      <li><a href="trainer-dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="trainer-batches.html">My Batches</a></li>
+      <li><a href="../dashboard/index.html" class="active">Dashboard</a></li>
+      <li><a href="../registry/index.html">Trainer Registry</a></li>
+      <li><a href="../batch-issuance/index.html">Batch Issuance</a></li>
+      <li><a href="../batch-view/index.html">Batch View</a></li>
+      <li><a href="../accreditation/index.html">Accreditation</a></li>
+      <li><a href="../approvals/index.html">Approvals</a></li>
+      <li><a href="../reports/index.html">Reports</a></li>
+      <li><a href="../audit-logs/index.html">Audit Logs</a></li>
+      <li><a href="../settings/index.html">Settings</a></li>
     </ul>
   </nav>
 
@@ -111,7 +118,7 @@
 
 <!-- 🔥 ADMIN SYSTEM -->
 <script type="module">
-import { initAdminApp } from "../assets/js/admin-app.js";
+import { initAdminApp } from "../../assets/js/admin-app.js";
 
 /* ✅ CONNECTED TO DATA LAYER */
 initAdminApp("trainer-dashboard.js");

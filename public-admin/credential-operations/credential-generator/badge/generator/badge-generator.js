@@ -262,13 +262,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     populateFields(record);
 
-    renderBadgePreview(record);
+renderBadgePreview(record);
 
-    if (isBadgeReady(record)) {
+console.log("Before enable");
+console.log("Badge Ready:", isBadgeReady(record));
+console.log("Issued Status:", record.issued_status);
+
+if (isBadgeReady(record)) {
+
+    console.log("Enabling button");
 
     enablePngButton();
 
-    } else {
+} else {
+
+    console.log("Badge NOT ready");
 
     disablePngButton();
 
@@ -276,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Credential is not eligible for badge generation."
     );
 
-    }
+}
 
   }
 
@@ -481,7 +489,11 @@ async function renderBadgePreview(record) {
 
 function getDisplayCredentialTitle(record) {
 
-  if (record.program_code === "AOP") {
+  const code =
+    (record.program_code || "")
+      .toUpperCase();
+
+  if (code === "AOP" || code === "AIPA") {
 
     return (
       "Artificial Intelligence Professional Agilist"
@@ -633,22 +645,35 @@ function disablePngButton() {
   generatePngBtn.disabled = true;
 
   generatePngBtn.classList.add(
-    "cg-btn-disabled"
+    "bg-btn-disabled"
   );
 
 }
 
 function enablePngButton() {
 
+  console.log(
+    "enablePngButton called"
+  );
+
   const generatePngBtn =
     document.getElementById("generatePngBtn");
+
+  console.log(
+    "Button:",
+    generatePngBtn
+  );
 
   if (!generatePngBtn) return;
 
   generatePngBtn.disabled = false;
 
   generatePngBtn.classList.remove(
-    "cg-btn-disabled"
+    "bg-btn-disabled"
   );
 
-}       
+  console.log(
+    "Button Enabled"
+  );
+
+}

@@ -144,7 +144,27 @@ export function initAdminApp(moduleName = null) {
       if (loginView) loginView.style.display = "none";
       if (appView) appView.style.display = "block";
 
-      highlightActiveSidebar();
+      /*************************************************
+       SIDEBAR ACTIVE STATE
+
+        Legacy pages still use:
+        - hardcoded sidebars
+
+        New pages use:
+        - loadAdminSidebar()
+
+        Therefore only run auto-highlight
+        when adminSidebarContainer is absent.
+      *************************************************/
+
+      const centralizedSidebar =
+        document.getElementById(
+          "adminSidebarContainer"
+        );
+
+      if (!centralizedSidebar) {
+        highlightActiveSidebar();
+      }
 
       /* =====================================================
          📦 MODULE LOADER (CACHE-SAFE — FINAL FIX)

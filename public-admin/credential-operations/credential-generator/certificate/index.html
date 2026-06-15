@@ -29,6 +29,7 @@
 
     <!-- 🎨 DESIGN AUTHORITY -->
     <link rel="stylesheet" href="../../../shared/design-authority/css/refinement.css" />
+    <link rel="stylesheet" href="../../../shared/design-authority/css/admin-breadcrumb.css" />
 
     <!-- 🧩 COMMON SURFACES -->
     <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/common.css" />
@@ -66,6 +67,8 @@
           <div class="cg-container">
 
             <header class="cg-page-header">
+
+              <div id="adminBreadcrumbContainer"></div>
 
               <h1>University Certificate</h1>
 
@@ -331,6 +334,26 @@
     <!-- 🔷 FOOTER -->
     <div id="footerContainer"></div>
 
+    <script>
+      window.adminBreadcrumb = [
+        {
+          label: "Admin",
+          href: "/index.html"
+        },
+        {
+          label: "Credential Operations",
+          href: "/credential-operations/index.html"
+        },
+        {
+          label: "Credential Generator",
+          href: "/credential-operations/credential-generator/credential-generator.html"
+        },
+        {
+          label: "University Certificate"
+        }
+      ];
+    </script>
+
     <!-- 🔥 ADMIN APP BOOTSTRAP -->
     <script type="module">
 
@@ -339,10 +362,15 @@
 
       import { loadAdminSidebar }
         from "../../../shared/design-authority/js/admin-sidebar.js";
+      
+      import { renderAdminBreadcrumb }
+        from "../../../shared/design-authority/js/admin-breadcrumb.js";
 
       loadAdminSidebar(
         "credential-operations"
       );
+
+      renderAdminBreadcrumb();
 
       initAdminApp();
 

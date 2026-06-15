@@ -25,17 +25,17 @@
         ===================================================== -->
 
     <!-- 🔒 CORE SYSTEM -->
-    <link rel="stylesheet" href="../../assets/css/site.css" />
+    <link rel="stylesheet" href="../../../assets/css/site.css" />
 
     <!-- 🎨 DESIGN AUTHORITY -->
-    <link rel="stylesheet" href="../../shared/design-authority/css/refinement.css" />
+    <link rel="stylesheet" href="../../../shared/design-authority/css/refinement.css" />
 
     <!-- 🧩 COMMON SURFACES -->
-    <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/common.css" />
-    <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/tables.css" />
-    <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/typography.css" />
-    <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
-    <link rel="stylesheet" href="../assets/css/badge-generator.css" />
+    <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/common.css" />
+    <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/tables.css" />
+    <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/typography.css" />
+    <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+    <link rel="stylesheet" href="../assets/css/trainer-certificate-generator.css" />
   </head>
 
   <body class="app-loading">
@@ -46,19 +46,7 @@
     <div class="layout">
 
       <!-- 🔷 SIDEBAR -->
-      <nav class="sidebar" id="adminNav" style="display:none;">
-        <ul>
-          <li><a href="../../index.html">Dashboard</a></li>
-          <li><a href="../../leads.html">Lead Intelligence</a></li>
-          <li><a href="/credential-operations/batch.html">Batch Management</a></li>
-          <li><a href="../../csv.html">CSV Import</a></li>
-          <li><a href="../credential-generator.html" class="active">Credential Generator</a></li>
-          <li><a href="../../credential-registry/credential-registry.html">Credential Registry</a></li>
-          <li><a href="../../trainer-management/dashboard/index.html">Trainer Management</a></li>
-          <li><a href="../../reconciliation.html">Reconciliation</a></li>
-          <li><a href="../../audit-logs.html">Audit Logs</a></li>
-        </ul>
-      </nav>
+      <div id="adminSidebarContainer"></div>
 
       <main class="content">
 
@@ -352,9 +340,19 @@
 
     <!-- 🔥 ADMIN APP BOOTSTRAP -->
     <script type="module">
-      import { initAdminApp } from "../../assets/js/admin-app.js";
+
+      import { initAdminApp }
+        from "../../assets/js/admin-app.js";
+
+      import { loadAdminSidebar }
+        from "../../shared/design-authority/js/admin-sidebar.js";
+
+      loadAdminSidebar(
+        "credential-operations"
+      );
 
       initAdminApp();
+
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

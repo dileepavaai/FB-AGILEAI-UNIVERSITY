@@ -70,16 +70,7 @@
   <div class="layout">
 
     <!-- 🔷 SIDEBAR -->
-    <nav class="sidebar" id="adminNav" style="display:none;">
-      <ul>
-        <li><a href="../index.html">Dashboard</a></li>
-        <li><a href="../leads.html">Lead Intelligence</a></li>
-        <li><a href="index.html" class="active">Credential Operations</a></li>
-        <li><a href="../trainer-management/dashboard/index.html">Trainer Management</a></li>
-        <li><a href="../reconciliation.html">Reconciliation</a></li>
-        <li><a href="../audit-logs.html">Audit Logs</a></li>
-      </ul>
-    </nav>
+    <div id="adminSidebarContainer"></div>
 
     <main class="content">
 
@@ -212,23 +203,35 @@
   <div id="footerContainer"></div>
 
   <!-- 🔥 ADMIN APP BOOTSTRAP -->
-  <script type="module">
-    import { initAdminApp } from "../assets/js/admin-app.js";
+<script type="module">
 
-    /*
-      Credential Operations Gateway
-      Version: 1.0.0
+  import { initAdminApp }
+    from "../assets/js/admin-app.js";
 
-      Architecture:
-      Admin
-        ↓
-      Credential Operations
-        ↓
-      Operational Surface
-    */
+  import { loadAdminSidebar }
+    from "../shared/design-authority/js/admin-sidebar.js";
 
-    initAdminApp();
-  </script>
+  /*
+    Credential Operations Gateway
+    Version: 1.1.0
 
-</body>
+    Admin Navigation Authority Pilot
+
+    Architecture:
+    Admin
+      ↓
+    Credential Operations
+      ↓
+    Operational Surface
+  */
+
+  loadAdminSidebar(
+    "credential-operations"
+  );
+
+  initAdminApp();
+
+</script>
+
+</body> 
 </html>

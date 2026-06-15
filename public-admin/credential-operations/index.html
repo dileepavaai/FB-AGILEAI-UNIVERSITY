@@ -60,6 +60,10 @@
 
   <link rel="stylesheet"
         href="../assets/css/credential-generator.css" />
+
+  <link rel="stylesheet"
+        href="./assets/css/credential-operations.css" />
+
 </head>
 
 <body class="app-loading">
@@ -106,31 +110,79 @@
               Operational Administration
             </div>
 
-            <div class="credential-generator-grid">
+            <div class="co-operations-grid">
 
-              <div class="data-row">
-                <span class="data-label">Batch Management</span>
-                <a href="./batch.html">Launch →</a>
-              </div>
+              <div class="co-operation-card">
 
-              <div class="data-row">
-                <span class="data-label">CSV Import</span>
-                <a href="./csv.html">Launch →</a>
-              </div>
-
-              <div class="data-row">
-                <span class="data-label">Credential Generator</span>
-                <a href="./credential-generator/credential-generator.html">
-                    Launch →
-                </a>
+                <div class="co-operation-title">
+                  Batch Management
                 </div>
 
-                <div class="data-row">
-                <span class="data-label">Credential Registry</span>
-                <a href="./credential-registry/credential-registry.html">
-                    Launch →
+                <div class="co-operation-description">
+                  Create and manage credential batches.
+                </div>
+
+                <a
+                  class="co-operation-link"
+                  href="./batch.html">
+                  Launch →
                 </a>
-            </div>
+
+              </div>
+
+              <div class="co-operation-card">
+
+                <div class="co-operation-title">
+                  CSV Import
+                </div>
+
+                <div class="co-operation-description">
+                  Import credential records into the platform.
+                </div>
+
+                <a
+                  class="co-operation-link"
+                  href="./csv.html">
+                  Launch →
+                </a>
+
+              </div>
+
+              <div class="co-operation-card">
+
+                <div class="co-operation-title">
+                  Credential Generator
+                </div>
+
+                <div class="co-operation-description">
+                  Generate governed credential artifacts.
+                </div>
+
+                <a
+                  class="co-operation-link"
+                  href="./credential-generator/credential-generator.html">
+                  Launch →
+                </a>
+
+              </div>
+
+              <div class="co-operation-card">
+
+                <div class="co-operation-title">
+                  Credential Registry
+                </div>
+
+                <div class="co-operation-description">
+                  Manage credential registry records.
+                </div>
+
+                <a
+                  class="co-operation-link"
+                  href="./credential-registry/credential-registry.html">
+                  Launch →
+                </a>
+
+              </div>
 
             </div>
 
@@ -207,35 +259,35 @@
   <div id="footerContainer"></div>
 
   <!-- 🔥 ADMIN APP BOOTSTRAP -->
-<script type="module">
+  <script type="module">
 
-  import { initAdminApp }
-    from "../assets/js/admin-app.js";
+    import { initAdminApp }
+      from "../assets/js/admin-app.js";
 
-  import { loadAdminSidebar }
-    from "../shared/design-authority/js/admin-sidebar.js";
+    import { loadAdminSidebar }
+      from "../shared/design-authority/js/admin-sidebar.js";
 
-  /*
-    Credential Operations Gateway
-    Version: 1.1.0
+    /*
+      Credential Operations Gateway
+      Version: 1.1.0
 
-    Admin Navigation Authority Pilot
+      Admin Navigation Authority Pilot
 
-    Architecture:
-    Admin
-      ↓
-    Credential Operations
-      ↓
-    Operational Surface
-  */
+      Architecture:
+      Admin
+        ↓
+      Credential Operations
+        ↓
+      Operational Surface
+    */
 
-  loadAdminSidebar(
-    "credential-operations"
-  );
+    loadAdminSidebar(
+      "credential-operations"
+    );
 
-  initAdminApp();
+    initAdminApp();
 
-</script>
+  </script>
 
-</body> 
+</body>
 </html>

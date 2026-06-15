@@ -1,27 +1,36 @@
 /* ==================================================
    ADMIN NAVIGATION AUTHORITY
    Version: 1.0.0
-   Status: LOCKED
+   Status: PILOT DEPLOYED
 
    Purpose
    ------------------------------------------
    Single source of truth for all Admin
    navigation surfaces.
 
-   Architecture
-   ------------------------------------------
-   Dashboard
-   Lead Intelligence
-   Credential Operations
-   Trainer Management
-   Reconciliation
-   Audit Logs
-
    Governance
    ------------------------------------------
-   - One active menu only
-   - No duplicated sidebar definitions
-   - Centralized navigation control
+   - Introduced centralized admin menu authority
+   - Introduced centralized admin sidebar renderer
+   - Credential Operations adopted as pilot surface
+   - Legacy pages remain compatible
+   - Active-state conflicts eliminated
+   - Future menu additions managed from a
+     single navigation authority file
+
+   Architecture
+   ------------------------------------------
+   ADMIN_MENU
+        ↓
+   loadAdminSidebar()
+        ↓
+   Admin Surfaces
+
+   Change Policy
+   ------------------------------------------
+   New admin navigation items must be added
+   here first before being rendered across
+   admin surfaces.
 ================================================== */
 
 export const ADMIN_MENU = [

@@ -1,0 +1,107 @@
+/* =========================================================
+   Agile AI University
+   Admin Breadcrumb Styles
+
+   File:
+   public-admin/shared/design-authority/css/admin-breadcrumb.css
+
+   Version:
+   1.0.0
+
+   Status:
+   ACTIVE
+
+   Purpose:
+   Centralized breadcrumb styling authority for the
+   Public Admin platform.
+
+   Scope:
+   public-admin/*
+
+   Supported Modules:
+   - Credential Operations
+   - Trainer Management
+   - Governance
+   - Audit Logs
+   - Reconciliation
+   - Future Admin Modules
+
+   Governance:
+   - Breadcrumb styling authority
+   - Shared Design Authority owned
+   - Responsive by default
+   - Consistent across all admin modules
+
+   Must NOT:
+   - Override page headers
+   - Override admin shell layout
+   - Override sidebar behavior
+   - Introduce module-specific styling
+
+   ========================================================= */
+
+
+/* =========================================================
+   Container
+   ========================================================= */
+
+.admin-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+
+  margin-bottom: 1rem;
+
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   Links
+   ========================================================= */
+
+.admin-breadcrumb-link {
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.admin-breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   Separator
+   ========================================================= */
+
+.admin-breadcrumb-separator {
+  color: #94a3b8;
+  user-select: none;
+}
+
+
+/* =========================================================
+   Current Page
+   ========================================================= */
+
+.admin-breadcrumb-current {
+  color: #64748b;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .admin-breadcrumb {
+    font-size: 0.8125rem;
+    margin-bottom: 0.75rem;
+  }
+
+}

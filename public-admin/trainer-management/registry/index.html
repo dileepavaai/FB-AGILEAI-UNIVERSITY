@@ -84,7 +84,7 @@
             Search Registry
           </div>
 
-          <div class="grid-2">
+          <div class="grid-4">
 
             <div>
 
@@ -341,7 +341,14 @@
     ==================================================
     */
 
-    initAdminApp();
+    import { loadAdminSidebar }
+        from "../../shared/design-authority/js/admin-sidebar.js";
+
+        loadAdminSidebar(
+        "trainer-management"
+        );
+
+        initAdminApp();
 
   </script>
 

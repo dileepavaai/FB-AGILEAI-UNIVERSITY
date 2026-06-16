@@ -71,23 +71,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =====================================================
    📥 LOAD BATCHES
-   Safe Version
+   Diagnostic Version
    ===================================================== */
 
 async function loadBatches() {
+
+  console.log(
+    "===================================="
+  );
+
+  console.log(
+    "CSV Import → loadBatches() started"
+  );
 
   try {
 
     batchSelect.innerHTML =
       `<option value="">-- Select Batch --</option>`;
 
+    console.log(
+      "Current User:",
+      auth.currentUser?.email
+    );
+
+    console.log(
+      "Firebase Project Query → batches"
+    );
+
     const snap = await getDocs(
-      collection(db, "batches")
+      collection(
+        db,
+        "batches"
+      )
+    );
+
+    console.log(
+      "Batch Count:",
+      snap.size
     );
 
     if (snap.empty) {
 
-      console.warn("No batches found");
+      console.warn(
+        "No batches found"
+      );
 
       batchSelect.innerHTML =
         `<option value="">No batches available</option>`;
@@ -98,6 +125,12 @@ async function loadBatches() {
     snap.forEach(docSnap => {
 
       const b = docSnap.data();
+
+      console.log(
+        "Batch Document:",
+        docSnap.id,
+        b
+      );
 
       batchSelect.innerHTML += `
         <option value="${docSnap.id}">
@@ -121,6 +154,10 @@ async function loadBatches() {
     batchSelect.innerHTML =
       `<option value="">Error loading batches</option>`;
   }
+
+  console.log(
+    "===================================="
+  );
 }
 
 batchSelect.addEventListener("change", () => {

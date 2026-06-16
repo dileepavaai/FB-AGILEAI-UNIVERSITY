@@ -217,7 +217,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     tableBody.innerHTML = "";
 
+    console.log("CSV Import: loadBatches started");
+
     try {
+
+      console.log("Reading batches collection...");
 
       const snap =
         await getDocs(
@@ -231,6 +235,11 @@ document.addEventListener("DOMContentLoaded", async () => {
               "desc"
             )
           )
+        );
+
+        console.log(
+          "Batch query completed",
+          snap.size
         );
 
       if (snap.empty) {
@@ -247,6 +256,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       snap.forEach(docSnap => {
+
+        console.log(
+            "Batch document:",
+            docSnap.id,
+            docSnap.data()
+          );
 
         const b =
           docSnap.data();

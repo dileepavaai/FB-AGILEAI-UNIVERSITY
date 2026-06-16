@@ -1,3 +1,36 @@
+<!-- ==========================================
+Trainer Registry
+Version: 1.1.0
+Status: ACTIVE
+
+Purpose
+------------------------------------------
+Authoritative trainer identity registry
+for credential generation governance.
+
+Revenue Sprint Scope
+------------------------------------------
+trainerId
+trainerName
+email
+status
+
+Architecture
+------------------------------------------
+Admin
+  ↓
+Trainer Management
+  ↓
+Trainer Registry
+
+Governance
+------------------------------------------
+- No URL changes
+- No Firebase changes
+- No RBAC changes
+- No file movement
+========================================== -->
+
 <!doctype html>
 <html lang="en">
 
@@ -59,6 +92,32 @@
     <div id="adminSidebarContainer"></div>
 
     <main class="content">
+
+  <!-- 🔐 LOGIN -->
+
+  <section id="loginView">
+
+    <h2>Admin Access</h2>
+
+    <p>
+      Please sign in with your authorized account.
+    </p>
+
+    <button
+      id="loginBtn"
+      class="btn btn-primary">
+
+      Sign in with Google
+
+    </button>
+
+  </section>
+
+  <!-- 🔷 APP -->
+
+  <section
+    id="appView"
+    class="hidden">
 
       <!-- PAGE HEADER -->
 
@@ -298,6 +357,8 @@
         </div>
 
       </div>
+
+  </section>
 
     </main>
 

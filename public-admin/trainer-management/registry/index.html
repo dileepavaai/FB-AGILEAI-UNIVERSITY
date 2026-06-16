@@ -1,43 +1,81 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8" />
+
   <title>Trainer Registry – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1" />
 
   <!-- 🔒 CORE SYSTEM -->
-  <link rel="stylesheet" href="../../assets/css/site.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../assets/css/site.css" />
 
   <!-- 🎨 DESIGN AUTHORITY -->
-  <link rel="stylesheet" href="../../shared/design-authority/css/refinement.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/refinement.css" />
 
   <!-- 🧩 COMMON SURFACES -->
-  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/typography.css" />
-  <link rel="stylesheet" href="../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/common/common.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/common/tables.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/common/typography.css" />
+
+  <link
+    rel="stylesheet"
+    href="../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+
 </head>
 
 <body class="app-loading">
+
+  <!-- 🔷 HEADER -->
 
   <div id="headerContainer"></div>
 
   <div class="layout">
 
+    <!-- 🔷 SIDEBAR -->
+
+    <div id="adminSidebarContainer"></div>
+
     <main class="content">
 
       <!-- PAGE HEADER -->
+
       <div class="section">
 
-        <h2>Trainer Registry</h2>
+        <h2>
+          Trainer Registry
+        </h2>
 
         <p class="page-subtitle">
-          Search and review accredited trainers authorized under the Agile AI University Trainer Governance Framework.
+
+          Authoritative registry of trainer records used for
+          trainer certificate generation and credential governance.
+
         </p>
 
       </div>
 
       <!-- SEARCH -->
+
       <div class="section">
 
         <div class="card">
@@ -46,60 +84,89 @@
             Search Registry
           </div>
 
-          <div>
+          <div class="grid-2">
 
             <div>
-              <label>Trainer ID</label>
+
+              <label>
+                Trainer ID
+              </label>
+
               <input
                 type="text"
                 id="searchTrainerId"
-                placeholder="Enter Trainer ID"
-              />
+                placeholder="Enter Trainer ID" />
+
             </div>
 
             <div>
-              <label>Trainer Name</label>
+
+              <label>
+                Trainer Name
+              </label>
+
               <input
                 type="text"
                 id="searchTrainerName"
-                placeholder="Enter Trainer Name"
-              />
+                placeholder="Enter Trainer Name" />
+
             </div>
 
             <div>
-              <label>Email</label>
+
+              <label>
+                Email
+              </label>
+
               <input
                 type="text"
                 id="searchTrainerEmail"
-                placeholder="Enter Email"
-              />
+                placeholder="Enter Email" />
+
             </div>
 
             <div>
-              <label>Status</label>
+
+              <label>
+                Status
+              </label>
 
               <select id="searchTrainerStatus">
-                <option value="">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="suspended">Suspended</option>
+
+                <option value="">
+                  All Statuses
+                </option>
+
+                <option value="active">
+                  Active
+                </option>
+
+                <option value="inactive">
+                  Inactive
+                </option>
+
               </select>
+
             </div>
 
           </div>
 
-          <div>
+          <div style="margin-top:16px;">
 
             <button
               id="searchBtn"
               class="btn btn-primary">
+
               Search
+
             </button>
 
             <button
               id="resetBtn"
               class="btn btn-secondary">
+
               Reset
+
             </button>
 
           </div>
@@ -109,6 +176,7 @@
       </div>
 
       <!-- GOVERNANCE NOTICE -->
+
       <div class="section">
 
         <div class="card">
@@ -118,20 +186,60 @@
           </div>
 
           <p>
-            The Trainer Registry serves as the authoritative record of accredited trainers authorized to issue trainer-delivered credentials within the Agile AI University ecosystem.
+
+            The Trainer Registry serves as the authoritative
+            source of trainer identity information used for
+            trainer certificate generation within Agile AI University.
+
           </p>
+
+          <p>
+
+            Revenue Sprint scope is intentionally limited to:
+
+          </p>
+
+          <ul>
+
+            <li>trainerId</li>
+
+            <li>trainerName</li>
+
+            <li>email</li>
+
+            <li>status</li>
+
+          </ul>
 
         </div>
 
       </div>
 
       <!-- RESULTS -->
+
       <div class="section">
 
         <div class="card">
 
-          <div class="card-title">
-            Trainer Results
+          <div
+            style="
+              display:flex;
+              justify-content:space-between;
+              align-items:center;
+              margin-bottom:20px;">
+
+            <div class="card-title">
+              Trainer Records
+            </div>
+
+            <button
+              id="addTrainerBtn"
+              class="btn btn-primary">
+
+              + New Trainer
+
+            </button>
+
           </div>
 
           <div class="table-wrapper">
@@ -139,22 +247,43 @@
             <table class="table">
 
               <thead>
+
                 <tr>
-                  <th>Trainer ID</th>
-                  <th>Trainer Name</th>
-                  <th>Email</th>
-                  <th>Designation</th>
-                  <th>Status</th>
-                  <th>Accreditation Date</th>
+
+                  <th>
+                    Trainer ID
+                  </th>
+
+                  <th>
+                    Trainer Name
+                  </th>
+
+                  <th>
+                    Email
+                  </th>
+
+                  <th>
+                    Status
+                  </th>
+
+                  <th>
+                    Actions
+                  </th>
+
                 </tr>
+
               </thead>
 
               <tbody id="trainerRegistryBody">
 
                 <tr>
-                  <td colspan="6">
+
+                  <td colspan="5">
+
                     No trainer records available.
+
                   </td>
+
                 </tr>
 
               </tbody>
@@ -171,24 +300,51 @@
 
   </div>
 
+  <!-- 🔷 FOOTER -->
+
   <div id="footerContainer"></div>
 
+  <!-- 🔥 APP BOOTSTRAP -->
+
   <script type="module">
-    import { initAdminApp } from "../../assets/js/admin-app.js";
+
+    import { initAdminApp }
+      from "../../assets/js/admin-app.js";
 
     /*
-      TRAINER MANAGEMENT
-      REGISTRY SURFACE
+    ==================================================
+    TRAINER REGISTRY
+    Revenue Sprint Version
+    ==================================================
 
-      Firestore Collection:
-      trainerRegistry
+    Purpose
 
-      Status:
-      Phase-1 Placeholder
+    Authoritative trainer identity registry.
+
+    Approved Schema
+
+    trainerId
+    trainerName
+    email
+    status
+
+    Revenue Path
+
+    Trainer Registry
+        ↓
+    Trainer Certificate Resolution
+        ↓
+    Credential Generation
+        ↓
+    Student Portal Visibility
+
+    ==================================================
     */
 
     initAdminApp();
+
   </script>
 
 </body>
+
 </html>

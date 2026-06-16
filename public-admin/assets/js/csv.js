@@ -11,7 +11,6 @@ import {
   getDocs,
   query,
   where,
-  orderBy,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -71,35 +70,70 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!fileInput || !parseBtn || !uploadBtn) return;
 
   /* =====================================================
-     📥 LOAD BATCHES
-     ===================================================== */
+   📥 LOAD BATCHES
+   Safe Version
+   ===================================================== */
 
-  async function loadBatches() {
+async function loadBatches() {
+
+  try {
+
+    batchSelect.innerHTML =
+      `<option value="">-- Select Batch --</option>`;
+
     const snap = await getDocs(
-      query(collection(db, "batches"), orderBy("created_at", "desc"))
+      collection(db, "batches")
     );
 
-    batchSelect.innerHTML = `<option value="">-- Select Batch --</option>`;
+    if (snap.empty) {
+
+      console.warn("No batches found");
+
+      batchSelect.innerHTML =
+        `<option value="">No batches available</option>`;
+
+      return;
+    }
 
     snap.forEach(docSnap => {
+
       const b = docSnap.data();
 
       batchSelect.innerHTML += `
         <option value="${docSnap.id}">
-          ${b.batch_name} (${b.program_code})
+          ${b.batch_name || "Unnamed Batch"}
+          (${b.program_code || "N/A"})
         </option>
       `;
     });
+
+    console.log(
+      `Loaded ${snap.size} batch(es)`
+    );
+
+  } catch (err) {
+
+    console.error(
+      "Failed to load batches:",
+      err
+    );
+
+    batchSelect.innerHTML =
+      `<option value="">Error loading batches</option>`;
   }
+}
 
-  batchSelect.addEventListener("change", () => {
-    const selectedOption = batchSelect.options[batchSelect.selectedIndex];
+batchSelect.addEventListener("change", () => {
 
-    selectedBatch = {
-      id: batchSelect.value,
-      name: selectedOption.text
-    };
-  });
+  const selectedOption =
+    batchSelect.options[batchSelect.selectedIndex];
+
+  selectedBatch = {
+    id: batchSelect.value,
+    name: selectedOption.text
+  };
+
+});
 
   /* =====================================================
      📄 PARSE CSV

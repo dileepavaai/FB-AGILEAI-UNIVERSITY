@@ -1,0 +1,43 @@
+/* ==========================================
+   Trainer Management Gateway
+   ========================================== */
+
+.co-operations-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.co-operation-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  background: #ffffff;
+}
+
+.co-operation-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.co-operation-description {
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.co-operation-link {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Responsive */
+
+@media (max-width: 960px) {
+
+  .co-operations-grid {
+    grid-template-columns: 1fr;
+  }
+
+}

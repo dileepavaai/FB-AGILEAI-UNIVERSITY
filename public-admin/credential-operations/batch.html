@@ -1,171 +1,217 @@
+<!-- ==========================================
+Batch Management
+Version: 1.1.0
+Status: ACTIVE
+
+Purpose
+------------------------------------------
+Create and manage program batches.
+
+Architecture
+------------------------------------------
+Admin
+  ↓
+Credential Operations
+  ↓
+Batch Management
+
+Governance
+------------------------------------------
+- Program Code immutable after creation
+- Admin controlled
+- Credential Operations domain
+========================================== -->
+
 <!doctype html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8" />
-  <title>Batch Management – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 🔒 BASE -->
-  <link rel="stylesheet" href="../assets/css/site.css" />
+  <title>
+    Batch Management – Admin
+  </title>
 
-  <!-- 🎨 DESIGN SYSTEM -->
-  <link rel="stylesheet" href="../shared/design-authority/css/refinement.css" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1" />
 
-  <!-- 🧩 COMMON -->
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/typography.css" />
+  <!-- 🔒 CORE SYSTEM -->
 
-  <!-- 🎯 SURFACE -->
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/batch.css" />
+  <link
+    rel="stylesheet"
+    href="../assets/css/site.css" />
+
+  <!-- 🎨 DESIGN AUTHORITY -->
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/refinement.css" />
+
+  <!-- 🧩 COMMON SURFACES -->
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/common.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/tables.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/typography.css" />
+
+  <!-- 🎯 DOMAIN SURFACE -->
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/batch.css" />
+
 </head>
 
 <body class="app-loading">
 
-<!-- 🔷 HEADER -->
-<div id="headerContainer"></div>
+  <!-- 🔷 HEADER -->
 
-<div class="layout">
+  <div id="headerContainer"></div>
+
+  <div class="layout">
 
     <!-- 🔷 SIDEBAR -->
+
     <div id="adminSidebarContainer"></div>
 
-  <main class="content">
+    <main class="content">
 
-    <!-- 🔐 LOGIN VIEW -->
-    <section id="loginView">
-      <h2>Admin Access</h2>
-      <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
-    </section>
+      <!-- 🔐 LOGIN VIEW -->
 
-    <!-- 🔷 APP VIEW -->
-    <section id="appView" class="hidden">
+      <section id="loginView">
 
-      <!-- 🧠 HEADER -->
-      <div class="batch-header section">
-        <h2>Batch Management</h2>
-        <p>Create and manage program batches</p>
-      </div>
+        <h2>
+          Admin Access
+        </h2>
 
-      <!-- ➕ CREATE -->
-      <div class="batch-form-card">
+        <p>
+          Please sign in with your authorized account.
+        </p>
 
-        <div class="batch-form-title">Create Batch</div>
+        <button
+          id="loginBtn"
+          class="btn btn-primary">
 
-        <form id="batchForm" class="batch-form-grid">
+          Sign in with Google
 
-          <div>
-            <label>Batch Name *</label>
-            <input id="batchName" required />
-          </div>
+        </button>
 
-          <div>
-            <label>Program Code *</label>
-            <select id="programCode" required>
-              <option value="">Select Program Code</option>
-              <option value="AOP">AOP</option>
-              <option value="AIPA">AIPA</option>
-            </select>
-          </div>
+      </section>
 
-          <div>
-            <label>Status</label>
-            <select id="batchStatus">
-              <option value="active">Active</option>
-              <option value="closed">Closed</option>
-            </select>
-          </div>
+      <!-- 🔷 APPLICATION VIEW -->
 
-        </form>
+      <section
+        id="appView"
+        class="hidden">
 
-        <div class="batch-actions">
-          <button type="submit" form="batchForm" class="btn btn-primary">
-            Create Batch
-          </button>
+        <!-- ==================================================
+             PAGE HEADER
+        ================================================== -->
 
-          <button type="button" class="btn btn-secondary"
-            onclick="document.getElementById('batchForm').reset()">
-            Reset
-          </button>
+        <div class="batch-header section">
+
+          <h2>
+            Batch Management
+          </h2>
+
+          <p>
+            Create and manage program batches.
+          </p>
+
         </div>
 
-        <!-- ⚠️ GOVERNANCE SAFETY -->
-        <div class="batch-warning">
-          ⚠️ Program Code selection is permanent and cannot be changed after batch creation.
+        <!-- ==================================================
+             CREATE BATCH
+        ================================================== -->
+
+        <div class="batch-form-card">
+
+          ...
+          
         </div>
 
-      </div>
+        <!-- ==================================================
+             BATCH LIST
+        ================================================== -->
 
-      <!-- 📊 LIST -->
-      <div class="batch-list-card section">
+        <div class="batch-list-card section">
 
-        <div class="batch-list-title">Batch List</div>
+          ...
 
-        <div class="table-wrapper">
-          <table id="batchTable" class="table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Program</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
         </div>
 
-      </div>
+      </section>
 
-    </section>
+    </main>
 
-  </main>
-</div>
+  </div>
 
-<!-- 🔷 FOOTER -->
-<div id="footerContainer"></div>
+  <!-- 🔷 FOOTER -->
 
-<!-- 🔥 UNIVERSAL ADMIN CONTROLLER -->
-<script type="module">
+  <div id="footerContainer"></div>
 
-import { initAdminApp }
-  from "../assets/js/admin-app.js";
+  <!-- 🔥 APP BOOTSTRAP -->
 
-import { loadAdminSidebar }
-  from "../shared/design-authority/js/admin-sidebar.js";
+  <script type="module">
 
-/*
-  Batch Management
-  Version: 1.1.0
+    import { initAdminApp }
+      from "../assets/js/admin-app.js";
 
-  Admin Navigation Authority Adoption
+    import { loadAdminSidebar }
+      from "../shared/design-authority/js/admin-sidebar.js";
 
-  Architecture:
-  Admin
-    ↓
-  Credential Operations
-    ↓
-  Batch Management
-*/
+    /*
+    ==================================================
+    BATCH MANAGEMENT
+    Version: 1.1.0
 
-loadAdminSidebar(
-  "credential-operations"
-);
+    Navigation Authority
 
-initAdminApp(
-  "batch.js"
-);
+    Admin
+      ↓
+    Credential Operations
+      ↓
+    Batch Management
+    ==================================================
+    */
 
-</script>
+    loadAdminSidebar(
+      "credential-operations"
+    );
 
-<!-- 🔗 NAVIGATION -->
-<script>
-function openBatch(batchId) {
-  window.location.href = `batch-view.html?batch_id=${batchId}`;
-}
-</script>
+    initAdminApp(
+      "batch.js"
+    );
+
+  </script>
+
+  <!-- 🔗 NAVIGATION HELPERS -->
+
+  <script>
+
+    function openBatch(batchId) {
+
+      window.location.href =
+        `batch-view.html?batch_id=${batchId}`;
+
+    }
+
+  </script>
 
 </body>
+
 </html>

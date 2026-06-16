@@ -1,6 +1,6 @@
 /* =====================================================
    TRAINER REGISTRY
-   Version: 1.0.0
+   Version: 1.1.0
    Status: ACTIVE
 
    Purpose
@@ -13,6 +13,7 @@
    ✓ Trainer Search
    ✓ Trainer Listing
    ✓ Trainer Status
+   ✓ Trainer Resolution
 
    Collection
    -----------------------------------------------------
@@ -37,6 +38,8 @@ import {
   collection,
   addDoc,
   query,
+  where,
+  getDocs,
   onSnapshot,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -77,6 +80,49 @@ function generateTrainerId() {
 }
 
 /* =====================================================
+   TRAINER RESOLUTION
+===================================================== */
+
+export async function resolveTrainer(trainerId) {
+
+  if (!trainerId) {
+    return null;
+  }
+
+  try {
+
+    const snap = await getDocs(
+      query(
+        collection(
+          db,
+          "trainerRegistry"
+        ),
+        where(
+          "trainerId",
+          "==",
+          trainerId
+        )
+      )
+    );
+
+    if (snap.empty) {
+      return null;
+    }
+
+    return snap.docs[0].data();
+
+  } catch (error) {
+
+    console.error(
+      "Trainer resolution failed:",
+      error
+    );
+
+    return null;
+  }
+}
+
+/* =====================================================
    RENDER TABLE
 ===================================================== */
 
@@ -104,19 +150,11 @@ function renderRegistry() {
 
   body.innerHTML = trainers.map(t => `
     <tr>
-
       <td>${safe(t.trainerId)}</td>
-
       <td>${safe(t.trainerName)}</td>
-
       <td>${safe(t.email)}</td>
-
       <td>${safe(t.status)}</td>
-
-      <td>
-        View
-      </td>
-
+      <td>View</td>
     </tr>
   `).join("");
 
@@ -141,17 +179,28 @@ function startListener() {
     );
 
   unsubscribe =
-    onSnapshot(q, snapshot => {
+    onSnapshot(
+      q,
+      snapshot => {
 
-      trainers =
-        snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+        trainers =
+          snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
 
-      renderRegistry();
+        renderRegistry();
 
-    });
+      },
+      error => {
+
+        console.error(
+          "Trainer listener error:",
+          error
+        );
+
+      }
+    );
 
 }
 
@@ -237,7 +286,10 @@ window.createTrainer = async function () {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Trainer creation failed:",
+      error
+    );
 
     alert(
       "Failed to create trainer."
@@ -248,7 +300,7 @@ window.createTrainer = async function () {
 };
 
 /* =====================================================
-   SEARCH (PHASE 1 PLACEHOLDER)
+   SEARCH
 ===================================================== */
 
 window.searchTrainerRegistry =
@@ -290,25 +342,33 @@ window.searchTrainerRegistry =
       trainers.filter(t => {
 
         return (
+
           (!trainerId ||
             t.trainerId
               ?.toLowerCase()
-              .includes(trainerId)) &&
+              .includes(trainerId))
+
+          &&
 
           (!trainerName ||
             t.trainerName
               ?.toLowerCase()
-              .includes(trainerName)) &&
+              .includes(trainerName))
+
+          &&
 
           (!email ||
             t.email
               ?.toLowerCase()
-              .includes(email)) &&
+              .includes(email))
+
+          &&
 
           (!status ||
             t.status
               ?.toLowerCase()
               === status)
+
         );
 
       });

@@ -218,7 +218,7 @@ Governance
             <button
               id="searchBtn"
               class="btn btn-primary">
-
+                onclick="searchTrainerRegistry()">
               Search
 
             </button>
@@ -358,6 +358,82 @@ Governance
 
       </div>
 
+      <!-- ADD TRAINER -->
+
+<div class="section">
+
+  <div class="card">
+
+    <div class="card-title">
+      Add Trainer
+    </div>
+
+    <div class="grid-4">
+
+      <div>
+
+        <label>
+          Trainer Name
+        </label>
+
+        <input
+          type="text"
+          id="newTrainerName"
+          placeholder="Enter Trainer Name" />
+
+      </div>
+
+      <div>
+
+        <label>
+          Email
+        </label>
+
+        <input
+          type="email"
+          id="newTrainerEmail"
+          placeholder="Enter Email" />
+
+      </div>
+
+      <div>
+
+        <label>
+          Status
+        </label>
+
+        <select id="newTrainerStatus">
+
+          <option value="active">
+            Active
+          </option>
+
+          <option value="inactive">
+            Inactive
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div style="margin-top:16px;">
+
+      <button
+        class="btn btn-primary"
+        onclick="createTrainer()">
+
+        Create Trainer
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
   </section>
 
     </main>
@@ -374,6 +450,8 @@ Governance
 
     import { initAdminApp }
       from "../../assets/js/admin-app.js";
+    
+    import "../assets/js/registry.js";
 
     /*
     ==================================================

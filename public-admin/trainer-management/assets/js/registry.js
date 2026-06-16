@@ -31,7 +31,7 @@
 ===================================================== */
 
 import { db, auth }
-  from "../../assets/js/core.js";
+  from "../../../assets/js/core.js";
 
 import {
   collection,

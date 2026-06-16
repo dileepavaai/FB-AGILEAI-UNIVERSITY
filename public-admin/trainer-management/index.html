@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Trainer Management – Admin</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1" />
+
+  <!-- 🔒 CORE SYSTEM -->
+  <link
+    rel="stylesheet"
+    href="../assets/css/site.css" />
+
+  <!-- 🎨 DESIGN AUTHORITY -->
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/refinement.css" />
+
+  <!-- 🧩 COMMON SURFACES -->
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/common.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/tables.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/typography.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+
+</head>
+
+<body class="app-loading">
+
+  <!-- HEADER -->
+  <div id="headerContainer"></div>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <div id="adminSidebarContainer"></div>
+
+    <main class="content">
+
+      <!-- LOGIN -->
+      <section id="loginView">
+
+        <h2>Admin Access</h2>
+
+        <p>
+          Please sign in with your authorized account.
+        </p>
+
+        <button
+          id="loginBtn"
+          class="btn btn-primary">
+
+          Sign in with Google
+
+        </button>
+
+      </section>
+
+      <!-- APP -->
+      <section
+        id="appView"
+        class="hidden">
+
+        <!-- PAGE HEADER -->
+
+        <div class="section">
+
+          <h2>
+            Trainer Management
+          </h2>
+
+          <p class="page-subtitle">
+
+            Centralized administration for trainer identity governance,
+            trainer-linked credential issuance, trainer registry operations,
+            and future trainer governance services.
+
+          </p>
+
+        </div>
+
+        <!-- OPERATIONAL ADMINISTRATION -->
+
+        <div class="section">
+
+          <div class="card">
+
+            <div class="card-title">
+              Operational Administration
+            </div>
+
+            <div class="co-operations-grid">
+
+              <!-- TRAINER REGISTRY -->
+
+              <div class="co-operation-card">
+
+                <div class="co-operation-title">
+                  Trainer Registry
+                </div>
+
+                <div class="co-operation-description">
+
+                  Manage governed trainer records used for
+                  credential generation.
+
+                </div>
+
+                <a
+                  class="co-operation-link"
+                  href="./registry/index.html">
+
+                  Launch →
+
+                </a>
+
+              </div>
+
+              <!-- CREDENTIAL TESTING -->
+
+              <div class="co-operation-card">
+
+                <div class="co-operation-title">
+                  Credential Testing
+                </div>
+
+                <div class="co-operation-description">
+
+                  Validate trainer-linked PDF and PNG credential
+                  generation workflows.
+
+                </div>
+
+                <a
+                  class="co-operation-link"
+                  href="./dashboard/index.html">
+
+                  Launch →
+
+                </a>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- REVENUE WORKFLOW -->
+
+        <div class="section">
+
+          <div class="card">
+
+            <div class="card-title">
+              Revenue Sprint Workflow
+            </div>
+
+            <div class="data-row">
+              <span class="data-label">Revenue Path</span>
+              <span>
+                AOP Holder → Upgrade → Payment → Credential Issuance → Portal Visibility
+              </span>
+            </div>
+
+            <div class="data-row">
+              <span class="data-label">Credential Flow</span>
+              <span>
+                Trainer Registry → Dynamic Resolution → Credential Generation →
+                Credential Registry → Student Portal Visibility
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FUTURE CAPABILITY -->
+
+        <div class="section">
+
+          <div class="card">
+
+            <div class="card-title">
+              Future Capability
+            </div>
+
+            <div class="grid-2">
+
+              <div class="data-row">
+                <span class="data-label">Trainer Dashboard</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Trainer Batches</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Batch Issuance</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Batch View</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Trainer Activity</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Learner Completion Rates</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Credential Issuance Trends</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Program Distribution</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Monthly Metrics</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Batch Performance</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Accreditation Insights</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Accreditation</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Approvals</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Audit Logs</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Trainer Credential Governance</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Reports</span>
+                <span>Deferred</span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">Settings</span>
+                <span>Deferred</span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- GOVERNANCE NOTICE -->
+
+        <div class="section">
+
+          <div class="card">
+
+            <div class="card-title">
+              Governance Notice
+            </div>
+
+            <p>
+
+              Trainer Management is the authoritative administrative
+              gateway for trainer identity governance and trainer-linked
+              credential issuance activities within Agile AI University.
+
+            </p>
+
+            <p>
+
+              Current sprint priorities focus on Trainer Registry,
+              Trainer Certificate Dynamic Resolution, Credential Testing,
+              Student Portal Credential Visibility, and Alumni Upgrade
+              Campaign activation.
+
+            </p>
+
+            <p>
+
+              Future capabilities remain visible to preserve
+              architectural transparency and platform roadmap continuity.
+
+            </p>
+
+            <p>
+
+              Existing operational URLs remain canonical and unchanged.
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footerContainer"></div>
+
+  <script type="module">
+
+    import { initAdminApp }
+      from "../assets/js/admin-app.js";
+
+    import { loadAdminSidebar }
+      from "../shared/design-authority/js/admin-sidebar.js";
+
+    loadAdminSidebar(
+      "trainer-management"
+    );
+
+    initAdminApp();
+
+  </script>
+
+</body>
+
+</html>

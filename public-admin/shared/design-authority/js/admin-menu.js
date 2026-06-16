@@ -56,9 +56,9 @@ export const ADMIN_MENU = [
   {
     id: "trainer-management",
     label: "Trainer Management",
-    href: "/trainer-management/dashboard/index.html"
-  },
-
+    href: "/trainer-management/"
+},
+  
   {
     id: "reconciliation",
     label: "Reconciliation",

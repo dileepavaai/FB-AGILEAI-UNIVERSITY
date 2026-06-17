@@ -327,12 +327,19 @@
 }
 
 .trainer-certificate-footer {
-    margin-top: 60px;
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 45px;
+
+    text-align: center;
 }
 
-.trainer-certificate-metadata p,
-.issuer-line {
-    margin: 8px 0;
+.organization-emblem:not([src]),
+.organization-emblem[src=""] {
+    display: none;
 }
 
 /* ==========================================

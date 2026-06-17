@@ -31,6 +31,19 @@ Cost Model:
 
 ===================================================== */
 
+import { db }
+from "../../../../assets/js/core.js";
+
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 document.addEventListener("DOMContentLoaded", () => {
 
   /* =====================================================
@@ -320,6 +333,117 @@ function invalidateLoadedCredentialState() {
   }
 
   /* =====================================================
+   Trainer Resolution
+===================================================== */
+
+async function resolveTrainerContext(record) {
+
+  try {
+
+    if (!record?.batch_id) {
+      return null;
+    }
+
+    const batchRef =
+      doc(
+        db,
+        "batches",
+        record.batch_id
+      );
+
+    const batchSnap =
+      await getDoc(batchRef);
+
+    if (!batchSnap.exists()) {
+      return null;
+    }
+
+    const batch =
+      batchSnap.data();
+
+    const trainerId =
+      batch.trainerId;
+
+    if (!trainerId) {
+      return null;
+    }
+
+    const trainerQuery =
+      query(
+        collection(
+          db,
+          "trainerRegistry"
+        ),
+        where(
+          "trainerId",
+          "==",
+          trainerId
+        )
+      );
+
+    const trainerResult =
+      await getDocs(
+        trainerQuery
+      );
+
+    if (trainerResult.empty) {
+      return null;
+    }
+
+    const trainer =
+      trainerResult.docs[0].data();
+
+    let organization = null;
+
+    if (trainer.organizationId) {
+
+      const organizationQuery =
+        query(
+          collection(
+            db,
+            "trainingOrganizations"
+          ),
+          where(
+            "organizationId",
+            "==",
+            trainer.organizationId
+          )
+        );
+
+      const organizationResult =
+        await getDocs(
+          organizationQuery
+        );
+
+      if (!organizationResult.empty) {
+
+        organization =
+          organizationResult.docs[0].data();
+
+      }
+
+    }
+
+    return {
+      trainer,
+      organization
+    };
+
+  }
+  catch (error) {
+
+    console.error(
+      "Trainer Resolution Failed",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+  /* =====================================================
      Trainer Certificate Preview
   ===================================================== */
 
@@ -400,6 +524,116 @@ function invalidateLoadedCredentialState() {
         trainercertificatePreview.querySelector(
           "#trainercertIssueDate"
         );
+
+      const trainerContext =
+        await resolveTrainerContext(
+          record
+        );
+
+      const trainerNameElement =
+        trainercertificatePreview.querySelector(
+          "#trainercertTrainerName"
+        );
+
+      const trainerIdElement =
+        trainercertificatePreview.querySelector(
+          "#trainercertTrainerId"
+        );
+
+      const organizationNameElement =
+        trainercertificatePreview.querySelector(
+          "#trainercertOrganizationName"
+        );
+
+      const organizationEmblemElement =
+        trainercertificatePreview.querySelector(
+          "#trainercertOrganizationEmblem"
+        );
+
+      const pdfTrainerNameElement =
+        pdfRenderContainer?.querySelector(
+          "#trainercertTrainerName"
+        );
+
+      const pdfTrainerIdElement =
+        pdfRenderContainer?.querySelector(
+          "#trainercertTrainerId"
+        );
+
+      const pdfOrganizationNameElement =
+        pdfRenderContainer?.querySelector(
+          "#trainercertOrganizationName"
+        );
+
+      const pdfOrganizationEmblemElement =
+        pdfRenderContainer?.querySelector(
+          "#trainercertOrganizationEmblem"
+        );
+
+      if (trainerContext) {
+
+        const {
+          trainer,
+          organization
+        } = trainerContext;
+
+        if (trainerNameElement) {
+          trainerNameElement.textContent =
+            trainer?.trainerName || "-";
+        }
+
+        if (pdfTrainerNameElement) {
+          pdfTrainerNameElement.textContent =
+            trainer?.trainerName || "-";
+        }
+
+        if (trainerIdElement) {
+          trainerIdElement.textContent =
+            trainer?.trainerId || "-";
+        }
+
+        if (pdfTrainerIdElement) {
+          pdfTrainerIdElement.textContent =
+            trainer?.trainerId || "-";
+        }
+
+        if (organizationNameElement) {
+          organizationNameElement.textContent =
+            organization?.organizationName || "-";
+        }
+
+        if (pdfOrganizationNameElement) {
+          pdfOrganizationNameElement.textContent =
+            organization?.organizationName || "-";
+        }
+
+        if (
+          organization?.emblemUrl &&
+          organizationEmblemElement
+        ) {
+
+          organizationEmblemElement.src =
+            organization.emblemUrl;
+
+          organizationEmblemElement.style.display =
+            "block";
+
+        }
+
+        if (
+          organization?.emblemUrl &&
+          pdfOrganizationEmblemElement
+        ) {
+
+          pdfOrganizationEmblemElement.src =
+            organization.emblemUrl;
+
+          pdfOrganizationEmblemElement.style.display =
+            "block";
+
+        }
+
+      }
 
       if (learnerName) {
         learnerName.textContent =

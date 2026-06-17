@@ -341,7 +341,7 @@
 
 .trainer-attribution-grid {
 
-    width: 700px;
+    width: 600px;
 
     margin: 40px auto;
 
@@ -383,7 +383,7 @@
 .trainer-heading,
 .organization-heading {
 
-    font-size: 1rem;
+    font-size: 0.9rem;
 
     font-weight: 600;
 
@@ -394,7 +394,7 @@
 
 .trainer-name {
 
-    font-size: 1.1rem;
+    font-size: 1rem;
 
     font-weight: 700;
 
@@ -405,7 +405,7 @@
 
 .organization-name {
 
-    font-size: 1rem;
+    font-size: 0.95rem;
 
     font-weight: 600;
 

@@ -34,94 +34,234 @@
 
     <!-- 🔐 LOGIN -->
     <section id="loginView">
+
       <h2>Admin Access</h2>
-      <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
+
+      <p>
+        Please sign in with your authorized account.
+      </p>
+
+      <button
+        id="loginBtn"
+        class="btn btn-primary">
+
+        Sign in with Google
+
+      </button>
+
     </section>
 
     <!-- 🔷 APP -->
-    <section id="appView" class="hidden">
+    <section
+      id="appView"
+      class="hidden">
 
-      <!-- 🧠 HEADER (ALIGNED WITH DASHBOARD) -->
+      <!-- ==================================================
+           PAGE HEADER
+      =================================================== -->
+
       <div class="section">
-        <h1>CSV Import</h1>
+
+        <h1>
+          CSV Import
+        </h1>
+
         <p class="page-subtitle">
-          Controlled credential ingestion with validation and batch binding
+
+          Controlled credential ingestion
+          with validation and batch binding.
+
         </p>
+
       </div>
 
-      <!-- 🔷 STEP 1 -->
+      <!-- ==================================================
+           IMPORT CONFIGURATION
+      =================================================== -->
+
       <div class="card section">
 
         <div class="card-title">
+
           Import Configuration
+
         </div>
 
-        <select id="csvBatchSelect">
-          <option value="">Select Batch</option>
-        </select>
+        <div
+          style="
+            display:grid;
+            grid-template-columns:2fr 2fr auto auto;
+            gap:12px;
+            align-items:end;
+          ">
 
-        <div class="card-subtitle" style="margin-top:10px;">
-          ⚠ All uploaded credentials will be permanently linked to this batch.
+          <!-- Batch -->
+
+          <div>
+
+            <label>
+              Batch
+            </label>
+
+            <select id="csvBatchSelect">
+
+              <option value="">
+                -- Select Batch --
+              </option>
+
+            </select>
+
+          </div>
+
+          <!-- File -->
+
+          <div>
+
+            <label>
+              CSV File
+            </label>
+
+            <input
+              type="file"
+              id="csvFile"
+              accept=".csv" />
+
+          </div>
+
+          <!-- Validate -->
+
+          <div>
+
+            <button
+              id="parseBtn"
+              class="btn btn-secondary">
+
+              Validate
+
+            </button>
+
+          </div>
+
+          <!-- Upload -->
+
+          <div>
+
+            <button
+              id="uploadBtn"
+              class="btn btn-primary"
+              style="display:none;">
+
+              Upload
+
+            </button>
+
+          </div>
+
         </div>
 
-        <!-- Batch Meta (JS will fill) -->
-        <div id="batchMeta" style="margin-top:10px;"></div>
+        <div
+          class="card-subtitle"
+          style="margin-top:12px;">
+
+          ⚠ All uploaded credentials will be
+          permanently linked to the selected batch.
+
+        </div>
+
+        <div
+          id="fileName"
+          class="card-subtitle"
+          style="margin-top:10px;">
+
+        </div>
+
+        <div
+          id="statusMsg"
+          class="card-subtitle"
+          style="margin-top:10px;">
+
+        </div>
 
       </div>
 
-      <!-- 🔷 STEP 2 -->
-      <div class="card section" id="step2Card" style="opacity:0.5; pointer-events:none;">
+      <!-- ==================================================
+           BATCH INFORMATION
+      =================================================== -->
 
-        <div class="card-title">2. Upload CSV File</div>
-
-        <p class="card-subtitle" id="step2Hint">
-          Select a batch to enable upload
-        </p>
-
-        <input type="file" id="csvFile" accept=".csv" />
-
-        <p id="fileName" class="card-subtitle" style="margin-top:6px;"></p>
-
-        <div class="section-tight action-row" style="margin-top:12px;">
-          <button id="parseBtn" class="btn btn-secondary">
-            Validate File
-          </button>
-
-          <button id="uploadBtn" class="btn btn-primary" style="display:none;">
-            Upload Valid Records
-          </button>
-        </div>
-
-        <p id="statusMsg" class="card-subtitle"></p>
-
-      </div>
-
-      <!-- 🔷 STEP 3 -->
       <div class="card section">
 
-        <div class="card-title">3. Review & Validation</div>
+        <div class="card-title">
 
-        <!-- Validation Summary -->
-        <div id="validationSummary" class="card-subtitle" style="margin-bottom:10px;"></div>
+          Batch Information
+
+        </div>
+
+        <div id="batchMeta">
+
+          <p class="card-subtitle">
+
+            Select a batch to view batch metadata.
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <!-- ==================================================
+           REVIEW & VALIDATION
+      =================================================== -->
+
+      <div class="card section">
+
+        <div class="card-title">
+
+          Review & Validation
+
+        </div>
+
+        <div
+          id="validationSummary"
+          class="card-subtitle"
+          style="margin-bottom:12px;">
+
+        </div>
 
         <div class="table-wrapper">
-          <table id="previewTable" class="table">
+
+          <table
+            id="previewTable"
+            class="table">
+
             <thead>
+
               <tr>
+
                 <th>Name</th>
+
                 <th>Email</th>
+
                 <th>Type</th>
+
                 <th>Program</th>
+
                 <th>Status / Errors</th>
+
               </tr>
+
             </thead>
+
             <tbody></tbody>
+
           </table>
+
         </div>
 
         <p class="card-subtitle">
-          Invalid rows are highlighted. Only valid records will be uploaded.
+
+          Invalid rows are highlighted.
+          Only valid records will be uploaded.
+
         </p>
 
       </div>
@@ -129,11 +269,15 @@
     </section>
 
   </main>
+
 </div>
 
 <div id="footerContainer"></div>
 
-<!-- 🔥 APP BOOTSTRAP -->
+<!-- ==================================================
+     APP BOOTSTRAP
+================================================== -->
+
 <script type="module">
 
 import { initAdminApp }
@@ -146,7 +290,7 @@ import { loadAdminSidebar }
 
 /* ==================================================
    CSV IMPORT
-   Version: 2.0.0
+   Version: 2.1.0
    Status: ACTIVE
 
    Purpose
@@ -167,12 +311,11 @@ import { loadAdminSidebar }
    Governance
    --------------------------------------------------
    - Direct module import
-   - No dynamic module loading
    - Firestore direct access
    - Batch-bound credential creation
-   - Credential ID generation
    - Credential validation
    - Credential preview
+   - Operational admin workflow
 ================================================== */
 
 loadAdminSidebar(

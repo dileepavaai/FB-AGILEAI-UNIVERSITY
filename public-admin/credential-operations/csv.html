@@ -131,22 +131,53 @@
 
 <div id="footerContainer"></div>
 
-<!-- 🔥 ADMIN -->
+<!-- 🔥 APP BOOTSTRAP -->
 <script type="module">
 
 import { initAdminApp }
   from "../assets/js/admin-app.js";
 
+import "./csv.js";
+
 import { loadAdminSidebar }
   from "../shared/design-authority/js/admin-sidebar.js";
+
+/* ==================================================
+   CSV IMPORT
+   Version: 2.0.0
+   Status: ACTIVE
+
+   Purpose
+   --------------------------------------------------
+   Controlled credential ingestion and
+   batch-bound credential creation.
+
+   Architecture
+   --------------------------------------------------
+   Credential Operations
+       ↓
+   CSV Import
+       ↓
+   csv.js
+       ↓
+   Firestore
+
+   Governance
+   --------------------------------------------------
+   - Direct module import
+   - No dynamic module loading
+   - Firestore direct access
+   - Batch-bound credential creation
+   - Credential ID generation
+   - Credential validation
+   - Credential preview
+================================================== */
 
 loadAdminSidebar(
   "credential-operations"
 );
 
-initAdminApp(
-  "csv.js"
-);
+initAdminApp();
 
 </script>
 

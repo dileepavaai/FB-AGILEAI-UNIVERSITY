@@ -334,3 +334,87 @@
 .issuer-line {
     margin: 8px 0;
 }
+
+/* ==========================================
+   Trainer Attribution Layout v1.1
+========================================== */
+
+.trainer-attribution-grid {
+
+    width: 700px;
+
+    margin: 32px auto;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 60px;
+}
+
+.trainer-column {
+
+    flex: 1;
+
+    text-align: center;
+}
+
+.organization-column {
+
+    flex: 1;
+
+    text-align: center;
+}
+
+.organization-emblem {
+
+    width: 90px;
+    height: 90px;
+
+    object-fit: contain;
+
+    display: block;
+
+    margin: 12px auto;
+}
+
+.trainer-heading,
+.organization-heading {
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    color: #374151;
+
+    margin-bottom: 8px;
+}
+
+.trainer-name {
+
+    font-size: 1.1rem;
+
+    font-weight: 700;
+
+    color: #111827;
+
+    margin-bottom: 6px;
+}
+
+.organization-name {
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    color: #111827;
+}
+
+.trainer-id-line {
+
+    color: #6b7280;
+}
+
+

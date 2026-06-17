@@ -350,7 +350,7 @@
 
     width: 600px;
 
-    margin: 40px auto;
+    margin: 12px auto;
 
     display: flex;
 
@@ -361,18 +361,14 @@
     gap: 80px;
 }
 
-.trainer-column {
-
-    flex: 1;
-
-    text-align: center;
-}
-
+.trainer-column,
 .organization-column {
 
-    flex: 1;
+    display: flex;
 
-    text-align: center;
+    flex-direction: column;
+
+    gap: 6px;
 }
 
 .organization-emblem {

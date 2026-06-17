@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>CSV Import – Admin</title>
+  <title>Credential Import – Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- 🔒 BASE -->
@@ -63,13 +63,13 @@
       <div class="section">
 
         <h1>
-          CSV Import
+          Credential Import
         </h1>
 
         <p class="page-subtitle">
 
-          Controlled credential ingestion
-          with validation and batch binding.
+          Import credential records into a selected batch
+          with validation and governance controls.
 
         </p>
 
@@ -83,7 +83,7 @@
 
         <div class="card-title">
 
-          Import Configuration
+          Import Setup
 
         </div>
 
@@ -118,7 +118,7 @@
           <div>
 
             <label>
-              CSV File
+              Credential CSV File
             </label>
 
             <input
@@ -149,10 +149,8 @@
             <button
               id="uploadBtn"
               class="btn btn-primary"
-              style="display:none;">
-
-              Upload
-
+              disabled>
+              Upload Valid Records
             </button>
 
           </div>
@@ -188,7 +186,10 @@
            BATCH INFORMATION
       =================================================== -->
 
-      <div class="card section">
+      <div
+        id="batchInfoCard"
+        class="card section"
+        style="display:none;">
 
         <div class="card-title">
 
@@ -302,7 +303,7 @@ import { loadAdminSidebar }
    --------------------------------------------------
    Credential Operations
        ↓
-   CSV Import
+   Credential Import
        ↓
    csv.js
        ↓

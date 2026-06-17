@@ -148,6 +148,21 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  fileInput.addEventListener(
+        "change",
+        () => {
+
+          const fileName =
+            document.getElementById(
+              "fileName"
+            );
+
+          fileName.innerText =
+            fileInput.files?.[0]?.name || "";
+
+        }
+    );
+
   /* =====================================================
      📥 LOAD BATCHES
   ===================================================== */
@@ -231,10 +246,22 @@ document.addEventListener("DOMContentLoaded", () => {
     "change",
     () => {
 
+      const batchInfoCard =
+        document.getElementById(
+          "batchInfoCard"
+        );
+
       const batch =
         batchLookup[
           batchSelect.value
         ];
+
+      if (batchInfoCard) {
+
+        batchInfoCard.style.display =
+          batch ? "block" : "none";
+
+      }
 
       const selectedOption =
         batchSelect.options[
@@ -280,6 +307,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <div>
             <strong>Status:</strong>
             ${batch.status || "-"}
+          </div>
+
+          <div>
+            <strong>Expected Records:</strong>
+            ${batch.total_expected_records || "-"}
           </div>
 
         </div>
@@ -329,9 +361,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
       renderPreview();
 
-      statusMsg.innerText =
-        `Parsed: ${parsedData.length} | Valid: ${validatedData.length}`;
+      uploadBtn.disabled =
+        validatedData.length === 0;
 
+      const validationSummary =
+  document.getElementById(
+    "validationSummary"
+  );
+
+if (validationSummary) {
+
+  validationSummary.innerHTML = `
+    Total Records: ${parsedData.length}
+    |
+    Valid Records: ${validatedData.length}
+    |
+    Invalid Records:
+    ${parsedData.length - validatedData.length}
+  `;
+
+}
+
+statusMsg.innerText =
+  `Parsed: ${parsedData.length} | Valid: ${validatedData.length}`;
+  
     };
 
     reader.readAsText(file);

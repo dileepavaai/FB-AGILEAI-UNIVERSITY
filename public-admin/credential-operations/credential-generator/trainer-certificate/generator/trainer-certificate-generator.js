@@ -338,6 +338,9 @@ function invalidateLoadedCredentialState() {
 
 async function resolveTrainerContext(record) {
 
+  console.log("Credential Record", record);
+  console.log("Batch ID", record.batch_id);
+
   try {
 
     if (!record?.batch_id) {
@@ -360,6 +363,8 @@ async function resolveTrainerContext(record) {
 
     const batch =
       batchSnap.data();
+    
+    console.log("Batch Data", batch);
 
     const trainerId =
       batch.trainerId;
@@ -392,6 +397,8 @@ async function resolveTrainerContext(record) {
 
     const trainer =
       trainerResult.docs[0].data();
+
+    console.log("Trainer Data", trainer);
 
     let organization = null;
 

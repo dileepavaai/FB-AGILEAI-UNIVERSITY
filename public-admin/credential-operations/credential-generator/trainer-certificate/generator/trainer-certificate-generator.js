@@ -339,23 +339,44 @@ function invalidateLoadedCredentialState() {
 async function resolveTrainerContext(record) {
 
   console.log("Credential Record", record);
+  console.log("Credential Keys",Object.keys(record));
   console.log("Batch ID", record.batch_id);
+  console.log("batchId:", record.batchId);
+  console.log("batch_name:",record.batch_name);
 
   try {
 
-    if (!record?.batch_id) {
-      return null;
-    }
+    const batchName =
+  record.batch_name;
 
-    const batchRef =
-      doc(
-        db,
-        "batches",
-        record.batch_id
-      );
+if (!batchName) {
+  return null;
+}
 
-    const batchSnap =
-      await getDoc(batchRef);
+const batchQuery =
+  query(
+    collection(db, "batches"),
+    where(
+      "batch_name",
+      "==",
+      batchName
+    )
+  );
+
+const batchResult =
+  await getDocs(batchQuery);
+
+if (batchResult.empty) {
+  return null;
+}
+
+const batch =
+  batchResult.docs[0].data();
+
+console.log(
+  "Batch Data",
+  batch
+);
 
     if (!batchSnap.exists()) {
       return null;

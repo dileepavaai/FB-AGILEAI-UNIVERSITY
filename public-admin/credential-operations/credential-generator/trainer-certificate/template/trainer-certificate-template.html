@@ -2,7 +2,7 @@
 ==================================================
 Agile AI University
 
-Trainer Certificate Template Standard v1.1
+Trainer Certificate Template Standard v1.2
 Trainer Certificate Canvas Standard v1.0
 Trainer Certificate Frame Standard v1.0
 
@@ -42,15 +42,29 @@ Must Display
 - Credential ID
 - Trainer Name
 - Trainer ID
+- Training Program
+- Training Period
 - Licensed Training Organization Name
 - Licensed Training Organization Emblem
 
 Must Not Display
 
 - Trainer Signature
+- Capability Status
+- Recognition Framework
+- Recognition Effective Date
 
 Template Authority:
 trainer-certificate-template.html
+
+Change History
+
+v1.2.0
+------------------------------------------
+- Added Training Program display
+- Added Training Period display
+- Expanded training attribution section
+- Preserved existing trainer attribution model
 
 Locked:
 June 2026
@@ -59,120 +73,141 @@ June 2026
 
 <div class="trainer-certificate-template">
 
-    <div class="trainer-certificate-header">
+<div class="trainer-certificate-header">
 
-        <img
-            src="../assets/images/aau-emblem.png"
-            alt="Agile AI University Emblem"
-            class="trainer-certificate-emblem"
-        >
+    <img
+        src="../assets/images/aau-emblem.png"
+        alt="Agile AI University Emblem"
+        class="trainer-certificate-emblem"
+    >
 
-        <h1>Agile AI University</h1>
+    <h1>Agile AI University</h1>
 
-        <h2>Certificate of Professional Recognition</h2>
+    <h2>Certificate of Professional Recognition</h2>
 
-    </div>
+</div>
 
-    <div class="trainer-certificate-body">
+<div class="trainer-certificate-body">
 
-        <p class="recognition-intro">
-            Agile AI University hereby recognizes
-        </p>
+    <p class="recognition-intro">
+        Agile AI University hereby recognizes
+    </p>
 
-        <h3 id="trainercertLearnerName">
-            Learner Name
-        </h3>
+    <h3 id="trainercertLearnerName">
+        Learner Name
+    </h3>
 
-        <p class="recognition-text">
-            as an
-        </p>
+    <p class="recognition-text">
+        as an
+    </p>
 
-        <h3 id="trainercertCredentialType">
-            Credential Title
-        </h3>
+    <h3 id="trainercertCredentialType">
+        Credential Title
+    </h3>
 
-        <p class="recognition-text">
-            under the professional recognition framework established by Agile AI University.
-        </p>
+    <p class="recognition-text">
+        under the professional recognition framework established by Agile AI University.
+    </p>
 
-        <!-- ==========================================
-             Trainer Recognition Section
-        ========================================== -->
+    <!-- ==========================================
+         Trainer Attribution Section
+    ========================================== -->
 
-        <div class="trainer-attribution-grid">
+    <div class="trainer-attribution-grid">
 
-            <div class="trainer-column">
+        <div class="trainer-column">
 
-                <div class="trainer-heading">
-                    Accredited Trainer
-                </div>
-
-                <div
-                    id="trainercertTrainerName"
-                    class="trainer-name">
-                    Trainer Name
-                </div>
-
-                <div class="trainer-id-line">
-                    Trainer ID:
-                    <span id="trainercertTrainerId">
-                        TRN-AAU-XXXXXXXX
-                    </span>
-                </div>
-
+            <div class="trainer-heading">
+                Accredited Trainer
             </div>
 
-            <div class="organization-column">
+            <div
+                id="trainercertTrainerName"
+                class="trainer-name">
+                Trainer Name
+            </div>
 
-                <div class="organization-heading">
-                    Licensed Training Organization
-                </div>
+            <div class="trainer-id-line">
+                Trainer ID:
+                <span id="trainercertTrainerId">
+                    TRN-AAU-XXXXXXXX
+                </span>
+            </div>
 
-                <img
-            id="trainercertOrganizationEmblem"
-            class="organization-emblem"
-            alt="Organization Emblem"
-            crossorigin="anonymous"
-        >
-                <div
-                    id="trainercertOrganizationName"
-                    class="organization-name">
-                    Organization Name
-                </div>
+            <div class="trainer-program-label">
+                Training Program
+            </div>
 
+            <div
+                id="trainercertProgramName"
+                class="trainer-program-name">
+                Program Name
+            </div>
+
+            <div class="trainer-period-label">
+                Training Period
+            </div>
+
+            <div
+                id="trainercertTrainingPeriod"
+                class="trainer-training-period">
+                01 Jan 2023 – 15 Jan 2023
+            </div>
+
+        </div>
+
+        <div class="organization-column">
+
+            <div class="organization-heading">
+                Licensed Training Organization
+            </div>
+
+            <img
+                id="trainercertOrganizationEmblem"
+                class="organization-emblem"
+                alt="Organization Emblem"
+                crossorigin="anonymous"
+            >
+
+            <div
+                id="trainercertOrganizationName"
+                class="organization-name">
+                Organization Name
             </div>
 
         </div>
 
     </div>
 
-    <div class="trainer-certificate-footer">
+</div>
 
-        <div class="trainer-certificate-metadata">
+<div class="trainer-certificate-footer">
 
-            <p>
-                <strong>Credential ID:</strong>
-                <span id="trainercertCredentialId"></span>
-            </p>
+    <div class="trainer-certificate-metadata">
 
-            <p class="verification-url">
-                verify.agileai.university
-            </p>
+        <p>
+            <strong>Credential ID:</strong>
+            <span id="trainercertCredentialId"></span>
+        </p>
 
-        </div>
-
-        <div class="issuer-section">
-
-            <p class="issuer-line">
-                Issued by Agile AI University
-            </p>
-
-            <p class="issuer-role">
-                Independent Academic and Professional Body
-            </p>
-
-        </div>
+        <p class="verification-url">
+            verify.agileai.university
+        </p>
 
     </div>
+
+    <div class="issuer-section">
+
+        <p class="issuer-line">
+            Issued by Agile AI University
+        </p>
+
+        <p class="issuer-role">
+            Independent Academic and Professional Body
+        </p>
+
+    </div>
+
+</div>
 
 </div>

@@ -401,6 +401,11 @@ function invalidateLoadedCredentialState() {
       batch
     );
 
+    console.log(
+      "Batch Data Full",
+      JSON.stringify(batch, null, 2)
+    );
+
     const trainerId =
       batch.trainerId;
 

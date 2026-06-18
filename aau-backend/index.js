@@ -303,23 +303,34 @@ app.post("/admin/credential-registry", async (req, res) => {
 
     const credentials = snapshot.docs.map(doc => {
 
-      const data = doc.data();
+  const data = doc.data();
 
-      return {
-        credential_id: data.credential_id || "",
-        full_name: data.full_name || "",
-        email: data.email || "",
-        program_code: data.program_code || "",
-        credential_type: data.credential_type || "",
-        issued_status: data.issued_status || "",
-        issued_by: data.issued_by || "",
+  return {
+    credential_id: data.credential_id || "",
+    full_name: data.full_name || "",
+    email: data.email || "",
 
-        batch_name: data.batch_name || "",
-        approval_status: data.approval_status || "",
-        imported_at: data.imported_at || null
-      };
-      
-    });
+    program_code: data.program_code || "",
+    program_name: data.program_name || "",
+
+    credential_type: data.credential_type || "",
+    issued_status: data.issued_status || "",
+    issued_by: data.issued_by || "",
+
+    batch_name: data.batch_name || "",
+    approval_status: data.approval_status || "",
+
+    training_start_date:
+      data.training_start_date || "",
+
+    training_end_date:
+      data.training_end_date || "",
+
+    imported_at:
+      data.imported_at || null
+  };
+
+});
 
     return res.json({
       status: "success",

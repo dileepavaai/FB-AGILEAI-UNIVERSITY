@@ -688,32 +688,43 @@ console.log(
             organization?.organizationName || "-";
         }
 
-        if (
-          organization?.emblemUrl &&
-          organizationEmblemElement
-        ) {
+        /*
+        =====================================================
+        Organization Emblem Rendering
 
-          organizationEmblemElement.crossOrigin =
-            "anonymous";
+        Temporary CORS Mitigation
+
+        Purpose:
+        Use locally hosted emblem assets instead of
+        Firebase Storage URLs until CORS configuration
+        is fully operational.
+
+        Governance:
+        Trainer Certificate Display Standard v1.1
+
+        Future:
+        May revert to organization.emblemUrl once
+        cross-origin image rendering is approved.
+        =====================================================
+        */
+
+        const organizationEmblemPath =
+          "/credential-operations/assets/images/organizations/agile-ai-academy.png";
+
+        if (organizationEmblemElement) {
 
           organizationEmblemElement.src =
-            organization.emblemUrl;
+            organizationEmblemPath;
 
           organizationEmblemElement.style.display =
             "block";
 
         }
 
-        if (
-          organization?.emblemUrl &&
-          pdfOrganizationEmblemElement
-        ) {
-
-          pdfOrganizationEmblemElement.crossOrigin =
-            "anonymous";
+        if (pdfOrganizationEmblemElement) {
 
           pdfOrganizationEmblemElement.src =
-            organization.emblemUrl;
+            organizationEmblemPath;
 
           pdfOrganizationEmblemElement.style.display =
             "block";

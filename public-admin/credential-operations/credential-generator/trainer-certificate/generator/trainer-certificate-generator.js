@@ -561,97 +561,117 @@ catch(error) {
         "#trainercertIssueDate"
     );
 
-      const learnerName =
-        trainercertificatePreview.querySelector(
-          "#trainercertLearnerName"
-        );
+    const learnerName =
+      trainercertificatePreview.querySelector(
+        "#trainercertLearnerName"
+      );
 
-      const credentialType =
-        trainercertificatePreview.querySelector(
-          "#trainercertCredentialType"
-        );
+    const credentialType =
+      trainercertificatePreview.querySelector(
+        "#trainercertCredentialType"
+      );
 
-      const programCode =
-        trainercertificatePreview.querySelector(
-          "#trainercertProgramCode"
-        );
+    const programCode =
+      trainercertificatePreview.querySelector(
+        "#trainercertProgramCode"
+      );
 
-      const credentialId =
-        trainercertificatePreview.querySelector(
-          "#trainercertCredentialId"
-        );
+    const credentialId =
+      trainercertificatePreview.querySelector(
+        "#trainercertCredentialId"
+      );
 
-      const issueDate =
-        trainercertificatePreview.querySelector(
-          "#trainercertIssueDate"
-        );
+    const issueDate =
+      trainercertificatePreview.querySelector(
+        "#trainercertIssueDate"
+      );
 
-      const trainerContext =
-        await resolveTrainerContext(
-          record
-        );
+    const trainerContext =
+      await resolveTrainerContext(
+        record
+      );
 
-      const trainerNameElement =
-        trainercertificatePreview.querySelector(
-          "#trainercertTrainerName"
-        );
+    const trainerNameElement =
+      trainercertificatePreview.querySelector(
+        "#trainercertTrainerName"
+      );
 
-      const trainerIdElement =
-        trainercertificatePreview.querySelector(
-          "#trainercertTrainerId"
-        );
+    const trainerIdElement =
+      trainercertificatePreview.querySelector(
+        "#trainercertTrainerId"
+      );
 
-      const organizationNameElement =
-        trainercertificatePreview.querySelector(
-          "#trainercertOrganizationName"
-        );
+    const organizationNameElement =
+      trainercertificatePreview.querySelector(
+        "#trainercertOrganizationName"
+      );
 
-      const organizationEmblemElement =
-        trainercertificatePreview.querySelector(
-          "#trainercertOrganizationEmblem"
-        );
+    const organizationEmblemElement =
+      trainercertificatePreview.querySelector(
+        "#trainercertOrganizationEmblem"
+      );
 
-      const pdfTrainerNameElement =
-        pdfRenderContainer?.querySelector(
-          "#trainercertTrainerName"
-        );
+    const pdfTrainerNameElement =
+      pdfRenderContainer?.querySelector(
+        "#trainercertTrainerName"
+      );
 
-      const pdfTrainerIdElement =
-        pdfRenderContainer?.querySelector(
-          "#trainercertTrainerId"
-        );
+    const pdfTrainerIdElement =
+      pdfRenderContainer?.querySelector(
+        "#trainercertTrainerId"
+      );
 
-      const pdfOrganizationNameElement =
-        pdfRenderContainer?.querySelector(
-          "#trainercertOrganizationName"
-        );
+    const pdfOrganizationNameElement =
+      pdfRenderContainer?.querySelector(
+        "#trainercertOrganizationName"
+      );
 
-      const pdfOrganizationEmblemElement =
-        pdfRenderContainer?.querySelector(
-          "#trainercertOrganizationEmblem"
-        );
+    const pdfOrganizationEmblemElement =
+      pdfRenderContainer?.querySelector(
+        "#trainercertOrganizationEmblem"
+      );
+
+    const programNameElement =
+      trainercertificatePreview.querySelector(
+        "#trainercertProgramName"
+      );
+
+    const trainingPeriodElement =
+      trainercertificatePreview.querySelector(
+        "#trainercertTrainingPeriod"
+      );
+
+    const pdfProgramNameElement =
+      pdfRenderContainer?.querySelector(
+        "#trainercertProgramName"
+      );
+
+    const pdfTrainingPeriodElement =
+      pdfRenderContainer?.querySelector(
+        "#trainercertTrainingPeriod"
+      );
 
       if (trainerContext) {
 
         console.log(
-  "trainerNameElement",
-  trainerNameElement
-);
+          "trainerNameElement",
+          trainerNameElement
+        );
 
-console.log(
-  "trainerIdElement",
-  trainerIdElement
-);
+        console.log(
+          "trainerIdElement",
+          trainerIdElement
+        );
 
-console.log(
-  "organizationNameElement",
-  organizationNameElement
-);
+        console.log(
+          "organizationNameElement",
+          organizationNameElement
+        );
 
-console.log(
-  "Trainer Context",
-  trainerContext
-);
+        console.log(
+          "Trainer Context",
+          trainerContext
+        );
 
         const {
           trainer,
@@ -687,6 +707,59 @@ console.log(
           pdfOrganizationNameElement.textContent =
             organization?.organizationName || "-";
         }
+
+        /* ==========================================
+            Training Program
+          ========================================== */
+
+          const trainingProgramName =
+            record.program_name ||
+            record.program_code ||
+            "-";
+
+          if (programNameElement) {
+
+            programNameElement.textContent =
+              trainingProgramName;
+
+          }
+
+          if (pdfProgramNameElement) {
+
+            pdfProgramNameElement.textContent =
+              trainingProgramName;
+
+          }
+
+          /* ==========================================
+            Training Period
+          ========================================== */
+
+          let trainingPeriod = "-";
+
+          if (
+            record.training_start_date &&
+            record.training_end_date
+          ) {
+
+            trainingPeriod =
+              `${record.training_start_date} - ${record.training_end_date}`;
+
+          }
+
+          if (trainingPeriodElement) {
+
+            trainingPeriodElement.textContent =
+              trainingPeriod;
+
+          }
+
+          if (pdfTrainingPeriodElement) {
+
+            pdfTrainingPeriodElement.textContent =
+              trainingPeriod;
+
+          }
 
         /*
         =====================================================

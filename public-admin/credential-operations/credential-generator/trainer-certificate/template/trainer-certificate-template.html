@@ -63,8 +63,9 @@ v1.2.0
 ------------------------------------------
 - Added Training Program display
 - Added Training Period display
-- Expanded training attribution section
-- Preserved existing trainer attribution model
+- Introduced dedicated Training Information section
+- Preserved trainer attribution symmetry
+- Improved visual balance
 
 Locked:
 June 2026
@@ -73,6 +74,7 @@ June 2026
 
 <div class="trainer-certificate-template">
 
+```
 <div class="trainer-certificate-header">
 
     <img
@@ -134,26 +136,6 @@ June 2026
                 </span>
             </div>
 
-            <div class="trainer-program-label">
-                Training Program
-            </div>
-
-            <div
-                id="trainercertProgramName"
-                class="trainer-program-name">
-                Program Name
-            </div>
-
-            <div class="trainer-period-label">
-                Training Period
-            </div>
-
-            <div
-                id="trainercertTrainingPeriod"
-                class="trainer-training-period">
-                01 Jan 2023 – 15 Jan 2023
-            </div>
-
         </div>
 
         <div class="organization-column">
@@ -175,6 +157,34 @@ June 2026
                 Organization Name
             </div>
 
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+         Training Information Section
+    ========================================== -->
+
+    <div class="training-information-section">
+
+        <div class="training-program-label">
+            Training Program
+        </div>
+
+        <div
+            id="trainercertProgramName"
+            class="training-program-name">
+            Program Name
+        </div>
+
+        <div class="training-period-label">
+            Training Period
+        </div>
+
+        <div
+            id="trainercertTrainingPeriod"
+            class="training-period-value">
+            01 Jan 2023 – 15 Jan 2023
         </div>
 
     </div>
@@ -209,5 +219,6 @@ June 2026
     </div>
 
 </div>
+```
 
 </div>

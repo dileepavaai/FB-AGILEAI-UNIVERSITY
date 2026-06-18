@@ -348,9 +348,9 @@
 
 .trainer-attribution-grid {
 
-    width: 600px;
+    width: 700px;
 
-    margin: 12px auto;
+    margin: 24px auto;
 
     display: flex;
 
@@ -364,17 +364,25 @@
 .trainer-column,
 .organization-column {
 
+    width: 240px;
+
     display: flex;
 
     flex-direction: column;
 
-    gap: 6px;
+    align-items: center;
+
+    justify-content: flex-start;
+
+    gap: 8px;
+
+    min-height: 160px;
 }
 
 .organization-emblem {
 
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
 
     object-fit: contain;
 
@@ -382,7 +390,7 @@
 
     display: block;
 
-    margin: 12px auto;
+    margin: 8px auto;
 
     image-rendering: auto;
 }

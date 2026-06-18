@@ -378,14 +378,44 @@ console.log(
   batch
 );
 
-    if (!batchSnap.exists()) {
-      return null;
-    }
+    const batchName =
+  record.batch_name;
 
-    const batch =
-      batchSnap.data();
-    
-    console.log("Batch Data", batch);
+if (!batchName) {
+  return null;
+}
+
+const batchQuery =
+  query(
+    collection(db, "batches"),
+    where(
+      "batch_name",
+      "==",
+      batchName
+    )
+  );
+
+const batchResult =
+  await getDocs(batchQuery);
+
+if (batchResult.empty) {
+  return null;
+}
+
+const batch =
+  batchResult.docs[0].data();
+
+console.log(
+  "Batch Data",
+  batch
+);
+
+const trainerId =
+  batch.trainerId;
+
+if (!trainerId) {
+  return null;
+}
 
     const trainerId =
       batch.trainerId;

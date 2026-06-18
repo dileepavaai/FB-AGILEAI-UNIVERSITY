@@ -2,7 +2,7 @@
 ==================================================
 Agile AI University
 
-Certificate Template Standard v1.0
+University Certificate Template Standard v1.1
 Certificate Canvas Standard v1.0
 Certificate Frame Standard v1.0
 
@@ -13,7 +13,7 @@ Governance Authority:
 Agile AI University
 
 Certificate Type:
-Certificate of Professional Recognition
+University Certificate of Professional Recognition
 
 Positioning:
 Independent Academic and Professional Body
@@ -35,6 +35,18 @@ Governance Locks:
 - No Training Provider Positioning
 - No Commercial Course Provider Positioning
 
+Equivalency Governance:
+
+For credentials issued through an approved
+equivalency recognition framework, the
+certificate may display:
+
+- Recognition Framework
+- Recognition Effective Date
+
+Training periods shall NOT be displayed
+for equivalency recognitions.
+
 Template Authority:
 certificate-template.html
 
@@ -45,74 +57,122 @@ June 2026
 
 <div class="certificate-template">
 
-  <div class="certificate-header">
+<div class="certificate-header">
 
     <img
         src="../assets/images/aau-emblem.png"
         alt="Agile AI University Emblem"
         class="certificate-emblem"
-        >
+    >
 
-<h1>Agile AI University</h1>
+    <h1>Agile AI University</h1>
 
-<h2>Certificate of Professional Recognition</h2>
-
-  </div>
-
-  <div class="certificate-body">
-
-<p class="recognition-intro">
-  Agile AI University hereby recognizes
-</p>
-
-<h3 id="certLearnerName">
-  Learner Name
-</h3>
-
-<p class="recognition-text">
-  as an
-</p>
-
-<h3 id="certCredentialType">
-  Credential Title
-</h3>
-
-<p class="recognition-text">
-  under the professional recognition framework established by Agile AI University.
-</p>
-
-  </div>
-
-  <div class="certificate-footer">
-
-<div class="certificate-metadata">
-
-  <p>
-    <strong>Credential ID:</strong>
-    <span id="certCredentialId"></span>
-  </p>
-
-  <p class="verification-line">
-    Verify Credential:
-  </p>
-
-  <p class="verification-url">
-    verify.agileai.university
-  </p>
+    <h2>Certificate of Professional Recognition</h2>
 
 </div>
 
-<div class="issuer-section">
+<div class="certificate-body">
 
-  <p class="issuer-line">
-    Issued by Agile AI University
-  </p>
+    <p class="recognition-intro">
+        Agile AI University hereby recognizes
+    </p>
 
-  <p class="issuer-role">
-    Independent Academic and Professional Body
-  </p>
+    <h3 id="certLearnerName">
+        Learner Name
+    </h3>
+
+    <p class="recognition-text">
+        as an
+    </p>
+
+    <h3 id="certCredentialType">
+        Credential Title
+    </h3>
+
+    <p class="recognition-text">
+        under the professional recognition framework established by Agile AI University.
+    </p>
+
+    <!-- ==========================================
+         Equivalency Recognition Section
+
+         Hidden by default.
+
+         Display only when:
+
+         batch.batchCategory === "equivalency"
+    ========================================== -->
+
+    <div
+        id="certificateRecognitionSection"
+        class="certificate-recognition-section"
+        style="display:none;">
+
+        <p class="recognition-framework-line">
+
+            <strong>
+                Recognition Framework:
+            </strong>
+
+            <span
+                id="certRecognitionFramework">
+            </span>
+
+        </p>
+
+        <p class="recognition-date-line">
+
+            <strong>
+                Recognition Effective Date:
+            </strong>
+
+            <span
+                id="certRecognitionDate">
+            </span>
+
+        </p>
+
+    </div>
 
 </div>
+
+<div class="certificate-footer">
+
+    <div class="certificate-metadata">
+
+        <p>
+
+            <strong>
+                Credential ID:
+            </strong>
+
+            <span
+                id="certCredentialId">
+            </span>
+
+        </p>
+
+        <p class="verification-line">
+            Verify Credential:
+        </p>
+
+        <p class="verification-url">
+            verify.agileai.university
+        </p>
+
+    </div>
+
+    <div class="issuer-section">
+
+        <p class="issuer-line">
+            Issued by Agile AI University
+        </p>
+
+        <p class="issuer-role">
+            Independent Academic and Professional Body
+        </p>
+
+    </div>
 
 </div>
 

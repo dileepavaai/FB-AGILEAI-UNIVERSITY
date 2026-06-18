@@ -334,11 +334,25 @@ function invalidateLoadedCredentialState() {
 
   async function resolveTrainerContext(record) {
 
-  console.log("Credential Record", record);
-  console.log("Credential Keys", Object.keys(record));
-  console.log("Batch ID", record.batch_id);
-  console.log("batchId:", record.batchId);
-  console.log("batch_name:", record.batch_name);
+    console.log("Credential Record", record);
+    console.log(
+    "training_start_date",
+    record.training_start_date
+    );
+
+    console.log(
+      "training_end_date",
+      record.training_end_date
+    );
+
+    console.log(
+      "Full Record",
+      JSON.stringify(record, null, 2)
+    );
+    console.log("Credential Keys", Object.keys(record));
+    console.log("Batch ID", record.batch_id);
+    console.log("batchId:", record.batchId);
+    console.log("batch_name:", record.batch_name);
 
   try {
 

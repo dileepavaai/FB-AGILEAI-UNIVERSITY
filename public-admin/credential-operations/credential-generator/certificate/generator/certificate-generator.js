@@ -265,57 +265,62 @@ function invalidateLoadedCredentialState() {
 
   /* =====================================================
      Populate UI
-  ===================================================== */
+    ===================================================== */
 
   function populateFields(record) {
 
-    credentialIdValue.textContent =
-      record.credential_id || "-";
+  console.log(
+  "CERTIFICATE GENERATOR RECORD",
+  record
+  );
 
-    credentialTypeValue.textContent =
-      record.credential_type || "-";
+  credentialIdValue.textContent =
+  record.credential_id || "-";
 
-    credentialFamilyValue.textContent =
-      record.credential_family || "-";
+  credentialTypeValue.textContent =
+  record.credential_type || "-";
 
-    programCodeValue.textContent =
-      record.program_code || "-";
+  credentialFamilyValue.textContent =
+  record.credential_family || "-";
 
-    programNameValue.textContent =
-      record.program_name || "-";
+  programCodeValue.textContent =
+  record.program_code || "-";
 
-    templateKeyValue.textContent =
-      record.template_key || "-";
+  programNameValue.textContent =
+  record.program_name || "-";
 
-    credentialStatusValue.textContent =
-      record.issued_status || "-";
+  templateKeyValue.textContent =
+  record.template_key || "-";
 
-    issueDateValue.textContent =
-      formatDate(record.imported_at);
+  credentialStatusValue.textContent =
+  record.issued_status || "-";
 
-    lifecycleStateValue.textContent =
-      record.lifecycle_state || "-";
+  issueDateValue.textContent =
+  formatDate(record.imported_at);
 
-    successorProgramValue.textContent =
-      record.successor_program || "-";
+  lifecycleStateValue.textContent =
+  record.lifecycle_state || "-";
 
-    bridgeRequiredValue.textContent =
-      record.bridge_required || "-";
+  successorProgramValue.textContent =
+  record.successor_program || "-";
 
-    bridgeCompletionStatusValue.textContent =
-      record.bridge_completion_status || "-";
+  bridgeRequiredValue.textContent =
+  record.bridge_required || "-";
 
-    originalCredentialValue.textContent =
-      record.original_credential || "-";
+  bridgeCompletionStatusValue.textContent =
+  record.bridge_completion_status || "-";
 
-    currentRecognitionValue.textContent =
-      record.current_recognition || "-";
+  originalCredentialValue.textContent =
+  record.original_credential || "-";
 
-    recognitionStatusValue.textContent =
-      record.recognition_status || "-";
+  currentRecognitionValue.textContent =
+  record.current_recognition || "-";
 
-    recognitionEffectiveDateValue.textContent =
-      record.recognition_effective_date || "-";
+  recognitionStatusValue.textContent =
+  record.recognition_status || "-";
+
+  recognitionEffectiveDateValue.textContent =
+  record.recognition_effective_date || "-";
 
   }
 

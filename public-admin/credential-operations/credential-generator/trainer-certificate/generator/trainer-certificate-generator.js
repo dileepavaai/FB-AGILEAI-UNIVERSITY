@@ -332,96 +332,72 @@ function invalidateLoadedCredentialState() {
 
   }
 
-  /* =====================================================
-   Trainer Resolution
-===================================================== */
-
-async function resolveTrainerContext(record) {
+  async function resolveTrainerContext(record) {
 
   console.log("Credential Record", record);
-  console.log("Credential Keys",Object.keys(record));
+  console.log("Credential Keys", Object.keys(record));
   console.log("Batch ID", record.batch_id);
   console.log("batchId:", record.batchId);
-  console.log("batch_name:",record.batch_name);
+  console.log("batch_name:", record.batch_name);
 
   try {
 
     const batchName =
-  record.batch_name;
+      record.batch_name;
 
-if (!batchName) {
-  return null;
-}
+    if (!batchName) {
 
-const batchQuery =
-  query(
-    collection(db, "batches"),
-    where(
-      "batch_name",
-      "==",
-      batchName
-    )
-  );
+      console.warn(
+        "No batch_name found on credential record"
+      );
 
-const batchResult =
-  await getDocs(batchQuery);
+      return null;
 
-if (batchResult.empty) {
-  return null;
-}
+    }
 
-const batch =
-  batchResult.docs[0].data();
+    const batchQuery =
+      query(
+        collection(db, "batches"),
+        where(
+          "batch_name",
+          "==",
+          batchName
+        )
+      );
 
-console.log(
-  "Batch Data",
-  batch
-);
+    const batchResult =
+      await getDocs(batchQuery);
 
-    const batchName =
-  record.batch_name;
+    if (batchResult.empty) {
 
-if (!batchName) {
-  return null;
-}
+      console.warn(
+        "No batch found for",
+        batchName
+      );
 
-const batchQuery =
-  query(
-    collection(db, "batches"),
-    where(
-      "batch_name",
-      "==",
-      batchName
-    )
-  );
+      return null;
 
-const batchResult =
-  await getDocs(batchQuery);
+    }
 
-if (batchResult.empty) {
-  return null;
-}
+    const batch =
+      batchResult.docs[0].data();
 
-const batch =
-  batchResult.docs[0].data();
-
-console.log(
-  "Batch Data",
-  batch
-);
-
-const trainerId =
-  batch.trainerId;
-
-if (!trainerId) {
-  return null;
-}
+    console.log(
+      "Batch Data",
+      batch
+    );
 
     const trainerId =
       batch.trainerId;
 
     if (!trainerId) {
+
+      console.warn(
+        "Batch has no trainerId"
+      );
+
       return null;
+
     }
 
     const trainerQuery =
@@ -443,13 +419,23 @@ if (!trainerId) {
       );
 
     if (trainerResult.empty) {
+
+      console.warn(
+        "Trainer not found",
+        trainerId
+      );
+
       return null;
+
     }
 
     const trainer =
       trainerResult.docs[0].data();
 
-    console.log("Trainer Data", trainer);
+    console.log(
+      "Trainer Data",
+      trainer
+    );
 
     let organization = null;
 
@@ -477,6 +463,11 @@ if (!trainerId) {
 
         organization =
           organizationResult.docs[0].data();
+
+        console.log(
+          "Organization Data",
+          organization
+        );
 
       }
 

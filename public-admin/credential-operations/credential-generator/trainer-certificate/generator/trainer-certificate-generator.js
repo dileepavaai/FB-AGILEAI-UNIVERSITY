@@ -437,41 +437,53 @@ function invalidateLoadedCredentialState() {
       trainer
     );
 
-    let organization = null;
+let organization = null;
 
-    if (trainer.organizationId) {
+try {
 
-      const organizationQuery =
-        query(
-          collection(
-            db,
-            "trainingOrganizations"
-          ),
-          where(
-            "organizationId",
-            "==",
-            trainer.organizationId
-          )
-        );
+  if (trainer.organizationId) {
 
-      const organizationResult =
-        await getDocs(
-          organizationQuery
-        );
+    const organizationQuery =
+      query(
+        collection(
+          db,
+          "trainingOrganizations"
+        ),
+        where(
+          "organizationId",
+          "==",
+          trainer.organizationId
+        )
+      );
 
-      if (!organizationResult.empty) {
+    const organizationResult =
+      await getDocs(
+        organizationQuery
+      );
 
-        organization =
-          organizationResult.docs[0].data();
+    if (!organizationResult.empty) {
 
-        console.log(
-          "Organization Data",
-          organization
-        );
+      organization =
+        organizationResult.docs[0].data();
 
-      }
+      console.log(
+        "Organization Data",
+        organization
+      );
 
     }
+
+  }
+
+}
+catch(error) {
+
+  console.warn(
+    "Organization lookup skipped",
+    error
+  );
+
+}
 
     return {
       trainer,
@@ -620,6 +632,26 @@ function invalidateLoadedCredentialState() {
         );
 
       if (trainerContext) {
+
+        console.log(
+  "trainerNameElement",
+  trainerNameElement
+);
+
+console.log(
+  "trainerIdElement",
+  trainerIdElement
+);
+
+console.log(
+  "organizationNameElement",
+  organizationNameElement
+);
+
+console.log(
+  "Trainer Context",
+  trainerContext
+);
 
         const {
           trainer,

@@ -708,8 +708,8 @@ console.log(
         =====================================================
         */
 
-        const organizationEmblemPath =
-          "/credential-operations/assets/images/organizations/agile-ai-academy.png";
+        const organizationEmblemPath = 
+            "/credential-operations/credential-generator/assets/images/organizations/agile-ai-academy.png";
 
         if (organizationEmblemElement) {
 

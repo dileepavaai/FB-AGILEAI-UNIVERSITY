@@ -693,6 +693,9 @@ console.log(
           organizationEmblemElement
         ) {
 
+          organizationEmblemElement.crossOrigin =
+            "anonymous";
+
           organizationEmblemElement.src =
             organization.emblemUrl;
 
@@ -705,6 +708,9 @@ console.log(
           organization?.emblemUrl &&
           pdfOrganizationEmblemElement
         ) {
+
+          pdfOrganizationEmblemElement.crossOrigin =
+            "anonymous";
 
           pdfOrganizationEmblemElement.src =
             organization.emblemUrl;

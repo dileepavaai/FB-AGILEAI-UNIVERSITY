@@ -378,9 +378,13 @@
 
     object-fit: contain;
 
+    object-position: center center;
+
     display: block;
 
     margin: 12px auto;
+
+    image-rendering: auto;
 }
 
 .trainer-heading,
@@ -419,5 +423,3 @@
 
     color: #6b7280;
 }
-
-

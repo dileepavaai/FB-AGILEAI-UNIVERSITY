@@ -88,10 +88,10 @@ Authorization decisions must be based on authenticated user identity and entitle
 
 Access requires:
 
-```text
+text
 student_portal = true
 credentials_view = true
-```
+
 
 Both conditions must be satisfied.
 
@@ -178,7 +178,7 @@ The Credentials Module does not own:
 
 Module Structure
 
-```text
+text
 credentials/
 
 ├── assets/
@@ -186,13 +186,15 @@ credentials/
 │   └── js/
 │
 ├── my-credentials.html
+├── credential-details.html
+├── university-certificate.html
+├── trainer-certificate.html
 │
 └── GOVERNANCE.md
-```
 
 ---
 
-## Asset Ownership
+## Credential Module Asset Ownership
 
 Credential-specific assets must remain within the Credentials Module.
 
@@ -202,20 +204,118 @@ Examples:
 * load-credentials.js
 * render-credentials.js
 
-Shared assets must remain under:
+These assets are owned exclusively by the Credentials Module.
 
-```text
+---
+
+## Shared Asset Governance
+
+Shared assets may exist in either:
+
+text
+public-portal/assets/
+
+or
+
+text
 shared/design-authority/
-```
+
+depending on governance-approved runtime architecture.
+
+The current production runtime uses:
+
+text
+public-portal/assets/
+
+as the authoritative shared asset location.
+
+---
+
+# 10A. RUNTIME COMPONENT GOVERNANCE
+
+Status: LOCKED
+
+The Student Portal currently operates using runtime-authoritative shared components.
+
+Runtime-authoritative components are the components actively referenced and executed by production portal pages.
+
+Current Runtime Components
+
+text
+public-portal/assets/css/site.css
+
+public-portal/assets/js/header.js
+
+public-portal/assets/js/footer.js
+
+These components constitute the authoritative runtime experience for:
+
+* Portal Home
+* Credentials Module
+* Future Profile Module
+* Future Wallet Module
+* Future Badge Module
+
+Production pages must reference runtime-authoritative components unless an explicit governance migration has been approved.
+
+---
+
+# 10B. REFERENCE ARCHITECTURE GOVERNANCE
+
+Status: LOCKED
+
+Reference architecture components may exist for future architectural evolution.
+
+Reference components are retained for:
+
+* Design exploration
+* Future architecture migration
+* Governance review
+* Structural experimentation
+
+Reference components are not considered production-authoritative.
 
 Examples:
 
-* site.css
-* header.js
-* footer.js
-* theme.js
+text
+shared/design-authority/js/header-v4-reference.js
+
+shared/design-authority/js/footer-v4-reference.js
+
+Reference components must not be assumed to be active production components.
+
+Reference components may be renamed using the suffix:
+
+text
+-reference
+
+to prevent ambiguity with runtime-authoritative implementations.
 
 ---
+
+# 10C. COMPONENT NAMING GOVERNANCE
+
+Status: LOCKED
+
+Production-authoritative components must use canonical names.
+
+Examples:
+
+text
+header.js
+footer.js
+site.css
+
+Reference implementations should use descriptive names.
+
+Examples:
+
+text
+header-v4-reference.js
+
+footer-v4-reference.js
+
+This convention reduces implementation ambiguity and improves long-term maintainability.
 
 # 11. FUTURE CAPABILITIES
 

@@ -78,20 +78,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   html.push(
-    '      </ul>',
-    '    </nav>',
+  '      </ul>',
+  '    </nav>',
 
-    '    <div class="nav-muted">',
-    '      An independent Academic &amp; Professional Body for Agile AI and Agentic AI'
-  );
+  '    <div class="nav-muted">',
+  '      <div class="institution-line">',
+  '        An independent Academic &amp; Professional Body for Agile AI and Agentic AI',
+  '      </div>'
+);
 
   if (isPortalContext) {
     html.push(
-      '      <span class="context-tag">Student &amp; Executive Portal</span>'
+       '      <div class="portal-context">',
+      '        <span class="context-tag">Student &amp; Executive Portal</span>',
+      '      </div>'
     );
   } else if (isAssessmentContext) {
     html.push(
-      '      <span class="context-tag">Assessment Environment</span>'
+      '      <div class="assessment-context">',
+      '        <span class="context-tag">Assessment Environment</span>',
+      '      </div>'
     );
   }
 

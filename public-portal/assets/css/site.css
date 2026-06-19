@@ -123,6 +123,28 @@ main {
   color: var(--text);
 }
 
+.institution-line {
+  display: block;
+}
+
+.portal-context {
+  margin-top: 6px;
+}
+
+.context-tag {
+  display: inline-block;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  background: #f3f4f6;
+  color: #374151;
+}
+
 /* =====================
    SUBMENUS
    ===================== */
@@ -525,13 +547,12 @@ footer {
   display: flex;
   align-items: center;
   gap: 12px;
-
-  font-weight: 700;
 }
 
 .brand-logo {
   width: 40px;
   height: 40px;
   object-fit: contain;
+  display: block;
 }
 

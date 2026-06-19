@@ -253,10 +253,14 @@ BUTTONS
 
 #btnGoogle,
 #btnEmailLink {
-  width: 100%;
+    width: 100%;
+    max-width: 420px;
 
-  background: #1e3a8a;
-  color: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+
+    background: #1e3a8a;
+    color: #ffffff;
 }
 
 #btnGoogle:hover,
@@ -325,7 +329,9 @@ RESPONSIVE
 @media (max-width: 1024px) {
 
 .portal-grid {
-grid-template-columns: 1fr;
+    grid-template-columns:
+        minmax(380px, 460px)
+        minmax(380px, 1fr);
 }
 
 }

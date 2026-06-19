@@ -1,0 +1,214 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : portal.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+
+   Scope:
+   - Portal Landing Page
+   - Authentication Experience
+   - Portal Actions
+
+   Depends On:
+   - site.css
+
+   Notes:
+   - No institutional header styling
+   - No footer styling
+   - No theme engine overrides
+   ========================================================== */
+
+/* ==========================================================
+   PAGE LAYOUT
+   ========================================================== */
+
+.portal-home {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 32px 80px;
+}
+
+.portal-hero {
+  max-width: 720px;
+}
+
+.portal-content {
+  margin-bottom: 40px;
+}
+
+.portal-content h1 {
+  margin: 0 0 16px;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #1f2937;
+}
+
+.portal-content p {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #6b7280;
+}
+
+/* ==========================================================
+   AUTH SECTIONS
+   ========================================================== */
+
+#signedOutUI,
+#signedInUI {
+  margin-top: 32px;
+}
+
+#statusText {
+  margin-bottom: 20px;
+  color: #4b5563;
+  font-size: 1rem;
+}
+
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 48px;
+  padding: 0 20px;
+
+  border: none;
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+#btnGoogle,
+#btnEmailLink {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+#btnSignOut {
+  background: #6b7280;
+  color: #ffffff;
+}
+
+.portal-actions .btn {
+  background: #7c3aed;
+  color: #ffffff;
+}
+
+/* ==========================================================
+   EMAIL LOGIN
+   ========================================================== */
+
+.auth-box {
+  max-width: 420px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-box input {
+  height: 48px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  font-size: 0.95rem;
+}
+
+.auth-box input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.divider {
+  margin: 24px 0;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+/* ==========================================================
+   EMAIL STATUS
+   ========================================================== */
+
+#emailStatus {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* ==========================================================
+   SIGNED-IN AREA
+   ========================================================== */
+
+#userName {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.1rem;
+}
+
+#userEmail {
+  margin-bottom: 20px;
+  color: #6b7280;
+}
+
+.portal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+.note {
+  margin-top: 20px;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+  .portal-home {
+    padding: 40px 20px 60px;
+  }
+
+  .portal-content h1 {
+    font-size: 2.25rem;
+  }
+
+  .portal-actions {
+    flex-direction: column;
+  }
+
+  .portal-actions .btn {
+    width: 100%;
+  }
+
+  #btnGoogle,
+  #btnEmailLink {
+    width: 100%;
+  }
+}

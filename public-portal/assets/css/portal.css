@@ -90,10 +90,11 @@ PORTAL CARD
 ========================================================== */
 
 .portal-card {
+  padding: 32px;
+
   background: #ffffff;
 
   border: 1px solid #e5e7eb;
-
   border-radius: 16px;
 
   box-shadow:
@@ -102,10 +103,9 @@ PORTAL CARD
 }
 
 .portal-card h2 {
-  margin-top: 0;
-  margin-bottom: 16px;
+  margin: 0 0 20px;
 
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
 
   color: #1f2937;
@@ -129,23 +129,23 @@ UNIVERSITY SERVICES PANEL
 
 .portal-services {
   align-self: start;
-  height: 100%;
 }
 
 .portal-services ul {
-  display: flex;
-  flex-direction: column;
-
-  gap: 12px;
-
+  margin: 0;
   padding-left: 20px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 10px 32px;
 }
 
 .portal-services li {
   margin: 0;
 
   color: #4b5563;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 /* ==========================================================
@@ -174,50 +174,49 @@ AUTHENTICATION
 ========================================================== */
 
 #statusText {
-margin-bottom: 24px;
-
-color: #6b7280;
+  margin-bottom: 20px;
+  color: #6b7280;
 }
 
 .auth-box {
-display: flex;
-flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-gap: 12px;
+  gap: 10px;
 }
 
 .auth-box input {
-height: 50px;
+  height: 42px;
 
-padding: 0 14px;
+  padding: 0 14px;
 
-border: 1px solid #d1d5db;
-border-radius: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
 
-font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .auth-box input:focus {
-outline: none;
-border-color: #2563eb;
+  outline: none;
+  border-color: #2563eb;
 }
 
 .divider {
-margin: 24px 0;
+  margin: 20px 0;
 
-text-align: center;
+  text-align: center;
 
-color: #9ca3af;
+  color: #9ca3af;
 }
 
 .status-message {
-min-height: 20px;
+  min-height: 20px;
 
-margin: 0;
+  margin: 0;
 
-font-size: 0.9rem;
+  font-size: 0.85rem;
 
-color: #6b7280;
+  color: #6b7280;
 }
 
 /* ==========================================================
@@ -225,31 +224,31 @@ BUTTONS
 ========================================================== */
 
 .btn {
-display: inline-flex;
-align-items: center;
-justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-min-height: 50px;
+  min-height: 40px;
 
-padding: 0 20px;
+  padding: 0 18px;
 
-border: none;
-border-radius: 10px;
+  border: none;
+  border-radius: 8px;
 
-cursor: pointer;
+  cursor: pointer;
 
-text-decoration: none;
+  text-decoration: none;
 
-font-size: 0.95rem;
-font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 600;
 
-transition:
-transform 0.2s ease,
-opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .btn:hover {
-transform: translateY(-1px);
+  transform: translateY(-1px);
 }
 
 #btnGoogle,
@@ -266,8 +265,8 @@ transform: translateY(-1px);
 }
 
 #btnSignOut {
-background: #6b7280;
-color: #ffffff;
+  background: #6b7280;
+  color: #ffffff;
 }
 
 /* ==========================================================
@@ -357,9 +356,9 @@ min-width: auto;
 }
 
 .portal-help {
-  margin-top: 12px;
+  margin-top: 16px;
 
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   line-height: 1.6;
 
   color: #6b7280;

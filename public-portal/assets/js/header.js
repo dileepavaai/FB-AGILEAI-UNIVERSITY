@@ -101,12 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  if (isPortalContext) {
-    html.push(
-      '      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark or light theme" aria-pressed="false">🌙</button>'
-    );
-  }
-
   html.push(
     '    </div>',
     '  </div>',

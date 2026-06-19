@@ -224,10 +224,15 @@ transform: translateY(-1px);
 
 #btnGoogle,
 #btnEmailLink {
-width: 100%;
+  width: 100%;
 
-background: #2563eb;
-color: #ffffff;
+  background: #1e3a8a;
+  color: #ffffff;
+}
+
+#btnGoogle:hover,
+#btnEmailLink:hover {
+  background: #1e40af;
 }
 
 #btnSignOut {

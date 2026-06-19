@@ -516,3 +516,24 @@ footer {
     display: none !important;
   }
 }
+
+/* ==========================================================
+   AAU BRANDING
+   ========================================================== */
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+
+  object-fit: contain;
+  flex-shrink: 0;
+}
+

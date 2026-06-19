@@ -556,3 +556,10 @@ footer {
   display: block;
 }
 
+[data-theme="dark"] .portal-hero h1 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .portal-hero p {
+  color: #94a3b8;
+}

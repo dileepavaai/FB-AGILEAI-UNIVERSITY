@@ -3,223 +3,166 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portal - Agile AI University</title>
 
+  <title>Agile AI University Portal</title>
+
+  <!-- Shared Design Authority -->
   <link rel="stylesheet" href="/assets/css/site.css" />
 
-  <style>
-    body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; color:#222; }
-    main { padding:40px; }
-    h1 { font-size:40px; margin:0 0 20px; }
-
-    .btn {
-      display:inline-block;
-      background:#2f80ed;
-      color:white;
-      padding:10px 14px;
-      border-radius:8px;
-      border:none;
-      cursor:pointer;
-      font-weight:600;
-      text-decoration:none;
-    }
-
-    .btn.gray { background:#6b7280; }
-    .btn.green { background:#10b981; }
-
-    .auth-box {
-      margin-top:20px;
-      max-width:400px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    input {
-      padding:10px;
-      border-radius:6px;
-      border:1px solid #ccc;
-      font-size:14px;
-    }
-
-    .divider {
-      margin:20px 0;
-      color:#888;
-      font-size:14px;
-    }
-
-    nav { margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; }
-    .note { color:#777; margin-top:22px; font-size:14px;}
-  </style>
+  <!-- Portal Module -->
+  <link rel="stylesheet" href="/assets/css/portal.css" />
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div id="site-header"></div>
+  <!-- Shared Header -->
+  <div id="site-header"></div>
 
-<main>
+  <main class="portal-page">
 
-  <h1>Welcome to Agile AI University Portal</h1>
+    <section class="portal-hero">
 
-  <!-- SIGNED OUT -->
-  <div id="signedOutUI">
+      <h1>Student &amp; Executive Portal</h1>
 
-    <p id="statusText">Not signed in</p>
+      <p class="portal-subtitle">
+        Access assessments, credentials, recognitions,
+        reports, and university services.
+      </p>
 
-    <!-- GOOGLE LOGIN -->
-    <button id="btnGoogle" class="btn">Sign in with Google</button>
+    </section>
 
-    <div class="divider">OR</div>
+    <!-- ==================================================
+         SIGNED OUT EXPERIENCE
+         ================================================== -->
+    <section
+      id="signedOutUI"
+      class="portal-card"
+    >
 
-    <!-- EMAIL LOGIN -->
-    <div class="auth-box">
-      <input id="emailInput" type="email" placeholder="Enter your email" />
-      <button id="btnEmailLink" class="btn">Send Login Link</button>
-      <p id="emailStatus" style="font-size:13px;color:#666;"></p>
-    </div>
+      <h2>Sign In</h2>
 
-  </div>
+      <p id="statusText">
+        Sign in to access your university services.
+      </p>
 
-  <!-- SIGNED IN -->
-  <div id="signedInUI" style="display:none;">
+      <button
+        id="btnGoogle"
+        class="btn btn-primary"
+        type="button"
+      >
+        Sign in with Google
+      </button>
 
-    <p><strong id="userName"></strong></p>
-    <p id="userEmail" style="color:#555;"></p>
+      <div class="divider">OR</div>
 
-    <button id="btnSignOut" class="btn gray">Sign out</button>
+      <div class="auth-box">
 
-    <nav>
-      <a href="/assessment.html" class="btn green">AI + Agile Assessment</a>
+        <input
+          id="emailInput"
+          type="email"
+          placeholder="Enter your email"
+          autocomplete="email"
+        />
 
-      <!-- ✅ FIXED LINK -->
-      <a href="/certs.html" class="btn" style="background:#8b5cf6">
-        My Certificates
-      </a>
-    </nav>
+        <button
+          id="btnEmailLink"
+          class="btn btn-secondary"
+          type="button"
+        >
+          Send Login Link
+        </button>
 
-    <p class="note">You are signed in to the Agile AI University Portal.</p>
+        <p id="emailStatus" class="status-message"></p>
 
-  </div>
+      </div>
 
-</main>
+    </section>
 
-<!-- FOOTER -->
-<div id="site-footer"></div>
+    <!-- ==================================================
+         SIGNED IN EXPERIENCE
+         ================================================== -->
+    <section
+      id="signedInUI"
+      class="portal-card"
+      style="display:none;"
+    >
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+      <h2>Welcome</h2>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
-  authDomain: "fb-agileai-university.firebaseapp.com",
-  projectId: "fb-agileai-university",
-  storageBucket: "fb-agileai-university.appspot.com",
-  messagingSenderId: "458881040066",
-  appId: "1:458881040066:web:c832c420f9b4282e76c55b"
-};
+      <p class="user-name">
+        <strong id="userName"></strong>
+      </p>
 
-firebase.initializeApp(firebaseConfig);
+      <p
+        id="userEmail"
+        class="user-email"
+      ></p>
 
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
+      <div class="portal-actions">
 
+        <a
+          href="/assessment.html"
+          class="btn btn-success"
+        >
+          AI + Agile Assessment
+        </a>
 
-// ===============================
-// EMAIL LINK CONFIG
-// ===============================
-const actionCodeSettings = {
-  url: "https://portal.agileai.university",
-  handleCodeInApp: true
-};
+        <a
+          href="/credentials/my-credentials.html"
+          class="btn btn-purple"
+        >
+          My Credentials
+        </a>
 
+      </div>
 
-// ===============================
-// HANDLE LOGIN STATE
-// ===============================
-auth.onAuthStateChanged(user => {
-  if (user) {
-    document.getElementById("signedOutUI").style.display = "none";
-    document.getElementById("signedInUI").style.display = "block";
+      <button
+        id="btnSignOut"
+        class="btn btn-neutral"
+        type="button"
+      >
+        Sign Out
+      </button>
 
-    document.getElementById("userName").textContent = user.displayName || user.email;
-    document.getElementById("userEmail").textContent = user.email || '';
-  } else {
-    document.getElementById("signedOutUI").style.display = "block";
-    document.getElementById("signedInUI").style.display = "none";
-  }
-});
+      <p class="note">
+        You are authenticated within the Agile AI University Portal.
+      </p>
 
+    </section>
 
-// ===============================
-// GOOGLE LOGIN
-// ===============================
-document.getElementById("btnGoogle").onclick = () => {
-  auth.signInWithPopup(provider);
-};
+  </main>
 
+  <!-- Shared Footer -->
+  <div id="site-footer"></div>
 
-// ===============================
-// EMAIL LINK LOGIN (SEND)
-// ===============================
-document.getElementById("btnEmailLink").onclick = async () => {
-  const email = document.getElementById("emailInput").value;
+  <!-- ==================================================
+       CONTEXT
+       ================================================== -->
+  <script>
+    window.__AAIU_CONTEXT = "portal";
+  </script>
 
-  if (!email) {
-    alert("Enter email");
-    return;
-  }
+  <!-- ==================================================
+       FIREBASE SDK
+       ================================================== -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  try {
-    await auth.sendSignInLinkToEmail(email, actionCodeSettings);
-    localStorage.setItem("emailForSignIn", email);
+  <!-- ==================================================
+       PLATFORM SERVICES
+       ================================================== -->
+  <script src="/assets/js/firebase-init.js"></script>
 
-    document.getElementById("emailStatus").textContent =
-      "Login link sent. Check your email.";
+  <!-- ==================================================
+       PORTAL MODULE
+       ================================================== -->
+  <script src="/assets/js/portal-auth.js"></script>
 
-  } catch (err) {
-    console.error(err);
-    document.getElementById("emailStatus").textContent =
-      "Error sending email.";
-  }
-};
-
-
-// ===============================
-// EMAIL LINK LOGIN (COMPLETE)
-// ===============================
-if (auth.isSignInWithEmailLink(window.location.href)) {
-  let email = localStorage.getItem("emailForSignIn");
-
-  if (!email) {
-    email = prompt("Confirm your email");
-  }
-
-  auth.signInWithEmailLink(email, window.location.href)
-    .then(() => {
-      localStorage.removeItem("emailForSignIn");
-      window.location.href = "/";
-    })
-    .catch(err => console.error(err));
-}
-
-
-// ===============================
-// SIGN OUT
-// ===============================
-document.getElementById("btnSignOut").onclick = () => auth.signOut();
-</script>
-
-<!-- CONTEXT -->
-<script>
-window.__AAIU_CONTEXT = "portal";
-</script>
-
-<!-- HEADER / FOOTER -->
-<script src="/assets/js/header.js"></script>
-<script src="/assets/js/footer.js"></script>
+  <!-- ==================================================
+       SHARED DESIGN AUTHORITY
+       ================================================== -->
+  <script src="/assets/js/header.js"></script>
+  <script src="/assets/js/footer.js"></script>
 
 </body>
 </html>

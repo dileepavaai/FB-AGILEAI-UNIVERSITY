@@ -52,29 +52,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (window.__AAIU_AUTH_READY__) {
 
-    const authState =
-      await window.__AAIU_AUTH_READY__;
+  const authState =
+    await window.__AAIU_AUTH_READY__;
 
-    if (authState?.user) {
-      showSignedIn(authState.user);
+  if (authState?.user) {
+    showSignedIn(authState.user);
+  } else {
+    showSignedOut();
+  }
+
+  firebase.auth().onAuthStateChanged(user => {
+
+    if (user) {
+      showSignedIn(user);
     } else {
       showSignedOut();
     }
-  }
 
-  if (btnGoogle) {
+  });
 
-    btnGoogle.addEventListener("click", async () => {
-
-      try {
-        await window.AAIUAuth.signInWithGoogle();
-      } catch (err) {
-        console.error(err);
-      }
-
-    });
-
-  }
+}
 
   if (btnEmailLink) {
 
@@ -113,8 +110,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       try {
 
         await firebase.auth().signOut();
-
-        showSignedOut();
 
       } catch (err) {
         console.error(err);

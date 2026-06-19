@@ -1,258 +1,280 @@
 /* ==========================================================
-Agile AI University
-Student & Executive Portal
+   Agile AI University
+   Student & Executive Portal
 
-File      : portal.css
-Version   : 1.1.0
-Status    : ACTIVE
+   File      : portal.css
+   Version   : 1.2.0
+   Status    : ACTIVE
 
-Scope:
+   Scope:
+   - Portal Landing Page
+   - Authentication Experience
+   - Authenticated User Experience
+   - Future Dashboard Expansion
 
-* Portal Landing Page
-* Authentication Experience
-* Portal Actions
+   Depends On:
+   - site.css
 
-Depends On:
+   Notes:
+   - No header styling
+   - No footer styling
+   - No theme engine overrides
+   - Uses shared design authority tokens
+   ========================================================== */
 
-* site.css
-
-Notes:
-
-* No institutional header styling
-* No footer styling
-* No theme engine overrides
-* Authentication card introduced
-* Future dashboard card support added
-  ========================================================== */
 
 /* ==========================================================
-PAGE LAYOUT
-========================================================== */
+   PAGE LAYOUT
+   ========================================================== */
 
-.portal-home {
-max-width: 1200px;
-margin: 0 auto;
-padding: 60px 32px 80px;
+.portal-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 32px 96px;
 }
 
 .portal-hero {
-max-width: 800px;
+  max-width: 800px;
+  margin-bottom: 32px;
 }
 
-.portal-content {
-margin-bottom: 40px;
+.portal-hero h1 {
+  margin: 0 0 16px;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text, #1f2937);
 }
 
-.portal-content h1 {
-margin: 0 0 16px;
-font-size: 3rem;
-font-weight: 700;
-line-height: 1.1;
-color: #1f2937;
+.portal-subtitle {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--muted, #6b7280);
 }
 
-.portal-content p {
-margin: 0;
-font-size: 1.125rem;
-line-height: 1.7;
-color: #6b7280;
-}
 
 /* ==========================================================
-AUTH SECTIONS
-========================================================== */
+   PORTAL CARD
+   ========================================================== */
 
-#signedOutUI,
-#signedInUI {
-margin-top: 32px;
+.portal-card {
+  max-width: 560px;
 
-max-width: 520px;
+  padding: 32px;
 
-padding: 32px;
+  background: var(--card, #ffffff);
 
-background: #ffffff;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
 
-border: 1px solid #e5e7eb;
-border-radius: 16px;
-
-box-shadow:
-0 1px 3px rgba(0,0,0,.05),
-0 10px 25px rgba(0,0,0,.08);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 10px 25px rgba(0, 0, 0, 0.08);
 }
+
+.portal-card h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.portal-card p {
+  margin-top: 0;
+}
+
+
+/* ==========================================================
+   AUTHENTICATION
+   ========================================================== */
 
 #statusText {
-margin-bottom: 20px;
-color: #4b5563;
-font-size: 1rem;
+  color: var(--muted, #6b7280);
+  margin-bottom: 24px;
 }
-
-/* ==========================================================
-BUTTONS
-========================================================== */
-
-.btn {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-
-min-height: 48px;
-padding: 0 20px;
-
-border: none;
-border-radius: 10px;
-
-cursor: pointer;
-
-text-decoration: none;
-font-weight: 600;
-font-size: 0.95rem;
-
-transition:
-transform .2s ease,
-opacity .2s ease;
-}
-
-.btn:hover {
-transform: translateY(-1px);
-}
-
-#btnGoogle,
-#btnEmailLink {
-background: #2563eb;
-color: #ffffff;
-}
-
-#btnSignOut {
-background: #6b7280;
-color: #ffffff;
-}
-
-.portal-actions .btn {
-min-width: 220px;
-}
-
-/* ==========================================================
-EMAIL LOGIN
-========================================================== */
 
 .auth-box {
-max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 
-display: flex;
-flex-direction: column;
-gap: 12px;
+  max-width: 420px;
 }
 
 .auth-box input {
-height: 48px;
+  height: 48px;
 
-padding: 0 14px;
+  padding: 0 14px;
 
-border: 1px solid #d1d5db;
-border-radius: 10px;
+  border: 1px solid var(--border, #d1d5db);
+  border-radius: 10px;
 
-font-size: 0.95rem;
+  font-size: 0.95rem;
 }
 
 .auth-box input:focus {
-outline: none;
-border-color: #2563eb;
+  outline: none;
+  border-color: #2563eb;
 }
 
 .divider {
-margin: 24px 0;
-color: #9ca3af;
-font-size: 0.9rem;
+  margin: 24px 0;
+
+  text-align: center;
+
+  color: var(--muted, #9ca3af);
+  font-size: 0.9rem;
 }
+
+.status-message {
+  min-height: 20px;
+
+  margin: 0;
+
+  font-size: 0.9rem;
+  color: var(--muted, #6b7280);
+}
+
 
 /* ==========================================================
-EMAIL STATUS
-========================================================== */
+   BUTTONS
+   ========================================================== */
 
-#emailStatus {
-margin-top: 4px;
-font-size: 0.9rem;
-color: #6b7280;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 48px;
+
+  padding: 0 20px;
+
+  border: none;
+  border-radius: 10px;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
-/* ==========================================================
-SIGNED-IN AREA
-========================================================== */
-
-#userName {
-display: block;
-margin-bottom: 6px;
-font-size: 1.1rem;
+.btn:hover {
+  transform: translateY(-1px);
 }
 
-#userEmail {
-margin-bottom: 20px;
-color: #6b7280;
+.btn-primary {
+  background: #2563eb;
+  color: #ffffff;
 }
 
-.portal-actions {
-display: flex;
-flex-wrap: wrap;
-gap: 12px;
-
-margin-top: 20px;
+.btn-secondary {
+  background: #2563eb;
+  color: #ffffff;
 }
 
-.note {
-margin-top: 20px;
-color: #6b7280;
-font-size: 0.95rem;
+.btn-success {
+  background: #10b981;
+  color: #ffffff;
 }
 
-/* ==========================================================
-FUTURE DASHBOARD SUPPORT
-========================================================== */
-
-.portal-card-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 20px;
+.btn-purple {
+  background: #7c3aed;
+  color: #ffffff;
 }
 
-.portal-card {
-padding: 24px;
-
-background: #ffffff;
-
-border: 1px solid #e5e7eb;
-border-radius: 16px;
-}
-
-/* ==========================================================
-RESPONSIVE
-========================================================== */
-
-@media (max-width: 768px) {
-
-.portal-home {
-padding: 40px 20px 60px;
-}
-
-.portal-content h1 {
-font-size: 2.25rem;
-}
-
-.portal-actions {
-flex-direction: column;
-}
-
-.portal-actions .btn {
-width: 100%;
-min-width: auto;
+.btn-neutral {
+  background: #6b7280;
+  color: #ffffff;
 }
 
 #btnGoogle,
 #btnEmailLink {
-width: 100%;
+  width: 100%;
 }
 
-#signedOutUI,
-#signedInUI {
-padding: 24px;
+
+/* ==========================================================
+   AUTHENTICATED USER
+   ========================================================== */
+
+.user-name {
+  margin-bottom: 6px;
 }
+
+.user-email {
+  margin-bottom: 24px;
+  color: var(--muted, #6b7280);
+}
+
+.portal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-bottom: 24px;
+}
+
+.portal-actions .btn {
+  min-width: 220px;
+}
+
+#btnSignOut {
+  margin-bottom: 16px;
+}
+
+.note {
+  margin: 0;
+  color: var(--muted, #6b7280);
+  font-size: 0.95rem;
+}
+
+
+/* ==========================================================
+   FUTURE DASHBOARD SUPPORT
+   ========================================================== */
+
+.portal-card-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(280px, 1fr));
+
+  gap: 20px;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+  .portal-page {
+    padding: 40px 20px 64px;
+  }
+
+  .portal-hero h1 {
+    font-size: 2.25rem;
+  }
+
+  .portal-card {
+    padding: 24px;
+  }
+
+  .portal-actions {
+    flex-direction: column;
+  }
+
+  .portal-actions .btn {
+    width: 100%;
+    min-width: auto;
+  }
 }

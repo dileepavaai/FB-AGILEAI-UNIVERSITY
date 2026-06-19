@@ -3,7 +3,7 @@ Agile AI University
 Student & Executive Portal
 
 File      : portal.css
-Version   : 1.3.0
+Version   : 1.3.1
 Status    : ACTIVE
 
 Scope:
@@ -24,6 +24,8 @@ Notes:
 * No footer styling
 * No theme engine overrides
 * Two-column portal layout
+* Responsive services panel
+* Governance-clean release
   ========================================================== */
 
 /* ==========================================================
@@ -33,8 +35,10 @@ PAGE LAYOUT
 .portal-home {
 max-width: 1200px;
 margin: 0 auto;
-padding: 60px 32px 80px;
-min-height: calc(100vh - 280px);
+
+padding: 48px 32px 64px;
+
+min-height: calc(100vh - 220px);
 }
 
 /* ==========================================================
@@ -42,14 +46,14 @@ HERO
 ========================================================== */
 
 .portal-hero {
-max-width: 800px;
+max-width: 680px;
 margin-bottom: 40px;
 }
 
 .portal-content h1 {
 margin: 0 0 16px;
 
-font-size: 3.5rem;
+font-size: 3rem;
 font-weight: 700;
 line-height: 1.1;
 
@@ -72,7 +76,9 @@ TWO COLUMN PORTAL LAYOUT
 .portal-grid {
 display: grid;
 
-grid-template-columns: 560px 1fr;
+grid-template-columns:
+minmax(420px, 520px)
+minmax(320px, 1fr);
 
 gap: 32px;
 
@@ -84,6 +90,8 @@ PORTAL CARD
 ========================================================== */
 
 .portal-card {
+height: 100%;
+
 padding: 32px;
 
 background: #ffffff;
@@ -92,8 +100,8 @@ border: 1px solid #e5e7eb;
 border-radius: 16px;
 
 box-shadow:
-0 1px 3px rgba(0,0,0,.05),
-0 10px 25px rgba(0,0,0,.08);
+0 1px 3px rgba(0, 0, 0, 0.05),
+0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 .portal-card h2 {
@@ -111,19 +119,24 @@ margin-top: 0;
 }
 
 /* ==========================================================
-SERVICES PANEL
+UNIVERSITY SERVICES PANEL
 ========================================================== */
 
 .portal-services ul {
 margin: 0;
+
+display: grid;
+
+grid-template-columns:
+repeat(2, minmax(180px, 1fr));
+
+gap: 12px 24px;
+
 padding-left: 20px;
 }
 
 .portal-services li {
-margin-bottom: 14px;
-
 color: #4b5563;
-
 line-height: 1.6;
 }
 
@@ -140,6 +153,7 @@ color: #6b7280;
 .auth-box {
 display: flex;
 flex-direction: column;
+
 gap: 12px;
 }
 
@@ -201,8 +215,8 @@ font-size: 0.95rem;
 font-weight: 600;
 
 transition:
-transform .2s ease,
-opacity .2s ease;
+transform 0.2s ease,
+opacity 0.2s ease;
 }
 
 .btn:hover {
@@ -239,6 +253,7 @@ color: #6b7280;
 .portal-actions {
 display: flex;
 flex-wrap: wrap;
+
 gap: 12px;
 
 margin-bottom: 24px;
@@ -294,6 +309,10 @@ font-size: 2.5rem;
 
 .portal-card {
 padding: 24px;
+}
+
+.portal-services ul {
+grid-template-columns: 1fr;
 }
 
 .portal-actions {

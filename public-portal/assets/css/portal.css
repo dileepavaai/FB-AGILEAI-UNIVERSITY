@@ -50,22 +50,26 @@ margin-bottom: 40px;
 }
 
 .portal-content h1 {
-margin: 0 0 16px;
+    margin: 0 0 16px;
 
-font-size: 2.75rem;
-font-weight: 700;
-line-height: 1.1;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.15;
 
-color: #1f2937;
+    letter-spacing: -0.02em;
+
+    color: #1f2937;
 }
 
 .portal-content p {
-margin: 0;
+    margin: 0;
 
-font-size: 1.125rem;
-line-height: 1.7;
+    max-width: 700px;
 
-color: #6b7280;
+    font-size: 1rem;
+    line-height: 1.7;
+
+    color: #6b7280;
 }
 
 /* ==========================================================
@@ -73,11 +77,11 @@ PORTAL GRID
 ========================================================== */
 
 .portal-grid {
-display: grid;
+    display: grid;
 
-grid-template-columns:
-minmax(420px, 520px)
-minmax(320px, 1fr);
+    grid-template-columns:
+        minmax(380px, 460px)
+        minmax(360px, 1fr);
 
 gap: 32px;
 
@@ -102,12 +106,12 @@ box-shadow:
 }
 
 .portal-card h2 {
-margin: 0 0 20px;
+    margin: 0 0 18px;
 
-font-size: 1.4rem;
-font-weight: 700;
+    font-size: 1.25rem;
+    font-weight: 700;
 
-color: #1f2937;
+    color: #1f2937;
 }
 
 .portal-card p {
@@ -223,19 +227,19 @@ transform: translateY(-1px);
 
 #btnGoogle,
 #btnEmailLink {
-width: 100%;
-max-width: 420px;
+    width: 100%;
+    max-width: 360px;
 
 margin-left: auto;
 margin-right: auto;
 
-background: #1e3a8a;
+background: #243c84;
 color: #ffffff;
 }
 
 #btnGoogle:hover,
 #btnEmailLink:hover {
-background: #1e40af;
+background: #2c4a9a;
 }
 
 #btnSignOut {

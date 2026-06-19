@@ -357,12 +357,129 @@ app.post("/admin/credential-registry", async (req, res) => {
 });
 
 /* =====================================================
-   Server Start
+🎓 Student Credentials API
+--------------------------
+
+API Version : 1.0.0
+Status      : Read Only
+Owner       : Agile AI University
+
+Purpose:
+Return credentials belonging to an authenticated learner.
+
+Data Source:
+Firestore → credentials
+
 ===================================================== */
+
+app.post("/student/my-credentials", async (req, res) => {
+
+try {
+
+const email =
+  String(req.body.email || "")
+    .trim()
+    .toLowerCase();
+
+if (!email) {
+  return res.status(400).json({
+    status: "error",
+    message: "email is required"
+  });
+}
+
+const snapshot = await db
+  .collection("credentials")
+  .where("email", "==", email)
+  .get();
+
+const credentials = snapshot.docs.map(doc => {
+
+  const data = doc.data();
+
+  return {
+
+    credential_id:
+      data.credential_id || "",
+
+    full_name:
+      data.full_name || "",
+
+    email:
+      data.email || "",
+
+    program_code:
+      data.program_code || "",
+
+    program_name:
+      data.program_name || "",
+
+    credential_type:
+      data.credential_type || "",
+
+    issued_status:
+      data.issued_status || "",
+
+    issued_by:
+      data.issued_by || "Agile AI University",
+
+    approval_status:
+      data.approval_status || "",
+
+    training_start_date:
+      data.training_start_date || "",
+
+    training_end_date:
+      data.training_end_date || "",
+
+    issued_at:
+      data.issued_on ||
+      data.imported_at ||
+      data.created_at ||
+      null,
+
+    imported_at:
+      data.imported_at || null,
+
+    validity:
+      "Lifetime"
+  };
+
+});
+
+return res.json({
+  status: "success",
+  version: "1.0.0",
+  api: "student-my-credentials",
+  total_records: credentials.length,
+  credentials
+});
+
+} catch (error) {
+
+console.error(
+  "Student Credentials Error:",
+  error
+);
+
+return res.status(500).json({
+  status: "error",
+  message:
+    "Failed to load learner credentials"
+});
+
+}
+
+});
+
+/* =====================================================
+Server Start
+===================================================== */
+
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-  console.log(
-    `${SERVICE_NAME} v${SERVICE_VERSION} running on port ${PORT}`
-  );
+console.log(
+`${SERVICE_NAME} v${SERVICE_VERSION} running on port ${PORT}`
+);
 });

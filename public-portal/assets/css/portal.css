@@ -90,16 +90,15 @@ PORTAL CARD
 ========================================================== */
 
 .portal-card {
-  padding: 24px;
-  min-height: auto;
+  background: #ffffff;
 
-  background: #e8edf5;
-  border: 1px solid #cfd8e3;
+  border: 1px solid #e5e7eb;
+
   border-radius: 16px;
 
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 10px 25px rgba(0, 0, 0, 0.08);
+    0 1px 3px rgba(0,0,0,0.04),
+    0 4px 12px rgba(0,0,0,0.05);
 }
 
 .portal-card h2 {

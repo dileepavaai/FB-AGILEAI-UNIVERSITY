@@ -357,118 +357,153 @@ app.post("/admin/credential-registry", async (req, res) => {
 });
 
 /* =====================================================
-🎓 Student Credentials API
---------------------------
+   🎓 Student Credentials API
+   -----------------------------------------------------
+   API Version : 1.1.0
+   Status      : Read Only
+   Owner       : Agile AI University
 
-API Version : 1.0.0
-Status      : Read Only
-Owner       : Agile AI University
+   Purpose:
+   Return credentials belonging to a learner.
 
-Purpose:
-Return credentials belonging to an authenticated learner.
-
-Data Source:
-Firestore → credentials
+   Data Source:
+   Firestore → credentials
 
 ===================================================== */
 
 app.post("/student/my-credentials", async (req, res) => {
 
-try {
+  try {
 
-const email =
-  String(req.body.email || "")
-    .trim()
-    .toLowerCase();
+    /* ---------------------------------------------
+       INPUT VALIDATION
+    --------------------------------------------- */
 
-if (!email) {
-  return res.status(400).json({
-    status: "error",
-    message: "email is required"
-  });
-}
+    const email = String(
+      req.body?.email || ""
+    )
+      .trim()
+      .toLowerCase();
 
-const snapshot = await db
-  .collection("credentials")
-  .where("email", "==", email)
-  .get();
+    if (!email) {
 
-const credentials = snapshot.docs.map(doc => {
+      return res.status(400).json({
+        status: "error",
+        message: "email is required"
+      });
 
-  const data = doc.data();
+    }
 
-  return {
+    /* ---------------------------------------------
+       FIRESTORE LOOKUP
+    --------------------------------------------- */
 
-    credential_id:
-      data.credential_id || "",
+    const snapshot = await db
+      .collection("credentials")
+      .where("email", "==", email)
+      .get();
 
-    full_name:
-      data.full_name || "",
+    /* ---------------------------------------------
+       RESPONSE MAPPING
+    --------------------------------------------- */
 
-    email:
-      data.email || "",
+    const credentials = snapshot.docs.map(doc => {
 
-    program_code:
-      data.program_code || "",
+      const data = doc.data();
 
-    program_name:
-      data.program_name || "",
+      return {
 
-    credential_type:
-      data.credential_type || "",
+        credential_id:
+          data.credential_id || "",
 
-    issued_status:
-      data.issued_status || "",
+        full_name:
+          data.full_name || "",
 
-    issued_by:
-      data.issued_by || "Agile AI University",
+        email:
+          data.email || "",
 
-    approval_status:
-      data.approval_status || "",
+        program_code:
+          data.program_code || "",
 
-    training_start_date:
-      data.training_start_date || "",
+        program_name:
+          data.program_name || "",
 
-    training_end_date:
-      data.training_end_date || "",
+        credential_type:
+          data.credential_type || "",
 
-    issued_at:
-      data.issued_on ||
-      data.imported_at ||
-      data.created_at ||
-      null,
+        issued_status:
+          data.issued_status || "",
 
-    imported_at:
-      data.imported_at || null,
+        issued_by:
+          data.issued_by || "Agile AI University",
 
-    validity:
-      "Lifetime"
-  };
+        approval_status:
+          data.approval_status || "",
 
-});
+        training_start_date:
+          data.training_start_date || "",
 
-return res.json({
-  status: "success",
-  version: "1.0.0",
-  api: "student-my-credentials",
-  total_records: credentials.length,
-  credentials
-});
+        training_end_date:
+          data.training_end_date || "",
 
-} catch (error) {
+        issued_at:
+          data.issued_on ||
+          data.imported_at ||
+          data.created_at ||
+          null,
 
-console.error(
-  "Student Credentials Error:",
-  error
-);
+        imported_at:
+          data.imported_at || null,
 
-return res.status(500).json({
-  status: "error",
-  message:
-    "Failed to load learner credentials"
-});
+        validity:
+          data.validity || "Lifetime"
 
-}
+      };
+
+    });
+
+    /* ---------------------------------------------
+       SUCCESS
+    --------------------------------------------- */
+
+    return res.json({
+
+      status: "success",
+
+      version: "1.1.0",
+
+      api: "student-my-credentials",
+
+      email,
+
+      total_records:
+        credentials.length,
+
+      credentials
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Student Credentials Error:",
+      error
+    );
+
+    return res.status(500).json({
+
+      status: "error",
+
+      version: "1.1.0",
+
+      api: "student-my-credentials",
+
+      message:
+        "Failed to load learner credentials"
+
+    });
+
+  }
 
 });
 

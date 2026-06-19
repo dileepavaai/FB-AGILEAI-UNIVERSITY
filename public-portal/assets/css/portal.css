@@ -92,7 +92,9 @@ PORTAL CARD
 .portal-card {
 height: 100%;
 
-padding: 32px;
+min-height: 420px;
+
+padding: 24px;
 
 background: #ffffff;
 
@@ -309,10 +311,6 @@ padding: 40px 20px 64px;
 
 .portal-content h1 {
 font-size: 2.5rem;
-}
-
-.portal-card {
-padding: 24px;
 }
 
 .portal-services ul {

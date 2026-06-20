@@ -1,251 +1,79 @@
-/* ============================================================
-Agile AI University Portal
-Portal Authentication Controller
+/* ==========================================================
+   Agile AI University Portal
+   Firebase Auth Service
 
-File       : portal-auth.js
-Version    : 1.1.0
-Status     : ACTIVE
-Owner      : Agile AI University
+   File: firebase-init.js
+   Version: 1.0.0
+   Status: ACTIVE
+========================================================== */
 
-Responsibilities:
+(function () {
 
-* Google Sign-In
-* Email Magic Link Sign-In
-* Auth State Resolution
-* Portal UI State Management
-
-Dependencies:
-
-* firebase-init.js
-
-Last Updated:
-2026-06-19
-============================================================ */
-
-document.addEventListener("DOMContentLoaded", async () => {
 "use strict";
 
-/* ==========================================================
-COMPLETE EMAIL LINK SIGN-IN (IF APPLICABLE)
-========================================================== */
-try {
+window.__AAIU_AUTH_READY__ =
+new Promise((resolve) => {
 
-if (window.AAIUAuth?.completeEmailLinkSignIn) {
-  await window.AAIUAuth.completeEmailLinkSignIn();
-}
+  try {
 
-} catch (err) {
+    if (!firebase.apps.length) {
 
-console.error(
-  "[Portal Auth] Email link sign-in failed",
-  err
-);
+      firebase.initializeApp({
+        apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
+        authDomain: "fb-agileai-university.firebaseapp.com",
+        projectId: "fb-agileai-university",
+        storageBucket: "fb-agileai-university.appspot.com",
+        messagingSenderId: "458881040066",
+        appId: "1:458881040066:web:c832c420f9b4282e76c55b"
+      });
 
-}
+    }
 
-/* ==========================================================
-DOM REFERENCES
-========================================================== */
-const signedOutUI =
-document.getElementById("signedOutUI");
+    const auth = firebase.auth();
 
-const signedInUI =
-document.getElementById("signedInUI");
+    window.AAIUAuth = {
 
-const userName =
-document.getElementById("userName");
+      async signInWithGoogle() {
 
-const userEmail =
-document.getElementById("userEmail");
+        const provider =
+          new firebase.auth.GoogleAuthProvider();
 
-const btnGoogle =
-document.getElementById("btnGoogle");
+        return auth.signInWithPopup(provider);
 
-const btnEmailLink =
-document.getElementById("btnEmailLink");
+      },
 
-const btnSignOut =
-document.getElementById("btnSignOut");
+      async sendEmailLink(email) {
 
-const emailInput =
-document.getElementById("emailInput");
+        throw new Error(
+          "Email Link Sign-In not yet implemented."
+        );
 
-const emailStatus =
-document.getElementById("emailStatus");
+      },
 
-/* ==========================================================
-UI HELPERS
-========================================================== */
+      async completeEmailLinkSignIn() {
 
-function showSignedOut() {
+        return null;
 
-if (signedOutUI) {
-  signedOutUI.style.display = "block";
-}
+      }
 
-if (signedInUI) {
-  signedInUI.style.display = "none";
-}
+    };
 
-}
+    resolve({
+      auth,
+      user: auth.currentUser
+    });
 
-function showSignedIn(user) {
+  } catch (err) {
 
-if (signedOutUI) {
-  signedOutUI.style.display = "none";
-}
+    console.error(
+      "[AAIU Auth] Initialization failed",
+      err
+    );
 
-if (signedInUI) {
-  signedInUI.style.display = "block";
-}
+    resolve(null);
 
-if (userName) {
-  userName.textContent =
-    user?.displayName ||
-    user?.email ||
-    "";
-}
-
-if (userEmail) {
-  userEmail.textContent =
-    user?.email ||
-    "";
-}
-
-}
-
-/* ==========================================================
-AUTH READINESS
-========================================================== */
-
-if (window.AAIU_AUTH_READY) {
-
-const authState =
-  await window.__AAIU_AUTH_READY__;
-
-if (authState?.user) {
-  showSignedIn(authState.user);
-} else {
-  showSignedOut();
-}
-
-/* --------------------------------------------------------
-   LIVE AUTH STATE SYNCHRONIZATION
-   -------------------------------------------------------- */
-
-firebase.auth().onAuthStateChanged(user => {
-
-  if (user) {
-    showSignedIn(user);
-  } else {
-    showSignedOut();
   }
 
 });
 
-}
-
-/* ==========================================================
-GOOGLE SIGN-IN
-========================================================== */
-
-if (btnGoogle) {
-
-btnGoogle.addEventListener(
-  "click",
-  async () => {
-
-    try {
-
-      await window.AAIUAuth.signInWithGoogle();
-
-    } catch (err) {
-
-      console.error(
-        "[Portal Auth] Google sign-in failed",
-        err
-      );
-
-    }
-
-  }
-);
-
-}
-
-/* ==========================================================
-EMAIL MAGIC LINK
-========================================================== */
-
-if (btnEmailLink) {
-
-btnEmailLink.addEventListener(
-  "click",
-  async () => {
-
-    try {
-
-      const email =
-        emailInput?.value?.trim();
-
-      await window.AAIUAuth.sendEmailLink(
-        email
-      );
-
-      if (emailStatus) {
-
-        emailStatus.textContent =
-          "Login link sent. Check your email.";
-
-      }
-
-    } catch (err) {
-
-      console.error(
-        "[Portal Auth] Email link failed",
-        err
-      );
-
-      if (emailStatus) {
-
-        emailStatus.textContent =
-          "Unable to send login link.";
-
-      }
-
-    }
-
-  }
-);
-
-}
-
-/* ==========================================================
-SIGN OUT
-========================================================== */
-
-if (btnSignOut) {
-
-btnSignOut.addEventListener(
-  "click",
-  async () => {
-
-    try {
-
-      await firebase.auth().signOut();
-
-    } catch (err) {
-
-      console.error(
-        "[Portal Auth] Sign out failed",
-        err
-      );
-
-    }
-
-  }
-);
-
-}
-
-});
+})();

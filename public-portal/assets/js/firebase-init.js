@@ -3,8 +3,20 @@
    Firebase Auth Service
 
    File: firebase-init.js
-   Version: 1.0.0
+   Version: 1.1.0
    Status: ACTIVE
+
+   Authentication Providers
+
+   • Google Sign-In
+   • Email Magic Link Sign-In
+
+   Governance
+
+   • Authentication Service Only
+   • No Portal Authorization Logic
+   • No Entitlement Logic
+   • No Credential Logic
 ========================================================== */
 
 (function () {
@@ -33,6 +45,10 @@ new Promise((resolve) => {
 
     window.AAIUAuth = {
 
+      /* ====================================================
+         Google Sign-In
+      ==================================================== */
+
       async signInWithGoogle() {
 
         const provider =
@@ -42,17 +58,78 @@ new Promise((resolve) => {
 
       },
 
+      /* ====================================================
+         Email Magic Link
+      ==================================================== */
+
       async sendEmailLink(email) {
 
-        throw new Error(
-          "Email Link Sign-In not yet implemented."
+        const actionCodeSettings = {
+
+          url:
+            "https://portal.agileai.university/",
+
+          handleCodeInApp: true
+
+        };
+
+        await auth.sendSignInLinkToEmail(
+          email,
+          actionCodeSettings
+        );
+
+        window.localStorage.setItem(
+          "aaiuEmailForSignIn",
+          email
         );
 
       },
 
       async completeEmailLinkSignIn() {
 
-        return null;
+        const currentUrl =
+          window.location.href;
+
+        if (
+          !auth.isSignInWithEmailLink(
+            currentUrl
+          )
+        ) {
+
+          return null;
+
+        }
+
+        let email =
+          window.localStorage.getItem(
+            "aaiuEmailForSignIn"
+          );
+
+        if (!email) {
+
+          email = window.prompt(
+            "Please confirm your email address."
+          );
+
+        }
+
+        if (!email) {
+
+          return null;
+
+        }
+
+        const result =
+          await auth.signInWithEmailLink(
+            email,
+            currentUrl
+          );
+
+        window.localStorage.removeItem(
+          "aaiuEmailForSignIn"
+        );
+
+        return result;
 
       }
 

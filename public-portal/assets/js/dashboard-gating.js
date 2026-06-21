@@ -1,9 +1,17 @@
 /* =========================================================
-   Dashboard Gating — Phase-9.3.15
+   Dashboard Gating — Phase-9.4.0
    RESOLVER-LED · AUTHORIZATION-AWARE
    FINAL · LOCKED · PRODUCTION-SAFE
 
    Change History
+
+   Phase-9.4.1
+    -----------------------------------------
+    - Added explicit authentication boundary
+    - Prevented anonymous authorization checks
+    - Fixed sign-out redirect loop
+    - Added governance documentation
+    - Improved audit traceability
 
     Phase-9.4.0
     -----------------------------------------
@@ -38,14 +46,70 @@
 
   function evaluateAndRender(reason) {
 
-    const data = window.portalEntitlementData;
+    /* -------------------------------------------------------
+   AUTHENTICATION BOUNDARY
 
-    if (!data || data.checked !== true) {
+   Governance Rule
+
+   Dashboard Gating must never evaluate
+   authorization for anonymous users.
+
+   Authentication ownership belongs to:
+
+   - firebase-init.js
+   - portal-auth.js
+
+   Anonymous users must remain on the
+   Portal Login experience.
+
+   Only authenticated users proceed to:
+
+   Entitlement Resolution
+   → Authorization
+   → Dashboard Rendering
+
+------------------------------------------------------- */
+
+    const currentUser =
+      firebase?.auth?.()?.currentUser;
+
+    if (!currentUser) {
+
+      console.log(
+        "[Dashboard Gating] Anonymous session detected"
+      );
+
       return;
     }
 
-    if (typeof window.resolvePortalEntitlements !== "function") {
-      console.error("[Dashboard Gating] Resolver missing");
+    /* -------------------------------------------------------
+      ENTITLEMENT DATA READINESS
+    ------------------------------------------------------- */
+
+    const data = window.portalEntitlementData;
+
+    if (!data || data.checked !== true) {
+
+      console.log(
+        "[Dashboard Gating] Waiting for entitlement data"
+      );
+
+      return;
+    }
+
+    /* -------------------------------------------------------
+      RESOLVER GOVERNANCE
+    ------------------------------------------------------- */
+
+    if (
+      typeof window.resolvePortalEntitlements !==
+      "function"
+    ) {
+
+      console.error(
+        "[Dashboard Gating] Resolver missing"
+      );
+
       return;
     }
 

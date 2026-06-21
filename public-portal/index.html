@@ -1,21 +1,43 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  />
 
   <title>Agile AI University Portal</title>
 
-  <!-- Shared Design Authority -->
-  <link rel="stylesheet" href="/assets/css/site.css" />
+  <!-- ==================================================
+       SHARED DESIGN AUTHORITY
+       ================================================== -->
 
-  <!-- Portal Module -->
-  <link rel="stylesheet" href="/assets/css/portal.css" />
+  <link
+    rel="stylesheet"
+    href="/assets/css/site.css"
+  />
+
+  <!-- ==================================================
+       PORTAL MODULE
+       ================================================== -->
+
+  <link
+    rel="stylesheet"
+    href="/assets/css/portal.css"
+  />
+
 </head>
 
 <body>
 
-  <!-- Shared Header -->
+  <!-- ==================================================
+       SHARED HEADER
+       ================================================== -->
+
   <div id="site-header"></div>
 
   <main class="portal-home">
@@ -23,15 +45,19 @@
     <!-- ==================================================
          HERO
          ================================================== -->
+
     <section class="portal-hero">
 
       <div class="portal-content">
 
-        <h1>Agile AI University Portal</h1>
+        <h1>
+          Agile AI University Portal
+        </h1>
 
         <p>
-          Secure access to assessments, credentials,
-          recognitions, reports, and university services.
+          Secure access to assessments,
+          credentials, recognitions,
+          reports, and university services.
         </p>
 
       </div>
@@ -41,21 +67,28 @@
     <!-- ==================================================
          PORTAL GRID
          ================================================== -->
+
     <div class="portal-grid">
 
       <!-- ================================================
            SIGNED OUT EXPERIENCE
            ================================================ -->
+
       <section
         id="signedOutUI"
         class="portal-card"
       >
 
-        <h2>Sign In</h2>
+        <h2>
+          Sign In
+        </h2>
 
         <p id="statusText">
-          Sign in to access assessments, credentials,
-          recognitions, reports, and university services.
+
+          Sign in to access assessments,
+          credentials, recognitions,
+          reports, and university services.
+
         </p>
 
         <button
@@ -63,10 +96,16 @@
           class="btn"
           type="button"
         >
+
           Sign in with Google
+
         </button>
 
-        <div class="divider">OR</div>
+        <div class="divider">
+
+          OR
+
+        </div>
 
         <div class="auth-box">
 
@@ -82,13 +121,22 @@
             class="btn"
             type="button"
           >
+
             Send Login Link
+
           </button>
 
-          <p id="emailStatus" class="status-message"></p>
+          <p
+            id="emailStatus"
+            class="status-message"
+          ></p>
 
           <p class="portal-help">
-            Secure access using Google Sign-In or a passwordless email link.
+
+            Secure access using
+            Google Sign-In or a
+            passwordless email link.
+
           </p>
 
         </div>
@@ -98,17 +146,41 @@
       <!-- ================================================
            AVAILABLE SERVICES
            ================================================ -->
-      <aside class="portal-card portal-services">
 
-        <h2>Available Services</h2>
+      <aside
+        class="portal-card portal-services"
+      >
+
+        <h2>
+          Available Services
+        </h2>
 
         <ul>
-          <li>Assessment Platform</li>
-          <li>Professional Credentials</li>
-          <li>Recognition Records</li>
-          <li>Executive Insight Reports</li>
-          <li>Student Services</li>
-          <li>University Verification Services</li>
+
+          <li>
+            Assessment Platform
+          </li>
+
+          <li>
+            Professional Credentials
+          </li>
+
+          <li>
+            Recognition Records
+          </li>
+
+          <li>
+            Executive Insight Reports
+          </li>
+
+          <li>
+            Student Services
+          </li>
+
+          <li>
+            University Verification Services
+          </li>
+
         </ul>
 
       </aside>
@@ -118,16 +190,23 @@
     <!-- ================================================
          SIGNED IN EXPERIENCE
          ================================================ -->
+
     <section
       id="signedInUI"
       class="portal-card"
       hidden
     >
 
-      <h2>Welcome</h2>
+      <h2>
+        Welcome
+      </h2>
 
       <p class="user-name">
-        <strong id="userName"></strong>
+
+        <strong
+          id="userName"
+        ></strong>
+
       </p>
 
       <p
@@ -141,14 +220,18 @@
           href="/assessment.html"
           class="btn"
         >
+
           AI + Agile Assessment
+
         </a>
 
         <a
           href="/credentials/my-credentials.html"
           class="btn"
         >
+
           My Credentials
+
         </a>
 
       </div>
@@ -158,57 +241,158 @@
         class="btn"
         type="button"
       >
+
         Sign Out
+
       </button>
 
       <p class="note">
-        You are authenticated within the Agile AI University Portal.
+
+        You are authenticated within
+        the Agile AI University Portal.
+
       </p>
 
     </section>
 
   </main>
 
-  <!-- Shared Footer -->
+  <!-- ==================================================
+       SHARED FOOTER
+       ================================================== -->
+
   <div id="site-footer"></div>
 
   <!-- ==================================================
        CONTEXT
        ================================================== -->
+
   <script>
-    window.__AAIU_CONTEXT = "portal";
+
+    window.__AAIU_CONTEXT =
+      "portal";
+
   </script>
 
   <!-- ==================================================
        FIREBASE SDK
        ================================================== -->
+
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <!-- ==================================================
+       AUTHENTICATION FOUNDATION
+
+       RESPONSIBILITIES
+
+       • Firebase Initialization
+       • Google Authentication
+       • Email Link Authentication
+       • Auth Readiness Contract
+
+       GOVERNANCE
+
+       • Authentication Only
+       • No Authorization
+       • No Entitlements
+       ================================================== -->
 
   <script src="/assets/js/firebase-init.js"></script>
 
   <!-- ==================================================
        PORTAL AUTHENTICATION
+
+       RESPONSIBILITIES
+
+       • Login UI
+       • Logout UI
+       • Session Display
+
+       GOVERNANCE
+
+       • No Access Decisions
+       • No Entitlement Logic
        ================================================== -->
+
   <script src="/assets/js/portal-auth.js"></script>
 
   <!-- ==================================================
-       PORTAL AUTHORIZATION
+       ENTITLEMENT RESOLUTION
+
+       RESPONSIBILITIES
+
+       • Resolve user entitlements
+       • Resolve credentials
+       • Publish entitlement state
+
+       GOVERNANCE
+
+       • API Driven
+       • No UI Logic
+       • No Redirect Logic
        ================================================== -->
+
+  <script src="/assets/js/entitlement.js"></script>
+
+  <!-- ==================================================
+       ENTITLEMENT RESOLVER
+
+       RESPONSIBILITIES
+
+       • Executive precedence
+       • Student access evaluation
+       • Credential visibility filtering
+
+       GOVERNANCE
+
+       • Pure Function
+       • Single Source Of Truth
+       ================================================== -->
+
+  <script src="/assets/js/services/entitlements/resolvePortalEntitlements.js"></script>
+
+  <!-- ==================================================
+       PORTAL AUTHORIZATION
+
+       RESPONSIBILITIES
+
+       • Grant / Deny Portal Access
+
+       GOVERNANCE
+
+       • Resolver Output Only
+       • No API Calls
+       • No Firestore Access
+       ================================================== -->
+
   <script src="/assets/js/services/authorization/portal-authorization.js"></script>
 
   <!-- ==================================================
        DASHBOARD GATING
+
+       RESPONSIBILITIES
+
+       • Enforce Authorization
+       • Unauthorized Redirect
+       • Credential Rendering
+
+       GOVERNANCE
+
+       • Consumes Resolver Output
        ================================================== -->
+
   <script src="/assets/js/dashboard-gating.js"></script>
 
   <!-- ==================================================
        SHARED DESIGN AUTHORITY
        ================================================== -->
+
   <script src="/assets/js/header.js"></script>
 
   <script src="/assets/js/footer.js"></script>
 
 </body>
+
 </html>

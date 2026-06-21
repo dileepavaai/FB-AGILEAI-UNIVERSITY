@@ -449,10 +449,9 @@ console.log(
 }
 
 if (
-window.AAIU_AUTH_READY
+window.__AAIU_AUTH_READY__
 instanceof Promise
 ) {
-
 
 window.__AAIU_AUTH_READY__.then(
   state => {

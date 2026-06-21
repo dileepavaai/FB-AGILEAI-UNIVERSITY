@@ -2,10 +2,70 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Access Restricted | Agile AI University</title>
+
+<!-- =====================================================
+     Unauthorized Access Page
+
+     Version    : 2.1.0
+     Status     : ACTIVE
+     Governance : LOCKED
+
+     PURPOSE
+
+     Displayed when:
+
+     Authentication  = SUCCESS
+     Authorization   = DENIED
+
+     This page is informational only.
+
+     Responsibilities
+
+     - Explain access restriction
+     - Provide support contact
+     - Allow session termination
+     - Allow navigation to public website
+
+     Non-Responsibilities
+
+     - Authentication
+     - Authorization
+     - Entitlement Resolution
+     - Credential Lookup
+     - Registry Access
+
+     Architectural Rule
+
+     Unauthorized users must NOT be routed
+     back into the protected portal area.
+
+     Change History
+
+     v2.1.0
+     -------------------------------------
+     - Removed inline JavaScript
+     - Added unauthorized.js controller
+     - Enforced controller-based architecture
+     - Preserved authorization-loop prevention
+
+     v2.0.0
+     -------------------------------------
+     - Removed "Return to Portal Home"
+     - Added "Return to Public Website"
+     - Added Sign Out action
+     - Prevented authorization loop
+     - Added governance documentation
+
+     v1.0.0
+     -------------------------------------
+     - Initial implementation
+
+===================================================== -->
 
 <link rel="stylesheet" href="/assets/css/site.css">
 <link rel="stylesheet" href="/assets/css/portal.css">
@@ -14,8 +74,15 @@
 
 <body>
 
-<!-- Shared Header -->
+<!-- =====================================================
+     SHARED HEADER
+===================================================== -->
+
 <div id="site-header"></div>
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
 
 <main class="container">
 
@@ -46,22 +113,69 @@ support@agileai.university
 </a>
 </p>
 
-<p>
-<a href="/" class="btn">
-Return to Portal Home
+<!-- =====================================================
+     USER ACTIONS
+===================================================== -->
+
+<div class="portal-actions">
+
+<a
+  href="https://agileai.university"
+  class="btn"
+>
+  Return to Public Website
 </a>
-</p>
+
+<button
+  id="btnSignOut"
+  class="btn"
+  type="button"
+>
+  Sign Out
+</button>
+
+</div>
 
 </section>
 
 </main>
 
-<!-- Shared Footer -->
+<!-- =====================================================
+     SHARED FOOTER
+===================================================== -->
+
 <div id="site-footer"></div>
 
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script src="/assets/js/firebase-init.js"></script>
+
+<!-- =====================================================
+     UNAUTHORIZED PAGE CONTROLLER
+
+     Responsibilities
+
+     - Sign Out
+     - Session Exit
+     - Unauthorized Page Actions
+
+===================================================== -->
+
+<script src="/assets/js/unauthorized.js"></script>
+
+<!-- =====================================================
+     SHARED DESIGN AUTHORITY
+===================================================== -->
+
 <script src="/assets/js/header.js"></script>
+
 <script src="/assets/js/footer.js"></script>
 
 </body>
-
 </html>

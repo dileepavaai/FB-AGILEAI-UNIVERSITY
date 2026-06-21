@@ -1,52 +1,89 @@
 /* =========================================================
-   Dashboard Gating — Phase-9.4.0
-   RESOLVER-LED · AUTHORIZATION-AWARE
-   FINAL · LOCKED · PRODUCTION-SAFE
+Dashboard Gating — Phase-9.4.1
 
-   Change History
+RESOLVER-LED · AUTHORIZATION-AWARE
+FINAL · LOCKED · PRODUCTION-SAFE
 
-   Phase-9.4.1
-    -----------------------------------------
-    - Added explicit authentication boundary
-    - Prevented anonymous authorization checks
-    - Fixed sign-out redirect loop
-    - Added governance documentation
-    - Improved audit traceability
+PURPOSE
 
-    Phase-9.4.0
-    -----------------------------------------
-    - Added authorization-aware portal gating
-    - Integrated portal-authorization.js
-    - Added unauthorized.html redirect flow
-    - Preserved resolver-led architecture
-    - No sign-out on authorization failure
+Dashboard Gating is responsible for:
 
-    Phase-9.3.15
-    -----------------------------------------
-    - Resolver-led dashboard gating
-    - Credential rendering governance
-    - Executive insight rendering
-   ========================================================= */
+* Consuming authenticated session state
+* Consuming entitlement data
+* Invoking the entitlement resolver
+* Invoking authorization policy
+* Rendering dashboard experiences
+
+Dashboard Gating is NOT responsible for:
+
+* Authentication
+* Sign In
+* Sign Out
+* Entitlement Resolution Rules
+* Authorization Rules
+
+OWNERSHIP
+
+Authentication
+
+* firebase-init.js
+* portal-auth.js
+
+Authorization
+
+* portal-authorization.js
+
+Entitlement Resolution
+
+* resolvePortalEntitlements()
+
+Change History
+
+## Phase-9.4.1
+
+* Added explicit authentication boundary
+* Prevented anonymous authorization checks
+* Fixed sign-out redirect loop
+* Added authorization governance boundary
+* Improved audit traceability
+* Improved future maintainability
+
+## Phase-9.4.0
+
+* Added authorization-aware portal gating
+* Integrated portal-authorization.js
+* Added unauthorized.html redirect flow
+* Preserved resolver-led architecture
+* No sign-out on authorization failure
+
+## Phase-9.3.15
+
+* Resolver-led dashboard gating
+* Credential rendering governance
+* Executive insight rendering
+
+========================================================= */
 
 (function () {
-  "use strict";
 
-  console.log(
-    "[Dashboard Gating] Initializing (Resolver-led · Phase-9.3.15)"
-  );
+"use strict";
 
-  window.__dashboardGatingRan = true;
+console.log(
+"[Dashboard Gating] Initializing (Resolver-led · Phase-9.4.1)"
+);
 
-  let credentialsRendered = false;
-  let credentialsObserved = false;
-  let renderAttempted = false;
+window.__dashboardGatingRan = true;
 
-  let lastAuthUid = null;
-  let resolverInvokedAfterAuth = false;
+let credentialsRendered = false;
+let credentialsObserved = false;
+let renderAttempted = false;
 
-  function evaluateAndRender(reason) {
+let lastAuthUid = null;
+let resolverInvokedAfterAuth = false;
 
-    /* -------------------------------------------------------
+function evaluateAndRender(reason) {
+
+/* -------------------------------------------------------
    AUTHENTICATION BOUNDARY
 
    Governance Rule
@@ -54,342 +91,426 @@
    Dashboard Gating must never evaluate
    authorization for anonymous users.
 
-   Authentication ownership belongs to:
+   Authentication ownership belongs
+   exclusively to:
 
    - firebase-init.js
    - portal-auth.js
 
-   Anonymous users must remain on the
+   Dashboard Gating must never:
+
+   - Sign users in
+   - Sign users out
+   - Redirect users to login
+   - Complete authentication flows
+
+   Anonymous users remain on the
    Portal Login experience.
 
-   Only authenticated users proceed to:
-
-   Entitlement Resolution
-   → Authorization
-   → Dashboard Rendering
+   Dashboard Gating consumes
+   authentication state only.
 
 ------------------------------------------------------- */
 
-    const currentUser =
-      firebase?.auth?.()?.currentUser;
+const currentUser =
+  firebase?.auth?.()?.currentUser;
 
-    if (!currentUser) {
+if (!currentUser) {
 
-      console.log(
-        "[Dashboard Gating] Anonymous session detected"
-      );
+  console.log(
+    "[Dashboard Gating] Anonymous session detected - authorization evaluation skipped"
+  );
 
-      return;
-    }
+  return;
+}
 
-    /* -------------------------------------------------------
-      ENTITLEMENT DATA READINESS
-    ------------------------------------------------------- */
+/* -------------------------------------------------------
+   ENTITLEMENT DATA READINESS
 
-    const data = window.portalEntitlementData;
+   Entitlement data must be available
+   before resolver execution.
 
-    if (!data || data.checked !== true) {
+------------------------------------------------------- */
 
-      console.log(
-        "[Dashboard Gating] Waiting for entitlement data"
-      );
+const data = window.portalEntitlementData;
 
-      return;
-    }
+if (!data || data.checked !== true) {
 
-    /* -------------------------------------------------------
-      RESOLVER GOVERNANCE
-    ------------------------------------------------------- */
+  console.log(
+    "[Dashboard Gating] Waiting for entitlement data"
+  );
 
-    if (
-      typeof window.resolvePortalEntitlements !==
-      "function"
-    ) {
+  return;
+}
 
-      console.error(
-        "[Dashboard Gating] Resolver missing"
-      );
+/* -------------------------------------------------------
+   RESOLVER GOVERNANCE
 
-      return;
-    }
+   Resolver is the single source of truth
+   for portal entitlement state.
 
-    window.__resolverInvoked = true;
+------------------------------------------------------- */
 
-    const state = window.resolvePortalEntitlements({
-      executiveEntitlement: data.executiveEntitlement || null,
-      userEntitlements: data.userEntitlements || null,
-      credentials: Array.isArray(data.credentials)
+if (
+  typeof window.resolvePortalEntitlements !==
+  "function"
+) {
+
+  console.error(
+    "[Dashboard Gating] Resolver missing"
+  );
+
+  return;
+}
+
+window.__resolverInvoked = true;
+
+const state =
+  window.resolvePortalEntitlements({
+    executiveEntitlement:
+      data.executiveEntitlement || null,
+
+    userEntitlements:
+      data.userEntitlements || null,
+
+    credentials:
+      Array.isArray(data.credentials)
         ? data.credentials
         : [],
-      authenticatedUser: data.email
+
+    authenticatedUser:
+      data.email
         ? { email: data.email }
         : null
-    });
+  });
 
-    /* -------------------------------------------------------
-       GOVERNED HANDOFF
-       ------------------------------------------------------- */
+/* -------------------------------------------------------
+   GOVERNED HANDOFF
 
-    if (typeof window.publishPortalEntitlements === "function") {
-      window.publishPortalEntitlements(state);
-    }
+   Publish resolver output for
+   downstream consumers.
 
-    console.log(
-      `[Dashboard Gating] Resolved entitlement state (${reason})`,
+------------------------------------------------------- */
+
+if (
+  typeof window.publishPortalEntitlements ===
+  "function"
+) {
+
+  window.publishPortalEntitlements(
+    state
+  );
+
+}
+
+console.log(
+  `[Dashboard Gating] Resolved entitlement state (${reason})`,
+  state
+);
+
+/* -------------------------------------------------------
+   AUTHORIZATION BOUNDARY
+
+   Governance Rule
+
+   Authorization determines whether an
+   authenticated user may access the
+   Student Portal experience.
+
+   Authorization ownership belongs to:
+
+   - portal-authorization.js
+
+   Dashboard Gating consumes the
+   authorization decision and performs
+   UI routing only.
+
+   Dashboard Gating does NOT determine
+   authorization policy.
+
+------------------------------------------------------- */
+
+if (
+  typeof window.authorizePortalAccess ===
+  "function"
+) {
+
+  const authorized =
+    window.authorizePortalAccess(
       state
     );
 
-    /* -------------------------------------------------------
-       PORTAL AUTHORIZATION
-       ------------------------------------------------------- */
+  if (!authorized) {
 
-    if (
-      typeof window.authorizePortalAccess === "function"
-    ) {
-
-      const authorized =
-        window.authorizePortalAccess(state);
-
-      if (!authorized) {
-
-        console.warn(
-          "[Dashboard Gating] Access denied"
-        );
-
-        if (
-          !window.location.pathname.endsWith(
-            "/unauthorized.html"
-          )
-        ) {
-          window.location.href =
-            "/unauthorized.html";
-        }
-
-        return;
-      }
-
-      console.log(
-        "[Dashboard Gating] Access granted"
-      );
-    }
-
-    /* -------------------------------------------------------
-       INVARIANT CHECKS
-       ------------------------------------------------------- */
-
-    console.assert(
-      !Array.isArray(state.visibleCredentials) ||
-        state.visibleCredentials.every(
-          c =>
-            c &&
-            typeof c.program_code === "string"
-        ),
-      "[Dashboard Gating Invariant] visibleCredentials missing program_code"
+    console.warn(
+      "[Dashboard Gating] Access denied"
     );
 
-    /* -------------------------------------------------------
-       EXECUTIVE INSIGHT
-       ------------------------------------------------------- */
-
-    const execSection =
-      document.getElementById(
-        "exec-insight-section"
-      );
-
-    const validUntilRow =
-      document.getElementById(
-        "exec-valid-until-row"
-      );
-
-    const validUntilEl =
-      document.getElementById(
-        "exec-valid-until"
-      );
-
-    const daysRemainingEl =
-      document.getElementById(
-        "exec-days-remaining"
-      );
-
     if (
-      state.executiveInsight?.hasAccess === true
+      !window.location.pathname.endsWith(
+        "/unauthorized.html"
+      )
     ) {
 
-      execSection?.classList.remove("hidden");
-
-      validUntilRow?.classList.remove("hidden");
-
-      const raw =
-        state.executiveInsight.validUntil;
-
-      const validUntilDate =
-        raw?.toDate?.() ||
-        (raw ? new Date(raw) : null);
-
-      if (validUntilEl) {
-        validUntilEl.textContent =
-          validUntilDate
-            ? validUntilDate.toLocaleDateString()
-            : "—";
-      }
-
-      if (
-        daysRemainingEl &&
-        validUntilDate
-      ) {
-
-        const daysRemaining = Math.max(
-          0,
-          Math.ceil(
-            (validUntilDate - new Date()) /
-              86400000
-          )
-        );
-
-        daysRemainingEl.textContent =
-          `(${daysRemaining} days remaining)`;
-      }
-
-    } else {
-
-      validUntilRow?.classList.add("hidden");
+      window.location.href =
+        "/unauthorized.html";
 
     }
 
-    /* -------------------------------------------------------
-       CREDENTIAL VISIBILITY
-       ------------------------------------------------------- */
+    return;
+  }
 
-    if (
-      Array.isArray(
-        state.visibleCredentials
-      ) &&
-      state.visibleCredentials.length > 0
-    ) {
+  console.log(
+    "[Dashboard Gating] Access granted"
+  );
+}
 
-      document
-        .getElementById(
-          "student-dashboard-section"
-        )
-        ?.classList.remove("hidden");
+/* -------------------------------------------------------
+   INVARIANT CHECKS
 
-    }
+------------------------------------------------------- */
 
-    /* -------------------------------------------------------
-       CREDENTIAL RENDERING
-       ------------------------------------------------------- */
+console.assert(
+  !Array.isArray(
+    state.visibleCredentials
+  ) ||
+  state.visibleCredentials.every(
+    c =>
+      c &&
+      typeof c.program_code ===
+        "string"
+  ),
+  "[Dashboard Gating Invariant] visibleCredentials missing program_code"
+);
 
-    if (
-      !credentialsRendered &&
-      Array.isArray(
-        state.visibleCredentials
-      ) &&
-      state.visibleCredentials.length > 0 &&
-      typeof window.renderCredentials ===
-        "function"
-    ) {
+/* -------------------------------------------------------
+   EXECUTIVE INSIGHT RENDERING
 
-      const container =
-        document.getElementById(
-          "credentials-container"
-        );
+------------------------------------------------------- */
 
-      if (!container) {
-        return;
-      }
+const execSection =
+  document.getElementById(
+    "exec-insight-section"
+  );
 
-      renderAttempted = true;
-      credentialsRendered = true;
+const validUntilRow =
+  document.getElementById(
+    "exec-valid-until-row"
+  );
 
-      console.log(
-        "[Dashboard Gating] Rendering credentials:",
-        state.visibleCredentials.length
-      );
+const validUntilEl =
+  document.getElementById(
+    "exec-valid-until"
+  );
 
-      window.renderCredentials(
-        state.visibleCredentials
-      );
-    }
+const daysRemainingEl =
+  document.getElementById(
+    "exec-days-remaining"
+  );
 
-    if (
-      renderAttempted &&
-      Array.isArray(
-        state.visibleCredentials
-      ) &&
-      state.visibleCredentials.length > 0
-    ) {
+if (
+  state.executiveInsight?.hasAccess ===
+  true
+) {
 
-      console.assert(
-        credentialsObserved ||
-          credentialsRendered,
-        "[BOOT-INTEGRITY] Credentials present but never observed or rendered"
-      );
+  execSection?.classList.remove(
+    "hidden"
+  );
 
-    }
+  validUntilRow?.classList.remove(
+    "hidden"
+  );
 
-    console.log(
-      "[Dashboard Gating] Evaluation complete"
-    );
+  const raw =
+    state.executiveInsight.validUntil;
+
+  const validUntilDate =
+    raw?.toDate?.() ||
+    (raw ? new Date(raw) : null);
+
+  if (validUntilEl) {
+
+    validUntilEl.textContent =
+      validUntilDate
+        ? validUntilDate.toLocaleDateString()
+        : "—";
+
   }
 
   if (
-    window.__AAIU_AUTH_READY__
-      instanceof Promise
+    daysRemainingEl &&
+    validUntilDate
   ) {
 
-    window.__AAIU_AUTH_READY__.then(
-      state => {
+    const daysRemaining =
+      Math.max(
+        0,
+        Math.ceil(
+          (
+            validUntilDate -
+            new Date()
+          ) / 86400000
+        )
+      );
 
-        const user = state?.user;
+    daysRemainingEl.textContent =
+      `(${daysRemaining} days remaining)`;
 
-        if (!user) {
-          return;
-        }
-
-        if (
-          user.uid === lastAuthUid &&
-          resolverInvokedAfterAuth
-        ) {
-          return;
-        }
-
-        lastAuthUid = user.uid;
-        resolverInvokedAfterAuth = true;
-
-        evaluateAndRender(
-          "auth-ready"
-        );
-      }
-    );
   }
 
-  document.addEventListener(
-    "entitlements:ready",
-    () => {
-      evaluateAndRender(
-        "entitlements"
-      );
-    }
+} else {
+
+  validUntilRow?.classList.add(
+    "hidden"
   );
 
-  document.addEventListener(
-    "credentials:ready",
-    () => {
+}
 
-      credentialsObserved = true;
-      credentialsRendered = false;
+/* -------------------------------------------------------
+   CREDENTIAL VISIBILITY
 
-      evaluateAndRender(
-        "credentials"
-      );
-    }
+------------------------------------------------------- */
+
+if (
+  Array.isArray(
+    state.visibleCredentials
+  ) &&
+  state.visibleCredentials.length > 0
+) {
+
+  document
+    .getElementById(
+      "student-dashboard-section"
+    )
+    ?.classList.remove(
+      "hidden"
+    );
+
+}
+
+/* -------------------------------------------------------
+   CREDENTIAL RENDERING
+
+------------------------------------------------------- */
+
+if (
+  !credentialsRendered &&
+  Array.isArray(
+    state.visibleCredentials
+  ) &&
+  state.visibleCredentials.length > 0 &&
+  typeof window.renderCredentials ===
+    "function"
+) {
+
+  const container =
+    document.getElementById(
+      "credentials-container"
+    );
+
+  if (!container) {
+    return;
+  }
+
+  renderAttempted = true;
+  credentialsRendered = true;
+
+  console.log(
+    "[Dashboard Gating] Rendering credentials:",
+    state.visibleCredentials.length
   );
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-      evaluateAndRender("dom");
-    }
+  window.renderCredentials(
+    state.visibleCredentials
   );
+
+}
+
+if (
+  renderAttempted &&
+  Array.isArray(
+    state.visibleCredentials
+  ) &&
+  state.visibleCredentials.length > 0
+) {
+
+  console.assert(
+    credentialsObserved ||
+    credentialsRendered,
+    "[BOOT-INTEGRITY] Credentials present but never observed or rendered"
+  );
+
+}
+
+console.log(
+  "[Dashboard Gating] Evaluation complete"
+);
+
+}
+
+if (
+window.AAIU_AUTH_READY
+instanceof Promise
+) {
+
+
+window.__AAIU_AUTH_READY__.then(
+  state => {
+
+    const user = state?.user;
+
+    if (!user) {
+      return;
+    }
+
+    if (
+      user.uid === lastAuthUid &&
+      resolverInvokedAfterAuth
+    ) {
+      return;
+    }
+
+    lastAuthUid = user.uid;
+    resolverInvokedAfterAuth = true;
+
+    evaluateAndRender(
+      "auth-ready"
+    );
+
+  }
+);
+
+}
+
+document.addEventListener(
+"entitlements:ready",
+() => {
+evaluateAndRender(
+"entitlements"
+);
+}
+);
+
+document.addEventListener(
+"credentials:ready",
+() => {
+
+  credentialsObserved = true;
+  credentialsRendered = false;
+
+  evaluateAndRender(
+    "credentials"
+  );
+
+}
+
+);
+
+document.addEventListener(
+"DOMContentLoaded",
+() => {
+evaluateAndRender("dom");
+}
+);
 
 })();

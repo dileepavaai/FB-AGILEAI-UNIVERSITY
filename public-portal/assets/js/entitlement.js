@@ -1,11 +1,26 @@
 /* =====================================================
-   User Entitlement Resolution — Phase-6.6 (LOCKED)
-   PAID > TRIAL
-   UI READ-ONLY PASS THROUGH
-   SINGLE AUTHORITATIVE STATE
-   EVENT-EMITTING (DETERMINISTIC)
-   AUTH-LED · API-DRIVEN (NO FIRESTORE)
-   ===================================================== */
+   User Entitlement Resolution
+
+   Version : Phase-6.7
+   Status  : ACTIVE
+
+   Change History
+
+   Phase-6.7
+   -----------------------------------------
+   - Replaced authState.token dependency
+   - Uses Firebase getIdToken() directly
+   - Prevents stale or missing token issues
+   - Aligns entitlement resolution with
+     Firebase authentication lifecycle
+
+   Phase-6.6
+   -----------------------------------------
+   - API-driven entitlement resolution
+   - Deterministic event emission
+   - Resolver-led architecture
+
+===================================================== */
 
 (function () {
   "use strict";
@@ -99,10 +114,24 @@
       const email = user.email?.toLowerCase() || null;
       window.execEntitlement.email = email;
 
-      const token = authState.token;
+      /* -------------------------------------------------
+        PHASE-6.7
+        Obtain fresh Firebase ID token directly from
+        authenticated user.
+
+        Rationale:
+        Avoids dependency on authState.token and
+        ensures entitlement API always receives a
+        current Firebase token.
+      ------------------------------------------------- */
+
+      const token =
+        await user.getIdToken();
 
       if (!token) {
-        throw new Error("Auth token missing at entitlement resolution");
+        throw new Error(
+          "Unable to obtain Firebase ID token"
+        );
       }
 
       const res = await fetch(RESOLVE_API, {

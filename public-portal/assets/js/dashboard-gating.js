@@ -2,6 +2,22 @@
    Dashboard Gating — Phase-9.3.15
    RESOLVER-LED · AUTHORIZATION-AWARE
    FINAL · LOCKED · PRODUCTION-SAFE
+
+   Change History
+
+    Phase-9.4.0
+    -----------------------------------------
+    - Added authorization-aware portal gating
+    - Integrated portal-authorization.js
+    - Added unauthorized.html redirect flow
+    - Preserved resolver-led architecture
+    - No sign-out on authorization failure
+
+    Phase-9.3.15
+    -----------------------------------------
+    - Resolver-led dashboard gating
+    - Credential rendering governance
+    - Executive insight rendering
    ========================================================= */
 
 (function () {

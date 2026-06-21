@@ -3,7 +3,7 @@
    Firebase Auth Service
 
    File: firebase-init.js
-   Version: 1.1.0
+   Version: 1.2.0
    Status: ACTIVE
 
    Authentication Providers
@@ -17,16 +17,34 @@
    • No Portal Authorization Logic
    • No Entitlement Logic
    • No Credential Logic
+
+   Change History
+
+   v1.2.0
+   • Fixed auth readiness timing issue
+   • Waits for Firebase auth restoration
+   • Resolves __AAIU_AUTH_READY__ only after
+     first auth state resolution
+   • Added governance diagnostics
+
 ========================================================== */
 
 (function () {
 
 "use strict";
 
+console.log(
+  "[AAIU Auth] Firebase Auth Service v1.2.0 initializing"
+);
+
 window.__AAIU_AUTH_READY__ =
 new Promise((resolve) => {
 
   try {
+
+    /* ======================================================
+       FIREBASE INITIALIZATION
+    ====================================================== */
 
     if (!firebase.apps.length) {
 
@@ -39,9 +57,17 @@ new Promise((resolve) => {
         appId: "1:458881040066:web:c832c420f9b4282e76c55b"
       });
 
+      console.log(
+        "[AAIU Auth] Firebase initialized"
+      );
+
     }
 
     const auth = firebase.auth();
+
+    /* ======================================================
+       AUTH SERVICE API
+    ====================================================== */
 
     window.AAIUAuth = {
 
@@ -54,7 +80,9 @@ new Promise((resolve) => {
         const provider =
           new firebase.auth.GoogleAuthProvider();
 
-        return auth.signInWithPopup(provider);
+        return auth.signInWithPopup(
+          provider
+        );
 
       },
 
@@ -135,10 +163,27 @@ new Promise((resolve) => {
 
     };
 
-    resolve({
-      auth,
-      user: auth.currentUser
-    });
+    /* ======================================================
+       AUTH READINESS CONTRACT
+       WAIT FOR FIREBASE TO RESTORE SESSION
+    ====================================================== */
+
+    const unsubscribe =
+      auth.onAuthStateChanged((user) => {
+
+        unsubscribe();
+
+        console.log(
+          "[AAIU Auth] Auth ready:",
+          user?.email || "anonymous"
+        );
+
+        resolve({
+          auth,
+          user
+        });
+
+      });
 
   } catch (err) {
 

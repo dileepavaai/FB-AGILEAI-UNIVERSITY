@@ -148,6 +148,16 @@
 
       const data = await res.json();
 
+      console.log(
+          "[Entitlement API Response]",
+          JSON.stringify(data, null, 2)
+        );
+
+      console.log(
+          "[User Entitlements]",
+          data.userEntitlements
+        );
+
       const executive = data.executiveEntitlement;
       const userEntitlements = data.userEntitlements;
       const credentials = Array.isArray(data.credentials)

@@ -328,15 +328,37 @@ app.get(
               data.program_code || null,
 
             full_name:
-              data.full_name || null
+              data.full_name || null,
+
+            email:
+              data.email || null,
+
+            issued_status:
+              data.issued_status || null,
+
+            created_at:
+              data.created_at || null,
+
+            issued_by:
+              data.issued_by || null,
+
+            validity:
+              data.validity || null
           });
         }
       });
 
       return res.status(200).json({
         status: "success",
+
         email,
-        entitlements,
+
+        executiveEntitlement: null,
+
+        userEntitlements: {
+          entitlements
+        },
+
         credentials
       });
 

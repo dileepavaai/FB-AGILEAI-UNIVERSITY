@@ -58,14 +58,72 @@ window.resolvePortalEntitlements = function ({
   }
 
   /* =====================================================
-     STUDENT / TRIAL PORTAL ACCESS (LOCKED)
-     ===================================================== */
+   PORTAL ACCESS RESOLUTION
+   Phase-1 Simplification
 
-  let portalAccess = { hasAccess: false, type: null };
+   Portal access may originate from:
 
-  if (userEntitlements?.entitlements?.student_portal === true) {
-    portalAccess = { hasAccess: true, type: "trial" };
+   - Executive entitlement
+   - Student portal entitlement
+   - Existing credential ownership (alumni)
+
+   Future:
+   - Enrollments
+   - Reports
+   - Memberships
+   ===================================================== */
+
+  let portalAccess = {
+    hasAccess: false,
+    type: null
+  };
+
+  const hasStudentPortal =
+    userEntitlements?.entitlements?.student_portal === true;
+
+  const visibleCredentials =
+    normalizeVisibleCredentials(
+      credentials,
+      email
+    );
+
+  const hasCredentials =
+    visibleCredentials.length > 0;
+
+  /* -----------------------------------------
+    Student Portal Users
+  ----------------------------------------- */
+
+  if (hasStudentPortal) {
+
+    portalAccess = {
+      hasAccess: true,
+      type: "student"
+    };
+
   }
+
+  /* -----------------------------------------
+    Alumni Users
+  ----------------------------------------- */
+
+  else if (hasCredentials) {
+
+    portalAccess = {
+      hasAccess: true,
+      type: "alumni"
+    };
+
+  }
+
+  console.log(
+    "[Portal Access Resolution]",
+    {
+      hasStudentPortal,
+      hasCredentials,
+      portalAccess
+    }
+  );
 
   return {
     executiveInsight: {

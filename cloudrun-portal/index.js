@@ -226,6 +226,138 @@ app.post(
 );
 
 /* -------------------------------------------------
+   PORTAL: Entitlement Resolver v1.0
+   -------------------------------------------------
+
+   PURPOSE
+
+   Provides a unified portal access contract.
+
+   Governance Principles:
+
+   1. user_entitlements controls platform access.
+
+   2. credentials collection controls
+      academic recognition visibility.
+
+   3. Certificates, Trainer Certificates
+      and University Badges are NOT products.
+
+   4. Recognition artifacts are derived from
+      credential records.
+
+   5. Executive Reports remain entitlement-driven.
+
+   Future Safe:
+
+   - Instructor-led programs
+   - Self-paced programs
+   - Executive reports
+   - Future subscriptions
+   - Future memberships
+
+------------------------------------------------- */
+
+app.get(
+  "/portal/resolve-entitlements",
+  requireAuth,
+  async (req, res) => {
+    try {
+      const email =
+        req.user?.email?.toLowerCase()?.trim();
+
+      if (!email) {
+        return res.status(400).json({
+          error: "EMAIL_REQUIRED"
+        });
+      }
+
+      /* ----------------------------------------
+         USER ENTITLEMENTS
+      ---------------------------------------- */
+
+      const entitlementSnapshot =
+        await db
+          .collection("user_entitlements")
+          .where("email", "==", email)
+          .limit(1)
+          .get();
+
+      let entitlements = {
+        student_portal: false,
+        credentials_view: false,
+        executive_insight: false
+      };
+
+      if (!entitlementSnapshot.empty) {
+        const entitlementDoc =
+          entitlementSnapshot.docs[0].data();
+
+        entitlements =
+          entitlementDoc.entitlements ||
+          entitlements;
+      }
+
+      /* ----------------------------------------
+         CREDENTIAL VISIBILITY
+      ---------------------------------------- */
+
+      const credentialSnapshot =
+        await db
+          .collection("credentials")
+          .where("email", "==", email)
+          .get();
+
+      const credentials = [];
+
+      credentialSnapshot.forEach(doc => {
+        const data = doc.data();
+
+        if (
+          data.issued_status === "finalized" &&
+          data.approval_status === "approved"
+        ) {
+          credentials.push({
+            credential_id:
+              data.credential_id || null,
+
+            credential_type:
+              data.credential_type || null,
+
+            program_code:
+              data.program_code || null,
+
+            full_name:
+              data.full_name || null
+          });
+        }
+      });
+
+      return res.status(200).json({
+        status: "success",
+        email,
+        entitlements,
+        credentials
+      });
+
+    } catch (error) {
+
+      log(
+        "ERROR",
+        "Portal entitlement resolution failed",
+        {
+          error: error.message
+        }
+      );
+
+      return res.status(500).json({
+        error: "RESOLUTION_FAILED"
+      });
+    }
+  }
+);
+
+/* -------------------------------------------------
    ADMIN routes (LOCKED – unchanged)
 ------------------------------------------------- */
 async function requireAuth(req, res, next) {

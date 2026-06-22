@@ -62,7 +62,8 @@
      API ENDPOINT (LOCKED)
      ===================================================== */
   const RESOLVE_API =
-    "https://asia-south1-fb-agileai-university.cloudfunctions.net/resolvePortalEntitlements";
+      window.AAIU_CONFIG?.ENTITLEMENT_API ||
+      "https://cloud-run-portal-458881040066.asia-south1.run.app/portal/resolve-entitlements";
 
   /* =====================================================
      AUTH READINESS — SINGLE SOURCE OF TRUTH

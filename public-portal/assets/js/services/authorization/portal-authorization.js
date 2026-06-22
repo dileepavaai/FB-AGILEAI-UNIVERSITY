@@ -2,8 +2,8 @@
    Portal Authorization Service
    File: portal-authorization.js
 
-   Version : 2.0.0
-   Status  : ACTIVE
+   Version : 2.0.1
+   Status  : DIAGNOSTIC
    Governance : LOCKED
 
    PURPOSE
@@ -17,23 +17,11 @@
    - true  = access granted
    - false = access denied
 
-   RULES
-
-   Executive users:
-   - Allowed
-
-   Student Portal users:
-   - Allowed
-
-   All others:
-   - Denied
-
    NO UI LOGIC
    NO REDIRECTS
    NO FIRESTORE
    NO SIDE EFFECTS
 
-   Resolver remains the single source of truth.
    ========================================================= */
 
 (function () {
@@ -42,9 +30,46 @@
 
   window.authorizePortalAccess = function (state) {
 
+    console.group(
+      "[Portal Authorization]"
+    );
+
+    console.log(
+      "[Authorization Input]",
+      state
+    );
+
     if (!state || typeof state !== "object") {
+
+      console.warn(
+        "[Authorization Result] DENIED - Invalid State"
+      );
+
+      console.groupEnd();
+
       return false;
     }
+
+    console.log(
+      "[Authorization State]",
+      {
+        executiveAccess:
+          state.executiveInsight?.hasAccess || false,
+
+        portalAccess:
+          state.portalAccess?.hasAccess || false,
+
+        portalType:
+          state.portalAccess?.type || null,
+
+        credentialCount:
+          Array.isArray(
+            state.visibleCredentials
+          )
+            ? state.visibleCredentials.length
+            : 0
+      }
+    );
 
     /* -----------------------------------------------------
        EXECUTIVE ACCESS
@@ -53,6 +78,13 @@
     if (
       state.executiveInsight?.hasAccess === true
     ) {
+
+      console.log(
+        "[Authorization Result] GRANTED - Executive"
+      );
+
+      console.groupEnd();
+
       return true;
     }
 
@@ -63,12 +95,25 @@
     if (
       state.portalAccess?.hasAccess === true
     ) {
+
+      console.log(
+        "[Authorization Result] GRANTED - Portal"
+      );
+
+      console.groupEnd();
+
       return true;
     }
 
     /* -----------------------------------------------------
        DEFAULT DENY
        ----------------------------------------------------- */
+
+    console.warn(
+      "[Authorization Result] DENIED"
+    );
+
+    console.groupEnd();
 
     return false;
   };

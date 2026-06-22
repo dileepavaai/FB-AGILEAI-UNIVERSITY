@@ -185,6 +185,45 @@ const state =
   });
 
 /* -------------------------------------------------------
+   DIAGNOSTICS
+
+   No business logic.
+   No authorization logic.
+   No side effects.
+
+------------------------------------------------------- */
+
+console.group(
+  `[Dashboard State] (${reason})`
+);
+
+console.log(
+  "Portal Data",
+  data
+);
+
+console.log(
+  "Resolved State",
+  state
+);
+
+console.log(
+  "Credential Count",
+  Array.isArray(data.credentials)
+    ? data.credentials.length
+    : 0
+);
+
+console.log(
+  "Visible Credential Count",
+  Array.isArray(state.visibleCredentials)
+    ? state.visibleCredentials.length
+    : 0
+);
+
+console.groupEnd();
+
+/* -------------------------------------------------------
    GOVERNED HANDOFF
 
    Publish resolver output for
@@ -241,6 +280,15 @@ if (
     );
 
   if (!authorized) {
+
+    console.error(
+      "[Dashboard Redirect Triggered]",
+      {
+        reason,
+        state,
+        entitlementData: data
+      }
+    );
 
     console.warn(
       "[Dashboard Gating] Access denied"

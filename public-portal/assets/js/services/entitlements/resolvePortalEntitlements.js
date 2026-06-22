@@ -73,57 +73,35 @@ window.resolvePortalEntitlements = function ({
    - Memberships
    ===================================================== */
 
-  let portalAccess = {
-    hasAccess: false,
-    type: null
+  /* =====================================================
+   STUDENT / TRIAL PORTAL ACCESS (LOCKED)
+   ===================================================== */
+
+let portalAccess = {
+  hasAccess: false,
+  type: null
+};
+
+if (
+  userEntitlements?.entitlements?.student_portal === true
+) {
+
+  portalAccess = {
+    hasAccess: true,
+    type: "trial"
   };
 
-  const hasStudentPortal =
-    userEntitlements?.entitlements?.student_portal === true;
+}
 
-  const visibleCredentials =
-    normalizeVisibleCredentials(
-      credentials,
-      email
-    );
+console.log(
+  "[Portal Access Resolution]",
+  {
+    studentPortal:
+      userEntitlements?.entitlements?.student_portal === true,
 
-  const hasCredentials =
-    visibleCredentials.length > 0;
-
-  /* -----------------------------------------
-    Student Portal Users
-  ----------------------------------------- */
-
-  if (hasStudentPortal) {
-
-    portalAccess = {
-      hasAccess: true,
-      type: "student"
-    };
-
+    portalAccess
   }
-
-  /* -----------------------------------------
-    Alumni Users
-  ----------------------------------------- */
-
-  else if (hasCredentials) {
-
-    portalAccess = {
-      hasAccess: true,
-      type: "alumni"
-    };
-
-  }
-
-  console.log(
-    "[Portal Access Resolution]",
-    {
-      hasStudentPortal,
-      hasCredentials,
-      portalAccess
-    }
-  );
+);
 
   return {
     executiveInsight: {
@@ -133,10 +111,11 @@ window.resolvePortalEntitlements = function ({
 
     portalAccess,
 
-    visibleCredentials: normalizeVisibleCredentials(
-      credentials,
-      email
-    ),
+    visibleCredentials:
+      normalizeVisibleCredentials(
+        credentials,
+        email
+      ),
 
     uiState: {
       suppressUpgradeCTAs: false,

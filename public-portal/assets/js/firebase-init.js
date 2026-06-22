@@ -168,22 +168,41 @@ new Promise((resolve) => {
        WAIT FOR FIREBASE TO RESTORE SESSION
     ====================================================== */
 
-    const unsubscribe =
-      auth.onAuthStateChanged((user) => {
+    let authResolved = false;
 
-        unsubscribe();
+    auth.onAuthStateChanged((user) => {
 
-        console.log(
-          "[AAIU Auth] Auth ready:",
-          user?.email || "anonymous"
+    if (authResolved) {
+        return;
+    }
+
+    const emailLinkFlow =
+        auth.isSignInWithEmailLink(
+        window.location.href
         );
 
-        resolve({
-          auth,
-          user
-        });
+    if (!user && emailLinkFlow) {
 
-      });
+        console.log(
+        "[AAIU Auth] Waiting for email-link completion"
+        );
+
+        return;
+    }
+
+    authResolved = true;
+
+    console.log(
+        "[AAIU Auth] Auth ready:",
+        user?.email || "anonymous"
+    );
+
+    resolve({
+        auth,
+        user
+    });
+
+    });
 
   } catch (err) {
 

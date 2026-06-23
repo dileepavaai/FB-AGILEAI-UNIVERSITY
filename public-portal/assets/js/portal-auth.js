@@ -150,11 +150,19 @@ function showSignedIn(user) {
 
   }
 
-  if (userName) {
+  const displayName =
+  user?.displayName?.trim();
+
+  if (displayName) {
+
     userName.textContent =
-      user?.displayName ||
-      user?.email ||
-      "";
+      displayName;
+
+  } else {
+
+    userName.textContent =
+      "Agile AI University User";
+
   }
 
   if (userEmail) {

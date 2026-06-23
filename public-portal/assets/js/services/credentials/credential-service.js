@@ -1,77 +1,205 @@
-/* =========================================================
-   Credential Registry — SINGLE SOURCE OF TRUTH
-   GOVERNANCE · INSTITUTIONAL · STABLE
-   ========================================================= */
+/* =====================================================
+
+Agile AI University
+
+Module      : Student & Executive Portal
+Component   : Credential Service
+
+File        : credential-service.js
+Version     : 1.0.0
+Status      : ACTIVE
+
+Governance  : Portal Governance v1.0
+
+## Purpose
+
+Consumes resolved portal entitlements and renders
+visible credentials available to authenticated
+and authorized portal users.
+
+## Responsibilities
+
+* Wait for entitlement readiness
+* Invoke resolver
+* Obtain visible credentials
+* Invoke credential renderer
+* Handle rendering lifecycle
+
+## Must Never
+
+* Call APIs
+* Query Firestore
+* Perform Authorization
+* Resolve Entitlements
+* Filter Credentials
+* Modify Entitlement State
+
+## Governance
+
+Authentication
+-> portal-auth.js
+
+Entitlements
+-> entitlement.js
+
+Resolver
+-> resolvePortalEntitlements.js
+
+Authorization
+-> portal-authorization.js
+
+Rendering
+-> credential-renderer.js
+
+This file is a consumer only.
+
+## Dependencies
+
+resolvePortalEntitlements.js
+credential-renderer.js
+
+## Change History
+
+v1.0.0
+
+* Initial governed implementation
+* Added lifecycle logging
+* Added empty state handling
+* Added defensive validation
+
+===================================================== */
 
 (function () {
-  "use strict";
 
-  window.AAIU_CREDENTIAL_REGISTRY = {
+"use strict";
 
-    /* =====================================================
-       AAIA — Agentic AI Agilist
-       ===================================================== */
-    AAIA: {
-      /* Canonical identifiers */
-      code: "AAIA",
+console.log(
+"[Credential Service] Loaded v1.0.0"
+);
 
-      /* Canonical human-readable title
-         (REQUIRED by renderCredentials.js) */
-      full_title: "Agentic AI Agilist",
+let initialized = false;
 
-      /* Display variants (backward compatibility) */
-      full_name: "Agentic AI Agilist",
-      display_name: "Agentic AI Agilist (AAIA)",
+function showErrorState() {
 
-      /* Credential metadata */
-      credential_type: "Professional Credential",
-      issuer: "Agile AI University",
-      validity: "Lifetime",
+const container =
+document.getElementById(
+"credentials-container"
+);
 
-      /* Canonical description */
-      description:
-        "A professional credential recognizing applied capability in Agentic AI systems, decision intelligence, and responsible AI practice.",
+if (!container) {
+return;
+}
 
-      /* LinkedIn Add-to-Profile configuration */
-      linkedin: {
-        organization: "Agile AI University",
-        credential_type: "CERTIFICATION"
-      }
-    },
+container.innerHTML = `     <div class="error-state">
+      Unable to load credentials.     </div>
+  `;
+}
 
-    /* =====================================================
-       AIPA — Artificial Intelligence Professional Agilist
-       ===================================================== */
-    AIPA: {
-      /* Canonical identifiers */
-      code: "AIPA",
+function showEmptyState() {
 
-      /* Canonical human-readable title */
-      full_title: "Artificial Intelligence Professional Agilist",
+const container =
+document.getElementById(
+"credentials-container"
+);
 
-      /* Display variants */
-      full_name: "Artificial Intelligence Professional Agilist",
-      display_name: "Artificial Intelligence Professional Agilist (AIPA)",
+if (!container) {
+return;
+}
 
-      /* Credential metadata */
-      credential_type: "Professional Credential",
-      issuer: "Agile AI University",
-      validity: "Lifetime",
+container.innerHTML = `     <div class="empty-state">
+      No credentials available.     </div>
+  `;
+}
 
-      /* SAME description as AAIA (intentional, approved) */
-      description:
-        "A professional credential recognizing applied capability in leveraging Agile AI to unlock organizational agility, while leading responsible and ethical AI adoption.",
+function renderVisibleCredentials() {
 
-      /* LinkedIn Add-to-Profile configuration */
-      linkedin: {
-        organization: "Agile AI University",
-        credential_type: "CERTIFICATION"
-      }
-    }
+try {
 
-    /* -----------------------------------------------------
-       Future credentials go here (append-only)
-       ----------------------------------------------------- */
-  };
+if (
+  typeof window.resolvePortalEntitlements !==
+  "function"
+) {
+
+  console.error(
+    "[Credential Service] Resolver not available"
+  );
+
+  showErrorState();
+  return;
+}
+
+const entitlementData =
+  window.portalEntitlementData || {};
+
+const resolved =
+  window.resolvePortalEntitlements(
+    entitlementData
+  );
+
+const credentials =
+  resolved?.visibleCredentials || [];
+
+console.log(
+  `[Credential Service] Rendering ${credentials.length} credential(s)`
+);
+
+if (credentials.length === 0) {
+
+  console.log(
+    "[Credential Service] No visible credentials"
+  );
+
+  showEmptyState();
+  return;
+}
+
+if (
+  typeof window.renderCredentials !==
+  "function"
+) {
+
+  console.error(
+    "[Credential Service] Renderer not available"
+  );
+
+  showErrorState();
+  return;
+}
+
+window.renderCredentials(
+  credentials
+);
+
+} catch (error) {
+
+console.error(
+  "[Credential Service] Render failure",
+  error
+);
+
+showErrorState();
+
+}
+}
+
+function initialize() {
+
+if (initialized) {
+return;
+}
+
+initialized = true;
+
+console.log(
+"[Credential Service] Initializing"
+);
+
+renderVisibleCredentials();
+}
+
+document.addEventListener(
+"entitlements:ready",
+initialize
+);
 
 })();

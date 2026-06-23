@@ -1,15 +1,82 @@
-/* =========================================================
-   Credential Renderer — Phase-3F.5 (CARD-BASED, GOVERNED)
-   REGISTRY-AWARE · NO-REPETITION · TOOLTIP-SAFE · SHARE-SAFE
-   PURE RENDERER · COMPLETION-SIGNALLED (PHASE-9A ALLOWED)
+/* =====================================================
 
-   GUARANTEES:
-   - Renderer is UI-only (no entitlement logic)
-   - Idempotent rendering
-   - Lifetime validity integrity enforced
-   - Completion explicitly signalled (fire-once)
-   - No coupling to dashboard-gating or boot-integrity
-   ========================================================= */
+Agile AI University
+
+Module      : Student & Executive Portal
+Component   : Credential Renderer
+
+File        : credential-renderer.js
+Version     : 1.0.0
+Status      : ACTIVE
+
+Governance  : Portal Governance v1.0
+
+## Purpose
+
+Render credential cards from resolver-approved
+credential data.
+
+## Architectural Position
+
+Authentication
+↓
+Entitlements
+↓
+Resolver
+↓
+Credential Service
+↓
+Credential Renderer
+
+## Responsibilities
+
+* Render credential cards
+* Display credential metadata
+* Generate verification links
+* Generate LinkedIn add-profile links
+* Generate share actions
+* Signal render completion
+
+## Must Never
+
+* Call APIs
+* Query Firestore
+* Perform Authorization
+* Resolve Entitlements
+* Filter Credentials
+* Modify Entitlement State
+
+## Governance Rules
+
+Resolver owns visibility decisions.
+
+Renderer consumes resolver-approved
+credential data only.
+
+Renderer must remain UI-only.
+
+## Dependencies
+
+credential-service.js
+
+Optional Registry Sources
+
+window.AAIU_CREDENTIAL_REGISTRY
+window.__AAIU_CREDENTIAL_REGISTRY
+window.CREDENTIAL_REGISTRY
+
+## Change History
+
+v1.0.0
+
+* Governance aligned implementation
+* Registry-aware rendering
+* Credential verification support
+* LinkedIn integration support
+* Share experience support
+* Completion signalling support
+
+===================================================== */
 
 (function () {
   "use strict";

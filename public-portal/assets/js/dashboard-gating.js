@@ -268,12 +268,20 @@ console.log(
 if (!authorized) {
 
   document
-  .getElementById(
-    "authorizedPortalUI"
-  )
-  ?.classList.add(
-    "hidden"
-  );
+    .getElementById(
+      "authorizedPortalUI"
+    )
+    ?.classList.add(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "noServicesUI"
+    )
+    ?.classList.remove(
+      "hidden"
+    );
 
   console.error(
     "[Dashboard Authorization Failed]",
@@ -285,12 +293,9 @@ if (!authorized) {
   );
 
   console.warn(
-    "[Dashboard Gating] Access denied"
+    "[Dashboard Gating] No active services available"
   );
 
-  console.warn(
-    "[Dashboard Gating] Access denied"
-    );
   return;
 }
 
@@ -304,7 +309,15 @@ document
   ?.classList.remove(
     "hidden"
   );
-  
+
+  document
+  .getElementById(
+    "noServicesUI"
+  )
+  ?.classList.add(
+    "hidden"
+  );
+
 /* -------------------------------------------------------
    INVARIANT CHECKS
 

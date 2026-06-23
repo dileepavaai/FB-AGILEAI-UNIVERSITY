@@ -22,11 +22,15 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
+      "https://portal.agileai.university",
       "https://assessment.agileai.university",
       "https://verify.agileai.university"
     ],
     methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization"
+    ]
   })
 );
 

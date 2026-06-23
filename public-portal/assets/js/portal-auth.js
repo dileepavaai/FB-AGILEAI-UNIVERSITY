@@ -118,38 +118,50 @@ UI HELPERS
 
 function showSignedOut() {
 
-if (signedOutUI) {
-  signedOutUI.style.display = "block";
-}
+  if (signedOutUI) {
 
-if (signedInUI) {
-  signedInUI.style.display = "none";
-}
+    signedOutUI.hidden = false;
+    signedOutUI.style.display = "block";
+
+  }
+
+  if (signedInUI) {
+
+    signedInUI.hidden = true;
+    signedInUI.style.display = "none";
+
+  }
 
 }
 
 function showSignedIn(user) {
 
-if (signedOutUI) {
-  signedOutUI.style.display = "none";
-}
+  if (signedOutUI) {
 
-if (signedInUI) {
-  signedInUI.style.display = "block";
-}
+    signedOutUI.hidden = true;
+    signedOutUI.style.display = "none";
 
-if (userName) {
-  userName.textContent =
-    user?.displayName ||
-    user?.email ||
-    "";
-}
+  }
 
-if (userEmail) {
-  userEmail.textContent =
-    user?.email ||
-    "";
-}
+  if (signedInUI) {
+
+    signedInUI.hidden = false;
+    signedInUI.style.display = "block";
+
+  }
+
+  if (userName) {
+    userName.textContent =
+      user?.displayName ||
+      user?.email ||
+      "";
+  }
+
+  if (userEmail) {
+    userEmail.textContent =
+      user?.email ||
+      "";
+  }
 
 }
 

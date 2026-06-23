@@ -267,6 +267,14 @@ console.log(
 
 if (!authorized) {
 
+  document
+  .getElementById(
+    "authorizedPortalUI"
+  )
+  ?.classList.add(
+    "hidden"
+  );
+
   console.error(
     "[Dashboard Authorization Failed]",
     {
@@ -289,7 +297,14 @@ if (!authorized) {
 console.log(
   "[Dashboard Gating] Access granted"
 );
-
+document
+  .getElementById(
+    "authorizedPortalUI"
+  )
+  ?.classList.remove(
+    "hidden"
+  );
+  
 /* -------------------------------------------------------
    INVARIANT CHECKS
 

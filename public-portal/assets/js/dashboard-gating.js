@@ -247,70 +247,24 @@ console.log(
   state
 );
 
-/* -------------------------------------------------------
-   AUTHORIZATION BOUNDARY
+if (!authorized) {
 
-   Governance Rule
-
-   Authorization determines whether an
-   authenticated user may access the
-   Student Portal experience.
-
-   Authorization ownership belongs to:
-
-   - portal-authorization.js
-
-   Dashboard Gating consumes the
-   authorization decision and performs
-   UI routing only.
-
-   Dashboard Gating does NOT determine
-   authorization policy.
-
-------------------------------------------------------- */
-
-if (
-  typeof window.authorizePortalAccess ===
-  "function"
-) {
-
-  const authorized =
-    window.authorizePortalAccess(
-      state
-    );
-
-  if (!authorized) {
-
-    console.error(
-      "[Dashboard Redirect Triggered]",
-      {
-        reason,
-        state,
-        entitlementData: data
-      }
-    );
-
-    console.warn(
-      "[Dashboard Gating] Access denied"
-    );
-
-    if (
-      !window.location.pathname.endsWith(
-        "/unauthorized.html"
-      )
-    ) {
-
-      window.location.href =
-        "/unauthorized.html";
-
+  console.error(
+    "[Dashboard Redirect Triggered]",
+    {
+      reason,
+      state,
+      entitlementData: data
     }
-
-    return;
-  }
-
-  console.log(
-    "[Dashboard Gating] Access granted"
   );
+
+  console.warn(
+    "[Dashboard Gating] Access denied"
+  );
+
+  alert("ACCESS DENIED - CHECK CONSOLE");
+
+  return;
 }
 
 /* -------------------------------------------------------

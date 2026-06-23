@@ -214,27 +214,52 @@
         class="user-email"
       ></p>
 
-      <div class="portal-actions">
+      <!-- ================================================
+     AUTHORIZED PORTAL SERVICES
 
-        <a
-          href="/assessment.html"
-          class="btn"
-        >
+     GOVERNANCE
 
-          AI + Agile Assessment
+     Authentication alone must NOT expose
+     protected portal capabilities.
 
-        </a>
+     Visibility is controlled exclusively by:
 
-        <a
-          href="/credentials/my-credentials.html"
-          class="btn"
-        >
+     • resolvePortalEntitlements.js
+     • portal-authorization.js
+     • dashboard-gating.js
 
-          My Credentials
+     portal-auth.js may authenticate users
+     but must never grant access.
 
-        </a>
+     Hidden by default.
+     Revealed only after successful
+     authorization evaluation.
+     ================================================ -->
 
-      </div>
+<div
+  id="authorizedPortalUI"
+  class="portal-actions hidden"
+>
+
+  <a
+    href="/assessment.html"
+    class="btn"
+  >
+
+    AI + Agile Assessment
+
+  </a>
+
+  <a
+    href="/credentials/my-credentials.html"
+    class="btn"
+  >
+
+    My Credentials
+
+  </a>
+
+</div>
 
       <button
         id="btnSignOut"

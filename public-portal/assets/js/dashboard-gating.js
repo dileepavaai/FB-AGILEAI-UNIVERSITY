@@ -280,8 +280,9 @@ if (!authorized) {
     "[Dashboard Gating] Access denied"
   );
 
-  alert("ACCESS DENIED - CHECK CONSOLE");
-
+  console.warn(
+    "[Dashboard Gating] Access denied"
+    );
   return;
 }
 

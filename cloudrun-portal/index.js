@@ -19,22 +19,25 @@ app.use(express.json());
 /* -------------------------------------------------
    CORS (PUBLIC endpoints only – LOCKED)
 ------------------------------------------------- */
-app.use(
-  cors({
-    origin: [
-      "https://portal.agileai.university",
-      "https://assessment.agileai.university",
-      "https://verify.agileai.university"
-    ],
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization"
-    ]
-  })
-);
+const corsOptions = {
+  origin: [
+    "https://portal.agileai.university",
+    "https://assessment.agileai.university",
+    "https://verify.agileai.university"
+  ],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization"
+  ]
+};
 
-app.options("*", cors());
+app.use(cors(corsOptions));
+
+app.options(
+  "/portal/resolve-entitlements",
+  cors(corsOptions)
+);
 
 /* -------------------------------------------------
    Structured logging (Cloud Run native)

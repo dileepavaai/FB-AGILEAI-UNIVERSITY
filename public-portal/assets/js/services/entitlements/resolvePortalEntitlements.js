@@ -18,12 +18,22 @@
  */
 
 window.resolvePortalEntitlements = function ({
-  executiveEntitlement,
-  userEntitlements,
-  credentials,
-  authenticatedUser
-}) {
+    executiveEntitlement,
+    userEntitlements,
+    credentials,
+    authenticatedUser
+  }) {
   const email = normalizeEmail(authenticatedUser?.email);
+
+      console.log(
+      "[Resolver Input]",
+      {
+        authenticatedUser,
+        userEntitlements,
+        credentials,
+        email
+      }
+    );
 
   /* =====================================================
      EXECUTIVE INSIGHT — ABSOLUTE PRECEDENCE (LOCKED)

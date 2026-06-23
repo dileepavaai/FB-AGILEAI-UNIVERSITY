@@ -77,20 +77,37 @@ window.resolvePortalEntitlements = function ({
    STUDENT / TRIAL PORTAL ACCESS (LOCKED)
    ===================================================== */
 
+const visibleCredentials =
+  normalizeVisibleCredentials(
+    credentials,
+    email
+  );
+
 let portalAccess = {
   hasAccess: false,
   type: null
 };
 
+/* Student Portal Entitlement */
+
 if (
   userEntitlements?.entitlements?.student_portal === true
 ) {
-
   portalAccess = {
     hasAccess: true,
-    type: "trial"
+    type: "student"
   };
+}
 
+/* Alumni Access */
+
+else if (
+  visibleCredentials.length > 0
+) {
+  portalAccess = {
+    hasAccess: true,
+    type: "alumni"
+  };
 }
 
 console.log(
@@ -99,29 +116,29 @@ console.log(
     studentPortal:
       userEntitlements?.entitlements?.student_portal === true,
 
+    visibleCredentialCount:
+      visibleCredentials.length,
+
     portalAccess
   }
 );
 
   return {
-    executiveInsight: {
-      hasAccess: false,
-      validUntil: null
-    },
+  executiveInsight: {
+    hasAccess: false,
+    validUntil: null
+  },
 
-    portalAccess,
+  portalAccess,
 
-    visibleCredentials:
-      normalizeVisibleCredentials(
-        credentials,
-        email
-      ),
+  visibleCredentials,
 
-    uiState: {
-      suppressUpgradeCTAs: false,
-      suppressNoAccessMessages: portalAccess.hasAccess
-    }
-  };
+  uiState: {
+    suppressUpgradeCTAs: false,
+    suppressNoAccessMessages: portalAccess.hasAccess
+  }
+};
+
 };
 
 /* =====================================================

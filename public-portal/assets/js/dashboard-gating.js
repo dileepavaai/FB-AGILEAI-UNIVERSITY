@@ -247,10 +247,28 @@ console.log(
   state
 );
 
+/* -------------------------------------------------------
+   AUTHORIZATION BOUNDARY
+
+   Dashboard Gating consumes the
+   authorization decision only.
+
+------------------------------------------------------- */
+
+const authorized =
+  typeof window.authorizePortalAccess === "function"
+    ? window.authorizePortalAccess(state)
+    : true;
+
+console.log(
+  "[Dashboard Authorization]",
+  authorized
+);
+
 if (!authorized) {
 
   console.error(
-    "[Dashboard Redirect Triggered]",
+    "[Dashboard Authorization Failed]",
     {
       reason,
       state,
@@ -266,6 +284,10 @@ if (!authorized) {
 
   return;
 }
+
+console.log(
+  "[Dashboard Gating] Access granted"
+);
 
 /* -------------------------------------------------------
    INVARIANT CHECKS

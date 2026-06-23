@@ -131,10 +131,21 @@ if (
 const entitlementData =
   window.portalEntitlementData || {};
 
+console.log(
+  "[Credential Service] Auth User",
+  window.authState?.user ||
+  firebase.auth().currentUser
+);
+
 const resolved =
-  window.resolvePortalEntitlements(
-    entitlementData
-  );
+  window.resolvePortalEntitlements({
+    ...entitlementData,
+
+    authenticatedUser:
+      window.authState?.user ||
+      firebase.auth().currentUser ||
+      null
+  });
 
 const credentials =
   resolved?.visibleCredentials || [];

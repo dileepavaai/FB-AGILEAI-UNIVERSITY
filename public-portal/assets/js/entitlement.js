@@ -135,12 +135,22 @@
         );
       }
 
-      const res = await fetch(RESOLVE_API, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      console.log(
+  "[ENTITLEMENT API]",
+  RESOLVE_API
+);
+
+    const res = await fetch(RESOLVE_API, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    console.log(
+      "[ENTITLEMENT STATUS]",
+      res.status
+    );
 
       if (!res.ok) {
         throw new Error(`Entitlement API failed (${res.status})`);
@@ -224,7 +234,7 @@
       console.log("[Entitlement] Resolved", window.execEntitlement);
 
     } catch (err) {
-      console.error("[Entitlement] Resolution failed", err);
+      console.error("🚨 ENTITLEMENT FAILURE 🚨", err);
 
       finalizeAndEmit({
         checked: true,

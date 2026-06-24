@@ -304,10 +304,6 @@ v1.0.0
           Issued by <strong>${cred.issued_by || "Agile AI University"}</strong>
         </div>
 
-        <div class="credential-meta">
-          Issued on ${safeDate(cred.issued_at)}
-        </div>
-
         ${
           String(cred.validity).toLowerCase() === "lifetime"
             ? `<div class="credential-meta credential-validity">
@@ -345,10 +341,7 @@ v1.0.0
 
         <div class="credential-helper">
           <small>
-            ${def.description ? `${def.description}<br />` : ""}
-            Use <strong>View official credential record</strong> to share
-            this credential for verification.
-            Use <strong>Add to LinkedIn</strong> only to add it to your profile.
+            ${def.description || ""}
           </small>
         </div>
       `;

@@ -6,7 +6,7 @@ Module      : Student & Executive Portal
 Component   : Credential Detail
 
 File        : credential-detail.js
-Version     : 1.0.0
+Version     : 1.1.0
 Status      : ACTIVE
 
 Governance  : Portal Governance v1.0
@@ -35,7 +35,7 @@ credential-service.js
 "use strict";
 
 console.log(
-  "[Credential Detail] Loaded v1.0.0"
+  "[Credential Detail] Loaded v1.1.0"
 );
 
 if (
@@ -122,41 +122,86 @@ function populateCredential(
 
   const title =
     definition.full_title ||
-    credential.program_code;
+    definition.full_name ||
+    definition.display_name ||
+    credential.program_code ||
+    "Credential";
 
-  document.getElementById(
-    "credential-id"
-  ).textContent =
-    credential.credential_id || "--";
+  const code =
+    definition.code ||
+    credential.program_code ||
+    "--";
 
-  document.getElementById(
-    "credential-holder"
-  ).textContent =
-    credential.full_name || "--";
-
-  document.getElementById(
-    "credential-issuer"
-  ).textContent =
-    definition.issuer ||
-    "Agile AI University";
-
-  document.getElementById(
-    "credential-validity"
-  ).textContent =
+  const validity =
     definition.validity ||
     "Lifetime";
 
-    const titleElement =
-    document.querySelector(
-        ".credential-title strong"
-    );
+  const issuer =
+    definition.issuer ||
+    "Agile AI University";
 
-    if (titleElement) {
+  const holder =
+    credential.full_name ||
+    credential.learner_name ||
+    "--";
 
-    titleElement.textContent =
-        title;
+  const credentialId =
+    credential.credential_id ||
+    "--";
+
+  const setText = function (
+    id,
+    value
+  ) {
+
+    const element =
+      document.getElementById(
+        id
+      );
+
+    if (element) {
+
+      element.textContent =
+        value;
 
     }
+
+  };
+
+  setText(
+    "credential-code",
+    code
+  );
+
+  setText(
+    "credential-title",
+    title
+  );
+
+  setText(
+    "credential-id",
+    credentialId
+  );
+
+  setText(
+    "credential-holder",
+    holder
+  );
+
+  setText(
+    "credential-issuer",
+    issuer
+  );
+
+  setText(
+    "credential-validity",
+    validity
+  );
+
+  setText(
+    "credential-status",
+    "Active"
+  );
 
 }
 

@@ -241,42 +241,77 @@ v1.0.0
     console.log("[Credentials Renderer] credentials:rendered dispatched");
   }
 
-  /* =====================================================
-     MAIN RENDER ENTRY (PURE · IDEMPOTENT)
-     ===================================================== */
-  window.renderCredentials = function renderCredentials(credentials) {
-    if (renderCompleted === true) {
-      signalRenderComplete();
-      return;
-    }
+/* =====================================================
+   MAIN RENDER ENTRY (PURE · IDEMPOTENT)
+   ===================================================== */
+window.renderCredentials = function renderCredentials(
+  credentials
+) {
 
-    const container =
-      document.getElementById("credentials-container") ||
-      document.getElementById("credentials-list");
+  if (renderCompleted === true) {
 
-    if (!container) return;
+    signalRenderComplete();
 
-    if (!Array.isArray(credentials) || credentials.length === 0) {
-      container.innerHTML =
-        "<p class='note'>No credentials available at this time.</p>";
-      renderCompleted = true;
-      signalRenderComplete();
-      return;
-    }
+    return;
 
-    console.assert(
-      credentials.every(
-        c => c && typeof c.program_code === "string"
-      ),
-      "[Credentials Renderer Invariant] Credential missing program_code"
+  }
+
+  const container =
+    document.getElementById(
+      "credentials-container"
+    ) ||
+    document.getElementById(
+      "credentials-list"
     );
 
-    container.innerHTML = "";
+  if (!container) {
+    return;
+  }
 
-    credentials.forEach((cred) => {
-      assertCredentialValidityIntegrity(cred);
+  if (
+    !Array.isArray(credentials) ||
+    credentials.length === 0
+  ) {
 
-      const def = resolveCredentialDefinition(cred);
+    container.innerHTML =
+      "<p class='note'>No credentials available at this time.</p>";
+
+    renderCompleted = true;
+
+    signalRenderComplete();
+
+    return;
+
+  }
+
+  console.assert(
+
+    credentials.every(
+      c =>
+        c &&
+        typeof c.program_code ===
+          "string"
+    ),
+
+    "[Credentials Renderer Invariant] Credential missing program_code"
+
+  );
+
+  container.innerHTML = "";
+
+  credentials.forEach(
+
+    function (cred) {
+
+      assertCredentialValidityIntegrity(
+        cred
+      );
+
+      const def =
+        resolveCredentialDefinition(
+          cred
+        );
+
       const title =
         def.full_title ||
         def.full_name ||
@@ -284,25 +319,135 @@ v1.0.0
         def.code;
 
       const tooltip =
-        def.code && (def.full_title || def.full_name)
-          ? `${def.code} = ${def.full_title || def.full_name}`
+
+        def.code &&
+        (
+          def.full_title ||
+          def.full_name
+        )
+
+          ? `${def.code} = ${
+              def.full_title ||
+              def.full_name
+            }`
+
           : def.code;
 
-      const card = document.createElement("div");
+      const card =
+        document.createElement(
+          "div"
+        );
 
-          card.className =
-            "credential-card";
+      card.className =
+        "credential-card";
 
-          card.style.cursor =
-            "pointer";
+      card.style.cursor =
+        "pointer";
 
       card.innerHTML = `
-        <div class="credential-badge" title="${tooltip}">
+
+        <div
+          class="credential-badge"
+          title="${tooltip}">
           ${def.code}
         </div>
 
-            card.addEventListener(
+        <div class="credential-meta credential-title">
+          <strong>${title}</strong>
+        </div>
+
+        <div class="credential-meta">
+          Issued by
+          <strong>
+            ${cred.issued_by || "Agile AI University"}
+          </strong>
+        </div>
+
+        ${
+          String(
+            cred.validity
+          ).toLowerCase() ===
+          "lifetime"
+
+            ? `
+              <div class="credential-meta credential-validity">
+                Validity:
+                <strong>Lifetime</strong>
+              </div>
+            `
+
+            : ""
+        }
+
+        ${
+          cred?.credential_id
+
+            ? `
+              <div class="credential-meta">
+                Credential ID:
+                <code>${cred.credential_id}</code>
+              </div>
+            `
+
+            : ""
+        }
+
+        <div class="credential-actions">
+
+          <a
+            href="${buildVerifyUrl(
+              cred
+            )}"
+            target="_blank"
+            rel="noopener"
+            class="btn secondary">
+
+            Verify
+
+          </a>
+
+          <a
+            href="${buildLinkedInUrl(
+              cred,
+              title
+            )}"
+            target="_blank"
+            rel="noopener"
+            class="btn primary">
+
+            Add to LinkedIn
+
+          </a>
+
+          <button
+            class="btn secondary share-btn">
+
+            View Official Credential Record
+
+          </button>
+
+        </div>
+
+        <div class="credential-helper">
+
+          <small>
+
+            ${def.description || ""}
+
+          </small>
+
+        </div>
+
+      `;
+
+      /* ==========================================
+         Card Navigation
+         ========================================== */
+
+      card.addEventListener(
+
         "click",
+
         function () {
 
           if (
@@ -318,88 +463,76 @@ v1.0.0
             );
 
         }
+
       );
 
-        <div class="credential-meta credential-title">
-          <strong>${title}</strong>
-        </div>
-
-        <div class="credential-meta">
-          Issued by <strong>${cred.issued_by || "Agile AI University"}</strong>
-        </div>
-
-        ${
-          String(cred.validity).toLowerCase() === "lifetime"
-            ? `<div class="credential-meta credential-validity">
-                 Validity: <strong>Lifetime</strong>
-               </div>`
-            : ""
-        }
-
-        ${
-          cred?.credential_id
-            ? `<div class="credential-meta">
-                 Credential ID: <code>${cred.credential_id}</code>
-               </div>`
-            : ""
-        }
-
-        <div class="credential-actions">
-          <a href="${buildVerifyUrl(
-            cred
-          )}" target="_blank" rel="noopener" class="btn secondary">
-            Verify
-          </a>
-
-          <a href="${buildLinkedInUrl(
-            cred,
-            title
-          )}" target="_blank" rel="noopener" class="btn primary">
-            Add to LinkedIn
-          </a>
-
-          <button class="btn secondary share-btn">
-            View official credential record
-          </button>
-        </div>
-
-        <div class="credential-helper">
-          <small>
-            ${def.description || ""}
-          </small>
-        </div>
-      `;
+      /* ==========================================
+         Share Button
+         ========================================== */
 
       card
-        .querySelector(".share-btn")
-        .addEventListener("click", () =>
-          shareCredential(cred, def)
+        .querySelector(
+          ".share-btn"
+        )
+        .addEventListener(
+
+          "click",
+
+          function () {
+
+            shareCredential(
+              cred,
+              def
+            );
+
+          }
+
         );
 
+      /* ==========================================
+         Prevent Card Navigation
+         ========================================== */
+
       card
-      .querySelectorAll(
-        "a, button"
-      )
-      .forEach(
-        function (element) {
+        .querySelectorAll(
+          "a, button"
+        )
+        .forEach(
 
-          element.addEventListener(
-            "click",
-            function (event) {
+          function (element) {
 
-              event.stopPropagation();
+            element.addEventListener(
 
-            }
-          );
+              "click",
 
-        }
+              function (event) {
+
+                event.stopPropagation();
+
+              }
+
+            );
+
+          }
+
+        );
+
+      container.appendChild(
+        card
       );
 
-      container.appendChild(card);
-    });
+    }
 
-    renderCompleted = true;
-    console.log("[Credentials Renderer] Render complete");
-    signalRenderComplete();
-  };
+  );
+
+  renderCompleted = true;
+
+  console.log(
+    "[Credentials Renderer] Render complete"
+  );
+
+  signalRenderComplete();
+
+};
+
 })();

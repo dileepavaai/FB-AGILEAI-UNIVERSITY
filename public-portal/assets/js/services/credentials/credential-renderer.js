@@ -289,12 +289,36 @@ v1.0.0
           : def.code;
 
       const card = document.createElement("div");
-      card.className = "credential-card";
+
+          card.className =
+            "credential-card";
+
+          card.style.cursor =
+            "pointer";
 
       card.innerHTML = `
         <div class="credential-badge" title="${tooltip}">
           ${def.code}
         </div>
+
+            card.addEventListener(
+        "click",
+        function () {
+
+          if (
+            !cred?.credential_id
+          ) {
+            return;
+          }
+
+          window.location.href =
+            "/credentials/credential-details.html?credentialId=" +
+            encodeURIComponent(
+              cred.credential_id
+            );
+
+        }
+      );
 
         <div class="credential-meta credential-title">
           <strong>${title}</strong>
@@ -351,6 +375,25 @@ v1.0.0
         .addEventListener("click", () =>
           shareCredential(cred, def)
         );
+
+      card
+      .querySelectorAll(
+        "a, button"
+      )
+      .forEach(
+        function (element) {
+
+          element.addEventListener(
+            "click",
+            function (event) {
+
+              event.stopPropagation();
+
+            }
+          );
+
+        }
+      );
 
       container.appendChild(card);
     });

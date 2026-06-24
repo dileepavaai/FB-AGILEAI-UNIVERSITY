@@ -456,6 +456,13 @@ window.renderCredentials = function renderCredentials(
             return;
           }
 
+          sessionStorage.setItem(
+            "selectedCredential",
+            JSON.stringify(
+              cred
+            )
+          );
+
           window.location.href =
             "/credentials/credential-details.html?credentialId=" +
             encodeURIComponent(

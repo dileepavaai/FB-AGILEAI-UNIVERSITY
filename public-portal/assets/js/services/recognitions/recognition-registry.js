@@ -42,6 +42,10 @@ Governance Rules
 
       type: "certificate",
 
+      status: "ACTIVE",
+
+      display_order: 1,
+
       display_name:
         "University Certificate",
 
@@ -56,6 +60,10 @@ Governance Rules
 
       type: "trainer-certificate",
 
+      status: "ACTIVE",
+
+      display_order: 2,
+
       display_name:
         "Trainer Certificate",
 
@@ -69,6 +77,10 @@ Governance Rules
       code: "UNIVERSITY_BADGE",
 
       type: "badge",
+
+      status: "ACTIVE",
+
+      display_order: 3,
 
       display_name:
         "University Badge",

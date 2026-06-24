@@ -131,6 +131,26 @@ v1.0.0
     }
   }
 
+      /* =====================================================
+      RESERVED FOR CREDENTIAL DETAIL EXPERIENCE
+
+      Currently unused by Portfolio Experience.
+
+      Retained for future use in:
+
+      credential-details.html
+
+      function buildPublicCredentialUrl(...)
+      function buildVerifyUrl(...)
+      function buildLinkedInUrl(...)
+      function shareCredential(...)
+
+      Governance:
+      Safe to remove after Detail Experience
+      implementation is finalized.
+
+    ===================================================== */
+
   /* =====================================================
      🔗 CANONICAL URL BUILDERS
      ===================================================== */
@@ -238,12 +258,16 @@ v1.0.0
       })
     );
 
-    console.log("[Credentials Renderer] credentials:rendered dispatched");
-  }
+  console.log(
+    "[Credentials Renderer] credentials:rendered dispatched"
+  );
+
+}
 
 /* =====================================================
-   MAIN RENDER ENTRY (PURE · IDEMPOTENT)
-   ===================================================== */
+   MAIN RENDER ENTRY (PORTFOLIO CARD EXPERIENCE)
+===================================================== */
+
 window.renderCredentials = function renderCredentials(
   credentials
 ) {
@@ -273,8 +297,15 @@ window.renderCredentials = function renderCredentials(
     credentials.length === 0
   ) {
 
-    container.innerHTML =
-      "<p class='note'>No credentials available at this time.</p>";
+    container.innerHTML = `
+
+      <div class="empty-state">
+
+        No credentials available at this time.
+
+      </div>
+
+    `;
 
     renderCompleted = true;
 
@@ -287,9 +318,9 @@ window.renderCredentials = function renderCredentials(
   console.assert(
 
     credentials.every(
-      c =>
-        c &&
-        typeof c.program_code ===
+      credential =>
+        credential &&
+        typeof credential.program_code ===
           "string"
     ),
 
@@ -301,37 +332,23 @@ window.renderCredentials = function renderCredentials(
 
   credentials.forEach(
 
-    function (cred) {
+    function (credential) {
 
       assertCredentialValidityIntegrity(
-        cred
+        credential
       );
 
-      const def =
+      const definition =
         resolveCredentialDefinition(
-          cred
+          credential
         );
 
       const title =
-        def.full_title ||
-        def.full_name ||
-        def.display_name ||
-        def.code;
-
-      const tooltip =
-
-        def.code &&
-        (
-          def.full_title ||
-          def.full_name
-        )
-
-          ? `${def.code} = ${
-              def.full_title ||
-              def.full_name
-            }`
-
-          : def.code;
+        definition.full_title ||
+        definition.full_name ||
+        definition.display_name ||
+        definition.code ||
+        credential.program_code;
 
       const card =
         document.createElement(
@@ -341,108 +358,56 @@ window.renderCredentials = function renderCredentials(
       card.className =
         "credential-card";
 
-      card.style.cursor =
-        "pointer";
-
       card.innerHTML = `
 
-        <div
-          class="credential-badge"
-          title="${tooltip}">
-          ${def.code}
-        </div>
+        <div class="credential-portfolio-card">
 
-        <div class="credential-meta credential-title">
-          <strong>${title}</strong>
-        </div>
+          <img
+            class="credential-portfolio-emblem"
+            src="/assets/images/aau-emblem.png"
+            alt="Agile AI University">
 
-        <div class="credential-meta">
-          Issued by
-          <strong>
-            ${cred.issued_by || "Agile AI University"}
-          </strong>
-        </div>
+          <div class="credential-portfolio-code">
 
-        ${
-          String(
-            cred.validity
-          ).toLowerCase() ===
-          "lifetime"
+            ${definition.code || credential.program_code}
 
-            ? `
-              <div class="credential-meta credential-validity">
-                Validity:
-                <strong>Lifetime</strong>
-              </div>
-            `
+          </div>
 
-            : ""
-        }
+          <div class="credential-portfolio-title">
 
-        ${
-          cred?.credential_id
+            ${title}
 
-            ? `
-              <div class="credential-meta">
-                Credential ID:
-                <code>${cred.credential_id}</code>
-              </div>
-            `
+          </div>
 
-            : ""
-        }
+          <div class="credential-portfolio-validity">
 
-        <div class="credential-actions">
+            ${
+              String(
+                credential.validity || ""
+              ).toLowerCase() ===
+              "lifetime"
 
-          <a
-            href="${buildVerifyUrl(
-              cred
-            )}"
-            target="_blank"
-            rel="noopener"
-            class="btn secondary">
+                ? "Lifetime"
 
-            Verify
+                : (
+                    credential.validity ||
+                    "Active"
+                  )
+            }
 
-          </a>
-
-          <a
-            href="${buildLinkedInUrl(
-              cred,
-              title
-            )}"
-            target="_blank"
-            rel="noopener"
-            class="btn primary">
-
-            Add to LinkedIn
-
-          </a>
+          </div>
 
           <button
-            class="btn secondary share-btn">
+            type="button"
+            class="credential-portfolio-action">
 
-            View Official Credential Record
+            View Credential
 
           </button>
 
         </div>
 
-        <div class="credential-helper">
-
-          <small>
-
-            ${def.description || ""}
-
-          </small>
-
-        </div>
-
       `;
-
-      /* ==========================================
-         Card Navigation
-         ========================================== */
 
       card.addEventListener(
 
@@ -451,78 +416,67 @@ window.renderCredentials = function renderCredentials(
         function () {
 
           if (
-            !cred?.credential_id
+            !credential?.credential_id
           ) {
             return;
           }
 
           sessionStorage.setItem(
+
             "selectedCredential",
+
             JSON.stringify(
-              cred
+              credential
             )
+
           );
 
           window.location.href =
             "/credentials/credential-details.html?credentialId=" +
             encodeURIComponent(
-              cred.credential_id
+              credential.credential_id
             );
 
         }
 
       );
 
-      /* ==========================================
-         Share Button
-         ========================================== */
+      const actionButton =
+        card.querySelector(
+          ".credential-portfolio-action"
+        );
 
-      card
-        .querySelector(
-          ".share-btn"
-        )
-        .addEventListener(
+      if (actionButton) {
+
+        actionButton.addEventListener(
 
           "click",
 
-          function () {
+          function (event) {
 
-            shareCredential(
-              cred,
-              def
+            event.stopPropagation();
+
+            sessionStorage.setItem(
+
+              "selectedCredential",
+
+              JSON.stringify(
+                credential
+              )
+
             );
+
+            window.location.href =
+              "/credentials/credential-details.html?credentialId=" +
+              encodeURIComponent(
+                credential.credential_id
+              );
 
           }
 
         );
 
-      /* ==========================================
-         Prevent Card Navigation
-         ========================================== */
-
-      card
-        .querySelectorAll(
-          "a, button"
-        )
-        .forEach(
-
-          function (element) {
-
-            element.addEventListener(
-
-              "click",
-
-              function (event) {
-
-                event.stopPropagation();
-
-              }
-
-            );
-
-          }
-
-        );
+      }
 
       container.appendChild(
         card

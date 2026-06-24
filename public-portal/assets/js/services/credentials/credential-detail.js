@@ -71,14 +71,36 @@ function findCredential(
   credentialId
 ) {
 
-  const credentials =
-    window.portalCredentials || [];
+  try {
 
-  return credentials.find(
-    credential =>
+    const credential =
+      JSON.parse(
+        sessionStorage.getItem(
+          "selectedCredential"
+        )
+      );
+
+    if (
+      credential &&
       credential.credential_id ===
       credentialId
-  );
+    ) {
+
+      return credential;
+
+    }
+
+  }
+  catch (error) {
+
+    console.error(
+      "[Credential Detail] Session parse failure",
+      error
+    );
+
+  }
+
+  return null;
 
 }
 
@@ -124,17 +146,17 @@ function populateCredential(
     definition.validity ||
     "Lifetime";
 
-  const titleElement =
+    const titleElement =
     document.querySelector(
-      ".credential-title strong"
+        ".credential-title strong"
     );
 
-  if (titleElement) {
+    if (titleElement) {
 
     titleElement.textContent =
-      title;
+        title;
 
-  }
+    }
 
 }
 
@@ -216,11 +238,11 @@ function initialize() {
 }
 
 /* =====================================================
-   Wait For Credentials
+   Initialize On Page Load
 ===================================================== */
 
 document.addEventListener(
-  "credentials:rendered",
+  "DOMContentLoaded",
   initialize
 );
 

@@ -167,76 +167,170 @@ window.__recognitionServiceInitialized = true;
 let initialized = false;
 
 /* =====================================================
-Recognition Resolution
+   Recognition Resolution
+
+   Purpose
+   -----------------------------------------------------
+   Builds the recognition model for the current user.
+
+   Recognition eligibility is determined by the
+   credential definition stored in:
+
+   AAIU_CREDENTIAL_REGISTRY
+
+   The registry specifies which recognition assets
+   belong to each credential.
+
+   Example
+
+   AIPA
+      → UNIVERSITY_CERTIFICATE
+      → TRAINER_CERTIFICATE
+      → UNIVERSITY_BADGE
+
+   AAIA
+      → UNIVERSITY_CERTIFICATE
+      → TRAINER_CERTIFICATE
+      → UNIVERSITY_BADGE
+
+   Future self-paced credentials may expose:
+
+      → UNIVERSITY_CERTIFICATE
+
+   only.
+
+   Governance
+   -----------------------------------------------------
+   - No API Calls
+   - No Authorization
+   - No Entitlement Resolution
+   - No Rendering
+
+   Returns
+   -----------------------------------------------------
+   Array<Recognition>
+
 ===================================================== */
 
 function buildRecognitions(
-credentials
+  credentials
 ) {
 
-const credentialRegistry =
-window.AAIU_CREDENTIAL_REGISTRY || {};
+  const credentialRegistry =
+    window.AAIU_CREDENTIAL_REGISTRY || {};
 
-const recognitionRegistry =
-window.AAIU_RECOGNITION_REGISTRY || {};
+  const recognitionRegistry =
+    window.AAIU_RECOGNITION_REGISTRY || {};
 
-const recognitionMap =
-new Map();
-
-if (
-!Array.isArray(credentials)
-) {
-return [];
-}
-
-credentials.forEach(
-function (credential) {
-
-```
-  const definition =
-    credentialRegistry[
-      credential.program_code
-    ];
+  const recognitionMap =
+    new Map();
 
   if (
-    !definition ||
-    !Array.isArray(
-      definition.recognitions
-    )
+    !Array.isArray(credentials)
   ) {
-    return;
+
+    console.warn(
+      "[Recognition Service] No credentials supplied"
+    );
+
+    return [];
+
   }
 
-  definition.recognitions.forEach(
-    function (recognitionCode) {
+  credentials.forEach(
+    function (credential) {
 
-      const recognition =
-        recognitionRegistry[
-          recognitionCode
+      const credentialCode =
+        credential.program_code ||
+        credential.credential_type;
+
+        const definition =
+        credentialRegistry[
+            credentialCode
         ];
 
       if (
-        !recognition
+        !definition
       ) {
+
+        console.warn(
+            "[Recognition Service] Credential definition not found:",
+            credentialCode
+            );
+
         return;
+
       }
 
-      recognitionMap.set(
-        recognitionCode,
-        recognition
+      if (
+        !Array.isArray(
+          definition.recognitions
+        )
+      ) {
+
+        console.warn(
+          "[Recognition Service] No recognitions configured for:",
+          credentialCode
+        );
+
+        return;
+
+      }
+
+      definition.recognitions.forEach(
+        function (recognitionCode) {
+
+          const recognition =
+            recognitionRegistry[
+              recognitionCode
+            ];
+
+          if (
+            !recognition
+          ) {
+
+            console.warn(
+              "[Recognition Service] Recognition definition not found:",
+              recognitionCode
+            );
+
+            return;
+
+          }
+
+          /* -----------------------------------------------------
+            Deduplication Governance
+
+            Multiple credentials may expose the same
+            recognition asset.
+
+            Example
+
+            AAIA
+                -> UNIVERSITY_CERTIFICATE
+
+            AIPA
+                -> UNIVERSITY_CERTIFICATE
+
+            User should see one certificate asset,
+            not duplicates.
+
+            ----------------------------------------------------- */
+
+          recognitionMap.set(
+            recognitionCode,
+            recognition
+          );
+
+        }
       );
 
     }
   );
 
-}
-```
-
-);
-
-return Array.from(
-recognitionMap.values()
-);
+  return Array.from(
+    recognitionMap.values()
+  );
 
 }
 
@@ -248,7 +342,6 @@ function renderRecognitions() {
 
 try {
 
-```
 if (
   typeof window.resolvePortalEntitlements !==
   "function"
@@ -305,18 +398,15 @@ if (
 window.renderRecognitions(
   recognitions
 );
-```
 
 }
 
 catch (error) {
 
-```
 console.error(
   "[Recognition Service] Render failure",
   error
 );
-```
 
 }
 

@@ -6,6 +6,15 @@ Module      : Student & Executive Portal
 Component   : Credential Registry
 
 File        : credential-registry.js
+
+Version     : 1.2.0
+Governance  : Portal Governance v1.2
+
+* Added credential_status governance
+* Added credential_family governance
+* Established credential lifecycle model
+* Established credential family classification model
+
 Version     : 1.1.0
 Status      : ACTIVE
 
@@ -147,6 +156,12 @@ AAIA: {
 
 code: "AAIA",
 
+credential_status:
+"ACTIVE",
+
+credential_family:
+"AGILE_AI",
+
 delivery_model:
 "INSTRUCTOR_LED",
 
@@ -196,6 +211,12 @@ AIPA: {
 
 code: "AIPA",
 
+credential_status:
+"ACTIVE",
+
+credential_family:
+"AGILE_AI",
+
 delivery_model:
 "INSTRUCTOR_LED",
 
@@ -244,6 +265,12 @@ AOP — Agile Outcome Practitioner
 AOP: {
 
 code: "AOP",
+
+credential_status:
+"ACTIVE",
+
+credential_family:
+"AGILE_AI",
 
 delivery_model:
 "INSTRUCTOR_LED",

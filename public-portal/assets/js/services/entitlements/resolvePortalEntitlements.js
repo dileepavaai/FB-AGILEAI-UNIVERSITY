@@ -196,6 +196,11 @@ function normalizeVisibleCredentials(credentials, email) {
     "AOP"
   ];
 
+  console.log(
+      "[Resolver Raw Credential]",
+      credentials?.[0]
+    );
+
   const normalized = credentials
     .filter(c =>
       c &&
@@ -206,22 +211,55 @@ function normalizeVisibleCredentials(credentials, email) {
       ALLOWED_PROGRAM_CODES.includes(c.program_code)
     )
     .map(c => ({
-      // 🔒 REQUIRED PASS-THROUGH (NON-NEGOTIABLE)
-      program_code: c.program_code,
 
-      credential_code: c.program_code,
-      credential_type: c.credential_type || c.program_code,
+  /* ==========================================
+     Canonical Credential Identity
+     ========================================== */
 
-      issued_at: c.created_at?.toDate
-        ? c.created_at.toDate()
-        : c.created_at || null,
+  program_code: c.program_code,
 
-      issued_by: c.issued_by || "Agile AI University",
-      email: c.email,
+  credential_code:
+    c.credential_code ||
+    c.program_code,
 
-      validity: c.validity || null,
-      credential_id: c.credential_id || null
-    }));
+  credential_type:
+    c.credential_type ||
+    c.program_code,
+
+  credential_id:
+    c.credential_id || null,
+
+  /* ==========================================
+     Credential Holder
+     ========================================== */
+
+  full_name:
+    c.full_name ||
+    c.learner_name ||
+    c.name ||
+    null,
+
+  email:
+    c.email || null,
+
+  /* ==========================================
+     Issuance Information
+     ========================================== */
+
+  issued_at:
+    c.created_at?.toDate
+      ? c.created_at.toDate()
+      : c.created_at || null,
+
+  issued_by:
+    c.issued_by ||
+    "Agile AI University",
+
+  validity:
+    c.validity ||
+    "Lifetime"
+
+}));
 
   console.assert(
     normalized.every(c => c.program_code),

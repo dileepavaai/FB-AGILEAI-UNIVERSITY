@@ -6,10 +6,10 @@ Module      : Student & Executive Portal
 Component   : Credential Registry
 
 File        : credential-registry.js
-Version     : 1.0.0
+Version     : 1.1.0
 Status      : ACTIVE
 
-Governance  : Portal Governance v1.0
+Governance  : Portal Governance v1.1
 
 ## Purpose
 
@@ -30,6 +30,18 @@ Credential Registry
 ↓
 Credential Renderer
 
+Recognition Architecture
+
+Credential Registry
+↓
+Recognition Applicability
+↓
+Recognition Service
+↓
+Recognition Registry
+↓
+Recognition Renderer
+
 ## Responsibilities
 
 * Define credential metadata
@@ -38,6 +50,8 @@ Credential Renderer
 * Define issuer information
 * Define validity metadata
 * Define LinkedIn metadata
+* Define delivery models
+* Define recognition applicability
 
 ## Must Never
 
@@ -51,10 +65,23 @@ Credential Renderer
 ## Governance Rules
 
 * Registry is display metadata only
+
 * Registry is append-only
+
 * Existing credential codes must not change
+
 * Existing credential definitions must remain
   backward compatible
+
+* Credential definitions own
+  recognition applicability
+
+* Recognition Registry owns
+  recognition metadata
+
+* Recognition Service resolves
+  recognition assets from credential
+  definitions
 
 ## Dependencies
 
@@ -64,7 +91,39 @@ None
 
 credential-renderer.js
 
+recognition-service.js
+
+## Recognition Governance
+
+Recognition applicability is determined
+by the credential definition.
+
+Examples
+
+Instructor-Led Programs
+
+• University Certificate
+• Trainer Certificate
+• University Badge
+
+Self-Paced Programs
+
+• University Certificate
+
+Executive Programs
+
+• Determined by credential definition
+
+This model allows future expansion without
+modifying recognition infrastructure.
+
 ## Change History
+
+v1.1.0
+
+* Added delivery_model governance
+* Added recognitions governance
+* Established recognition applicability model
 
 v1.0.0
 
@@ -82,126 +141,169 @@ v1.0.0
 window.AAIU_CREDENTIAL_REGISTRY = {
 
 /* =====================================================
-   AAIA — Agentic AI Agilist
-   ===================================================== */
+AAIA — Agentic AI Agilist
+===================================================== */
 AAIA: {
 
-  code: "AAIA",
+code: "AAIA",
 
-  full_title: "Agentic AI Agilist",
+delivery_model:
+"INSTRUCTOR_LED",
 
-  full_name: "Agentic AI Agilist",
+recognitions: [
+"UNIVERSITY_CERTIFICATE",
+"TRAINER_CERTIFICATE",
+"UNIVERSITY_BADGE"
+],
 
-  display_name:
-    "Agentic AI Agilist (AAIA)",
+full_title:
+"Agentic AI Agilist",
 
-  credential_type:
-    "Professional Credential",
+full_name:
+"Agentic AI Agilist",
 
-  issuer:
-    "Agile AI University",
+display_name:
+"Agentic AI Agilist (AAIA)",
 
-  validity:
-    "Lifetime",
+credential_type:
+"Professional Credential",
 
-  description:
-    "A professional credential recognizing applied capability in Agentic AI systems, decision intelligence, and responsible AI practice.",
+issuer:
+"Agile AI University",
 
-  linkedin: {
+validity:
+"Lifetime",
 
-    organization:
-      "Agile AI University",
+description:
+"A professional credential recognizing applied capability in Agentic AI systems, decision intelligence, and responsible AI practice.",
 
-    credential_type:
-      "CERTIFICATION"
+linkedin: {
 
-  }
+organization:
+  "Agile AI University",
+
+credential_type:
+  "CERTIFICATION"
+
+}
 
 },
 
 /* =====================================================
-   AIPA — Artificial Intelligence Professional Agilist
-   ===================================================== */
+AIPA — Artificial Intelligence Professional Agilist
+===================================================== */
 AIPA: {
 
-  code: "AIPA",
+code: "AIPA",
 
-  full_title:
-    "Artificial Intelligence Professional Agilist",
+delivery_model:
+"INSTRUCTOR_LED",
 
-  full_name:
-    "Artificial Intelligence Professional Agilist",
+recognitions: [
+"UNIVERSITY_CERTIFICATE",
+"TRAINER_CERTIFICATE",
+"UNIVERSITY_BADGE"
+],
 
-  display_name:
-    "Artificial Intelligence Professional Agilist (AIPA)",
+full_title:
+"Artificial Intelligence Professional Agilist",
 
-  credential_type:
-    "Professional Credential",
+full_name:
+"Artificial Intelligence Professional Agilist",
 
-  issuer:
-    "Agile AI University",
+display_name:
+"Artificial Intelligence Professional Agilist (AIPA)",
 
-  validity:
-    "Lifetime",
+credential_type:
+"Professional Credential",
 
-  description:
-    "A professional credential recognizing applied capability in leveraging Agile AI to unlock organizational agility, while leading responsible and ethical AI adoption.",
+issuer:
+"Agile AI University",
 
-  linkedin: {
+validity:
+"Lifetime",
 
-    organization:
-      "Agile AI University",
+description:
+"A professional credential recognizing applied capability in leveraging Agile AI to unlock organizational agility, while leading responsible and ethical AI adoption.",
 
-    credential_type:
-      "CERTIFICATION"
+linkedin: {
 
-  }
+organization:
+  "Agile AI University",
+
+credential_type:
+  "CERTIFICATION"
+
+}
 
 },
 
 /* =====================================================
-   AOP — Agile Outcome Practitioner
-   ===================================================== */
+AOP — Agile Outcome Practitioner
+===================================================== */
 AOP: {
 
-  code: "AOP",
+code: "AOP",
 
-  full_title:
-    "Agile Outcome Practitioner",
+delivery_model:
+"INSTRUCTOR_LED",
 
-  full_name:
-    "Agile Outcome Practitioner",
+recognitions: [
+"UNIVERSITY_CERTIFICATE",
+"TRAINER_CERTIFICATE",
+"UNIVERSITY_BADGE"
+],
 
-  display_name:
-    "Agile Outcome Practitioner (AOP)",
+full_title:
+"Agile Outcome Practitioner",
 
-  credential_type:
-    "Professional Credential",
+full_name:
+"Agile Outcome Practitioner",
 
-  issuer:
-    "Agile AI University",
+display_name:
+"Agile Outcome Practitioner (AOP)",
 
-  validity:
-    "Lifetime",
+credential_type:
+"Professional Credential",
 
-  description:
-    "A professional credential recognizing applied capability in outcome-driven agility, value delivery and adaptive ways of working.",
+issuer:
+"Agile AI University",
 
-  linkedin: {
+validity:
+"Lifetime",
 
-    organization:
-      "Agile AI University",
+description:
+"A professional credential recognizing applied capability in outcome-driven agility, value delivery and adaptive ways of working.",
 
-    credential_type:
-      "CERTIFICATION"
+linkedin: {
 
-  }
+organization:
+  "Agile AI University",
+
+credential_type:
+  "CERTIFICATION"
+
+}
 
 }
 
 /* -----------------------------------------------------
-   Future credentials go here (append-only)
-   ----------------------------------------------------- */
+Future credentials go here (append-only)
+
+Example
+
+SELF_PACED:
+recognitions: [
+"UNIVERSITY_CERTIFICATE"
+]
+
+INSTRUCTOR_LED:
+recognitions: [
+"UNIVERSITY_CERTIFICATE",
+"TRAINER_CERTIFICATE",
+"UNIVERSITY_BADGE"
+]
+----------------------------------------------------- */
 
 };
 

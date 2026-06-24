@@ -149,6 +149,9 @@ const resolved =
 
 const credentials =
   resolved?.visibleCredentials || [];
+  
+  window.portalCredentials =
+  credentials;
 
 console.log(
   `[Credential Service] Rendering ${credentials.length} credential(s)`

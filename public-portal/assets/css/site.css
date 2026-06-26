@@ -97,30 +97,42 @@ a:hover {
 }
 
 main {
-  padding: 40px 20px;
+
+    padding:152px 20px 40px;
+
 }
 
 /* =====================
    HEADER
-   ===================== */
+===================== */
 
-.site-header {
+#site-header{
 
-    position: sticky;
+    height:112px;
 
-    top: 0;
+}
 
-    z-index: 1000;
+.site-header{
 
-    background: var(--bg);
+    position:fixed;
 
-    border-bottom: 1px solid var(--border);
+    top:0;
 
-    box-shadow: 0 2px 8px rgba(15,23,42,.06);
+    left:0;
 
-    -webkit-backdrop-filter: blur(12px);
+    right:0;
 
-    backdrop-filter: blur(12px);
+    z-index:1000;
+
+    background:var(--bg);
+
+    border-bottom:1px solid var(--border);
+
+    box-shadow:0 2px 8px rgba(15,23,42,.06);
+
+    backdrop-filter:blur(12px);
+
+    -webkit-backdrop-filter:blur(12px);
 
 }
 

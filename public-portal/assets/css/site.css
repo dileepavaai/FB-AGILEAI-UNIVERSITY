@@ -98,7 +98,7 @@ a:hover {
 
 main {
 
-    padding:152px 20px 40px;
+    padding:132px 20px 40px;
 
 }
 
@@ -108,7 +108,7 @@ main {
 
 #site-header{
 
-    height:112px;
+    height:96px;
 
 }
 
@@ -148,9 +148,9 @@ main {
   display: flex;
   align-items: center;
 
-  gap: 32px;
+  gap: 26px;
 
-  padding: 20px 0;
+  padding: 14px 0;
 
   margin: 0;
 }
@@ -169,10 +169,10 @@ main {
 }
 
 .institution-line {
-  margin-top: 14px;
+  margin-top: 8px;
 
-  font-size: 1.25rem;
-  line-height: 1.7;
+  font-size: 1.1rem;
+  line-height: 1.4;
 
   font-weight: 400;
 
@@ -180,7 +180,7 @@ main {
 }
 
 .portal-context {
-  margin-top: 6px;
+  margin-top: 2px;
 }
 
 .context-tag {
@@ -614,8 +614,8 @@ footer {
 }
 
 .brand-logo {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   display: block;
 }

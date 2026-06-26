@@ -1,0 +1,334 @@
+/* ==========================================================
+   Agile AI University
+
+   Design Token System
+
+   File      : design-tokens.css
+   Version   : 1.0.0
+   Status    : LOCKED
+
+   Purpose
+   ----------------------------------------------------------
+   Centralized design tokens for the Agile AI University
+   Design System.
+
+   Every visual component consumes these tokens.
+
+   Components MUST NOT hardcode:
+
+   - Colors
+   - Typography
+   - Border Radius
+   - Shadows
+   - Spacing
+   - Animations
+   - Elevation
+   - Z-Index
+
+   Governance
+   ----------------------------------------------------------
+
+   ✓ Single Source of Truth
+   ✓ Light Theme Default
+   ✓ Dark Theme Ready
+   ✓ Component Driven
+   ✓ Platform Wide
+
+==========================================================*/
+
+:root {
+
+/* ==========================================================
+   BRAND
+========================================================== */
+
+--brand-primary: #1E3A8A;
+--brand-primary-hover: #1E40AF;
+
+--brand-secondary: #334155;
+
+--brand-accent: #2563EB;
+
+--brand-success: #15803D;
+--brand-warning: #CA8A04;
+--brand-danger: #DC2626;
+
+--brand-info: #0369A1;
+
+
+/* ==========================================================
+   SURFACE
+========================================================== */
+
+--surface-page: #F8FAFC;
+
+--surface-card: #FFFFFF;
+
+--surface-card-hover: #FCFCFD;
+
+--surface-secondary: #F1F5F9;
+
+--surface-disabled: #F3F4F6;
+
+
+/* ==========================================================
+   TEXT
+========================================================== */
+
+--text-primary: #111827;
+
+--text-secondary: #475569;
+
+--text-muted: #64748B;
+
+--text-disabled: #9CA3AF;
+
+--text-inverse: #FFFFFF;
+
+
+/* ==========================================================
+   BORDERS
+========================================================== */
+
+--border-light: #F1F5F9;
+
+--border-default: #E5E7EB;
+
+--border-dark: #CBD5E1;
+
+--border-focus: #1E3A8A;
+
+
+/* ==========================================================
+   LINKS
+========================================================== */
+
+--link-color: #1E3A8A;
+
+--link-hover: #1E40AF;
+
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+--button-primary-bg: var(--brand-primary);
+
+--button-primary-hover: var(--brand-primary-hover);
+
+--button-primary-text: #FFFFFF;
+
+--button-secondary-bg: #FFFFFF;
+
+--button-secondary-text: var(--text-primary);
+
+--button-secondary-border: var(--border-default);
+
+--button-ghost-text: var(--brand-primary);
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+--status-success-bg: #ECFDF5;
+
+--status-success-text: #15803D;
+
+--status-warning-bg: #FEFCE8;
+
+--status-warning-text: #CA8A04;
+
+--status-danger-bg: #FEF2F2;
+
+--status-danger-text: #DC2626;
+
+--status-info-bg: #EFF6FF;
+
+--status-info-text: #1D4ED8;
+
+
+/* ==========================================================
+   TYPOGRAPHY
+========================================================== */
+
+--font-family-primary:
+"Inter",
+"Segoe UI",
+Roboto,
+Helvetica,
+Arial,
+sans-serif;
+
+--font-family-heading:
+"Inter",
+"Segoe UI",
+sans-serif;
+
+--font-size-xs: .75rem;
+
+--font-size-sm: .875rem;
+
+--font-size-md: 1rem;
+
+--font-size-lg: 1.125rem;
+
+--font-size-xl: 1.25rem;
+
+--font-size-2xl: 1.5rem;
+
+--font-size-3xl: 2rem;
+
+--font-size-4xl: 2.75rem;
+
+
+/* ==========================================================
+   FONT WEIGHT
+========================================================== */
+
+--font-light:300;
+
+--font-normal:400;
+
+--font-medium:500;
+
+--font-semibold:600;
+
+--font-bold:700;
+
+
+/* ==========================================================
+   LINE HEIGHT
+========================================================== */
+
+--line-height-tight:1.2;
+
+--line-height-normal:1.5;
+
+--line-height-relaxed:1.8;
+
+
+/* ==========================================================
+   SPACING
+========================================================== */
+
+--space-1:4px;
+
+--space-2:8px;
+
+--space-3:12px;
+
+--space-4:16px;
+
+--space-5:20px;
+
+--space-6:24px;
+
+--space-8:32px;
+
+--space-10:40px;
+
+--space-12:48px;
+
+--space-16:64px;
+
+--space-20:80px;
+
+
+/* ==========================================================
+   BORDER RADIUS
+========================================================== */
+
+--radius-sm:6px;
+
+--radius-md:10px;
+
+--radius-lg:14px;
+
+--radius-xl:18px;
+
+--radius-pill:999px;
+
+
+/* ==========================================================
+   SHADOWS
+========================================================== */
+
+--shadow-xs:
+0 1px 2px rgba(15,23,42,.04);
+
+--shadow-sm:
+0 2px 6px rgba(15,23,42,.05);
+
+--shadow-md:
+0 6px 18px rgba(15,23,42,.08);
+
+--shadow-lg:
+0 12px 32px rgba(15,23,42,.12);
+
+--shadow-xl:
+0 20px 48px rgba(15,23,42,.16);
+
+
+/* ==========================================================
+   TRANSITIONS
+========================================================== */
+
+--transition-fast:.15s ease;
+
+--transition-normal:.25s ease;
+
+--transition-slow:.40s ease;
+
+
+/* ==========================================================
+   LAYOUT
+========================================================== */
+
+--container-width:1280px;
+
+--content-width:1100px;
+
+--sidebar-width:280px;
+
+--header-height:76px;
+
+--footer-padding:80px;
+
+
+/* ==========================================================
+   Z INDEX
+========================================================== */
+
+--z-dropdown:1000;
+
+--z-sticky:1100;
+
+--z-fixed:1200;
+
+--z-modal-backdrop:1300;
+
+--z-modal:1400;
+
+--z-toast:1500;
+
+--z-tooltip:1600;
+
+
+/* ==========================================================
+   OPACITY
+========================================================== */
+
+--opacity-disabled:.45;
+
+--opacity-hover:.85;
+
+
+/* ==========================================================
+   FOCUS
+========================================================== */
+
+--focus-ring:
+0 0 0 3px rgba(30,58,138,.15);
+
+}

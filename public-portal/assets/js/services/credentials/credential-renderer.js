@@ -264,6 +264,174 @@ v1.0.0
 
 }
 
+function renderCredentialPreview(credential) {
+
+    const preview =
+        document.getElementById(
+            "credential-preview-container"
+        );
+
+    if (!preview) {
+        return;
+    }
+
+    const definition =
+        resolveCredentialDefinition(
+            credential
+        );
+
+    preview.hidden = false;
+
+    preview.innerHTML =
+        buildCredentialPreview(
+            credential,
+            definition
+        );
+
+    preview.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+function buildCredentialPreview(
+    credential,
+    definition
+) {
+
+    const title =
+        definition.full_title ||
+        definition.full_name ||
+        definition.display_name ||
+        definition.code ||
+        credential.program_code;
+
+    const validity =
+        String(
+            credential.validity || ""
+        ).toLowerCase() === "lifetime"
+            ? "Lifetime"
+            : (
+                credential.validity ||
+                "Active"
+            );
+
+    return `
+
+<section class="credential-preview-card">
+
+    <div class="credential-preview-header">
+
+        <img
+            class="credential-portfolio-emblem"
+            src="/assets/images/aau-emblem.png"
+            alt="Agile AI University">
+
+        <div>
+
+            <h2>
+
+                ${title}
+
+            </h2>
+
+            <p>
+
+                ${definition.code || credential.program_code}
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="credential-preview-section">
+
+        <div class="credential-helper">
+
+            <strong>Credential ID</strong><br>
+
+            ${credential.credential_id || "--"}
+
+        </div>
+
+        <div class="credential-helper">
+
+            <strong>Credential Holder</strong><br>
+
+            ${credential.full_name || "--"}
+
+        </div>
+
+        <div class="credential-helper">
+
+            <strong>Issued By</strong><br>
+
+            Agile AI University
+
+        </div>
+
+        <div class="credential-helper">
+
+            <strong>Validity</strong><br>
+
+            ${validity}
+
+        </div>
+
+    </div>
+
+    <div class="credential-preview-actions">
+
+        <button
+            class="btn primary"
+            type="button">
+
+            View University Certificate
+
+        </button>
+
+        <button
+            class="btn secondary"
+            type="button">
+
+            Download University Certificate
+
+        </button>
+
+        <button
+            class="btn secondary"
+            type="button">
+
+            View University Badge
+
+        </button>
+
+        <button
+            class="btn secondary"
+            type="button">
+
+            View Trainer Certificate
+
+        </button>
+
+        <button
+            class="btn secondary"
+            type="button">
+
+            Verify Credential
+
+        </button>
+
+    </div>
+
+</section>
+
+`;
+
+}
+
 /* =====================================================
    MAIN RENDER ENTRY (PORTFOLIO CARD EXPERIENCE)
 ===================================================== */
@@ -409,37 +577,11 @@ window.renderCredentials = function renderCredentials(
 
       `;
 
-      card.addEventListener(
+      card.addEventListener("click", function () {
 
-        "click",
+    renderCredentialPreview(credential);
 
-        function () {
-
-          if (
-            !credential?.credential_id
-          ) {
-            return;
-          }
-
-          sessionStorage.setItem(
-
-            "selectedCredential",
-
-            JSON.stringify(
-              credential
-            )
-
-          );
-
-          window.location.href =
-            "/credentials/credential-details.html?credentialId=" +
-            encodeURIComponent(
-              credential.credential_id
-            );
-
-        }
-
-      );
+});
 
       const actionButton =
         card.querySelector(
@@ -456,21 +598,7 @@ window.renderCredentials = function renderCredentials(
 
             event.stopPropagation();
 
-            sessionStorage.setItem(
-
-              "selectedCredential",
-
-              JSON.stringify(
-                credential
-              )
-
-            );
-
-            window.location.href =
-              "/credentials/credential-details.html?credentialId=" +
-              encodeURIComponent(
-                credential.credential_id
-              );
+            renderCredentialPreview(credential);
 
           }
 

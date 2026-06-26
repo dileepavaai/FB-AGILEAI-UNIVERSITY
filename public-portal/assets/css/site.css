@@ -105,8 +105,23 @@ main {
    ===================== */
 
 .site-header {
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    background: var(--bg);
+
+    border-bottom: 1px solid var(--border);
+
+    box-shadow: 0 2px 8px rgba(15,23,42,.06);
+
+    -webkit-backdrop-filter: blur(12px);
+
+    backdrop-filter: blur(12px);
+
 }
 
 .site-nav {

@@ -3,8 +3,22 @@ Agile AI University
 Student & Executive Portal
 
 File      : portal.css
-Version   : 1.4.0
+Version   : 1.5.0
 Status    : ACTIVE
+Phase     : Sprint 2A
+
+Changes
+--------------------------------------------------
+
+• Introduced centralized executive shell imports
+
+• Migrated portal cards to design tokens
+
+• Migrated buttons to design tokens
+
+• Migrated authentication inputs to design tokens
+
+• Prepared stylesheet for Executive Dashboard
 
 Scope:
 
@@ -27,10 +41,6 @@ Governance Notes:
 * Content-Driven Card Heights
 * Governance-Clean Release
 
-========================================================== */
-
-/* ==========================================================
-   SHARED EXECUTIVE COMPONENTS
 ========================================================== */
 
 @import url("./components/shell.css");
@@ -66,7 +76,7 @@ margin-bottom: 40px;
 
     letter-spacing: -0.02em;
 
-    color: #1f2937;
+    color: var(--text-primary);
 }
 
 .portal-content p {
@@ -77,7 +87,7 @@ margin-bottom: 40px;
     font-size: 1rem;
     line-height: 1.7;
 
-    color: #6b7280;
+    color:var(--text-secondary);
 }
 
 /* ==========================================================
@@ -101,16 +111,19 @@ PORTAL CARD
 ========================================================== */
 
 .portal-card {
-padding: 32px;
 
-background: #ffffff;
+    padding: 32px;
 
-border: 1px solid #e5e7eb;
-border-radius: 16px;
+    background: var(--surface-card);
 
-box-shadow:
-0 1px 3px rgba(0,0,0,0.04),
-0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-xl);
+
+    box-shadow: var(--shadow-sm);
+
+    transition: var(--transition-fast);
+
 }
 
 .portal-card h2 {
@@ -119,7 +132,7 @@ box-shadow:
     font-size: 1.25rem;
     font-weight: 700;
 
-    color: #1f2937;
+    color: var(--text-primary);
 }
 
 .portal-card p {
@@ -147,7 +160,7 @@ gap: 12px 24px;
 .portal-services li {
 margin: 0;
 
-color: #4b5563;
+color: var(--text-secondary);
 line-height: 1.6;
 }
 
@@ -157,7 +170,7 @@ AUTHENTICATION
 
 #statusText {
 margin-bottom: 20px;
-color: #6b7280;
+color: var(--text-secondary);
 }
 
 .auth-box {
@@ -172,7 +185,7 @@ height: 42px;
 
 padding: 0 14px;
 
-border: 1px solid #d1d5db;
+border: 1px solid var(--border-default);
 border-radius: 8px;
 
 font-size: 0.9rem;
@@ -180,7 +193,7 @@ font-size: 0.9rem;
 
 .auth-box input:focus {
 outline: none;
-border-color: #2563eb;
+border-color: var(--border-focus);
 }
 
 .divider {
@@ -188,7 +201,7 @@ margin: 20px 0;
 
 text-align: center;
 
-color: #9ca3af;
+color: var(--text-muted);
 }
 
 .status-message {
@@ -198,7 +211,7 @@ margin: 0;
 
 font-size: 0.85rem;
 
-color: #6b7280;
+color: var(--text-secondary);
 }
 
 /* ==========================================================
@@ -224,9 +237,7 @@ text-decoration: none;
 font-size: 0.9rem;
 font-weight: 600;
 
-transition:
-transform 0.2s ease,
-opacity 0.2s ease;
+transition: var(--transition-fast);
 }
 
 .btn:hover {
@@ -265,7 +276,8 @@ margin-bottom: 8px;
 
 .user-email {
 margin-bottom: 24px;
-color: #6b7280;
+color: var(--text-secondary);
+
 }
 
 .portal-actions {
@@ -286,7 +298,7 @@ color: #ffffff;
 
 .note {
 margin-top: 16px;
-color: #6b7280;
+color: var(--text-secondary);
 }
 
 /* ==========================================================
@@ -325,7 +337,7 @@ OPTIONAL FUTURE SERVICES SECTIONS
 margin: 24px 0;
 
 border: 0;
-border-top: 1px solid #d1d5db;
+border-top:1px solid var(--border-default);
 }
 
 .portal-services h3 {

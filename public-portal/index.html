@@ -54,18 +54,20 @@
          HERO
          ================================================== -->
 
-    <section class="portal-hero">
+    <!-- ==================================================
+     DASHBOARD HEADER
+     ================================================== -->
 
-        <div class="portal-content">
+    <section class="dashboard-header">
+
+        <div class="dashboard-header-content">
 
             <h1>
-                Agile AI University Portal
+                Dashboard
             </h1>
 
             <p>
-                Secure access to assessments,
-                credentials, recognitions,
-                reports, and university services.
+                Welcome back to your Agile AI University portal.
             </p>
 
         </div>
@@ -147,35 +149,93 @@
         </section>
 
         <!-- ================================================
-             AVAILABLE SERVICES
-             ================================================ -->
+        QUICK ACCESS
+        ================================================ -->
 
-        <aside
-            class="portal-card portal-services">
+    <aside
+        class="portal-card quick-access">
 
-            <h2>
-                Available Services
-            </h2>
+        <h2>
+            Quick Access
+        </h2>
 
-            <ul>
+        <div class="quick-access-grid">
 
-                <li>Assessment Platform</li>
+            <a
+                href="/credentials/my-credentials.html"
+                class="quick-access-card">
 
-                <li>Professional Credentials</li>
+                <span class="quick-access-icon">🎓</span>
 
-                <li>Recognition Records</li>
+                <div>
 
-                <li>Executive Insight Reports</li>
+                    <strong>My Credentials</strong>
 
-                <li>Student Services</li>
+                    <small>
+                        View your credential portfolio
+                    </small>
 
-                <li>University Verification Services</li>
+                </div>
 
-            </ul>
+            </a>
 
-        </aside>
+            <a
+                href="/certs/"
+                class="quick-access-card">
 
-    </div>
+                <span class="quick-access-icon">📜</span>
+
+                <div>
+
+                    <strong>Certificates</strong>
+
+                    <small>
+                        University & Trainer Certificates
+                    </small>
+
+                </div>
+
+            </a>
+
+            <a
+                href="/badges/"
+                class="quick-access-card">
+
+                <span class="quick-access-icon">🛡️</span>
+
+                <div>
+
+                    <strong>Digital Badges</strong>
+
+                    <small>
+                        University Badge Portfolio
+                    </small>
+
+                </div>
+
+            </a>
+
+            <a
+                href="/assessment.html"
+                class="quick-access-card">
+
+                <span class="quick-access-icon">📝</span>
+
+                <div>
+
+                    <strong>Assessment Platform</strong>
+
+                    <small>
+                        Continue your learning journey
+                    </small>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </aside>
 
     <!-- ================================================
          SIGNED IN EXPERIENCE
@@ -187,7 +247,7 @@
         hidden>
 
         <h2>
-            Welcome
+            Student Dashboard
         </h2>
 
         <p class="user-name">
@@ -198,44 +258,103 @@
 
         <p
             id="userEmail"
-            class="user-email"></p>
+            class="user-email">
+        </p>
 
         <!-- ================================================
-             AUTHORIZED PORTAL SERVICES
-             ================================================ -->
+            DASHBOARD SUMMARY
+            ================================================ -->
+
+        <div class="dashboard-summary">
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+
+                    Credential Portfolio
+
+                </span>
+
+                <strong class="summary-value">
+
+                    0
+
+                </strong>
+
+            </div>
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+
+                    University Certificates
+
+                </span>
+
+                <strong class="summary-value">
+
+                    0
+
+                </strong>
+
+            </div>
+
+            <div class="summary-card">
+
+                <span class="summary-label">
+
+                    Digital Badges
+
+                </span>
+
+                <strong class="summary-value">
+
+                    0
+
+                </strong>
+
+            </div>
+
+        </div>
+
+        <!-- ================================================
+            PRIMARY ACTIONS
+            ================================================ -->
 
         <div
             id="authorizedPortalUI"
             class="portal-actions hidden">
 
             <a
-                href="/assessment.html"
+                href="/credentials/my-credentials.html"
                 class="btn">
 
-                AI + Agile Assessment
+                View Credential Portfolio
 
             </a>
 
             <a
-                href="/credentials/my-credentials.html"
+                href="/assessment.html"
                 class="btn">
 
-                My Credentials
+                Assessment Platform
 
             </a>
 
         </div>
 
         <!-- ================================================
-             NO ACTIVE SERVICES
-             ================================================ -->
+            NO ACTIVE SERVICES
+            ================================================ -->
 
         <div
             id="noServicesUI"
             class="portal-card hidden">
 
             <h3>
+
                 No Active Services
+
             </h3>
 
             <p>
@@ -248,25 +367,20 @@
             <p>
 
                 No active Agile AI University
-                services, credentials,
-                recognitions, assessments,
-                or executive entitlements
-                are currently associated
-                with this account.
+                services or credentials are currently
+                associated with this account.
 
             </p>
 
             <p>
 
                 If you believe this is incorrect,
-                please contact:
-
-            </p>
-
-            <p>
+                please contact
 
                 <a href="mailto:support@agileai.university">
+
                     support@agileai.university
+
                 </a>
 
             </p>

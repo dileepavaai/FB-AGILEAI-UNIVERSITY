@@ -4,7 +4,7 @@
    Design Token System
 
    File      : design-tokens.css
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : LOCKED
 
    Purpose
@@ -33,6 +33,7 @@
    ✓ Dark Theme Ready
    ✓ Component Driven
    ✓ Platform Wide
+   ✓ Executive Dashboard Ready
 
 ==========================================================*/
 
@@ -42,17 +43,18 @@
    BRAND
 ========================================================== */
 
---brand-primary: #1E3A8A;
---brand-primary-hover: #1E40AF;
+--brand-primary: #243447;
+--brand-primary-hover: #1E2E3E;
 
---brand-secondary: #334155;
+--brand-secondary: #475569;
 
---brand-accent: #2563EB;
+/* Executive Accent
+   Used sparingly for highlights and active states */
+--brand-accent: #8B7355;
 
 --brand-success: #15803D;
 --brand-warning: #CA8A04;
 --brand-danger: #DC2626;
-
 --brand-info: #0369A1;
 
 
@@ -60,14 +62,19 @@
    SURFACE
 ========================================================== */
 
---surface-page: #F8FAFC;
+/* Semantic Surface Levels */
 
---surface-card: #FFFFFF;
+--surface-0: #F8FAFC;
+--surface-1: #FFFFFF;
+--surface-2: #F8FAFC;
+--surface-3: #F1F5F9;
 
+/* Backward Compatibility */
+
+--surface-page: var(--surface-0);
+--surface-card: var(--surface-1);
 --surface-card-hover: #FCFCFD;
-
---surface-secondary: #F1F5F9;
-
+--surface-secondary: var(--surface-3);
 --surface-disabled: #F3F4F6;
 
 
@@ -76,13 +83,9 @@
 ========================================================== */
 
 --text-primary: #111827;
-
 --text-secondary: #475569;
-
 --text-muted: #64748B;
-
 --text-disabled: #9CA3AF;
-
 --text-inverse: #FFFFFF;
 
 
@@ -91,21 +94,81 @@
 ========================================================== */
 
 --border-light: #F1F5F9;
-
 --border-default: #E5E7EB;
-
 --border-dark: #CBD5E1;
-
---border-focus: #1E3A8A;
+--border-focus: var(--brand-primary);
 
 
 /* ==========================================================
    LINKS
 ========================================================== */
 
---link-color: #1E3A8A;
+--link-color: var(--brand-primary);
+--link-hover: var(--brand-primary-hover);
 
---link-hover: #1E40AF;
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+--header-bg: #FFFFFF;
+--header-border: #E5E7EB;
+--header-shadow: var(--shadow-sm);
+--header-height: 72px;
+
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+
+--sidebar-bg: #FFFFFF;
+--sidebar-border: #E5E7EB;
+
+--sidebar-text: #475569;
+--sidebar-text-active: #243447;
+
+--sidebar-hover: #F8FAFC;
+--sidebar-active: #EEF2F7;
+
+--sidebar-width: 280px;
+--sidebar-collapsed-width: 80px;
+
+
+/* ==========================================================
+   CARDS
+========================================================== */
+
+--card-bg: #FFFFFF;
+--card-border: #E5E7EB;
+
+--card-shadow: var(--shadow-sm);
+--card-shadow-hover: var(--shadow-md);
+
+
+/* ==========================================================
+   BADGES
+========================================================== */
+
+--badge-neutral-bg: #F8FAFC;
+--badge-neutral-text: #475569;
+
+--badge-success-bg: #ECFDF5;
+--badge-success-text: #15803D;
+
+--badge-warning-bg: #FEFCE8;
+--badge-warning-text: #CA8A04;
+
+--badge-info-bg: #EFF6FF;
+--badge-info-text: #1D4ED8;
+
+
+/* ==========================================================
+   ICONS
+========================================================== */
+
+--icon-primary: #243447;
+--icon-secondary: #64748B;
+--icon-muted: #94A3B8;
 
 
 /* ==========================================================
@@ -113,15 +176,11 @@
 ========================================================== */
 
 --button-primary-bg: var(--brand-primary);
-
 --button-primary-hover: var(--brand-primary-hover);
-
 --button-primary-text: #FFFFFF;
 
 --button-secondary-bg: #FFFFFF;
-
 --button-secondary-text: var(--text-primary);
-
 --button-secondary-border: var(--border-default);
 
 --button-ghost-text: var(--brand-primary);
@@ -132,19 +191,15 @@
 ========================================================== */
 
 --status-success-bg: #ECFDF5;
-
 --status-success-text: #15803D;
 
 --status-warning-bg: #FEFCE8;
-
 --status-warning-text: #CA8A04;
 
 --status-danger-bg: #FEF2F2;
-
 --status-danger-text: #DC2626;
 
 --status-info-bg: #EFF6FF;
-
 --status-info-text: #1D4ED8;
 
 
@@ -166,19 +221,12 @@ sans-serif;
 sans-serif;
 
 --font-size-xs: .75rem;
-
 --font-size-sm: .875rem;
-
 --font-size-md: 1rem;
-
 --font-size-lg: 1.125rem;
-
 --font-size-xl: 1.25rem;
-
 --font-size-2xl: 1.5rem;
-
 --font-size-3xl: 2rem;
-
 --font-size-4xl: 2.75rem;
 
 
@@ -187,13 +235,9 @@ sans-serif;
 ========================================================== */
 
 --font-light:300;
-
 --font-normal:400;
-
 --font-medium:500;
-
 --font-semibold:600;
-
 --font-bold:700;
 
 
@@ -202,9 +246,7 @@ sans-serif;
 ========================================================== */
 
 --line-height-tight:1.2;
-
 --line-height-normal:1.5;
-
 --line-height-relaxed:1.8;
 
 
@@ -213,25 +255,15 @@ sans-serif;
 ========================================================== */
 
 --space-1:4px;
-
 --space-2:8px;
-
 --space-3:12px;
-
 --space-4:16px;
-
 --space-5:20px;
-
 --space-6:24px;
-
 --space-8:32px;
-
 --space-10:40px;
-
 --space-12:48px;
-
 --space-16:64px;
-
 --space-20:80px;
 
 
@@ -240,13 +272,9 @@ sans-serif;
 ========================================================== */
 
 --radius-sm:6px;
-
 --radius-md:10px;
-
 --radius-lg:14px;
-
 --radius-xl:18px;
-
 --radius-pill:999px;
 
 
@@ -275,9 +303,7 @@ sans-serif;
 ========================================================== */
 
 --transition-fast:.15s ease;
-
 --transition-normal:.25s ease;
-
 --transition-slow:.40s ease;
 
 
@@ -286,12 +312,7 @@ sans-serif;
 ========================================================== */
 
 --container-width:1280px;
-
 --content-width:1100px;
-
---sidebar-width:280px;
-
---header-height:76px;
 
 --footer-padding:80px;
 
@@ -301,17 +322,11 @@ sans-serif;
 ========================================================== */
 
 --z-dropdown:1000;
-
 --z-sticky:1100;
-
 --z-fixed:1200;
-
 --z-modal-backdrop:1300;
-
 --z-modal:1400;
-
 --z-toast:1500;
-
 --z-tooltip:1600;
 
 
@@ -320,7 +335,6 @@ sans-serif;
 ========================================================== */
 
 --opacity-disabled:.45;
-
 --opacity-hover:.85;
 
 
@@ -329,6 +343,6 @@ sans-serif;
 ========================================================== */
 
 --focus-ring:
-0 0 0 3px rgba(30,58,138,.15);
+0 0 0 3px rgba(36,52,71,.15);
 
 }

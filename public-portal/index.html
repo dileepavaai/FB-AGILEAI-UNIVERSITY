@@ -32,7 +32,7 @@
 
 </head>
 
-<body>
+<body data-page="dashboard">
 
   <!-- ==================================================
        SHARED HEADER
@@ -40,7 +40,15 @@
 
   <div id="site-header"></div>
 
-  <main class="portal-home">
+  <div class="portal-shell">
+
+    <aside id="portal-sidebar"></aside>
+
+    <section class="portal-content-shell">
+
+        <div id="portal-toolbar"></div>
+
+        <main class="portal-home">
 
     <!-- ==================================================
          HERO
@@ -48,19 +56,19 @@
 
     <section class="portal-hero">
 
-      <div class="portal-content">
+        <div class="portal-content">
 
-        <h1>
-          Agile AI University Portal
-        </h1>
+            <h1>
+                Agile AI University Portal
+            </h1>
 
-        <p>
-          Secure access to assessments,
-          credentials, recognitions,
-          reports, and university services.
-        </p>
+            <p>
+                Secure access to assessments,
+                credentials, recognitions,
+                reports, and university services.
+            </p>
 
-      </div>
+        </div>
 
     </section>
 
@@ -70,120 +78,102 @@
 
     <div class="portal-grid">
 
-      <!-- ================================================
-           SIGNED OUT EXPERIENCE
-           ================================================ -->
+        <!-- ================================================
+             SIGNED OUT EXPERIENCE
+             ================================================ -->
 
-      <section
-        id="signedOutUI"
-        class="portal-card"
-      >
+        <section
+            id="signedOutUI"
+            class="portal-card">
 
-        <h2>
-          Sign In
-        </h2>
+            <h2>
+                Sign In
+            </h2>
 
-        <p id="statusText">
+            <p id="statusText">
 
-          Sign in to access assessments,
-          credentials, recognitions,
-          reports, and university services.
+                Sign in to access assessments,
+                credentials, recognitions,
+                reports, and university services.
 
-        </p>
+            </p>
 
-        <button
-          id="btnGoogle"
-          class="btn"
-          type="button"
-        >
+            <button
+                id="btnGoogle"
+                class="btn"
+                type="button">
 
-          Sign in with Google
+                Sign in with Google
 
-        </button>
+            </button>
 
-        <div class="divider">
+            <div class="divider">
 
-          OR
+                OR
 
-        </div>
+            </div>
 
-        <div class="auth-box">
+            <div class="auth-box">
 
-          <input
-            id="emailInput"
-            type="email"
-            placeholder="Enter your email"
-            autocomplete="email"
-          />
+                <input
+                    id="emailInput"
+                    type="email"
+                    placeholder="Enter your email"
+                    autocomplete="email" />
 
-          <button
-            id="btnEmailLink"
-            class="btn"
-            type="button"
-          >
+                <button
+                    id="btnEmailLink"
+                    class="btn"
+                    type="button">
 
-            Send Login Link
+                    Send Login Link
 
-          </button>
+                </button>
 
-          <p
-            id="emailStatus"
-            class="status-message"
-          ></p>
+                <p
+                    id="emailStatus"
+                    class="status-message"></p>
 
-          <p class="portal-help">
+                <p class="portal-help">
 
-            Secure access using
-            Google Sign-In or a
-            passwordless email link.
+                    Secure access using
+                    Google Sign-In or a
+                    passwordless email link.
 
-          </p>
+                </p>
 
-        </div>
+            </div>
 
-      </section>
+        </section>
 
-      <!-- ================================================
-           AVAILABLE SERVICES
-           ================================================ -->
+        <!-- ================================================
+             AVAILABLE SERVICES
+             ================================================ -->
 
-      <aside
-        class="portal-card portal-services"
-      >
+        <aside
+            class="portal-card portal-services">
 
-        <h2>
-          Available Services
-        </h2>
+            <h2>
+                Available Services
+            </h2>
 
-        <ul>
+            <ul>
 
-          <li>
-            Assessment Platform
-          </li>
+                <li>Assessment Platform</li>
 
-          <li>
-            Professional Credentials
-          </li>
+                <li>Professional Credentials</li>
 
-          <li>
-            Recognition Records
-          </li>
+                <li>Recognition Records</li>
 
-          <li>
-            Executive Insight Reports
-          </li>
+                <li>Executive Insight Reports</li>
 
-          <li>
-            Student Services
-          </li>
+                <li>Student Services</li>
 
-          <li>
-            University Verification Services
-          </li>
+                <li>University Verification Services</li>
 
-        </ul>
+            </ul>
 
-      </aside>
+        </aside>
 
     </div>
 
@@ -192,127 +182,119 @@
          ================================================ -->
 
     <section
-      id="signedInUI"
-      class="portal-card"
-      hidden
-    >
+        id="signedInUI"
+        class="portal-card"
+        hidden>
 
-      <h2>
-        Welcome
-      </h2>
+        <h2>
+            Welcome
+        </h2>
 
-      <p class="user-name">
+        <p class="user-name">
 
-        <strong
-          id="userName"
-        ></strong>
+            <strong id="userName"></strong>
 
-      </p>
-
-      <p
-        id="userEmail"
-        class="user-email"
-      ></p>
-
-      <!-- ================================================
-     AUTHORIZED PORTAL SERVICES
-
-     GOVERNANCE
-
-     Authentication alone must NOT expose
-     protected portal capabilities.
-
-     Visibility is controlled exclusively by:
-
-     • resolvePortalEntitlements.js
-     • portal-authorization.js
-     • dashboard-gating.js
-
-     portal-auth.js may authenticate users
-     but must never grant access.
-
-     Hidden by default.
-     Revealed only after successful
-     authorization evaluation.
-     ================================================ -->
-
-      <div
-        id="authorizedPortalUI"
-        class="portal-actions hidden"
-      >
-
-        <a
-          href="/assessment.html"
-          class="btn"
-        >
-          AI + Agile Assessment
-        </a>
-
-        <a
-          href="/credentials/my-credentials.html"
-          class="btn"
-        >
-          My Credentials
-        </a>
-
-      </div>
-
-      <!-- ================================================
-          NO ACTIVE SERVICES
-          ================================================ -->
-
-      <div
-        id="noServicesUI"
-        class="portal-card hidden"
-      >
-
-        <h3>
-          No Active Services
-        </h3>
-
-        <p>
-          Your account has been successfully
-          authenticated.
         </p>
 
-        <p>
-          No active Agile AI University
-          services, credentials, recognitions,
-          assessments, or executive entitlements
-          are currently associated with this
-          account.
-        </p>
+        <p
+            id="userEmail"
+            class="user-email"></p>
 
-        <p>
-          If you believe this is incorrect,
-          please contact:
-        </p>
+        <!-- ================================================
+             AUTHORIZED PORTAL SERVICES
+             ================================================ -->
 
-        <p>
-          <a href="mailto:support@agileai.university">
-            support@agileai.university
-          </a>
-        </p>
+        <div
+            id="authorizedPortalUI"
+            class="portal-actions hidden">
 
-      </div>
+            <a
+                href="/assessment.html"
+                class="btn">
 
-      <button
-        id="btnSignOut"
-        class="btn"
-        type="button"
-      >
-        Sign Out
-      </button>
+                AI + Agile Assessment
+
+            </a>
+
+            <a
+                href="/credentials/my-credentials.html"
+                class="btn">
+
+                My Credentials
+
+            </a>
+
+        </div>
+
+        <!-- ================================================
+             NO ACTIVE SERVICES
+             ================================================ -->
+
+        <div
+            id="noServicesUI"
+            class="portal-card hidden">
+
+            <h3>
+                No Active Services
+            </h3>
+
+            <p>
+
+                Your account has been successfully
+                authenticated.
+
+            </p>
+
+            <p>
+
+                No active Agile AI University
+                services, credentials,
+                recognitions, assessments,
+                or executive entitlements
+                are currently associated
+                with this account.
+
+            </p>
+
+            <p>
+
+                If you believe this is incorrect,
+                please contact:
+
+            </p>
+
+            <p>
+
+                <a href="mailto:support@agileai.university">
+                    support@agileai.university
+                </a>
+
+            </p>
+
+        </div>
+
+        <button
+            id="btnSignOut"
+            class="btn"
+            type="button">
+
+            Sign Out
+
+        </button>
 
     </section>
 
-  </main>
+</main>
 
-  <!-- ==================================================
-       SHARED FOOTER
-       ================================================== -->
+    </section>
 
-  <div id="site-footer"></div>
+  </div>
+
+      <!-- ==================================================
+          SHARED FOOTER
+          ================================================== -->
+
+      <div id="site-footer"></div>
 
   <!-- ==================================================
        CONTEXT
@@ -441,7 +423,8 @@
        ================================================== -->
 
   <script src="/assets/js/header.js"></script>
-
+  <script src="/assets/js/components/sidebar.js"></script>
+  <script src="/assets/js/components/toolbar.js"></script>
   <script src="/assets/js/footer.js"></script>
 
 </body>

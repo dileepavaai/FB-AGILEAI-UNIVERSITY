@@ -1,0 +1,258 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : shell.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Shared Executive Portal Layout
+
+   Responsibilities
+
+   ✓ Portal shell
+   ✓ Sidebar region
+   ✓ Main content region
+   ✓ Responsive layout
+   ✓ Content spacing
+
+   Non Responsibilities
+
+   ✗ Sidebar styling
+   ✗ Toolbar styling
+   ✗ Dashboard cards
+   ✗ Credential UI
+   ✗ Forms
+
+   Governance
+
+   • Single Responsibility
+   • Shared Layout Authority
+   • Executive Dashboard Standard
+
+==========================================================*/
+
+
+
+/* ==========================================================
+   PORTAL SHELL
+========================================================== */
+
+.portal-shell {
+
+    display: grid;
+
+    grid-template-columns:
+        280px
+        minmax(0, 1fr);
+
+    min-height:
+        calc(100vh - var(--header-height));
+
+}
+
+
+
+/* ==========================================================
+   SIDEBAR REGION
+========================================================== */
+
+.portal-sidebar {
+
+    position: sticky;
+
+    top: 0;
+
+    align-self: start;
+
+    min-height: 100%;
+
+    background: var(--surface-card);
+
+    border-right:
+        1px solid var(--border-default);
+
+    overflow-y: auto;
+
+}
+
+
+
+/* ==========================================================
+   CONTENT REGION
+========================================================== */
+
+.portal-content-shell {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+    background:
+        var(--surface-page);
+
+}
+
+
+
+/* ==========================================================
+   TOOLBAR REGION
+========================================================== */
+
+.portal-toolbar {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+
+    background:
+        var(--surface-card);
+
+    border-bottom:
+        1px solid var(--border-default);
+
+}
+
+
+
+/* ==========================================================
+   PAGE REGION
+========================================================== */
+
+.portal-home {
+
+    flex: 1;
+
+    padding:
+
+        40px
+        48px
+        64px;
+
+}
+
+
+
+/* ==========================================================
+   CONTENT WIDTH
+========================================================== */
+
+.portal-page {
+
+    width: 100%;
+
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+}
+
+
+
+/* ==========================================================
+   SCROLLING
+========================================================== */
+
+.portal-content-shell {
+
+    overflow-x: hidden;
+
+}
+
+
+
+/* ==========================================================
+   LARGE DESKTOP
+========================================================== */
+
+@media (min-width: 1600px) {
+
+    .portal-shell {
+
+        grid-template-columns:
+
+            300px
+
+            minmax(0, 1fr);
+
+    }
+
+}
+
+
+
+/* ==========================================================
+   LAPTOP
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .portal-shell {
+
+        grid-template-columns:
+
+            260px
+
+            minmax(0, 1fr);
+
+    }
+
+}
+
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 992px) {
+
+    .portal-shell {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .portal-sidebar {
+
+        display: none;
+
+    }
+
+    .portal-home {
+
+        padding:
+
+            32px
+            24px
+            48px;
+
+    }
+
+}
+
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 640px) {
+
+    .portal-home {
+
+        padding:
+
+            24px
+            20px
+            40px;
+
+    }
+
+}

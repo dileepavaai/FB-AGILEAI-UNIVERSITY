@@ -1,0 +1,417 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : toolbar.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Shared Executive Toolbar
+
+   Responsibilities
+
+   ✓ Toolbar Layout
+   ✓ Breadcrumb
+   ✓ Page Title
+   ✓ Search
+   ✓ Notifications
+   ✓ User Menu
+
+   Non Responsibilities
+
+   ✗ Authentication
+   ✗ Authorization
+   ✗ Sidebar
+   ✗ Dashboard Cards
+   ✗ Page Content
+
+   Governance
+
+   • Shared UI Component
+   • Enterprise Dashboard Standard
+   • HBR / MIT Inspired
+   • Light Theme Default
+
+==========================================================*/
+
+
+
+/* ==========================================================
+   TOOLBAR
+========================================================== */
+
+.portal-toolbar {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 24px;
+
+    padding: 20px 40px;
+
+    background: var(--surface-card);
+
+    border-bottom: 1px solid var(--border-default);
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+
+}
+
+
+
+/* ==========================================================
+   LEFT
+========================================================== */
+
+.portal-toolbar-left {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+}
+
+
+
+/* ==========================================================
+   BREADCRUMB
+========================================================== */
+
+.portal-breadcrumb {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: var(--font-size-sm);
+
+    color: var(--text-muted);
+
+}
+
+.breadcrumb-home {
+
+    color: var(--text-secondary);
+
+}
+
+.breadcrumb-separator {
+
+    opacity: .5;
+
+}
+
+.breadcrumb-current {
+
+    color: var(--text-primary);
+
+    font-weight: var(--font-semibold);
+
+}
+
+
+
+/* ==========================================================
+   PAGE TITLE
+========================================================== */
+
+.portal-page-title {
+
+    margin: 0;
+
+    font-size: 2rem;
+
+    font-weight: var(--font-bold);
+
+    color: var(--text-primary);
+
+}
+
+
+
+/* ==========================================================
+   RIGHT
+========================================================== */
+
+.portal-toolbar-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+}
+
+
+
+/* ==========================================================
+   SEARCH
+========================================================== */
+
+.portal-search {
+
+    width: 320px;
+
+}
+
+.portal-search input {
+
+    width: 100%;
+
+    height: 44px;
+
+    padding: 0 16px;
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-pill);
+
+    background: var(--surface-card);
+
+    color: var(--text-primary);
+
+    font-size: var(--font-size-sm);
+
+    transition: all var(--transition-fast);
+
+}
+
+.portal-search input:focus {
+
+    outline: none;
+
+    border-color: var(--brand-primary);
+
+    box-shadow: var(--focus-ring);
+
+}
+
+
+
+/* ==========================================================
+   ICON BUTTONS
+========================================================== */
+
+.toolbar-button {
+
+    width: 44px;
+
+    height: 44px;
+
+    border: 1px solid var(--border-default);
+
+    border-radius: 50%;
+
+    background: var(--surface-card);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    cursor: pointer;
+
+    transition: all var(--transition-fast);
+
+}
+
+.toolbar-button:hover {
+
+    background: var(--surface-secondary);
+
+    border-color: var(--brand-primary);
+
+}
+
+
+
+/* ==========================================================
+   USER MENU
+========================================================== */
+
+.toolbar-user {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 6px 12px;
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-pill);
+
+    background: var(--surface-card);
+
+    cursor: pointer;
+
+    transition: all var(--transition-fast);
+
+}
+
+.toolbar-user:hover {
+
+    background: var(--surface-secondary);
+
+}
+
+
+
+/* ==========================================================
+   AVATAR
+========================================================== */
+
+.toolbar-avatar {
+
+    width: 40px;
+
+    height: 40px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: var(--brand-primary);
+
+    color: #ffffff;
+
+    font-size: var(--font-size-sm);
+
+    font-weight: var(--font-bold);
+
+}
+
+
+
+/* ==========================================================
+   USER NAME
+========================================================== */
+
+.toolbar-name {
+
+    font-size: var(--font-size-sm);
+
+    font-weight: var(--font-semibold);
+
+    color: var(--text-primary);
+
+    white-space: nowrap;
+
+}
+
+
+
+/* ==========================================================
+   DROPDOWN
+========================================================== */
+
+.toolbar-arrow {
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .portal-toolbar {
+
+        padding: 18px 24px;
+
+    }
+
+    .portal-search {
+
+        width: 240px;
+
+    }
+
+}
+
+
+
+@media (max-width: 992px) {
+
+    .portal-toolbar {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 16px;
+
+    }
+
+    .portal-toolbar-right {
+
+        justify-content: space-between;
+
+    }
+
+    .portal-search {
+
+        flex: 1;
+
+        width: auto;
+
+    }
+
+}
+
+
+
+@media (max-width: 640px) {
+
+    .portal-toolbar {
+
+        padding: 16px;
+
+    }
+
+    .toolbar-name {
+
+        display: none;
+
+    }
+
+    .portal-page-title {
+
+        font-size: 1.5rem;
+
+    }
+
+    .portal-search {
+
+        display: none;
+
+    }
+
+}

@@ -1,0 +1,367 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : sidebar.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Shared Executive Portal Sidebar
+
+   Responsibilities
+
+   ✓ Sidebar Layout
+   ✓ Navigation
+   ✓ Profile Card
+   ✓ Portfolio Summary
+
+   Non Responsibilities
+
+   ✗ Shell Layout
+   ✗ Toolbar
+   ✗ Dashboard
+   ✗ Credential Cards
+   ✗ Authentication
+
+   Governance
+
+   • Shared Navigation Authority
+   • Enterprise Dashboard Standard
+   • HBR / MIT Inspired
+   • Light Theme Default
+
+==========================================================*/
+
+
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+
+.portal-sidebar {
+
+    background: var(--surface-card);
+
+    border-right: 1px solid var(--border-default);
+
+    padding: 32px 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 28px;
+
+}
+
+
+
+/* ==========================================================
+   BRAND
+========================================================== */
+
+.portal-sidebar-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid var(--border-light);
+
+}
+
+.portal-sidebar-logo {
+
+    width: 46px;
+
+    height: 46px;
+
+    object-fit: contain;
+
+}
+
+.portal-sidebar-title {
+
+    font-size: var(--font-size-lg);
+
+    font-weight: var(--font-bold);
+
+    color: var(--text-primary);
+
+}
+
+.portal-sidebar-subtitle {
+
+    margin-top: 4px;
+
+    font-size: var(--font-size-sm);
+
+    color: var(--text-secondary);
+
+}
+
+
+
+/* ==========================================================
+   NAVIGATION
+========================================================== */
+
+.portal-navigation {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+}
+
+.portal-nav-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 12px 14px;
+
+    border-radius: var(--radius-md);
+
+    color: var(--text-secondary);
+
+    text-decoration: none;
+
+    font-weight: var(--font-medium);
+
+    transition: all var(--transition-fast);
+
+}
+
+.portal-nav-item:hover {
+
+    background: var(--surface-secondary);
+
+    color: var(--text-primary);
+
+}
+
+.portal-nav-item.active {
+
+    background: rgba(30,58,138,.08);
+
+    color: var(--brand-primary);
+
+    font-weight: var(--font-semibold);
+
+}
+
+.portal-nav-icon {
+
+    width: 22px;
+
+    display: flex;
+
+    justify-content: center;
+
+    font-size: 18px;
+
+}
+
+.portal-nav-title {
+
+    flex: 1;
+
+}
+
+
+
+/* ==========================================================
+   PROFILE
+========================================================== */
+
+.portal-sidebar-profile {
+
+    margin-top: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 18px;
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-lg);
+
+    background: var(--surface-secondary);
+
+}
+
+.profile-avatar {
+
+    width: 52px;
+
+    height: 52px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--brand-primary);
+
+    color: #ffffff;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    flex-shrink: 0;
+
+}
+
+#sidebarUserName {
+
+    font-weight: var(--font-semibold);
+
+    color: var(--text-primary);
+
+}
+
+#sidebarMembership {
+
+    margin-top: 4px;
+
+    font-size: var(--font-size-sm);
+
+    color: var(--text-secondary);
+
+}
+
+
+
+/* ==========================================================
+   PORTFOLIO SUMMARY
+========================================================== */
+
+.portal-sidebar-summary {
+
+    margin-top: 18px;
+
+    padding: 22px;
+
+    border-radius: var(--radius-lg);
+
+    background: var(--brand-primary);
+
+    color: #ffffff;
+
+    box-shadow: var(--shadow-md);
+
+}
+
+.summary-title {
+
+    font-size: var(--font-size-sm);
+
+    opacity: .9;
+
+}
+
+.summary-count {
+
+    margin: 12px 0 6px;
+
+    font-size: 42px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+}
+
+.summary-subtitle {
+
+    font-size: var(--font-size-sm);
+
+    opacity: .9;
+
+}
+
+
+
+/* ==========================================================
+   SECTION DIVIDER
+========================================================== */
+
+.portal-sidebar hr {
+
+    border: 0;
+
+    border-top: 1px solid var(--border-light);
+
+}
+
+
+
+/* ==========================================================
+   SCROLLBAR
+========================================================== */
+
+.portal-sidebar::-webkit-scrollbar {
+
+    width: 6px;
+
+}
+
+.portal-sidebar::-webkit-scrollbar-thumb {
+
+    background: var(--border-dark);
+
+    border-radius: 999px;
+
+}
+
+
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media (max-width: 992px) {
+
+    .portal-sidebar {
+
+        display: none;
+
+    }
+
+}
+
+
+
+/* ==========================================================
+   LARGE DESKTOP
+========================================================== */
+
+@media (min-width: 1600px) {
+
+    .portal-sidebar {
+
+        padding: 36px 24px;
+
+    }
+
+}

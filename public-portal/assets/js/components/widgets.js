@@ -3,13 +3,22 @@
    Student & Executive Portal
 
    File      : widgets.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
-   Phase     : Sprint 2B
+   Phase     : Sprint 2C
 
    Purpose
    ----------------------------------------------------------
    Dashboard Widget Renderer
+
+   Changes
+   ----------------------------------------------------------
+
+   • Prepared KPI rendering
+   • Added progressive DOM rendering
+   • Prepared credential widget rendering
+   • Prepared recognition widget rendering
+   • Prepared notification widget rendering
 
    Responsibilities
 
@@ -114,8 +123,37 @@
                 return;
             }
 
-            // Sprint 2B
-            // KPI widget rendering placeholder
+            const credentials =
+                document.getElementById("kpiCredentials");
+
+            const certificates =
+                document.getElementById("kpiCertificates");
+
+            const badges =
+                document.getElementById("kpiBadges");
+
+            const recognitions =
+                document.getElementById("kpiRecognitions");
+
+            if (credentials) {
+                credentials.textContent =
+                    kpi.credentials;
+            }
+
+            if (certificates) {
+                certificates.textContent =
+                    kpi.certificates;
+            }
+
+            if (badges) {
+                badges.textContent =
+                    kpi.badges;
+            }
+
+            if (recognitions) {
+                recognitions.textContent =
+                    kpi.recognitions;
+            }
 
         },
 
@@ -129,8 +167,11 @@
                 return;
             }
 
-            // Existing HTML remains.
-            // Future versions may build this dynamically.
+            /*
+             * Existing HTML remains.
+             * Future versions may build
+             * this section dynamically.
+             */
 
         },
 
@@ -144,12 +185,21 @@
                 return;
             }
 
-            // Sprint 2C
+            const container =
+                document.getElementById(
+                    "recentCredentials"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = "";
 
         },
 
         /* ==================================================
-           RECOGNITIONS
+           RECENT RECOGNITIONS
         ================================================== */
 
         renderRecentRecognitions(recognitions) {
@@ -158,7 +208,16 @@
                 return;
             }
 
-            // Sprint 2C
+            const container =
+                document.getElementById(
+                    "recentRecognitions"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = "";
 
         },
 
@@ -172,7 +231,16 @@
                 return;
             }
 
-            // Future Sprint
+            const container =
+                document.getElementById(
+                    "dashboardNotifications"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = "";
 
         }
 
@@ -180,7 +248,6 @@
 
     Object.freeze(DashboardWidgets);
 
-    window.DashboardWidgets =
-        DashboardWidgets;
+    window.DashboardWidgets = DashboardWidgets;
 
 })(window, document);

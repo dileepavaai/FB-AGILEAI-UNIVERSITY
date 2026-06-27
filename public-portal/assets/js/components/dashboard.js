@@ -3,13 +3,21 @@
    Student & Executive Portal
 
    File      : dashboard.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
-   Phase     : Sprint 2B
+   Phase     : Sprint 2C
 
    Purpose
    ----------------------------------------------------------
    Dashboard Controller
+
+   Changes
+   ----------------------------------------------------------
+
+   • Uses dashboard aggregation service
+   • Simplified controller orchestration
+   • Prepared for live KPI rendering
+   • Added centralized initialization error handler
 
    Responsibilities
 
@@ -48,50 +56,15 @@
 
         try {
 
-            const summary =
-                await DashboardService.loadDashboardSummary();
+            const dashboard =
+                await DashboardService.loadDashboard();
 
-            const kpi =
-                await DashboardService.loadKpiData();
-
-            const quickAccess =
-                await DashboardService.loadQuickAccess();
-
-            const recentCredentials =
-                await DashboardService.loadRecentCredentials();
-
-            const recentRecognitions =
-                await DashboardService.loadRecentRecognitions();
-
-            const notifications =
-                await DashboardService.loadNotifications();
-
-            renderDashboard({
-
-                summary,
-
-                kpi,
-
-                quickAccess,
-
-                recentCredentials,
-
-                recentRecognitions,
-
-                notifications
-
-            });
+            renderDashboard(dashboard);
 
         }
         catch (error) {
 
-            console.error(
-
-                "Dashboard initialization failed.",
-
-                error
-
-            );
+            showInitializationError(error);
 
         }
 
@@ -101,16 +74,38 @@
        RENDER DASHBOARD
     ====================================================== */
 
-    function renderDashboard(data) {
+    function renderDashboard(dashboard) {
 
         if (
-            window.DashboardWidgets &&
-            typeof window.DashboardWidgets.render === "function"
+            !window.DashboardWidgets ||
+            typeof window.DashboardWidgets.render !== "function"
         ) {
-
-            window.DashboardWidgets.render(data);
-
+            return;
         }
+
+        window.DashboardWidgets.render(dashboard);
+
+    }
+
+    /* ======================================================
+       INITIALIZATION ERROR
+    ====================================================== */
+
+    function showInitializationError(error) {
+
+        console.error(
+            "Dashboard initialization failed.",
+            error
+        );
+
+        /*
+         * Reserved for future enhancements:
+         *
+         * • Toast notification
+         * • Dashboard error card
+         * • Retry mechanism
+         * • Telemetry / logging
+         */
 
     }
 
@@ -119,11 +114,8 @@
     ====================================================== */
 
     document.addEventListener(
-
         "DOMContentLoaded",
-
         initializeDashboard
-
     );
 
 })(window, document);

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : dashboard-service.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Sprint 2C
 
@@ -14,12 +14,11 @@
    Changes
    ----------------------------------------------------------
 
-   • Added dashboard aggregation entry point
-   • Prepared service for live KPI integration
-   • Added dashboard view model
-   • Prepared for credential service integration
-   • Prepared for recognition service integration
-   • Prepared for notification service integration
+   • Refactored dashboard aggregation
+   • Added reusable dashboard builders
+   • Removed duplicated KPI placeholder logic
+   • Prepared for live credential integration
+   • Preserved current dashboard behaviour
 
    Responsibilities
 
@@ -59,13 +58,15 @@
 
         async loadDashboard() {
 
-            const dashboard = {
+            const summary =
+                await this.loadDashboardSummary();
 
-                summary:
-                    await this.loadDashboardSummary(),
+            return {
+
+                summary,
 
                 kpi:
-                    await this.loadKpiData(),
+                    await this.loadKpiData(summary),
 
                 quickAccess:
                     await this.loadQuickAccess(),
@@ -81,8 +82,6 @@
 
             };
 
-            return dashboard;
-
         },
 
         /* ==================================================
@@ -91,13 +90,20 @@
 
         async loadDashboardSummary() {
 
-            const summary = {
+            return this.createSummaryModel();
+
+        },
+
+        createSummaryModel() {
+
+            return {
 
                 user: {
 
                     name: "Student",
 
-                    membership: "University Member"
+                    membership:
+                        "University Member"
 
                 },
 
@@ -115,29 +121,38 @@
 
             };
 
-            return summary;
-
         },
 
         /* ==================================================
            KPI DATA
         ================================================== */
 
-        async loadKpiData() {
+        async loadKpiData(summary) {
 
-            const kpi = {
+            return this.createKpiModel(summary);
 
-                credentials: 0,
+        },
 
-                certificates: 0,
+        createKpiModel(summary) {
 
-                badges: 0,
+            const portfolio =
+                summary?.portfolio || {};
 
-                recognitions: 0
+            return {
+
+                credentials:
+                    portfolio.credentials || 0,
+
+                certificates:
+                    portfolio.certificates || 0,
+
+                badges:
+                    portfolio.badges || 0,
+
+                recognitions:
+                    portfolio.recognitions || 0
 
             };
-
-            return kpi;
 
         },
 
@@ -147,7 +162,7 @@
 
         async loadQuickAccess() {
 
-            const quickAccess = [
+            return [
 
                 {
                     title: "My Credentials",
@@ -175,8 +190,6 @@
 
             ];
 
-            return quickAccess;
-
         },
 
         /* ==================================================
@@ -191,7 +204,8 @@
 
                     id: "AAIU-2026-000001",
 
-                    title: "Artificial Intelligence Professional Agilist",
+                    title:
+                        "Artificial Intelligence Professional Agilist",
 
                     status: "Active",
 
@@ -211,9 +225,7 @@
 
         async loadRecentRecognitions() {
 
-            const recognitions = [];
-
-            return recognitions;
+            return [];
 
         },
 
@@ -223,9 +235,7 @@
 
         async loadNotifications() {
 
-            const notifications = [];
-
-            return notifications;
+            return [];
 
         }
 

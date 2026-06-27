@@ -10,7 +10,7 @@
 | ---------------- | ---------------------------------------------------------------------------------- |
 | Document         | Portal Governance                                                                  |
 | File             | `portal-governance.md`                                                             |
-| Version          | 1.0.0                                                                              |
+| Version          | 1.1.0                                                                              |
 | Status           | **LOCKED**                                                                         |
 | Governance Level | Constitutional                                                                     |
 | Applies To       | Student Portal, Executive Portal, Administrative Portal, Future Portal Experiences |
@@ -301,6 +301,201 @@ Presentation components must never modify business data.
 
 ---
 
+# Shared Portal State Governance
+
+The Portal adopts a Shared Portal State Architecture.
+
+Portal business data shall be resolved once and
+shared across all Portal experiences during the
+authenticated user session.
+
+This architecture establishes a single source of
+truth for portal runtime data while reducing
+duplicate processing, cloud operations and
+infrastructure costs.
+
+---
+
+## Architectural Flow
+
+```text
+Authentication
+
+↓
+
+Authorization
+
+↓
+
+Entitlement Retrieval
+
+↓
+
+Entitlement Resolution
+
+↓
+
+Portal Services
+
+↓
+
+Shared Portal State
+
+↓
+
+Renderers
+
+↓
+
+Portal User Interface
+```
+
+---
+
+## Authoritative Shared State
+
+The following runtime objects are designated as
+the authoritative Portal state.
+
+```javascript
+window.authState
+
+window.portalEntitlementData
+
+window.portalCredentials
+```
+
+Additional shared objects shall follow the same
+governance pattern.
+
+---
+
+## Consumer Rule
+
+Portal modules shall consume Shared Portal State.
+
+Portal modules must never independently retrieve,
+resolve or duplicate information already
+available within the shared state.
+
+This rule applies to:
+
+* Dashboard
+* Credential Portfolio
+* Certificates
+* Digital Badges
+* Recognition Assets
+* Verification
+* Assessment Platform
+* Learning Journey
+* Executive Insights
+* Future Portal Experiences
+
+---
+
+## Responsibilities
+
+Shared Portal State provides:
+
+* Authentication state
+* Authorization outcome
+* User profile information
+* User entitlement information
+* Visible credentials
+* Dashboard view models
+* KPI summaries
+* Notification data
+* Future shared portal models
+
+---
+
+## Prohibited Responsibilities
+
+Portal modules must never:
+
+* Query Firestore directly.
+* Invoke Cloud Run credential services directly.
+* Resolve entitlements.
+* Resolve authorization.
+* Filter credentials.
+* Duplicate dashboard aggregation.
+* Duplicate credential loading.
+* Maintain independent credential caches.
+
+---
+
+## Cost Governance
+
+Credential retrieval is one of the highest
+frequency operations within the Student &
+Executive Portal.
+
+Resolving credentials once and sharing the
+result across all Portal modules reduces:
+
+* Firestore document reads.
+* Cloud Run invocations.
+* Network requests.
+* Browser processing.
+* Duplicate memory allocation.
+* Rendering latency.
+
+This governance decision improves scalability
+while minimizing operational cost.
+
+---
+
+## Session Lifecycle
+
+Shared Portal State remains valid for the
+authenticated session.
+
+Shared state shall be refreshed only when:
+
+* User signs in.
+* User signs out.
+* Session expires.
+* User explicitly refreshes the Portal.
+* Credential lifecycle changes.
+* Administrator initiated refresh occurs.
+
+---
+
+## Implementation Rule
+
+Portal services publish shared state.
+
+Portal components consume shared state.
+
+Presentation components must never retrieve
+business data directly.
+
+Business logic remains exclusively within
+governed service layers.
+
+---
+
+## Future Expansion
+
+Additional shared Portal objects may be
+introduced using this governance model.
+
+Examples include:
+
+* Learning Progress
+* Executive Insights
+* Assessment History
+* Wallet Assets
+* Notifications
+* AI Recommendations
+* Analytics
+
+Future Portal functionality shall extend this
+architecture rather than introducing duplicate
+data retrieval or independent runtime state.
+
+---
+
 # Security Principles
 
 Portal security is governed through:
@@ -445,6 +640,8 @@ Changes to this document require an explicit governance revision and version upd
 
 ---
 
+
+
 **Status:** **LOCKED**
 
-**Version:** **1.0.0**
+**Version:** **1.1.0**

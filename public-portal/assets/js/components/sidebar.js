@@ -3,12 +3,21 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
+   Phase     : Sprint 2A
 
    Purpose
    ----------------------------------------------------------
    Renders the shared Student & Executive Portal sidebar.
+
+   Changes
+   --------------------------------------------------
+
+    • Updated university branding
+    • Corrected emblem asset
+    • Added lazy image loading
+    • Prepared sidebar for executive dashboard
 
    Responsibilities
 
@@ -173,22 +182,23 @@
                 <div class="portal-sidebar-brand">
 
                     <img
-                        src="/assets/images/logo.png"
+                        src="/assets/images/aau-emblem.png"
                         alt="Agile AI University"
                         class="portal-sidebar-logo"
+                        loading="lazy"
                     >
 
                     <div>
 
                         <div class="portal-sidebar-title">
 
-                            Student Portal
+                            Agile AI University
 
                         </div>
 
                         <div class="portal-sidebar-subtitle">
 
-                            Agile AI University
+                            Student & Executive Portal
 
                         </div>
 
@@ -206,7 +216,7 @@
 
                     <div class="profile-avatar">
 
-                        AA
+                        Student
 
                     </div>
 

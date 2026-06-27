@@ -1,0 +1,315 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : dashboard-widgets.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+   Phase     : Sprint 2B
+
+   Purpose
+   ----------------------------------------------------------
+   Shared Dashboard Widget Components
+
+   Responsibilities
+
+   ✓ Widget Grid
+   ✓ Widget Layout
+   ✓ Widget Lists
+   ✓ Widget Items
+   ✓ Widget Empty State
+   ✓ Widget Responsive Behaviour
+
+   Non Responsibilities
+
+   ✗ Dashboard Layout
+   ✗ KPI Components
+   ✗ Card Components
+   ✗ Business Logic
+   ✗ Authentication
+
+   Governance
+
+   • Shared Widget Authority
+   • Single Responsibility
+   • Enterprise Portal Standard
+   • Design Token Driven
+
+========================================================== */
+
+
+/* ==========================================================
+   WIDGET GRID
+========================================================== */
+
+.dashboard-widget-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+
+    gap: 24px;
+
+}
+
+
+/* ==========================================================
+   WIDGET SIZES
+========================================================== */
+
+.widget-full {
+
+    grid-column: span 12;
+
+}
+
+.widget-half {
+
+    grid-column: span 6;
+
+}
+
+.widget-third {
+
+    grid-column: span 4;
+
+}
+
+.widget-quarter {
+
+    grid-column: span 3;
+
+}
+
+
+/* ==========================================================
+   WIDGET CONTENT
+========================================================== */
+
+.dashboard-widget-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+}
+
+
+/* ==========================================================
+   WIDGET LIST
+========================================================== */
+
+.dashboard-widget-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+}
+
+
+/* ==========================================================
+   WIDGET ITEM
+========================================================== */
+
+.dashboard-widget-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding-bottom: 16px;
+
+    border-bottom: 1px solid var(--border-light);
+
+}
+
+.dashboard-widget-item:last-child {
+
+    padding-bottom: 0;
+
+    border-bottom: none;
+
+}
+
+
+/* ==========================================================
+   WIDGET DETAILS
+========================================================== */
+
+.widget-title {
+
+    margin: 0;
+
+    font-size: var(--font-size-md);
+
+    font-weight: var(--font-semibold);
+
+    color: var(--text-primary);
+
+}
+
+.widget-subtitle {
+
+    margin-top: 4px;
+
+    font-size: var(--font-size-sm);
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   WIDGET BADGES
+========================================================== */
+
+.widget-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 36px;
+
+    padding: 4px 10px;
+
+    border-radius: var(--radius-pill);
+
+    background: var(--surface-secondary);
+
+    color: var(--text-secondary);
+
+    font-size: var(--font-size-xs);
+
+    font-weight: var(--font-semibold);
+
+}
+
+.widget-badge.success {
+
+    background: var(--color-success-soft);
+
+    color: var(--color-success);
+
+}
+
+.widget-badge.warning {
+
+    background: var(--color-warning-soft);
+
+    color: var(--color-warning);
+
+}
+
+.widget-badge.info {
+
+    background: var(--brand-primary-soft);
+
+    color: var(--brand-primary);
+
+}
+
+
+/* ==========================================================
+   WIDGET ACTIONS
+========================================================== */
+
+.dashboard-widget-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 12px;
+
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.dashboard-widget-empty {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    min-height: 180px;
+
+    text-align: center;
+
+    color: var(--text-secondary);
+
+}
+
+.dashboard-widget-empty-icon {
+
+    font-size: 2rem;
+
+    opacity: .6;
+
+}
+
+.dashboard-widget-empty-title {
+
+    font-size: var(--font-size-lg);
+
+    font-weight: var(--font-semibold);
+
+}
+
+.dashboard-widget-empty-text {
+
+    max-width: 300px;
+
+    line-height: 1.6;
+
+    font-size: var(--font-size-sm);
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .widget-half,
+    .widget-third,
+    .widget-quarter {
+
+        grid-column: span 12;
+
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .dashboard-widget-grid {
+
+        gap: 20px;
+
+    }
+
+}

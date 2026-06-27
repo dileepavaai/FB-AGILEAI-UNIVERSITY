@@ -1,0 +1,293 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : dashboard-cards.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+   Phase     : Sprint 2B
+
+   Purpose
+   ----------------------------------------------------------
+   Shared Dashboard Card Components
+
+   Responsibilities
+
+   ✓ Dashboard Card
+   ✓ Card Header
+   ✓ Card Title
+   ✓ Card Actions
+   ✓ Card Body
+   ✓ Card Footer
+   ✓ Empty State
+
+   Non Responsibilities
+
+   ✗ Dashboard Layout
+   ✗ KPI Components
+   ✗ Widget Logic
+   ✗ Business Logic
+   ✗ Authentication
+
+   Governance
+
+   • Shared Dashboard Component
+   • Single Responsibility
+   • Enterprise Portal Standard
+   • Design Token Driven
+
+========================================================== */
+
+
+/* ==========================================================
+   DASHBOARD CARD
+========================================================== */
+
+.dashboard-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: var(--surface-card);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-xl);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+
+}
+
+.dashboard-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+
+}
+
+
+/* ==========================================================
+   CARD HEADER
+========================================================== */
+
+.dashboard-card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 20px 24px;
+
+    border-bottom: 1px solid var(--border-light);
+
+}
+
+
+/* ==========================================================
+   CARD TITLE
+========================================================== */
+
+.dashboard-card-title {
+
+    margin: 0;
+
+    font-size: var(--font-size-lg);
+
+    font-weight: var(--font-bold);
+
+    color: var(--text-primary);
+
+}
+
+.dashboard-card-subtitle {
+
+    margin-top: 4px;
+
+    font-size: var(--font-size-sm);
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   CARD ACTIONS
+========================================================== */
+
+.dashboard-card-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+/* ==========================================================
+   CARD BODY
+========================================================== */
+
+.dashboard-card-body {
+
+    flex: 1;
+
+    padding: 24px;
+
+}
+
+
+/* ==========================================================
+   CARD FOOTER
+========================================================== */
+
+.dashboard-card-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 16px 24px;
+
+    border-top: 1px solid var(--border-light);
+
+    background: var(--surface-secondary);
+
+}
+
+
+/* ==========================================================
+   CARD LINK
+========================================================== */
+
+.dashboard-card-link {
+
+    color: var(--brand-primary);
+
+    font-weight: var(--font-semibold);
+
+    text-decoration: none;
+
+    transition: color var(--transition-fast);
+
+}
+
+.dashboard-card-link:hover {
+
+    color: var(--brand-primary-hover);
+
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.dashboard-card-empty {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    padding: 48px 24px;
+
+    text-align: center;
+
+    color: var(--text-secondary);
+
+}
+
+.dashboard-card-empty-icon {
+
+    font-size: 2rem;
+
+    opacity: .6;
+
+}
+
+.dashboard-card-empty-title {
+
+    font-size: var(--font-size-lg);
+
+    font-weight: var(--font-semibold);
+
+    color: var(--text-primary);
+
+}
+
+.dashboard-card-empty-text {
+
+    max-width: 320px;
+
+    font-size: var(--font-size-sm);
+
+    line-height: 1.6;
+
+}
+
+
+/* ==========================================================
+   LOADING STATE
+========================================================== */
+
+.dashboard-card-loading {
+
+    min-height: 180px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--text-muted);
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .dashboard-card-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+    .dashboard-card-footer {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+}

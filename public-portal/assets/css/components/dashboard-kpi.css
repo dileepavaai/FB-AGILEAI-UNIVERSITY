@@ -1,0 +1,231 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : dashboard-kpi.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+   Phase     : Sprint 2B
+
+   Purpose
+   ----------------------------------------------------------
+   Dashboard KPI Components
+
+   Responsibilities
+
+   ✓ KPI Grid
+   ✓ KPI Card
+   ✓ KPI Value
+   ✓ KPI Label
+   ✓ KPI Trend Placeholder
+
+   Non Responsibilities
+
+   ✗ Dashboard Layout
+   ✗ Widgets
+   ✗ Sidebar
+   ✗ Toolbar
+   ✗ Business Logic
+
+   Governance
+
+   • Dashboard KPI Authority
+   • Shared Component
+   • Enterprise Portal Standard
+   • Design Token Driven
+
+==========================================================*/
+
+
+/* ==========================================================
+   KPI GRID
+========================================================== */
+
+.dashboard-kpi-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 24px;
+
+    margin-bottom: 32px;
+
+}
+
+
+/* ==========================================================
+   KPI CARD
+========================================================== */
+
+.dashboard-kpi-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+    padding: 24px;
+
+    background: var(--surface-card);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-xl);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+
+}
+
+
+.dashboard-kpi-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+
+}
+
+
+/* ==========================================================
+   KPI HEADER
+========================================================== */
+
+.dashboard-kpi-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+}
+
+
+.dashboard-kpi-icon {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 50%;
+
+    background: var(--surface-secondary);
+
+    font-size: 1.4rem;
+
+}
+
+
+/* ==========================================================
+   KPI VALUE
+========================================================== */
+
+.dashboard-kpi-value {
+
+    margin: 0;
+
+    font-size: var(--font-size-4xl);
+
+    font-weight: var(--font-bold);
+
+    line-height: 1;
+
+    color: var(--text-primary);
+
+}
+
+
+/* ==========================================================
+   KPI LABEL
+========================================================== */
+
+.dashboard-kpi-label {
+
+    margin: 0;
+
+    font-size: var(--font-size-sm);
+
+    font-weight: var(--font-medium);
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   KPI TREND
+========================================================== */
+
+.dashboard-kpi-trend {
+
+    margin-top: auto;
+
+    font-size: var(--font-size-sm);
+
+    color: var(--text-muted);
+
+}
+
+
+/* ==========================================================
+   KPI STATES
+========================================================== */
+
+.dashboard-kpi-card.is-success {
+
+    border-left: 4px solid var(--color-success);
+
+}
+
+
+.dashboard-kpi-card.is-warning {
+
+    border-left: 4px solid var(--color-warning);
+
+}
+
+
+.dashboard-kpi-card.is-danger {
+
+    border-left: 4px solid var(--color-danger);
+
+}
+
+
+.dashboard-kpi-card.is-info {
+
+    border-left: 4px solid var(--brand-primary);
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .dashboard-kpi-grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 20px;
+
+    }
+
+}

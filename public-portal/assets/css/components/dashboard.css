@@ -1,0 +1,385 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : dashboard.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+   Phase     : Sprint 2B
+
+   Purpose
+   ----------------------------------------------------------
+   Dashboard Layout Authority
+
+   Responsibilities
+
+   ✓ Dashboard page layout
+   ✓ Dashboard regions
+   ✓ Dashboard grid
+   ✓ Section spacing
+   ✓ Responsive layout
+   ✓ Layout composition
+
+   Non Responsibilities
+
+   ✗ KPI styling
+   ✗ Card styling
+   ✗ Widget styling
+   ✗ Business logic
+   ✗ Authentication
+
+   Depends On
+
+   • dashboard-cards.css
+   • dashboard-kpi.css
+   • dashboard-widgets.css
+
+   Governance
+
+   • Dashboard Layout Authority
+   • Enterprise Portal Standard
+   • Single Responsibility
+   • Design Token Driven
+
+========================================================== */
+
+
+/* ==========================================================
+   DASHBOARD ROOT
+========================================================== */
+
+.dashboard {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 40px;
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   DASHBOARD HEADER
+========================================================== */
+
+.dashboard-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 24px;
+
+}
+
+.dashboard-header-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+}
+
+.dashboard-header-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+}
+
+.dashboard-title {
+
+    margin: 0;
+
+    font-size: 2.25rem;
+
+    font-weight: var(--font-bold);
+
+    color: var(--text-primary);
+
+}
+
+.dashboard-subtitle {
+
+    margin: 0;
+
+    max-width: 760px;
+
+    font-size: var(--font-size-md);
+
+    line-height: 1.7;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   KPI REGION
+========================================================== */
+
+.dashboard-kpi-region {
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   MAIN CONTENT
+========================================================== */
+
+.dashboard-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 32px;
+
+}
+
+
+/* ==========================================================
+   DASHBOARD GRID
+========================================================== */
+
+.dashboard-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(12, minmax(0, 1fr));
+
+    gap: 24px;
+
+}
+
+
+/* ==========================================================
+   COLUMN SIZES
+========================================================== */
+
+.dashboard-main {
+
+    grid-column: span 8;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 24px;
+
+}
+
+.dashboard-sidebar-region {
+
+    grid-column: span 4;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 24px;
+
+}
+
+
+/* ==========================================================
+   FULL WIDTH REGION
+========================================================== */
+
+.dashboard-full {
+
+    grid-column: span 12;
+
+}
+
+
+/* ==========================================================
+   SECTION
+========================================================== */
+
+.dashboard-section {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+}
+
+.dashboard-section-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 16px;
+
+}
+
+.dashboard-section-title {
+
+    margin: 0;
+
+    font-size: var(--font-size-xl);
+
+    font-weight: var(--font-bold);
+
+    color: var(--text-primary);
+
+}
+
+.dashboard-section-description {
+
+    margin: 0;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   EMPTY DASHBOARD
+========================================================== */
+
+.dashboard-empty {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 16px;
+
+    min-height: 320px;
+
+    text-align: center;
+
+}
+
+.dashboard-empty-title {
+
+    font-size: var(--font-size-xl);
+
+    font-weight: var(--font-semibold);
+
+    color: var(--text-primary);
+
+}
+
+.dashboard-empty-description {
+
+    max-width: 520px;
+
+    line-height: 1.7;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   LOADING STATE
+========================================================== */
+
+.dashboard-loading {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    min-height: 280px;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 1200px) {
+
+    .dashboard-main,
+    .dashboard-sidebar-region {
+
+        grid-column: span 12;
+
+    }
+
+}
+
+@media (max-width: 992px) {
+
+    .dashboard {
+
+        gap: 32px;
+
+    }
+
+    .dashboard-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .dashboard {
+
+        gap: 24px;
+
+    }
+
+    .dashboard-grid {
+
+        gap: 20px;
+
+    }
+
+    .dashboard-title {
+
+        font-size: 1.8rem;
+
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .dashboard-title {
+
+        font-size: 1.5rem;
+
+    }
+
+    .dashboard-subtitle {
+
+        font-size: var(--font-size-sm);
+
+    }
+
+}

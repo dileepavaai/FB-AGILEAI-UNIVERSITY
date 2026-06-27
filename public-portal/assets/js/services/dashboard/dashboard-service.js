@@ -185,9 +185,23 @@
 
         async loadRecentCredentials() {
 
-            const credentials = [];
+            return [
 
-            return credentials;
+                {
+
+                    id: "AAIU-2026-000001",
+
+                    title: "Artificial Intelligence Professional Agilist",
+
+                    status: "Active",
+
+                    certificate: true,
+
+                    badge: true
+
+                }
+
+            ];
 
         },
 

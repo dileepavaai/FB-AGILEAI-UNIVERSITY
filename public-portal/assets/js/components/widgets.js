@@ -179,6 +179,10 @@
            RECENT CREDENTIALS
         ================================================== */
 
+        /* ==================================================
+        RECENT CREDENTIALS
+        ================================================== */
+
         renderRecentCredentials(credentials) {
 
             if (!Array.isArray(credentials)) {
@@ -194,7 +198,102 @@
                 return;
             }
 
-            container.innerHTML = "";
+            if (credentials.length === 0) {
+
+                container.innerHTML = `
+
+                    <div class="portal-empty-state">
+
+                        <p>
+
+                            No credentials available yet.
+
+                        </p>
+
+                        <p>
+
+                            Your earned Agile AI University
+                            credentials will appear here.
+
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+            container.innerHTML = credentials.map(
+
+                credential => `
+
+                    <article class="portal-card">
+
+                        <h3>
+
+                            ${credential.title}
+
+                        </h3>
+
+                        <p>
+
+                            <strong>Credential ID:</strong>
+
+                            ${credential.id}
+
+                        </p>
+
+                        <p>
+
+                            <strong>Status:</strong>
+
+                            ${credential.status}
+
+                        </p>
+
+                        <div class="portal-actions">
+
+                            <a
+                                href="#"
+                                class="btn">
+
+                                View Credential
+
+                            </a>
+
+                            ${credential.certificate ? `
+
+                                <a
+                                    href="#"
+                                    class="btn">
+
+                                    Certificate
+
+                                </a>
+
+                            ` : ""}
+
+                            ${credential.badge ? `
+
+                                <a
+                                    href="#"
+                                    class="btn">
+
+                                    Badge
+
+                                </a>
+
+                            ` : ""}
+
+                        </div>
+
+                    </article>
+
+                `
+
+            ).join("");
 
         },
 

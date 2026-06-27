@@ -62,7 +62,7 @@
 
     top: 0;
 
-    z-index: 100;
+    z-index:var(--z-sticky);
 
 }
 
@@ -186,7 +186,10 @@
 
     font-size: var(--font-size-sm);
 
-    transition: all var(--transition-fast);
+    transition:
+        background var(--transition-fast),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
 
 }
 
@@ -200,6 +203,20 @@
 
 }
 
+.portal-search input::placeholder{
+
+    color:var(--text-muted);
+
+}
+
+.toolbar-button:focus-visible,
+.toolbar-user:focus-visible{
+
+    outline:2px solid var(--border-focus);
+
+    outline-offset:2px;
+
+}
 
 
 /* ==========================================================
@@ -226,7 +243,9 @@
 
     cursor: pointer;
 
-    transition: all var(--transition-fast);
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
 
 }
 
@@ -262,7 +281,9 @@
 
     cursor: pointer;
 
-    transition: all var(--transition-fast);
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
 
 }
 
@@ -294,7 +315,7 @@
 
     background: var(--brand-primary);
 
-    color: #ffffff;
+    color:var(--text-inverse);
 
     font-size: var(--font-size-sm);
 

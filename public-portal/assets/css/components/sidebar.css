@@ -52,6 +52,10 @@
 
     flex-direction: column;
 
+    scrollbar-width: thin;
+
+    scrollbar-color: var(--border-dark) transparent;
+
     gap: 28px;
 
 }
@@ -140,7 +144,10 @@
 
     font-weight: var(--font-medium);
 
-    transition: all var(--transition-fast);
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast);
 
 }
 
@@ -154,11 +161,21 @@
 
 .portal-nav-item.active {
 
-    background: rgba(30,58,138,.08);
+    --surface-selected: rgba(30,58,138,.08);
+
+    background: var(--surface-selected);
 
     color: var(--brand-primary);
 
     font-weight: var(--font-semibold);
+
+}
+
+.portal-nav-item:focus-visible{
+
+    outline:2px solid var(--border-focus);
+
+    outline-offset:2px;
 
 }
 
@@ -222,7 +239,7 @@
 
     background: var(--brand-primary);
 
-    color: #ffffff;
+    color: var(--text-inverse);
 
     font-size: 18px;
 
@@ -266,7 +283,7 @@
 
     background: var(--brand-primary);
 
-    color: #ffffff;
+    color: var(--text-inverse);
 
     box-shadow: var(--shadow-md);
 
@@ -284,7 +301,7 @@
 
     margin: 12px 0 6px;
 
-    font-size: 42px;
+    font-size: var(--font-size-4xl);
 
     font-weight: 700;
 
@@ -350,8 +367,6 @@
 
 }
 
-
-
 /* ==========================================================
    LARGE DESKTOP
 ========================================================== */
@@ -365,3 +380,15 @@
     }
 
 }
+
+/* ==========================================================
+   FUTURE EXTENSIONS
+
+   Reserved for:
+
+   • Notifications
+   • Learning Progress
+   • AI Assistant
+   • Quick Actions
+
+========================================================== */

@@ -188,85 +188,149 @@ window.publishPortalEntitlements = function (entitlements) {
    ===================================================== */
 
 function normalizeVisibleCredentials(credentials, email) {
-  if (!Array.isArray(credentials) || !email) return [];
 
-  const ALLOWED_PROGRAM_CODES = [
-    "AAIA",
-    "AIPA",
-    "AOP"
-  ];
+    if (!Array.isArray(credentials) || !email) {
+        return [];
+    }
 
-  console.log(
-      "[Resolver Raw Credential]",
-      credentials?.[0]
+    const ALLOWED_PROGRAM_CODES = [
+        "AAIA",
+        "AIPA",
+        "AOP"
+    ];
+
+    console.log(
+        "[Resolver Raw Credential]",
+        credentials?.[0]
     );
 
-  const normalized = credentials
-    .filter(c =>
-      c &&
-      normalizeEmail(c.email) === email &&
-      (c.issued_status === "issued" ||
-       c.issued_status === "finalized") &&
-      c.program_code &&
-      ALLOWED_PROGRAM_CODES.includes(c.program_code)
-    )
-    .map(c => ({
+    const normalized = credentials
 
-  /* ==========================================
-     Canonical Credential Identity
-     ========================================== */
+        .filter(c =>
 
-  program_code: c.program_code,
+            c &&
 
-  credential_code:
-    c.credential_code ||
-    c.program_code,
+            normalizeEmail(c.email) === email &&
 
-  credential_type:
-    c.credential_type ||
-    c.program_code,
+            (
+                c.issued_status === "issued" ||
+                c.issued_status === "finalized"
+            ) &&
 
-  credential_id:
-    c.credential_id || null,
+            c.program_code &&
 
-  /* ==========================================
-     Credential Holder
-     ========================================== */
+            ALLOWED_PROGRAM_CODES.includes(
+                c.program_code
+            )
 
-  full_name:
-    c.full_name ||
-    c.learner_name ||
-    c.name ||
-    null,
+        )
 
-  email:
-    c.email || null,
+        .map(c => ({
 
-  /* ==========================================
-     Issuance Information
-     ========================================== */
+            /* ==========================================
+               Canonical Credential Identity
+               ========================================== */
 
-  issued_at:
-    c.created_at?.toDate
-      ? c.created_at.toDate()
-      : c.created_at || null,
+            program_code:
+                c.program_code,
 
-  issued_by:
-    c.issued_by ||
-    "Agile AI University",
+            credential_code:
+                c.credential_code ||
+                c.program_code,
 
-  validity:
-    c.validity ||
-    "Lifetime"
+            credential_type:
+                c.credential_type ||
+                c.program_code,
 
-}));
+            credential_id:
+                c.credential_id || null,
 
-  console.assert(
-    normalized.every(c => c.program_code),
-    "[Resolver Invariant Violation] program_code missing on visible credential"
-  );
+            /* ==========================================
+               Available Recognition Assets
+               ========================================== */
 
-  return normalized;
+            available_assets:
+
+                (
+                    c.available_assets &&
+                    typeof c.available_assets === "object"
+                )
+
+                    ? {
+
+                        universityCertificate:
+                            c.available_assets.universityCertificate === true,
+
+                        trainerCertificate:
+                            c.available_assets.trainerCertificate === true,
+
+                        digitalBadge:
+                            c.available_assets.digitalBadge === true,
+
+                        recognitionAsset:
+                            c.available_assets.recognitionAsset === true
+
+                    }
+
+                    : {
+
+                        universityCertificate: false,
+
+                        trainerCertificate: false,
+
+                        digitalBadge: false,
+
+                        recognitionAsset: false
+
+                    },
+
+            /* ==========================================
+               Credential Holder
+               ========================================== */
+
+            full_name:
+                c.full_name ||
+                c.learner_name ||
+                c.name ||
+                null,
+
+            email:
+                c.email || null,
+
+            /* ==========================================
+               Issuance Information
+               ========================================== */
+
+            issued_at:
+
+                c.created_at?.toDate
+
+                    ? c.created_at.toDate()
+
+                    : c.created_at || null,
+
+            issued_by:
+                c.issued_by ||
+                "Agile AI University",
+
+            validity:
+                c.validity ||
+                "Lifetime"
+
+        }));
+
+    console.assert(
+
+        normalized.every(
+            c => c.program_code
+        ),
+
+        "[Resolver Invariant Violation] program_code missing on visible credential"
+
+    );
+
+    return normalized;
+
 }
 
 /* =====================================================

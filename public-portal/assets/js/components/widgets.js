@@ -114,7 +114,7 @@
         },
 
         /* ==================================================
-           KPI
+        KPI
         ================================================== */
 
         renderKpiCards(kpi) {
@@ -129,11 +129,31 @@
             const certificates =
                 document.getElementById("kpiCertificates");
 
+            const trainerCertificates =
+                document.getElementById("kpiTrainerCertificates");
+
             const badges =
                 document.getElementById("kpiBadges");
 
             const recognitions =
                 document.getElementById("kpiRecognitions");
+
+            /*
+            * KPI values are authoritatively rendered by
+            * dashboard-gating.js after entitlement
+            * resolution.
+            *
+            * If those values are already populated,
+            * DashboardWidgets must not overwrite them.
+            */
+
+            if (
+                credentials &&
+                credentials.textContent.trim() !== "" &&
+                credentials.textContent.trim() !== "—"
+            ) {
+                return;
+            }
 
             if (credentials) {
                 credentials.textContent =
@@ -144,6 +164,15 @@
                 certificates.textContent =
                     kpi.certificates;
             }
+
+            /*
+            * Legacy DashboardService does not yet expose
+            * Trainer Certificate counts.
+            *
+            * Intentionally left untouched so that
+            * dashboard-gating.js remains the
+            * authoritative renderer.
+            */
 
             if (badges) {
                 badges.textContent =
@@ -177,10 +206,6 @@
 
         /* ==================================================
            RECENT CREDENTIALS
-        ================================================== */
-
-        /* ==================================================
-        RECENT CREDENTIALS
         ================================================== */
 
         renderRecentCredentials(credentials) {

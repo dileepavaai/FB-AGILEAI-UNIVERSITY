@@ -114,8 +114,11 @@
     ====================================================== */
 
     document.addEventListener(
-        "DOMContentLoaded",
-        initializeDashboard
+
+    "entitlements:ready",
+
+    initializeDashboard
+
     );
 
 })(window, document);

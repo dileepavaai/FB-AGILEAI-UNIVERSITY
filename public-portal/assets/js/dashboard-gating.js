@@ -442,6 +442,82 @@ if (
 }
 
 /* -------------------------------------------------------
+   DASHBOARD STATISTICS
+------------------------------------------------------- */
+
+const credentials =
+    Array.isArray(state.visibleCredentials)
+        ? state.visibleCredentials
+        : [];
+
+const totalCredentials =
+    credentials.length;
+
+const universityCertificates =
+    credentials.filter(c =>
+        c.credential_type === "AIPA" ||
+        c.credential_type === "AAIA" ||
+        c.credential_type === "AIDE"
+    ).length;
+
+const digitalBadges =
+    credentials.filter(c =>
+        c.badge === true
+    ).length;
+
+const recognitionAssets =
+    credentials.filter(c =>
+        c.recognition_asset === true
+    ).length;
+
+/*
+    Update Dashboard Numbers
+
+    Replace the element IDs below with
+    your actual HTML IDs if different.
+*/
+
+document.getElementById("credentialPortfolioCount")?.textContent =
+    totalCredentials;
+
+document.getElementById("certificateCount")?.textContent =
+    universityCertificates;
+
+document.getElementById("badgeCount")?.textContent =
+    digitalBadges;
+
+document.getElementById("recognitionCount")?.textContent =
+    recognitionAssets;
+
+
+/* -------------------------------------------------------
+   DASHBOARD KPI RENDERING
+------------------------------------------------------- */
+
+const visibleCredentials =
+    Array.isArray(state.visibleCredentials)
+        ? state.visibleCredentials
+        : [];
+
+document.getElementById("kpiCredentials").textContent =
+    visibleCredentials.length;
+
+document.getElementById("kpiCertificates").textContent =
+    visibleCredentials.length;
+
+/*
+ * Badge generation has not yet been implemented.
+ * Governance: Display zero until badge module
+ * becomes operational.
+ */
+document.getElementById("kpiBadges").textContent = "0";
+
+/*
+ * Recognition Assets module is not yet implemented.
+ */
+document.getElementById("kpiRecognitions").textContent = "0";
+
+/* -------------------------------------------------------
    CREDENTIAL RENDERING
 
 ------------------------------------------------------- */
@@ -458,7 +534,7 @@ if (
 
   const container =
     document.getElementById(
-      "credentials-container"
+        "recentCredentials"
     );
 
   if (!container) {

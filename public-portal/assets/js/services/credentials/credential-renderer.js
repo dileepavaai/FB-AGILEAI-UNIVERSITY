@@ -760,12 +760,26 @@ window.renderCredentials = function renderCredentials(
 
   }
 
-  const container =
+  /* =====================================================
+   GOVERNED RENDER TARGET RESOLUTION
+
+   Supported Experiences
+
+   • Credential Portfolio
+   • Student Dashboard
+   • Future Executive Dashboard
+
+===================================================== */
+
+const container =
     document.getElementById(
-      "credentials-container"
+        "credentials-container"
     ) ||
     document.getElementById(
-      "credentials-list"
+        "credentials-list"
+    ) ||
+    document.getElementById(
+        "recentCredentials"
     );
 
   if (!container) {

@@ -455,19 +455,22 @@ const totalCredentials =
 
 const universityCertificates =
     credentials.filter(c =>
-        c.credential_type === "AIPA" ||
-        c.credential_type === "AAIA" ||
-        c.credential_type === "AIDE"
+        c.available_assets?.universityCertificate === true
     ).length;
 
 const digitalBadges =
     credentials.filter(c =>
-        c.badge === true
+        c.available_assets?.digitalBadge === true
     ).length;
 
 const recognitionAssets =
     credentials.filter(c =>
-        c.recognition_asset === true
+        c.available_assets?.recognitionAsset === true
+    ).length;
+
+const trainerCertificates =
+    credentials.filter(c =>
+        c.available_assets?.trainerCertificate === true
     ).length;
 
 /*
@@ -491,6 +494,16 @@ const certificateCount =
 if (certificateCount) {
     certificateCount.textContent =
         universityCertificates;
+}
+
+const trainerCertificateCount =
+    document.getElementById("trainerCertificateCount");
+
+if (trainerCertificateCount) {
+
+    trainerCertificateCount.textContent =
+        trainerCertificates;
+
 }
 
 const badgeCount =
@@ -542,7 +555,19 @@ const kpiCertificates =
 if (kpiCertificates) {
 
     kpiCertificates.textContent =
-        visibleCredentials.length;
+        universityCertificates;
+
+}
+
+const kpiTrainerCertificates =
+    document.getElementById(
+        "kpiTrainerCertificates"
+    );
+
+if (kpiTrainerCertificates) {
+
+    kpiTrainerCertificates.textContent =
+        trainerCertificates;
 
 }
 
@@ -558,7 +583,8 @@ const kpiBadges =
 
 if (kpiBadges) {
 
-    kpiBadges.textContent = "0";
+    kpiBadges.textContent =
+        digitalBadges;
 
 }
 
@@ -572,7 +598,8 @@ const kpiRecognitions =
 
 if (kpiRecognitions) {
 
-    kpiRecognitions.textContent = "0";
+    kpiRecognitions.textContent =
+        recognitionAssets;
 
 }
 

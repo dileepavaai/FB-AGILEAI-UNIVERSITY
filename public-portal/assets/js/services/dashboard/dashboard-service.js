@@ -1,53 +1,3 @@
-/* ==========================================================
-   Agile AI University
-   Student & Executive Portal
-
-   File      : dashboard-service.js
-   Version   : 1.3.0
-   Status    : ACTIVE
-   Phase     : Sprint 2D
-
-   Purpose
-   ----------------------------------------------------------
-   Dashboard Data Service
-
-   Changes
-   ----------------------------------------------------------
-
-   • Adopted Shared Portal State architecture
-   • Consumes governed portal credential state
-   • Eliminated hardcoded dashboard credentials
-   • Prepared dashboard for live portal data
-   • Zero additional API requests
-   • Zero additional Firestore reads
-
-   Responsibilities
-
-   ✓ Dashboard summary
-   ✓ KPI aggregation
-   ✓ Widget data
-   ✓ Dashboard View Model
-   ✓ Dashboard data abstraction
-
-   Non Responsibilities
-
-   ✗ UI Rendering
-   ✗ DOM Manipulation
-   ✗ Authentication
-   ✗ Authorization
-   ✗ Event Handling
-   ✗ Firestore Queries
-   ✗ Cloud Run API Calls
-
-   Governance
-
-   • Single Responsibility
-   • Dashboard Data Authority
-   • Shared Portal State Consumer
-   • Enterprise Portal Standard
-
-========================================================== */
-
 (function (window) {
 
     "use strict";
@@ -98,17 +48,8 @@
 
         createSummaryModel() {
 
-            const credentials =
-                window.portalCredentials || [];
-
             const finalizedCredentials =
-                credentials.filter(function (credential) {
-
-                    return (
-                        credential.issued_status === "finalized"
-                    );
-
-                });
+                this.getFinalizedCredentials();
 
             return {
 
@@ -129,15 +70,15 @@
                         finalizedCredentials.length,
 
                     /*
-                    * Agile AI University issues
-                    * one certificate and one badge
-                    * for every finalized credential.
-                    *
-                    * These values will later be
-                    * driven by explicit asset metadata
-                    * once the Certificate Registry
-                    * and Badge Registry are introduced.
-                    */
+                     * Agile AI University currently
+                     * issues one Certificate and one
+                     * Digital Badge for every finalized
+                     * credential.
+                     *
+                     * Future versions will derive these
+                     * values from dedicated Certificate
+                     * and Badge Registry services.
+                     */
 
                     certificates:
                         finalizedCredentials.length,
@@ -223,12 +164,12 @@
         },
 
         /* ==================================================
-        RECENT CREDENTIALS
+           RECENT CREDENTIALS
         ================================================== */
 
         async loadRecentCredentials() {
 
-            return window.portalCredentials || [];
+            return this.getPortalCredentials();
 
         },
 
@@ -259,9 +200,7 @@
         getPortalCredentials() {
 
             if (
-                !Array.isArray(
-                    window.portalCredentials
-                )
+                !Array.isArray(window.portalCredentials)
             ) {
 
                 return [];
@@ -270,20 +209,30 @@
 
             return window.portalCredentials;
 
-        }
+        },
 
         /* ==================================================
-           FUTURE SERVICES
-
-           Reserved For
-
-           ✓ Executive Insights
-           ✓ Learning Progress
-           ✓ AI Recommendations
-           ✓ Activity Timeline
-           ✓ Analytics
-
+           FINALIZED CREDENTIALS
         ================================================== */
+
+        getFinalizedCredentials() {
+
+            return this
+                .getPortalCredentials()
+                .filter(function (credential) {
+
+                    return (
+
+                        credential &&
+
+                        credential.issued_status ===
+                        "finalized"
+
+                    );
+
+                });
+
+        }
 
     };
 

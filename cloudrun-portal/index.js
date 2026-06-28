@@ -306,6 +306,39 @@ app.get(
       }
 
       /* ----------------------------------------
+        PROGRAM CONFIGURATION
+      ---------------------------------------- */
+
+      const programSnapshot =
+        await db
+          .collection("programs")
+          .get();
+
+      const programConfigurations = {};
+
+      programSnapshot.forEach(doc => {
+
+        const program =
+          doc.data();
+
+        const programCode =
+          String(
+            program.program_code || ""
+          )
+            .trim()
+            .toUpperCase();
+
+        if (programCode) {
+
+          programConfigurations[
+            programCode
+          ] = program;
+
+        }
+
+      });
+
+      /* ----------------------------------------
          CREDENTIAL VISIBILITY
       ---------------------------------------- */
 
@@ -324,7 +357,33 @@ app.get(
           data.issued_status === "finalized" &&
           data.approval_status === "approved"
         ) {
+          const programCode =
+            String(
+              data.program_code || ""
+            )
+              .trim()
+              .toUpperCase();
+
+          const program =
+            programConfigurations[
+              programCode
+            ] || {};
+
+          const availableAssets =
+
+            program.available_assets || {
+
+              universityCertificate: false,
+              trainerCertificate: false,
+              digitalBadge: false,
+              recognitionAsset: false
+
+            };
           credentials.push({
+
+            available_assets:
+              availableAssets,
+
             credential_id:
               data.credential_id || null,
 

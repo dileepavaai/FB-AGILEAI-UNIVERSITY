@@ -3,9 +3,9 @@
    Student & Executive Portal
 
    File      : dashboard-service.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
-   Phase     : Sprint 2C
+   Phase     : Sprint 2D
 
    Purpose
    ----------------------------------------------------------
@@ -14,11 +14,12 @@
    Changes
    ----------------------------------------------------------
 
-   • Refactored dashboard aggregation
-   • Added reusable dashboard builders
-   • Removed duplicated KPI placeholder logic
-   • Prepared for live credential integration
-   • Preserved current dashboard behaviour
+   • Adopted Shared Portal State architecture
+   • Consumes governed portal credential state
+   • Eliminated hardcoded dashboard credentials
+   • Prepared dashboard for live portal data
+   • Zero additional API requests
+   • Zero additional Firestore reads
 
    Responsibilities
 
@@ -36,12 +37,13 @@
    ✗ Authorization
    ✗ Event Handling
    ✗ Firestore Queries
+   ✗ Cloud Run API Calls
 
    Governance
 
    • Single Responsibility
    • Dashboard Data Authority
-   • Service Layer
+   • Shared Portal State Consumer
    • Enterprise Portal Standard
 
 ========================================================== */
@@ -96,11 +98,25 @@
 
         createSummaryModel() {
 
+            const credentials =
+                window.portalCredentials || [];
+
+            const finalizedCredentials =
+                credentials.filter(function (credential) {
+
+                    return (
+                        credential.issued_status === "finalized"
+                    );
+
+                });
+
             return {
 
                 user: {
 
-                    name: "Student",
+                    name:
+                        window.authState?.user?.displayName ||
+                        "Student",
 
                     membership:
                         "University Member"
@@ -109,11 +125,25 @@
 
                 portfolio: {
 
-                    credentials: 0,
+                    credentials:
+                        finalizedCredentials.length,
 
-                    certificates: 0,
+                    /*
+                    * Agile AI University issues
+                    * one certificate and one badge
+                    * for every finalized credential.
+                    *
+                    * These values will later be
+                    * driven by explicit asset metadata
+                    * once the Certificate Registry
+                    * and Badge Registry are introduced.
+                    */
 
-                    badges: 0,
+                    certificates:
+                        finalizedCredentials.length,
+
+                    badges:
+                        finalizedCredentials.length,
 
                     recognitions: 0
 
@@ -193,29 +223,12 @@
         },
 
         /* ==================================================
-           RECENT CREDENTIALS
+        RECENT CREDENTIALS
         ================================================== */
 
         async loadRecentCredentials() {
 
-            return [
-
-                {
-
-                    id: "AAIU-2026-000001",
-
-                    title:
-                        "Artificial Intelligence Professional Agilist",
-
-                    status: "Active",
-
-                    certificate: true,
-
-                    badge: true
-
-                }
-
-            ];
+            return window.portalCredentials || [];
 
         },
 
@@ -236,6 +249,26 @@
         async loadNotifications() {
 
             return [];
+
+        },
+
+        /* ==================================================
+           SHARED PORTAL STATE
+        ================================================== */
+
+        getPortalCredentials() {
+
+            if (
+                !Array.isArray(
+                    window.portalCredentials
+                )
+            ) {
+
+                return [];
+
+            }
+
+            return window.portalCredentials;
 
         }
 

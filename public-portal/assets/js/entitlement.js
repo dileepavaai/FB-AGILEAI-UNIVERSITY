@@ -40,23 +40,86 @@
   };
 
   /* =====================================================
-     FINALIZE + EMIT (ORDER GUARANTEED)
-     ===================================================== */
-  function finalizeAndEmit(portalData) {
+   FINALIZE + EMIT (ORDER GUARANTEED)
+   ===================================================== */
+
+function finalizeAndEmit(
+    portalData,
+    authenticatedUser = null
+) {
+
     console.assert(
-      Array.isArray(portalData.credentials),
-      "[Entitlement Invariant] credentials missing at finalize"
+        Array.isArray(portalData.credentials),
+        "[Entitlement Invariant] credentials missing at finalize"
     );
 
-    window.portalEntitlementData = portalData;
-    window.execEntitlement.checked = true;
+    window.portalEntitlementData =
+    Object.freeze({
+        ...portalData
+    });
 
-    document.dispatchEvent(new Event("entitlements:ready"));
+    window.execEntitlement.checked =
+        true;
 
-    if (portalData.credentials.length > 0) {
-      document.dispatchEvent(new Event("credentials:ready"));
+    /* =====================================================
+       GOVERNED RESOLUTION
+    ===================================================== */
+
+    if (
+        typeof window.resolvePortalEntitlements ===
+        "function"
+    ) {
+
+        const resolvedState =
+            window.resolvePortalEntitlements({
+
+                executiveEntitlement:
+                    portalData.executiveEntitlement,
+
+                userEntitlements:
+                    portalData.userEntitlements,
+
+                credentials:
+                    portalData.credentials,
+
+                authenticatedUser:
+                    authenticatedUser
+
+            });
+
+        if (
+            typeof window.publishPortalEntitlements ===
+            "function"
+        ) {
+
+            window.publishPortalEntitlements(
+                resolvedState
+            );
+
+            console.info(
+                "[Entitlement] Shared portal state published"
+            );
+
+        }
+
     }
-  }
+
+    document.dispatchEvent(
+        new Event("entitlements:ready")
+    );
+
+    if (
+        Array.isArray(portalData.credentials) &&
+        portalData.credentials.length > 0
+    ) {
+
+        document.dispatchEvent(
+            new Event("credentials:ready")
+        );
+
+    }
+
+}
 
   /* =====================================================
      API ENDPOINT (LOCKED)
@@ -72,12 +135,14 @@
     console.error("[Entitlement] Auth readiness contract missing");
 
     finalizeAndEmit({
-      checked: true,
-      email: null,
-      executiveEntitlement: null,
-      userEntitlements: null,
-      credentials: []
-    });
+
+        checked: true,
+        email: null,
+        executiveEntitlement: null,
+        userEntitlements: null,
+        credentials: []
+
+        }, null);
 
     return;
   }
@@ -98,18 +163,26 @@
     });
 
     if (!user) {
-      window.execEntitlement.source = "none";
 
-      finalizeAndEmit({
-        checked: true,
-        email: null,
-        executiveEntitlement: null,
-        userEntitlements: null,
-        credentials: []
-      });
+    window.execEntitlement.source = "none";
 
-      return;
-    }
+    finalizeAndEmit({
+
+          checked: true,
+
+          email: null,
+
+          executiveEntitlement: null,
+
+          userEntitlements: null,
+
+          credentials: []
+
+      }, null);
+
+    return;
+
+}
 
     try {
       const email = user.email?.toLowerCase() || null;
@@ -194,7 +267,7 @@
           },
           userEntitlements: null,
           credentials
-        });
+        }, user);
 
         console.log("[Entitlement] Resolved (PAID)", window.execEntitlement);
         return;
@@ -229,7 +302,7 @@
         executiveEntitlement: null,
         userEntitlements,
         credentials
-      });
+      }, user);
 
       console.log("[Entitlement] Resolved", window.execEntitlement);
 
@@ -242,7 +315,7 @@
         executiveEntitlement: null,
         userEntitlements: null,
         credentials: []
-      });
+      }, user);
     }
   });
 })();

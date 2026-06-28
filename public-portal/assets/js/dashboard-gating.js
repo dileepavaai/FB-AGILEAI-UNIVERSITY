@@ -477,18 +477,37 @@ const recognitionAssets =
     your actual HTML IDs if different.
 */
 
-document.getElementById("credentialPortfolioCount")?.textContent =
-    totalCredentials;
+const credentialPortfolioCount =
+    document.getElementById("credentialPortfolioCount");
 
-document.getElementById("certificateCount")?.textContent =
-    universityCertificates;
+if (credentialPortfolioCount) {
+    credentialPortfolioCount.textContent =
+        totalCredentials;
+}
 
-document.getElementById("badgeCount")?.textContent =
-    digitalBadges;
+const certificateCount =
+    document.getElementById("certificateCount");
 
-document.getElementById("recognitionCount")?.textContent =
-    recognitionAssets;
+if (certificateCount) {
+    certificateCount.textContent =
+        universityCertificates;
+}
 
+const badgeCount =
+    document.getElementById("badgeCount");
+
+if (badgeCount) {
+    badgeCount.textContent =
+        digitalBadges;
+}
+
+const recognitionCount =
+    document.getElementById("recognitionCount");
+
+if (recognitionCount) {
+    recognitionCount.textContent =
+        recognitionAssets;
+}
 
 /* -------------------------------------------------------
    DASHBOARD KPI RENDERING
@@ -499,23 +518,63 @@ const visibleCredentials =
         ? state.visibleCredentials
         : [];
 
-document.getElementById("kpiCredentials").textContent =
-    visibleCredentials.length;
+/*
+ * Credential Portfolio
+ */
 
-document.getElementById("kpiCertificates").textContent =
-    visibleCredentials.length;
+const kpiCredentials =
+    document.getElementById("kpiCredentials");
+
+if (kpiCredentials) {
+
+    kpiCredentials.textContent =
+        visibleCredentials.length;
+
+}
+
+/*
+ * University Certificates
+ */
+
+const kpiCertificates =
+    document.getElementById("kpiCertificates");
+
+if (kpiCertificates) {
+
+    kpiCertificates.textContent =
+        visibleCredentials.length;
+
+}
 
 /*
  * Badge generation has not yet been implemented.
- * Governance: Display zero until badge module
- * becomes operational.
+ * Governance:
+ * Display zero until Badge Generator becomes
+ * operational.
  */
-document.getElementById("kpiBadges").textContent = "0";
+
+const kpiBadges =
+    document.getElementById("kpiBadges");
+
+if (kpiBadges) {
+
+    kpiBadges.textContent = "0";
+
+}
 
 /*
- * Recognition Assets module is not yet implemented.
+ * Recognition Assets module has not yet been
+ * implemented.
  */
-document.getElementById("kpiRecognitions").textContent = "0";
+
+const kpiRecognitions =
+    document.getElementById("kpiRecognitions");
+
+if (kpiRecognitions) {
+
+    kpiRecognitions.textContent = "0";
+
+}
 
 /* -------------------------------------------------------
    CREDENTIAL RENDERING

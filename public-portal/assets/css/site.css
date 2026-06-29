@@ -4,6 +4,27 @@
    SINGLE SOURCE OF TRUTH (FINAL)
    ========================================================= */
 
+  /* ==========================================================
+   Shared Design System
+========================================================== */
+
+@import url("./design-tokens.css");
+
+/* ==========================================================
+   Executive Portal Components
+========================================================== */
+
+@import url("./components/dashboard.css");
+@import url("./components/dashboard-cards.css");
+@import url("./components/dashboard-kpi.css");
+@import url("./components/dashboard-widgets.css");
+
+/* ==========================================================
+   Portal Module
+========================================================== */
+
+@import url("./portal.css");
+
 /* =====================
    GLOBAL THEME VARIABLES
    ===================== */

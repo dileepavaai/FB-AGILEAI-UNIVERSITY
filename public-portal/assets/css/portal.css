@@ -43,6 +43,10 @@ Governance Notes:
 
 ========================================================== */
 
+/* ==========================================================
+   Executive Portal Components
+========================================================== */
+
 @import url("./components/shell.css");
 @import url("./components/sidebar.css");
 @import url("./components/toolbar.css");
@@ -104,39 +108,6 @@ PORTAL GRID
 gap: 32px;
 
 align-items: start;
-}
-
-/* ==========================================================
-PORTAL CARD
-========================================================== */
-
-.portal-card {
-
-    padding: 32px;
-
-    background: var(--surface-card);
-
-    border: 1px solid var(--border-default);
-
-    border-radius: var(--radius-xl);
-
-    box-shadow: var(--shadow-sm);
-
-    transition: var(--transition-fast);
-
-}
-
-.portal-card h2 {
-    margin: 0 0 18px;
-
-    font-size: 1.25rem;
-    font-weight: 700;
-
-    color: var(--text-primary);
-}
-
-.portal-card p {
-margin-top: 0;
 }
 
 /* ==========================================================

@@ -1,0 +1,190 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : buttons.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Shared Button Components
+
+   Responsibilities
+
+   ✓ Primary Button
+   ✓ Secondary Button
+   ✓ Ghost Button
+   ✓ Icon Button
+   ✓ Disabled State
+   ✓ Responsive Behaviour
+
+   Non Responsibilities
+
+   ✗ Business Logic
+   ✗ Portal Layout
+   ✗ Authentication
+   ✗ Dashboard Layout
+
+   Governance
+
+   • Shared Component Authority
+   • Design Token Driven
+   • Enterprise Portal Standard
+
+========================================================== */
+
+
+/* ==========================================================
+   BASE BUTTON
+========================================================== */
+
+.btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: var(--space-2);
+
+    min-height: 40px;
+
+    padding: 0 var(--space-5);
+
+    border: 1px solid transparent;
+
+    border-radius: var(--radius-md);
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    font-size: var(--font-size-sm);
+
+    font-weight: var(--font-semibold);
+
+    transition:
+        background var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+
+}
+
+.btn:hover {
+
+    transform: translateY(-1px);
+
+}
+
+.btn:focus-visible {
+
+    outline: none;
+
+    box-shadow: var(--focus-ring);
+
+}
+
+
+/* ==========================================================
+   PRIMARY
+========================================================== */
+
+.btn-primary {
+
+    background: var(--button-primary-bg);
+
+    color: var(--button-primary-text);
+
+}
+
+.btn-primary:hover {
+
+    background: var(--button-primary-hover);
+
+}
+
+
+/* ==========================================================
+   SECONDARY
+========================================================== */
+
+.btn-secondary {
+
+    background: var(--button-secondary-bg);
+
+    color: var(--button-secondary-text);
+
+    border-color: var(--button-secondary-border);
+
+}
+
+.btn-secondary:hover {
+
+    background: var(--surface-secondary);
+
+}
+
+
+/* ==========================================================
+   GHOST
+========================================================== */
+
+.btn-ghost {
+
+    background: transparent;
+
+    color: var(--button-ghost-text);
+
+}
+
+.btn-ghost:hover {
+
+    background: var(--surface-secondary);
+
+}
+
+
+/* ==========================================================
+   FULL WIDTH
+========================================================== */
+
+.btn-block {
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   DISABLED
+========================================================== */
+
+.btn:disabled,
+.btn.disabled {
+
+    opacity: var(--opacity-disabled);
+
+    cursor: not-allowed;
+
+    pointer-events: none;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width:768px){
+
+    .btn{
+
+        width:100%;
+
+    }
+
+}

@@ -1,0 +1,175 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : cards.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Shared Card Components
+
+   Responsibilities
+
+   ✓ Shared Card Container
+   ✓ Card Header
+   ✓ Card Body
+   ✓ Card Footer
+   ✓ Card Hover States
+   ✓ Responsive Behaviour
+
+   Non Responsibilities
+
+   ✗ Dashboard Layout
+   ✗ KPI Components
+   ✗ Widgets
+   ✗ Authentication
+   ✗ Business Logic
+
+   Governance
+
+   • Shared Component Authority
+   • Design Token Driven
+   • Enterprise Portal Standard
+
+========================================================== */
+
+
+/* ==========================================================
+   BASE CARD
+========================================================== */
+
+.portal-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: var(--space-8);
+
+    background: var(--surface-card);
+
+    border: 1px solid var(--border-default);
+
+    border-radius: var(--radius-xl);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+
+}
+
+.portal-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+
+}
+
+
+/* ==========================================================
+   CARD HEADER
+========================================================== */
+
+.portal-card-header {
+
+    margin-bottom: var(--space-5);
+
+}
+
+
+/* ==========================================================
+   CARD TITLE
+========================================================== */
+
+.portal-card-title {
+
+    margin: 0;
+
+    font-size: var(--font-size-xl);
+
+    font-weight: var(--font-bold);
+
+    color: var(--text-primary);
+
+}
+
+
+/* ==========================================================
+   CARD SUBTITLE
+========================================================== */
+
+.portal-card-subtitle {
+
+    margin-top: var(--space-2);
+
+    font-size: var(--font-size-sm);
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================
+   CARD BODY
+========================================================== */
+
+.portal-card-body {
+
+    flex: 1;
+
+}
+
+
+/* ==========================================================
+   CARD FOOTER
+========================================================== */
+
+.portal-card-footer {
+
+    margin-top: var(--space-6);
+
+}
+
+
+/* ==========================================================
+   LEGACY SUPPORT
+   (Supports existing portal markup)
+========================================================== */
+
+.portal-card h2 {
+
+    margin: 0 0 var(--space-5);
+
+    font-size: var(--font-size-xl);
+
+    font-weight: var(--font-bold);
+
+    color: var(--text-primary);
+
+}
+
+.portal-card p {
+
+    margin-top: 0;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .portal-card {
+
+        padding: var(--space-6);
+
+    }
+
+}

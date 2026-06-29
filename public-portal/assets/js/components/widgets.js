@@ -205,7 +205,7 @@
         },
 
         /* ==================================================
-           RECENT CREDENTIALS
+        RECENT CREDENTIALS
         ================================================== */
 
         renderRecentCredentials(credentials) {
@@ -252,71 +252,118 @@
 
             container.innerHTML = credentials.map(
 
-                credential => `
+                credential => {
 
-                    <article class="portal-card">
+                    const assets =
+                        credential.available_assets || {};
 
-                        <h3>
+                    return `
 
-                            ${credential.title}
+                        <article class="portal-card">
 
-                        </h3>
+                            <h3>
 
-                        <p>
+                                ${credential.program_code || "Credential"}
 
-                            <strong>Credential ID:</strong>
+                            </h3>
 
-                            ${credential.id}
+                            <p>
 
-                        </p>
+                                <strong>Credential ID:</strong>
 
-                        <p>
+                                ${credential.credential_id || "-"}
 
-                            <strong>Status:</strong>
+                            </p>
 
-                            ${credential.status}
+                            <p>
 
-                        </p>
+                                <strong>Credential Type:</strong>
 
-                        <div class="portal-actions">
+                                ${credential.credential_type || "-"}
 
-                            <a
-                                href="#"
-                                class="btn">
+                            </p>
 
-                                View Credential
+                            <p>
 
-                            </a>
+                                <strong>Issued By:</strong>
 
-                            ${credential.certificate ? `
+                                ${credential.issued_by || "Agile AI University"}
+
+                            </p>
+
+                            <p>
+
+                                <strong>Validity:</strong>
+
+                                ${credential.validity || "Lifetime"}
+
+                            </p>
+
+                            <div class="portal-actions">
 
                                 <a
                                     href="#"
                                     class="btn">
 
-                                    Certificate
+                                    View Credential
 
                                 </a>
 
-                            ` : ""}
+                                ${assets.universityCertificate ? `
 
-                            ${credential.badge ? `
+                                    <a
+                                        href="#"
+                                        class="btn">
 
-                                <a
-                                    href="#"
-                                    class="btn">
+                                        University Certificate
 
-                                    Badge
+                                    </a>
 
-                                </a>
+                                ` : ""}
 
-                            ` : ""}
+                                ${assets.trainerCertificate ? `
 
-                        </div>
+                                    <a
+                                        href="#"
+                                        class="btn">
 
-                    </article>
+                                        Trainer Certificate
 
-                `
+                                    </a>
+
+                                ` : ""}
+
+                                ${assets.digitalBadge ? `
+
+                                    <a
+                                        href="#"
+                                        class="btn">
+
+                                        Digital Badge
+
+                                    </a>
+
+                                ` : ""}
+
+                                ${assets.recognitionAsset ? `
+
+                                    <a
+                                        href="#"
+                                        class="btn">
+
+                                        Recognition Asset
+
+                                    </a>
+
+                                ` : ""}
+
+                            </div>
+
+                        </article>
+
+                    `;
+
+                }
 
             ).join("");
 

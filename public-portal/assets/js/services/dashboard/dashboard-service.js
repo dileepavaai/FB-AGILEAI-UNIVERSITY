@@ -199,20 +199,26 @@
 
         getPortalCredentials() {
 
+            const entitlements =
+                window.__AAIU_ENTITLEMENTS__;
+
             if (
-                !Array.isArray(window.portalCredentials)
+                !entitlements ||
+                !Array.isArray(
+                    entitlements.visibleCredentials
+                )
             ) {
 
                 return [];
 
             }
 
-            return window.portalCredentials;
+            return entitlements.visibleCredentials;
 
         },
 
         /* ==================================================
-           FINALIZED CREDENTIALS
+            FINALIZED CREDENTIALS
         ================================================== */
 
         getFinalizedCredentials() {
@@ -225,8 +231,27 @@
 
                         credential &&
 
-                        credential.issued_status ===
-                        "finalized"
+                        (
+
+                            credential.issued_status ===
+                                "finalized" ||
+
+                            credential.issued_status ===
+                                "issued" ||
+
+                            /*
+                            * Resolver-normalized credentials
+                            * intentionally omit issued_status.
+                            *
+                            * Presence of a canonical
+                            * credential_id indicates a
+                            * resolver-approved visible
+                            * credential.
+                            */
+
+                            credential.credential_id
+
+                        )
 
                     );
 

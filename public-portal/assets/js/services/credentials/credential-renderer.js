@@ -569,16 +569,14 @@ function renderCredentialInformation(
 
    • Render recognition assets
    • Populate Recognition Assets region
-   • Display available recognition artifacts
+   • Display only configured recognition assets
 
-   Must Never
+   Governance
 
-   • Retrieve data
-   • Resolve entitlements
-   • Perform authorization
-   • Render hero
-   • Render metadata
-   • Wire action events
+   • Asset visibility is determined exclusively by
+     credential.available_assets
+   • Renderer must never infer assets from
+     program codes or credential types
 
 ===================================================== */
 
@@ -596,56 +594,148 @@ function renderRecognitionAssets(
         return;
     }
 
+    const availableAssets =
+        credential.available_assets || {};
+
+    const cards = [];
+
+    if (availableAssets.universityCertificate) {
+
+        cards.push(`
+
+            <div class="recognition-asset-card">
+
+                <h4>
+
+                    University Certificate
+
+                </h4>
+
+                <p>
+
+                    Official Agile AI University
+                    credential certificate.
+
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
+    if (availableAssets.trainerCertificate) {
+
+        cards.push(`
+
+            <div class="recognition-asset-card">
+
+                <h4>
+
+                    Trainer Certificate
+
+                </h4>
+
+                <p>
+
+                    Trainer-issued recognition
+                    certificate.
+
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
+    if (availableAssets.digitalBadge) {
+
+        cards.push(`
+
+            <div class="recognition-asset-card">
+
+                <h4>
+
+                    University Badge
+
+                </h4>
+
+                <p>
+
+                    Official Agile AI University
+                    digital badge for professional
+                    recognition.
+
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
+    if (availableAssets.recognitionAsset) {
+
+        cards.push(`
+
+            <div class="recognition-asset-card">
+
+                <h4>
+
+                    Recognition Asset
+
+                </h4>
+
+                <p>
+
+                    Additional institutional
+                    recognition associated with
+                    this credential.
+
+                </p>
+
+            </div>
+
+        `);
+
+    }
+
     assets.innerHTML = `
 
         <div class="credential-preview-section">
 
             <h3>
+
                 Recognition Assets
+
             </h3>
 
-            <div class="recognition-assets-grid">
+            ${
+                cards.length > 0
 
-                <div class="recognition-asset-card">
+                    ? `
 
-                    <h4>
-                        University Certificate
-                    </h4>
+                        <div class="recognition-assets-grid">
 
-                    <p>
-                        Official Agile AI University
-                        credential certificate.
-                    </p>
+                            ${cards.join("")}
 
-                </div>
+                        </div>
 
-                <div class="recognition-asset-card">
+                    `
 
-                    <h4>
-                        Trainer Certificate
-                    </h4>
+                    : `
 
-                    <p>
-                        Trainer-issued recognition
-                        certificate.
-                    </p>
+                        <div class="credential-helper">
 
-                </div>
+                            No recognition assets are
+                            currently available for
+                            this credential.
 
-                <div class="recognition-asset-card">
+                        </div>
 
-                    <h4>
-                        University Badge
-                    </h4>
-
-                    <p>
-                        Digital credential badge for
-                        professional recognition.
-                    </p>
-
-                </div>
-
-            </div>
+                    `
+            }
 
         </div>
 

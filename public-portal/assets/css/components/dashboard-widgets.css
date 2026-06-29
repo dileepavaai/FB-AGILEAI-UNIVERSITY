@@ -47,9 +47,11 @@
     display: grid;
 
     grid-template-columns:
-        repeat(12, minmax(0, 1fr));
+        repeat(auto-fit, minmax(360px, 1fr));
 
     gap: 24px;
+
+    align-items: start;
 
 }
 

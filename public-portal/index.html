@@ -3,32 +3,25 @@
 
 <head>
 
-  <meta charset="utf-8" />
+    <meta charset="utf-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
-  />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
 
-  <title>Agile AI University Portal</title>
+    <title>
 
-  <!-- ==================================================
-       SHARED DESIGN AUTHORITY
-       ================================================== -->
+        Agile AI University Portal
 
-  <link
-    rel="stylesheet"
-    href="/assets/css/site.css"
-  />
+    </title>
 
-  <!-- ==================================================
-       PORTAL MODULE
-       ================================================== -->
+    <link
+        rel="stylesheet"
+        href="/assets/css/site.css">
 
-  <link
-    rel="stylesheet"
-    href="/assets/css/portal.css"
-  />
+    <link
+        rel="stylesheet"
+        href="/assets/css/portal.css">
 
 </head>
 
@@ -36,65 +29,78 @@
 
     <div class="portal-shell">
 
-      <aside
-          id="portal-sidebar"
-          class="portal-sidebar">
-      </aside>
+        <!-- Sidebar -->
 
-    <section class="portal-content-shell">
+        <aside
+            id="portal-sidebar"
+            class="portal-sidebar">
+        </aside>
 
-          <header
-              id="portal-toolbar"
-              class="portal-toolbar">
-          </header>
+        <!-- Main Application -->
 
-        <main class="portal-home">
+        <section class="portal-content-shell">
 
-          <div class="portal-page">
+            <!-- Toolbar -->
 
-        <!-- ==================================================
-         DASHBOARD HEADER
-         ================================================== -->
+            <header
+                id="portal-toolbar"
+                class="portal-toolbar">
+            </header>
 
-    <section class="dashboard-header">
+            <!-- Page -->
 
-        <div class="dashboard-header-content">
+            <main class="portal-home">
 
-            <h1>
-                Dashboard
-            </h1>
+                <div class="portal-page">
+                    <!-- ==================================================
+     DASHBOARD HEADER
+================================================== -->
 
-            <p>
-                Welcome back to your Agile AI University portal.
-            </p>
+<section class="dashboard-header">
 
-        </div>
+    <div class="dashboard-header-content">
 
-    </section>
+        <h1 class="dashboard-title">
 
-    <!-- ==================================================
-         PORTAL GRID
-         ================================================== -->
+            Dashboard
+
+        </h1>
+
+        <p class="dashboard-subtitle">
+
+            Welcome back to your Agile AI University portal.
+
+        </p>
+
+    </div>
+
+</section>
+
+<!-- ==================================================
+     SIGNED OUT EXPERIENCE
+================================================== -->
+
+<section id="signedOutUI">
 
     <div class="portal-grid">
 
-        <!-- ================================================
-             SIGNED OUT EXPERIENCE
-             ================================================ -->
+        <!-- ==========================================
+             SIGN IN
+        =========================================== -->
 
-        <section
-            id="signedOutUI"
-            class="dashboard-card">
+        <section class="dashboard-card">
 
             <h2>
+
                 Sign In
+
             </h2>
 
             <p id="statusText">
 
                 Sign in to access assessments,
                 credentials, recognitions,
-                reports, and university services.
+                reports and university services.
 
             </p>
 
@@ -119,7 +125,7 @@
                     id="emailInput"
                     type="email"
                     placeholder="Enter your email"
-                    autocomplete="email" />
+                    autocomplete="email">
 
                 <button
                     id="btnEmailLink"
@@ -132,7 +138,9 @@
 
                 <p
                     id="emailStatus"
-                    class="status-message"></p>
+                    class="status-message">
+
+                </p>
 
                 <p class="portal-help">
 
@@ -146,207 +154,237 @@
 
         </section>
 
-    <!-- ================================================
-     QUICK ACCESS
-     ================================================ -->
+        <!-- ==========================================
+             QUICK ACCESS
+        =========================================== -->
 
-      <section class="dashboard-card quick-access">
-
-          <h2>
-
-              Quick Access
-
-          </h2>
-
-          <div
-              id="dashboardQuickAccess"
-              class="quick-access-grid">
-
-          </div>
-
-      </section>
-
-    <!-- ================================================
-         SIGNED IN EXPERIENCE
-         ================================================ -->
-
-    <section
-        id="signedInUI"
-        class="dashboard-card"
-        hidden>
-
-        <h2>
-            Student Dashboard
-        </h2>
-
-        <p class="user-name">
-
-            <strong id="userName"></strong>
-
-        </p>
-
-        <p
-            id="userEmail"
-            class="user-email">
-        </p>
-
-        <!-- ================================================
-            DASHBOARD SUMMARY
-            ================================================ -->
-
-        <div class="dashboard-summary">
-
-            <div class="summary-card">
-
-                <span class="summary-label">
-
-                    Credential Portfolio
-
-                </span>
-
-                <strong
-                    id="kpiCredentials"
-                    class="summary-value">
-
-                    —
-
-                </strong>
-
-            </div>
-
-            <div class="summary-card">
-
-                <span class="summary-label">
-
-                    University Certificates
-
-                </span>
-
-                <strong
-                    id="kpiCertificates"
-                    class="summary-value">
-
-                    —
-
-                </strong>
-
-            </div>
-
-            <div class="summary-card">
-
-                <span class="summary-label">
-
-                    Trainer Certificates
-
-                </span>
-
-                <strong
-                    id="kpiTrainerCertificates"
-                    class="summary-value">
-
-                    —
-
-                </strong>
-
-            </div>
-
-            <div class="summary-card">
-
-                <span class="summary-label">
-
-                    Digital Badges
-
-                </span>
-
-                <strong
-                    id="kpiBadges"
-                    class="summary-value">
-
-                    —
-
-                </strong>
-
-            </div>
-
-            <div class="summary-card">
-
-                <span class="summary-label">
-
-                    Recognition Assets
-
-                </span>
-
-                <strong
-                    id="kpiRecognitions"
-                    class="summary-value">
-
-                    —
-
-                </strong>
-
-            </div>
-
-        </div>
-
-        <!-- ================================================
-            RECENT CREDENTIALS
-            ================================================ -->
-
-        <section class="dashboard-card">
+        <section class="dashboard-card quick-access">
 
             <h2>
 
-                Recent Credentials
+                Quick Access
 
             </h2>
 
             <div
-                id="recentCredentials"
-                class="dashboard-widget-grid">
+                id="dashboardQuickAccess"
+                class="quick-access-grid">
 
             </div>
 
         </section>
 
-        <!-- ================================================
-            PRIMARY ACTIONS
-            ================================================ -->
+    </div>
 
-        <div
-            id="authorizedPortalUI"
-            class="dashboard-card-actions hidden">
+</section>
 
-            <a
-                href="/credentials/my-credentials.html"
-                class="btn">
+<!-- ==================================================
+     SIGNED IN EXPERIENCE
+================================================== -->
 
-                View Credential Portfolio
+<section
+    id="signedInUI"
+    class="dashboard"
+    hidden>
 
-            </a>
+        <!-- ==========================================
+             STUDENT SUMMARY
+        =========================================== -->
 
-            <a
-                href="/assessment.html"
-                class="btn">
+        <section class="dashboard-card">
 
-                Assessment Platform
+            <h2>
 
-            </a>
+                Student Dashboard
+
+            </h2>
+
+            <p class="user-name">
+
+                <strong id="userName"></strong>
+
+            </p>
+
+            <p
+                id="userEmail"
+                class="user-email">
+            </p>
+
+        </section>
+
+        <!-- ==========================================
+             DASHBOARD SUMMARY
+        =========================================== -->
+
+        <section class="dashboard-section">
+
+            <div class="dashboard-summary">
+
+                <div class="summary-card">
+
+                    <span class="summary-label">
+
+                        Credential Portfolio
+
+                    </span>
+
+                    <strong
+                        id="kpiCredentials"
+                        class="summary-value">
+
+                        —
+
+                    </strong>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <span class="summary-label">
+
+                        University Certificates
+
+                    </span>
+
+                    <strong
+                        id="kpiCertificates"
+                        class="summary-value">
+
+                        —
+
+                    </strong>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <span class="summary-label">
+
+                        Trainer Certificates
+
+                    </span>
+
+                    <strong
+                        id="kpiTrainerCertificates"
+                        class="summary-value">
+
+                        —
+
+                    </strong>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <span class="summary-label">
+
+                        Digital Badges
+
+                    </span>
+
+                    <strong
+                        id="kpiBadges"
+                        class="summary-value">
+
+                        —
+
+                    </strong>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <span class="summary-label">
+
+                        Recognition Assets
+
+                    </span>
+
+                    <strong
+                        id="kpiRecognitions"
+                        class="summary-value">
+
+                        —
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ==========================================
+     RECENT CREDENTIALS
+========================================== -->
+
+<section class="dashboard-section">
+
+    <section class="dashboard-card">
+
+        <div class="dashboard-section-header">
+
+            <h2 class="dashboard-section-title">
+
+                Recent Credentials
+
+            </h2>
 
         </div>
 
-        <!-- ================================================
-            NO ACTIVE SERVICES
-            ================================================ -->
-
         <div
+            id="recentCredentials"
+            class="dashboard-widget-grid">
+
+        </div>
+
+    </section>
+
+</section>
+
+        <!-- ==========================================
+             PRIMARY ACTIONS
+        =========================================== -->
+
+        <section class="dashboard-section">
+
+            <div
+                id="authorizedPortalUI"
+                class="dashboard-card-actions hidden">
+
+                <a
+                    href="/credentials/my-credentials.html"
+                    class="btn">
+
+                    View Credential Portfolio
+
+                </a>
+
+                <a
+                    href="/assessment.html"
+                    class="btn">
+
+                    Assessment Platform
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- ==========================================
+             NO ACTIVE SERVICES
+        =========================================== -->
+
+        <section
             id="noServicesUI"
             class="dashboard-card hidden">
 
-            <h3>
+            <h2>
 
                 No Active Services
 
-            </h3>
+            </h2>
 
             <p>
 
@@ -376,159 +414,58 @@
 
             </p>
 
-        </div>
+        </section>
 
-        <button
-            id="btnSignOut"
-            class="btn"
-            type="button">
+        <!-- ==========================================
+             ACCOUNT ACTIONS
+        =========================================== -->
 
-            Sign Out
+        <section class="dashboard-section">
 
-        </button>
+            <button
+                id="btnSignOut"
+                class="btn"
+                type="button">
+
+                Sign Out
+
+            </button>
+
+        </section>
 
     </section>
 
-        </div> <!-- portal-page -->
-
-</main>
-
-</section>
-
 </div>
 
-  <!-- ==================================================
-       CONTEXT
-       ================================================== -->
+            </main>
 
-  <script>
+        </section>
 
-    window.__AAIU_CONTEXT =
-      "portal";
+    </div>
 
-  </script>
+    <!-- ==========================================
+         Portal Context
+    =========================================== -->
 
-  <!-- ==================================================
-       FIREBASE SDK
-       ================================================== -->
+    <script>
+    window.__AAIU_CONTEXT = "portal";
+</script>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="/assets/js/firebase-init.js"></script>
+<script src="/assets/js/portal-auth.js"></script>
+<script src="/assets/js/entitlement.js"></script>
+<script src="/assets/js/services/entitlements/resolvePortalEntitlements.js"></script>
+<script src="/assets/js/services/authorization/portal-authorization.js"></script>
+<script src="/assets/js/dashboard-gating.js"></script>
 
-  <!-- ==================================================
-       AUTHENTICATION FOUNDATION
-
-       RESPONSIBILITIES
-
-       • Firebase Initialization
-       • Google Authentication
-       • Email Link Authentication
-       • Auth Readiness Contract
-
-       GOVERNANCE
-
-       • Authentication Only
-       • No Authorization
-       • No Entitlements
-       ================================================== -->
-
-  <script src="/assets/js/firebase-init.js"></script>
-
-  <!-- ==================================================
-       PORTAL AUTHENTICATION
-
-       RESPONSIBILITIES
-
-       • Login UI
-       • Logout UI
-       • Session Display
-
-       GOVERNANCE
-
-       • No Access Decisions
-       • No Entitlement Logic
-       ================================================== -->
-
-  <script src="/assets/js/portal-auth.js"></script>
-
-  <!-- ==================================================
-       ENTITLEMENT RESOLUTION
-
-       RESPONSIBILITIES
-
-       • Resolve user entitlements
-       • Resolve credentials
-       • Publish entitlement state
-
-       GOVERNANCE
-
-       • API Driven
-       • No UI Logic
-       • No Redirect Logic
-       ================================================== -->
-
-  <script src="/assets/js/entitlement.js"></script>
-
-  <!-- ==================================================
-       ENTITLEMENT RESOLVER
-
-       RESPONSIBILITIES
-
-       • Executive precedence
-       • Student access evaluation
-       • Credential visibility filtering
-
-       GOVERNANCE
-
-       • Pure Function
-       • Single Source Of Truth
-       ================================================== -->
-
-  <script src="/assets/js/services/entitlements/resolvePortalEntitlements.js"></script>
-
-  <!-- ==================================================
-       PORTAL AUTHORIZATION
-
-       RESPONSIBILITIES
-
-       • Grant / Deny Portal Access
-
-       GOVERNANCE
-
-       • Resolver Output Only
-       • No API Calls
-       • No Firestore Access
-       ================================================== -->
-
-  <script src="/assets/js/services/authorization/portal-authorization.js"></script>
-
-  <!-- ==================================================
-       DASHBOARD GATING
-
-       RESPONSIBILITIES
-
-       • Enforce Authorization
-       • Unauthorized Redirect
-       • Portal Service Visibility
-
-       GOVERNANCE
-
-       • Consumes Resolver Output
-       ================================================== -->
-
-  <script src="/assets/js/dashboard-gating.js"></script>
-
-  <!-- ==================================================
-       SHARED DESIGN AUTHORITY
-       ================================================== -->
-
-  <script src="/assets/js/components/sidebar.js"></script>
-  <script src="/assets/js/components/toolbar.js"></script>
-  <script src="/assets/js/services/dashboard/dashboard-service.js"></script>
-  <script src="/assets/js/components/widgets.js"></script>
-  <script src="/assets/js/components/dashboard.js"></script>
+<script src="/assets/js/components/sidebar.js"></script>
+<script src="/assets/js/components/toolbar.js"></script>
+<script src="/assets/js/services/dashboard/dashboard-service.js"></script>
+<script src="/assets/js/components/widgets.js"></script>
+<script src="/assets/js/components/dashboard.js"></script>
 
 </body>
-
 </html>

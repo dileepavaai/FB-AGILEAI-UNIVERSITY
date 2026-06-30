@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : widgets.js
-   Version   : 1.1.0
+   Version   : 2.0.0
    Status    : ACTIVE
    Phase     : Sprint 2C
 
@@ -11,29 +11,22 @@
    ----------------------------------------------------------
    Dashboard Widget Renderer
 
-   Changes
-   ----------------------------------------------------------
-
-   • Prepared KPI rendering
-   • Added progressive DOM rendering
-   • Prepared credential widget rendering
-   • Prepared recognition widget rendering
-   • Prepared notification widget rendering
-
    Responsibilities
 
-   ✓ Render dashboard widgets
-   ✓ Render KPI summary
+   ✓ Render Dashboard
+   ✓ Render Sidebar Summary
+   ✓ Render KPI Cards
    ✓ Render Quick Access
-   ✓ Render dashboard placeholders
-   ✓ Update dashboard UI
+   ✓ Render Credential Widgets
+   ✓ Render Recognition Widgets
+   ✓ Render Notifications
 
    Non Responsibilities
 
    ✗ Authentication
    ✗ Authorization
-   ✗ Business Logic
    ✗ Firestore
+   ✗ Business Logic
    ✗ API Calls
 
    Governance
@@ -57,11 +50,21 @@
 
         render(data) {
 
-            this.renderSummary(data.summary);
+            if (!data) {
+                return;
+            }
 
-            this.renderKpiCards(data.kpi);
+            this.renderSummary(
+                data.summary
+            );
 
-            this.renderQuickAccess(data.quickAccess);
+            this.renderKpiCards(
+                data.kpi
+            );
+
+            this.renderQuickAccess(
+                data.quickAccess
+            );
 
             this.renderRecentCredentials(
                 data.recentCredentials
@@ -78,7 +81,7 @@
         },
 
         /* ==================================================
-           SUMMARY
+           SIDEBAR SUMMARY
         ================================================== */
 
         renderSummary(summary) {
@@ -88,33 +91,45 @@
             }
 
             const userName =
-                document.getElementById("sidebarUserName");
+                document.getElementById(
+                    "sidebarUserName"
+                );
 
             const membership =
-                document.getElementById("sidebarMembership");
+                document.getElementById(
+                    "sidebarMembership"
+                );
 
-            const portfolio =
-                document.getElementById("sidebarCredentialCount");
+            const credentialCount =
+                document.getElementById(
+                    "sidebarCredentialCount"
+                );
 
             if (userName) {
+
                 userName.textContent =
-                    summary.user.name;
+                    summary.user?.name || "Student";
+
             }
 
             if (membership) {
+
                 membership.textContent =
-                    summary.user.membership;
+                    summary.user?.membership || "";
+
             }
 
-            if (portfolio) {
-                portfolio.textContent =
-                    summary.portfolio.credentials;
+            if (credentialCount) {
+
+                credentialCount.textContent =
+                    summary.portfolio?.credentials || 0;
+
             }
 
         },
 
         /* ==================================================
-        KPI
+           KPI CARDS
         ================================================== */
 
         renderKpiCards(kpi) {
@@ -124,69 +139,98 @@
             }
 
             const credentials =
-                document.getElementById("kpiCredentials");
+                document.getElementById(
+                    "kpiCredentials"
+                );
 
             const certificates =
-                document.getElementById("kpiCertificates");
+                document.getElementById(
+                    "kpiCertificates"
+                );
 
             const trainerCertificates =
-                document.getElementById("kpiTrainerCertificates");
+                document.getElementById(
+                    "kpiTrainerCertificates"
+                );
 
             const badges =
-                document.getElementById("kpiBadges");
+                document.getElementById(
+                    "kpiBadges"
+                );
 
             const recognitions =
-                document.getElementById("kpiRecognitions");
+                document.getElementById(
+                    "kpiRecognitions"
+                );
 
             /*
-            * KPI values are authoritatively rendered by
-            * dashboard-gating.js after entitlement
-            * resolution.
-            *
-            * If those values are already populated,
-            * DashboardWidgets must not overwrite them.
-            */
+             * Dashboard Gating is the
+             * authoritative renderer.
+             *
+             * If values already exist,
+             * never overwrite them.
+             */
 
             if (
+
                 credentials &&
                 credentials.textContent.trim() !== "" &&
                 credentials.textContent.trim() !== "—"
+
             ) {
+
                 return;
+
             }
 
             if (credentials) {
+
                 credentials.textContent =
-                    kpi.credentials;
+                    kpi.credentials ?? 0;
+
             }
 
             if (certificates) {
+
                 certificates.textContent =
-                    kpi.certificates;
+                    kpi.certificates ?? 0;
+
             }
 
             /*
-            * Legacy DashboardService does not yet expose
-            * Trainer Certificate counts.
-            *
-            * Intentionally left untouched so that
-            * dashboard-gating.js remains the
-            * authoritative renderer.
-            */
+             * Reserved for future
+             * Trainer Certificate Service.
+             */
+
+            if (
+
+                trainerCertificates &&
+                kpi.trainerCertificates !== undefined
+
+            ) {
+
+                trainerCertificates.textContent =
+                    kpi.trainerCertificates;
+
+            }
 
             if (badges) {
+
                 badges.textContent =
-                    kpi.badges;
+                    kpi.badges ?? 0;
+
             }
 
             if (recognitions) {
+
                 recognitions.textContent =
-                    kpi.recognitions;
+                    kpi.recognitions ?? 0;
+
             }
 
         },
 
-        /* ==================================================
+                /* ==================================================
            QUICK ACCESS
         ================================================== */
 
@@ -196,16 +240,37 @@
                 return;
             }
 
-            /*
-             * Existing HTML remains.
-             * Future versions may build
-             * this section dynamically.
-             */
+            const container =
+                document.getElementById(
+                    "dashboardQuickAccess"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = items.map(
+
+                item => `
+
+                    <a
+                        href="${item.url}"
+                        class="btn btn-secondary">
+
+                        ${item.icon || ""}
+
+                        ${item.title}
+
+                    </a>
+
+                `
+
+            ).join("");
 
         },
 
         /* ==================================================
-        RECENT CREDENTIALS
+           RECENT CREDENTIALS
         ================================================== */
 
         renderRecentCredentials(credentials) {
@@ -227,22 +292,38 @@
 
                 container.innerHTML = `
 
-                    <div class="portal-empty-state">
+                    <article class="dashboard-card">
 
-                        <p>
+                        <div class="dashboard-card-body">
 
-                            No credentials available yet.
+                            <div class="dashboard-card-empty">
 
-                        </p>
+                                <div class="dashboard-card-empty-icon">
 
-                        <p>
+                                    🎓
 
-                            Your earned Agile AI University
-                            credentials will appear here.
+                                </div>
 
-                        </p>
+                                <div class="dashboard-card-empty-title">
 
-                    </div>
+                                    No Credentials Yet
+
+                                </div>
+
+                                <div class="dashboard-card-empty-text">
+
+                                    Your Agile AI University
+                                    credentials will appear
+                                    here after successful
+                                    completion.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
 
                 `;
 
@@ -259,103 +340,117 @@
 
                     return `
 
-                        <article class="portal-card">
+                        <article class="dashboard-card">
 
-                            <h3>
+                            <div class="dashboard-card-header">
 
-                                ${credential.program_code || "Credential"}
+                                <div>
 
-                            </h3>
+                                    <h3 class="dashboard-card-title">
 
-                            <p>
+                                        ${credential.program_code || "Credential"}
 
-                                <strong>Credential ID:</strong>
+                                    </h3>
 
-                                ${credential.credential_id || "-"}
+                                    <div class="dashboard-card-subtitle">
 
-                            </p>
+                                        ${credential.credential_type || "-"}
 
-                            <p>
+                                    </div>
 
-                                <strong>Credential Type:</strong>
+                                </div>
 
-                                ${credential.credential_type || "-"}
+                            </div>
 
-                            </p>
+                            <div class="dashboard-card-body">
 
-                            <p>
+                                <p>
 
-                                <strong>Issued By:</strong>
+                                    <strong>Credential ID:</strong>
 
-                                ${credential.issued_by || "Agile AI University"}
+                                    ${credential.credential_id || "-"}
 
-                            </p>
+                                </p>
 
-                            <p>
+                                <p>
 
-                                <strong>Validity:</strong>
+                                    <strong>Issued By:</strong>
 
-                                ${credential.validity || "Lifetime"}
+                                    ${credential.issued_by || "Agile AI University"}
 
-                            </p>
+                                </p>
 
-                            <div class="portal-actions">
+                                <p>
 
-                                <a
-                                    href="#"
-                                    class="btn">
+                                    <strong>Validity:</strong>
 
-                                    View Credential
+                                    ${credential.validity || "Lifetime"}
 
-                                </a>
+                                </p>
 
-                                ${assets.universityCertificate ? `
+                            </div>
 
-                                    <a
-                                        href="#"
-                                        class="btn">
+                            <div class="dashboard-card-footer">
 
-                                        University Certificate
-
-                                    </a>
-
-                                ` : ""}
-
-                                ${assets.trainerCertificate ? `
+                                <div class="dashboard-card-actions">
 
                                     <a
                                         href="#"
-                                        class="btn">
+                                        class="btn btn-primary">
 
-                                        Trainer Certificate
-
-                                    </a>
-
-                                ` : ""}
-
-                                ${assets.digitalBadge ? `
-
-                                    <a
-                                        href="#"
-                                        class="btn">
-
-                                        Digital Badge
+                                        View Credential
 
                                     </a>
 
-                                ` : ""}
+                                    ${assets.universityCertificate ? `
 
-                                ${assets.recognitionAsset ? `
+                                        <a
+                                            href="#"
+                                            class="btn btn-secondary">
 
-                                    <a
-                                        href="#"
-                                        class="btn">
+                                            University Certificate
 
-                                        Recognition Asset
+                                        </a>
 
-                                    </a>
+                                    ` : ""}
 
-                                ` : ""}
+                                    ${assets.trainerCertificate ? `
+
+                                        <a
+                                            href="#"
+                                            class="btn btn-secondary">
+
+                                            Trainer Certificate
+
+                                        </a>
+
+                                    ` : ""}
+
+                                    ${assets.digitalBadge ? `
+
+                                        <a
+                                            href="#"
+                                            class="btn btn-secondary">
+
+                                            Digital Badge
+
+                                        </a>
+
+                                    ` : ""}
+
+                                    ${assets.recognitionAsset ? `
+
+                                        <a
+                                            href="#"
+                                            class="btn btn-secondary">
+
+                                            Recognition Asset
+
+                                        </a>
+
+                                    ` : ""}
+
+                                </div>
 
                             </div>
 
@@ -369,7 +464,7 @@
 
         },
 
-        /* ==================================================
+                /* ==================================================
            RECENT RECOGNITIONS
         ================================================== */
 
@@ -388,7 +483,45 @@
                 return;
             }
 
-            container.innerHTML = "";
+            if (recognitions.length === 0) {
+
+                container.innerHTML = "";
+
+                return;
+
+            }
+
+            container.innerHTML = recognitions.map(
+
+                recognition => `
+
+                    <article class="dashboard-card">
+
+                        <div class="dashboard-card-header">
+
+                            <h3 class="dashboard-card-title">
+
+                                ${recognition.title || "Recognition"}
+
+                            </h3>
+
+                        </div>
+
+                        <div class="dashboard-card-body">
+
+                            <p>
+
+                                ${recognition.description || ""}
+
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                `
+
+            ).join("");
 
         },
 
@@ -411,14 +544,41 @@
                 return;
             }
 
-            container.innerHTML = "";
+            if (notifications.length === 0) {
+
+                container.innerHTML = "";
+
+                return;
+
+            }
+
+            container.innerHTML = notifications.map(
+
+                notification => `
+
+                    <article class="dashboard-card">
+
+                        <div class="dashboard-card-body">
+
+                            ${notification.message || ""}
+
+                        </div>
+
+                    </article>
+
+                `
+
+            ).join("");
 
         }
 
     };
 
-    Object.freeze(DashboardWidgets);
+    Object.freeze(
+        DashboardWidgets
+    );
 
-    window.DashboardWidgets = DashboardWidgets;
+    window.DashboardWidgets =
+        DashboardWidgets;
 
 })(window, document);

@@ -75,7 +75,7 @@
 
         return `
             <span class="breadcrumb-home">
-                Dashboard
+                Home
             </span>
 
             <span class="breadcrumb-separator">

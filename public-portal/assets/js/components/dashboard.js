@@ -56,8 +56,17 @@
 
         try {
 
+            if (
+                !window.DashboardService ||
+                typeof window.DashboardService.loadDashboard !== "function"
+            ) {
+                throw new Error(
+                    "DashboardService is unavailable."
+                );
+            }
+
             const dashboard =
-                await DashboardService.loadDashboard();
+                await window.DashboardService.loadDashboard();
 
             renderDashboard(dashboard);
 

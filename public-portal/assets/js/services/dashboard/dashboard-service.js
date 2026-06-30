@@ -13,24 +13,45 @@
             const summary =
                 await this.loadDashboardSummary();
 
+            const [
+
+                kpi,
+
+                quickAccess,
+
+                recentCredentials,
+
+                recentRecognitions,
+
+                notifications
+
+            ] = await Promise.all([
+
+                this.loadKpiData(summary),
+
+                this.loadQuickAccess(),
+
+                this.loadRecentCredentials(),
+
+                this.loadRecentRecognitions(),
+
+                this.loadNotifications()
+
+            ]);
+
             return {
 
                 summary,
 
-                kpi:
-                    await this.loadKpiData(summary),
+                kpi,
 
-                quickAccess:
-                    await this.loadQuickAccess(),
+                quickAccess,
 
-                recentCredentials:
-                    await this.loadRecentCredentials(),
+                recentCredentials,
 
-                recentRecognitions:
-                    await this.loadRecentRecognitions(),
+                recentRecognitions,
 
-                notifications:
-                    await this.loadNotifications()
+                notifications
 
             };
 
@@ -42,11 +63,26 @@
 
         async loadDashboardSummary() {
 
-            return this.createSummaryModel();
+            const recognitionCount =
+
+                (
+                    window.RecognitionService &&
+                    typeof window.RecognitionService.count === "function"
+                )
+
+                    ? await window.RecognitionService.count()
+
+                    : 0;
+
+            return this.createSummaryModel(
+
+                recognitionCount
+
+            );
 
         },
 
-        createSummaryModel() {
+        createSummaryModel(recognitionCount) {
 
             const finalizedCredentials =
                 this.getFinalizedCredentials();
@@ -86,7 +122,8 @@
                     badges:
                         finalizedCredentials.length,
 
-                    recognitions: 0
+                    recognitions:
+                        recognitionCount
 
                 }
 

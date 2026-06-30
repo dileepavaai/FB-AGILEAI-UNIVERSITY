@@ -81,7 +81,318 @@
         },
 
         /* ==================================================
-           SIDEBAR SUMMARY
+           DOM HELPERS
+        ================================================== */
+
+        getElement(id) {
+
+            return document.getElementById(id);
+
+        },
+
+        setText(element, value) {
+
+            if (!element) {
+                return;
+            }
+
+            element.textContent =
+                value ?? "";
+
+        },
+
+        setHtml(element, html) {
+
+            if (!element) {
+                return;
+            }
+
+            element.innerHTML =
+                html ?? "";
+
+        },
+
+        clearElement(element) {
+
+            this.setHtml(
+                element,
+                ""
+            );
+
+        },
+
+        /* ==================================================
+        QUICK ACCESS BUTTON
+        ================================================== */
+
+        createQuickAccessButton(item) {
+
+            return `
+
+                <a
+                    href="${item.url}"
+                    class="btn btn-secondary">
+
+                    ${item.icon || ""}
+
+                    ${item.title}
+
+                </a>
+
+            `;
+
+        },
+
+        /* ==================================================
+        CREDENTIAL EMPTY STATE
+        ================================================== */
+
+        createCredentialEmptyState() {
+
+            return `
+
+                <article class="dashboard-card">
+
+                    <div class="dashboard-card-body">
+
+                        <div class="dashboard-card-empty">
+
+                            <div class="dashboard-card-empty-icon">
+
+                                🎓
+
+                            </div>
+
+                            <div class="dashboard-card-empty-title">
+
+                                No Credentials Yet
+
+                            </div>
+
+                            <div class="dashboard-card-empty-text">
+
+                                Your Agile AI University
+                                credentials will appear
+                                here after successful
+                                completion.
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            `;
+
+        },
+
+        /* ==================================================
+        CREDENTIAL ASSET BUTTONS
+        ================================================== */
+
+        createAssetButtons(assets = {}) {
+
+            return [
+
+                assets.universityCertificate ? `
+
+                    <a
+                        href="#"
+                        class="btn btn-secondary">
+
+                        University Certificate
+
+                    </a>
+
+                ` : "",
+
+                assets.trainerCertificate ? `
+
+                    <a
+                        href="#"
+                        class="btn btn-secondary">
+
+                        Trainer Certificate
+
+                    </a>
+
+                ` : "",
+
+                assets.digitalBadge ? `
+
+                    <a
+                        href="#"
+                        class="btn btn-secondary">
+
+                        Digital Badge
+
+                    </a>
+
+                ` : "",
+
+                assets.recognitionAsset ? `
+
+                    <a
+                        href="#"
+                        class="btn btn-secondary">
+
+                        Recognition Asset
+
+                    </a>
+
+                ` : ""
+
+            ].join("");
+
+        },
+
+        /* ==================================================
+        CREDENTIAL CARD
+        ================================================== */
+
+        createCredentialCard(credential) {
+
+            const assets =
+                credential.available_assets || {};
+
+            return `
+
+                <article class="dashboard-card">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+
+                            <h3 class="dashboard-card-title">
+
+                                ${credential.program_code || "Credential"}
+
+                            </h3>
+
+                            <div class="dashboard-card-subtitle">
+
+                                ${credential.credential_type || "-"}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="dashboard-card-body">
+
+                        <p>
+
+                            <strong>Credential ID:</strong>
+
+                            ${credential.credential_id || "-"}
+
+                        </p>
+
+                        <p>
+
+                            <strong>Issued By:</strong>
+
+                            ${credential.issued_by || "Agile AI University"}
+
+                        </p>
+
+                        <p>
+
+                            <strong>Validity:</strong>
+
+                            ${credential.validity || "Lifetime"}
+
+                        </p>
+
+                    </div>
+
+                    <div class="dashboard-card-footer">
+
+                        <div class="dashboard-card-actions">
+
+                            <a
+                                href="#"
+                                class="btn btn-primary">
+
+                                View Credential
+
+                            </a>
+
+                            ${this.createAssetButtons(assets)}
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            `;
+
+        },
+
+        /* ==================================================
+   RECOGNITION CARD
+================================================== */
+
+createRecognitionCard(recognition) {
+
+    return `
+
+        <article class="dashboard-card">
+
+            <div class="dashboard-card-header">
+
+                <h3 class="dashboard-card-title">
+
+                    ${recognition.title || "Recognition"}
+
+                </h3>
+
+            </div>
+
+            <div class="dashboard-card-body">
+
+                <p>
+
+                    ${recognition.description || ""}
+
+                </p>
+
+            </div>
+
+        </article>
+
+    `;
+
+},
+
+        /* ==================================================
+   NOTIFICATION CARD
+================================================== */
+
+createNotificationCard(notification) {
+
+    return `
+
+        <article class="dashboard-card">
+
+            <div class="dashboard-card-body">
+
+                ${notification.message || ""}
+
+            </div>
+
+        </article>
+
+    `;
+
+},
+
+        /* ==================================================
+        SIDEBAR SUMMARY
         ================================================== */
 
         renderSummary(summary) {
@@ -90,41 +401,35 @@
                 return;
             }
 
-            const userName =
-                document.getElementById(
+            this.setText(
+
+                this.getElement(
                     "sidebarUserName"
-                );
+                ),
 
-            const membership =
-                document.getElementById(
+                summary.user?.name || "Student"
+
+            );
+
+            this.setText(
+
+                this.getElement(
                     "sidebarMembership"
-                );
+                ),
 
-            const credentialCount =
-                document.getElementById(
+                summary.user?.membership || ""
+
+            );
+
+            this.setText(
+
+                this.getElement(
                     "sidebarCredentialCount"
-                );
+                ),
 
-            if (userName) {
+                summary.portfolio?.credentials || 0
 
-                userName.textContent =
-                    summary.user?.name || "Student";
-
-            }
-
-            if (membership) {
-
-                membership.textContent =
-                    summary.user?.membership || "";
-
-            }
-
-            if (credentialCount) {
-
-                credentialCount.textContent =
-                    summary.portfolio?.credentials || 0;
-
-            }
+            );
 
         },
 
@@ -139,27 +444,27 @@
             }
 
             const credentials =
-                document.getElementById(
+                this.getElement(
                     "kpiCredentials"
                 );
 
             const certificates =
-                document.getElementById(
+                this.getElement(
                     "kpiCertificates"
                 );
 
             const trainerCertificates =
-                document.getElementById(
+                this.getElement(
                     "kpiTrainerCertificates"
                 );
 
             const badges =
-                document.getElementById(
+                this.getElement(
                     "kpiBadges"
                 );
 
             const recognitions =
-                document.getElementById(
+                this.getElement(
                     "kpiRecognitions"
                 );
 
@@ -185,15 +490,25 @@
 
             if (credentials) {
 
-                credentials.textContent =
-                    kpi.credentials ?? 0;
+                this.setText(
+
+                    credentials,
+
+                    kpi.credentials ?? 0
+
+                );
 
             }
 
             if (certificates) {
 
-                certificates.textContent =
-                    kpi.certificates ?? 0;
+                this.setText(
+
+                    certificates,
+
+                    kpi.certificates ?? 0
+
+                );
 
             }
 
@@ -209,29 +524,44 @@
 
             ) {
 
-                trainerCertificates.textContent =
-                    kpi.trainerCertificates;
+                this.setText(
+
+                    trainerCertificates,
+
+                    kpi.trainerCertificates
+
+                );
 
             }
 
             if (badges) {
 
-                badges.textContent =
-                    kpi.badges ?? 0;
+                this.setText(
+
+                    badges,
+
+                    kpi.badges ?? 0
+
+                );
 
             }
 
             if (recognitions) {
 
-                recognitions.textContent =
-                    kpi.recognitions ?? 0;
+                this.setText(
+
+                    recognitions,
+
+                    kpi.recognitions ?? 0
+
+                );
 
             }
 
         },
 
-                /* ==================================================
-           QUICK ACCESS
+        /* ==================================================
+        QUICK ACCESS
         ================================================== */
 
         renderQuickAccess(items) {
@@ -241,7 +571,7 @@
             }
 
             const container =
-                document.getElementById(
+                this.getElement(
                     "dashboardQuickAccess"
                 );
 
@@ -249,221 +579,72 @@
                 return;
             }
 
-            container.innerHTML = items.map(
+            this.setHtml(
 
-                item => `
+                container,
 
-                    <a
-                        href="${item.url}"
-                        class="btn btn-secondary">
+                items
+                    .map(item =>
+                        this.createQuickAccessButton(item)
+                    )
+                    .join("")
 
-                        ${item.icon || ""}
-
-                        ${item.title}
-
-                    </a>
-
-                `
-
-            ).join("");
+            );
 
         },
 
         /* ==================================================
-           RECENT CREDENTIALS
-        ================================================== */
+   RECENT CREDENTIALS
+================================================== */
 
-        renderRecentCredentials(credentials) {
+renderRecentCredentials(credentials) {
 
-            if (!Array.isArray(credentials)) {
-                return;
-            }
+    if (!Array.isArray(credentials)) {
+        return;
+    }
 
-            const container =
-                document.getElementById(
-                    "recentCredentials"
-                );
+    const container =
+        this.getElement(
+            "recentCredentials"
+        );
 
-            if (!container) {
-                return;
-            }
+    if (!container) {
+        return;
+    }
 
-            if (credentials.length === 0) {
+    if (credentials.length === 0) {
 
-                container.innerHTML = `
+        this.setHtml(
 
-                    <article class="dashboard-card">
+            container,
 
-                        <div class="dashboard-card-body">
+            this.createCredentialEmptyState()
 
-                            <div class="dashboard-card-empty">
+        );
 
-                                <div class="dashboard-card-empty-icon">
+        return;
 
-                                    🎓
+    }
 
-                                </div>
+        this.setHtml(
 
-                                <div class="dashboard-card-empty-title">
+        container,
 
-                                    No Credentials Yet
+        credentials
+            .map(
 
-                                </div>
+                credential =>
 
-                                <div class="dashboard-card-empty-text">
+                    this.createCredentialCard(
+                        credential
+                    )
 
-                                    Your Agile AI University
-                                    credentials will appear
-                                    here after successful
-                                    completion.
+            )
+            .join("")
 
-                                </div>
+    );
 
-                            </div>
-
-                        </div>
-
-                    </article>
-
-                `;
-
-                return;
-
-            }
-
-            container.innerHTML = credentials.map(
-
-                credential => {
-
-                    const assets =
-                        credential.available_assets || {};
-
-                    return `
-
-                        <article class="dashboard-card">
-
-                            <div class="dashboard-card-header">
-
-                                <div>
-
-                                    <h3 class="dashboard-card-title">
-
-                                        ${credential.program_code || "Credential"}
-
-                                    </h3>
-
-                                    <div class="dashboard-card-subtitle">
-
-                                        ${credential.credential_type || "-"}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="dashboard-card-body">
-
-                                <p>
-
-                                    <strong>Credential ID:</strong>
-
-                                    ${credential.credential_id || "-"}
-
-                                </p>
-
-                                <p>
-
-                                    <strong>Issued By:</strong>
-
-                                    ${credential.issued_by || "Agile AI University"}
-
-                                </p>
-
-                                <p>
-
-                                    <strong>Validity:</strong>
-
-                                    ${credential.validity || "Lifetime"}
-
-                                </p>
-
-                            </div>
-
-                            <div class="dashboard-card-footer">
-
-                                <div class="dashboard-card-actions">
-
-                                    <a
-                                        href="#"
-                                        class="btn btn-primary">
-
-                                        View Credential
-
-                                    </a>
-
-                                    ${assets.universityCertificate ? `
-
-                                        <a
-                                            href="#"
-                                            class="btn btn-secondary">
-
-                                            University Certificate
-
-                                        </a>
-
-                                    ` : ""}
-
-                                    ${assets.trainerCertificate ? `
-
-                                        <a
-                                            href="#"
-                                            class="btn btn-secondary">
-
-                                            Trainer Certificate
-
-                                        </a>
-
-                                    ` : ""}
-
-                                    ${assets.digitalBadge ? `
-
-                                        <a
-                                            href="#"
-                                            class="btn btn-secondary">
-
-                                            Digital Badge
-
-                                        </a>
-
-                                    ` : ""}
-
-                                    ${assets.recognitionAsset ? `
-
-                                        <a
-                                            href="#"
-                                            class="btn btn-secondary">
-
-                                            Recognition Asset
-
-                                        </a>
-
-                                    ` : ""}
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    `;
-
-                }
-
-            ).join("");
-
-        },
-
+},
                 /* ==================================================
            RECENT RECOGNITIONS
         ================================================== */
@@ -475,7 +656,7 @@
             }
 
             const container =
-                document.getElementById(
+                this.getElement(
                     "recentRecognitions"
                 );
 
@@ -485,43 +666,29 @@
 
             if (recognitions.length === 0) {
 
-                container.innerHTML = "";
+                this.clearElement(container);
 
                 return;
 
             }
 
-            container.innerHTML = recognitions.map(
+            this.setHtml(
 
-                recognition => `
+    container,
 
-                    <article class="dashboard-card">
+    recognitions
+        .map(
 
-                        <div class="dashboard-card-header">
+            recognition =>
 
-                            <h3 class="dashboard-card-title">
+                this.createRecognitionCard(
+                    recognition
+                )
 
-                                ${recognition.title || "Recognition"}
+        )
+        .join("")
 
-                            </h3>
-
-                        </div>
-
-                        <div class="dashboard-card-body">
-
-                            <p>
-
-                                ${recognition.description || ""}
-
-                            </p>
-
-                        </div>
-
-                    </article>
-
-                `
-
-            ).join("");
+);
 
         },
 
@@ -536,7 +703,7 @@
             }
 
             const container =
-                document.getElementById(
+                this.getElement(
                     "dashboardNotifications"
                 );
 
@@ -546,29 +713,29 @@
 
             if (notifications.length === 0) {
 
-                container.innerHTML = "";
+                this.clearElement(container);
 
                 return;
 
             }
 
-            container.innerHTML = notifications.map(
+            this.setHtml(
 
-                notification => `
+    container,
 
-                    <article class="dashboard-card">
+    notifications
+        .map(
 
-                        <div class="dashboard-card-body">
+            notification =>
 
-                            ${notification.message || ""}
+                this.createNotificationCard(
+                    notification
+                )
 
-                        </div>
+        )
+        .join("")
 
-                    </article>
-
-                `
-
-            ).join("");
+);
 
         }
 

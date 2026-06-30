@@ -3,9 +3,9 @@
    Student & Executive Portal
 
    File      : dashboard-kpi.css
-   Version   : 1.0.0
+   Version   : 2.0.0
    Status    : ACTIVE
-   Phase     : Sprint 2B
+   Phase     : Sprint 2C
 
    Purpose
    ----------------------------------------------------------
@@ -15,9 +15,13 @@
 
    ✓ KPI Grid
    ✓ KPI Card
+   ✓ KPI Header
+   ✓ KPI Icon
    ✓ KPI Value
    ✓ KPI Label
-   ✓ KPI Trend Placeholder
+   ✓ KPI Trend
+   ✓ KPI Status Styles
+   ✓ Responsive Behaviour
 
    Non Responsibilities
 
@@ -34,7 +38,7 @@
    • Enterprise Portal Standard
    • Design Token Driven
 
-==========================================================*/
+========================================================== */
 
 
 /* ==========================================================
@@ -50,8 +54,6 @@
 
     gap: 24px;
 
-    margin-bottom: 32px;
-
 }
 
 
@@ -65,7 +67,7 @@
 
     flex-direction: column;
 
-    gap: 16px;
+    gap: 20px;
 
     padding: 24px;
 
@@ -79,14 +81,16 @@
 
     transition:
         transform var(--transition-fast),
+        border-color var(--transition-fast),
         box-shadow var(--transition-fast);
 
 }
 
-
 .dashboard-kpi-card:hover {
 
     transform: translateY(-2px);
+
+    border-color: var(--brand-primary);
 
     box-shadow: var(--shadow-md);
 
@@ -109,6 +113,10 @@
 
 }
 
+
+/* ==========================================================
+   KPI ICON
+========================================================== */
 
 .dashboard-kpi-icon {
 
@@ -137,9 +145,11 @@
 
 .dashboard-kpi-value {
 
+    display: block;
+
     margin: 0;
 
-    font-size: var(--font-size-4xl);
+    font-size: var(--font-size-3xl);
 
     font-weight: var(--font-bold);
 
@@ -188,28 +198,25 @@
 
 .dashboard-kpi-card.is-success {
 
-    border-left: 4px solid var(--color-success);
+    border-left: 4px solid var(--brand-success);
 
 }
-
 
 .dashboard-kpi-card.is-warning {
 
-    border-left: 4px solid var(--color-warning);
+    border-left: 4px solid var(--brand-warning);
 
 }
-
 
 .dashboard-kpi-card.is-danger {
 
-    border-left: 4px solid var(--color-danger);
+    border-left: 4px solid var(--brand-danger);
 
 }
 
-
 .dashboard-kpi-card.is-info {
 
-    border-left: 4px solid var(--brand-primary);
+    border-left: 4px solid var(--brand-info);
 
 }
 

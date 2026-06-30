@@ -3,9 +3,9 @@
    Student & Executive Portal
 
    File      : dashboard.css
-   Version   : 2.0.0
+   Version   : 2.1.0
    Status    : ACTIVE
-   Phase     : Sprint 2C
+   Phase     : Sprint 2D
 
    Purpose
    ----------------------------------------------------------
@@ -14,6 +14,7 @@
    Responsibilities
 
    ✓ Dashboard page layout
+   ✓ Dashboard overview layout
    ✓ Dashboard header
    ✓ Dashboard section layout
    ✓ Empty dashboard state
@@ -46,6 +47,7 @@
 
 ========================================================== */
 
+
 /* ==========================================================
    DASHBOARD ROOT
 ========================================================== */
@@ -57,6 +59,24 @@
     gap: 40px;
 
 }
+
+
+/* ==========================================================
+   DASHBOARD OVERVIEW
+========================================================== */
+
+.dashboard-overview {
+
+    display: grid;
+
+    grid-template-columns: 340px 1fr;
+
+    gap: 24px;
+
+    align-items: start;
+
+}
+
 
 /* ==========================================================
    DASHBOARD HEADER
@@ -120,6 +140,7 @@
 
 }
 
+
 /* ==========================================================
    DASHBOARD SECTION
 ========================================================== */
@@ -166,6 +187,7 @@
 
 }
 
+
 /* ==========================================================
    EMPTY DASHBOARD
 ========================================================== */
@@ -208,6 +230,7 @@
 
 }
 
+
 /* ==========================================================
    LOADING STATE
 ========================================================== */
@@ -223,6 +246,7 @@
     min-height: 280px;
 
 }
+
 
 /* ==========================================================
    RESPONSIVE
@@ -241,6 +265,12 @@
         flex-direction: column;
 
         align-items: flex-start;
+
+    }
+
+    .dashboard-overview {
+
+        grid-template-columns: 1fr;
 
     }
 

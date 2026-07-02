@@ -54,7 +54,9 @@
                 return;
             }
 
-            this.renderSummary(
+            this.renderProfile(
+                data.profile,
+                data.membership,
                 data.summary
             );
 
@@ -64,6 +66,10 @@
 
             this.renderQuickAccess(
                 data.quickAccess
+            );
+
+            this.renderUpgradeCard(
+                data.upgrade
             );
 
             this.renderRecentCredentials(
@@ -131,7 +137,8 @@
 
                 <a
                     href="${item.url}"
-                    class="btn btn-secondary">
+                    class="btn btn-secondary"
+                    aria-label="${item.title}">
 
                     ${item.icon || ""}
 
@@ -395,7 +402,11 @@ createNotificationCard(notification) {
         SIDEBAR SUMMARY
         ================================================== */
 
-        renderSummary(summary) {
+        renderProfile(
+                        profile,
+                        membership,
+                        summary
+                    ) {
 
             if (!summary) {
                 return;
@@ -407,7 +418,7 @@ createNotificationCard(notification) {
                     "sidebarUserName"
                 ),
 
-                summary.user?.name || "Student"
+                profile?.name || "Student"
 
             );
 
@@ -417,7 +428,7 @@ createNotificationCard(notification) {
                     "sidebarMembership"
                 ),
 
-                summary.user?.membership || ""
+                membership || ""
 
             );
 
@@ -594,7 +605,53 @@ createNotificationCard(notification) {
         },
 
         /* ==================================================
-   RECENT CREDENTIALS
+   UPGRADE CARD
+================================================== */
+
+renderUpgradeCard(upgrade) {
+
+    const container =
+        this.getElement(
+            "dashboardUpgrade"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    if (!upgrade) {
+
+        this.clearElement(
+            container
+        );
+
+        return;
+
+    }
+
+    if (
+        !window.UpgradeCard ||
+        typeof window.UpgradeCard.render !== "function"
+    ) {
+
+        return;
+
+    }
+
+    this.setHtml(
+
+        container,
+
+        window.UpgradeCard.render(
+            upgrade
+        )
+
+    );
+
+},  
+
+        /* ==================================================
+   RECENT RECENT CREDENTIALS
 ================================================== */
 
 renderRecentCredentials(credentials) {

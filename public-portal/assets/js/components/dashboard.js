@@ -49,10 +49,26 @@
     "use strict";
 
     /* ======================================================
+       STATE
+    ====================================================== */
+
+    let initialized = false;
+
+    let initializing = false;
+
+    /* ======================================================
        INITIALIZATION
     ====================================================== */
 
     async function initializeDashboard() {
+
+        if (initialized || initializing) {
+            return;
+        }
+
+        initializing = true;
+
+        showLoading();
 
         try {
 
@@ -70,10 +86,21 @@
 
             renderDashboard(dashboard);
 
+            initialized = true;
+
         }
         catch (error) {
 
+            initialized = false;
+
             showInitializationError(error);
+
+        }
+        finally {
+
+            initializing = false;
+
+            hideLoading();
 
         }
 

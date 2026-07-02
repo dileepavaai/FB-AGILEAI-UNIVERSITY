@@ -39,7 +39,33 @@
 
             ]);
 
+            /* ==================================================
+                DASHBOARD VIEW MODEL
+               ================================================== */
+
+            const user =
+                summary?.user ?? {};
+
+            const profile =
+                user;
+
+            const membership =
+                user.membership ?? "University Member";
+
+            /* ==================================================
+            UPGRADE VIEW MODEL
+            ================================================== */
+
+            const upgrade =
+                await this.loadUpgradeModel();
+
             return {
+
+                /*
+                * Existing Dashboard Model
+                * ---------------------------------------------
+                * Backward compatible.
+                */
 
                 summary,
 
@@ -51,7 +77,20 @@
 
                 recentRecognitions,
 
-                notifications
+                notifications,
+
+                /*
+                * Dashboard ViewModel v1.2
+                * ---------------------------------------------
+                * New consumers should gradually migrate
+                * to these properties.
+                */
+
+                profile,
+
+                membership,
+
+                upgrade
 
             };
 
@@ -63,22 +102,31 @@
 
         async loadDashboardSummary() {
 
-            const recognitionCount =
+            try {
 
-                (
-                    window.RecognitionService &&
-                    typeof window.RecognitionService.count === "function"
-                )
+                const recognitionCount =
+                    (
+                        window.RecognitionService &&
+                        typeof window.RecognitionService.count === "function"
+                    )
+                        ? await window.RecognitionService.count()
+                        : 0;
 
-                    ? await window.RecognitionService.count()
+                return this.createSummaryModel(
+                    recognitionCount
+                );
 
-                    : 0;
+            }
+            catch (error) {
 
-            return this.createSummaryModel(
+                console.error(
+                    "[DashboardService] Failed to load dashboard summary.",
+                    error
+                );
 
-                recognitionCount
+                return this.createSummaryModel(0);
 
-            );
+            }
 
         },
 
@@ -227,6 +275,62 @@
         async loadNotifications() {
 
             return [];
+
+        },
+
+        /* ==================================================
+        UPGRADE MODEL
+        ================================================== */
+
+        async loadUpgradeModel() {
+
+            if (
+                !window.EligibilityService ||
+                typeof window.EligibilityService.getUpgradeModel !== "function"
+            ) {
+
+                /*
+                * Revenue Sprint v1
+                * ---------------------------------------------
+                * Fallback Upgrade Model.
+                *
+                * Used until EligibilityService
+                * becomes available.
+                */
+
+                return {
+
+                    eligible: true,
+
+                    programCode:
+                        "AIPA",
+
+                    programName:
+                        "Artificial Intelligence Professional Agilist",
+
+                    title:
+                        "Upgrade Your Agile AI Capability",
+
+                    description:
+                        "Continue your Agile AI University learning journey by upgrading to the Artificial Intelligence Professional Agilist (AIPA) credential.",
+
+                    buttonText:
+                        "Upgrade Now",
+
+                    price:
+                        null,
+
+                    currency:
+                        "INR",
+
+                    url:
+                        "/upgrade/upgrade.html"
+
+                };
+
+            }
+
+            return await window.EligibilityService.getUpgradeModel();
 
         },
 

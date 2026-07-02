@@ -36,36 +36,49 @@ window.resolvePortalEntitlements = function ({
     );
 
   /* =====================================================
-     EXECUTIVE INSIGHT — ABSOLUTE PRECEDENCE (LOCKED)
-     ===================================================== */
+   EXECUTIVE INSIGHT — ABSOLUTE PRECEDENCE (LOCKED)
+   ===================================================== */
 
-  const hasExecutiveInsight =
+const hasExecutiveInsight =
     executiveEntitlement &&
     executiveEntitlement.entitled === true;
 
-  if (hasExecutiveInsight) {
+if (hasExecutiveInsight) {
+
+    const visibleCredentials =
+        normalizeVisibleCredentials(
+            credentials,
+            email
+        );
+
+    const learningJourney =
+        createEmptyLearningJourney();
+
     return {
-      executiveInsight: {
-        hasAccess: true,
-        validUntil: executiveEntitlement.validUntil || null
-      },
 
-      portalAccess: {
-        hasAccess: true,
-        type: "executive"
-      },
+        executiveInsight: {
+            hasAccess: true,
+            validUntil:
+                executiveEntitlement.validUntil || null
+        },
 
-      visibleCredentials: normalizeVisibleCredentials(
-        credentials,
-        email
-      ),
+        portalAccess: {
+            hasAccess: true,
+            type: "executive"
+        },
 
-      uiState: {
-        suppressUpgradeCTAs: true,
-        suppressNoAccessMessages: true
-      }
+        visibleCredentials,
+
+        learningJourney,
+
+        uiState: {
+            suppressUpgradeCTAs: true,
+            suppressNoAccessMessages: true
+        }
+
     };
-  }
+
+}
 
   /* =====================================================
    PORTAL ACCESS RESOLUTION
@@ -92,6 +105,19 @@ const visibleCredentials =
     credentials,
     email
   );
+
+/* =====================================================
+   LEARNING JOURNEY
+   Foundation Placeholder
+   -----------------------------------------------------
+   NOTE:
+   Replaced by buildLearningJourney() during Sprint 2
+   integration once the Learning Services layer is
+   connected to the resolver.
+   ===================================================== */
+
+const learningJourney =
+    createEmptyLearningJourney();
 
 let portalAccess = {
   hasAccess: false,
@@ -142,6 +168,8 @@ console.log(
   portalAccess,
 
   visibleCredentials,
+
+  learningJourney,
 
   uiState: {
     suppressUpgradeCTAs: false,
@@ -341,4 +369,40 @@ function normalizeEmail(email) {
   return typeof email === "string"
     ? email.trim().toLowerCase()
     : null;
+}
+
+function createEmptyLearningJourney() {
+
+    return {
+
+        completedPrograms: [],
+
+        relationships: [],
+
+        progression: {
+
+            current: [],
+
+            future: [],
+
+            opportunities: []
+
+        },
+
+        bridgePrograms: [],
+
+        recommendations: [],
+
+        summary: {
+
+            completedProgramCount: 0,
+
+            recommendationCount: 0,
+
+            bridgeProgramCount: 0
+
+        }
+
+    };
+
 }

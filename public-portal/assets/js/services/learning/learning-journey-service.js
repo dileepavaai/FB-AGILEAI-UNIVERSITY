@@ -1,188 +1,409 @@
-/**
- * ================================================================
- * Agile AI University
- * Learning Journey Service
- * ---------------------------------------------------------------
- * File:
- * public-portal/assets/js/services/learning/learning-journey-service.js
- *
- * Version        : 1.0.0
- * Status         : Foundation
- * Owner          : Agile AI University
- *
- * Description
- * ---------------------------------------------------------------
- * Central orchestration service responsible for constructing a
- * learner's complete learning journey.
- *
- * Responsibilities
- * ---------------------------------------------------------------
- * • Load learner credentials
- * • Resolve completed programs
- * • Resolve capability relationships
- * • Resolve bridge opportunities
- * • Generate learning recommendations
- * • Build learner journey model
- *
- * This service does NOT perform rendering.
- * UI components consume the returned model.
- *
- * ================================================================
- */
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
 
-import {
-    getProgramRelationships
-} from "./program-relationship-service.js";
+   File      : learning-journey-service.js
+   Version   : 2.0.0
+   Status    : ACTIVE
+   Phase     : Sprint 3
 
-import {
-    resolveCapabilityProgression
-} from "./capability-progression-service.js";
+   Purpose
+   ----------------------------------------------------------
+   Learning Journey Orchestration Service
 
-import {
-    resolveBridgePrograms
-} from "./bridge-program-service.js";
+   Responsibilities
 
-import {
-    generateRecommendations
-} from "./recommendation-service.js";
+   ✓ Build Learning Journey ViewModel
+   ✓ Extract completed programs
+   ✓ Orchestrate learning services
+   ✓ Build summary model
+   ✓ Return immutable learning journey
 
+   Non Responsibilities
 
-/**
- * ================================================================
- * Public API
- * ================================================================
- */
+   ✗ Authentication
+   ✗ Authorization
+   ✗ Firestore
+   ✗ Dashboard Rendering
+   ✗ DOM Manipulation
+   ✗ HTML Generation
 
-export async function buildLearningJourney(credentials = [], programs = {}) {
+   Depends On
 
-    const completedPrograms =
-        extractCompletedPrograms(credentials);
+   • EligibilityService
+   • RecommendationService (Future)
 
-    const relationships =
-        getProgramRelationships(
-            completedPrograms,
-            programs
-        );
+   Governance
 
-    const progression =
-        resolveCapabilityProgression(
-            completedPrograms,
-            relationships
-        );
+   • Learning Journey Authority
+   • Business Service
+   • Resolver First
+   • Single Responsibility
+   • Dashboard consumes ViewModel only
 
-    const bridgePrograms =
-        resolveBridgePrograms(
-            completedPrograms,
-            relationships
-        );
+========================================================== */
 
-    const recommendations =
-        generateRecommendations({
+(function (window) {
 
-            completedPrograms,
+    "use strict";
 
-            relationships,
+    const LearningJourneyService = {
 
-            progression,
+        /* ==================================================
+           PUBLIC API
+        ================================================== */
 
-            bridgePrograms
+        build(visibleCredentials = []) {
 
-        });
+            const completedPrograms =
+                this.extractCompletedPrograms(
+                    visibleCredentials
+                );
 
-    return {
+            const relationships =
+                this.buildRelationships(
+                    completedPrograms
+                );
 
-        completedPrograms,
+            const progression =
+                this.buildProgression(
+                    completedPrograms,
+                    relationships
+                );
 
-        relationships,
+            const bridgePrograms =
+                this.buildBridgePrograms(
+                    completedPrograms,
+                    relationships
+                );
 
-        progression,
+            const recommendations =
+                this.buildRecommendations({
 
-        bridgePrograms,
+                    completedPrograms,
 
-        recommendations,
+                    relationships,
 
-        summary:
-            buildJourneySummary({
+                    progression,
+
+                    bridgePrograms
+
+                });
+
+            return this.validate({
+
                 completedPrograms,
+
+                relationships,
+
+                progression,
+
+                bridgePrograms,
+
                 recommendations,
-                bridgePrograms
-            })
+
+                summary:
+                    this.buildSummary({
+
+                        completedPrograms,
+
+                        recommendations,
+
+                        bridgePrograms
+
+                    })
+
+            });
+
+        },
+
+        /* ==================================================
+           COMPLETED PROGRAMS
+        ================================================== */
+
+        extractCompletedPrograms(
+            credentials = []
+        ) {
+
+            if (!Array.isArray(credentials)) {
+
+                return [];
+
+            }
+
+            return credentials
+
+                .filter(function (credential) {
+
+                    return Boolean(
+                        credential &&
+                        credential.program_code
+                    );
+
+                })
+
+                .map(function (credential) {
+
+                    return {
+
+                        programCode:
+                            credential.program_code,
+
+                        programName:
+                            credential.program_name ||
+                            credential.program_code,
+
+                        credentialId:
+                            credential.credential_id ||
+                            null,
+
+                        credentialType:
+                            credential.credential_type ||
+                            null,
+
+                        issuedBy:
+                            credential.issued_by ||
+                            null,
+
+                        issuedAt:
+                            credential.issued_at ||
+                            null,
+
+                        validity:
+                            credential.validity ||
+                            "Lifetime"
+
+                    };
+
+                });
+
+        },
+
+                /* ==================================================
+           PROGRAM RELATIONSHIPS
+        ================================================== */
+
+        buildRelationships(
+            completedPrograms = []
+        ) {
+
+            /*
+             * Sprint 3 Foundation
+             * ------------------------------------------------
+             * Future versions will resolve:
+             *
+             * • Program Equivalencies
+             * • Capability Relationships
+             * • Learning Dependencies
+             * • Credential Hierarchy
+             */
+
+            return [];
+
+        },
+
+        /* ==================================================
+           CAPABILITY PROGRESSION
+        ================================================== */
+
+        buildProgression(
+
+            completedPrograms = [],
+
+            relationships = []
+
+        ) {
+
+            /*
+             * Sprint 3 Foundation
+             * ------------------------------------------------
+             * Future versions will determine:
+             *
+             * • Current Capability
+             * • Next Capability
+             * • Future Learning Path
+             * • Upgrade Readiness
+             */
+
+            return {
+
+                current: [],
+
+                future: [],
+
+                opportunities: []
+
+            };
+
+        },
+
+        /* ==================================================
+           BRIDGE PROGRAMS
+        ================================================== */
+
+        buildBridgePrograms(
+
+            completedPrograms = [],
+
+            relationships = []
+
+        ) {
+
+            /*
+             * Sprint 3 Foundation
+             * ------------------------------------------------
+             * Future versions will evaluate:
+             *
+             * • Bridge Programs
+             * • Recognition of Prior Learning
+             * • Fast-track Eligibility
+             * • Cross-program Pathways
+             */
+
+            return [];
+
+        },
+
+                /* ==================================================
+           RECOMMENDATIONS
+        ================================================== */
+
+        buildRecommendations(journey) {
+
+            /*
+             * Recommendation Authority
+             * ------------------------------------------------
+             * Future versions delegate to:
+             *
+             * • RecommendationService
+             * • EligibilityService
+             * • AI Learning Coach
+             *
+             * Revenue Sprint v1 returns an
+             * empty recommendation collection.
+             */
+
+            if (
+
+                window.RecommendationService &&
+
+                typeof window.RecommendationService.build ===
+                    "function"
+
+            ) {
+
+                return window
+                    .RecommendationService
+                    .build(journey);
+
+            }
+
+            return [];
+
+        },
+
+        /* ==================================================
+           JOURNEY SUMMARY
+        ================================================== */
+
+        buildSummary({
+
+            completedPrograms = [],
+
+            recommendations = [],
+
+            bridgePrograms = []
+
+        }) {
+
+            return {
+
+                completedProgramCount:
+                    completedPrograms.length,
+
+                recommendationCount:
+                    recommendations.length,
+
+                bridgeProgramCount:
+                    bridgePrograms.length
+
+            };
+
+        },
+
+        /* ==================================================
+           EMPTY JOURNEY
+        ================================================== */
+
+        createEmptyJourney() {
+
+            return {
+
+                completedPrograms: [],
+
+                relationships: [],
+
+                progression: {
+
+                    current: [],
+
+                    future: [],
+
+                    opportunities: []
+
+                },
+
+                bridgePrograms: [],
+
+                recommendations: [],
+
+                summary: {
+
+                    completedProgramCount: 0,
+
+                    recommendationCount: 0,
+
+                    bridgeProgramCount: 0
+
+                }
+
+            };
+
+        },
+
+                /* ==================================================
+           VALIDATION
+        ================================================== */
+
+        validate(journey) {
+
+            if (
+
+                !journey ||
+
+                typeof journey !== "object"
+
+            ) {
+
+                return this.createEmptyJourney();
+
+            }
+
+            return journey;
+
+        }
 
     };
 
-}
+    /* ======================================================
+       GOVERNANCE
+    ====================================================== */
 
+    Object.freeze(
+        LearningJourneyService
+    );
 
-/**
- * ================================================================
- * Internal Helpers
- * ================================================================
- */
+    window.LearningJourneyService =
+        LearningJourneyService;
 
-function extractCompletedPrograms(credentials = []) {
-
-    return credentials
-
-        .filter(c => c.program_code)
-
-        .map(c => ({
-
-            programCode:
-                c.program_code,
-
-            programName:
-                c.program_name,
-
-            credentialId:
-                c.credential_id,
-
-            credentialType:
-                c.credential_type,
-
-            issuedStatus:
-                c.issued_status,
-
-            trainingEndDate:
-                c.training_end_date
-
-        }));
-
-}
-
-
-function buildJourneySummary(data) {
-
-    return {
-
-        completedProgramCount:
-            data.completedPrograms.length,
-
-        recommendationCount:
-            data.recommendations.length,
-
-        bridgeProgramCount:
-            data.bridgePrograms.length
-
-    };
-
-}
-
-
-/**
- * ================================================================
- * Future Extension Points
- * ================================================================
- *
- * Future versions may include:
- *
- * • Learning Timeline
- * • Skill Graph
- * • Competency Heatmap
- * • Executive Dashboard Insights
- * • Credential Equivalency Engine
- * • Learning Analytics
- * • AI Learning Coach
- * • Personalized Learning Paths
- *
- * ================================================================
- */
+})(window);

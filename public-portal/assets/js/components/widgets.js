@@ -127,87 +127,7 @@
 
         },
 
-        /* ==================================================
-        QUICK ACCESS BUTTON
-        ================================================== */
-
-        createQuickAccessButton(item) {
-
-            return `
-
-                <a
-                    href="${item.url}"
-                    class="btn btn-secondary"
-                    aria-label="${item.title}">
-
-                    ${item.icon || ""}
-
-                    ${item.title}
-
-                </a>
-
-            `;
-
-        },
-
-
-        /* ==================================================
-   RECOGNITION CARD
-================================================== */
-
-createRecognitionCard(recognition) {
-
-    return `
-
-        <article class="dashboard-card">
-
-            <div class="dashboard-card-header">
-
-                <h3 class="dashboard-card-title">
-
-                    ${recognition.title || "Recognition"}
-
-                </h3>
-
-            </div>
-
-            <div class="dashboard-card-body">
-
-                <p>
-
-                    ${recognition.description || ""}
-
-                </p>
-
-            </div>
-
-        </article>
-
-    `;
-
-},
-
-        /* ==================================================
-   NOTIFICATION CARD
-================================================== */
-
-createNotificationCard(notification) {
-
-    return `
-
-        <article class="dashboard-card">
-
-            <div class="dashboard-card-body">
-
-                ${notification.message || ""}
-
-            </div>
-
-        </article>
-
-    `;
-
-},
+        
 
         /* ==================================================
         SIDEBAR SUMMARY
@@ -383,37 +303,59 @@ createNotificationCard(notification) {
         },
 
         /* ==================================================
-        QUICK ACCESS
-        ================================================== */
+   QUICK ACCESS
+================================================== */
 
-        renderQuickAccess(items) {
+renderQuickAccess(items) {
 
-            if (!Array.isArray(items)) {
-                return;
-            }
+    if (!Array.isArray(items)) {
+        return;
+    }
 
-            const container =
-                this.getElement(
-                    "dashboardQuickAccess"
-                );
+    const container =
+        this.getElement(
+            "dashboardQuickAccess"
+        );
 
-            if (!container) {
-                return;
-            }
+    if (!container) {
+        return;
+    }
 
-            this.setHtml(
+    /*
+     * Quick Access Card Component
+     * is the authoritative renderer.
+     */
 
-                container,
+    if (
 
-                items
-                    .map(item =>
-                        this.createQuickAccessButton(item)
-                    )
-                    .join("")
+        !window.QuickAccessCard ||
 
-            );
+        typeof window.QuickAccessCard.render !==
+            "function"
 
-        },
+    ) {
+
+        return;
+
+    }
+
+    this.setHtml(
+
+        container,
+
+        items
+            .map(function (item) {
+
+                return window
+                    .QuickAccessCard
+                    .render(item);
+
+            })
+            .join("")
+
+    );
+
+},
 
         /* ==================================================
    UPGRADE CARD
@@ -462,8 +404,8 @@ renderUpgradeCard(upgrade) {
 },  
 
         /* ==================================================
-   RECENT RECENT CREDENTIALS
-================================================== */
+            RECENT CREDENTIALS
+        ================================================== */
 
 renderRecentCredentials(credentials) {
 
@@ -479,6 +421,22 @@ renderRecentCredentials(credentials) {
     if (!container) {
         return;
     }
+
+    if (
+
+    !window.CredentialCard ||
+
+    typeof window.CredentialCard.render !==
+        "function" ||
+
+    typeof window.CredentialCard.renderEmpty !==
+        "function"
+
+) {
+
+    return;
+
+}
 
     if (credentials.length === 0) {
 
@@ -513,107 +471,147 @@ renderRecentCredentials(credentials) {
     );
 
 },
-                /* ==================================================
-           RECENT RECOGNITIONS
-        ================================================== */
+               /* ==================================================
+   RECENT RECOGNITIONS
+================================================== */
 
-        renderRecentRecognitions(recognitions) {
+renderRecentRecognitions(recognitions) {
 
-            if (!Array.isArray(recognitions)) {
-                return;
-            }
+    if (!Array.isArray(recognitions)) {
+        return;
+    }
 
-            const container =
-                this.getElement(
-                    "recentRecognitions"
-                );
+    const container =
+        this.getElement(
+            "recentRecognitions"
+        );
 
-            if (!container) {
-                return;
-            }
+    if (!container) {
+        return;
+    }
 
-            if (recognitions.length === 0) {
+    /*
+     * Recognition Card Component
+     * is the authoritative renderer.
+     */
 
-                this.clearElement(container);
+    if (
 
-                return;
+        !window.RecognitionCard ||
 
-            }
+        typeof window.RecognitionCard.render !==
+            "function"
 
-            this.setHtml(
+    ) {
 
-    container,
+        return;
 
-    recognitions
-        .map(
+    }
 
-            recognition =>
+    if (recognitions.length === 0) {
 
-                this.createRecognitionCard(
-                    recognition
-                )
+        this.clearElement(
+            container
+        );
 
-        )
-        .join("")
+        return;
 
-);
+    }
 
-        },
+    this.setHtml(
 
-        /* ==================================================
-           NOTIFICATIONS
-        ================================================== */
+        container,
 
-        renderNotifications(notifications) {
+        recognitions
+            .map(function (recognition) {
 
-            if (!Array.isArray(notifications)) {
-                return;
-            }
+                return window
+                    .RecognitionCard
+                    .render(
+                        recognition
+                    );
 
-            const container =
-                this.getElement(
-                    "dashboardNotifications"
-                );
+            })
+            .join("")
 
-            if (!container) {
-                return;
-            }
-
-            if (notifications.length === 0) {
-
-                this.clearElement(container);
-
-                return;
-
-            }
-
-            this.setHtml(
-
-    container,
-
-    notifications
-        .map(
-
-            notification =>
-
-                this.createNotificationCard(
-                    notification
-                )
-
-        )
-        .join("")
-
-);
-
-        }
-
-    };
-
-    Object.freeze(
-        DashboardWidgets
     );
 
-    window.DashboardWidgets =
-        DashboardWidgets;
+},
+
+/* ==================================================
+   NOTIFICATIONS
+================================================== */
+
+renderNotifications(notifications) {
+
+    if (!Array.isArray(notifications)) {
+        return;
+    }
+
+    const container =
+        this.getElement(
+            "dashboardNotifications"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    /*
+     * Notification Card Component
+     * is the authoritative renderer.
+     */
+
+    if (
+
+        !window.NotificationCard ||
+
+        typeof window.NotificationCard.render !==
+            "function"
+
+    ) {
+
+        return;
+
+    }
+
+    if (notifications.length === 0) {
+
+        this.clearElement(
+            container
+        );
+
+        return;
+
+    }
+
+    this.setHtml(
+
+        container,
+
+        notifications
+            .map(function (notification) {
+
+                return window
+                    .NotificationCard
+                    .render(
+                        notification
+                    );
+
+            })
+            .join("")
+
+    );
+
+}
+
+};
+
+Object.freeze(
+    DashboardWidgets
+);
+
+window.DashboardWidgets =
+    DashboardWidgets;
 
 })(window, document);

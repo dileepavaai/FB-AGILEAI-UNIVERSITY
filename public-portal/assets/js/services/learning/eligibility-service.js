@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : eligibility-service.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -49,52 +49,27 @@
             const credentials =
                 this.getVisibleCredentials();
 
-            /*
-             * Revenue Sprint v1
-             * ---------------------------------------------
-             * Placeholder implementation.
-             *
-             * Future versions will evaluate:
-             *
-             * • Completed Programs
-             * • Membership
-             * • Upgrade Paths
-             * • Campaign Rules
-             * • Pricing
-             */
+            const currentProgram =
+                this.getCurrentProgram(
+                    credentials
+                );
 
-            return {
+            const eligibility =
+                this.evaluateEligibility(
+                    currentProgram
+                );
 
-                eligible: true,
+            const pricing =
+                this.resolvePricing(
+                    currentProgram
+                );
 
-                programCode:
-                    "AIPA",
-
-                programName:
-                    "Artificial Intelligence Professional Agilist",
-
-                title:
-                    "Upgrade Your Agile AI Capability",
-
-                description:
-                    "Continue your Agile AI University learning journey by upgrading to the Artificial Intelligence Professional Agilist (AIPA) credential.",
-
-                buttonText:
-                    "Upgrade Now",
-
-                price:
-                    null,
-
-                currency:
-                    "INR",
-
-                url:
-                    "/upgrade/upgrade.html",
-
-                currentCredentials:
-                    credentials.length
-
-            };
+            return this.buildUpgradeModel(
+                eligibility,
+                currentProgram,
+                pricing,
+                credentials
+            );
 
         },
 
@@ -120,12 +95,174 @@
 
             return entitlements.visibleCredentials;
 
+        },
+
+        /* ==================================================
+           CURRENT PROGRAM
+        ================================================== */
+
+        getCurrentProgram(credentials) {
+
+            if (
+                !Array.isArray(credentials) ||
+                credentials.length === 0
+            ) {
+
+                return null;
+
+            }
+
+            /*
+             * Revenue Sprint v1
+             *
+             * Current implementation:
+             * Uses the latest visible credential.
+             *
+             * Future:
+             * Highest credential
+             * Learning hierarchy
+             * Bridge rules
+             */
+
+            const latestCredential =
+                credentials[0];
+
+            return {
+
+                code:
+                    latestCredential.programCode ||
+                    latestCredential.code ||
+                    null,
+
+                name:
+                    latestCredential.programName ||
+                    latestCredential.name ||
+                    null
+
+            };
+
+        },
+
+        /* ==================================================
+           ELIGIBILITY
+        ================================================== */
+
+        evaluateEligibility(program) {
+
+            if (!program) {
+
+                return false;
+
+            }
+
+            /*
+             * Revenue Sprint v1
+             *
+             * Future versions will evaluate:
+             * • Membership
+             * • Upgrade paths
+             * • Campaign rules
+             */
+
+            return true;
+
+        },
+
+        /* ==================================================
+           PRICING
+        ================================================== */
+
+        resolvePricing(program) {
+
+            if (!program) {
+
+                return {
+
+                    price: null,
+
+                    currency: "INR"
+
+                };
+
+            }
+
+            /*
+             * Revenue Sprint v1
+             *
+             * Future:
+             * Campaign pricing
+             * Regional pricing
+             * Coupons
+             */
+
+            return {
+
+                price: null,
+
+                currency: "INR"
+
+            };
+
+        },
+
+        /* ==================================================
+           UPGRADE VIEW MODEL
+        ================================================== */
+
+        buildUpgradeModel(
+            eligibility,
+            program,
+            pricing,
+            credentials
+        ) {
+
+            return {
+
+                eligible,
+
+                currentProgram:
+                    program,
+
+                programCode:
+                    "AIPA",
+
+                programName:
+                    "Artificial Intelligence Professional Agilist",
+
+                title:
+                    "Upgrade Your Agile AI Capability",
+
+                description:
+                    "Continue your Agile AI University learning journey by upgrading to the Artificial Intelligence Professional Agilist (AIPA) credential.",
+
+                buttonText:
+                    "Upgrade Now",
+
+                price:
+                    pricing.price,
+
+                currency:
+                    pricing.currency,
+
+                url:
+                    "/upgrade/upgrade.html",
+
+                currentCredentials:
+                    credentials.length,
+
+                reasons: []
+
+            };
+
         }
 
     };
 
-    Object.freeze(EligibilityService);
+    Object.freeze(
+        EligibilityService
+    );
 
-    window.EligibilityService = EligibilityService;
+    window.EligibilityService =
+        EligibilityService;
 
 })(window);

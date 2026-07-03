@@ -50,10 +50,10 @@
 
                 eligible = false,
 
-                title = "Continue Your Learning",
+                title = "Your Next Agile AI Capability",
 
                 description =
-                    "Explore your next Agile AI learning opportunity.",
+                    "Based on your current credentials, you're ready to advance to the next Agile AI capability.",
 
                 currentProgram = null,
 
@@ -65,7 +65,7 @@
 
                 currency = "INR",
 
-                buttonText = "Learn More",
+                buttonText = "View Upgrade Path",
 
                 url = "/upgrade/upgrade.html",
 
@@ -147,7 +147,7 @@
 
                                 <strong>
 
-                                    Next Program:
+                                    Recommended Program:
 
                                 </strong>
 

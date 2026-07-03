@@ -120,7 +120,7 @@
 
             return `
 
-                <section class="dashboard-card upgrade-card">
+                <section class="upgrade-card">
 
                     <div class="upgrade-card__header">
 

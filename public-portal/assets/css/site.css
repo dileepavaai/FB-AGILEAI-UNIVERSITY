@@ -2,35 +2,54 @@
    Agile AI University — Portal Site Styles
    INSTITUTIONAL · GOVERNANCE-ALIGNED · SAFE
    SINGLE SOURCE OF TRUTH (FINAL)
-   ========================================================= */
+   Version : 2.1.0
+   Status  : ACTIVE
 
-  /* ==========================================================
-    Shared Design System
-  ========================================================== */
+   Changes
+   ---------------------------------------------------------
+   • Added Upgrade Card component stylesheet
+   • No breaking changes
+   • Backward compatible
+   • Governance aligned
+========================================================= */
 
-  @import url("./design-tokens.css");
 
-  /* ==========================================================
-    Shared UI Components
-  ========================================================== */
+/* ==========================================================
+   Shared Design System
+========================================================== */
 
-  @import url("./components/buttons.css");
-  @import url("./components/cards.css");
+@import url("./design-tokens.css");
 
-  /* ==========================================================
-    Dashboard Components
-  ========================================================== */
 
-  @import url("./components/dashboard.css");
-  @import url("./components/dashboard-cards.css");
-  @import url("./components/dashboard-kpi.css");
-  @import url("./components/dashboard-widgets.css");
+/* ==========================================================
+   Shared UI Components
+========================================================== */
 
-  /* ==========================================================
-    Portal Module
-  ========================================================== */
+@import url("./components/buttons.css");
+@import url("./components/cards.css");
 
-  @import url("./portal.css");
+/*
+ * Revenue Sprint
+ * Dashboard Upgrade Component
+ */
+@import url("./components/upgrade-card.css");
+
+
+/* ==========================================================
+   Dashboard Components
+========================================================== */
+
+@import url("./components/dashboard.css");
+@import url("./components/dashboard-cards.css");
+@import url("./components/dashboard-kpi.css");
+@import url("./components/dashboard-widgets.css");
+
+
+/* ==========================================================
+   Portal Module
+========================================================== */
+
+@import url("./portal.css");
 
 /* =====================
    GLOBAL THEME VARIABLES

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : upgrade-card.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -15,7 +15,7 @@
 
    ✓ Render upgrade recommendation
    ✓ Render CTA
-   ✓ UI only
+   ✓ UI Rendering only
 
    Non Responsibilities
 
@@ -24,6 +24,13 @@
    ✗ Payments
    ✗ Routing Logic
    ✗ Business Rules
+
+   Governance
+
+   • Presentation Component
+   • Consumes Upgrade ViewModel
+   • Stateless
+   • Enterprise Portal Standard
 
 ========================================================== */
 
@@ -48,11 +55,68 @@
                 description =
                     "Explore your next Agile AI learning opportunity.",
 
+                currentProgram = null,
+
+                nextProgram = null,
+
+                programName = null,
+
+                price = null,
+
+                currency = "INR",
+
                 buttonText = "Learn More",
 
-                url = "/upgrade/upgrade.html"
+                url = "/upgrade/upgrade.html",
+
+                reasons = []
 
             } = model;
+
+            const reasonHtml =
+                reasons.length > 0
+                    ? `
+                        <ul class="upgrade-card__reasons">
+                            ${reasons
+                                .map(function (reason) {
+                                    return `<li>${reason}</li>`;
+                                })
+                                .join("")}
+                        </ul>
+                    `
+                    : "";
+
+            const priceHtml =
+                price !== null
+                    ? `
+                        <div class="upgrade-card__price">
+
+                            <strong>
+
+                                ${currency} ${Number(price).toLocaleString()}
+
+                            </strong>
+
+                        </div>
+                    `
+                    : "";
+
+            const journeyHtml =
+                currentProgram && nextProgram
+                    ? `
+                        <div class="upgrade-card__journey">
+
+                            <strong>
+
+                                ${currentProgram.code}
+                                →
+                                ${nextProgram}
+
+                            </strong>
+
+                        </div>
+                    `
+                    : "";
 
             return `
 
@@ -60,7 +124,11 @@
 
                     <div class="upgrade-card__header">
 
-                        <h3>${title}</h3>
+                        <h3>
+
+                            ${title}
+
+                        </h3>
 
                     </div>
 
@@ -71,6 +139,26 @@
                             ${description}
 
                         </p>
+
+                        ${journeyHtml}
+
+                        ${programName ? `
+                            <p>
+
+                                <strong>
+
+                                    Next Program:
+
+                                </strong>
+
+                                ${programName}
+
+                            </p>
+                        ` : ""}
+
+                        ${priceHtml}
+
+                        ${reasonHtml}
 
                     </div>
 
@@ -96,6 +184,7 @@
 
     Object.freeze(UpgradeCard);
 
-    window.UpgradeCard = UpgradeCard;
+    window.UpgradeCard =
+        UpgradeCard;
 
 })(window);

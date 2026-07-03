@@ -68,7 +68,11 @@
 
         initializing = true;
 
-        showLoading();
+        if (typeof window.showLoading === "function") {
+
+            window.showLoading();
+
+        }
 
         try {
 
@@ -100,7 +104,11 @@
 
             initializing = false;
 
-            hideLoading();
+            if (typeof window.hideLoading === "function") {
+
+                window.hideLoading();
+
+            }
 
         }
 

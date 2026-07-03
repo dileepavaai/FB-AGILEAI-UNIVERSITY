@@ -171,13 +171,13 @@
 
                             <h3 class="dashboard-card-title">
 
-                                ${credential.program_code || "Credential"}
+                                ${credential.programName || credential.program_code || "Credential"}
 
                             </h3>
 
                             <div class="dashboard-card-subtitle">
 
-                                ${credential.credential_type || "-"}
+                                ${credential.programCode || credential.program_code || "-"}
 
                             </div>
 

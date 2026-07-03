@@ -249,12 +249,54 @@
         },
 
         /* ==================================================
-           RECENT CREDENTIALS
+        RECENT CREDENTIALS
         ================================================== */
 
         async loadRecentCredentials() {
 
-            return this.getPortalCredentials();
+            const credentials =
+                this.getPortalCredentials();
+
+            if (!Array.isArray(credentials)) {
+
+                return [];
+
+            }
+
+            return await Promise.all(
+
+                credentials.map(async (credential) => {
+
+                    const program =
+                        await window.ProgramService.get(
+                            credential.program_code
+                        );
+
+                    return Object.freeze({
+
+                        ...credential,
+
+                        /*
+                        * Academic ViewModel
+                        * ------------------------------
+                        * ProgramService is the single
+                        * authority for program metadata.
+                        */
+
+                        programName:
+                            program.programName,
+
+                        programCode:
+                            program.programCode,
+
+                        available_assets:
+                            program.availableAssets
+
+                    });
+
+                })
+
+            );
 
         },
 

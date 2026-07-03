@@ -65,6 +65,30 @@
 
     });
 
+    /* ==================================================
+       COMMERCIAL CONSTANTS
+    ================================================== */
+
+    const BRIDGE_OFFER_END_DATE =
+        "2026-06-10";
+
+    /*
+     * Future Commercial Constants
+     * ------------------------------------------------
+     * Keep all commercial values centralized here.
+     *
+     * Example:
+     *
+     * const BRIDGE_PROGRAMME =
+     *     "AIPA Capability Upgrade";
+     *
+     * const BRIDGE_FEE = 7500;
+     *
+     * const STANDARD_BRIDGE_FEE = 15000;
+     *
+     * const FULL_PROGRAMME_FEE = 30000;
+     */
+
     const EligibilityService = {
 
         /* ==================================================
@@ -88,6 +112,7 @@
 
             const pricing =
                 this.resolvePricing(
+                    currentProgram,
                     eligibility
                 );
 
@@ -302,11 +327,14 @@
 
         },
 
-        /* ==================================================
-        PRICING
+                /* ==================================================
+           PRICING
         ================================================== */
 
-        resolvePricing(eligibility) {
+        resolvePricing(
+            currentProgram,
+            eligibility
+        ) {
 
             if (
                 !eligibility ||
@@ -315,9 +343,27 @@
 
                 return {
 
-                    price: null,
+                    campaignName: null,
 
-                    currency: "INR"
+                    bridgeProgram: null,
+
+                    offerTitle: null,
+
+                    offerDescription: null,
+
+                    baseFee: null,
+
+                    standardFee: null,
+
+                    fullProgrammeFee: null,
+
+                    currency: "INR",
+
+                    gstApplicable: false,
+
+                    offerEndsOn: null,
+
+                    ctaText: "View Learning Journey"
 
                 };
 
@@ -325,45 +371,119 @@
 
             /*
             * Revenue Sprint v1
-            * ---------------------------------------------
-            * Commercial pricing.
+            * ------------------------------------------------
+            * Commercial Pricing Rules
             *
-            * Future versions will support:
+            * Current Campaign
             *
-            * • Campaign pricing
-            * • Regional pricing
-            * • Membership discounts
+            * • Existing AOP Holders
+            * • Existing AAIA Holders
+            *
+            * Bridge Programme
+            *
+            * • AIPA Capability Upgrade
+            *
+            * Pricing
+            *
+            * • Limited-Time Bridge Fee
+            *      INR 7,500
+            *
+            * • Standard Bridge Fee
+            *      INR 15,000
+            *
+            * • Full Programme Fee
+            *      INR 30,000
+            *
+            * GST
+            *
+            * • GST is NOT calculated here.
+            * • GST is automatically calculated
+            *   by the payment gateway during checkout.
+            *
+            * Future
+            *
+            * • Campaign Pricing
             * • Coupons
-            * • Promotional offers
+            * • Membership Discounts
+            * • Corporate Pricing
+            * • Regional Pricing
             */
 
-            switch (eligibility.nextProgram) {
+            if (
+                currentProgram &&
+                (
+                    currentProgram.code === "AOP" ||
+                    currentProgram.code === "AAIA"
+                ) &&
+                eligibility.nextProgram === "AIPA"
+            ) {
 
-                case "AIPA":
+                return {
 
-                    return {
+                    campaignName:
+                        "AOP Bridge Upgrade",
 
-                        price: 8850,
+                    bridgeProgram:
+                        "AIPA Capability Upgrade",
 
-                        currency: "INR"
+                    offerTitle:
+                        "Exclusive Upgrade Offer",
 
-                    };
+                    offerDescription:
+                        "Upgrade from your existing Agile certification to AIPA through the limited-time Bridge Programme.",
 
-                default:
+                    baseFee: 7500,
 
-                    return {
+                    standardFee: 15000,
 
-                        price: null,
+                    fullProgrammeFee: 30000,
 
-                        currency: "INR"
+                    currency: "INR",
 
-                    };
+                    gstApplicable: true,
+
+                    offerEndsOn: BRIDGE_OFFER_END_DATE,
+
+                    ctaText:
+                        "Register for AIPA Bridge"
+
+                };
 
             }
 
+            /*
+            * Default Pricing
+            */
+
+            return {
+
+                campaignName: null,
+
+                bridgeProgram: null,
+
+                offerTitle: null,
+
+                offerDescription: null,
+
+                baseFee: null,
+
+                standardFee: null,
+
+                fullProgrammeFee: null,
+
+                currency: "INR",
+
+                gstApplicable: false,
+
+                offerEndsOn: null,
+
+                ctaText: "Upgrade Now"
+
+            };
+
         },
 
-        /* ==================================================
+                /* ==================================================
            UPGRADE VIEW MODEL
         ================================================== */
 
@@ -376,17 +496,25 @@
 
             return {
 
+                /* ------------------------------------------
+                   Eligibility
+                ------------------------------------------ */
+
                 eligible:
                     eligibility.eligible,
+
+                reason:
+                    eligibility.reason,
+
+                /* ------------------------------------------
+                   Current & Next Programme
+                ------------------------------------------ */
 
                 currentProgram:
                     program,
 
                 nextProgram:
                     eligibility.nextProgram,
-
-                reason:
-                    eligibility.reason,
 
                 programCode:
                     eligibility.nextProgram,
@@ -398,25 +526,60 @@
                         ] || null
                         : null,
 
+                /* ------------------------------------------
+                   Upgrade Experience
+                ------------------------------------------ */
+
                 title:
+                    pricing.offerTitle ||
                     "Upgrade Your Agile AI Capability",
 
                 description:
+                    pricing.offerDescription ||
                     "Continue your Agile AI University learning journey by upgrading your Agile AI capability.",
 
                 buttonText:
                     eligibility.eligible
-                        ? "Upgrade Now"
+                        ? (
+                            pricing.ctaText ||
+                            "Upgrade Now"
+                        )
                         : "View Learning Journey",
 
-                price:
-                    pricing.price,
+                url:
+                    "/upgrade/upgrade.html",
+
+                /* ------------------------------------------
+                   Commercial Information
+                ------------------------------------------ */
+
+                campaignName:
+                    pricing.campaignName,
+
+                bridgeProgram:
+                    pricing.bridgeProgram,
+
+                baseFee:
+                    pricing.baseFee,
+
+                standardFee:
+                    pricing.standardFee,
+
+                fullProgrammeFee:
+                    pricing.fullProgrammeFee,
 
                 currency:
                     pricing.currency,
 
-                url:
-                    "/upgrade/upgrade.html",
+                gstApplicable:
+                    pricing.gstApplicable,
+
+                offerEndsOn:
+                    pricing.offerEndsOn,
+
+                /* ------------------------------------------
+                   Dashboard Information
+                ------------------------------------------ */
 
                 currentCredentials:
                     Array.isArray(credentials)

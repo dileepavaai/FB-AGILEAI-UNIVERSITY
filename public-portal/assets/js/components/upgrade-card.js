@@ -38,7 +38,7 @@
 
     "use strict";
 
-    const UpgradeCard = {
+        const UpgradeCard = {
 
         /* ==================================================
            RENDER
@@ -61,9 +61,21 @@
 
                 programName = null,
 
-                price = null,
+                campaignName = null,
+
+                bridgeProgram = null,
+
+                baseFee = null,
+
+                standardFee = null,
+
+                fullProgrammeFee = null,
 
                 currency = "INR",
+
+                gstApplicable = false,
+
+                offerEndsOn = null,
 
                 buttonText = "View Upgrade Path",
 
@@ -86,18 +98,79 @@
                     `
                     : "";
 
-            const priceHtml =
-                price !== null
+                        const priceHtml =
+                baseFee !== null
                     ? `
-                        <div class="upgrade-card__price">
 
-                            <strong>
+                        <div class="upgrade-card__pricing">
 
-                                ${currency} ${Number(price).toLocaleString()}
+                            ${campaignName ? `
+                                <div class="upgrade-card__campaign">
 
-                            </strong>
+                                    ${campaignName}
+
+                                </div>
+                            ` : ""}
+
+                            ${bridgeProgram ? `
+                                <div class="upgrade-card__bridge">
+
+                                    <strong>
+
+                                        ${bridgeProgram}
+
+                                    </strong>
+
+                                </div>
+                            ` : ""}
+
+                            <div class="upgrade-card__price">
+
+                                <strong>
+
+                                    ₹ ${Number(baseFee).toLocaleString()}
+
+                                </strong>
+
+                            </div>
+
+                            ${standardFee ? `
+                                <div class="upgrade-card__standard-price">
+
+                                    Regular Bridge Fee:
+                                    ₹ ${Number(standardFee).toLocaleString()}
+
+                                </div>
+                            ` : ""}
+
+                            ${fullProgrammeFee ? `
+                                <div class="upgrade-card__full-price">
+
+                                    Full Programme Fee:
+                                    ₹ ${Number(fullProgrammeFee).toLocaleString()}
+
+                                </div>
+                            ` : ""}
+
+                            ${gstApplicable ? `
+                                <div class="upgrade-card__gst">
+
+                                    Applicable GST will be added during secure payment checkout.
+
+                                </div>
+                            ` : ""}
+
+                            ${offerEndsOn ? `
+                                <div class="upgrade-card__offer">
+
+                                    Offer valid until
+                                    ${offerEndsOn}
+
+                                </div>
+                            ` : ""}
 
                         </div>
+
                     `
                     : "";
 
@@ -142,12 +215,26 @@
 
                         ${journeyHtml}
 
+                        ${bridgeProgram ? `
+                            <p>
+
+                                <strong>
+
+                                    Bridge Programme:
+
+                                </strong>
+
+                                ${bridgeProgram}
+
+                            </p>
+                        ` : ""}
+
                         ${programName ? `
                             <p>
 
                                 <strong>
 
-                                    Recommended Program:
+                                    Upgrade To:
 
                                 </strong>
 

@@ -52,6 +52,19 @@
 
     });
 
+    const PROGRAM_NAMES = Object.freeze({
+
+        AIPA:
+            "Artificial Intelligence Professional Agilist",
+
+        AAIP:
+            "Agentic AI Professional",
+
+        AIAL:
+            "Agile AI Leadership"
+
+    });
+
     const EligibilityService = {
 
         /* ==================================================
@@ -75,7 +88,7 @@
 
             const pricing =
                 this.resolvePricing(
-                    currentProgram
+                    eligibility
                 );
 
             return this.buildUpgradeModel(
@@ -183,37 +196,122 @@
         },
 
         /* ==================================================
-           ELIGIBILITY
+        ELIGIBILITY
         ================================================== */
 
         evaluateEligibility(program) {
 
             if (!program) {
 
-                return false;
+                return {
+
+                    eligible: false,
+
+                    nextProgram: null,
+
+                    reason:
+                        "No qualifying program found."
+
+                };
 
             }
 
             /*
-             * Revenue Sprint v1
-             *
-             * Future versions will evaluate:
-             * • Membership
-             * • Upgrade paths
-             * • Campaign rules
-             */
+            * Revenue Sprint v1
+            * ---------------------------------------------
+            * Current commercial offering:
+            *
+            * • AOP  → AIPA
+            * • AAIA → AIPA
+            *
+            * Future versions will evaluate:
+            *
+            * • Membership
+            * • Campaign rules
+            * • Learning prerequisites
+            * • Regional availability
+            */
 
-            return true;
+            switch (program.code) {
+
+                case "AOP":
+
+                case "AAIA":
+
+                    return {
+
+                        eligible: true,
+
+                        nextProgram: "AIPA",
+
+                        reason: null
+
+                    };
+
+                case "AIPA":
+
+                    return {
+
+                        eligible: true,
+
+                        nextProgram: "AAIP",
+
+                        reason: null
+
+                    };
+
+                case "AAIP":
+
+                    return {
+
+                        eligible: true,
+
+                        nextProgram: "AIAL",
+
+                        reason: null
+
+                    };
+
+                case "AIAL":
+
+                    return {
+
+                        eligible: false,
+
+                        nextProgram: null,
+
+                        reason:
+                            "Highest program already achieved."
+
+                    };
+
+                default:
+
+                    return {
+
+                        eligible: false,
+
+                        nextProgram: null,
+
+                        reason:
+                            "No upgrade currently available."
+
+                    };
+
+            }
 
         },
 
         /* ==================================================
-           PRICING
+        PRICING
         ================================================== */
 
-        resolvePricing(program) {
+        resolvePricing(eligibility) {
 
-            if (!program) {
+            if (
+                !eligibility ||
+                !eligibility.eligible
+            ) {
 
                 return {
 
@@ -226,21 +324,42 @@
             }
 
             /*
-             * Revenue Sprint v1
-             *
-             * Future:
-             * Campaign pricing
-             * Regional pricing
-             * Coupons
-             */
+            * Revenue Sprint v1
+            * ---------------------------------------------
+            * Commercial pricing.
+            *
+            * Future versions will support:
+            *
+            * • Campaign pricing
+            * • Regional pricing
+            * • Membership discounts
+            * • Coupons
+            * • Promotional offers
+            */
 
-            return {
+            switch (eligibility.nextProgram) {
 
-                price: null,
+                case "AIPA":
 
-                currency: "INR"
+                    return {
 
-            };
+                        price: 8850,
+
+                        currency: "INR"
+
+                    };
+
+                default:
+
+                    return {
+
+                        price: null,
+
+                        currency: "INR"
+
+                    };
+
+            }
 
         },
 
@@ -257,25 +376,38 @@
 
             return {
 
-                eligible,
+                eligible:
+                    eligibility.eligible,
 
                 currentProgram:
                     program,
 
+                nextProgram:
+                    eligibility.nextProgram,
+
+                reason:
+                    eligibility.reason,
+
                 programCode:
-                    "AIPA",
+                    eligibility.nextProgram,
 
                 programName:
-                    "Artificial Intelligence Professional Agilist",
+                    eligibility.nextProgram
+                        ? PROGRAM_NAMES[
+                            eligibility.nextProgram
+                        ] || null
+                        : null,
 
                 title:
                     "Upgrade Your Agile AI Capability",
 
                 description:
-                    "Continue your Agile AI University learning journey by upgrading to the Artificial Intelligence Professional Agilist (AIPA) credential.",
+                    "Continue your Agile AI University learning journey by upgrading your Agile AI capability.",
 
                 buttonText:
-                    "Upgrade Now",
+                    eligibility.eligible
+                        ? "Upgrade Now"
+                        : "View Learning Journey",
 
                 price:
                     pricing.price,
@@ -287,9 +419,14 @@
                     "/upgrade/upgrade.html",
 
                 currentCredentials:
-                    credentials.length,
+                    Array.isArray(credentials)
+                        ? credentials.length
+                        : 0,
 
-                reasons: []
+                reasons:
+                    eligibility.reason
+                        ? [eligibility.reason]
+                        : []
 
             };
 

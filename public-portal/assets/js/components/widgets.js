@@ -44,15 +44,26 @@
 
     const DashboardWidgets = {
 
-        /* ==================================================
+                /* ==================================================
            ROOT RENDER
         ================================================== */
 
         render(data) {
 
             if (!data) {
+
+                console.warn(
+                    "[DashboardWidgets] No dashboard data supplied."
+                );
+
                 return;
+
             }
+
+            console.info(
+                "[DashboardWidgets] Rendering dashboard",
+                data
+            );
 
             this.renderProfile(
                 data.profile,

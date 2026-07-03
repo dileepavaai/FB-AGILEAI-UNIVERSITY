@@ -115,7 +115,32 @@
     }
 
     /* ======================================================
-       RENDER DASHBOARD
+    RENDER DASHBOARD
+    ====================================================== */
+
+    function renderDashboard(dashboard) {
+
+        if (
+            !window.DashboardRenderer ||
+            typeof window.DashboardRenderer.render !== "function"
+        ) {
+
+            console.warn(
+                "[Dashboard] DashboardRenderer unavailable."
+            );
+
+            return;
+
+        }
+
+        window.DashboardRenderer.render(
+            dashboard
+        );
+
+    }
+
+    /* ======================================================
+    RENDER DASHBOARD
     ====================================================== */
 
     function renderDashboard(dashboard) {
@@ -127,29 +152,12 @@
             return;
         }
 
-        window.DashboardWidgets.render(dashboard);
-
-    }
-
-    /* ======================================================
-       INITIALIZATION ERROR
-    ====================================================== */
-
-    function showInitializationError(error) {
-
-        console.error(
-            "Dashboard initialization failed.",
-            error
+        console.info(
+            "[Dashboard] Rendering dashboard",
+            dashboard
         );
 
-        /*
-         * Reserved for future enhancements:
-         *
-         * • Toast notification
-         * • Dashboard error card
-         * • Retry mechanism
-         * • Telemetry / logging
-         */
+        window.DashboardWidgets.render(dashboard);
 
     }
 

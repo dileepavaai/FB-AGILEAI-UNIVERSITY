@@ -38,6 +38,20 @@
 
     "use strict";
 
+    const PROGRAM_HIERARCHY = Object.freeze({
+
+        AOP: 1,
+
+        AAIA: 2,
+
+        AIPA: 3,
+
+        AAIP: 4,
+
+        AIAL: 5
+
+    });
+
     const EligibilityService = {
 
         /* ==================================================
@@ -98,7 +112,7 @@
         },
 
         /* ==================================================
-           CURRENT PROGRAM
+        CURRENT PROGRAM
         ================================================== */
 
         getCurrentProgram(credentials) {
@@ -112,31 +126,56 @@
 
             }
 
-            /*
-             * Revenue Sprint v1
-             *
-             * Current implementation:
-             * Uses the latest visible credential.
-             *
-             * Future:
-             * Highest credential
-             * Learning hierarchy
-             * Bridge rules
-             */
+            let highestCredential = null;
 
-            const latestCredential =
-                credentials[0];
+            let highestRank = 0;
+
+            credentials.forEach((credential) => {
+
+                if (!credential) {
+                    return;
+                }
+
+                const programCode =
+                    String(
+                        credential.program_code ||
+                        credential.programCode ||
+                        credential.code ||
+                        ""
+                    ).toUpperCase();
+
+                const rank =
+                    PROGRAM_HIERARCHY[programCode] || 0;
+
+                if (rank > highestRank) {
+
+                    highestRank = rank;
+
+                    highestCredential = credential;
+
+                }
+
+            });
+
+            if (!highestCredential) {
+
+                return null;
+
+            }
 
             return {
 
                 code:
-                    latestCredential.programCode ||
-                    latestCredential.code ||
+                    highestCredential.program_code ||
+                    highestCredential.programCode ||
+                    highestCredential.code ||
                     null,
 
                 name:
-                    latestCredential.programName ||
-                    latestCredential.name ||
+                    highestCredential.program_name ||
+                    highestCredential.programName ||
+                    highestCredential.name ||
+                    highestCredential.credential_type ||
                     null
 
             };

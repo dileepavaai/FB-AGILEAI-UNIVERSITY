@@ -56,6 +56,11 @@
                     "[DashboardService] Recent Credentials ViewModel",
                     recentCredentials
                 );
+            
+            console.log(
+                    "FIRST CREDENTIAL",
+                    JSON.stringify(recentCredentials[0], null, 2)
+                );
 
             /* ==================================================
             UPGRADE VIEW MODEL

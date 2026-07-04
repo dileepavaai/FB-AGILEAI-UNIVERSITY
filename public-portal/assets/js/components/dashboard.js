@@ -125,9 +125,15 @@
 
         if (
             !window.DashboardWidgets ||
-            typeof window.DashboardWidgets.render !== "function"
-        ) {
+                    typeof window.DashboardWidgets.render !== "function"
+                ) {
+
+            console.warn(
+                "[Dashboard] DashboardWidgets unavailable."
+            );
+
             return;
+
         }
 
         console.info(

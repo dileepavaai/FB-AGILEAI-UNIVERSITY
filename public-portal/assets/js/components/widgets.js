@@ -350,33 +350,56 @@ renderQuickAccess(items) {
 
     }
 
-    const html = credentials.map(function (credential) {
+    if (items.length === 0) {
 
-    try {
-
-        return window.CredentialCard.render(
-            credential
+        this.clearElement(
+            container
         );
 
-    }
-    catch (error) {
-
-        console.error(
-            "[CredentialCard] Render failed.",
-            credential,
-            error
-        );
-
-        return "";
+        return;
 
     }
 
-}).join("");
+    const html = items
 
-this.setHtml(
-    container,
-    html
-);
+        .map(function (item) {
+
+            try {
+
+                return window
+                    .QuickAccessCard
+                    .render(
+                        item
+                    );
+
+            }
+            catch (error) {
+
+                console.error(
+
+                    "[QuickAccessCard] Render failed.",
+
+                    item,
+
+                    error
+
+                );
+
+                return "";
+
+            }
+
+        })
+
+        .join("");
+
+    this.setHtml(
+
+        container,
+
+        html
+
+    );
 
 },
 

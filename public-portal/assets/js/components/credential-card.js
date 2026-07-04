@@ -164,6 +164,7 @@
             const programName =
                 program.programName ||
                 credential.programName ||
+                credential.program_name ||
                 credential.program_code ||
                 credential.credential_type ||
                 "Credential";
@@ -172,6 +173,7 @@
                 program.programCode ||
                 credential.programCode ||
                 credential.program_code ||
+                credential.credential_code ||
                 credential.credential_type ||
                 "-";
 
@@ -194,11 +196,11 @@
 
                             </h3>
 
-                            <h3 class="dashboard-card-title">
+                            <div class="dashboard-card-subtitle">
 
                                 ${programName}
 
-                            </h3>
+                            </div>
 
                         </div>
 

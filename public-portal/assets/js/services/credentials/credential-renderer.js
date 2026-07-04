@@ -191,61 +191,6 @@ v1.0.0
   }
 
   /* =====================================================
-     REGISTRY RESOLUTION (DISPLAY ONLY · LOCKED)
-     ===================================================== */
-  function resolveCredentialDefinition(cred) {
-    const code =
-      cred?.program_code ||
-      cred?.credential_code ||
-      cred?.credential_type ||
-      "UNKNOWN";
-
-    const registry =
-      window.AAIU_CREDENTIAL_REGISTRY ||
-      window.__AAIU_CREDENTIAL_REGISTRY ||
-      window.CREDENTIAL_REGISTRY ||
-      null;
-
-    return registry && registry[code] ? registry[code] : { code };
-  }
-
-  /* =====================================================
-     SHARE HANDLER (RECORD ACCESS ONLY)
-     ===================================================== */
-  function shareCredential(cred, def) {
-    const title =
-      def.full_title || def.full_name || def.display_name || def.code;
-
-    const url = buildPublicCredentialUrl(cred);
-    const text =
-      `Official credential record\n\n` +
-      `Credential: ${title}\n` +
-      `Issued by: Agile AI University\n\n` +
-      `View credential record:\n${url}`;
-
-    if (navigator.share) {
-      navigator.share({ title, text, url }).catch(() => {});
-      return;
-    }
-
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(url).then(() =>
-        alert("Official credential record link copied.")
-      );
-      return;
-    }
-
-    const temp = document.createElement("textarea");
-    temp.value = url;
-    document.body.appendChild(temp);
-    temp.select();
-    document.execCommand("copy");
-    document.body.removeChild(temp);
-
-    alert("Official credential record link copied.");
-  }
-
-  /* =====================================================
      COMPLETION SIGNAL (EVENT-SAFE · FIRE-ONCE)
      ===================================================== */
   function signalRenderComplete() {
@@ -299,19 +244,28 @@ function renderCredentialPreview(credential) {
         return;
     }
 
-    const definition =
-        resolveCredentialDefinition(
-            credential
-        );
-
-    /* ---------------------------------------------
-       Hero
-    ---------------------------------------------- */
+    const program =
+    credential.program || {};
 
     renderHero(
-        credential,
-        definition
-    );
+    credential,
+    program
+);
+
+renderCredentialInformation(
+    credential,
+    program
+);
+
+renderRecognitionAssets(
+    credential,
+    program
+);
+
+renderActionBar(
+    credential,
+    program
+);
 
     /* ---------------------------------------------
        Future Renderers
@@ -331,21 +285,6 @@ function renderCredentialPreview(credential) {
     ---------------------------------------------- */
 
     
-    renderCredentialInformation(
-        credential,
-        definition
-    );
-
-    renderRecognitionAssets(
-        credential,
-        definition
-    );
-
-    renderActionBar(
-        credential,
-        definition
-    );
-
     preview.hidden = false;
 
     preview.scrollIntoView({
@@ -395,7 +334,7 @@ function renderCredentialPreview(credential) {
 
 function renderHero(
     credential,
-    definition
+    program
 ) {
 
     const hero =
@@ -408,16 +347,19 @@ function renderHero(
     }
 
     const title =
-        definition.full_title ||
-        definition.full_name ||
-        definition.display_name ||
-        definition.code ||
+
+        program.programName ||
+
         credential.program_code ||
+
         "Credential";
 
     const programCode =
-        definition.code ||
+
+        program.programCode ||
+
         credential.program_code ||
+
         "--";
 
     const validity =
@@ -488,8 +430,7 @@ function renderHero(
 ===================================================== */
 
 function renderCredentialInformation(
-    credential,
-    definition
+    credential
 ) {
 
     const information =
@@ -581,8 +522,7 @@ function renderCredentialInformation(
 ===================================================== */
 
 function renderRecognitionAssets(
-    credential,
-    definition
+    credential
 ) {
 
     const assets =
@@ -763,8 +703,7 @@ function renderRecognitionAssets(
 ===================================================== */
 
 function renderActionBar(
-    credential,
-    definition
+    credential
 ) {
 
     const actions =
@@ -922,17 +861,14 @@ const container =
         credential
       );
 
-      const definition =
-        resolveCredentialDefinition(
-          credential
-        );
+      const program =
+    credential.program || {};
 
       const title =
-        definition.full_title ||
-        definition.full_name ||
-        definition.display_name ||
-        definition.code ||
-        credential.program_code;
+
+    program.programName ||
+
+    credential.program_code;
 
       const card =
         document.createElement(
@@ -953,7 +889,7 @@ const container =
 
           <div class="credential-portfolio-code">
 
-            ${definition.code || credential.program_code}
+            ${program.programCode || credential.program_code}
 
           </div>
 

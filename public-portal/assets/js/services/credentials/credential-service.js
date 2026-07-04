@@ -111,7 +111,7 @@ container.innerHTML = `     <div class="empty-state">
   `;
 }
 
-function renderVisibleCredentials() {
+async function renderVisibleCredentials() {
 
 try {
 
@@ -149,9 +149,6 @@ const resolved =
 
 const credentials =
   resolved?.visibleCredentials || [];
-  
-  window.portalCredentials =
-  credentials;
 
 console.log(
   `[Credential Service] Rendering ${credentials.length} credential(s)`
@@ -180,9 +177,55 @@ if (
   return;
 }
 
-window.renderCredentials(
-  credentials
+if (
+
+    !window.ProgramService ||
+
+    typeof window.ProgramService.get !==
+        "function"
+
+) {
+
+    console.error(
+
+        "[Credential Service] ProgramService not available"
+
+    );
+
+    showErrorState();
+
+    return;
+
+}
+
+const enrichedCredentials = await Promise.all(
+
+    credentials.map(async function (credential) {
+
+        const program =
+
+    credential.program_code
+
+        ? await window.ProgramService.get(
+            credential.program_code
+        )
+
+        : window.ProgramService.createUnknownProgram();
+
+        return {
+
+            ...credential,
+
+            program
+
+        };
+
+    })
+
 );
+
+window.portalCredentials =
+    enrichedCredentials;
 
 } catch (error) {
 

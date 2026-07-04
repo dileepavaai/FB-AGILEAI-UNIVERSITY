@@ -415,17 +415,19 @@ app.get(
       });
 
       return res.status(200).json({
-        status: "success",
+          status: "success",
 
-        email,
+          email,
 
-        executiveEntitlement: null,
+          executiveEntitlement: null,
 
-        userEntitlements: {
-          entitlements
-        },
+          userEntitlements: {
+              entitlements
+          },
 
-        credentials
+          programs: programConfigurations,
+
+          credentials
       });
 
     } catch (error) {

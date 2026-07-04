@@ -295,29 +295,31 @@
 
                         return Object.freeze({
 
-                            ...credential,
+    ...credential,
 
-                            /*
-                            * Academic ViewModel
-                            * ---------------------------------
-                            * ProgramService is the single
-                            * authority for program metadata.
-                            */
+    /*
+     * Program ViewModel
+     * ---------------------------------
+     * ProgramService is the single
+     * authority for program metadata.
+     */
 
-                            programName:
-                                program?.programName ??
-                                credential.program_code,
+    program,
 
-                            programCode:
-                                program?.programCode ??
-                                credential.program_code,
+    programName:
+        program?.programName ??
+        credential.program_code,
 
-                            available_assets:
-                                program?.availableAssets ??
-                                credential.available_assets ??
-                                {}
+    programCode:
+        program?.programCode ??
+        credential.program_code,
 
-                        });
+    available_assets:
+        program?.availableAssets ??
+        credential.available_assets ??
+        {}
+
+});
 
                     }
                     catch (error) {
@@ -330,19 +332,19 @@
 
                         return Object.freeze({
 
-                            ...credential,
+    ...credential,
 
-                            programName:
-                                credential.program_code,
+    programName:
+        credential.program_code,
 
-                            programCode:
-                                credential.program_code,
+    programCode:
+        credential.program_code,
 
-                            available_assets:
-                                credential.available_assets ??
-                                {}
+    available_assets:
+        credential.available_assets ??
+        {}
 
-                        });
+});
 
                     }
 

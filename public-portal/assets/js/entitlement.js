@@ -236,6 +236,14 @@ function finalizeAndEmit(
           JSON.stringify(data, null, 2)
         );
 
+      /* -------------------------------------------------
+        PROGRAM DEFINITIONS (READ-ONLY CACHE)
+      ------------------------------------------------- */
+
+      window.__AAIU_PROGRAMS__ = Object.freeze(
+          data.programs || {}
+      );
+
       console.log(
           "[User Entitlements]",
           data.userEntitlements

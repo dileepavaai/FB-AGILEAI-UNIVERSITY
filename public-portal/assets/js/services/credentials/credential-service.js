@@ -227,6 +227,10 @@ const enrichedCredentials = await Promise.all(
 window.portalCredentials =
     enrichedCredentials;
 
+  window.renderCredentials(
+    enrichedCredentials
+  );
+
 } catch (error) {
 
 console.error(

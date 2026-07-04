@@ -146,7 +146,7 @@
 
         },
 
-        /* ==================================================
+                /* ==================================================
            CREDENTIAL CARD
         ================================================== */
 
@@ -158,8 +158,27 @@
 
             }
 
+            const program =
+                credential.program || {};
+
+            const programName =
+                program.programName ||
+                credential.programName ||
+                credential.program_code ||
+                credential.credential_type ||
+                "Credential";
+
+            const programCode =
+                program.programCode ||
+                credential.programCode ||
+                credential.program_code ||
+                credential.credential_type ||
+                "-";
+
             const assets =
-                credential.available_assets || {};
+                program.availableAssets ||
+                credential.available_assets ||
+                {};
 
             return `
 
@@ -171,13 +190,13 @@
 
                             <h3 class="dashboard-card-title">
 
-                                ${credential.programName || credential.program_code || "Credential"}
+                                ${programName}
 
                             </h3>
 
                             <div class="dashboard-card-subtitle">
 
-                                ${credential.programCode || credential.program_code || "-"}
+                                ${programCode}
 
                             </div>
 

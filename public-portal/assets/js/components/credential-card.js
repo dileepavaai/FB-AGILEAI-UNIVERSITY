@@ -146,7 +146,7 @@
 
         },
 
-                /* ==================================================
+        /* ==================================================
            CREDENTIAL CARD
         ================================================== */
 
@@ -190,15 +190,15 @@
 
                             <h3 class="dashboard-card-title">
 
-                                ${programName}
+                                ${programCode}
 
                             </h3>
 
-                            <div class="dashboard-card-subtitle">
+                            <h3 class="dashboard-card-title">
 
-                                ${programCode}
+                                ${programName}
 
-                            </div>
+                            </h3>
 
                         </div>
 

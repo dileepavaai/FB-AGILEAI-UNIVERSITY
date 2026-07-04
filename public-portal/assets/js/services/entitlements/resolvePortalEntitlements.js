@@ -357,6 +357,11 @@ function normalizeVisibleCredentials(credentials, email) {
 
     );
 
+    console.log(
+            "[Resolver Normalized Credential]",
+            normalized[0]
+        );
+
     return normalized;
 
 }

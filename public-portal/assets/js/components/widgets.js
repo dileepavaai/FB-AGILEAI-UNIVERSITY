@@ -350,21 +350,33 @@ renderQuickAccess(items) {
 
     }
 
-    this.setHtml(
+    const html = credentials.map(function (credential) {
 
-        container,
+    try {
 
-        items
-            .map(function (item) {
+        return window.CredentialCard.render(
+            credential
+        );
 
-                return window
-                    .QuickAccessCard
-                    .render(item);
+    }
+    catch (error) {
 
-            })
-            .join("")
+        console.error(
+            "[CredentialCard] Render failed.",
+            credential,
+            error
+        );
 
-    );
+        return "";
+
+    }
+
+}).join("");
+
+this.setHtml(
+    container,
+    html
+);
 
 },
 

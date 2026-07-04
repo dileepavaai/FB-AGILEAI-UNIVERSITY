@@ -52,6 +52,11 @@
             const membership =
                 user.membership ?? "University Member";
 
+            console.log(
+                    "[DashboardService] Recent Credentials ViewModel",
+                    recentCredentials
+                );
+
             /* ==================================================
             UPGRADE VIEW MODEL
             ================================================== */
@@ -267,32 +272,74 @@
 
                 credentials.map(async (credential) => {
 
-                    const program =
-                        await window.ProgramService.get(
-                            credential.program_code
+                    try {
+
+                        let program = null;
+
+                        if (
+                            window.ProgramService &&
+                            typeof window.ProgramService.get === "function"
+                        ) {
+
+                            program =
+                                await window.ProgramService.get(
+                                    credential.program_code
+                                );
+
+                        }
+
+                        return Object.freeze({
+
+                            ...credential,
+
+                            /*
+                            * Academic ViewModel
+                            * ---------------------------------
+                            * ProgramService is the single
+                            * authority for program metadata.
+                            */
+
+                            programName:
+                                program?.programName ??
+                                credential.program_code,
+
+                            programCode:
+                                program?.programCode ??
+                                credential.program_code,
+
+                            available_assets:
+                                program?.availableAssets ??
+                                credential.available_assets ??
+                                {}
+
+                        });
+
+                    }
+                    catch (error) {
+
+                        console.error(
+                            "[DashboardService] Program lookup failed.",
+                            credential.program_code,
+                            error
                         );
 
-                    return Object.freeze({
+                        return Object.freeze({
 
-                        ...credential,
+                            ...credential,
 
-                        /*
-                        * Academic ViewModel
-                        * ------------------------------
-                        * ProgramService is the single
-                        * authority for program metadata.
-                        */
+                            programName:
+                                credential.program_code,
 
-                        programName:
-                            program.programName,
+                            programCode:
+                                credential.program_code,
 
-                        programCode:
-                            program.programCode,
+                            available_assets:
+                                credential.available_assets ??
+                                {}
 
-                        available_assets:
-                            program.availableAssets
+                        });
 
-                    });
+                    }
 
                 })
 

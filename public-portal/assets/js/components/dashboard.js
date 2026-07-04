@@ -95,12 +95,15 @@
         }
         catch (error) {
 
-            initialized = false;
+                initialized = false;
 
-            showInitializationError(error);
+                console.error(
+                    "[Dashboard] Initialization failed.",
+                    error
+                );
 
-        }
-        finally {
+            }
+            finally {
 
             initializing = false;
 
@@ -111,31 +114,6 @@
             }
 
         }
-
-    }
-
-    /* ======================================================
-    RENDER DASHBOARD
-    ====================================================== */
-
-    function renderDashboard(dashboard) {
-
-        if (
-            !window.DashboardRenderer ||
-            typeof window.DashboardRenderer.render !== "function"
-        ) {
-
-            console.warn(
-                "[Dashboard] DashboardRenderer unavailable."
-            );
-
-            return;
-
-        }
-
-        window.DashboardRenderer.render(
-            dashboard
-        );
 
     }
 

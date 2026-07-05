@@ -149,7 +149,7 @@
 
         },
 
-                /* ==================================================
+        /* ==================================================
            VISIBLE CREDENTIALS
         ================================================== */
 
@@ -176,8 +176,8 @@
 
         },
 
-        /* ==================================================
-        CURRENT PROGRAM
+                /* ==================================================
+           CURRENT PROGRAM
         ================================================== */
 
         getCurrentProgram(credentials) {
@@ -203,12 +203,14 @@
 
                 const programCode =
                     String(
+
                         credential.program_code ||
                         credential.programCode ||
                         credential.code ||
                         credential.program?.code ||
                         credential.program?.programCode ||
                         ""
+
                     ).toUpperCase();
 
                 const rank =
@@ -233,15 +235,21 @@
             return {
 
                 code:
+
                     highestCredential.program_code ||
                     highestCredential.programCode ||
                     highestCredential.code ||
+                    highestCredential.program?.code ||
+                    highestCredential.program?.programCode ||
                     null,
 
                 name:
+
                     highestCredential.program_name ||
                     highestCredential.programName ||
                     highestCredential.name ||
+                    highestCredential.program?.name ||
+                    highestCredential.program?.programName ||
                     highestCredential.credential_type ||
                     null
 

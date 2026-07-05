@@ -1,0 +1,234 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : overlay.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+   Phase     : UI Foundation
+
+   Purpose
+   ----------------------------------------------------------
+   Shared Overlay Framework
+
+   Responsibilities
+
+   ✓ Overlay Backdrop
+   ✓ Overlay Container
+   ✓ Overlay Header
+   ✓ Overlay Body
+   ✓ Overlay Footer
+   ✓ Close Button
+   ✓ Responsive Layout
+   ✓ Scroll Management
+
+   Non Responsibilities
+
+   ✗ Feature Specific Styling
+   ✗ Credential Styling
+   ✗ Recognition Styling
+   ✗ Business Logic
+
+   Governance
+
+   • Shared UI Framework
+   • Component Standard
+   • Single Responsibility
+   • Reusable Across Portal
+
+========================================================== */
+
+
+/* ==========================================================
+   OVERLAY
+========================================================== */
+
+.overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 1000;
+
+}
+
+
+/* ==========================================================
+   ACTIVE
+========================================================== */
+
+.overlay.is-open {
+
+    display: flex;
+
+}
+
+
+/* ==========================================================
+   BACKDROP
+========================================================== */
+
+.overlay-backdrop {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    backdrop-filter: blur(2px);
+
+}
+
+
+/* ==========================================================
+   CONTAINER
+========================================================== */
+
+.overlay-container {
+
+    position: relative;
+
+    width: min(900px, 92vw);
+
+    max-height: 90vh;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 12px 48px rgba(0,0,0,.25);
+
+    display: flex;
+
+    flex-direction: column;
+
+    z-index: 1;
+
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.overlay-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 1.25rem 1.5rem;
+
+    border-bottom: 1px solid #e5e7eb;
+
+}
+
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.overlay-title {
+
+    margin: 0;
+
+    font-size: 1.25rem;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================================
+   CLOSE BUTTON
+========================================================== */
+
+.overlay-close {
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 1.5rem;
+
+    line-height: 1;
+
+    padding: .25rem;
+
+}
+
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+.overlay-body {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 1.5rem;
+
+}
+
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.overlay-footer {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: .75rem;
+
+    padding: 1rem 1.5rem;
+
+    border-top: 1px solid #e5e7eb;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .overlay {
+
+        align-items: stretch;
+
+    }
+
+    .overlay-container {
+
+        width: 100%;
+
+        height: 100%;
+
+        max-height: none;
+
+        border-radius: 0;
+
+    }
+
+}

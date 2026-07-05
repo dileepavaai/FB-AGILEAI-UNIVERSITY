@@ -90,7 +90,13 @@
            ASSET BUTTONS
         ================================================== */
 
-        renderAssetButtons(assets = {}) {
+        renderAssetButtons(
+            credential,
+            assets = {}
+        ) {
+
+            const credentialId =
+                credential?.credential_id || "";
 
             return [
 
@@ -98,7 +104,8 @@
 
                     <a
                         href="#"
-                        class="btn btn-secondary">
+                        class="btn btn-secondary js-open-university-certificate"
+                        data-credential-id="${credentialId}">
 
                         University Certificate
 
@@ -110,7 +117,8 @@
 
                     <a
                         href="#"
-                        class="btn btn-secondary">
+                        class="btn btn-secondary js-open-trainer-certificate"
+                        data-credential-id="${credentialId}">
 
                         Trainer Certificate
 
@@ -122,7 +130,8 @@
 
                     <a
                         href="#"
-                        class="btn btn-secondary">
+                        class="btn btn-secondary js-open-digital-badge"
+                        data-credential-id="${credentialId}">
 
                         Digital Badge
 
@@ -134,7 +143,8 @@
 
                     <a
                         href="#"
-                        class="btn btn-secondary">
+                        class="btn btn-secondary js-open-recognition"
+                        data-credential-id="${credentialId}">
 
                         Recognition Asset
 
@@ -240,13 +250,17 @@
 
                             <a
                                 href="#"
-                                class="btn btn-primary">
+                                class="btn btn-primary js-view-credential"
+                                data-credential-id="${credential.credential_id || ""}">
 
                                 View Credential
 
                             </a>
 
-                            ${this.renderAssetButtons(assets)}
+                            ${this.renderAssetButtons(
+                                credential,
+                                assets
+                            )}
 
                         </div>
 

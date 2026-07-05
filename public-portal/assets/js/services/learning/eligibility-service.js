@@ -149,11 +149,17 @@
 
         },
 
-        /* ==================================================
+                /* ==================================================
            VISIBLE CREDENTIALS
         ================================================== */
 
         getVisibleCredentials() {
+
+            /*
+             * Primary Source
+             * -----------------------------
+             * Credential Service
+             */
 
             if (
 
@@ -164,19 +170,70 @@
 
             ) {
 
-                return window.CredentialService.getCredentials();
+                const credentials =
+                    window.CredentialService.getCredentials();
+
+                if (
+                    Array.isArray(credentials) &&
+                    credentials.length > 0
+                ) {
+
+                    return credentials;
+
+                }
+
+            }
+
+            /*
+             * Secondary Source
+             * -----------------------------
+             * Portal cache
+             */
+
+            if (
+
+                Array.isArray(window.portalCredentials) &&
+
+                window.portalCredentials.length > 0
+
+            ) {
+
+                return window.portalCredentials;
+
+            }
+
+            /*
+             * Final Fallback
+             * -----------------------------
+             * Published entitlement state
+             */
+
+            const entitlements =
+                window.__AAIU_ENTITLEMENTS__;
+
+            if (
+
+                entitlements &&
+
+                Array.isArray(
+                    entitlements.visibleCredentials
+                )
+
+            ) {
+
+                return entitlements.visibleCredentials;
 
             }
 
             console.warn(
-                "[EligibilityService] CredentialService unavailable."
+                "[EligibilityService] No credential source available."
             );
 
             return [];
 
         },
 
-                /* ==================================================
+        /* ==================================================
            CURRENT PROGRAM
         ================================================== */
 

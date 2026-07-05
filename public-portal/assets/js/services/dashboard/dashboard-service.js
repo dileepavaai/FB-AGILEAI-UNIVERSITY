@@ -374,7 +374,7 @@
 
         },
 
-        /* ==================================================
+                /* ==================================================
         UPGRADE MODEL
         ================================================== */
 
@@ -385,51 +385,27 @@
                 typeof window.EligibilityService.getUpgradeModel !== "function"
             ) {
 
-                /*
-                * Revenue Sprint v1
-                * ---------------------------------------------
-                * Fallback Upgrade Model.
-                *
-                * Used until EligibilityService
-                * becomes available.
-                */
+                return null;
 
-                return {
+            }
 
-                    eligible: true,
+            if (
+                !window.CredentialService ||
+                typeof window.CredentialService.getCredentials !== "function"
+            ) {
 
-                    programCode:
-                        "AIPA",
+                console.warn(
+                    "[DashboardService] CredentialService unavailable for upgrade model."
+                );
 
-                    programName:
-                        "Artificial Intelligence Professional Agilist",
-
-                    title:
-                        "Upgrade Your Agile AI Capability",
-
-                    description:
-                        "Continue your Agile AI University learning journey by upgrading to the Artificial Intelligence Professional Agilist (AIPA) credential.",
-
-                    buttonText:
-                        "Upgrade Now",
-
-                    price:
-                        null,
-
-                    currency:
-                        "INR",
-
-                    url:
-                        "/upgrade/upgrade.html"
-
-                };
+                return null;
 
             }
 
             return await window.EligibilityService.getUpgradeModel();
 
         },
-
+        
         /* ==================================================
            SHARED PORTAL STATE
         ================================================== */

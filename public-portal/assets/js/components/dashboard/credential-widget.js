@@ -301,10 +301,6 @@
 
     };
 
-    Object.freeze(
-        CredentialWidget
-    );
-
     window.CredentialWidget =
         CredentialWidget;
 

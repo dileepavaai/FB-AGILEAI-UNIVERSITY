@@ -206,6 +206,8 @@
                         credential.program_code ||
                         credential.programCode ||
                         credential.code ||
+                        credential.program?.code ||
+                        credential.program?.programCode ||
                         ""
                     ).toUpperCase();
 

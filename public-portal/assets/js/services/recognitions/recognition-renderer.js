@@ -6,10 +6,10 @@ Module      : Student & Executive Portal
 Component   : Recognition Renderer
 
 File        : recognition-renderer.js
-Version     : 1.0.0
+Version     : 1.1.0
 Status      : ACTIVE
 
-Governance  : Recognition Governance v1.0
+Governance  : Recognition Governance v1.1
 
 Purpose
 -------------------------------------------------------
@@ -65,6 +65,18 @@ AAIU_RECOGNITION_REGISTRY
 Change History
 -------------------------------------------------------
 
+v1.1.0
+
+* Added dashboard recognition container fallback
+* Added safe recognition field fallbacks
+
+v1.0.0
+
+* Initial governed implementation
+* Registry-aware rendering
+* Empty state support
+* Completion signalling support
+
 v1.0.0
 
 * Initial governed implementation
@@ -79,7 +91,7 @@ v1.0.0
 "use strict";
 
 console.log(
-  "[Recognition Renderer] Loaded v1.0.0"
+  "[Recognition Renderer] Loaded v1.1.0"
 );
 
 if (
@@ -143,6 +155,9 @@ function renderRecognitions(
   const container =
     document.getElementById(
       "recognitions-container"
+    ) ||
+    document.getElementById(
+      "recentRecognitions"
     );
 
   if (!container) {
@@ -183,12 +198,12 @@ function renderRecognitions(
 
       card.innerHTML = `
         <div class="credential-badge">
-          ${recognition.code}
+          ${recognition.code || "-"}
         </div>
 
         <div class="credential-meta credential-title">
           <strong>
-            ${recognition.display_name}
+            ${recognition.display_name || recognition.name || "Recognition"}
           </strong>
         </div>
 

@@ -6,7 +6,7 @@ Module      : Student & Executive Portal
 Component   : Credential Renderer
 
 File        : credential-renderer.js
-Version     : 1.0.0
+Version     : 2.0.0
 Status      : ACTIVE
 
 Governance  : Portal Governance v1.0
@@ -30,11 +30,9 @@ Credential Renderer
 
 ## Responsibilities
 
-* Render credential cards
-* Display credential metadata
-* Generate verification links
-* Generate LinkedIn add-profile links
-* Generate share actions
+* Render portfolio credential cards
+* Delegate credential detail experience
+* Display credential summary information
 * Signal render completion
 
 ## Must Never
@@ -58,14 +56,16 @@ Renderer must remain UI-only.
 ## Dependencies
 
 credential-service.js
-
-Optional Registry Sources
-
-window.AAIU_CREDENTIAL_REGISTRY
-window.__AAIU_CREDENTIAL_REGISTRY
-window.CREDENTIAL_REGISTRY
+credential-detail-actions.js
 
 ## Change History
+
+v2.0.0
+
+* Refactored to portfolio-only renderer
+* Delegated credential detail experience
+* Removed inline credential preview
+* Integrated CredentialDetailActions
 
 v1.0.0
 
@@ -82,8 +82,8 @@ v1.0.0
   "use strict";
 
   console.log(
-    "[Credentials Renderer] Loaded (Card v4.4 · Phase-B sharing intent locked)"
-  );
+    "[Credential Renderer] Loaded v2.0.0"
+    );
 
   if (window.__credentialsRendererInitialized === true) return;
   window.__credentialsRendererInitialized = true;
@@ -206,570 +206,6 @@ v1.0.0
   console.log(
     "[Credentials Renderer] credentials:rendered dispatched"
   );
-
-}
-
-/* =====================================================
-   CREDENTIAL PREVIEW EXPERIENCE
-
-   Responsibilities
-
-   • Activate inline preview
-   • Resolve display definition
-   • Delegate rendering to governed
-     renderer functions
-   • Scroll preview into view
-
-   Must Never
-
-   • Retrieve credentials
-   • Resolve entitlements
-   • Perform authorization
-   • Filter credentials
-
-===================================================== */
-
-function renderCredentialPreview(credential) {
-
-    if (!credential) {
-        return;
-    }
-
-    const preview =
-        document.getElementById(
-            "credential-preview-container"
-        );
-
-    if (!preview) {
-        return;
-    }
-
-    const program =
-    credential.program || {};
-
-    renderHero(
-    credential,
-    program
-);
-
-renderCredentialInformation(
-    credential,
-    program
-);
-
-renderRecognitionAssets(
-    credential,
-    program
-);
-
-renderActionBar(
-    credential,
-    program
-);
-
-    /* ---------------------------------------------
-       Future Renderers
-
-       Phase 7.0
-
-       renderCredentialInformation()
-
-       Phase 7.1
-
-       renderRecognitionAssets()
-
-       Phase 7.1
-
-       renderActionBar()
-
-    ---------------------------------------------- */
-
-    
-    preview.hidden = false;
-
-    preview.scrollIntoView({
-
-        behavior: "smooth",
-
-        block: "start"
-
-    });
-
-}
-
-/* =====================================================
-   Phase 7 Renderer Sequence
-
-   renderHero()
-
-   renderCredentialInformation()
-
-   renderRecognitionAssets()
-
-   renderActionBar()
-
-===================================================== */
-
-/* =====================================================
-   HERO RENDERER
-
-   Responsibilities
-
-   • Render credential hero
-   • Display visual identity
-   • Display credential title
-   • Display program code
-   • Display credential validity
-
-   Must Never
-
-   • Retrieve data
-   • Resolve entitlements
-   • Perform authorization
-   • Render metadata
-   • Render recognition assets
-   • Render action buttons
-
-===================================================== */
-
-function renderHero(
-    credential,
-    program
-) {
-
-    const hero =
-        document.getElementById(
-            "credential-hero"
-        );
-
-    if (!hero) {
-        return;
-    }
-
-    const title =
-
-        program.programName ||
-
-        credential.program_code ||
-
-        "Credential";
-
-    const programCode =
-
-        program.programCode ||
-
-        credential.program_code ||
-
-        "--";
-
-    const validity =
-        String(
-            credential.validity || ""
-        ).toLowerCase() === "lifetime"
-            ? "Lifetime Credential"
-            : (
-                credential.validity ||
-                "Active"
-            );
-
-    hero.innerHTML = `
-
-        <div class="credential-preview-header">
-
-            <img
-                class="credential-portfolio-emblem"
-                src="/assets/images/aau-emblem.png"
-                alt="Agile AI University">
-
-            <div class="credential-preview-title">
-
-                <div class="credential-portfolio-code">
-
-                    ${programCode}
-
-                </div>
-
-                <h2>
-
-                    ${title}
-
-                </h2>
-
-                <div class="credential-portfolio-validity">
-
-                    ${validity}
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-/* =====================================================
-   CREDENTIAL INFORMATION RENDERER
-
-   Responsibilities
-
-   • Render credential information
-   • Display credential metadata
-   • Populate Credential Information region
-
-   Must Never
-
-   • Retrieve data
-   • Resolve entitlements
-   • Perform authorization
-   • Render hero
-   • Render recognition assets
-   • Render action buttons
-
-===================================================== */
-
-function renderCredentialInformation(
-    credential
-) {
-
-    const information =
-        document.getElementById(
-            "credential-information"
-        );
-
-    if (!information) {
-        return;
-    }
-
-    const credentialId =
-        credential.credential_id || "--";
-
-    const holder =
-        credential.full_name || "--";
-
-    const issuedBy =
-        "Agile AI University";
-
-    const validity =
-        String(
-            credential.validity || ""
-        ).toLowerCase() === "lifetime"
-            ? "Lifetime Credential"
-            : (
-                credential.validity ||
-                "Active"
-            );
-
-    information.innerHTML = `
-
-        <div class="credential-preview-section">
-
-            <div class="credential-helper">
-
-                <strong>Credential ID</strong><br>
-
-                ${credentialId}
-
-            </div>
-
-            <div class="credential-helper">
-
-                <strong>Credential Holder</strong><br>
-
-                ${holder}
-
-            </div>
-
-            <div class="credential-helper">
-
-                <strong>Issued By</strong><br>
-
-                ${issuedBy}
-
-            </div>
-
-            <div class="credential-helper">
-
-                <strong>Validity</strong><br>
-
-                ${validity}
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-/* =====================================================
-   RECOGNITION ASSETS RENDERER
-
-   Responsibilities
-
-   • Render recognition assets
-   • Populate Recognition Assets region
-   • Display only configured recognition assets
-
-   Governance
-
-   • Asset visibility is determined exclusively by
-     credential.available_assets
-   • Renderer must never infer assets from
-     program codes or credential types
-
-===================================================== */
-
-function renderRecognitionAssets(
-    credential
-) {
-
-    const assets =
-        document.getElementById(
-            "recognition-assets"
-        );
-
-    if (!assets) {
-        return;
-    }
-
-    const availableAssets =
-        credential.available_assets || {};
-
-    const cards = [];
-
-    if (availableAssets.universityCertificate) {
-
-        cards.push(`
-
-            <div class="recognition-asset-card">
-
-                <h4>
-
-                    University Certificate
-
-                </h4>
-
-                <p>
-
-                    Official Agile AI University
-                    credential certificate.
-
-                </p>
-
-            </div>
-
-        `);
-
-    }
-
-    if (availableAssets.trainerCertificate) {
-
-        cards.push(`
-
-            <div class="recognition-asset-card">
-
-                <h4>
-
-                    Trainer Certificate
-
-                </h4>
-
-                <p>
-
-                    Trainer-issued recognition
-                    certificate.
-
-                </p>
-
-            </div>
-
-        `);
-
-    }
-
-    if (availableAssets.digitalBadge) {
-
-        cards.push(`
-
-            <div class="recognition-asset-card">
-
-                <h4>
-
-                    University Badge
-
-                </h4>
-
-                <p>
-
-                    Official Agile AI University
-                    digital badge for professional
-                    recognition.
-
-                </p>
-
-            </div>
-
-        `);
-
-    }
-
-    if (availableAssets.recognitionAsset) {
-
-        cards.push(`
-
-            <div class="recognition-asset-card">
-
-                <h4>
-
-                    Recognition Asset
-
-                </h4>
-
-                <p>
-
-                    Additional institutional
-                    recognition associated with
-                    this credential.
-
-                </p>
-
-            </div>
-
-        `);
-
-    }
-
-    assets.innerHTML = `
-
-        <div class="credential-preview-section">
-
-            <h3>
-
-                Recognition Assets
-
-            </h3>
-
-            ${
-                cards.length > 0
-
-                    ? `
-
-                        <div class="recognition-assets-grid">
-
-                            ${cards.join("")}
-
-                        </div>
-
-                    `
-
-                    : `
-
-                        <div class="credential-helper">
-
-                            No recognition assets are
-                            currently available for
-                            this credential.
-
-                        </div>
-
-                    `
-            }
-
-        </div>
-
-    `;
-
-}
-
-/* =====================================================
-   ACTION BAR RENDERER
-
-   Responsibilities
-
-   • Render credential action bar
-   • Populate Action Bar region
-   • Display available credential actions
-
-   Must Never
-
-   • Retrieve data
-   • Resolve entitlements
-   • Perform authorization
-   • Wire action events
-   • Perform navigation
-
-===================================================== */
-
-function renderActionBar(
-    credential
-) {
-
-    const actions =
-        document.getElementById(
-            "credential-actions"
-        );
-
-    if (!actions) {
-        return;
-    }
-
-    actions.innerHTML = `
-
-        <div class="credential-preview-section">
-
-            <h3>
-                Available Actions
-            </h3>
-
-            <div class="credential-actions">
-
-                <button
-                    type="button"
-                    class="btn primary">
-
-                    View Certificate
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn secondary">
-
-                    Download Certificate
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn secondary">
-
-                    View Badge
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn secondary">
-
-                    Trainer Certificate
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn secondary">
-
-                    Verify Credential
-
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
 
 }
 
@@ -943,15 +379,28 @@ const container =
 
       card.addEventListener(
 
-        "click",
+          "click",
 
-        function () {
+          function () {
 
-          renderCredentialPreview(
-            credential
-          );
+              if (
 
-        }
+                  window.CredentialDetailActions &&
+
+                  typeof window.CredentialDetailActions.open ===
+                      "function"
+
+              ) {
+
+                  window.CredentialDetailActions.open(
+
+                      credential.credential_id
+
+                  );
+
+              }
+
+          }
 
       );
 

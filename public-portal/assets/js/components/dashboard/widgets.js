@@ -112,12 +112,26 @@
                 data
             );
 
-            window.ProfileWidget.render(
-                data.profile,
-                data.membership,
-                data.summary,
-                this
-            );
+            if (
+                window.ProfileWidget &&
+                typeof window.ProfileWidget.render === "function"
+            ) {
+
+                window.ProfileWidget.render(
+                    data.profile,
+                    data.membership,
+                    data.summary,
+                    this
+                );
+
+            }
+            else {
+
+                console.warn(
+                    "[DashboardWidgets] ProfileWidget unavailable."
+                );
+
+            }
 
             window.KPIWidget.render(
                 data.kpi,

@@ -1,106 +1,219 @@
-/* =========================================================
-   Credential Registry Assertion Guard — Phase-R1
-   SYSTEM · GOVERNANCE · FAIL-LOUD / RENDER-SAFE
-   READ-ONLY · IDEMPOTENT · EVENT-SIGNALING
-   ========================================================= */
+/* ==========================================================
 
-(function () {
-  "use strict";
+Agile AI University
 
-  if (window.__credentialRegistryAssertionRan) return;
-  window.__credentialRegistryAssertionRan = true;
+Module      : Student & Executive Portal
+Component   : Credential Validation
 
-  const CONTEXT = window.__AAIU_CONTEXT || "unknown";
+File        : credential-validation.js
+Version     : 1.0.0
+Status      : ACTIVE
 
-  function fail(message) {
-    console.error(
-      "[Credential Registry Assertion FAILED]",
-      message
-    );
-  }
+Governance  : Portal Governance v1.0
 
-  function warn(message) {
-    console.warn(
-      "[Credential Registry Assertion]",
-      message
-    );
-  }
+Purpose
+----------------------------------------------------------
 
-  /* =====================================================
-     REGISTRY PRESENCE
-     ===================================================== */
+Provides governed validation utilities for
+credential objects consumed by the portal.
 
-  if (!window.AAIU_CREDENTIAL_REGISTRY) {
-    fail("window.AAIU_CREDENTIAL_REGISTRY is missing.");
-    signalReady(false);
-    return;
-  }
+Responsibilities
 
-  const registry = window.AAIU_CREDENTIAL_REGISTRY;
+✓ Validate credential object
 
-  if (
-    typeof registry !== "object" ||
-    Array.isArray(registry)
-  ) {
-    fail("Registry must be a plain object.");
-    signalReady(false);
-    return;
-  }
+✓ Validate required properties
 
-  /* =====================================================
-     ENTRY VALIDATION (DISPLAY CONTRACT ONLY)
-     ===================================================== */
+✓ Validate credential identity
 
-  let validCount = 0;
+✓ Validate program association
 
-  Object.keys(registry).forEach((key) => {
-    const entry = registry[key];
+✓ Validate lifecycle information
 
-    if (!entry || typeof entry !== "object") {
-      fail(`Registry entry '${key}' is not an object.`);
-      return;
-    }
+✓ Validate recognition readiness
 
-    if (!entry.code) {
-      fail(
-        `Registry entry '${key}' is missing required field: code`
-      );
-    }
+Must Never
 
-    if (!entry.full_title) {
-      fail(
-        `Registry entry '${key}' is missing required field: full_title`
-      );
-    }
+✗ Query Firestore
 
-    if (!entry.display_name && !entry.full_name) {
-      warn(
-        `Registry entry '${key}' has no display_name or full_name (fallbacks will apply).`
-      );
-    }
+✗ Resolve Entitlements
 
-    validCount++;
-  });
+✗ Perform Authorization
 
-  console.log(
-    `[Credential Registry Assertion] OK (${validCount} credential(s)) · context=${CONTEXT}`
-  );
+✗ Render UI
 
-  /* =====================================================
-     READINESS SIGNAL (NON-BLOCKING)
-     ===================================================== */
+✗ Modify Credential Data
 
-  signalReady(true);
+✗ Call APIs
 
-  function signalReady(ok) {
-    document.dispatchEvent(
-      new CustomEvent("registry:ready", {
-        detail: {
-          ok,
-          count: validCount,
-          context: CONTEXT
+Dependencies
+
+None
+
+Consumers
+
+credential-service.js
+credential-detail-overlay.js
+credential-detail-actions.js
+
+========================================================== */
+
+(function (window) {
+
+    "use strict";
+
+    const CredentialValidation = {
+
+        /* ==============================================
+           CREDENTIAL
+        ============================================== */
+
+        validate(credential) {
+
+            if (!credential) {
+
+                console.warn(
+                    "[CredentialValidation] Missing credential."
+                );
+
+                return false;
+
+            }
+
+            if (!credential.credential_id) {
+
+                console.warn(
+                    "[CredentialValidation] Missing credential_id."
+                );
+
+                return false;
+
+            }
+
+            if (!credential.program_code) {
+
+                console.warn(
+                    "[CredentialValidation] Missing program_code."
+                );
+
+                return false;
+
+            }
+
+            return true;
+
+        },
+
+        /* ==============================================
+           IDENTITY
+        ============================================== */
+
+        validateIdentity(credential) {
+
+            return Boolean(
+
+                credential &&
+
+                credential.credential_id &&
+
+                credential.program_code
+
+            );
+
+        },
+
+        /* ==============================================
+           HOLDER
+        ============================================== */
+
+        validateHolder(credential) {
+
+            return Boolean(
+
+                credential &&
+
+                (
+
+                    credential.full_name ||
+
+                    credential.learner_name
+
+                )
+
+            );
+
+        },
+
+        /* ==============================================
+           PROGRAM
+        ============================================== */
+
+        validateProgram(credential) {
+
+            return Boolean(
+
+                credential &&
+
+                credential.program_code
+
+            );
+
+        },
+
+        /* ==============================================
+           STATUS
+        ============================================== */
+
+        validateStatus(credential) {
+
+            return Boolean(
+
+                credential &&
+
+                credential.status
+
+            );
+
+        },
+
+        /* ==============================================
+           VALIDITY
+        ============================================== */
+
+        validateValidity(credential) {
+
+            return Boolean(
+
+                credential &&
+
+                credential.validity
+
+            );
+
+        },
+
+        /* ==============================================
+           RECOGNITION
+        ============================================== */
+
+        validateRecognition(credential) {
+
+            return Boolean(
+
+                credential &&
+
+                credential.credential_id
+
+            );
+
         }
-      })
+
+    };
+
+    Object.freeze(
+        CredentialValidation
     );
-  }
-})();
+
+    window.CredentialValidation =
+        CredentialValidation;
+
+})(window);

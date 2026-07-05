@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : eligibility-service.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -15,6 +15,7 @@
 
    ✓ Evaluate upgrade eligibility
    ✓ Build Upgrade ViewModel
+   ✓ Consume resolved credential cache
    ✓ Business rules only
 
    Non Responsibilities
@@ -24,19 +25,42 @@
    ✗ Dashboard Rendering
    ✗ Firestore Access
    ✗ Navigation
+   ✗ Entitlement Resolution
 
    Governance
 
    • Business Service
-   • Resolver First
+   • Credential Service Consumer
    • Single Responsibility
    • Dashboard consumes ViewModel only
+
+   Dependencies
+
+   • CredentialService
+
+   Change History
+
+   v1.2.0
+
+   • Consumes CredentialService credential cache
+   • Removed direct entitlement dependency
+   • Aligned eligibility with resolved credential model
+
+   v1.1.0
+
+   • Added commercial pricing model
+   • Added bridge upgrade eligibility
+   • Added upgrade ViewModel
 
 ========================================================== */
 
 (function (window) {
 
     "use strict";
+
+    console.log(
+        "[EligibilityService] Loaded v1.2.0"
+    );
 
     const PROGRAM_HIERARCHY = Object.freeze({
 
@@ -125,27 +149,30 @@
 
         },
 
-        /* ==================================================
+                /* ==================================================
            VISIBLE CREDENTIALS
         ================================================== */
 
         getVisibleCredentials() {
 
-            const entitlements =
-                window.__AAIU_ENTITLEMENTS__;
-
             if (
-                !entitlements ||
-                !Array.isArray(
-                    entitlements.visibleCredentials
-                )
+
+                window.CredentialService &&
+
+                typeof window.CredentialService.getCredentials ===
+                    "function"
+
             ) {
 
-                return [];
+                return window.CredentialService.getCredentials();
 
             }
 
-            return entitlements.visibleCredentials;
+            console.warn(
+                "[EligibilityService] CredentialService unavailable."
+            );
+
+            return [];
 
         },
 

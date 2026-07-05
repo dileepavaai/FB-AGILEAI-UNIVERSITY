@@ -262,8 +262,28 @@
 
             this.initialize();
 
+            if (!credential) {
+
+                console.warn(
+
+                    "[CredentialDetailOverlay] Missing credential."
+
+                );
+
+                return;
+
+            }
+
             this.activeCredential =
-                credential || null;
+                credential;
+
+            console.info(
+
+                "[CredentialDetailOverlay] Opening:",
+
+                credential.credential_id
+
+            );
 
             if (!this.isOpen) {
 
@@ -456,7 +476,7 @@
 
         },
 
-                /* ==================================================
+        /* ==================================================
            CLOSE
         ================================================== */
 
@@ -473,6 +493,12 @@
                 return;
 
             }
+
+            console.info(
+
+                "[CredentialDetailOverlay] Closed"
+
+            );
 
             this.overlay.classList.remove(
 

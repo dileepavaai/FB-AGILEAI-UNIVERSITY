@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : upgrade-widget.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
    Phase     : Sprint 2D
 
@@ -110,6 +110,10 @@
                     "function"
 
             ) {
+
+                console.warn(
+                    "[UpgradeWidget] UpgradeCard unavailable."
+                );
 
                 return;
 

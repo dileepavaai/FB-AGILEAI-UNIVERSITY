@@ -3,9 +3,9 @@
    Student & Executive Portal
 
    File      : credential-widget.js
-   Version   : 1.1.0
+   Version   : 2.0.0
    Status    : ACTIVE
-   Phase     : Sprint 2D
+   Phase     : Sprint 2E
 
    Purpose
    ----------------------------------------------------------
@@ -48,14 +48,10 @@
         ================================================== */
 
         bindEvents(
-            dashboard,
             container
         ) {
 
-            if (
-                !dashboard ||
-                !container
-            ) {
+            if (!container) {
                 return;
             }
 
@@ -77,7 +73,7 @@
 
                 const action =
                     event.target.closest(
-                        "a"
+                        "[data-credential-id]"
                     );
 
                 if (!action) {
@@ -103,16 +99,25 @@
 
                     event.preventDefault();
 
-                    /*
-                     * TODO
-                     * Delegate to
-                     * CredentialExperience.open()
-                     */
+                    /************************************************
+                     * Delegate to Credential Detail Actions
+                     * (Experience Orchestration Layer)
+                     ***********************************************/
 
-                    console.log(
-                        "View Credential:",
-                        credentialId
-                    );
+                    if (
+
+                        window.CredentialDetailActions &&
+
+                        typeof window.CredentialDetailActions.open ===
+                            "function"
+
+                    ) {
+
+                    window.CredentialDetailActions.open(
+                            credentialId
+                        );
+
+                    }
 
                     return;
 
@@ -260,6 +265,10 @@
 
                 );
 
+                this.bindEvents(
+                    container
+                );
+
                 return;
 
             }
@@ -285,9 +294,8 @@
             );
 
             this.bindEvents(
-                dashboard,
-                container
-            );
+                    container
+                );
 
         }
 

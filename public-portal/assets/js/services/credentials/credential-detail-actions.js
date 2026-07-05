@@ -1,439 +1,250 @@
-/* =====================================================
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
 
-Agile AI University
+   File      : credential-detail-actions.js
+   Version   : 2.0.0
+   Status    : ACTIVE
+   Phase     : Sprint 2E
 
-Module      : Student & Executive Portal
-Component   : Credential Detail Actions
+   Purpose
+   ----------------------------------------------------------
+   Credential Detail Experience Actions
 
-File        : credential-detail-actions.js
-Version     : 1.1.0
-Status      : ACTIVE
+   Responsibilities
 
-Governance  : Portal Governance v1.0
+   ✓ Launch Credential Detail Experience
+   ✓ Launch University Certificate
+   ✓ Launch Trainer Certificate
+   ✓ Launch Digital Badge
+   ✓ Launch Recognition Experience
+   ✓ Future LinkedIn Share
+   ✓ Future Wallet Export
 
-========================================================
+   Non Responsibilities
 
-Purpose
---------------------------------------------------------
+   ✗ Authentication
+   ✗ Authorization
+   ✗ Firestore
+   ✗ Business Logic
+   ✗ Dashboard Rendering
+   ✗ Overlay Rendering
 
-Provides the interaction layer for the
-Credential Detail experience.
+   Governance
 
-This controller is responsible ONLY for
-handling user interactions initiated from
-the Credential Detail page.
+   • Credential Experience Action Authority
+   • Experience Orchestration Layer
+   • Single Responsibility
+   • Enterprise Portal Standard
 
-Examples
+========================================================== */
 
-• Verify Credential
-• View University Certificate
-• View Trainer Certificate
-• View University Badge
-• Add To LinkedIn
-• Export To Wallet
+(function (window) {
 
-========================================================
+    "use strict";
 
-Architectural Position
---------------------------------------------------------
+    const CredentialDetailActions = {
 
-Authentication
-        ↓
-Entitlement Resolution
-        ↓
-Credential Service
-        ↓
-Credential Renderer
-        ↓
-Credential Detail Renderer
-        ↓
-Credential Detail Actions
+                /* ==================================================
+           OPEN EXPERIENCE
+        ================================================== */
 
-This component intentionally performs
-navigation and interaction only.
+        open(
+            credentialId
+        ) {
 
-========================================================
+            if (!credentialId) {
 
-Responsibilities
---------------------------------------------------------
+                console.warn(
+                    "[CredentialDetailActions] Missing credential ID."
+                );
 
-✓ Read selected credential
+                return;
 
-✓ Build governed navigation URLs
+            }
 
-✓ Attach UI event handlers
+            if (
 
-✓ Navigate to recognition assets
+                !window.CredentialService ||
 
-✓ Provide placeholders for future
-  sharing capabilities
+                typeof window.CredentialService
+                    .getCredentialById !== "function"
 
-========================================================
+            ) {
 
-Must Never
---------------------------------------------------------
+                console.warn(
+                    "[CredentialDetailActions] CredentialService unavailable."
+                );
 
-✗ Query Firestore
+                return;
 
-✗ Call Portal APIs
+            }
 
-✗ Resolve Entitlements
+            const credential =
 
-✗ Perform Authorization
+                window.CredentialService
+                    .getCredentialById(
+                        credentialId
+                    );
 
-✗ Render UI
+            if (!credential) {
 
-✗ Modify Credential Data
+                console.warn(
+                    "[CredentialDetailActions] Credential not found:",
+                    credentialId
+                );
 
-✗ Modify Session State
+                return;
 
-========================================================
+            }
 
-Governance Rules
---------------------------------------------------------
+            if (
 
-• Credential Detail owns rendering.
+                window.CredentialDetailOverlay &&
 
-• Credential Detail Actions owns
-  interaction only.
+                typeof window
+                    .CredentialDetailOverlay
+                    .open === "function"
 
-• Navigation is performed using the
-  selected Credential ID.
+            ) {
 
-• Downstream pages must independently
-  resolve their own data.
+                console.info(
 
-========================================================
+                    "[CredentialDetailActions] Opening credential detail experience:",
 
-Dependencies
---------------------------------------------------------
+                    credential.credential_id
 
-credential-detail.js
+                );
 
-========================================================
+                window
+                    .CredentialDetailOverlay
+                    .open(
+                        credential
+                    );
 
-Change History
---------------------------------------------------------
+                return;
 
-v1.1.0
+            }
 
-• Introduced governed interaction layer
-• Centralized route configuration
-• Added immutable route definitions
-• Added lifecycle documentation
-• Added defensive event binding
-• Added placeholder support for
-  future LinkedIn and Wallet modules
+            console.warn(
 
-v1.0.0
+                "[CredentialDetailActions] CredentialDetailOverlay unavailable."
 
-• Initial implementation
+            );
 
-===================================================== */
+        },
 
-(function () {
+        /* ==================================================
+           UNIVERSITY CERTIFICATE
+        ================================================== */
 
-"use strict";
+        openUniversityCertificate(
+            credential
+        ) {
 
-/* =====================================================
-   Component Initialization
-===================================================== */
+            console.info(
 
-const LOG_PREFIX =
-  "[Credential Detail Actions]";
+                "[CredentialDetailActions] University Certificate",
 
-console.info(
-  `${LOG_PREFIX} Loaded v1.1.0`
-);
+                credential
 
-if (
-  window.__credentialDetailActionsInitialized === true
-) {
-  console.info(
-    `${LOG_PREFIX} Already initialized`
-  );
-  return;
-}
+            );
 
-window.__credentialDetailActionsInitialized = true;
+        },
 
-/* =====================================================
-   Governed Route Configuration
+        /* ==================================================
+           TRAINER CERTIFICATE
+        ================================================== */
 
-   These routes represent navigation
-   endpoints only.
+        openTrainerCertificate(
+            credential
+        ) {
 
-   Future route modifications must occur
-   only within this configuration section.
+            console.info(
 
-===================================================== */
+                "[CredentialDetailActions] Trainer Certificate",
 
-const ROUTES = Object.freeze({
+                credential
 
-  VERIFY:
-    "https://verify.agileai.university/",
+            );
 
-  UNIVERSITY_CERTIFICATE:
-    "/credentials/university-certificate.html",
+        },
 
-  TRAINER_CERTIFICATE:
-    "/credentials/trainer-certificate.html",
+        /* ==================================================
+           DIGITAL BADGE
+        ================================================== */
 
-  UNIVERSITY_BADGE:
-    "/credentials/university-badge.html"
+        openDigitalBadge(
+            credential
+        ) {
 
-});
+            console.info(
 
-/* =====================================================
-   Selected Credential
+                "[CredentialDetailActions] Digital Badge",
 
-   Governance Decision
+                credential
 
-   The selected credential is persisted
-   by the Credential Renderer.
+            );
 
-   This controller consumes the stored
-   object but never modifies it.
+        },
 
-===================================================== */
+        /* ==================================================
+           RECOGNITION
+        ================================================== */
 
-function getCredential() {
+        openRecognition(
+            credential
+        ) {
 
-  try {
+            console.info(
 
-    return JSON.parse(
+                "[CredentialDetailActions] Recognition",
 
-      sessionStorage.getItem(
-        "selectedCredential"
-      )
+                credential
 
+            );
+
+        },
+
+        /* ==================================================
+           FUTURE
+        ================================================== */
+
+        shareLinkedIn(
+            credential
+        ) {
+
+            console.info(
+
+                "[CredentialDetailActions] LinkedIn",
+
+                credential
+
+            );
+
+        },
+
+        exportWallet(
+            credential
+        ) {
+
+            console.info(
+
+                "[CredentialDetailActions] Wallet",
+
+                credential
+
+            );
+
+        }
+
+    };
+
+    Object.freeze(
+        CredentialDetailActions
     );
 
-  }
+    window.CredentialDetailActions =
+        CredentialDetailActions;
 
-  catch (error) {
-
-    console.error(
-      `${LOG_PREFIX} Unable to read selected credential`,
-      error
-    );
-
-    return null;
-
-  }
-
-}
-
-/* =====================================================
-   Navigation
-
-   Every downstream experience receives
-   only the Credential ID.
-
-   No additional state is transmitted.
-
-===================================================== */
-
-function navigate(
-  baseUrl
-) {
-
-  const credential =
-    getCredential();
-
-  if (
-    !credential ||
-    !credential.credential_id
-  ) {
-
-    console.warn(
-      `${LOG_PREFIX} Missing credential ID`
-    );
-
-    return;
-
-  }
-
-  const destination =
-
-    `${baseUrl}?credentialId=${encodeURIComponent(
-      credential.credential_id
-    )}`;
-
-  console.info(
-    `${LOG_PREFIX} Navigating`,
-    destination
-  );
-
-  window.location.href =
-    destination;
-
-}
-
-/* =====================================================
-   Recognition Actions
-===================================================== */
-
-function openVerification() {
-
-  navigate(
-    ROUTES.VERIFY
-  );
-
-}
-
-function openUniversityCertificate() {
-
-  navigate(
-    ROUTES.UNIVERSITY_CERTIFICATE
-  );
-
-}
-
-function openTrainerCertificate() {
-
-  navigate(
-    ROUTES.TRAINER_CERTIFICATE
-  );
-
-}
-
-function openUniversityBadge() {
-
-  navigate(
-    ROUTES.UNIVERSITY_BADGE
-  );
-
-}
-
-/* =====================================================
-   Future Capabilities
-
-   These modules are intentionally
-   deferred to future releases.
-
-===================================================== */
-
-function shareLinkedIn() {
-
-  alert(
-
-    "LinkedIn sharing will be available in a future release."
-
-  );
-
-}
-
-function exportWallet() {
-
-  alert(
-
-    "Wallet export will be available in a future release."
-
-  );
-
-}
-
-/* =====================================================
-   Event Binding
-
-   Event registration occurs exactly once.
-
-   Missing UI elements are tolerated to
-   support phased feature rollout.
-
-===================================================== */
-
-function bind(
-
-  elementId,
-  handler
-
-) {
-
-  const element =
-
-    document.getElementById(
-      elementId
-    );
-
-  if (!element) {
-
-    console.warn(
-      `${LOG_PREFIX} Missing element`,
-      elementId
-    );
-
-    return;
-
-  }
-
-  element.addEventListener(
-
-    "click",
-
-    handler
-
-  );
-
-}
-
-/* =====================================================
-   Initialization Lifecycle
-
-   Initializes exactly once after the
-   Credential Detail page has loaded.
-
-===================================================== */
-
-function initialize() {
-
-  bind(
-    "verify-credential-btn",
-    openVerification
-  );
-
-  bind(
-    "university-certificate-btn",
-    openUniversityCertificate
-  );
-
-  bind(
-    "trainer-certificate-btn",
-    openTrainerCertificate
-  );
-
-  bind(
-    "university-badge-btn",
-    openUniversityBadge
-  );
-
-  bind(
-    "linkedin-btn",
-    shareLinkedIn
-  );
-
-  bind(
-    "wallet-btn",
-    exportWallet
-  );
-
-  console.info(
-    `${LOG_PREFIX} Initialization complete`
-  );
-
-}
-
-/* =====================================================
-   Bootstrap
-===================================================== */
-
-document.addEventListener(
-
-  "DOMContentLoaded",
-
-  initialize
-
-);
-
-})();
+})(window);

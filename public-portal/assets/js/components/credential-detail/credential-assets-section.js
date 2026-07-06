@@ -72,7 +72,8 @@
             return `
 
                 <section
-                    class="credential-assets-section">
+                    class="credential-assets-section"
+                    data-credential-section="assets">
 
                     <h3
                         class="credential-section-title">

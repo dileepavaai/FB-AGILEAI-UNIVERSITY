@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-widget.js
-   Version   : 2.0.0
+   Version   : 2.1.0
    Status    : ACTIVE
    Phase     : Sprint 2E
 
@@ -18,6 +18,7 @@
    ✓ Delegate Credential Card Rendering
    ✓ Populate Dashboard Credential Section
    ✓ Delegate User Interactions
+   ✓ Delegate Credential Asset Actions
 
    Non Responsibilities
 
@@ -37,36 +38,19 @@
 
     const CredentialWidget = {
 
-        /* ==================================================
-           EVENT HANDLER
-        ================================================== */
-
         handleClick: null,
 
-        /* ==================================================
-           EVENT BINDING
-        ================================================== */
-
-        bindEvents(
-            container
-        ) {
+        bindEvents(container) {
 
             if (!container) {
                 return;
             }
 
-            /*
-             * Prevent duplicate listeners when
-             * the dashboard is re-rendered.
-             */
-
             if (this.handleClick) {
-
                 container.removeEventListener(
                     "click",
                     this.handleClick
                 );
-
             }
 
             this.handleClick = function (event) {
@@ -87,6 +71,16 @@
                     return;
                 }
 
+                if (
+                    !window.CredentialDetailActions
+                ) {
+                    console.warn(
+                        "[CredentialWidget] CredentialDetailActions unavailable."
+                    );
+
+                    return;
+                }
+
                 /*
                  * View Credential
                  */
@@ -99,25 +93,40 @@
 
                     event.preventDefault();
 
-                    /************************************************
-                     * Delegate to Credential Detail Actions
-                     * (Experience Orchestration Layer)
-                     ***********************************************/
-
                     if (
-
-                        window.CredentialDetailActions &&
-
                         typeof window.CredentialDetailActions.open ===
                             "function"
-
                     ) {
 
-                    window.CredentialDetailActions.open(
+                        window.CredentialDetailActions.open(
                             credentialId
                         );
 
                     }
+
+                    return;
+
+                }
+
+                /*
+                 * Resolve Credential for Asset Actions
+                 */
+
+                const credential =
+                    window.CredentialService &&
+                    typeof window.CredentialService.getCredentialById ===
+                        "function"
+                        ? window.CredentialService.getCredentialById(
+                            credentialId
+                        )
+                        : null;
+
+                if (!credential) {
+
+                    console.warn(
+                        "[CredentialWidget] Credential not found:",
+                        credentialId
+                    );
 
                     return;
 
@@ -135,10 +144,17 @@
 
                     event.preventDefault();
 
-                    console.log(
-                        "University Certificate:",
-                        credentialId
-                    );
+                    if (
+                        typeof window.CredentialDetailActions
+                            .openUniversityCertificate === "function"
+                    ) {
+
+                        window.CredentialDetailActions
+                            .openUniversityCertificate(
+                                credential
+                            );
+
+                    }
 
                     return;
 
@@ -156,10 +172,17 @@
 
                     event.preventDefault();
 
-                    console.log(
-                        "Trainer Certificate:",
-                        credentialId
-                    );
+                    if (
+                        typeof window.CredentialDetailActions
+                            .openTrainerCertificate === "function"
+                    ) {
+
+                        window.CredentialDetailActions
+                            .openTrainerCertificate(
+                                credential
+                            );
+
+                    }
 
                     return;
 
@@ -177,10 +200,17 @@
 
                     event.preventDefault();
 
-                    console.log(
-                        "Digital Badge:",
-                        credentialId
-                    );
+                    if (
+                        typeof window.CredentialDetailActions
+                            .openDigitalBadge === "function"
+                    ) {
+
+                        window.CredentialDetailActions
+                            .openDigitalBadge(
+                                credential
+                            );
+
+                    }
 
                     return;
 
@@ -198,10 +228,19 @@
 
                     event.preventDefault();
 
-                    console.log(
-                        "Recognition Asset:",
-                        credentialId
-                    );
+                    if (
+                        typeof window.CredentialDetailActions
+                            .openRecognition === "function"
+                    ) {
+
+                        window.CredentialDetailActions
+                            .openRecognition(
+                                credential
+                            );
+
+                    }
+
+                    return;
 
                 }
 
@@ -213,10 +252,6 @@
             );
 
         },
-
-        /* ==================================================
-           RECENT CREDENTIALS
-        ================================================== */
 
         render(
             credentials,
@@ -240,62 +275,40 @@
             }
 
             if (
-
                 !window.CredentialCard ||
-
                 typeof window.CredentialCard.render !==
                     "function" ||
-
                 typeof window.CredentialCard.renderEmpty !==
                     "function"
-
             ) {
-
                 return;
-
             }
 
             if (credentials.length === 0) {
 
                 dashboard.setHtml(
-
                     container,
-
                     window.CredentialCard.renderEmpty()
-
                 );
 
-                this.bindEvents(
-                    container
-                );
+                this.bindEvents(container);
 
                 return;
 
             }
 
             dashboard.setHtml(
-
                 container,
-
                 credentials
-
                     .map(function (credential) {
-
-                        return window
-                            .CredentialCard
-                            .render(
-                                credential
-                            );
-
+                        return window.CredentialCard.render(
+                            credential
+                        );
                     })
-
                     .join("")
-
             );
 
-            this.bindEvents(
-                    container
-                );
+            this.bindEvents(container);
 
         }
 

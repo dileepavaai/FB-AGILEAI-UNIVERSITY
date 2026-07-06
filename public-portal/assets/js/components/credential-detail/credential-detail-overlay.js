@@ -59,6 +59,8 @@
 
         activeCredential: null,
 
+        activeOptions: {},
+
         isOpen: false,
 
         initialized: false,
@@ -257,7 +259,8 @@
         ================================================== */
 
         open(
-            credential
+            credential,
+            options = {}
         ) {
 
             this.initialize();
@@ -265,9 +268,7 @@
             if (!credential) {
 
                 console.warn(
-
                     "[CredentialDetailOverlay] Missing credential."
-
                 );
 
                 return;
@@ -277,12 +278,13 @@
             this.activeCredential =
                 credential;
 
+            this.activeOptions =
+                options || {};
+
             console.info(
-
                 "[CredentialDetailOverlay] Opening:",
-
-                credential.credential_id
-
+                credential.credential_id,
+                this.activeOptions
             );
 
             if (!this.isOpen) {
@@ -299,6 +301,60 @@
             }
 
             this.renderSections();
+
+            this.focusRequestedSection();
+
+        },
+
+                /* ==================================================
+           FOCUS REQUESTED SECTION
+        ================================================== */
+
+        focusRequestedSection() {
+
+            if (
+                !this.body ||
+                !this.activeOptions
+            ) {
+                return;
+            }
+
+            const section =
+                this.activeOptions.section;
+
+            if (!section) {
+                return;
+            }
+
+            const target =
+                this.body.querySelector(
+                    `[data-credential-section="${section}"]`
+                );
+
+            if (!target) {
+                return;
+            }
+
+            this.body
+                .querySelectorAll(
+                    ".credential-section--focused"
+                )
+                .forEach(function (focusedSection) {
+
+                    focusedSection.classList.remove(
+                        "credential-section--focused"
+                    );
+
+                });
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+            target.classList.add(
+                "credential-section--focused"
+            );
 
         },
 
@@ -508,7 +564,8 @@
 
             document.body.style.overflow = "";
 
-            this.activeCredential = null;
+                this.activeCredential = null;
+                this.activeOptions = {};
 
             if (this.body) {
 

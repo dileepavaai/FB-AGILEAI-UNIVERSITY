@@ -45,7 +45,7 @@
 
     const CredentialDetailActions = {
 
-                /* ==================================================
+        /* ==================================================
            OPEN EXPERIENCE
         ================================================== */
 
@@ -135,6 +135,48 @@
         },
 
         /* ==================================================
+        OPEN ASSET EXPERIENCE
+        ================================================== */
+
+        openAsset(
+            credential,
+            asset
+        ) {
+
+            if (!credential) {
+
+                console.warn(
+                    "[CredentialDetailActions] Missing credential."
+                );
+
+                return;
+
+            }
+
+            if (
+                window.CredentialDetailOverlay &&
+                typeof window.CredentialDetailOverlay.open === "function"
+            ) {
+
+                window.CredentialDetailOverlay.open(
+                    credential,
+                    {
+                        section: "assets",
+                        asset
+                    }
+                );
+
+                return;
+
+            }
+
+            console.warn(
+                "[CredentialDetailActions] CredentialDetailOverlay unavailable."
+            );
+
+        },
+
+                /* ==================================================
            UNIVERSITY CERTIFICATE
         ================================================== */
 
@@ -142,12 +184,9 @@
             credential
         ) {
 
-            console.info(
-
-                "[CredentialDetailActions] University Certificate",
-
-                credential
-
+            this.openAsset(
+                credential,
+                "universityCertificate"
             );
 
         },
@@ -160,12 +199,9 @@
             credential
         ) {
 
-            console.info(
-
-                "[CredentialDetailActions] Trainer Certificate",
-
-                credential
-
+            this.openAsset(
+                credential,
+                "trainerCertificate"
             );
 
         },
@@ -178,12 +214,9 @@
             credential
         ) {
 
-            console.info(
-
-                "[CredentialDetailActions] Digital Badge",
-
-                credential
-
+            this.openAsset(
+                credential,
+                "digitalBadge"
             );
 
         },
@@ -196,12 +229,9 @@
             credential
         ) {
 
-            console.info(
-
-                "[CredentialDetailActions] Recognition",
-
-                credential
-
+            this.openAsset(
+                credential,
+                "recognition"
             );
 
         },

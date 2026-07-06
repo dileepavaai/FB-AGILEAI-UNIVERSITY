@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-information-section.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Sprint 2E
 
@@ -13,9 +13,7 @@
 
    Responsibilities
 
-   ✓ Render non-duplicated credential metadata
-   ✓ Render issue date
-   ✓ Render validity
+   ✓ Reserved for future credential metadata
    ✓ Presentation Only
 
    Non Responsibilities
@@ -42,64 +40,36 @@
 
     const CredentialInformationSection = {
 
+        /* ==================================================
+           INFORMATION
+        ================================================== */
+
         render(
             credential
         ) {
 
             if (!credential) {
+
                 return "";
+
             }
 
-            const issueDate =
-                credential.issue_date ||
-                credential.issued_on ||
-                "-";
+            /*
+             * Credential information currently appears
+             * in the header component.
+             *
+             * This section is intentionally reserved
+             * for future metadata such as:
+             *
+             * • Learning Hours
+             * • Assessment Score
+             * • Credential Version
+             * • Cohort
+             * • Faculty
+             * • Accreditation
+             */
 
-            const validity =
-                credential.validity ||
-                "Lifetime";
-
-            return `
-
-                <section class="credential-information-section">
-
-                    <h3 class="credential-section-title">
-
-                        Credential Information
-
-                    </h3>
-
-                    <div class="credential-information-grid">
-
-                        <div class="credential-field">
-
-                            <strong>Issue Date</strong>
-
-                            <span>
-
-                                ${issueDate}
-
-                            </span>
-
-                        </div>
-
-                        <div class="credential-field">
-
-                            <strong>Validity</strong>
-
-                            <span>
-
-                                ${validity}
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-            `;
+            return "";
 
         }
 

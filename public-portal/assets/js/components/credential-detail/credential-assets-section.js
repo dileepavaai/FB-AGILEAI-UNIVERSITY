@@ -100,7 +100,7 @@
                     data-credential-section="assets">
 
                     <h3 class="credential-section-title">
-                        Credential Assets
+                        Available Assets
                     </h3>
 
                     <div class="credential-assets-grid">

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-verification-section.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Sprint 2E
 
@@ -15,7 +15,7 @@
 
    ✓ Render verification information
    ✓ Render verification status
-   ✓ Render verification URL
+   ✓ Render verification action
    ✓ Presentation Only
 
    Non Responsibilities
@@ -108,9 +108,10 @@
                                 <a
                                     href="${verificationUrl}"
                                     target="_blank"
-                                    rel="noopener noreferrer">
+                                    rel="noopener noreferrer"
+                                    class="btn btn-secondary">
 
-                                    ${verificationUrl}
+                                    Verify Credential
 
                                 </a>
 

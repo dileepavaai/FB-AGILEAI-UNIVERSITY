@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-recognition-section.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
    Phase     : Sprint 2E
 
@@ -15,6 +15,7 @@
 
    ✓ Render Recognition Information
    ✓ Render Recognition Metadata
+   ✓ Hide Empty Fields
    ✓ Presentation Only
 
    Non Responsibilities
@@ -56,66 +57,44 @@
             }
 
             const recognition =
-
                 credential.recognition || {};
 
             const recognitionName =
-
                 recognition.name ||
-
                 credential.recognition_name ||
-
                 "Professional Recognition";
 
             const recognizingBody =
-
                 recognition.organization ||
-
                 credential.recognition_body ||
-
                 "Agile AI University";
 
             const recognitionLevel =
-
                 recognition.level ||
-
-                credential.recognition_level ||
-
-                "-";
+                credential.recognition_level;
 
             const recognitionStatus =
-
                 recognition.status ||
-
                 credential.recognition_status ||
-
                 "Active";
 
             const recognitionDate =
-
                 recognition.date ||
-
-                credential.recognition_date ||
-
-                "-";
+                credential.recognition_date;
 
             return `
 
-                <section
-                    class="credential-recognition-section">
+                <section class="credential-recognition-section">
 
-                    <h3
-                        class="credential-section-title">
+                    <h3 class="credential-section-title">
 
                         Recognition
 
                     </h3>
 
-                    <div
-                        class="credential-information-grid">
+                    <div class="credential-information-grid">
 
-                        <div
-                            class="credential-field">
+                        <div class="credential-field">
 
                             <strong>Recognition</strong>
 
@@ -127,8 +106,7 @@
 
                         </div>
 
-                        <div
-                            class="credential-field">
+                        <div class="credential-field">
 
                             <strong>Recognizing Body</strong>
 
@@ -140,21 +118,7 @@
 
                         </div>
 
-                        <div
-                            class="credential-field">
-
-                            <strong>Level</strong>
-
-                            <span>
-
-                                ${recognitionLevel}
-
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="credential-field">
+                        <div class="credential-field">
 
                             <strong>Status</strong>
 
@@ -166,18 +130,37 @@
 
                         </div>
 
-                        <div
-                            class="credential-field">
+                        ${recognitionLevel ? `
 
-                            <strong>Recognition Date</strong>
+                            <div class="credential-field">
 
-                            <span>
+                                <strong>Level</strong>
 
-                                ${recognitionDate}
+                                <span>
 
-                            </span>
+                                    ${recognitionLevel}
 
-                        </div>
+                                </span>
+
+                            </div>
+
+                        ` : ""}
+
+                        ${recognitionDate ? `
+
+                            <div class="credential-field">
+
+                                <strong>Recognition Date</strong>
+
+                                <span>
+
+                                    ${recognitionDate}
+
+                                </span>
+
+                            </div>
+
+                        ` : ""}
 
                     </div>
 

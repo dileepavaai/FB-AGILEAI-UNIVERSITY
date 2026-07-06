@@ -257,11 +257,6 @@
 
                             </a>
 
-                            ${this.renderAssetButtons(
-                                credential,
-                                assets
-                            )}
-
                         </div>
 
                     </div>

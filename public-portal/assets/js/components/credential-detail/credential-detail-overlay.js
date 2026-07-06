@@ -607,14 +607,10 @@
 
     };
 
-    Object.freeze(
-        CredentialDetailOverlay
-    );
-
     window.CredentialDetailOverlay =
         CredentialDetailOverlay;
 
-})(
-    window,
-    document
+    })(
+        window,
+        document
 );        

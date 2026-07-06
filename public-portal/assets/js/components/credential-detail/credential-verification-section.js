@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-verification-section.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
    Phase     : Sprint 2E
 
@@ -13,8 +13,9 @@
 
    Responsibilities
 
-   ✓ Render Verification Information
-   ✓ Render Verification Metadata
+   ✓ Render verification information
+   ✓ Render verification status
+   ✓ Render verification URL
    ✓ Presentation Only
 
    Non Responsibilities
@@ -63,29 +64,11 @@
 
                 "https://verify.agileai.university";
 
-            const credentialId =
-
-                credential.credential_id ||
-
-                "-";
-
             const verificationStatus =
 
                 credential.verification_status ||
 
                 "Verifiable";
-
-            const issuer =
-
-                credential.issued_by ||
-
-                "Agile AI University";
-
-            const validity =
-
-                credential.validity ||
-
-                "Lifetime";
 
             return `
 
@@ -105,7 +88,7 @@
                         <div
                             class="credential-field">
 
-                            <strong>Status</strong>
+                            <strong>Verification Status</strong>
 
                             <span>
 
@@ -118,46 +101,7 @@
                         <div
                             class="credential-field">
 
-                            <strong>Credential ID</strong>
-
-                            <span>
-
-                                ${credentialId}
-
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="credential-field">
-
-                            <strong>Issued By</strong>
-
-                            <span>
-
-                                ${issuer}
-
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="credential-field">
-
-                            <strong>Validity</strong>
-
-                            <span>
-
-                                ${validity}
-
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="credential-field">
-
-                            <strong>Verification URL</strong>
+                            <strong>Verification Portal</strong>
 
                             <span>
 

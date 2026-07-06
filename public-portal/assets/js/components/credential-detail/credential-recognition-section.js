@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-recognition-section.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Sprint 2E
 
@@ -71,16 +71,47 @@
 
             const recognitionLevel =
                 recognition.level ||
-                credential.recognition_level;
-
-            const recognitionStatus =
-                recognition.status ||
-                credential.recognition_status ||
-                "Active";
+                credential.recognition_level ||
+                "";
 
             const recognitionDate =
                 recognition.date ||
-                credential.recognition_date;
+                credential.recognition_date ||
+                "";
+
+            const recognitionLevelHtml =
+                recognitionLevel
+                    ? `
+                        <div class="credential-field">
+
+                            <strong>Level</strong>
+
+                            <span>
+
+                                ${recognitionLevel}
+
+                            </span>
+
+                        </div>
+                    `
+                    : "";
+
+            const recognitionDateHtml =
+                recognitionDate
+                    ? `
+                        <div class="credential-field">
+
+                            <strong>Recognition Date</strong>
+
+                            <span>
+
+                                ${recognitionDate}
+
+                            </span>
+
+                        </div>
+                    `
+                    : "";
 
             return `
 
@@ -108,7 +139,7 @@
 
                         <div class="credential-field">
 
-                            <strong>Recognizing Body</strong>
+                            <strong>Recognized By</strong>
 
                             <span>
 
@@ -118,49 +149,9 @@
 
                         </div>
 
-                        <div class="credential-field">
+                        ${recognitionLevelHtml}
 
-                            <strong>Status</strong>
-
-                            <span>
-
-                                ${recognitionStatus}
-
-                            </span>
-
-                        </div>
-
-                        ${recognitionLevel ? `
-
-                            <div class="credential-field">
-
-                                <strong>Level</strong>
-
-                                <span>
-
-                                    ${recognitionLevel}
-
-                                </span>
-
-                            </div>
-
-                        ` : ""}
-
-                        ${recognitionDate ? `
-
-                            <div class="credential-field">
-
-                                <strong>Recognition Date</strong>
-
-                                <span>
-
-                                    ${recognitionDate}
-
-                                </span>
-
-                            </div>
-
-                        ` : ""}
+                        ${recognitionDateHtml}
 
                     </div>
 

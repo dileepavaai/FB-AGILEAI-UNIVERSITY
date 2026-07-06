@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-assets-section.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Sprint 2E
 
@@ -26,6 +26,13 @@
    ✗ Event Binding
    ✗ Overlay Rendering
    ✗ Future Share / Wallet Actions
+
+   Governance
+
+   • Credential Assets Authority
+   • Presentation Layer
+   • Single Responsibility
+   • Enterprise Portal Standard
 
 ========================================================== */
 
@@ -99,12 +106,18 @@
                     class="credential-assets-section"
                     data-credential-section="assets">
 
-                    <h3 class="credential-section-title">
-                        Available Assets
+                    <h3
+                        class="credential-section-title">
+
+                        Credential Assets
+
                     </h3>
 
-                    <div class="credential-assets-grid">
+                    <div
+                        class="credential-assets-grid">
+
                         ${assetButtons}
+
                     </div>
 
                 </section>

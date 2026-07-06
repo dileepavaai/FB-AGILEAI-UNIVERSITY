@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-verification-section.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Phase     : Sprint 2E
 
@@ -13,9 +13,7 @@
 
    Responsibilities
 
-   ✓ Render verification information
-   ✓ Render verification status
-   ✓ Render verification action
+   ✓ Render credential verification action
    ✓ Presentation Only
 
    Non Responsibilities
@@ -42,10 +40,6 @@
 
     const CredentialVerificationSection = {
 
-        /* ==================================================
-           VERIFICATION
-        ================================================== */
-
         render(
             credential
         ) {
@@ -64,58 +58,29 @@
 
                 "https://verify.agileai.university";
 
-            const verificationStatus =
-
-                credential.verification_status ||
-
-                "Verifiable";
-
             return `
 
-                <section
-                    class="credential-verification-section">
+                <section class="credential-verification-section">
 
-                    <h3
-                        class="credential-section-title">
+                    <h3 class="credential-section-title">
 
                         Verification
 
                     </h3>
 
-                    <div
-                        class="credential-information-grid">
+                    <div class="credential-information-grid">
 
-                        <div
-                            class="credential-field">
+                        <div class="credential-field">
 
-                            <strong>Verification Status</strong>
+                            <a
+                                href="${verificationUrl}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-secondary">
 
-                            <span>
+                                Verify Credential
 
-                                ${verificationStatus}
-
-                            </span>
-
-                        </div>
-
-                        <div
-                            class="credential-field">
-
-                            <strong>Verification Portal</strong>
-
-                            <span>
-
-                                <a
-                                    href="${verificationUrl}"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="btn btn-secondary">
-
-                                    Verify Credential
-
-                                </a>
-
-                            </span>
+                            </a>
 
                         </div>
 

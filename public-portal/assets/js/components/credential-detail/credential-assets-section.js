@@ -3,9 +3,9 @@
    Student & Executive Portal
 
    File      : credential-assets-section.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
-   Phase     : Sprint 2E
+   Phase     : Sprint 2E.1
 
    Purpose
    ----------------------------------------------------------
@@ -14,7 +14,8 @@
    Responsibilities
 
    ✓ Render available credential assets
-   ✓ Render certificate and badge actions
+   ✓ Render asset preview actions
+   ✓ Provide asset type metadata
    ✓ Presentation Only
 
    Non Responsibilities
@@ -23,14 +24,16 @@
    ✗ Authorization
    ✗ Firestore
    ✗ Business Logic
-   ✗ Event Binding
    ✗ Overlay Rendering
-   ✗ Future Share / Wallet Actions
+   ✗ Download Logic
+   ✗ LinkedIn Sharing Logic
+   ✗ Wallet Export Logic
 
    Governance
 
    • Credential Assets Authority
    • Presentation Layer
+   • Asset Preview Entry Point
    • Single Responsibility
    • Enterprise Portal Standard
 
@@ -51,48 +54,44 @@
             const assets =
                 credential.program?.availableAssets ||
                 credential.available_assets ||
+                credential.availableAssets ||
                 {};
 
             const credentialId =
-                credential.credential_id || "";
+                credential.credential_id ||
+                credential.credentialId ||
+                credential.id ||
+                "";
 
             const assetButtons = [
 
-                assets.universityCertificate ? `
-                    <a
-                        href="#"
-                        class="btn btn-secondary js-open-university-certificate"
-                        data-credential-id="${credentialId}">
-                        University Certificate
-                    </a>
-                ` : "",
+                this.renderAssetButton(
+                    assets.universityCertificate,
+                    credentialId,
+                    "university-certificate",
+                    "University Certificate"
+                ),
 
-                assets.trainerCertificate ? `
-                    <a
-                        href="#"
-                        class="btn btn-secondary js-open-trainer-certificate"
-                        data-credential-id="${credentialId}">
-                        Trainer Certificate
-                    </a>
-                ` : "",
+                this.renderAssetButton(
+                    assets.trainerCertificate,
+                    credentialId,
+                    "trainer-certificate",
+                    "Trainer Certificate"
+                ),
 
-                assets.digitalBadge ? `
-                    <a
-                        href="#"
-                        class="btn btn-secondary js-open-digital-badge"
-                        data-credential-id="${credentialId}">
-                        Digital Badge
-                    </a>
-                ` : "",
+                this.renderAssetButton(
+                    assets.digitalBadge,
+                    credentialId,
+                    "digital-badge",
+                    "Digital Badge"
+                ),
 
-                assets.recognitionAsset ? `
-                    <a
-                        href="#"
-                        class="btn btn-secondary js-open-recognition"
-                        data-credential-id="${credentialId}">
-                        Recognition
-                    </a>
-                ` : ""
+                this.renderAssetButton(
+                    assets.recognitionAsset,
+                    credentialId,
+                    "recognition-asset",
+                    "Recognition"
+                )
 
             ].join("");
 
@@ -106,23 +105,51 @@
                     class="credential-assets-section"
                     data-credential-section="assets">
 
-                    <h3
-                        class="credential-section-title">
-
+                    <h3 class="credential-section-title">
                         Credential Assets
-
                     </h3>
 
-                    <div
-                        class="credential-assets-grid">
-
+                    <div class="credential-assets-grid">
                         ${assetButtons}
-
                     </div>
 
                 </section>
 
             `;
+
+        },
+
+        renderAssetButton(
+            isAvailable,
+            credentialId,
+            assetType,
+            label
+        ) {
+
+            if (!isAvailable) {
+                return "";
+            }
+
+            return `
+                <button
+                    type="button"
+                    class="btn btn-secondary js-open-credential-asset-preview"
+                    data-credential-id="${this.escape(credentialId)}"
+                    data-credential-asset-type="${this.escape(assetType)}">
+                    ${this.escape(label)}
+                </button>
+            `;
+
+        },
+
+        escape(value) {
+
+            return String(value || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
 
         }
 

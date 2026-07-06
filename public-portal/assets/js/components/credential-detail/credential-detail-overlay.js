@@ -200,7 +200,7 @@
 
         },
 
-        /* ==================================================
+                /* ==================================================
            EVENT BINDING
         ================================================== */
 
@@ -252,9 +252,51 @@
 
             );
 
+            this.body.addEventListener(
+
+                "click",
+
+                (event) => {
+
+                    const button =
+                        event.target.closest(
+                            ".js-open-credential-asset-preview"
+                        );
+
+                    if (!button) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    if (!window.CredentialAssetPreview) {
+
+                        console.warn(
+                            "[CredentialDetailOverlay] CredentialAssetPreview is unavailable."
+                        );
+
+                        return;
+
+                    }
+
+                    const assetType =
+                        button.dataset.credentialAssetType;
+
+                    window.CredentialAssetPreview.open(
+
+                        this.activeCredential,
+
+                        assetType
+
+                    );
+
+                }
+
+            );
+
         },
 
-                /* ==================================================
+        /* ==================================================
            OPEN
         ================================================== */
 

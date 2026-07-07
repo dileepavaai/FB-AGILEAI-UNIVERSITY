@@ -138,7 +138,7 @@ v1.0.0
 
       Retained for future use in:
 
-      credential-details.html
+      Credential Workspace Overlay
 
       function buildPublicCredentialUrl(...)
       function buildVerifyUrl(...)

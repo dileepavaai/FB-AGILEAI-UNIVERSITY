@@ -2,48 +2,47 @@
 
 # Credential Architecture
 
-**Version:** 3.0
-
-**Status:** ACTIVE
-
-**Architecture Status:** LOCKED
-
-**Last Updated:** July 2026
+| Attribute | Value |
+|-----------|-------|
+| Document | Credential Architecture |
+| Version | 4.0 |
+| Status | ACTIVE |
+| Architecture Status | LOCKED |
+| Owner | Agile AI University |
+| Last Updated | 2026-07-07 |
 
 ---
 
 # Purpose
 
-This document defines the Credential Platform Architecture used throughout the Agile AI University ecosystem.
+This document defines the Credential Platform Architecture used throughout
+the Agile AI University ecosystem.
 
-It documents
+It establishes the end-to-end architecture governing credential creation,
+publication, consumption, verification, recognition, sharing and future
+digital credential capabilities.
 
-- Credential lifecycle
-- Credential Registry
-- Credential Experience
-- Certificate Architecture
-- Badge Architecture
-- Recognition Framework
-- Verification
-- Learning Integration
-- Revenue Integration
-- Future Wallet Architecture
-
-This document is the authoritative reference for all credential-related architecture.
+This document is the authoritative architectural reference for every
+credential-related capability.
 
 ---
 
 # Executive Summary
 
-Credentials are the central digital asset within the Agile AI University ecosystem.
+Credentials are the primary governed digital asset of Agile AI University.
 
-Every learner journey ultimately results in one or more credentials.
+Every learner journey ultimately produces one or more governed credentials.
 
-The platform is designed around a Registry-Driven Credential Architecture where credentials become the source for every learner experience.
+The platform follows a Registry-Driven and Asset-Consumption Architecture.
+
+Credential Operations is responsible for producing governed credential
+artifacts.
+
+The Student Portal consumes these official artifacts.
 
 ---
 
-# Vision
+# Platform Vision
 
 ```
 Learning
@@ -58,15 +57,11 @@ Credential
 
 ↓
 
-Certificate
-
-↓
-
-Badge
-
-↓
-
 Recognition
+
+↓
+
+Official Assets
 
 ↓
 
@@ -78,18 +73,18 @@ Sharing
 
 ↓
 
-Wallet
+Digital Wallet
 
 ↓
 
 Executive Insights
 ```
 
-The credential is the centre of the learner ecosystem.
+Credentials become the central digital identity of every learner.
 
 ---
 
-# Credential Lifecycle
+# End-to-End Credential Lifecycle
 
 ```
 Programme
@@ -124,11 +119,43 @@ Recognition
 
 ↓
 
-Verification
+Credential Registry
 
 ↓
 
-Digital Assets
+Credential Operations
+
+↓
+
+University Certificate
+
+↓
+
+University Badge
+
+↓
+
+Trainer Certificate
+
+↓
+
+Published Asset URLs
+
+↓
+
+Student Portal
+
+↓
+
+Credential Workspace
+
+↓
+
+Download
+
+↓
+
+Sharing
 
 ↓
 
@@ -137,18 +164,19 @@ Lifetime Portfolio
 
 ---
 
-# Architecture Principles
+# Architectural Principles
 
 The Credential Platform follows
 
 - Registry Driven
-- Resolver First
 - Service First
+- Resolver First
 - Experience Driven
+- Asset Consumption
 - Single Responsibility
 - Shared Services
-- Independent Presentation
 - Modular Components
+- Governance First
 
 These principles are mandatory.
 
@@ -162,52 +190,103 @@ Responsibilities
 
 - Credential metadata
 - Programme association
-- Candidate information
-- Verification information
-- Available assets
+- Learner information
 - Recognition references
+- Verification references
+- Asset references
+- Publication status
 
 Nothing bypasses the Credential Registry.
 
 ---
 
-# Credential Experience
+# Credential Operations
 
-Credentials are consumed through the Experience Architecture.
+Credential Operations is the only component permitted to generate official
+credential artifacts.
 
-```
-Dashboard
+Responsibilities
 
-↓
+- University Certificate generation
+- University Badge generation
+- Trainer Certificate generation
+- Asset publication
+- Asset lifecycle
+- Credential distribution
+- Registry synchronization
 
-Credential Card
-
-↓
-
-Credential Detail Experience
-
-↓
-
-Assets
-```
-
-Reference
-
-```
-portal/
-experience-architecture.md
-```
+Credential Operations is the single producer of governed credential assets.
 
 ---
 
-# Credential Detail Experience
+# Credential Asset Architecture
 
-The learner interacts with credentials through an overlay experience.
+Supported asset types
+
+- University Certificate
+- University Badge
+- Trainer Certificate
+- Recognition Asset
+- Verification Asset
+- Future Wallet Package
+
+Each asset is independently generated and governed.
+
+Assets are publishable and reusable.
+
+---
+
+# Asset Consumption Architecture
+
+The Student Portal never generates credential assets.
+
+Instead it consumes officially published assets.
+
+```
+Credential Registry
+
+↓
+
+Credential Operations
+
+↓
+
+Published Asset
+
+↓
+
+Student Portal
+
+↓
+
+Credential Workspace
+
+↓
+
+Preview
+
+↓
+
+Download
+
+↓
+
+Share
+```
+
+This architecture eliminates duplication while ensuring governance
+consistency.
+
+---
+
+# Credential Workspace
+
+The Credential Workspace is the canonical learner experience.
 
 Architecture
 
 ```
-Overlay
+Credential Workspace
 
 ↓
 
@@ -215,7 +294,7 @@ Header
 
 ↓
 
-Credential Information
+Information
 
 ↓
 
@@ -227,76 +306,92 @@ Verification
 
 ↓
 
-Available Assets
+Credential Assets
 
 ↓
 
-Actions
+Asset Preview
+
+↓
+
+Download
+
+↓
+
+Share
+
+↓
+
+Close
 ```
 
-Each section owns one responsibility.
+Nested overlays are prohibited.
+
+The Credential Workspace remains a single governed experience.
 
 ---
 
-# Credential Assets
+# Credential Detail Experience
 
-A credential may expose
+Credential Detail provides
 
-- University Certificate
-- Trainer Certificate
-- Digital Badge
-- Recognition Assets
-- Verification
-- Sharing
-- Wallet Export
+- Credential overview
+- Recognition information
+- Verification information
+- Available credential assets
 
-Assets are registry driven.
+Credential Detail is an entry point into asset consumption.
 
-No asset is hardcoded.
+It does not regenerate certificates or badges.
 
 ---
 
 # Certificate Architecture
 
-Certificates are generated independently.
-
-Supported
+Supported certificates
 
 - University Certificate
 - Trainer Certificate
 
-Certificates are presentation assets.
+Certificates
 
-Certificates never own credential data.
+- are generated by Credential Operations
+- are published as governed assets
+- consume Registry data
+- never own business logic
 
-They consume credential information.
+Certificates are immutable published artifacts.
 
 ---
 
 # Badge Architecture
 
-Digital badges are generated independently.
+Supported badges
 
-Badges
+- University Badge
 
-- Consume Credential Registry
-- Consume Recognition Registry
+Future
 
-Badges never duplicate credential information.
+- Open Badges
+- Verifiable Credentials
+
+Badges are independently generated and governed.
+
+Badges consume registry information rather than duplicating credential data.
 
 ---
 
 # Recognition Architecture
 
-Recognition is independent of credential presentation.
+Recognition remains independent from presentation.
 
 Recognition
 
-- References Credential
-- References Programme
-- References Registry
+- references credentials
+- references programmes
+- references registry data
 
-Recognition becomes another experience.
+Recognition is reusable across experiences.
 
 ---
 
@@ -306,8 +401,7 @@ Verification consumes
 
 - Credential Registry
 - Recognition Registry
-
-Verification never depends upon UI.
+- Published Credential Assets
 
 Verification remains platform independent.
 
@@ -315,14 +409,15 @@ Verification remains platform independent.
 
 # Service Architecture
 
-Credential business logic resides inside services.
+Business logic resides inside services.
 
 Examples
 
 - Credential Service
 - Credential Registry Service
-- Verification Service
 - Recognition Service
+- Verification Service
+- Publication Service
 
 Services
 
@@ -331,6 +426,8 @@ Services
 ✓ Aggregate data
 
 ✓ Resolve business rules
+
+✓ Publish asset references
 
 Never
 
@@ -353,57 +450,64 @@ Credential Card
 
 ↓
 
-Credential Detail
+Credential Workspace
 
 ↓
 
-Certificates
+Asset Preview
 
 ↓
 
-Badge
+Download
 
 ↓
 
-Recognition
+LinkedIn Sharing
 
 ↓
 
-Verification
+Future Wallet
 ```
 
-The Experience Layer consumes credential services.
+Experiences consume services.
+
+Services consume registries.
 
 ---
 
 # Portal Integration
 
-Credential Experience integrates with
+Credential Architecture integrates with
 
-- Student Dashboard
-- Learning Journey
-- Assessment Platform
+- Student Portal
 - Executive Portal
-- Revenue Platform
+- Assessment Platform
+- Learning Journey
+- Upgrade Platform
+- Recognition Platform
+- Credential Operations
 
-The credential becomes the shared digital asset.
+Credentials become the shared digital asset across every platform.
 
 ---
 
 # Future Expansion
 
-Future capabilities include
+Planned capabilities
 
-- Wallet Export
+- Apple Wallet
+- Google Wallet
 - Open Badges
+- Verifiable Credentials
+- Credential API
 - Blockchain Verification
 - Executive Credential Analytics
-- Career Portfolio
 - AI Credential Advisor
-- Public Credential Sharing
-- API Access
+- Public Credential Portfolio
+- Credential Distribution Services
 
-The architecture is designed to support future expansion without architectural change.
+The architecture supports these capabilities without requiring structural
+changes.
 
 ---
 
@@ -419,21 +523,25 @@ Always
 
 ✓ Experience Driven
 
-✓ Shared Assets
+✓ Asset Consumption
 
 ✓ Shared Registries
+
+✓ Credential Operations Authority
 
 Never
 
 ✗ Duplicate credential data
 
-✗ Duplicate certificate data
+✗ Duplicate certificate generation
 
-✗ Duplicate badge data
+✗ Duplicate badge generation
 
-✗ Implement business logic inside UI
+✗ Generate assets in the Student Portal
 
-✗ Query Firestore from presentation
+✗ Implement business logic inside presentation
+
+✗ Query Firestore directly from UI
 
 ---
 
@@ -448,31 +556,56 @@ portal-architecture.md
 Experience Architecture
 
 ```
-portal/
-experience-architecture.md
+portal/experience-architecture.md
 ```
 
-Firebase Hosting
+Component Architecture
 
 ```
-firebase-hosting.md
+portal/component-architecture.md
 ```
+
+Architecture Decisions
+
+```
+docs/04-decisions
+```
+
+---
+
+# Locked Architectural Decisions
+
+The following decisions are LOCKED.
+
+- Credential Registry is the single source of truth.
+- Credential Operations is the exclusive producer of credential assets.
+- Student Portal consumes published assets.
+- Credential Workspace is the canonical learner experience.
+- Nested overlays are prohibited.
+- Asset preview occurs within the Credential Workspace.
+- Shared services are mandatory.
+- Shared registries are mandatory.
+- Business logic is prohibited within presentation components.
 
 ---
 
 # Long-Term Vision
 
-The Credential Platform is the digital foundation of the Agile AI University ecosystem.
+The Credential Platform is the digital foundation of the Agile AI
+University ecosystem.
 
-Every learner journey, executive insight, recognition programme and future AI capability ultimately consumes credential information through shared registries, services and experiences.
+Every learner journey, recognition programme, executive insight and future
+AI capability ultimately consumes governed credential information through
+shared registries, shared services and governed experiences.
 
-The architecture is designed for long-term modular growth while maintaining strict governance and a solo-developer friendly implementation model.
+The architecture is designed for enterprise scalability while remaining
+maintainable for a solo-developer implementation model.
 
 ---
 
 # Status
 
-**Architecture Version:** 3.0
+**Architecture Version:** 4.0
 
 **Status:** ACTIVE
 

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-asset-preview.js
-   Version   : 2.0.0
+   Version   : 2.0.1
    Status    : ACTIVE
    Phase     : Sprint 2E.1
 
@@ -203,6 +203,16 @@
 
         download(credential, assetType) {
 
+            if (!credential || !assetType) {
+
+                alert(
+                    "Download is not available for this asset yet."
+                );
+
+                return;
+
+            }
+
             const url =
                 this.resolveDownloadUrl(
                     credential,
@@ -239,10 +249,30 @@
 
         shareOnLinkedIn(credential) {
 
+            if (!credential) {
+
+                alert(
+                    "LinkedIn sharing is not available for this credential yet."
+                );
+
+                return;
+
+            }
+
             const verificationUrl =
                 this.resolveVerificationUrl(
                     credential
                 );
+
+            if (!verificationUrl) {
+
+                alert(
+                    "LinkedIn sharing is not available for this credential yet."
+                );
+
+                return;
+
+            }
 
             const linkedInUrl =
                 "https://www.linkedin.com/sharing/share-offsite/?url=" +
@@ -260,6 +290,10 @@
 
         resolveDownloadUrl(credential, assetType) {
 
+            if (!credential || !assetType) {
+                return "";
+            }
+
             const assets =
                 credential.assets || {};
 
@@ -267,8 +301,12 @@
 
                 return credential.certificateUrl ||
                     credential.certificate_url ||
+                    credential.universityCertificateUrl ||
+                    credential.university_certificate_url ||
                     assets.universityCertificateUrl ||
+                    assets.university_certificate_url ||
                     assets.certificateUrl ||
+                    assets.certificate_url ||
                     "";
 
             }
@@ -278,6 +316,7 @@
                 return credential.trainerCertificateUrl ||
                     credential.trainer_certificate_url ||
                     assets.trainerCertificateUrl ||
+                    assets.trainer_certificate_url ||
                     "";
 
             }
@@ -286,8 +325,12 @@
 
                 return credential.badgeUrl ||
                     credential.badge_url ||
+                    credential.digitalBadgeUrl ||
+                    credential.digital_badge_url ||
                     assets.digitalBadgeUrl ||
+                    assets.digital_badge_url ||
                     assets.badgeUrl ||
+                    assets.badge_url ||
                     "";
 
             }
@@ -298,10 +341,16 @@
 
         resolveVerificationUrl(credential) {
 
+            if (!credential) {
+                return "";
+            }
+
             return credential.verificationUrl ||
                 credential.verification_url ||
                 credential.verifyUrl ||
+                credential.verify_url ||
                 credential.registryUrl ||
+                credential.registry_url ||
                 "https://verify.agileai.university";
 
         },
@@ -328,6 +377,10 @@
          */
 
         open(credential, assetType) {
+
+            if (!credential || !assetType) {
+                return;
+            }
 
             if (
                 window.CredentialDetailOverlay &&

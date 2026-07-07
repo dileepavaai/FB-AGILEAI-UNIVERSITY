@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : upgrade-card.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -32,21 +32,7 @@
    • Consumes Upgrade ViewModel
    • Stateless
    • Enterprise Portal Standard
-
-   Change History
-   ----------------------------------------------------------
-
-   v1.2.0
-
-   • Added safe reasons fallback
-   • Added CTA target handling
-   • Improved rendering defensiveness
-
-   v1.1.0
-
-   • Added bridge programme pricing display
-   • Added campaign display
-   • Added GST and offer validity messaging
+   • No Learner Navigation
 
 ========================================================== */
 
@@ -56,62 +42,31 @@
 
     const UpgradeCard = {
 
-        /* ==================================================
-           RENDER
-        ================================================== */
-
         render(model = {}) {
 
             const {
-
                 eligible = false,
-
                 title = "Your Next Agile AI Capability",
-
                 description =
                     "Based on your current credentials, you're ready to advance to the next Agile AI capability.",
-
                 currentProgram = null,
-
                 nextProgram = null,
-
                 programName = null,
-
                 campaignName = null,
-
                 bridgeProgram = null,
-
                 baseFee = null,
-
                 standardFee = null,
-
                 fullProgrammeFee = null,
-
                 gstApplicable = false,
-
                 offerEndsOn = null,
-
                 buttonText = "View Upgrade Path",
-
-                url = "/upgrade/upgrade.html",
-
                 reasons = []
-
             } = model;
 
             const safeReasons =
                 Array.isArray(reasons)
                     ? reasons
                     : [];
-
-            const isExternalUrl =
-                typeof url === "string" &&
-                /^https?:\/\//i.test(url);
-
-            const targetAttributes =
-                isExternalUrl
-                    ? `target="_blank" rel="noopener noreferrer"`
-                    : "";
 
             const reasonHtml =
                 safeReasons.length > 0
@@ -134,66 +89,45 @@
 
                             ${campaignName ? `
                                 <div class="upgrade-card__campaign">
-
                                     ${campaignName}
-
                                 </div>
                             ` : ""}
 
                             ${bridgeProgram ? `
                                 <div class="upgrade-card__bridge">
-
-                                    <strong>
-
-                                        ${bridgeProgram}
-
-                                    </strong>
-
+                                    <strong>${bridgeProgram}</strong>
                                 </div>
                             ` : ""}
 
                             <div class="upgrade-card__price">
-
                                 <strong>
-
-                                    ₹ ${Number(baseFee).toLocaleString()}
-
+                                    ₹ ${Number(baseFee).toLocaleString("en-IN")}
                                 </strong>
-
                             </div>
 
                             ${standardFee ? `
                                 <div class="upgrade-card__standard-price">
-
                                     Regular Bridge Fee:
-                                    ₹ ${Number(standardFee).toLocaleString()}
-
+                                    ₹ ${Number(standardFee).toLocaleString("en-IN")}
                                 </div>
                             ` : ""}
 
                             ${fullProgrammeFee ? `
                                 <div class="upgrade-card__full-price">
-
                                     Full Programme Fee:
-                                    ₹ ${Number(fullProgrammeFee).toLocaleString()}
-
+                                    ₹ ${Number(fullProgrammeFee).toLocaleString("en-IN")}
                                 </div>
                             ` : ""}
 
                             ${gstApplicable ? `
                                 <div class="upgrade-card__gst">
-
                                     Applicable GST will be added during secure payment checkout.
-
                                 </div>
                             ` : ""}
 
                             ${offerEndsOn ? `
                                 <div class="upgrade-card__offer">
-
-                                    Offer valid until
-                                    ${offerEndsOn}
-
+                                    Offer valid until ${offerEndsOn}
                                 </div>
                             ` : ""}
 
@@ -206,15 +140,11 @@
                 currentProgram && nextProgram
                     ? `
                         <div class="upgrade-card__journey">
-
                             <strong>
-
-                                ${currentProgram.code || "Current"}
+                                ${currentProgram.code || currentProgram || "Current"}
                                 →
-                                ${nextProgram}
-
+                                ${nextProgram.code || nextProgram}
                             </strong>
-
                         </div>
                     `
                     : "";
@@ -225,49 +155,27 @@
 
                     <div class="upgrade-card__header">
 
-                        <h3>
-
-                            ${title}
-
-                        </h3>
+                        <h3>${title}</h3>
 
                     </div>
 
                     <div class="upgrade-card__body">
 
-                        <p>
-
-                            ${description}
-
-                        </p>
+                        <p>${description}</p>
 
                         ${journeyHtml}
 
                         ${bridgeProgram ? `
                             <p>
-
-                                <strong>
-
-                                    Bridge Programme:
-
-                                </strong>
-
+                                <strong>Bridge Programme:</strong>
                                 ${bridgeProgram}
-
                             </p>
                         ` : ""}
 
                         ${programName ? `
                             <p>
-
-                                <strong>
-
-                                    Upgrade To:
-
-                                </strong>
-
+                                <strong>Upgrade To:</strong>
                                 ${programName}
-
                             </p>
                         ` : ""}
 
@@ -279,14 +187,14 @@
 
                     <div class="upgrade-card__footer">
 
-                        <a
-                            href="${url}"
-                            class="btn ${eligible ? "btn-primary" : "btn-secondary"}"
-                            ${targetAttributes}>
+                        <button
+                            type="button"
+                            class="btn ${eligible ? "btn-primary" : "btn-secondary"} js-open-upgrade-registration"
+                            ${eligible ? "" : "disabled"}>
 
                             ${buttonText}
 
-                        </a>
+                        </button>
 
                     </div>
 

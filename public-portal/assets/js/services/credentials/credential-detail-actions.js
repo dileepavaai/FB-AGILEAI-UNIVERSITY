@@ -3,9 +3,9 @@
    Student & Executive Portal
 
    File      : credential-detail-actions.js
-   Version   : 2.0.0
+   Version   : 2.1.0
    Status    : ACTIVE
-   Phase     : Sprint 2E
+   Phase     : Sprint 2E.1
 
    Purpose
    ----------------------------------------------------------
@@ -14,11 +14,10 @@
    Responsibilities
 
    ✓ Launch Credential Detail Experience
-   ✓ Launch University Certificate
-   ✓ Launch Trainer Certificate
-   ✓ Launch Digital Badge
+   ✓ Launch Credential Asset Preview
+   ✓ Download Credential Assets
+   ✓ Share Credential on LinkedIn
    ✓ Launch Recognition Experience
-   ✓ Future LinkedIn Share
    ✓ Future Wallet Export
 
    Non Responsibilities
@@ -36,6 +35,7 @@
    • Experience Orchestration Layer
    • Single Responsibility
    • Enterprise Portal Standard
+   • No Nested Overlay
 
 ========================================================== */
 
@@ -43,15 +43,209 @@
 
     "use strict";
 
+    let activeCredential = null;
+
     const CredentialDetailActions = {
 
-        /* ==================================================
-           OPEN EXPERIENCE
-        ================================================== */
+        open(credentialId) {
 
-        open(
-            credentialId
-        ) {
+            const credential =
+                this.resolveCredential(
+                    credentialId
+                );
+
+            if (!credential) {
+                return;
+            }
+
+            activeCredential =
+                credential;
+
+            if (
+                window.CredentialDetailOverlay &&
+                typeof window.CredentialDetailOverlay.open === "function"
+            ) {
+
+                window.CredentialDetailOverlay.open(
+                    credential
+                );
+
+                return;
+
+            }
+
+            console.warn(
+                "[CredentialDetailActions] CredentialDetailOverlay unavailable."
+            );
+
+        },
+
+        previewAsset(assetType) {
+
+            const credential =
+                this.getActiveCredential();
+
+            if (!credential || !assetType) {
+                return;
+            }
+
+            if (
+                window.CredentialDetailOverlay &&
+                typeof window.CredentialDetailOverlay.showAssetPreview === "function"
+            ) {
+
+                window.CredentialDetailOverlay.showAssetPreview(
+                    assetType
+                );
+
+                return;
+
+            }
+
+            console.warn(
+                "[CredentialDetailActions] Asset preview unavailable."
+            );
+
+        },
+
+        download(assetType) {
+
+            const credential =
+                this.getActiveCredential();
+
+            if (
+                !credential ||
+                !assetType ||
+                !window.CredentialAssetPreview ||
+                typeof window.CredentialAssetPreview.download !== "function"
+            ) {
+
+                console.warn(
+                    "[CredentialDetailActions] Download unavailable."
+                );
+
+                return;
+
+            }
+
+            window.CredentialAssetPreview.download(
+                credential,
+                assetType
+            );
+
+        },
+
+        shareLinkedIn() {
+
+            const credential =
+                this.getActiveCredential();
+
+            if (
+                !credential ||
+                !window.CredentialAssetPreview ||
+                typeof window.CredentialAssetPreview.shareOnLinkedIn !== "function"
+            ) {
+
+                console.warn(
+                    "[CredentialDetailActions] LinkedIn share unavailable."
+                );
+
+                return;
+
+            }
+
+            window.CredentialAssetPreview.shareOnLinkedIn(
+                credential
+            );
+
+        },
+
+        backToDetails() {
+
+            if (
+                window.CredentialDetailOverlay &&
+                typeof window.CredentialDetailOverlay.showDetails === "function"
+            ) {
+
+                window.CredentialDetailOverlay.showDetails();
+
+            }
+
+        },
+
+        close() {
+
+            activeCredential = null;
+
+            if (
+                window.CredentialDetailOverlay &&
+                typeof window.CredentialDetailOverlay.close === "function"
+            ) {
+
+                window.CredentialDetailOverlay.close();
+
+            }
+
+        },
+
+        openUniversityCertificate(credential) {
+
+            activeCredential =
+                credential || activeCredential;
+
+            this.previewAsset(
+                "university-certificate"
+            );
+
+        },
+
+        openTrainerCertificate(credential) {
+
+            activeCredential =
+                credential || activeCredential;
+
+            this.previewAsset(
+                "trainer-certificate"
+            );
+
+        },
+
+        openDigitalBadge(credential) {
+
+            activeCredential =
+                credential || activeCredential;
+
+            this.previewAsset(
+                "digital-badge"
+            );
+
+        },
+
+        openRecognition(credential) {
+
+            activeCredential =
+                credential || activeCredential;
+
+            console.info(
+                "[CredentialDetailActions] Recognition experience:",
+                activeCredential
+            );
+
+        },
+
+        exportWallet(credential) {
+
+            activeCredential =
+                credential || activeCredential;
+
+            console.info(
+                "[CredentialDetailActions] Wallet export:",
+                activeCredential
+            );
+
+        },
+
+        resolveCredential(credentialId) {
 
             if (!credentialId) {
 
@@ -59,33 +253,27 @@
                     "[CredentialDetailActions] Missing credential ID."
                 );
 
-                return;
+                return null;
 
             }
 
             if (
-
                 !window.CredentialService ||
-
-                typeof window.CredentialService
-                    .getCredentialById !== "function"
-
+                typeof window.CredentialService.getCredentialById !== "function"
             ) {
 
                 console.warn(
                     "[CredentialDetailActions] CredentialService unavailable."
                 );
 
-                return;
+                return null;
 
             }
 
             const credential =
-
-                window.CredentialService
-                    .getCredentialById(
-                        credentialId
-                    );
+                window.CredentialService.getCredentialById(
+                    credentialId
+                );
 
             if (!credential) {
 
@@ -94,179 +282,25 @@
                     credentialId
                 );
 
-                return;
+                return null;
 
             }
 
-            if (
-
-                window.CredentialDetailOverlay &&
-
-                typeof window
-                    .CredentialDetailOverlay
-                    .open === "function"
-
-            ) {
-
-                console.info(
-
-                    "[CredentialDetailActions] Opening credential detail experience:",
-
-                    credential.credential_id
-
-                );
-
-                window
-                    .CredentialDetailOverlay
-                    .open(
-                        credential
-                    );
-
-                return;
-
-            }
-
-            console.warn(
-
-                "[CredentialDetailActions] CredentialDetailOverlay unavailable."
-
-            );
+            return credential;
 
         },
 
-        
+        getActiveCredential() {
 
-        /* ==================================================
-        OPEN ASSET EXPERIENCE
-        ================================================== */
-
-        openAsset(
-            credential,
-            asset
-        ) {
-
-            if (!credential) {
+            if (!activeCredential) {
 
                 console.warn(
-                    "[CredentialDetailActions] Missing credential."
+                    "[CredentialDetailActions] No active credential."
                 );
-
-                return;
 
             }
 
-            if (
-                window.CredentialDetailOverlay &&
-                typeof window.CredentialDetailOverlay.open === "function"
-            ) {
-
-                window.CredentialDetailOverlay.open(
-                    credential,
-                    {
-                        section: "assets",
-                        asset
-                    }
-                );
-
-                return;
-
-            }
-
-            console.warn(
-                "[CredentialDetailActions] CredentialDetailOverlay unavailable."
-            );
-
-        },
-
-                /* ==================================================
-           UNIVERSITY CERTIFICATE
-        ================================================== */
-
-        openUniversityCertificate(
-            credential
-        ) {
-
-            this.openAsset(
-                credential,
-                "universityCertificate"
-            );
-
-        },
-
-        /* ==================================================
-           TRAINER CERTIFICATE
-        ================================================== */
-
-        openTrainerCertificate(
-            credential
-        ) {
-
-            this.openAsset(
-                credential,
-                "trainerCertificate"
-            );
-
-        },
-
-        /* ==================================================
-           DIGITAL BADGE
-        ================================================== */
-
-        openDigitalBadge(
-            credential
-        ) {
-
-            this.openAsset(
-                credential,
-                "digitalBadge"
-            );
-
-        },
-
-        /* ==================================================
-           RECOGNITION
-        ================================================== */
-
-        openRecognition(
-            credential
-        ) {
-
-            this.openAsset(
-                credential,
-                "recognition"
-            );
-
-        },
-
-        /* ==================================================
-           FUTURE
-        ================================================== */
-
-        shareLinkedIn(
-            credential
-        ) {
-
-            console.info(
-
-                "[CredentialDetailActions] LinkedIn",
-
-                credential
-
-            );
-
-        },
-
-        exportWallet(
-            credential
-        ) {
-
-            console.info(
-
-                "[CredentialDetailActions] Wallet",
-
-                credential
-
-            );
+            return activeCredential;
 
         }
 

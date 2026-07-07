@@ -3,59 +3,9 @@
    Student & Executive Portal
 
    File      : upgrade-widget.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
-   Phase     : Sprint 2D
-
-   Purpose
-   ----------------------------------------------------------
-   Dashboard Upgrade Widget
-
-   Renders the Upgrade Opportunity section of the
-   Student & Executive Dashboard.
-
-   Responsibilities
-
-   ✓ Render Upgrade Card
-   ✓ Render Empty Upgrade State
-   ✓ Delegate Upgrade Card Rendering
-   ✓ Populate Dashboard Upgrade Section
-
-   Non Responsibilities
-
-   ✗ Authentication
-   ✗ Authorization
-   ✗ Firestore
-   ✗ Business Logic
-   ✗ API Calls
-   ✗ Dashboard Orchestration
-   ✗ HTML Generation Outside Widget Scope
-
-   Governance
-
-   • Dashboard Upgrade Widget Authority
-   • Presentation Layer
-   • Stateless Renderer
-   • Single Responsibility
-   • Enterprise Portal Standard
-
-   Dependencies
-
-   • DashboardWidgets DOM Helpers
-   • UpgradeCard
-
-   Notes
-
-   DashboardWidgets owns all shared DOM helper
-   methods including:
-
-   • getElement()
-   • setText()
-   • setHtml()
-   • clearElement()
-
-   UpgradeCard is the authoritative renderer
-   for the Upgrade Opportunity experience.
+   Phase     : Revenue Sprint
 
 ========================================================== */
 
@@ -65,14 +15,7 @@
 
     const UpgradeWidget = {
 
-        /* ==================================================
-           UPGRADE CARD
-        ================================================== */
-
-        render(
-            upgrade,
-            dashboard
-        ) {
+        render(upgrade, dashboard) {
 
             if (!dashboard) {
                 return;
@@ -97,18 +40,9 @@
 
             }
 
-            /*
-             * Upgrade Card Component
-             * is the authoritative renderer.
-             */
-
             if (
-
                 !window.UpgradeCard ||
-
-                typeof window.UpgradeCard.render !==
-                    "function"
-
+                typeof window.UpgradeCard.render !== "function"
             ) {
 
                 console.warn(
@@ -120,13 +54,54 @@
             }
 
             dashboard.setHtml(
-
                 container,
-
                 window.UpgradeCard.render(
                     upgrade
                 )
+            );
 
+            this.bindActions(
+                container,
+                upgrade
+            );
+
+        },
+
+        bindActions(container, upgrade) {
+
+            const button =
+                container.querySelector(
+                    ".js-open-upgrade-registration"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            button.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    if (
+                        window.UpgradeRegistrationOverlay &&
+                        typeof window.UpgradeRegistrationOverlay.open === "function"
+                    ) {
+
+                        window.UpgradeRegistrationOverlay.open(
+                            upgrade
+                        );
+
+                        return;
+
+                    }
+
+                    console.warn(
+                        "[UpgradeWidget] UpgradeRegistrationOverlay unavailable."
+                    );
+
+                }
             );
 
         }

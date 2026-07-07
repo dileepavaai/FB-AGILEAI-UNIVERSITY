@@ -3,26 +3,26 @@
    Student & Executive Portal
 
    File      : credential-asset-preview.js
-   Version   : 1.0.0
+   Version   : 2.0.0
    Status    : ACTIVE
    Phase     : Sprint 2E.1
 
    Purpose
    ----------------------------------------------------------
-   Credential Asset Preview Coordinator
+   Credential Asset Preview Renderer
 
    Responsibilities
 
-   ✓ Open Credential Asset Preview
+   ✓ Render Credential Asset Preview
    ✓ Select Asset Renderer
-   ✓ Render Preview Shell
-   ✓ Wire Download Action
-   ✓ Wire LinkedIn Share Action
-   ✓ Close Preview
+   ✓ Render Preview Actions
+   ✓ Support Download Action
+   ✓ Support LinkedIn Share Action
 
    Non Responsibilities
 
-   ✗ Credential Detail Rendering
+   ✗ Overlay Creation
+   ✗ Overlay Lifecycle
    ✗ Firestore
    ✗ Authentication
    ✗ Authorization
@@ -31,127 +31,106 @@
 
    Governance
 
-   • Asset Preview Authority
+   • Credential Workspace Renderer
+   • No Nested Overlay
    • Renderer Based Architecture
    • No Firestore Access
    • No Authentication Logic
 
 ========================================================== */
 
-(function (window, document) {
+(function (window) {
 
     "use strict";
 
     const CredentialAssetPreview = {
 
-        overlayId: "credentialAssetPreviewOverlay",
-
-        open(credential, assetType) {
+        render(credential, assetType) {
 
             if (!credential || !assetType) {
-                return;
+                return this.renderEmpty();
             }
-
-            this.close();
-
-            const overlay =
-                document.createElement("div");
-
-            overlay.id = this.overlayId;
-            overlay.className = "credential-asset-preview-overlay";
-            overlay.setAttribute("role", "dialog");
-            overlay.setAttribute("aria-modal", "true");
-
-            overlay.innerHTML =
-                this.buildPreview(
-                    credential,
-                    assetType
-                );
-
-            document.body.appendChild(overlay);
-
-            this.bindEvents(
-                overlay,
-                credential,
-                assetType
-            );
-
-        },
-
-        close() {
-
-            const existing =
-                document.getElementById(
-                    this.overlayId
-                );
-
-            if (existing) {
-                existing.remove();
-            }
-
-        },
-
-        buildPreview(credential, assetType) {
 
             const title =
                 this.resolveTitle(assetType);
 
-            const body =
+            const preview =
                 this.renderAsset(
                     credential,
                     assetType
                 );
 
             return `
-                <div class="credential-asset-preview-backdrop" data-asset-preview-close></div>
 
-                <section class="credential-asset-preview-dialog">
+                <section
+                    class="credential-asset-preview-workspace"
+                    data-credential-section="asset-preview"
+                    data-credential-asset-type="${this.escape(assetType)}">
 
                     <header class="credential-asset-preview-header">
+
                         <div>
+
                             <p class="credential-asset-preview-label">
+
                                 Credential Asset Preview
+
                             </p>
 
-                            <h2>${this.escape(title)}</h2>
+                            <h2>
+
+                                ${this.escape(title)}
+
+                            </h2>
+
                         </div>
 
                         <button
                             type="button"
-                            class="credential-asset-preview-close"
-                            data-asset-preview-close
-                            aria-label="Close asset preview">
-                            ×
+                            class="btn btn-secondary js-back-to-credential-details">
+
+                            ← Back to Credential Details
+
                         </button>
+
                     </header>
 
                     <div class="credential-asset-preview-body">
-                        ${body}
+
+                        ${preview}
+
                     </div>
 
                     <footer class="credential-asset-preview-actions">
 
                         <button
                             type="button"
-                            class="credential-asset-preview-button secondary"
-                            data-asset-preview-download>
+                            class="credential-asset-preview-button secondary js-download-credential-asset"
+                            data-credential-asset-type="${this.escape(assetType)}">
+
                             Download
+
                         </button>
 
                         <button
                             type="button"
-                            class="credential-asset-preview-button primary"
-                            data-asset-preview-linkedin>
+                            class="credential-asset-preview-button primary js-share-credential-linkedin"
+                            data-credential-asset-type="${this.escape(assetType)}">
+
                             Share on LinkedIn
+
                         </button>
 
                     </footer>
 
                     <p class="credential-asset-preview-note">
+
                         Tip: Download the asset first, then upload it manually while sharing on LinkedIn.
+
                     </p>
 
                 </section>
+
             `;
 
         },
@@ -160,98 +139,65 @@
 
             if (
                 assetType === "university-certificate" &&
-                window.CertificatePreview
+                window.CertificatePreview &&
+                typeof window.CertificatePreview.render === "function"
             ) {
+
                 return window.CertificatePreview.render(
                     credential
                 );
+
             }
 
             if (
                 assetType === "trainer-certificate" &&
-                window.TrainerCertificatePreview
+                window.TrainerCertificatePreview &&
+                typeof window.TrainerCertificatePreview.render === "function"
             ) {
+
                 return window.TrainerCertificatePreview.render(
                     credential
                 );
+
             }
 
             if (
                 assetType === "digital-badge" &&
-                window.BadgePreview
+                window.BadgePreview &&
+                typeof window.BadgePreview.render === "function"
             ) {
+
                 return window.BadgePreview.render(
                     credential
                 );
+
             }
+
+            return this.renderEmpty();
+
+        },
+
+        renderEmpty() {
 
             return `
+
                 <div class="asset-preview-empty">
-                    <h3>Preview unavailable</h3>
-                    <p>This credential asset preview is not available yet.</p>
+
+                    <h3>
+
+                        Preview unavailable
+
+                    </h3>
+
+                    <p>
+
+                        This credential asset preview is not available yet.
+
+                    </p>
+
                 </div>
+
             `;
-
-        },
-
-        bindEvents(overlay, credential, assetType) {
-
-            overlay
-                .querySelectorAll("[data-asset-preview-close]")
-                .forEach((element) => {
-
-                    element.addEventListener(
-                        "click",
-                        () => this.close()
-                    );
-
-                });
-
-            const downloadButton =
-                overlay.querySelector(
-                    "[data-asset-preview-download]"
-                );
-
-            if (downloadButton) {
-
-                downloadButton.addEventListener(
-                    "click",
-                    () => this.download(
-                        credential,
-                        assetType
-                    )
-                );
-
-            }
-
-            const linkedInButton =
-                overlay.querySelector(
-                    "[data-asset-preview-linkedin]"
-                );
-
-            if (linkedInButton) {
-
-                linkedInButton.addEventListener(
-                    "click",
-                    () => this.shareOnLinkedIn(
-                        credential
-                    )
-                );
-
-            }
-
-            document.addEventListener(
-                "keydown",
-                this.handleEscape
-            );
-
-        },
-
-        handleEscape(event) {
-
-            if (event.key === "Escape") {
-                window.CredentialAssetPreview.close();
-            }
 
         },
 
@@ -264,8 +210,13 @@
                 );
 
             if (!url) {
-                alert("Download is not available for this asset yet.");
+
+                alert(
+                    "Download is not available for this asset yet."
+                );
+
                 return;
+
             }
 
             const anchor =
@@ -276,8 +227,12 @@
             anchor.target = "_blank";
             anchor.rel = "noopener noreferrer";
 
-            document.body.appendChild(anchor);
+            document.body.appendChild(
+                anchor
+            );
+
             anchor.click();
+
             anchor.remove();
 
         },
@@ -309,23 +264,32 @@
                 credential.assets || {};
 
             if (assetType === "university-certificate") {
+
                 return credential.certificateUrl ||
+                    credential.certificate_url ||
                     assets.universityCertificateUrl ||
                     assets.certificateUrl ||
                     "";
+
             }
 
             if (assetType === "trainer-certificate") {
+
                 return credential.trainerCertificateUrl ||
+                    credential.trainer_certificate_url ||
                     assets.trainerCertificateUrl ||
                     "";
+
             }
 
             if (assetType === "digital-badge") {
+
                 return credential.badgeUrl ||
+                    credential.badge_url ||
                     assets.digitalBadgeUrl ||
                     assets.badgeUrl ||
                     "";
+
             }
 
             return "";
@@ -335,6 +299,7 @@
         resolveVerificationUrl(credential) {
 
             return credential.verificationUrl ||
+                credential.verification_url ||
                 credential.verifyUrl ||
                 credential.registryUrl ||
                 "https://verify.agileai.university";
@@ -346,10 +311,40 @@
             const titles = {
                 "university-certificate": "University Certificate",
                 "trainer-certificate": "Trainer Certificate",
-                "digital-badge": "Digital Badge"
+                "digital-badge": "Digital Badge",
+                "recognition-asset": "Recognition Asset"
             };
 
-            return titles[assetType] || "Credential Asset";
+            return titles[assetType] ||
+                "Credential Asset";
+
+        },
+
+        /*
+         * Temporary compatibility method.
+         * Existing callers should be migrated to:
+         *
+         * CredentialDetailOverlay.showAssetPreview(assetType)
+         */
+
+        open(credential, assetType) {
+
+            if (
+                window.CredentialDetailOverlay &&
+                typeof window.CredentialDetailOverlay.showAssetPreview === "function"
+            ) {
+
+                window.CredentialDetailOverlay.showAssetPreview(
+                    assetType
+                );
+
+                return;
+
+            }
+
+            console.warn(
+                "[CredentialAssetPreview] open() is deprecated. Use render() inside CredentialDetailOverlay."
+            );
 
         },
 
@@ -366,6 +361,7 @@
 
     };
 
-    window.CredentialAssetPreview = CredentialAssetPreview;
+    window.CredentialAssetPreview =
+        CredentialAssetPreview;
 
-})(window, document);
+})(window);

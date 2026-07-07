@@ -3,20 +3,22 @@
    Student & Executive Portal
 
    File      : credential-detail-overlay.js
-   Version   : 2.0.0
+   Version   : 3.0.0
    Status    : ACTIVE
-   Phase     : Sprint 2E
+   Phase     : Sprint 2E.1
 
    Purpose
    ----------------------------------------------------------
-   Credential Detail Overlay
+   Credential Detail Workspace Overlay
 
    Responsibilities
 
    ✓ Create Overlay
    ✓ Open Overlay
    ✓ Close Overlay
-   ✓ Render Overlay Shell
+   ✓ Render Credential Details View
+   ✓ Render Credential Asset Preview View
+   ✓ Manage Workspace Navigation
    ✓ Manage Overlay Lifecycle
 
    Non Responsibilities
@@ -25,14 +27,15 @@
    ✗ Authorization
    ✗ Firestore
    ✗ Business Logic
-   ✗ Credential Rendering
-   ✗ Certificate Generation
+   ✗ Credential Generation
+   ✗ Payment Processing
 
    Governance
 
-   • Credential Detail Overlay Authority
-   • Presentation Layer
-   • Single Responsibility
+   • Credential Workspace Authority
+   • Single Overlay Experience
+   • No Nested Overlay
+   • Presentation Orchestration Layer
    • Enterprise Portal Standard
 
 ========================================================== */
@@ -44,6 +47,15 @@
     const CredentialDetailOverlay = {
 
         /* ==================================================
+           CONSTANTS
+        ================================================== */
+
+        views: {
+            DETAILS: "details",
+            ASSET_PREVIEW: "asset-preview"
+        },
+
+        /* ==================================================
            STATE
         ================================================== */
 
@@ -53,6 +65,8 @@
 
         container: null,
 
+        title: null,
+
         body: null,
 
         footer: null,
@@ -60,6 +74,10 @@
         activeCredential: null,
 
         activeOptions: {},
+
+        activeView: "details",
+
+        activeAssetType: null,
 
         isOpen: false,
 
@@ -94,7 +112,8 @@
             const wrapper =
                 document.createElement("div");
 
-            wrapper.innerHTML = this.render();
+            wrapper.innerHTML =
+                this.render();
 
             this.overlay =
                 wrapper.firstElementChild;
@@ -107,6 +126,11 @@
             this.container =
                 this.overlay.querySelector(
                     ".overlay-container"
+                );
+
+            this.title =
+                this.overlay.querySelector(
+                    ".overlay-title"
                 );
 
             this.body =
@@ -128,28 +152,23 @@
         },
 
         /* ==================================================
-           RENDER
+           RENDER SHELL
         ================================================== */
 
         render() {
 
             return `
 
-                <div
-                    class="overlay credential-detail-overlay">
+                <div class="overlay credential-detail-overlay">
 
-                    <div
-                        class="overlay-backdrop">
+                    <div class="overlay-backdrop">
                     </div>
 
-                    <div
-                        class="overlay-container">
+                    <div class="overlay-container">
 
-                        <div
-                            class="overlay-header">
+                        <div class="overlay-header">
 
-                            <h2
-                                class="overlay-title">
+                            <h2 class="overlay-title">
 
                                 Credential Details
 
@@ -166,11 +185,9 @@
 
                         </div>
 
-                        <div
-                            class="overlay-body">
+                        <div class="overlay-body">
 
-                            <div
-                                class="credential-empty">
+                            <div class="credential-empty">
 
                                 Select a credential to
                                 view its details.
@@ -179,8 +196,7 @@
 
                         </div>
 
-                        <div
-                            class="overlay-footer">
+                        <div class="overlay-footer">
 
                             <button
                                 type="button"
@@ -200,7 +216,7 @@
 
         },
 
-                /* ==================================================
+        /* ==================================================
            EVENT BINDING
         ================================================== */
 
@@ -211,88 +227,106 @@
             }
 
             this.overlay
-
                 .querySelector(".overlay-close")
-
                 .addEventListener(
-
                     "click",
-
                     this.close.bind(this)
-
                 );
 
             this.overlay
-
                 .querySelector(".overlay-close-button")
-
                 .addEventListener(
-
                     "click",
-
                     this.close.bind(this)
-
                 );
 
-            this.backdrop
-
-                .addEventListener(
-
-                    "click",
-
-                    this.close.bind(this)
-
-                );
+            this.backdrop.addEventListener(
+                "click",
+                this.close.bind(this)
+            );
 
             document.addEventListener(
-
                 "keydown",
-
                 this.handleEscape.bind(this)
-
             );
 
             this.body.addEventListener(
-
                 "click",
-
-                (event) => {
-
-                    const button =
-                        event.target.closest(
-                            ".js-open-credential-asset-preview"
-                        );
-
-                    if (!button) {
-                        return;
-                    }
-
-                    event.preventDefault();
-
-                    if (!window.CredentialAssetPreview) {
-
-                        console.warn(
-                            "[CredentialDetailOverlay] CredentialAssetPreview is unavailable."
-                        );
-
-                        return;
-
-                    }
-
-                    const assetType =
-                        button.dataset.credentialAssetType;
-
-                    window.CredentialAssetPreview.open(
-
-                        this.activeCredential,
-
-                        assetType
-
-                    );
-
-                }
-
+                this.handleBodyClick.bind(this)
             );
+
+        },
+
+        /* ==================================================
+           BODY CLICK ROUTER
+        ================================================== */
+
+        handleBodyClick(event) {
+
+            const assetButton =
+                event.target.closest(
+                    ".js-open-credential-asset-preview"
+                );
+
+            if (assetButton) {
+
+                event.preventDefault();
+
+                const assetType =
+                    assetButton.dataset.credentialAssetType;
+
+                this.showAssetPreview(
+                    assetType
+                );
+
+                return;
+
+            }
+
+            const backButton =
+                event.target.closest(
+                    ".js-back-to-credential-details"
+                );
+
+            if (backButton) {
+
+                event.preventDefault();
+
+                this.showDetails();
+
+                return;
+
+            }
+
+            const downloadButton =
+                event.target.closest(
+                    ".js-download-credential-asset"
+                );
+
+            if (downloadButton) {
+
+                event.preventDefault();
+
+                this.downloadActiveAsset(
+                    downloadButton.dataset.credentialAssetType
+                );
+
+                return;
+
+            }
+
+            const linkedInButton =
+                event.target.closest(
+                    ".js-share-credential-linkedin"
+                );
+
+            if (linkedInButton) {
+
+                event.preventDefault();
+
+                this.shareActiveCredentialOnLinkedIn();
+
+            }
 
         },
 
@@ -323,11 +357,11 @@
             this.activeOptions =
                 options || {};
 
-            console.info(
-                "[CredentialDetailOverlay] Opening:",
-                credential.credential_id,
-                this.activeOptions
-            );
+            this.activeView =
+                this.views.DETAILS;
+
+            this.activeAssetType =
+                null;
 
             if (!this.isOpen) {
 
@@ -342,13 +376,340 @@
 
             }
 
-            this.renderSections();
+            this.renderDetailsView();
 
             this.focusRequestedSection();
 
         },
 
-                /* ==================================================
+        /* ==================================================
+           DETAILS VIEW
+        ================================================== */
+
+        showDetails() {
+
+            this.activeView =
+                this.views.DETAILS;
+
+            this.activeAssetType =
+                null;
+
+            this.renderDetailsView();
+
+        },
+
+        renderDetailsView() {
+
+            this.setTitle(
+                "Credential Details"
+            );
+
+            this.renderSections();
+
+            this.renderDefaultFooter();
+
+        },
+
+        /* ==================================================
+           ASSET PREVIEW VIEW
+        ================================================== */
+
+        showAssetPreview(assetType) {
+
+            if (!this.activeCredential) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] No active credential for asset preview."
+                );
+
+                return;
+
+            }
+
+            if (!assetType) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] Missing asset type."
+                );
+
+                return;
+
+            }
+
+            if (
+                !window.CredentialAssetPreview ||
+                typeof window.CredentialAssetPreview.render !== "function"
+            ) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] CredentialAssetPreview renderer is unavailable."
+                );
+
+                return;
+
+            }
+
+            this.activeView =
+                this.views.ASSET_PREVIEW;
+
+            this.activeAssetType =
+                assetType;
+
+            this.setTitle(
+                this.resolveAssetTitle(assetType)
+            );
+
+            this.body.innerHTML =
+                window.CredentialAssetPreview.render(
+                    this.activeCredential,
+                    assetType
+                );
+
+            this.renderAssetPreviewFooter();
+
+            this.scrollToTop();
+
+        },
+
+        /* ==================================================
+           RENDER SECTIONS
+        ================================================== */
+
+        renderSections() {
+
+            if (!this.body) {
+                return;
+            }
+
+            if (!this.activeCredential) {
+
+                this.body.innerHTML = `
+
+                    <div class="credential-empty">
+
+                        Select a credential
+                        to view its details.
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+            const sections = [];
+
+            if (
+                window.CredentialDetailHeader &&
+                typeof window.CredentialDetailHeader.render === "function"
+            ) {
+
+                sections.push(
+                    window.CredentialDetailHeader.render(
+                        this.activeCredential
+                    )
+                );
+
+            }
+
+            if (
+                window.CredentialInformationSection &&
+                typeof window.CredentialInformationSection.render === "function"
+            ) {
+
+                sections.push(
+                    window.CredentialInformationSection.render(
+                        this.activeCredential
+                    )
+                );
+
+            }
+
+            if (
+                window.CredentialRecognitionSection &&
+                typeof window.CredentialRecognitionSection.render === "function"
+            ) {
+
+                sections.push(
+                    window.CredentialRecognitionSection.render(
+                        this.activeCredential
+                    )
+                );
+
+            }
+
+            if (
+                window.CredentialVerificationSection &&
+                typeof window.CredentialVerificationSection.render === "function"
+            ) {
+
+                sections.push(
+                    window.CredentialVerificationSection.render(
+                        this.activeCredential
+                    )
+                );
+
+            }
+
+            if (
+                window.CredentialAssetsSection &&
+                typeof window.CredentialAssetsSection.render === "function"
+            ) {
+
+                sections.push(
+                    window.CredentialAssetsSection.render(
+                        this.activeCredential
+                    )
+                );
+
+            }
+
+            this.body.innerHTML =
+                sections.join("");
+
+        },
+
+        /* ==================================================
+           FOOTERS
+        ================================================== */
+
+        renderDefaultFooter() {
+
+            if (!this.footer) {
+                return;
+            }
+
+            this.footer.innerHTML = `
+
+                <button
+                    type="button"
+                    class="btn btn-secondary overlay-close-button">
+
+                    Close
+
+                </button>
+
+            `;
+
+            this.footer
+                .querySelector(".overlay-close-button")
+                .addEventListener(
+                    "click",
+                    this.close.bind(this)
+                );
+
+        },
+
+        renderAssetPreviewFooter() {
+
+            if (!this.footer) {
+                return;
+            }
+
+            this.footer.innerHTML = `
+
+                <button
+                    type="button"
+                    class="btn btn-secondary js-back-to-credential-details">
+
+                    ← Back to Credential Details
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary js-download-credential-asset"
+                    data-credential-asset-type="${this.escape(this.activeAssetType)}">
+
+                    Download
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn js-share-credential-linkedin"
+                    data-credential-asset-type="${this.escape(this.activeAssetType)}">
+
+                    Share on LinkedIn
+
+                </button>
+
+            `;
+
+            this.footer
+                .querySelector(".js-back-to-credential-details")
+                .addEventListener(
+                    "click",
+                    this.showDetails.bind(this)
+                );
+
+            this.footer
+                .querySelector(".js-download-credential-asset")
+                .addEventListener(
+                    "click",
+                    () => this.downloadActiveAsset(
+                        this.activeAssetType
+                    )
+                );
+
+            this.footer
+                .querySelector(".js-share-credential-linkedin")
+                .addEventListener(
+                    "click",
+                    this.shareActiveCredentialOnLinkedIn.bind(this)
+                );
+
+        },
+
+        /* ==================================================
+           ACTIONS
+        ================================================== */
+
+        downloadActiveAsset(assetType) {
+
+            if (
+                !window.CredentialAssetPreview ||
+                typeof window.CredentialAssetPreview.download !== "function"
+            ) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] Download handler unavailable."
+                );
+
+                return;
+
+            }
+
+            window.CredentialAssetPreview.download(
+                this.activeCredential,
+                assetType || this.activeAssetType
+            );
+
+        },
+
+        shareActiveCredentialOnLinkedIn() {
+
+            if (
+                !window.CredentialAssetPreview ||
+                typeof window.CredentialAssetPreview.shareOnLinkedIn !== "function"
+            ) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] LinkedIn share handler unavailable."
+                );
+
+                return;
+
+            }
+
+            window.CredentialAssetPreview.shareOnLinkedIn(
+                this.activeCredential
+            );
+
+        },
+
+        /* ==================================================
            FOCUS REQUESTED SECTION
         ================================================== */
 
@@ -401,16 +762,42 @@
         },
 
         /* ==================================================
-           RENDER SECTIONS
+           CLOSE
         ================================================== */
 
-        renderSections() {
+        close() {
 
-            if (!this.body) {
+            if (
+                !this.overlay ||
+                !this.isOpen
+            ) {
                 return;
             }
 
-            if (!this.activeCredential) {
+            this.overlay.classList.remove(
+                "is-open"
+            );
+
+            document.body.style.overflow =
+                "";
+
+            this.activeCredential =
+                null;
+
+            this.activeOptions =
+                {};
+
+            this.activeView =
+                this.views.DETAILS;
+
+            this.activeAssetType =
+                null;
+
+            this.setTitle(
+                "Credential Details"
+            );
+
+            if (this.body) {
 
                 this.body.innerHTML = `
 
@@ -423,209 +810,12 @@
 
                 `;
 
-                return;
-
             }
 
-            const sections = [];
+            this.renderDefaultFooter();
 
-            /*
-             * Header
-             */
-
-            if (
-
-                window.CredentialDetailHeader &&
-
-                typeof window
-                    .CredentialDetailHeader
-                    .render === "function"
-
-            ) {
-
-                sections.push(
-
-                    window
-                        .CredentialDetailHeader
-                        .render(
-
-                            this.activeCredential
-
-                        )
-
-                );
-
-            }
-
-            /*
-             * Credential Information
-             */
-
-            if (
-
-                window.CredentialInformationSection &&
-
-                typeof window
-                    .CredentialInformationSection
-                    .render === "function"
-
-            ) {
-
-                sections.push(
-
-                    window
-                        .CredentialInformationSection
-                        .render(
-
-                            this.activeCredential
-
-                        )
-
-                );
-
-            }
-
-            /*
-             * Recognition
-             */
-
-            if (
-
-                window.CredentialRecognitionSection &&
-
-                typeof window
-                    .CredentialRecognitionSection
-                    .render === "function"
-
-            ) {
-
-                sections.push(
-
-                    window
-                        .CredentialRecognitionSection
-                        .render(
-
-                            this.activeCredential
-
-                        )
-
-                );
-
-            }
-
-            /*
-             * Verification
-             */
-
-            if (
-
-                window.CredentialVerificationSection &&
-
-                typeof window
-                    .CredentialVerificationSection
-                    .render === "function"
-
-            ) {
-
-                sections.push(
-
-                    window
-                        .CredentialVerificationSection
-                        .render(
-
-                            this.activeCredential
-
-                        )
-
-                );
-
-            }
-
-            /*
-             * Assets
-             */
-
-            if (
-
-                window.CredentialAssetsSection &&
-
-                typeof window
-                    .CredentialAssetsSection
-                    .render === "function"
-
-            ) {
-
-                sections.push(
-
-                    window
-                        .CredentialAssetsSection
-                        .render(
-
-                            this.activeCredential
-
-                        )
-
-                );
-
-            }
-
-            this.body.innerHTML =
-                sections.join("");
-
-        },
-
-        /* ==================================================
-           CLOSE
-        ================================================== */
-
-        close() {
-
-            if (
-
-                !this.overlay ||
-
-                !this.isOpen
-
-            ) {
-
-                return;
-
-            }
-
-            console.info(
-
-                "[CredentialDetailOverlay] Closed"
-
-            );
-
-            this.overlay.classList.remove(
-
-                "is-open"
-
-            );
-
-            document.body.style.overflow = "";
-
-                this.activeCredential = null;
-                this.activeOptions = {};
-
-            if (this.body) {
-
-                this.body.innerHTML = `
-
-                    <div
-                        class="credential-empty">
-
-                        Select a credential
-                        to view its details.
-
-                    </div>
-
-                `;
-
-            }
-
-            this.isOpen = false;
+            this.isOpen =
+                false;
 
         },
 
@@ -633,26 +823,81 @@
            ESCAPE
         ================================================== */
 
-        handleEscape(
-            event
-        ) {
+        handleEscape(event) {
+
+            if (event.key !== "Escape") {
+                return;
+            }
 
             if (
-                event.key !== "Escape"
+                this.isOpen &&
+                this.activeView === this.views.ASSET_PREVIEW
             ) {
+
+                this.showDetails();
+
                 return;
+
             }
 
             this.close();
 
         },
 
+        /* ==================================================
+           HELPERS
+        ================================================== */
+
+        setTitle(value) {
+
+            if (!this.title) {
+                return;
+            }
+
+            this.title.textContent =
+                value || "Credential Details";
+
+        },
+
+        scrollToTop() {
+
+            if (!this.body) {
+                return;
+            }
+
+            this.body.scrollTop =
+                0;
+
+        },
+
+        resolveAssetTitle(assetType) {
+
+            const titles = {
+                "university-certificate": "University Certificate",
+                "trainer-certificate": "Trainer Certificate",
+                "digital-badge": "Digital Badge",
+                "recognition-asset": "Recognition Asset"
+            };
+
+            return titles[assetType] ||
+                "Credential Asset";
+
+        },
+
+        escape(value) {
+
+            return String(value || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
     };
 
     window.CredentialDetailOverlay =
         CredentialDetailOverlay;
 
-    })(
-        window,
-        document
-);        
+})(window, document);

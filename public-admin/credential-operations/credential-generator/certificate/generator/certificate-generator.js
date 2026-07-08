@@ -2,8 +2,8 @@
 Agile AI University
 Certificate Generator Controller
 
-Version: 1.3.0
-Phase: Phase-1C
+Version: 1.4.0
+Phase: Admin Credential Asset Publisher Sprint
 
 Purpose:
 - Search Credential Records
@@ -11,6 +11,7 @@ Purpose:
 - Populate Read-Only Metadata Fields
 - Render Certificate Preview
 - Apply Recognition Display Governance
+- Expose selected credential for Admin Asset Publishing
 
 Governance:
 - Read Only
@@ -18,6 +19,7 @@ Governance:
 - No Certificate Generation
 - No PDF Generation
 - AOP → AIPA Recognition Display Enforcement
+- Student Portal does not generate assets
 
 Data Source:
 Existing Credential Registry API
@@ -25,27 +27,15 @@ Existing Credential Registry API
 Template Authority:
 certificate-template.html
 
-Cost Model:
-- Reuses Existing Cloud Run Endpoint
-- No Additional Infrastructure
-
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  /* =====================================================
-     Registry API
-  ===================================================== */
 
   const REGISTRY_API =
     "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
   let credentialData = [];
   let loadedCredential = null;
-
-  /* =====================================================
-     Search Controls
-  ===================================================== */
 
   const credentialIdInput =
     document.getElementById("searchCredentialId");
@@ -65,16 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const generatePdfBtn =
     document.getElementById("generatePdfBtn");
 
-  /* =====================================================
-     Preview Container
-  ===================================================== */
-
   const certificatePreview =
     document.getElementById("certificatePreview");
-
-  /* =====================================================
-     Field Mapping
-  ===================================================== */
 
   const credentialIdValue =
     document.getElementById("credentialIdValue");
@@ -100,10 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const credentialStatusValue =
     document.getElementById("credentialStatusValue");
 
-  /* =====================================================
-     Lifecycle
-  ===================================================== */
-
   const lifecycleStateValue =
     document.getElementById("lifecycleStateValue");
 
@@ -116,10 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const bridgeCompletionStatusValue =
     document.getElementById("bridgeCompletionStatusValue");
 
-  /* =====================================================
-     Recognition
-  ===================================================== */
-
   const originalCredentialValue =
     document.getElementById("originalCredentialValue");
 
@@ -131,10 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const recognitionEffectiveDateValue =
     document.getElementById("recognitionEffectiveDateValue");
-
-  /* =====================================================
-     Load Registry
-  ===================================================== */
 
   async function loadRegistry() {
 
@@ -177,23 +147,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  /* =====================================================
-   Search State Invalidation
-===================================================== */
+  function invalidateLoadedCredentialState() {
 
-function invalidateLoadedCredentialState() {
+    if (!loadedCredential) {
+      return;
+    }
 
-  if (!loadedCredential) {
-    return;
+    resetLoadedCredentialState();
+
   }
-
-  resetLoadedCredentialState();
-
-}
-
-  /* =====================================================
-     Search
-  ===================================================== */
 
   function searchCredential() {
 
@@ -239,10 +201,10 @@ function invalidateLoadedCredentialState() {
       alert("No matching credential found.");
 
       return;
+
     }
 
     loadedCredential = record;
-
     window.loadedCredential = record;
 
     populateFields(record);
@@ -251,84 +213,76 @@ function invalidateLoadedCredentialState() {
 
     if (isCertificateReady(record)) {
 
-    enablePdfButton();
+      enablePdfButton();
 
     } else {
 
-    disablePdfButton();
+      disablePdfButton();
 
-    alert(
+      alert(
         "Credential is not eligible for certificate generation."
-    );
+      );
 
     }
 
   }
 
-  /* =====================================================
-     Populate UI
-    ===================================================== */
-
   function populateFields(record) {
 
-  console.log(
-  "CERTIFICATE GENERATOR RECORD",
-  record
-  );
+    console.log(
+      "CERTIFICATE GENERATOR RECORD",
+      record
+    );
 
-  credentialIdValue.textContent =
-  record.credential_id || "-";
+    credentialIdValue.textContent =
+      record.credential_id || "-";
 
-  credentialTypeValue.textContent =
-  record.credential_type || "-";
+    credentialTypeValue.textContent =
+      record.credential_type || "-";
 
-  credentialFamilyValue.textContent =
-  record.credential_family || "-";
+    credentialFamilyValue.textContent =
+      record.credential_family || "-";
 
-  programCodeValue.textContent =
-  record.program_code || "-";
+    programCodeValue.textContent =
+      record.program_code || "-";
 
-  programNameValue.textContent =
-  record.program_name || "-";
+    programNameValue.textContent =
+      record.program_name || "-";
 
-  templateKeyValue.textContent =
-  record.template_key || "-";
+    templateKeyValue.textContent =
+      record.template_key || "-";
 
-  credentialStatusValue.textContent =
-  record.issued_status || "-";
+    credentialStatusValue.textContent =
+      record.issued_status || "-";
 
-  issueDateValue.textContent =
-  formatDate(record.imported_at);
+    issueDateValue.textContent =
+      formatDate(record.imported_at);
 
-  lifecycleStateValue.textContent =
-  record.lifecycle_state || "-";
+    lifecycleStateValue.textContent =
+      record.lifecycle_state || "-";
 
-  successorProgramValue.textContent =
-  record.successor_program || "-";
+    successorProgramValue.textContent =
+      record.successor_program || "-";
 
-  bridgeRequiredValue.textContent =
-  record.bridge_required || "-";
+    bridgeRequiredValue.textContent =
+      record.bridge_required || "-";
 
-  bridgeCompletionStatusValue.textContent =
-  record.bridge_completion_status || "-";
+    bridgeCompletionStatusValue.textContent =
+      record.bridge_completion_status || "-";
 
-  originalCredentialValue.textContent =
-  record.original_credential || "-";
+    originalCredentialValue.textContent =
+      record.original_credential || "-";
 
-  currentRecognitionValue.textContent =
-  record.current_recognition || "-";
+    currentRecognitionValue.textContent =
+      record.current_recognition || "-";
 
-  recognitionStatusValue.textContent =
-  record.recognition_status || "-";
+    recognitionStatusValue.textContent =
+      record.recognition_status || "-";
 
-  recognitionEffectiveDateValue.textContent =
-  record.recognition_effective_date || "-";
+    recognitionEffectiveDateValue.textContent =
+      record.recognition_effective_date || "-";
 
   }
-
-  /* =====================================================
-     Certificate Preview
-  ===================================================== */
 
   async function renderCertificatePreview(record) {
 
@@ -343,90 +297,65 @@ function invalidateLoadedCredentialState() {
       const template =
         await response.text();
 
-        certificatePreview.innerHTML =
+      certificatePreview.innerHTML =
         template;
 
-        const pdfRenderContainer =
-        document.getElementById(
-            "pdfRenderContainer"
-        );
+      const pdfRenderContainer =
+        document.getElementById("pdfRenderContainer");
 
-        if (pdfRenderContainer) {
-
-        pdfRenderContainer.innerHTML =
-            template;
-
-        }
+      if (pdfRenderContainer) {
+        pdfRenderContainer.innerHTML = template;
+      }
 
       const pdfLearnerName =
-        pdfRenderContainer?.querySelector(
-            "#certLearnerName"
-        );
+        pdfRenderContainer?.querySelector("#certLearnerName");
 
-    const pdfCredentialType =
-    pdfRenderContainer?.querySelector(
-        "#certCredentialType"
-    );
+      const pdfCredentialType =
+        pdfRenderContainer?.querySelector("#certCredentialType");
 
-    const pdfProgramCode =
-    pdfRenderContainer?.querySelector(
-        "#certProgramCode"
-    );
+      const pdfProgramCode =
+        pdfRenderContainer?.querySelector("#certProgramCode");
 
-    const pdfCredentialId =
-    pdfRenderContainer?.querySelector(
-        "#certCredentialId"
-    );
+      const pdfCredentialId =
+        pdfRenderContainer?.querySelector("#certCredentialId");
 
-    const pdfIssueDate =
-    pdfRenderContainer?.querySelector(
-        "#certIssueDate"
-    );
+      const pdfIssueDate =
+        pdfRenderContainer?.querySelector("#certIssueDate");
 
       const learnerName =
-        certificatePreview.querySelector(
-          "#certLearnerName"
-        );
+        certificatePreview.querySelector("#certLearnerName");
 
       const credentialType =
-        certificatePreview.querySelector(
-          "#certCredentialType"
-        );
+        certificatePreview.querySelector("#certCredentialType");
 
       const programCode =
-        certificatePreview.querySelector(
-          "#certProgramCode"
-        );
+        certificatePreview.querySelector("#certProgramCode");
 
       const credentialId =
-        certificatePreview.querySelector(
-          "#certCredentialId"
-        );
+        certificatePreview.querySelector("#certCredentialId");
 
       const issueDate =
-        certificatePreview.querySelector(
-          "#certIssueDate"
-        );
+        certificatePreview.querySelector("#certIssueDate");
 
       if (learnerName) {
         learnerName.textContent =
-            record.full_name || "-";
-        }
+          record.full_name || "-";
+      }
 
-        if (pdfLearnerName) {
+      if (pdfLearnerName) {
         pdfLearnerName.textContent =
-            record.full_name || "-";
-        }
+          record.full_name || "-";
+      }
 
       if (credentialType) {
         credentialType.textContent =
-            getDisplayCredentialTitle(record);
-        }
+          getDisplayCredentialTitle(record);
+      }
 
-        if (pdfCredentialType) {
+      if (pdfCredentialType) {
         pdfCredentialType.textContent =
-            getDisplayCredentialTitle(record);
-        }
+          getDisplayCredentialTitle(record);
+      }
 
       if (programCode) {
         programCode.textContent =
@@ -435,28 +364,28 @@ function invalidateLoadedCredentialState() {
 
       if (pdfProgramCode) {
         pdfProgramCode.textContent =
-            record.program_code || "-";
-        }
+          record.program_code || "-";
+      }
 
       if (credentialId) {
         credentialId.textContent =
-            record.credential_id || "-";
-        }
+          record.credential_id || "-";
+      }
 
-        if (pdfCredentialId) {
+      if (pdfCredentialId) {
         pdfCredentialId.textContent =
-            record.credential_id || "-";
-        }
+          record.credential_id || "-";
+      }
 
       if (issueDate) {
         issueDate.textContent =
-            formatDate(record.imported_at);
-        }
+          formatDate(record.imported_at);
+      }
 
-        if (pdfIssueDate) {
+      if (pdfIssueDate) {
         pdfIssueDate.textContent =
-            formatDate(record.imported_at);
-        }
+          formatDate(record.imported_at);
+      }
 
     } catch (error) {
 
@@ -469,73 +398,42 @@ function invalidateLoadedCredentialState() {
 
   }
 
-  /* =====================================================
-        Recognition Display Governance
-    ===================================================== */
+  function getDisplayCredentialTitle(record) {
 
-function getDisplayCredentialTitle(record) {
+    if (record.program_code === "AOP") {
 
-  if (record.program_code === "AOP") {
+      return (
+        "Artificial Intelligence Professional Agilist (AIPA)"
+      );
+
+    }
 
     return (
-      "Artificial Intelligence Professional Agilist (AIPA)"
+      record.current_recognition ||
+      record.credential_type ||
+      "-"
     );
 
   }
 
-  return (
-    record.current_recognition ||
-    record.credential_type ||
-    "-"
-  );
+  function isCertificateReady(record) {
 
-}
+    if (!record) return false;
+    if (!record.credential_id) return false;
+    if (!record.full_name) return false;
+    if (!record.credential_type) return false;
+    if (!record.program_code) return false;
 
-/* =====================================================
-   Certificate Readiness Validation
+    if (
+      (record.issued_status || "")
+        .toLowerCase() !== "finalized"
+    ) {
+      return false;
+    }
 
-   Governance Lock:
-   June 2026
+    return true;
 
-   Requirements:
-
-   - Credential ID required
-   - Learner Name required
-   - Credential Type required
-   - Program Code required
-   - Status must equal finalized
-
-   Certificate generation is prohibited
-   if validation fails.
-
-===================================================== */
-
-function isCertificateReady(record) {
-
-  if (!record) return false;
-
-  if (!record.credential_id) return false;
-
-  if (!record.full_name) return false;
-
-  if (!record.credential_type) return false;
-
-  if (!record.program_code) return false;
-
-  if (
-    (record.issued_status || "")
-      .toLowerCase() !== "finalized"
-  ) {
-    return false;
   }
-
-  return true;
-
-}
-
-  /* =====================================================
-     Format Date
-  ===================================================== */
 
   function formatDate(timestamp) {
 
@@ -551,73 +449,8 @@ function isCertificateReady(record) {
 
   function resetLoadedCredentialState() {
 
-  loadedCredential = null;
-
-  credentialIdValue.textContent = "Not Loaded";
-  credentialTypeValue.textContent = "Not Loaded";
-  credentialFamilyValue.textContent = "Not Loaded";
-  programCodeValue.textContent = "Not Loaded";
-  programNameValue.textContent = "Not Loaded";
-  templateKeyValue.textContent = "Not Loaded";
-  issueDateValue.textContent = "Not Loaded";
-  credentialStatusValue.textContent = "Not Loaded";
-
-  lifecycleStateValue.textContent = "Not Loaded";
-  successorProgramValue.textContent = "Not Loaded";
-  bridgeRequiredValue.textContent = "Not Loaded";
-  bridgeCompletionStatusValue.textContent = "Not Loaded";
-
-  originalCredentialValue.textContent = "Not Loaded";
-  currentRecognitionValue.textContent = "Not Loaded";
-  recognitionStatusValue.textContent = "Not Loaded";
-  recognitionEffectiveDateValue.textContent = "Not Loaded";
-
-  if (certificatePreview) {
-
-    certificatePreview.innerHTML = `
-      <div>
-        <h3>Preview Placeholder</h3>
-        <p>
-          Certificate preview will appear here after
-          credential loading and rendering services
-          are implemented.
-        </p>
-      </div>
-    `;
-
-  }
-
-  const pdfRenderContainer =
-    document.getElementById(
-      "pdfRenderContainer"
-    );
-
-  if (pdfRenderContainer) {
-    pdfRenderContainer.innerHTML = "";
-  }
-
-  disablePdfButton();
-
-}
-
-  /* =====================================================
-    Reset
-    ===================================================== */
-
-    function clearForm() {
-    
-    console.log("CLEAR STARTED");
-    console.log("RESETTING METADATA");
-
-    credentialIdInput.value = "";
-    learnerNameInput.value = "";
-    emailInput.value = "";
-
-    console.log("RESETTING PREVIEW");
-
-    /* ==========================================
-        Reset Metadata
-    ========================================== */
+    loadedCredential = null;
+    window.loadedCredential = null;
 
     credentialIdValue.textContent = "Not Loaded";
     credentialTypeValue.textContent = "Not Loaded";
@@ -638,98 +471,92 @@ function isCertificateReady(record) {
     recognitionStatusValue.textContent = "Not Loaded";
     recognitionEffectiveDateValue.textContent = "Not Loaded";
 
-    console.log("RESETTING PREVIEW");
-
-    /* ==========================================
-        Reset Preview
-    ========================================== */
-
     if (certificatePreview) {
 
-        certificatePreview.innerHTML = `
+      certificatePreview.innerHTML = `
         <div>
-            <h3>Preview Placeholder</h3>
-            <p>
+          <h3>Preview Placeholder</h3>
+          <p>
             Certificate preview will appear here after
             credential loading and rendering services
             are implemented.
-            </p>
+          </p>
         </div>
-        `;
+      `;
 
     }
-
-    /* ==========================================
-        Clear Hidden PDF Surface
-    ========================================== */
 
     const pdfRenderContainer =
-        document.getElementById(
-        "pdfRenderContainer"
-        );
+      document.getElementById("pdfRenderContainer");
 
     if (pdfRenderContainer) {
-
-        pdfRenderContainer.innerHTML = "";
-
+      pdfRenderContainer.innerHTML = "";
     }
+
+    disablePdfButton();
+
+  }
+
+  function clearForm() {
+
+    console.log("CLEAR STARTED");
+
+    credentialIdInput.value = "";
+    learnerNameInput.value = "";
+    emailInput.value = "";
+
+    resetLoadedCredentialState();
 
     console.log("CLEAR COMPLETED");
 
-    disablePdfButton();
+  }
 
-}
+  credentialIdInput?.addEventListener(
+    "input",
+    invalidateLoadedCredentialState
+  );
 
-credentialIdInput?.addEventListener(
-  "input",
-  invalidateLoadedCredentialState
-);
+  learnerNameInput?.addEventListener(
+    "input",
+    invalidateLoadedCredentialState
+  );
 
-learnerNameInput?.addEventListener(
-  "input",
-  invalidateLoadedCredentialState
-);
+  emailInput?.addEventListener(
+    "input",
+    invalidateLoadedCredentialState
+  );
 
-emailInput?.addEventListener(
-  "input",
-  invalidateLoadedCredentialState
-);
+  searchBtn?.addEventListener(
+    "click",
+    searchCredential
+  );
 
-  /* =====================================================
-    Events
-    ===================================================== */
+  clearBtn?.addEventListener(
+    "click",
+    clearForm
+  );
 
-searchBtn?.addEventListener(
-  "click",
-  searchCredential
-);
+  generatePdfBtn?.addEventListener(
+    "click",
+    async () => {
 
-clearBtn?.addEventListener(
-  "click",
-  clearForm
-);
+      if (
+        typeof window.generateCertificatePdf ===
+        "function"
+      ) {
 
-generatePdfBtn?.addEventListener(
-  "click",
-  async () => {
+        await window.generateCertificatePdf();
 
-    if (
-      typeof window.generateCertificatePdf ===
-      "function"
-    ) {
-
-      await window.generateCertificatePdf();
+      }
 
     }
+  );
 
-  }
-);
-
-    loadRegistry();
-    disablePdfButton();
+  loadRegistry();
+  disablePdfButton();
 
   console.log(
-    "Certificate Generator Controller v1.3.0 loaded"
+    "Certificate Generator Controller v1.4.0 loaded"
   );
 
 });

@@ -243,6 +243,8 @@ function invalidateLoadedCredentialState() {
 
     loadedCredential = record;
 
+    window.loadedCredential = record;
+
     populateFields(record);
 
     renderCertificatePreview(record);

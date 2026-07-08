@@ -33,6 +33,10 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+import {
+  getStorage
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
 
 /* =====================================================
    🔐 LEGACY ADMIN ACCESS (FALLBACK ONLY)
@@ -83,7 +87,7 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-
+export const storage = getStorage(app);
 
 /* =====================================================
    🔐 🔥 ROLE RESOLUTION (PRIMARY LOGIC)

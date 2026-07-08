@@ -6,159 +6,168 @@ Credential Operations Suite
 Certificate Generator
 PDF Export Engine
 
-Version: 1.1.0
+Version: 1.3.1
 
 Purpose:
+- Generate PDF from Certificate Template
+- Enforce ISO A4 Landscape Standard
+- Upload generated PDF to Firebase Storage
+- Publish asset metadata to credential_assets
+- Preserve local PDF download
 
-* Generate PDF from Certificate Template
-* Enforce ISO A4 Landscape Standard
-* Governance-Compliant Certificate Export
-
-PDF Governance:
-
-* PDF Format: ISO A4 Landscape
-* Page Size: 297mm × 210mm
-* No Dynamic Page Sizing
-* No Portrait Rendering
-* Fixed Rendering Dimensions
-* Single Source Rendering:
-  certificate-template.html
-
-Audit Event Governance:
-
-Prepared Events:
-
-* certificate.generate.started
-* certificate.generate.completed
-* certificate.download.completed
-
-Purpose:
-Prepare future audit logging integration
-without introducing persistence or
-backend dependencies.
-
-Current Implementation:
-
-* Console event placeholders only
-* No database logging
-* No API logging
-* No audit persistence
-
-Future Integration:
-Audit event placeholders may be connected
-to the Credential Operations Suite Audit Logs
-module in a future phase.
-
-Governance Lock:
-June 2026
-=========
+Governance:
+- Admin Portal publishes generated assets
+- Student Portal only consumes published assets
+- credentials collection is the source of truth
+- credential_assets is the asset registry only
 
 */
 
+import { storage } from "../../../../assets/js/core.js";
+
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
 window.generateCertificatePdf = async function () {
 
-try {
+    try {
 
-    const certificateElement =
-        document.querySelector(
-            "#pdfRenderContainer .certificate-template"
+        const certificateElement =
+            document.querySelector(
+                "#pdfRenderContainer .certificate-template"
+            );
+
+        if (!certificateElement) {
+
+            alert("Certificate preview not found.");
+
+            return;
+
+        }
+
+        const credential =
+            window.loadedCredential ||
+            window.currentCredential ||
+            window.selectedCredential ||
+            null;
+
+        if (!credential || !credential.credential_id) {
+
+            alert(
+                "Credential data not available for asset publishing."
+            );
+
+            return;
+
+        }
+
+        if (!window.CredentialAssetPublisher) {
+
+            throw new Error(
+                "CredentialAssetPublisher is not available."
+            );
+
+        }
+
+        console.log("certificate.generate.started");
+
+        const canvas =
+            await html2canvas(
+                certificateElement,
+                {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: "#ffffff"
+                }
+            );
+
+        const imageData =
+            canvas.toDataURL("image/png");
+
+        const {
+            jsPDF
+        } = window.jspdf;
+
+        const pdf =
+            new jsPDF({
+                orientation: "landscape",
+                unit: "mm",
+                format: "a4"
+            });
+
+        pdf.addImage(
+            imageData,
+            "PNG",
+            0,
+            0,
+            297,
+            210
         );
 
-    if (!certificateElement) {
+        console.log("certificate.generate.completed");
 
-        alert(
-            "Certificate preview not found."
-        );
+        const credentialId =
+            credential.credential_id;
 
-        return;
+        const fileName =
+            `${credentialId}_university_certificate.pdf`;
 
-    }
+        const storagePath =
+            `credential-assets/${credentialId}/university-certificate/${fileName}`;
 
-    console.log(
-        "CERT DIMENSIONS",
-        certificateElement.offsetWidth,
-        certificateElement.offsetHeight,
-        certificateElement.scrollWidth,
-        certificateElement.scrollHeight
-    );
+        const pdfBlob =
+            pdf.output("blob");
 
-    console.log(
-        "certificate.generate.started"
-    );
+        const storageRef =
+            ref(
+                storage,
+                storagePath
+            );
 
-    const canvas =
-        await html2canvas(
-            certificateElement,
+        await uploadBytes(
+            storageRef,
+            pdfBlob,
             {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: "#ffffff"
+                contentType: "application/pdf"
             }
         );
 
-    console.log(
-        "CANVAS DIMENSIONS",
-        canvas.width,
-        canvas.height
-    );
+        const downloadUrl =
+            await getDownloadURL(storageRef);
 
-    const imageData =
-        canvas.toDataURL(
-            "image/png"
+        await window.CredentialAssetPublisher
+            .publishUniversityCertificate({
+                credential_id: credentialId,
+                download_url: downloadUrl,
+                preview_url: downloadUrl,
+                storage_path: storagePath,
+                file_name: fileName,
+                version: 1
+            });
+
+        pdf.save(fileName);
+
+        console.log("certificate.download.completed");
+
+        alert(
+            "University Certificate generated and published successfully."
         );
 
-    const {
-        jsPDF
-    } = window.jspdf;
+    }
+    catch (error) {
 
-    /*
-    ==========================================
-    ISO A4 Landscape Governance Lock
+        console.error(
+            "PDF generation or publishing failed:",
+            error
+        );
 
-    Width  = 297 mm
-    Height = 210 mm
+        alert(
+            "PDF generation or publishing failed."
+        );
 
-    No dynamic sizing permitted.
-    ==========================================
-    */
-
-    const pdf =
-        new jsPDF({
-            orientation: "landscape",
-            unit: "mm",
-            format: "a4"
-        });
-
-    pdf.addImage(
-        imageData,
-        "PNG",
-        0,
-        0,
-        297,
-        210
-    );
-
-    console.log(
-        "certificate.generate.completed"
-    );
-
-    pdf.save(
-        "certificate.pdf"
-    );
-
-    console.log(
-        "certificate.download.completed"
-    );
-
-}
-catch (error) {
-
-    console.error(error);
-
-    alert(
-        "PDF generation failed."
-    );
-
-}
+    }
 
 };

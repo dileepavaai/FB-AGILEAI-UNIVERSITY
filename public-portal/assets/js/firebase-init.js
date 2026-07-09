@@ -3,7 +3,7 @@
    Firebase Auth Service
 
    File: firebase-init.js
-   Version: 1.2.0
+   Version: 1.3.0
    Status: ACTIVE
 
    Authentication Providers
@@ -13,12 +13,19 @@
 
    Governance
 
-   • Authentication Service Only
+   • Authentication Service Authority
+   • Firebase Initialization Authority
+   • Exposes Auth and Firestore Runtime Handles
    • No Portal Authorization Logic
    • No Entitlement Logic
    • No Credential Logic
 
    Change History
+
+   v1.3.0
+   • Added Firestore compat initialization
+   • Exposes window.db for read-only portal services
+   • Preserves auth readiness contract
 
    v1.2.0
    • Fixed auth readiness timing issue
@@ -34,7 +41,7 @@
 "use strict";
 
 console.log(
-  "[AAIU Auth] Firebase Auth Service v1.2.0 initializing"
+  "[AAIU Auth] Firebase Auth Service v1.3.0 initializing"
 );
 
 window.__AAIU_AUTH_READY__ =
@@ -63,17 +70,42 @@ new Promise((resolve) => {
 
     }
 
-    const auth = firebase.auth();
+    const auth =
+      firebase.auth();
+
+    /* ======================================================
+       FIRESTORE INITIALIZATION
+       Read service dependency for portal services
+    ====================================================== */
+
+    if (
+      firebase.firestore &&
+      typeof firebase.firestore === "function"
+    ) {
+
+      const db =
+        firebase.firestore();
+
+      window.db =
+        db;
+
+      console.log(
+        "[AAIU Auth] Firestore ready"
+      );
+
+    } else {
+
+      console.warn(
+        "[AAIU Auth] Firestore compat SDK not loaded"
+      );
+
+    }
 
     /* ======================================================
        AUTH SERVICE API
     ====================================================== */
 
     window.AAIUAuth = {
-
-      /* ====================================================
-         Google Sign-In
-      ==================================================== */
 
       async signInWithGoogle() {
 
@@ -85,10 +117,6 @@ new Promise((resolve) => {
         );
 
       },
-
-      /* ====================================================
-         Email Magic Link
-      ==================================================== */
 
       async sendEmailLink(email) {
 
@@ -135,9 +163,10 @@ new Promise((resolve) => {
 
         if (!email) {
 
-          email = window.prompt(
-            "Please confirm your email address."
-          );
+          email =
+            window.prompt(
+              "Please confirm your email address."
+            );
 
         }
 
@@ -168,39 +197,43 @@ new Promise((resolve) => {
        WAIT FOR FIREBASE TO RESTORE SESSION
     ====================================================== */
 
-    let authResolved = false;
+    let authResolved =
+      false;
 
     auth.onAuthStateChanged((user) => {
 
-    if (authResolved) {
+      if (authResolved) {
         return;
-    }
+      }
 
-    const emailLinkFlow =
+      const emailLinkFlow =
         auth.isSignInWithEmailLink(
-        window.location.href
+          window.location.href
         );
 
-    if (!user && emailLinkFlow) {
+      if (!user && emailLinkFlow) {
 
         console.log(
-        "[AAIU Auth] Waiting for email-link completion"
+          "[AAIU Auth] Waiting for email-link completion"
         );
 
         return;
-    }
 
-    authResolved = true;
+      }
 
-    console.log(
+      authResolved =
+        true;
+
+      console.log(
         "[AAIU Auth] Auth ready:",
         user?.email || "anonymous"
-    );
+      );
 
-    resolve({
+      resolve({
         auth,
-        user
-    });
+        user,
+        db: window.db || null
+      });
 
     });
 

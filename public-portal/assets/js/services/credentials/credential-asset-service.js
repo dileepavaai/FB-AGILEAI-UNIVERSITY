@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-asset-service.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
    Phase     : Credential Asset Consumption
 
@@ -19,10 +19,21 @@
    ----------------------------------------------------------
    ✓ Reads credential_assets collection
    ✓ Returns published/latest assets only
+   ✓ Enforces authenticated learner ownership
+   ✓ Uses learner_uid as the asset-access boundary
    ✓ Does not generate assets
    ✓ Does not upload files
    ✓ Does not write to Firestore
    ✓ Does not modify credential registry
+
+   Change History
+   ----------------------------------------------------------
+   v1.1.0
+   • Added authenticated UID resolution
+   • Added learner_uid constraint to collection queries
+   • Added ownership validation during normalization
+   • Added safer Firestore and authentication diagnostics
+   • Preserved deterministic asset document IDs
 
 ========================================================== */
 
@@ -42,9 +53,16 @@
 
     const CredentialAssetService = {
 
+        /* ==================================================
+           FIRESTORE
+        ================================================== */
+
         getDb() {
 
-            if (!window.firebase || !firebase.firestore) {
+            if (
+                !window.firebase ||
+                typeof window.firebase.firestore !== "function"
+            ) {
 
                 throw new Error(
                     "[CredentialAssetService] Firebase Firestore is not available."
@@ -52,9 +70,62 @@
 
             }
 
-            return firebase.firestore();
+            return window.firebase.firestore();
 
         },
+
+        /* ==================================================
+           AUTHENTICATED USER
+        ================================================== */
+
+        getCurrentUser() {
+
+            if (
+                !window.firebase ||
+                typeof window.firebase.auth !== "function"
+            ) {
+
+                throw new Error(
+                    "[CredentialAssetService] Firebase Authentication is not available."
+                );
+
+            }
+
+            const user =
+                window.firebase.auth().currentUser;
+
+            if (!user) {
+
+                throw new Error(
+                    "[CredentialAssetService] No authenticated user is available."
+                );
+
+            }
+
+            return user;
+
+        },
+
+        getCurrentUserUid() {
+
+            const user =
+                this.getCurrentUser();
+
+            if (!user.uid) {
+
+                throw new Error(
+                    "[CredentialAssetService] Authenticated user UID is unavailable."
+                );
+
+            }
+
+            return user.uid;
+
+        },
+
+        /* ==================================================
+           DOCUMENT ID
+        ================================================== */
 
         buildDocumentId(credentialId, assetType) {
 
@@ -62,7 +133,11 @@
 
         },
 
-        normalizeAsset(doc) {
+        /* ==================================================
+           ASSET NORMALIZATION
+        ================================================== */
+
+        normalizeAsset(doc, expectedLearnerUid = "") {
 
             if (!doc || !doc.exists) {
                 return null;
@@ -83,10 +158,34 @@
                 return null;
             }
 
+            /*
+             * Defence-in-depth ownership validation.
+             *
+             * Firestore Security Rules remain the security authority.
+             * This check prevents accidental client-side consumption
+             * if inconsistent data is ever returned.
+             */
+
+            if (
+                expectedLearnerUid &&
+                data.learner_uid !== expectedLearnerUid
+            ) {
+
+                console.warn(
+                    "[CredentialAssetService] Asset ownership mismatch:",
+                    doc.id
+                );
+
+                return null;
+
+            }
+
             return {
                 id: doc.id,
 
                 credentialId: data.credential_id || "",
+                learnerUid: data.learner_uid || "",
+
                 assetType: data.asset_type || "",
                 assetLabel: data.asset_label || "",
 
@@ -96,7 +195,10 @@
 
                 storagePath: data.storage_path || "",
                 downloadUrl: data.download_url || "",
-                previewUrl: data.preview_url || data.download_url || "",
+                previewUrl:
+                    data.preview_url ||
+                    data.download_url ||
+                    "",
 
                 fileName: data.file_name || "",
                 fileExtension: data.file_extension || "",
@@ -106,13 +208,24 @@
                 generatedBy: data.generated_by || "",
                 generatedSource: data.generated_source || "",
 
+                programCode: data.program_code || "",
+                learnerEmail: data.learner_email || "",
+                learnerName: data.learner_name || "",
+
                 createdAt: data.created_at || null,
                 updatedAt: data.updated_at || null
             };
 
         },
 
-        async getAssetByType(credentialId, assetType) {
+        /* ==================================================
+           SINGLE ASSET READ
+        ================================================== */
+
+        async getAssetByType(
+            credentialId,
+            assetType
+        ) {
 
             if (!credentialId || !assetType) {
                 return null;
@@ -121,21 +234,51 @@
             const db =
                 this.getDb();
 
+            const learnerUid =
+                this.getCurrentUserUid();
+
             const documentId =
                 this.buildDocumentId(
                     credentialId,
                     assetType
                 );
 
-            const snapshot =
-                await db
-                    .collection(COLLECTION_NAME)
-                    .doc(documentId)
-                    .get();
+            try {
 
-            return this.normalizeAsset(snapshot);
+                const snapshot =
+                    await db
+                        .collection(COLLECTION_NAME)
+                        .doc(documentId)
+                        .get();
+
+                return this.normalizeAsset(
+                    snapshot,
+                    learnerUid
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "[CredentialAssetService] Asset read failed:",
+                    {
+                        credentialId,
+                        assetType,
+                        documentId,
+                        learnerUid,
+                        error
+                    }
+                );
+
+                throw error;
+
+            }
 
         },
+
+        /* ==================================================
+           ALL ASSETS FOR CREDENTIAL
+        ================================================== */
 
         async getAssets(credentialId) {
 
@@ -146,21 +289,90 @@
             const db =
                 this.getDb();
 
-            const snapshot =
-                await db
-                    .collection(COLLECTION_NAME)
-                    .where("credential_id", "==", credentialId)
-                    .where("status", "==", "published")
-                    .where("is_latest", "==", true)
-                    .get();
+            const learnerUid =
+                this.getCurrentUserUid();
 
-            return snapshot.docs
-                .map((doc) => this.normalizeAsset(doc))
-                .filter(Boolean);
+            try {
+
+                /*
+                 * Security-rule-compatible query.
+                 *
+                 * Firestore rules require every returned asset to
+                 * belong to request.auth.uid. The learner_uid filter
+                 * therefore must be part of the query itself.
+                 */
+
+                const snapshot =
+                    await db
+                        .collection(COLLECTION_NAME)
+                        .where(
+                            "learner_uid",
+                            "==",
+                            learnerUid
+                        )
+                        .where(
+                            "credential_id",
+                            "==",
+                            credentialId
+                        )
+                        .where(
+                            "status",
+                            "==",
+                            "published"
+                        )
+                        .where(
+                            "is_latest",
+                            "==",
+                            true
+                        )
+                        .get();
+
+                const assets =
+                    snapshot.docs
+                        .map((doc) =>
+                            this.normalizeAsset(
+                                doc,
+                                learnerUid
+                            )
+                        )
+                        .filter(Boolean);
+
+                console.info(
+                    "[CredentialAssetService] Assets loaded:",
+                    {
+                        credentialId,
+                        learnerUid,
+                        count: assets.length
+                    }
+                );
+
+                return assets;
+
+            }
+            catch (error) {
+
+                console.error(
+                    "[CredentialAssetService] Credential asset query failed:",
+                    {
+                        credentialId,
+                        learnerUid,
+                        error
+                    }
+                );
+
+                throw error;
+
+            }
 
         },
 
-        async getUniversityCertificate(credentialId) {
+        /* ==================================================
+           ASSET TYPE CONVENIENCE METHODS
+        ================================================== */
+
+        async getUniversityCertificate(
+            credentialId
+        ) {
 
             return this.getAssetByType(
                 credentialId,
@@ -169,7 +381,9 @@
 
         },
 
-        async getTrainerCertificate(credentialId) {
+        async getTrainerCertificate(
+            credentialId
+        ) {
 
             return this.getAssetByType(
                 credentialId,
@@ -178,7 +392,9 @@
 
         },
 
-        async getDigitalBadge(credentialId) {
+        async getDigitalBadge(
+            credentialId
+        ) {
 
             return this.getAssetByType(
                 credentialId,
@@ -187,7 +403,9 @@
 
         },
 
-        async getRecognitionAsset(credentialId) {
+        async getRecognitionAsset(
+            credentialId
+        ) {
 
             return this.getAssetByType(
                 credentialId,
@@ -196,10 +414,16 @@
 
         },
 
+        /* ==================================================
+           ASSET MAP
+        ================================================== */
+
         async getAssetMap(credentialId) {
 
             const assets =
-                await this.getAssets(credentialId);
+                await this.getAssets(
+                    credentialId
+                );
 
             return assets.reduce(
                 (map, asset) => {
@@ -215,11 +439,17 @@
 
         },
 
+        /* ==================================================
+           URL HELPERS
+        ================================================== */
+
         getPreviewUrl(asset) {
 
-            return asset?.previewUrl ||
+            return (
+                asset?.previewUrl ||
                 asset?.downloadUrl ||
-                "";
+                ""
+            );
 
         },
 
@@ -233,5 +463,9 @@
 
     window.CredentialAssetService =
         CredentialAssetService;
+
+    console.info(
+        "[CredentialAssetService] Loaded v1.1.0"
+    );
 
 })(window);

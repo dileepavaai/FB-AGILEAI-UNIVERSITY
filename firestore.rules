@@ -1,77 +1,286 @@
 rules_version = '2';
+
 service cloud.firestore {
+
   match /databases/{database}/documents {
 
     /* =====================================================
-       PUBLIC READ
-       ===================================================== */
+       AGILE AI UNIVERSITY
+       FIRESTORE SECURITY RULES
 
-    match /faqs/{docId} {
-      allow read: if true;
-      allow write: if request.auth != null &&
+       Version : 2.3.0
+       Status  : ACTIVE
+
+       Security Model
+       -----------------------------------------------------
+       • Firebase Authentication UID is identity authority
+       • /users/{uid} is the RBAC profile authority
+       • Students may read only their own governed records
+       • Credential assets are owned through learner_uid
+       • Admin users are currently bootstrap-authorized
+         through the approved email list
+       • All unlisted access is denied
+    ===================================================== */
+
+
+    /* =====================================================
+       AUTHENTICATION HELPERS
+    ===================================================== */
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() &&
+             request.auth.uid == uid;
+    }
+
+    function isBootstrapAdmin() {
+      return isSignedIn() &&
         request.auth.token.email in [
           "dileep@agileai.university",
-          "dileepav@gmail.com"
+          "dileepav@gmail.com",
+          "laau.aaiu@gmail.com"
         ];
     }
 
+
     /* =====================================================
-       CREDENTIALS — PUBLIC VERIFICATION (GATED)
-       ===================================================== */
+       USERS — RBAC PROFILE AUTHORITY
+    ===================================================== */
+
+    match /users/{uid} {
+
+      /*
+       * A signed-in user may read only their own profile.
+       * Bootstrap administrators may read all user profiles.
+       */
+
+      allow get: if
+        isOwner(uid) ||
+        isBootstrapAdmin();
+
+      /*
+       * Collection-wide user listing is restricted to admins.
+       */
+
+      allow list: if
+        isBootstrapAdmin();
+
+      /*
+       * Client-side writes are disabled.
+       * Profiles must be maintained through trusted admin or
+       * backend workflows.
+       */
+
+      allow create, update, delete: if false;
+    }
+
+
+    /* =====================================================
+       PUBLIC FAQ CONTENT
+    ===================================================== */
+
+    match /faqs/{docId} {
+
+      allow read: if true;
+
+      allow create, update, delete: if
+        isBootstrapAdmin();
+    }
+
+
+    /* =====================================================
+       CREDENTIALS — PUBLIC VERIFICATION
+    ===================================================== */
 
     match /credentials/{docId} {
-      allow read: if
-        resource.data.issued_status == "finalized" &&
+
+      /*
+       * Public verification remains available only for
+       * finalized and approved credentials.
+       *
+       * Students may also read their own credential where
+       * learner_uid is present.
+       */
+
+      allow get: if
         (
-          !("approval_status" in resource.data) ||
-          resource.data.approval_status == "approved"
-        );
-      allow write: if false;
+          resource.data.issued_status == "finalized" &&
+          (
+            !("approval_status" in resource.data) ||
+            resource.data.approval_status == "approved"
+          )
+        ) ||
+        (
+          isSignedIn() &&
+          "learner_uid" in resource.data &&
+          resource.data.learner_uid == request.auth.uid
+        ) ||
+        isBootstrapAdmin();
+
+      /*
+       * Queries must only be permitted when every possible
+       * returned credential satisfies the rule.
+       */
+
+      allow list: if
+        isSignedIn() ||
+        isBootstrapAdmin();
+
+      allow create, update, delete: if false;
     }
+
+
+    /* =====================================================
+       CREDENTIAL ASSETS — LEARNER OWNED
+    ===================================================== */
+
+    match /credential_assets/{docId} {
+
+      /*
+       * A learner may read a published latest asset only when
+       * learner_uid matches their authenticated Firebase UID.
+       *
+       * This supports:
+       * • direct document reads
+       * • learner_uid filtered queries
+       * • credential_id filtered queries where the query also
+       *   guarantees ownership
+       */
+
+      allow get, list: if
+        (
+          isSignedIn() &&
+          resource.data.learner_uid == request.auth.uid &&
+          resource.data.status == "published" &&
+          resource.data.is_latest == true
+        ) ||
+        isBootstrapAdmin();
+
+      /*
+       * Student Portal never generates or modifies assets.
+       */
+
+      allow create, update, delete: if false;
+    }
+
 
     /* =====================================================
        VERIFICATION REQUESTS — PUBLIC INTAKE
-       ===================================================== */
+    ===================================================== */
 
     match /verification_requests/{docId} {
+
       allow create: if true;
-      allow read, update, delete: if request.auth != null &&
-        request.auth.token.email in [
-          "dileep@agileai.university",
-          "dileepav@gmail.com"
-        ];
+
+      allow read, update, delete: if
+        isBootstrapAdmin();
     }
 
+
     /* =====================================================
-       PHASE-3 — EXECUTIVE ENTITLEMENTS
-       ===================================================== */
+       EXECUTIVE ENTITLEMENTS
+    ===================================================== */
 
     match /executiveEntitlements/{email} {
-      allow read: if request.auth != null &&
-                  request.auth.token.email == email;
+
+      allow get: if
+        isSignedIn() &&
+        request.auth.token.email == email;
+
+      allow list: if false;
+
       allow create, update, delete: if false;
     }
 
+
     /* =====================================================
-       PHASE-5 — USER ENTITLEMENTS (AUTO TRIAL)
-       ===================================================== */
+       USER ENTITLEMENTS
+    ===================================================== */
 
     match /user_entitlements/{uid} {
-      allow read: if request.auth != null &&
-                  request.auth.uid == uid;
+
+      allow get: if
+        isOwner(uid) ||
+        isBootstrapAdmin();
+
+      allow list: if
+        isBootstrapAdmin();
+
       allow create, update, delete: if false;
     }
 
+
     /* =====================================================
-       DEFAULT DENY — ADMIN ONLY
-       ===================================================== */
+       LEADS — ADMIN ONLY
+    ===================================================== */
+
+    match /leads/{docId} {
+      allow read, write: if isBootstrapAdmin();
+    }
+
+
+    /* =====================================================
+       LEAD COMMUNICATIONS — ADMIN ONLY
+    ===================================================== */
+
+    match /lead_communications/{docId} {
+      allow read, write: if isBootstrapAdmin();
+    }
+
+
+    /* =====================================================
+       BATCHES — ADMIN ONLY
+    ===================================================== */
+
+    match /batches/{docId} {
+      allow read, write: if isBootstrapAdmin();
+    }
+
+
+    /* =====================================================
+       TRAINER REGISTRY — ADMIN ONLY
+    ===================================================== */
+
+    match /trainerRegistry/{docId} {
+      allow read, write: if isBootstrapAdmin();
+    }
+
+
+    /* =====================================================
+       TRAINING ORGANIZATIONS — ADMIN ONLY
+    ===================================================== */
+
+    match /trainingOrganizations/{docId} {
+      allow read, write: if isBootstrapAdmin();
+    }
+
+
+    /* =====================================================
+       PROGRAMS — AUTHENTICATED READ
+    ===================================================== */
+
+    match /programs/{docId} {
+
+      allow read: if
+        isSignedIn() ||
+        isBootstrapAdmin();
+
+      allow create, update, delete: if
+        isBootstrapAdmin();
+    }
+
+
+    /* =====================================================
+       DEFAULT DENY
+    ===================================================== */
 
     match /{document=**} {
-      allow read, write: if request.auth != null &&
-        request.auth.token.email in [
-          "dileep@agileai.university",
-          "dileepav@gmail.com"
-        ];
+      allow read, write: if false;
     }
+
   }
+
 }

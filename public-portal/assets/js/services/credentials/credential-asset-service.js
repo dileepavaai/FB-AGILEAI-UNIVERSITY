@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-asset-service.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Credential Asset Consumption
 
@@ -21,6 +21,7 @@
    ✓ Returns published/latest assets only
    ✓ Enforces authenticated learner ownership
    ✓ Uses learner_uid as the asset-access boundary
+   ✓ Waits for Firebase authentication readiness
    ✓ Does not generate assets
    ✓ Does not upload files
    ✓ Does not write to Firestore
@@ -28,12 +29,18 @@
 
    Change History
    ----------------------------------------------------------
+   v1.2.0
+   • Waits for Firebase authentication readiness
+   • Uses learner_uid in all collection queries
+   • Validates ownership during normalization
+   • Preserves deterministic asset document IDs
+   • Adds safe query and direct-read diagnostics
+   • Preserves the existing CredentialAssetService API
+
    v1.1.0
    • Added authenticated UID resolution
    • Added learner_uid constraint to collection queries
    • Added ownership validation during normalization
-   • Added safer Firestore and authentication diagnostics
-   • Preserved deterministic asset document IDs
 
 ========================================================== */
 
@@ -44,24 +51,50 @@
     const COLLECTION_NAME =
         "credential_assets";
 
-    const ASSET_TYPES = {
-        UNIVERSITY_CERTIFICATE: "university_certificate",
-        TRAINER_CERTIFICATE: "trainer_certificate",
-        DIGITAL_BADGE: "digital_badge",
-        RECOGNITION_ASSET: "recognition_asset"
-    };
+    const ASSET_TYPES = Object.freeze({
+
+        UNIVERSITY_CERTIFICATE:
+            "university_certificate",
+
+        TRAINER_CERTIFICATE:
+            "trainer_certificate",
+
+        DIGITAL_BADGE:
+            "digital_badge",
+
+        RECOGNITION_ASSET:
+            "recognition_asset"
+
+    });
 
     const CredentialAssetService = {
 
         /* ==================================================
-           FIRESTORE
+           FIREBASE AVAILABILITY
         ================================================== */
+
+        getFirebase() {
+
+            if (!window.firebase) {
+
+                throw new Error(
+                    "[CredentialAssetService] Firebase SDK is not available."
+                );
+
+            }
+
+            return window.firebase;
+
+        },
 
         getDb() {
 
+            const firebaseInstance =
+                this.getFirebase();
+
             if (
-                !window.firebase ||
-                typeof window.firebase.firestore !== "function"
+                typeof firebaseInstance.firestore !==
+                "function"
             ) {
 
                 throw new Error(
@@ -70,19 +103,18 @@
 
             }
 
-            return window.firebase.firestore();
+            return firebaseInstance.firestore();
 
         },
 
-        /* ==================================================
-           AUTHENTICATED USER
-        ================================================== */
+        getAuth() {
 
-        getCurrentUser() {
+            const firebaseInstance =
+                this.getFirebase();
 
             if (
-                !window.firebase ||
-                typeof window.firebase.auth !== "function"
+                typeof firebaseInstance.auth !==
+                "function"
             ) {
 
                 throw new Error(
@@ -91,33 +123,173 @@
 
             }
 
-            const user =
-                window.firebase.auth().currentUser;
-
-            if (!user) {
-
-                throw new Error(
-                    "[CredentialAssetService] No authenticated user is available."
-                );
-
-            }
-
-            return user;
+            return firebaseInstance.auth();
 
         },
 
-        getCurrentUserUid() {
+        /* ==================================================
+           AUTHENTICATION READINESS
+        ================================================== */
 
-            const user =
-                this.getCurrentUser();
+        async resolveCurrentUser() {
 
-            if (!user.uid) {
+            const auth =
+                this.getAuth();
 
-                throw new Error(
-                    "[CredentialAssetService] Authenticated user UID is unavailable."
-                );
+            /*
+             * Prefer the portal-wide authentication readiness
+             * contract when it is available.
+             */
+
+            if (
+                window.__AAIU_AUTH_READY__ &&
+                typeof window.__AAIU_AUTH_READY__.then ===
+                    "function"
+            ) {
+
+                const authState =
+                    await window.__AAIU_AUTH_READY__;
+
+                const resolvedUser =
+                    authState?.user ||
+                    auth.currentUser ||
+                    null;
+
+                if (!resolvedUser) {
+
+                    throw new Error(
+                        "[CredentialAssetService] No authenticated user is available."
+                    );
+
+                }
+
+                if (!resolvedUser.uid) {
+
+                    throw new Error(
+                        "[CredentialAssetService] Authenticated user UID is unavailable."
+                    );
+
+                }
+
+                return resolvedUser;
 
             }
+
+            /*
+             * Fallback for pages that do not expose
+             * __AAIU_AUTH_READY__.
+             */
+
+            if (auth.currentUser) {
+
+                if (!auth.currentUser.uid) {
+
+                    throw new Error(
+                        "[CredentialAssetService] Authenticated user UID is unavailable."
+                    );
+
+                }
+
+                return auth.currentUser;
+
+            }
+
+            return new Promise((resolve, reject) => {
+
+                let unsubscribe = null;
+
+                const timeoutId =
+                    window.setTimeout(() => {
+
+                        if (
+                            typeof unsubscribe ===
+                            "function"
+                        ) {
+
+                            unsubscribe();
+
+                        }
+
+                        reject(
+                            new Error(
+                                "[CredentialAssetService] Authentication readiness timed out."
+                            )
+                        );
+
+                    }, 10000);
+
+                unsubscribe =
+                    auth.onAuthStateChanged(
+                        (user) => {
+
+                            window.clearTimeout(
+                                timeoutId
+                            );
+
+                            if (
+                                typeof unsubscribe ===
+                                "function"
+                            ) {
+
+                                unsubscribe();
+
+                            }
+
+                            if (!user) {
+
+                                reject(
+                                    new Error(
+                                        "[CredentialAssetService] No authenticated user is available."
+                                    )
+                                );
+
+                                return;
+
+                            }
+
+                            if (!user.uid) {
+
+                                reject(
+                                    new Error(
+                                        "[CredentialAssetService] Authenticated user UID is unavailable."
+                                    )
+                                );
+
+                                return;
+
+                            }
+
+                            resolve(user);
+
+                        },
+                        (error) => {
+
+                            window.clearTimeout(
+                                timeoutId
+                            );
+
+                            if (
+                                typeof unsubscribe ===
+                                "function"
+                            ) {
+
+                                unsubscribe();
+
+                            }
+
+                            reject(error);
+
+                        }
+                    );
+
+            });
+
+        },
+
+        async getCurrentUserUid() {
+
+            const user =
+                await this.resolveCurrentUser();
 
             return user.uid;
 
@@ -127,9 +299,55 @@
            DOCUMENT ID
         ================================================== */
 
-        buildDocumentId(credentialId, assetType) {
+        buildDocumentId(
+            credentialId,
+            assetType
+        ) {
 
-            return `${credentialId}_${assetType}`;
+            const normalizedCredentialId =
+                String(
+                    credentialId || ""
+                ).trim();
+
+            const normalizedAssetType =
+                String(
+                    assetType || ""
+                ).trim();
+
+            if (
+                !normalizedCredentialId ||
+                !normalizedAssetType
+            ) {
+
+                return "";
+
+            }
+
+            return (
+                `${normalizedCredentialId}_${normalizedAssetType}`
+            );
+
+        },
+
+        /* ==================================================
+           INPUT VALIDATION
+        ================================================== */
+
+        normalizeCredentialId(
+            credentialId
+        ) {
+
+            return String(
+                credentialId || ""
+            ).trim();
+
+        },
+
+        isValidAssetType(assetType) {
+
+            return Object.values(
+                ASSET_TYPES
+            ).includes(assetType);
 
         },
 
@@ -137,43 +355,80 @@
            ASSET NORMALIZATION
         ================================================== */
 
-        normalizeAsset(doc, expectedLearnerUid = "") {
+        normalizeAsset(
+            documentSnapshot,
+            expectedLearnerUid = ""
+        ) {
 
-            if (!doc || !doc.exists) {
+            if (
+                !documentSnapshot ||
+                !documentSnapshot.exists
+            ) {
+
                 return null;
+
             }
 
             const data =
-                doc.data() || {};
+                documentSnapshot.data() || {};
 
-            if (data.status !== "published") {
+            if (
+                data.status !==
+                "published"
+            ) {
+
                 return null;
+
             }
 
-            if (data.is_latest !== true) {
+            if (
+                data.is_latest !==
+                true
+            ) {
+
                 return null;
+
             }
 
-            if (!data.download_url && !data.preview_url) {
+            if (
+                !data.download_url &&
+                !data.preview_url
+            ) {
+
+                console.warn(
+                    "[CredentialAssetService] Asset has no usable URL:",
+                    documentSnapshot.id
+                );
+
                 return null;
+
             }
 
             /*
              * Defence-in-depth ownership validation.
              *
-             * Firestore Security Rules remain the security authority.
-             * This check prevents accidental client-side consumption
-             * if inconsistent data is ever returned.
+             * Firestore Security Rules remain the security
+             * authority. This client-side validation prevents
+             * accidental consumption of inconsistent records.
              */
 
             if (
                 expectedLearnerUid &&
-                data.learner_uid !== expectedLearnerUid
+                data.learner_uid !==
+                    expectedLearnerUid
             ) {
 
                 console.warn(
                     "[CredentialAssetService] Asset ownership mismatch:",
-                    doc.id
+                    {
+                        documentId:
+                            documentSnapshot.id,
+
+                        expectedLearnerUid,
+
+                        actualLearnerUid:
+                            data.learner_uid || ""
+                    }
                 );
 
                 return null;
@@ -181,39 +436,75 @@
             }
 
             return {
-                id: doc.id,
 
-                credentialId: data.credential_id || "",
-                learnerUid: data.learner_uid || "",
+                id:
+                    documentSnapshot.id,
 
-                assetType: data.asset_type || "",
-                assetLabel: data.asset_label || "",
+                credentialId:
+                    data.credential_id || "",
 
-                status: data.status || "",
-                isLatest: data.is_latest === true,
-                version: data.version || 1,
+                learnerUid:
+                    data.learner_uid || "",
 
-                storagePath: data.storage_path || "",
-                downloadUrl: data.download_url || "",
+                assetType:
+                    data.asset_type || "",
+
+                assetLabel:
+                    data.asset_label || "",
+
+                status:
+                    data.status || "",
+
+                isLatest:
+                    data.is_latest === true,
+
+                version:
+                    data.version || 1,
+
+                storagePath:
+                    data.storage_path || "",
+
+                downloadUrl:
+                    data.download_url || "",
+
                 previewUrl:
                     data.preview_url ||
                     data.download_url ||
                     "",
 
-                fileName: data.file_name || "",
-                fileExtension: data.file_extension || "",
-                mimeType: data.mime_type || "",
-                assetFormat: data.asset_format || "",
+                fileName:
+                    data.file_name || "",
 
-                generatedBy: data.generated_by || "",
-                generatedSource: data.generated_source || "",
+                fileExtension:
+                    data.file_extension || "",
 
-                programCode: data.program_code || "",
-                learnerEmail: data.learner_email || "",
-                learnerName: data.learner_name || "",
+                mimeType:
+                    data.mime_type || "",
 
-                createdAt: data.created_at || null,
-                updatedAt: data.updated_at || null
+                assetFormat:
+                    data.asset_format || "",
+
+                generatedBy:
+                    data.generated_by || "",
+
+                generatedSource:
+                    data.generated_source || "",
+
+                programCode:
+                    data.program_code || "",
+
+                learnerEmail:
+                    data.learner_email || "",
+
+                learnerName:
+                    data.learner_name || "",
+
+                createdAt:
+                    data.created_at || null,
+
+                updatedAt:
+                    data.updated_at || null
+
             };
 
         },
@@ -227,19 +518,41 @@
             assetType
         ) {
 
-            if (!credentialId || !assetType) {
+            const normalizedCredentialId =
+                this.normalizeCredentialId(
+                    credentialId
+                );
+
+            if (
+                !normalizedCredentialId ||
+                !assetType
+            ) {
+
                 return null;
+
             }
+
+            if (
+                !this.isValidAssetType(
+                    assetType
+                )
+            ) {
+
+                throw new Error(
+                    `[CredentialAssetService] Invalid asset type: ${assetType}`
+                );
+
+            }
+
+            const learnerUid =
+                await this.getCurrentUserUid();
 
             const db =
                 this.getDb();
 
-            const learnerUid =
-                this.getCurrentUserUid();
-
             const documentId =
                 this.buildDocumentId(
-                    credentialId,
+                    normalizedCredentialId,
                     assetType
                 );
 
@@ -247,14 +560,38 @@
 
                 const snapshot =
                     await db
-                        .collection(COLLECTION_NAME)
-                        .doc(documentId)
+                        .collection(
+                            COLLECTION_NAME
+                        )
+                        .doc(
+                            documentId
+                        )
                         .get();
 
-                return this.normalizeAsset(
-                    snapshot,
-                    learnerUid
+                const asset =
+                    this.normalizeAsset(
+                        snapshot,
+                        learnerUid
+                    );
+
+                console.info(
+                    "[CredentialAssetService] Asset read completed:",
+                    {
+                        credentialId:
+                            normalizedCredentialId,
+
+                        assetType,
+
+                        documentId,
+
+                        learnerUid,
+
+                        found:
+                            Boolean(asset)
+                    }
                 );
+
+                return asset;
 
             }
             catch (error) {
@@ -262,10 +599,15 @@
                 console.error(
                     "[CredentialAssetService] Asset read failed:",
                     {
-                        credentialId,
+                        credentialId:
+                            normalizedCredentialId,
+
                         assetType,
+
                         documentId,
+
                         learnerUid,
+
                         error
                     }
                 );
@@ -280,31 +622,42 @@
            ALL ASSETS FOR CREDENTIAL
         ================================================== */
 
-        async getAssets(credentialId) {
+        async getAssets(
+            credentialId
+        ) {
 
-            if (!credentialId) {
+            const normalizedCredentialId =
+                this.normalizeCredentialId(
+                    credentialId
+                );
+
+            if (!normalizedCredentialId) {
+
                 return [];
+
             }
+
+            const learnerUid =
+                await this.getCurrentUserUid();
 
             const db =
                 this.getDb();
 
-            const learnerUid =
-                this.getCurrentUserUid();
-
             try {
 
                 /*
-                 * Security-rule-compatible query.
+                 * Firestore security-rule-compatible query.
                  *
-                 * Firestore rules require every returned asset to
-                 * belong to request.auth.uid. The learner_uid filter
-                 * therefore must be part of the query itself.
+                 * The learner_uid constraint is mandatory.
+                 * Firestore rules are not result filters.
+                 * The query itself must prove ownership.
                  */
 
                 const snapshot =
                     await db
-                        .collection(COLLECTION_NAME)
+                        .collection(
+                            COLLECTION_NAME
+                        )
                         .where(
                             "learner_uid",
                             "==",
@@ -313,7 +666,7 @@
                         .where(
                             "credential_id",
                             "==",
-                            credentialId
+                            normalizedCredentialId
                         )
                         .where(
                             "status",
@@ -329,20 +682,25 @@
 
                 const assets =
                     snapshot.docs
-                        .map((doc) =>
-                            this.normalizeAsset(
-                                doc,
-                                learnerUid
-                            )
+                        .map(
+                            (documentSnapshot) =>
+                                this.normalizeAsset(
+                                    documentSnapshot,
+                                    learnerUid
+                                )
                         )
                         .filter(Boolean);
 
                 console.info(
                     "[CredentialAssetService] Assets loaded:",
                     {
-                        credentialId,
+                        credentialId:
+                            normalizedCredentialId,
+
                         learnerUid,
-                        count: assets.length
+
+                        count:
+                            assets.length
                     }
                 );
 
@@ -354,8 +712,11 @@
                 console.error(
                     "[CredentialAssetService] Credential asset query failed:",
                     {
-                        credentialId,
+                        credentialId:
+                            normalizedCredentialId,
+
                         learnerUid,
+
                         error
                     }
                 );
@@ -367,7 +728,7 @@
         },
 
         /* ==================================================
-           ASSET TYPE CONVENIENCE METHODS
+           ASSET-TYPE CONVENIENCE METHODS
         ================================================== */
 
         async getUniversityCertificate(
@@ -376,7 +737,8 @@
 
             return this.getAssetByType(
                 credentialId,
-                ASSET_TYPES.UNIVERSITY_CERTIFICATE
+                ASSET_TYPES
+                    .UNIVERSITY_CERTIFICATE
             );
 
         },
@@ -387,7 +749,8 @@
 
             return this.getAssetByType(
                 credentialId,
-                ASSET_TYPES.TRAINER_CERTIFICATE
+                ASSET_TYPES
+                    .TRAINER_CERTIFICATE
             );
 
         },
@@ -398,7 +761,8 @@
 
             return this.getAssetByType(
                 credentialId,
-                ASSET_TYPES.DIGITAL_BADGE
+                ASSET_TYPES
+                    .DIGITAL_BADGE
             );
 
         },
@@ -409,7 +773,8 @@
 
             return this.getAssetByType(
                 credentialId,
-                ASSET_TYPES.RECOGNITION_ASSET
+                ASSET_TYPES
+                    .RECOGNITION_ASSET
             );
 
         },
@@ -418,7 +783,9 @@
            ASSET MAP
         ================================================== */
 
-        async getAssetMap(credentialId) {
+        async getAssetMap(
+            credentialId
+        ) {
 
             const assets =
                 await this.getAssets(
@@ -426,12 +793,23 @@
                 );
 
             return assets.reduce(
-                (map, asset) => {
+                (
+                    assetMap,
+                    asset
+                ) => {
 
-                    map[asset.assetType] =
-                        asset;
+                    if (
+                        asset &&
+                        asset.assetType
+                    ) {
 
-                    return map;
+                        assetMap[
+                            asset.assetType
+                        ] = asset;
+
+                    }
+
+                    return assetMap;
 
                 },
                 {}
@@ -443,19 +821,46 @@
            URL HELPERS
         ================================================== */
 
-        getPreviewUrl(asset) {
+        getPreviewUrl(
+            asset
+        ) {
+
+            if (!asset) {
+                return "";
+            }
 
             return (
-                asset?.previewUrl ||
-                asset?.downloadUrl ||
+                asset.previewUrl ||
+                asset.downloadUrl ||
                 ""
             );
 
         },
 
-        getDownloadUrl(asset) {
+        getDownloadUrl(
+            asset
+        ) {
 
-            return asset?.downloadUrl || "";
+            if (!asset) {
+                return "";
+            }
+
+            return (
+                asset.downloadUrl ||
+                ""
+            );
+
+        },
+
+        /* ==================================================
+           PUBLIC CONSTANT ACCESS
+        ================================================== */
+
+        getAssetTypes() {
+
+            return {
+                ...ASSET_TYPES
+            };
 
         }
 
@@ -465,7 +870,7 @@
         CredentialAssetService;
 
     console.info(
-        "[CredentialAssetService] Loaded v1.1.0"
+        "[CredentialAssetService] Loaded v1.2.0"
     );
 
 })(window);

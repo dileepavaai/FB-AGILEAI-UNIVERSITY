@@ -2,7 +2,7 @@
 Agile AI University
 Certificate Generator Controller
 
-Version: 1.4.0
+Version: 1.4.1
 Phase: Admin Credential Asset Publisher Sprint
 
 Purpose:
@@ -11,7 +11,7 @@ Purpose:
 - Populate Read-Only Metadata Fields
 - Render Certificate Preview
 - Apply Recognition Display Governance
-- Expose selected credential for Admin Asset Publishing
+- Expose Selected Credential for Admin Asset Publishing
 
 Governance:
 - Read Only
@@ -19,7 +19,7 @@ Governance:
 - No Certificate Generation
 - No PDF Generation
 - AOP → AIPA Recognition Display Enforcement
-- Student Portal does not generate assets
+- Student Portal Does Not Generate Assets
 
 Data Source:
 Existing Credential Registry API
@@ -27,566 +27,1309 @@ Existing Credential Registry API
 Template Authority:
 certificate-template.html
 
+Change History:
+v1.4.1
+- Supports dynamically loaded Admin modules
+- Initializes immediately when DOM is already ready
+- Prevents duplicate controller initialization
+- Adds registry loading and search diagnostics
+- Preserves existing search and preview behaviour
+
 ===================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+(function (window, document) {
+
+  "use strict";
 
   const REGISTRY_API =
     "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
-  let credentialData = [];
-  let loadedCredential = null;
+  let initialized = false;
 
-  const credentialIdInput =
-    document.getElementById("searchCredentialId");
+  function initializeCertificateGenerator() {
 
-  const learnerNameInput =
-    document.getElementById("searchLearnerName");
+    if (initialized) {
 
-  const emailInput =
-    document.getElementById("searchEmail");
+      console.info(
+        "[CertificateGenerator] Initialization already completed."
+      );
 
-  const searchBtn =
-    document.getElementById("searchCredentialBtn");
+      return;
 
-  const clearBtn =
-    document.getElementById("clearSearchBtn");
+    }
 
-  const generatePdfBtn =
-    document.getElementById("generatePdfBtn");
+    initialized = true;
 
-  const certificatePreview =
-    document.getElementById("certificatePreview");
+    let credentialData = [];
+    let loadedCredential = null;
+    let registryLoaded = false;
+    let registryLoading = false;
 
-  const credentialIdValue =
-    document.getElementById("credentialIdValue");
+    /* =====================================================
+       DOM REFERENCES
+    ===================================================== */
 
-  const credentialTypeValue =
-    document.getElementById("credentialTypeValue");
+    const credentialIdInput =
+      document.getElementById(
+        "searchCredentialId"
+      );
 
-  const credentialFamilyValue =
-    document.getElementById("credentialFamilyValue");
+    const learnerNameInput =
+      document.getElementById(
+        "searchLearnerName"
+      );
 
-  const programCodeValue =
-    document.getElementById("programCodeValue");
+    const emailInput =
+      document.getElementById(
+        "searchEmail"
+      );
 
-  const programNameValue =
-    document.getElementById("programNameValue");
+    const searchBtn =
+      document.getElementById(
+        "searchCredentialBtn"
+      );
 
-  const templateKeyValue =
-    document.getElementById("templateKeyValue");
+    const clearBtn =
+      document.getElementById(
+        "clearSearchBtn"
+      );
 
-  const issueDateValue =
-    document.getElementById("issueDateValue");
+    const generatePdfBtn =
+      document.getElementById(
+        "generatePdfBtn"
+      );
 
-  const credentialStatusValue =
-    document.getElementById("credentialStatusValue");
+    const certificatePreview =
+      document.getElementById(
+        "certificatePreview"
+      );
 
-  const lifecycleStateValue =
-    document.getElementById("lifecycleStateValue");
+    const credentialIdValue =
+      document.getElementById(
+        "credentialIdValue"
+      );
 
-  const successorProgramValue =
-    document.getElementById("successorProgramValue");
+    const credentialTypeValue =
+      document.getElementById(
+        "credentialTypeValue"
+      );
 
-  const bridgeRequiredValue =
-    document.getElementById("bridgeRequiredValue");
+    const credentialFamilyValue =
+      document.getElementById(
+        "credentialFamilyValue"
+      );
 
-  const bridgeCompletionStatusValue =
-    document.getElementById("bridgeCompletionStatusValue");
+    const programCodeValue =
+      document.getElementById(
+        "programCodeValue"
+      );
 
-  const originalCredentialValue =
-    document.getElementById("originalCredentialValue");
+    const programNameValue =
+      document.getElementById(
+        "programNameValue"
+      );
 
-  const currentRecognitionValue =
-    document.getElementById("currentRecognitionValue");
+    const templateKeyValue =
+      document.getElementById(
+        "templateKeyValue"
+      );
 
-  const recognitionStatusValue =
-    document.getElementById("recognitionStatusValue");
+    const issueDateValue =
+      document.getElementById(
+        "issueDateValue"
+      );
 
-  const recognitionEffectiveDateValue =
-    document.getElementById("recognitionEffectiveDateValue");
+    const credentialStatusValue =
+      document.getElementById(
+        "credentialStatusValue"
+      );
 
-  async function loadRegistry() {
+    const lifecycleStateValue =
+      document.getElementById(
+        "lifecycleStateValue"
+      );
 
-    try {
+    const successorProgramValue =
+      document.getElementById(
+        "successorProgramValue"
+      );
 
-      const response = await fetch(
-        REGISTRY_API,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
+    const bridgeRequiredValue =
+      document.getElementById(
+        "bridgeRequiredValue"
+      );
+
+    const bridgeCompletionStatusValue =
+      document.getElementById(
+        "bridgeCompletionStatusValue"
+      );
+
+    const originalCredentialValue =
+      document.getElementById(
+        "originalCredentialValue"
+      );
+
+    const currentRecognitionValue =
+      document.getElementById(
+        "currentRecognitionValue"
+      );
+
+    const recognitionStatusValue =
+      document.getElementById(
+        "recognitionStatusValue"
+      );
+
+    const recognitionEffectiveDateValue =
+      document.getElementById(
+        "recognitionEffectiveDateValue"
+      );
+
+    /* =====================================================
+       DOM VALIDATION
+    ===================================================== */
+
+    const missingRequiredElements = [];
+
+    if (!credentialIdInput) {
+      missingRequiredElements.push(
+        "searchCredentialId"
+      );
+    }
+
+    if (!learnerNameInput) {
+      missingRequiredElements.push(
+        "searchLearnerName"
+      );
+    }
+
+    if (!emailInput) {
+      missingRequiredElements.push(
+        "searchEmail"
+      );
+    }
+
+    if (!searchBtn) {
+      missingRequiredElements.push(
+        "searchCredentialBtn"
+      );
+    }
+
+    if (!clearBtn) {
+      missingRequiredElements.push(
+        "clearSearchBtn"
+      );
+    }
+
+    if (!generatePdfBtn) {
+      missingRequiredElements.push(
+        "generatePdfBtn"
+      );
+    }
+
+    if (missingRequiredElements.length > 0) {
+
+      console.error(
+        "[CertificateGenerator] Required DOM elements are missing:",
+        missingRequiredElements
+      );
+
+      initialized = false;
+
+      return;
+
+    }
+
+    /* =====================================================
+       REGISTRY
+    ===================================================== */
+
+    async function loadRegistry() {
+
+      if (registryLoading) {
+        return;
+      }
+
+      registryLoading = true;
+      registryLoaded = false;
+
+      setSearchButtonLoading(
+        true
+      );
+
+      console.info(
+        "[CertificateGenerator] Registry loading started."
+      );
+
+      try {
+
+        const response =
+          await fetch(
+            REGISTRY_API,
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              cache: "no-store"
+            }
+          );
+
+        if (!response.ok) {
+
+          throw new Error(
+            `Registry request failed with HTTP ${response.status}.`
+          );
+
+        }
+
+        const data =
+          await response.json();
+
+        if (
+          data.status !== "success" ||
+          !Array.isArray(
+            data.credentials
+          )
+        ) {
+
+          throw new Error(
+            "Invalid registry response."
+          );
+
+        }
+
+        credentialData =
+          data.credentials;
+
+        registryLoaded =
+          true;
+
+        console.info(
+          "[CertificateGenerator] Registry loaded:",
+          {
+            count:
+              credentialData.length
           }
+        );
+
+      }
+      catch (error) {
+
+        credentialData =
+          [];
+
+        registryLoaded =
+          false;
+
+        console.error(
+          "[CertificateGenerator] Registry load failed:",
+          error
+        );
+
+        window.alert(
+          "Credential Registry could not be loaded. Please refresh the page and try again."
+        );
+
+      }
+      finally {
+
+        registryLoading =
+          false;
+
+        setSearchButtonLoading(
+          false
+        );
+
+      }
+
+    }
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    function searchCredential() {
+
+      console.info(
+        "[CertificateGenerator] Search started."
+      );
+
+      if (registryLoading) {
+
+        window.alert(
+          "Credential Registry is still loading. Please wait a moment and try again."
+        );
+
+        return;
+
+      }
+
+      if (!registryLoaded) {
+
+        console.warn(
+          "[CertificateGenerator] Search blocked because registry is unavailable."
+        );
+
+        window.alert(
+          "Credential Registry is not available. Please refresh the page and try again."
+        );
+
+        return;
+
+      }
+
+      const credentialId =
+        normalizeSearchValue(
+          credentialIdInput.value
+        );
+
+      const learnerName =
+        normalizeSearchValue(
+          learnerNameInput.value
+        );
+
+      const email =
+        normalizeSearchValue(
+          emailInput.value
+        );
+
+      console.info(
+        "[CertificateGenerator] Search criteria:",
+        {
+          credentialId,
+          learnerName,
+          email
         }
       );
 
-      const data = await response.json();
-
       if (
-        data.status !== "success" ||
-        !Array.isArray(data.credentials)
+        !credentialId &&
+        !learnerName &&
+        !email
       ) {
-        throw new Error("Invalid registry response");
+
+        window.alert(
+          "Enter a Credential ID, Learner Name, or Email Address."
+        );
+
+        return;
+
       }
 
-      credentialData = data.credentials;
+      const record =
+        credentialData.find(
+          (item) => {
 
-      console.log(
-        "Certificate Generator Registry Loaded:",
-        credentialData.length
+            const recordCredentialId =
+              normalizeSearchValue(
+                item?.credential_id
+              );
+
+            const recordLearnerName =
+              normalizeSearchValue(
+                item?.full_name
+              );
+
+            const recordEmail =
+              normalizeSearchValue(
+                item?.email
+              );
+
+            const credentialMatch =
+              !credentialId ||
+              recordCredentialId.includes(
+                credentialId
+              );
+
+            const nameMatch =
+              !learnerName ||
+              recordLearnerName.includes(
+                learnerName
+              );
+
+            const emailMatch =
+              !email ||
+              recordEmail.includes(
+                email
+              );
+
+            return (
+              credentialMatch &&
+              nameMatch &&
+              emailMatch
+            );
+
+          }
+        );
+
+      if (!record) {
+
+        console.warn(
+          "[CertificateGenerator] No matching credential found:",
+          {
+            credentialId,
+            learnerName,
+            email
+          }
+        );
+
+        resetLoadedCredentialState();
+
+        window.alert(
+          "No matching credential found."
+        );
+
+        return;
+
+      }
+
+      loadedCredential =
+        record;
+
+      window.loadedCredential =
+        record;
+
+      console.info(
+        "[CertificateGenerator] Credential found:",
+        {
+          credentialId:
+            record.credential_id || "",
+          learnerName:
+            record.full_name || "",
+          email:
+            record.email || ""
+        }
       );
 
-    } catch (error) {
-
-      console.error(
-        "Registry Load Failed:",
-        error
+      populateFields(
+        record
       );
+
+      renderCertificatePreview(
+        record
+      );
+
+      if (
+        isCertificateReady(
+          record
+        )
+      ) {
+
+        enablePdfButton();
+
+      }
+      else {
+
+        disablePdfButton();
+
+        window.alert(
+          "Credential is not eligible for certificate generation."
+        );
+
+      }
 
     }
 
-  }
+    /* =====================================================
+       LOADED STATE
+    ===================================================== */
 
-  function invalidateLoadedCredentialState() {
+    function invalidateLoadedCredentialState() {
 
-    if (!loadedCredential) {
-      return;
+      if (!loadedCredential) {
+        return;
+      }
+
+      resetLoadedCredentialState();
+
     }
 
-    resetLoadedCredentialState();
+    function resetLoadedCredentialState() {
 
-  }
+      loadedCredential =
+        null;
 
-  function searchCredential() {
+      window.loadedCredential =
+        null;
 
-    const credentialId =
-      credentialIdInput?.value.trim().toLowerCase() || "";
-
-    const learnerName =
-      learnerNameInput?.value.trim().toLowerCase() || "";
-
-    const email =
-      emailInput?.value.trim().toLowerCase() || "";
-
-    const record = credentialData.find(item => {
-
-      const credentialMatch =
-        !credentialId ||
-        (item.credential_id || "")
-          .toLowerCase()
-          .includes(credentialId);
-
-      const nameMatch =
-        !learnerName ||
-        (item.full_name || "")
-          .toLowerCase()
-          .includes(learnerName);
-
-      const emailMatch =
-        !email ||
-        (item.email || "")
-          .toLowerCase()
-          .includes(email);
-
-      return (
-        credentialMatch &&
-        nameMatch &&
-        emailMatch
+      setText(
+        credentialIdValue,
+        "Not Loaded"
       );
 
-    });
+      setText(
+        credentialTypeValue,
+        "Not Loaded"
+      );
 
-    if (!record) {
+      setText(
+        credentialFamilyValue,
+        "Not Loaded"
+      );
 
-      alert("No matching credential found.");
+      setText(
+        programCodeValue,
+        "Not Loaded"
+      );
 
-      return;
+      setText(
+        programNameValue,
+        "Not Loaded"
+      );
 
-    }
+      setText(
+        templateKeyValue,
+        "Not Loaded"
+      );
 
-    loadedCredential = record;
-    window.loadedCredential = record;
+      setText(
+        issueDateValue,
+        "Not Loaded"
+      );
 
-    populateFields(record);
+      setText(
+        credentialStatusValue,
+        "Not Loaded"
+      );
 
-    renderCertificatePreview(record);
+      setText(
+        lifecycleStateValue,
+        "Not Loaded"
+      );
 
-    if (isCertificateReady(record)) {
+      setText(
+        successorProgramValue,
+        "Not Loaded"
+      );
 
-      enablePdfButton();
+      setText(
+        bridgeRequiredValue,
+        "Not Loaded"
+      );
 
-    } else {
+      setText(
+        bridgeCompletionStatusValue,
+        "Not Loaded"
+      );
+
+      setText(
+        originalCredentialValue,
+        "Not Loaded"
+      );
+
+      setText(
+        currentRecognitionValue,
+        "Not Loaded"
+      );
+
+      setText(
+        recognitionStatusValue,
+        "Not Loaded"
+      );
+
+      setText(
+        recognitionEffectiveDateValue,
+        "Not Loaded"
+      );
+
+      if (certificatePreview) {
+
+        certificatePreview.innerHTML = `
+
+          <div>
+
+            <h3>
+
+              Preview Placeholder
+
+            </h3>
+
+            <p>
+
+              Certificate preview will appear here after
+              a credential is loaded.
+
+            </p>
+
+          </div>
+
+        `;
+
+      }
+
+      const pdfRenderContainer =
+        document.getElementById(
+          "pdfRenderContainer"
+        );
+
+      if (pdfRenderContainer) {
+
+        pdfRenderContainer.innerHTML =
+          "";
+
+      }
 
       disablePdfButton();
 
-      alert(
-        "Credential is not eligible for certificate generation."
+    }
+
+    /* =====================================================
+       POPULATE METADATA
+    ===================================================== */
+
+    function populateFields(record) {
+
+      console.info(
+        "[CertificateGenerator] Populating credential fields:",
+        record
+      );
+
+      setText(
+        credentialIdValue,
+        record.credential_id || "-"
+      );
+
+      setText(
+        credentialTypeValue,
+        record.credential_type || "-"
+      );
+
+      setText(
+        credentialFamilyValue,
+        record.credential_family || "-"
+      );
+
+      setText(
+        programCodeValue,
+        record.program_code || "-"
+      );
+
+      setText(
+        programNameValue,
+        record.program_name || "-"
+      );
+
+      setText(
+        templateKeyValue,
+        record.template_key || "-"
+      );
+
+      setText(
+        credentialStatusValue,
+        record.issued_status || "-"
+      );
+
+      setText(
+        issueDateValue,
+        formatDate(
+          record.imported_at
+        )
+      );
+
+      setText(
+        lifecycleStateValue,
+        record.lifecycle_state || "-"
+      );
+
+      setText(
+        successorProgramValue,
+        record.successor_program || "-"
+      );
+
+      setText(
+        bridgeRequiredValue,
+        record.bridge_required || "-"
+      );
+
+      setText(
+        bridgeCompletionStatusValue,
+        record.bridge_completion_status || "-"
+      );
+
+      setText(
+        originalCredentialValue,
+        record.original_credential || "-"
+      );
+
+      setText(
+        currentRecognitionValue,
+        record.current_recognition || "-"
+      );
+
+      setText(
+        recognitionStatusValue,
+        record.recognition_status || "-"
+      );
+
+      setText(
+        recognitionEffectiveDateValue,
+        formatDisplayValue(
+          record.recognition_effective_date
+        )
       );
 
     }
 
-  }
+    /* =====================================================
+       CERTIFICATE PREVIEW
+    ===================================================== */
 
-  function populateFields(record) {
+    async function renderCertificatePreview(record) {
 
-    console.log(
-      "CERTIFICATE GENERATOR RECORD",
+      if (!certificatePreview) {
+        return;
+      }
+
+      try {
+
+        const response =
+          await fetch(
+            "./template/certificate-template.html",
+            {
+              cache: "no-store"
+            }
+          );
+
+        if (!response.ok) {
+
+          throw new Error(
+            `Certificate template request failed with HTTP ${response.status}.`
+          );
+
+        }
+
+        const template =
+          await response.text();
+
+        certificatePreview.innerHTML =
+          template;
+
+        const pdfRenderContainer =
+          document.getElementById(
+            "pdfRenderContainer"
+          );
+
+        if (pdfRenderContainer) {
+
+          pdfRenderContainer.innerHTML =
+            template;
+
+        }
+
+        populateCertificateTemplate(
+          certificatePreview,
+          record
+        );
+
+        if (pdfRenderContainer) {
+
+          populateCertificateTemplate(
+            pdfRenderContainer,
+            record
+          );
+
+        }
+
+        console.info(
+          "[CertificateGenerator] Certificate preview rendered."
+        );
+
+      }
+      catch (error) {
+
+        console.error(
+          "[CertificateGenerator] Certificate preview failed:",
+          error
+        );
+
+        certificatePreview.innerHTML = `
+
+          <div>
+
+            <h3>
+
+              Certificate preview unavailable
+
+            </h3>
+
+            <p>
+
+              The certificate template could not be loaded.
+
+            </p>
+
+          </div>
+
+        `;
+
+      }
+
+    }
+
+    function populateCertificateTemplate(
+      container,
       record
-    );
+    ) {
 
-    credentialIdValue.textContent =
-      record.credential_id || "-";
+      if (!container) {
+        return;
+      }
 
-    credentialTypeValue.textContent =
-      record.credential_type || "-";
-
-    credentialFamilyValue.textContent =
-      record.credential_family || "-";
-
-    programCodeValue.textContent =
-      record.program_code || "-";
-
-    programNameValue.textContent =
-      record.program_name || "-";
-
-    templateKeyValue.textContent =
-      record.template_key || "-";
-
-    credentialStatusValue.textContent =
-      record.issued_status || "-";
-
-    issueDateValue.textContent =
-      formatDate(record.imported_at);
-
-    lifecycleStateValue.textContent =
-      record.lifecycle_state || "-";
-
-    successorProgramValue.textContent =
-      record.successor_program || "-";
-
-    bridgeRequiredValue.textContent =
-      record.bridge_required || "-";
-
-    bridgeCompletionStatusValue.textContent =
-      record.bridge_completion_status || "-";
-
-    originalCredentialValue.textContent =
-      record.original_credential || "-";
-
-    currentRecognitionValue.textContent =
-      record.current_recognition || "-";
-
-    recognitionStatusValue.textContent =
-      record.recognition_status || "-";
-
-    recognitionEffectiveDateValue.textContent =
-      record.recognition_effective_date || "-";
-
-  }
-
-  async function renderCertificatePreview(record) {
-
-    if (!certificatePreview) return;
-
-    try {
-
-      const response = await fetch(
-        "./template/certificate-template.html"
+      setTemplateText(
+        container,
+        "#certLearnerName",
+        record.full_name || "-"
       );
 
-      const template =
-        await response.text();
+      setTemplateText(
+        container,
+        "#certCredentialType",
+        getDisplayCredentialTitle(
+          record
+        )
+      );
 
-      certificatePreview.innerHTML =
-        template;
+      setTemplateText(
+        container,
+        "#certProgramCode",
+        record.program_code || "-"
+      );
 
-      const pdfRenderContainer =
-        document.getElementById("pdfRenderContainer");
+      setTemplateText(
+        container,
+        "#certCredentialId",
+        record.credential_id || "-"
+      );
 
-      if (pdfRenderContainer) {
-        pdfRenderContainer.innerHTML = template;
-      }
-
-      const pdfLearnerName =
-        pdfRenderContainer?.querySelector("#certLearnerName");
-
-      const pdfCredentialType =
-        pdfRenderContainer?.querySelector("#certCredentialType");
-
-      const pdfProgramCode =
-        pdfRenderContainer?.querySelector("#certProgramCode");
-
-      const pdfCredentialId =
-        pdfRenderContainer?.querySelector("#certCredentialId");
-
-      const pdfIssueDate =
-        pdfRenderContainer?.querySelector("#certIssueDate");
-
-      const learnerName =
-        certificatePreview.querySelector("#certLearnerName");
-
-      const credentialType =
-        certificatePreview.querySelector("#certCredentialType");
-
-      const programCode =
-        certificatePreview.querySelector("#certProgramCode");
-
-      const credentialId =
-        certificatePreview.querySelector("#certCredentialId");
-
-      const issueDate =
-        certificatePreview.querySelector("#certIssueDate");
-
-      if (learnerName) {
-        learnerName.textContent =
-          record.full_name || "-";
-      }
-
-      if (pdfLearnerName) {
-        pdfLearnerName.textContent =
-          record.full_name || "-";
-      }
-
-      if (credentialType) {
-        credentialType.textContent =
-          getDisplayCredentialTitle(record);
-      }
-
-      if (pdfCredentialType) {
-        pdfCredentialType.textContent =
-          getDisplayCredentialTitle(record);
-      }
-
-      if (programCode) {
-        programCode.textContent =
-          record.program_code || "-";
-      }
-
-      if (pdfProgramCode) {
-        pdfProgramCode.textContent =
-          record.program_code || "-";
-      }
-
-      if (credentialId) {
-        credentialId.textContent =
-          record.credential_id || "-";
-      }
-
-      if (pdfCredentialId) {
-        pdfCredentialId.textContent =
-          record.credential_id || "-";
-      }
-
-      if (issueDate) {
-        issueDate.textContent =
-          formatDate(record.imported_at);
-      }
-
-      if (pdfIssueDate) {
-        pdfIssueDate.textContent =
-          formatDate(record.imported_at);
-      }
-
-    } catch (error) {
-
-      console.error(
-        "Certificate Preview Error:",
-        error
+      setTemplateText(
+        container,
+        "#certIssueDate",
+        formatDate(
+          record.imported_at
+        )
       );
 
     }
 
-  }
+    /* =====================================================
+       GOVERNANCE
+    ===================================================== */
 
-  function getDisplayCredentialTitle(record) {
+    function getDisplayCredentialTitle(record) {
 
-    if (record.program_code === "AOP") {
+      if (
+        record.program_code ===
+        "AOP"
+      ) {
+
+        return (
+          "Artificial Intelligence Professional Agilist (AIPA)"
+        );
+
+      }
 
       return (
-        "Artificial Intelligence Professional Agilist (AIPA)"
+        record.current_recognition ||
+        record.credential_type ||
+        "-"
       );
 
     }
 
-    return (
-      record.current_recognition ||
-      record.credential_type ||
-      "-"
+    function isCertificateReady(record) {
+
+      if (!record) {
+        return false;
+      }
+
+      if (!record.credential_id) {
+        return false;
+      }
+
+      if (!record.full_name) {
+        return false;
+      }
+
+      if (!record.credential_type) {
+        return false;
+      }
+
+      if (!record.program_code) {
+        return false;
+      }
+
+      if (
+        normalizeSearchValue(
+          record.issued_status
+        ) !==
+        "finalized"
+      ) {
+
+        return false;
+
+      }
+
+      return true;
+
+    }
+
+    /* =====================================================
+       FORM ACTIONS
+    ===================================================== */
+
+    function clearForm() {
+
+      credentialIdInput.value =
+        "";
+
+      learnerNameInput.value =
+        "";
+
+      emailInput.value =
+        "";
+
+      resetLoadedCredentialState();
+
+      console.info(
+        "[CertificateGenerator] Search form cleared."
+      );
+
+    }
+
+    /* =====================================================
+       EVENT BINDING
+    ===================================================== */
+
+    credentialIdInput.addEventListener(
+      "input",
+      invalidateLoadedCredentialState
+    );
+
+    learnerNameInput.addEventListener(
+      "input",
+      invalidateLoadedCredentialState
+    );
+
+    emailInput.addEventListener(
+      "input",
+      invalidateLoadedCredentialState
+    );
+
+    searchBtn.addEventListener(
+      "click",
+      (event) => {
+
+        event.preventDefault();
+
+        searchCredential();
+
+      }
+    );
+
+    clearBtn.addEventListener(
+      "click",
+      (event) => {
+
+        event.preventDefault();
+
+        clearForm();
+
+      }
+    );
+
+    generatePdfBtn.addEventListener(
+      "click",
+      async (event) => {
+
+        event.preventDefault();
+
+        if (
+          typeof window.generateCertificatePdf !==
+          "function"
+        ) {
+
+          console.error(
+            "[CertificateGenerator] PDF generator is unavailable."
+          );
+
+          window.alert(
+            "Certificate PDF generation is unavailable."
+          );
+
+          return;
+
+        }
+
+        try {
+
+          await window.generateCertificatePdf();
+
+        }
+        catch (error) {
+
+          console.error(
+            "[CertificateGenerator] PDF generation failed:",
+            error
+          );
+
+        }
+
+      }
+    );
+
+    /* =====================================================
+       STARTUP
+    ===================================================== */
+
+    resetLoadedCredentialState();
+
+    loadRegistry();
+
+    console.info(
+      "[CertificateGenerator] Controller v1.4.1 loaded."
     );
 
   }
 
-  function isCertificateReady(record) {
+  /* =======================================================
+     HELPERS
+  ======================================================= */
 
-    if (!record) return false;
-    if (!record.credential_id) return false;
-    if (!record.full_name) return false;
-    if (!record.credential_type) return false;
-    if (!record.program_code) return false;
+  function disablePdfButton() {
 
-    if (
-      (record.issued_status || "")
-        .toLowerCase() !== "finalized"
-    ) {
-      return false;
+    const generatePdfBtn =
+      document.getElementById(
+        "generatePdfBtn"
+      );
+
+    if (!generatePdfBtn) {
+      return;
     }
 
-    return true;
+    generatePdfBtn.disabled =
+      true;
+
+    generatePdfBtn.classList.add(
+      "cg-btn-disabled"
+    );
+
+  }
+
+  function enablePdfButton() {
+
+    const generatePdfBtn =
+      document.getElementById(
+        "generatePdfBtn"
+      );
+
+    if (!generatePdfBtn) {
+      return;
+    }
+
+    generatePdfBtn.disabled =
+      false;
+
+    generatePdfBtn.classList.remove(
+      "cg-btn-disabled"
+    );
+
+  }
+
+  function setSearchButtonLoading(
+    isLoading
+  ) {
+
+    const searchBtn =
+      document.getElementById(
+        "searchCredentialBtn"
+      );
+
+    if (!searchBtn) {
+      return;
+    }
+
+    searchBtn.disabled =
+      Boolean(
+        isLoading
+      );
+
+    searchBtn.textContent =
+      isLoading
+        ? "Loading Registry…"
+        : "Search Credential";
+
+  }
+
+  function normalizeSearchValue(value) {
+
+    return String(
+      value || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  }
+
+  function setText(
+    element,
+    value
+  ) {
+
+    if (!element) {
+      return;
+    }
+
+    element.textContent =
+      String(
+        value ?? "-"
+      );
+
+  }
+
+  function setTemplateText(
+    container,
+    selector,
+    value
+  ) {
+
+    const element =
+      container.querySelector(
+        selector
+      );
+
+    if (!element) {
+      return;
+    }
+
+    element.textContent =
+      String(
+        value ?? "-"
+      );
 
   }
 
   function formatDate(timestamp) {
 
-    if (!timestamp?._seconds) {
+    if (!timestamp) {
       return "-";
     }
 
-    return new Date(
-      timestamp._seconds * 1000
-    ).toLocaleDateString();
+    if (
+      typeof timestamp.toDate ===
+      "function"
+    ) {
 
-  }
-
-  function resetLoadedCredentialState() {
-
-    loadedCredential = null;
-    window.loadedCredential = null;
-
-    credentialIdValue.textContent = "Not Loaded";
-    credentialTypeValue.textContent = "Not Loaded";
-    credentialFamilyValue.textContent = "Not Loaded";
-    programCodeValue.textContent = "Not Loaded";
-    programNameValue.textContent = "Not Loaded";
-    templateKeyValue.textContent = "Not Loaded";
-    issueDateValue.textContent = "Not Loaded";
-    credentialStatusValue.textContent = "Not Loaded";
-
-    lifecycleStateValue.textContent = "Not Loaded";
-    successorProgramValue.textContent = "Not Loaded";
-    bridgeRequiredValue.textContent = "Not Loaded";
-    bridgeCompletionStatusValue.textContent = "Not Loaded";
-
-    originalCredentialValue.textContent = "Not Loaded";
-    currentRecognitionValue.textContent = "Not Loaded";
-    recognitionStatusValue.textContent = "Not Loaded";
-    recognitionEffectiveDateValue.textContent = "Not Loaded";
-
-    if (certificatePreview) {
-
-      certificatePreview.innerHTML = `
-        <div>
-          <h3>Preview Placeholder</h3>
-          <p>
-            Certificate preview will appear here after
-            credential loading and rendering services
-            are implemented.
-          </p>
-        </div>
-      `;
+      return timestamp
+        .toDate()
+        .toLocaleDateString();
 
     }
 
-    const pdfRenderContainer =
-      document.getElementById("pdfRenderContainer");
+    if (
+      Number.isFinite(
+        timestamp._seconds
+      )
+    ) {
 
-    if (pdfRenderContainer) {
-      pdfRenderContainer.innerHTML = "";
+      return new Date(
+        timestamp._seconds * 1000
+      ).toLocaleDateString();
+
     }
 
-    disablePdfButton();
+    if (
+      Number.isFinite(
+        timestamp.seconds
+      )
+    ) {
+
+      return new Date(
+        timestamp.seconds * 1000
+      ).toLocaleDateString();
+
+    }
+
+    const date =
+      new Date(
+        timestamp
+      );
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+
+      return "-";
+
+    }
+
+    return date.toLocaleDateString();
 
   }
 
-  function clearForm() {
+  function formatDisplayValue(value) {
 
-    console.log("CLEAR STARTED");
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
 
-    credentialIdInput.value = "";
-    learnerNameInput.value = "";
-    emailInput.value = "";
+      return "-";
 
-    resetLoadedCredentialState();
+    }
 
-    console.log("CLEAR COMPLETED");
+    if (
+      typeof value === "object"
+    ) {
 
-  }
-
-  credentialIdInput?.addEventListener(
-    "input",
-    invalidateLoadedCredentialState
-  );
-
-  learnerNameInput?.addEventListener(
-    "input",
-    invalidateLoadedCredentialState
-  );
-
-  emailInput?.addEventListener(
-    "input",
-    invalidateLoadedCredentialState
-  );
-
-  searchBtn?.addEventListener(
-    "click",
-    searchCredential
-  );
-
-  clearBtn?.addEventListener(
-    "click",
-    clearForm
-  );
-
-  generatePdfBtn?.addEventListener(
-    "click",
-    async () => {
+      const formattedDate =
+        formatDate(
+          value
+        );
 
       if (
-        typeof window.generateCertificatePdf ===
-        "function"
+        formattedDate !== "-"
       ) {
 
-        await window.generateCertificatePdf();
+        return formattedDate;
 
       }
 
     }
-  );
 
-  loadRegistry();
-  disablePdfButton();
+    return String(
+      value
+    );
 
-  console.log(
-    "Certificate Generator Controller v1.4.0 loaded"
-  );
+  }
 
-});
+  /* =======================================================
+     SAFE INITIALIZATION
+  ======================================================= */
 
-function disablePdfButton() {
+  if (
+    document.readyState ===
+    "loading"
+  ) {
 
-  const generatePdfBtn =
-    document.getElementById("generatePdfBtn");
+    document.addEventListener(
+      "DOMContentLoaded",
+      initializeCertificateGenerator,
+      {
+        once: true
+      }
+    );
 
-  if (!generatePdfBtn) return;
+  }
+  else {
 
-  generatePdfBtn.disabled = true;
+    initializeCertificateGenerator();
 
-  generatePdfBtn.classList.add(
-    "cg-btn-disabled"
-  );
+  }
 
-}
-
-function enablePdfButton() {
-
-  const generatePdfBtn =
-    document.getElementById("generatePdfBtn");
-
-  if (!generatePdfBtn) return;
-
-  generatePdfBtn.disabled = false;
-
-  generatePdfBtn.classList.remove(
-    "cg-btn-disabled"
-  );
-
-}
+})(window, document);

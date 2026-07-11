@@ -1,402 +1,707 @@
-/* =====================================================
+/* ==========================================================
 
-Agile AI University
+   Agile AI University
+   Student & Executive Portal
 
-Module      : Student & Executive Portal
-Component   : Credential Service
+   File      : credential-service.js
+   Version   : 1.2.0
+   Status    : ACTIVE
+   Phase     : Credential Experience
 
-File        : credential-service.js
-Version     : 1.1.0
-Status      : ACTIVE
+   Purpose
+   ----------------------------------------------------------
+   Consumes resolved portal entitlements and publishes the
+   authenticated learner's visible credential portfolio.
 
-Governance  : Portal Governance v1.0
+   Responsibilities
+   ----------------------------------------------------------
+   ✓ Wait for entitlement readiness
+   ✓ Invoke portal entitlement resolver
+   ✓ Obtain visible credentials
+   ✓ Validate visible credentials
+   ✓ Enrich credentials with programme metadata
+   ✓ Publish normalized portal credential collection
+   ✓ Provide safe credential lookup API
+   ✓ Invoke credential renderer
+   ✓ Handle credential rendering lifecycle
 
-## Purpose
+   Non-Responsibilities
+   ----------------------------------------------------------
+   ✗ Firestore queries
+   ✗ Credential asset queries
+   ✗ Authentication
+   ✗ Authorization
+   ✗ Entitlement resolution rules
+   ✗ Credential ownership decisions
+   ✗ Credential filtering rules
+   ✗ Credential generation
+   ✗ Credential registry writes
 
-Consumes resolved portal entitlements and renders
-visible credentials available to authenticated
-and authorized portal users.
+   Governance
+   ----------------------------------------------------------
+   Authentication
+   → portal-auth.js
 
-## Responsibilities
+   Entitlements
+   → entitlement.js
 
-* Wait for entitlement readiness
-* Invoke resolver
-* Obtain visible credentials
-* Enrich credential metadata
-* Invoke credential renderer
-* Publish credential lookup API
-* Handle rendering lifecycle
+   Resolver
+   → resolvePortalEntitlements.js
 
-## Must Never
+   Authorization
+   → portal-authorization.js
 
-* Call APIs
-* Query Firestore
-* Perform Authorization
-* Resolve Entitlements
-* Filter Credentials
-* Modify Entitlement State
+   Rendering
+   → credential-renderer.js
 
-## Governance
+   Credential Assets
+   → credential-asset-service.js
 
-Authentication
--> portal-auth.js
+   This service remains a governed consumer of already
+   resolved portal credential data.
 
-Entitlements
--> entitlement.js
+   Dependencies
+   ----------------------------------------------------------
+   • resolvePortalEntitlements.js
+   • credential-renderer.js
+   • ProgramService
+   • CredentialValidation
 
-Resolver
--> resolvePortalEntitlements.js
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Added canonical credential ID normalization
+   • Added support for credential_id and credentialId
+   • Added support for legacy ID aliases
+   • Added whitespace-safe and case-safe lookup
+   • Preserved synchronous lookup contract
+   • Added lookup diagnostics
+   • Preserved consumer-only architecture
 
-Authorization
--> portal-authorization.js
+   v1.1.0
+   • Added CredentialService public API
+   • Added getCredentialById()
+   • Published portal credential lookup service
+   • Added credential validation integration
 
-Rendering
--> credential-renderer.js
+   v1.0.0
+   • Initial governed implementation
+   • Added lifecycle logging
+   • Added empty state handling
+   • Added defensive validation
 
-This file is a consumer only.
+========================================================== */
 
-## Dependencies
+(function (window, document) {
 
-resolvePortalEntitlements.js
-credential-renderer.js
-ProgramService
-CredentialValidation
-CredentialDetailActions
+    "use strict";
 
-## Change History
+    const VERSION =
+        "1.2.0";
 
-v1.1.0
+    let initialized =
+        false;
 
-* Added CredentialService public API
-* Added getCredentialById()
-* Published portal credential lookup service
-* Added credential validation integration
-
-v1.0.0
-
-* Initial governed implementation
-* Added lifecycle logging
-* Added empty state handling
-* Added defensive validation
-
-===================================================== */
-
-(function () {
-
-"use strict";
-
-console.log(
-"[Credential Service] Loaded v1.1.0"
-);
-
-let initialized = false;
-
-function showErrorState() {
-
-const container =
-document.getElementById(
-"credentials-container"
-);
-
-if (!container) {
-return;
-}
-
-container.innerHTML = `     <div class="error-state">
-      Unable to load credentials.     </div>
-  `;
-}
-
-function showEmptyState() {
-
-const container =
-document.getElementById(
-"credentials-container"
-);
-
-if (!container) {
-return;
-}
-
-container.innerHTML = `     <div class="empty-state">
-      No credentials available.     </div>
-  `;
-}
-
-async function renderVisibleCredentials() {
-
-try {
-
-if (
-  typeof window.resolvePortalEntitlements !==
-  "function"
-) {
-
-  console.error(
-    "[Credential Service] Resolver not available"
-  );
-
-  showErrorState();
-  return;
-}
-
-const entitlementData =
-  window.portalEntitlementData || {};
-
-console.log(
-  "[Credential Service] Auth User",
-  window.authState?.user ||
-  firebase.auth().currentUser
-);
-
-const resolved =
-  window.resolvePortalEntitlements({
-    ...entitlementData,
-
-    authenticatedUser:
-      window.authState?.user ||
-      firebase.auth().currentUser ||
-      null
-  });
-
-const credentials =
-  resolved?.visibleCredentials || [];
-
-console.log(
-  `[Credential Service] Rendering ${credentials.length} credential(s)`
-);
-
-if (credentials.length === 0) {
-
-  console.log(
-    "[Credential Service] No visible credentials"
-  );
-
-  showEmptyState();
-  return;
-}
-
-if (
-  typeof window.renderCredentials !==
-  "function"
-) {
-
-  console.error(
-    "[Credential Service] Renderer not available"
-  );
-
-  showErrorState();
-  return;
-}
-
-if (
-
-    !window.ProgramService ||
-
-    typeof window.ProgramService.get !==
-        "function"
-
-) {
-
-    console.error(
-
-        "[Credential Service] ProgramService not available"
-
+    console.log(
+        `[Credential Service] Loaded v${VERSION}`
     );
 
-    showErrorState();
 
-    return;
+    /* ======================================================
+       DOM STATE
+    ====================================================== */
 
-}
+    function getContainer() {
 
-if (
+        return document.getElementById(
+            "credentials-container"
+        );
 
-    !window.CredentialValidation ||
+    }
 
-    typeof window.CredentialValidation.validate !==
-        "function"
 
-) {
+    function showErrorState() {
 
-    console.error(
+        const container =
+            getContainer();
 
-        "[Credential Service] CredentialValidation not available"
+        if (!container) {
+            return;
+        }
 
-    );
+        container.innerHTML = `
+            <div class="error-state">
+                Unable to load credentials.
+            </div>
+        `;
 
-    showErrorState();
+    }
 
-    return;
 
-}
+    function showEmptyState() {
 
-const enrichedCredentials = (
+        const container =
+            getContainer();
 
-    await Promise.all(
+        if (!container) {
+            return;
+        }
 
-        credentials.map(async function (credential) {
+        container.innerHTML = `
+            <div class="empty-state">
+                No credentials available.
+            </div>
+        `;
 
-            if (
+    }
 
-                !window.CredentialValidation.validate(
-                    credential
-                )
 
-            ) {
+    /* ======================================================
+       CREDENTIAL ID NORMALIZATION
+    ====================================================== */
 
-                console.warn(
+    function normalizeCredentialId(value) {
 
-                    "[Credential Service] Skipping invalid credential:",
+        if (
+            value === null ||
+            value === undefined
+        ) {
 
-                    credential
+            return "";
 
-                );
+        }
 
-                return null;
+        return String(value)
+            .trim()
+            .toUpperCase();
+
+    }
+
+
+    function resolveCredentialId(credential) {
+
+        if (
+            !credential ||
+            typeof credential !== "object"
+        ) {
+
+            return "";
+
+        }
+
+        return normalizeCredentialId(
+
+            credential.credential_id ||
+
+            credential.credentialId ||
+
+            credential.credentialID ||
+
+            credential.credentialIdValue ||
+
+            credential.id ||
+
+            credential.documentId ||
+
+            ""
+
+        );
+
+    }
+
+
+    function normalizeCredential(
+        credential
+    ) {
+
+        if (
+            !credential ||
+            typeof credential !== "object"
+        ) {
+
+            return null;
+
+        }
+
+        const canonicalCredentialId =
+            resolveCredentialId(
+                credential
+            );
+
+        return {
+
+            ...credential,
+
+            /*
+             * Canonical portal property.
+             */
+
+            credential_id:
+                canonicalCredentialId,
+
+            /*
+             * Compatibility property for newer components.
+             */
+
+            credentialId:
+                canonicalCredentialId
+
+        };
+
+    }
+
+
+    /* ======================================================
+       DEPENDENCY VALIDATION
+    ====================================================== */
+
+    function validateDependencies() {
+
+        if (
+            typeof window.resolvePortalEntitlements !==
+            "function"
+        ) {
+
+            console.error(
+                "[Credential Service] Resolver not available."
+            );
+
+            return false;
+
+        }
+
+        if (
+            typeof window.renderCredentials !==
+            "function"
+        ) {
+
+            console.error(
+                "[Credential Service] Renderer not available."
+            );
+
+            return false;
+
+        }
+
+        if (
+            !window.ProgramService ||
+            typeof window.ProgramService.get !==
+                "function"
+        ) {
+
+            console.error(
+                "[Credential Service] ProgramService not available."
+            );
+
+            return false;
+
+        }
+
+        if (
+            !window.CredentialValidation ||
+            typeof window.CredentialValidation.validate !==
+                "function"
+        ) {
+
+            console.error(
+                "[Credential Service] CredentialValidation not available."
+            );
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+
+    /* ======================================================
+       PROGRAMME RESOLUTION
+    ====================================================== */
+
+    async function resolveProgram(
+        credential
+    ) {
+
+        const programCode =
+
+            credential.program_code ||
+
+            credential.programCode ||
+
+            "";
+
+        if (programCode) {
+
+            return window.ProgramService.get(
+                programCode
+            );
+
+        }
+
+        if (
+            typeof window.ProgramService
+                .createUnknownProgram ===
+            "function"
+        ) {
+
+            return window.ProgramService
+                .createUnknownProgram();
+
+        }
+
+        return null;
+
+    }
+
+
+    /* ======================================================
+       CREDENTIAL ENRICHMENT
+    ====================================================== */
+
+    async function enrichCredential(
+        credential
+    ) {
+
+        const normalizedCredential =
+            normalizeCredential(
+                credential
+            );
+
+        if (!normalizedCredential) {
+
+            console.warn(
+                "[Credential Service] Invalid credential object:",
+                credential
+            );
+
+            return null;
+
+        }
+
+        if (
+            !window.CredentialValidation.validate(
+                normalizedCredential
+            )
+        ) {
+
+            console.warn(
+                "[Credential Service] Skipping invalid credential:",
+                normalizedCredential
+            );
+
+            return null;
+
+        }
+
+        const program =
+            await resolveProgram(
+                normalizedCredential
+            );
+
+        return {
+
+            ...normalizedCredential,
+
+            program
+
+        };
+
+    }
+
+
+    /* ======================================================
+       RENDERING LIFECYCLE
+    ====================================================== */
+
+    async function renderVisibleCredentials() {
+
+        try {
+
+            if (!validateDependencies()) {
+
+                showErrorState();
+
+                return;
 
             }
 
-            const program =
+            const authenticatedUser =
 
-                credential.program_code
+                window.authState?.user ||
 
-                    ? await window.ProgramService.get(
-                        credential.program_code
+                window.firebase
+                    ?.auth()
+                    ?.currentUser ||
+
+                null;
+
+            console.log(
+                "[Credential Service] Auth User:",
+                authenticatedUser
+            );
+
+            const entitlementData =
+                window.portalEntitlementData ||
+                {};
+
+            const resolved =
+                window.resolvePortalEntitlements({
+
+                    ...entitlementData,
+
+                    authenticatedUser
+
+                });
+
+            const visibleCredentials =
+
+                Array.isArray(
+                    resolved?.visibleCredentials
+                )
+
+                    ? resolved.visibleCredentials
+
+                    : [];
+
+            console.log(
+                `[Credential Service] Resolving ${visibleCredentials.length} credential(s).`
+            );
+
+            if (
+                visibleCredentials.length ===
+                0
+            ) {
+
+                window.portalCredentials =
+                    [];
+
+                console.log(
+                    "[Credential Service] No visible credentials."
+                );
+
+                showEmptyState();
+
+                return;
+
+            }
+
+            const enrichedCredentials = (
+
+                await Promise.all(
+
+                    visibleCredentials.map(
+                        enrichCredential
                     )
 
-                    : window.ProgramService.createUnknownProgram();
+                )
 
-            return {
+            ).filter(Boolean);
 
-                ...credential,
+            if (
+                enrichedCredentials.length ===
+                0
+            ) {
 
-                program
+                window.portalCredentials =
+                    [];
 
-            };
+                console.warn(
+                    "[Credential Service] No valid credentials available."
+                );
 
-        })
+                showEmptyState();
 
-    )
+                return;
 
-).filter(Boolean);
+            }
 
-if (enrichedCredentials.length === 0) {
+            window.portalCredentials =
+                enrichedCredentials;
 
-    console.warn(
+            console.log(
+                "[Credential Service] Published credentials:",
+                enrichedCredentials.map(
+                    function (credential) {
 
-        "[Credential Service] No valid credentials available."
+                        return {
 
-    );
+                            credentialId:
+                                resolveCredentialId(
+                                    credential
+                                ),
 
-    showEmptyState();
+                            programCode:
+                                credential.program_code ||
+                                credential.programCode ||
+                                "",
 
-    return;
+                            rawCredential:
+                                credential
 
-}
+                        };
 
-window.portalCredentials =
-    enrichedCredentials;
+                    }
+                )
+            );
 
-window.renderCredentials(
-    enrichedCredentials
-);
+            window.renderCredentials(
+                enrichedCredentials
+            );
 
-} catch (error) {
+        } catch (error) {
 
-    console.error(
-        "[Credential Service] Render failure",
-        error
-    );
+            window.portalCredentials =
+                [];
 
-    showErrorState();
+            console.error(
+                "[Credential Service] Render failure:",
+                error
+            );
 
-}
-}
+            showErrorState();
 
-/* =====================================================
-   PUBLIC API
-===================================================== */
-
-function getCredentialById(
-    credentialId
-) {
-
-    if (!credentialId) {
-
-        console.warn(
-            "[Credential Service] Missing credential ID."
-        );
-
-        return null;
-
-    }
-
-    const credential = (
-
-        window.portalCredentials || []
-
-    ).find(function (credential) {
-
-        return (
-
-            credential.credential_id ===
-            credentialId
-
-        );
-
-    });
-
-    if (!credential) {
-
-        console.warn(
-
-            "[Credential Service] Credential not found:",
-
-            credentialId
-
-        );
-
-        return null;
+        }
 
     }
 
-    return credential;
 
-}
+    /* ======================================================
+       PUBLIC LOOKUP API
+    ====================================================== */
 
-function getCredentials() {
+    function getCredentialById(
+        credentialId
+    ) {
 
-    return window.portalCredentials || [];
+        const requestedCredentialId =
+            normalizeCredentialId(
+                credentialId
+            );
 
-}
+        if (!requestedCredentialId) {
 
-window.CredentialService = Object.freeze({
+            console.warn(
+                "[Credential Service] Missing credential ID."
+            );
 
-    getCredentialById,
+            return null;
 
-    getCredentials
+        }
 
-});
+        const credentials =
+            Array.isArray(
+                window.portalCredentials
+            )
 
-function initialize() {
+                ? window.portalCredentials
 
-if (initialized) {
-return;
-}
+                : [];
 
-initialized = true;
+        const credential =
+            credentials.find(
+                function (candidate) {
 
-console.log(
-"[Credential Service] Initializing"
-);
+                    return (
+                        resolveCredentialId(
+                            candidate
+                        ) ===
+                        requestedCredentialId
+                    );
 
-renderVisibleCredentials();
-}
+                }
+            ) || null;
 
-document.addEventListener(
-"entitlements:ready",
-initialize
-);
+        if (!credential) {
 
-})();
+            console.warn(
+                "[Credential Service] Credential not found:",
+                {
+                    requestedCredentialId,
+                    availableCredentialIds:
+                        credentials.map(
+                            resolveCredentialId
+                        )
+                }
+            );
+
+            return null;
+
+        }
+
+        return credential;
+
+    }
+
+
+    function getCredentials() {
+
+        return Array.isArray(
+            window.portalCredentials
+        )
+
+            ? [...window.portalCredentials]
+
+            : [];
+
+    }
+
+
+    function hasCredential(
+        credentialId
+    ) {
+
+        return Boolean(
+            getCredentialById(
+                credentialId
+            )
+        );
+
+    }
+
+
+    window.CredentialService =
+        Object.freeze({
+
+            getCredentialById,
+
+            getCredentials,
+
+            hasCredential,
+
+            normalizeCredentialId,
+
+            resolveCredentialId
+
+        });
+
+
+    /* ======================================================
+       INITIALIZATION
+    ====================================================== */
+
+    function initialize() {
+
+        if (initialized) {
+            return;
+        }
+
+        initialized =
+            true;
+
+        console.log(
+            `[Credential Service] Initializing v${VERSION}`
+        );
+
+        renderVisibleCredentials();
+
+    }
+
+
+    document.addEventListener(
+        "entitlements:ready",
+        initialize
+    );
+
+})(window, document);

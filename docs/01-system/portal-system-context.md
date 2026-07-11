@@ -1,78 +1,146 @@
 # Agile AI University
+
 # Student & Executive Portal
 
-Version
---------
-2.0
+**Version:** 3.0
 
-Status
-------
-ACTIVE
+**Status:** ACTIVE
 
-Last Updated
-------------
-July 2026
+**Architecture Status:** LOCKED
+
+**Last Updated:** July 2026
+
+---
+
+# Purpose
+
+The Student & Executive Portal provides the authenticated digital experience for learners, credential holders, trainers and executives.
+
+It is responsible for consuming university services while remaining independent of credential generation and business rule execution.
+
+The portal follows a Resolver-First Architecture where authentication, authorization and entitlement resolution complete before any presentation layer is rendered.
 
 ---
 
 # Executive Summary
 
-The Student & Executive Portal is the authenticated experience
-for learners, credential holders, trainers and executives.
+The portal serves as the primary consumption experience for the Agile AI University ecosystem.
 
-The portal provides a single entry point for consuming
-credentials, certificates, badges, recognitions, learning
-resources and executive services.
+The portal provides access to
 
-The portal follows a resolver-first architecture where all
-business decisions are resolved before UI rendering begins.
+- Dashboard
+- Credential Portfolio
+- University Certificates
+- Digital Badges
+- Trainer Certificates
+- Recognition Assets
+- Learning Resources
+- Upgrade Opportunities
+- Executive Services
+
+The portal consumes authoritative information published by backend services and never owns business rules.
 
 ---
 
 # Current Completion
 
 Portal Foundation
+
 ✓ Complete
 
 Authentication
+
 ✓ Complete
 
 Authorization
+
 ✓ Complete
 
 Entitlement Resolution
+
 ✓ Complete
 
-Dashboard Foundation
+Program Bootstrap
+
 ✓ Complete
 
-Credential Experience
+Dashboard
+
 ✓ Complete
 
-Program Resolution
+Credential Portfolio
+
+✓ Complete
+
+Credential Detail Experience
+
+✓ Complete
+
+Credential Asset Preview
+
 ✓ Complete
 
 Recognition Foundation
-✓ In Progress
+
+✓ Complete
 
 Learning Experience
+
 Planned
 
 Executive Experience
+
+Planned
+
+Wallet Integration
+
 Planned
 
 ---
 
-# Architecture Layers
+# Portal Architecture
 
-Layer 1
+The portal consists of seven architectural layers.
+
+```
+Authentication
+
+↓
+
+Authorization
+
+↓
+
+Entitlement Resolution
+
+↓
+
+Program Resolution
+
+↓
+
+Dashboard Orchestration
+
+↓
+
+Feature Modules
+
+↓
+
+Presentation
+```
+
+---
+
+# Layer 1
+
 Authentication
 
 Responsible For
 
-• User Sign In
-• Session Management
-• Firebase Authentication
+- User Sign In
+- Session Management
+- Firebase Authentication
 
 Authority
 
@@ -80,14 +148,15 @@ portal-auth.js
 
 ---
 
-Layer 2
+# Layer 2
+
 Authorization
 
 Responsible For
 
-• Route Protection
-• Access Validation
-• User Authorization
+- Route Protection
+- User Validation
+- Role Resolution
 
 Authority
 
@@ -95,114 +164,230 @@ portal-authorization.js
 
 ---
 
-Layer 3
+# Layer 3
+
 Entitlement Resolution
 
 Responsible For
 
-• Executive Entitlements
-• Student Entitlements
-• Credential Resolution
-• Program Bootstrap
+- Student Entitlements
+- Executive Entitlements
+- Program Bootstrap
+- Initial Credential Resolution
 
 Authority
 
+Cloud Run
+
 resolve-user-entitlements.js
 
-Cloud Run
+Presentation does not render until entitlement resolution completes.
 
 ---
 
-Layer 4
+# Layer 4
+
 Program Resolution
 
 Responsible For
 
-• Program Metadata
-• Available Assets
-• Upgrade Recommendations
-• Future Programs
+- Program Metadata
+- Program Names
+- Program Codes
+- Upgrade Relationships
+- Available Assets
 
 Authority
 
 ProgramService
 
-Program definitions are loaded once during entitlement
-resolution and cached for the entire portal session.
+Program definitions are bootstrapped once and cached for the duration of the session.
 
-UI components never query Firestore directly.
+UI components never query Firestore.
 
 ---
 
-Layer 5
-Dashboard Aggregation
+# Layer 5
+
+Dashboard Orchestration
 
 Responsible For
 
-• Dashboard ViewModel
-• KPI Calculation
-• Recent Credentials
-• Recognition Summary
-• Quick Access
+- Dashboard View Model
+- KPI Resolution
+- Recent Credentials
+- Recognition Summary
+- Upgrade Summary
+- Quick Access
 
 Authority
 
 DashboardService
 
+DashboardService aggregates presentation data.
+
+Business rules remain outside the dashboard.
+
 ---
 
-Layer 6
+# Layer 6
+
+Feature Modules
+
+Responsible For
+
+- Credential Services
+- Recognition Services
+- Learning Services
+- Upgrade Services
+- Executive Services
+
+Each feature module owns its own presentation orchestration.
+
+---
+
+# Layer 7
+
 Presentation
 
 Responsible For
 
-• Dashboard Widgets
-• Credential Cards
-• Recognition Cards
-• Notification Cards
-• Upgrade Cards
+- Widgets
+- Cards
+- Overlays
+- Asset Preview
+- Rendering
 
 Presentation components contain no business logic.
+
+Presentation never queries Firestore.
+
+Presentation consumes immutable View Models only.
 
 ---
 
 # Program Bootstrap Architecture
 
-Status
+**Status**
 
 LOCKED
 
-Cloud Run returns the complete Program Definition collection
-during entitlement resolution.
+Cloud Run returns
 
-Returned payload
+- User
+- Entitlements
+- Credentials
+- Executive Information
+- Program Definitions
 
-• Credentials
-• Executive Entitlement
-• User Entitlements
-• Programs
-
-The Programs collection is bootstrapped into
+Program Definitions are cached as
 
 window.__AAIU_PROGRAMS__
 
-ProgramService becomes the single authority for resolving
-Program ViewModels.
+ProgramService becomes the single authority for
+
+- Program Names
+- Program Codes
+- Available Assets
+- Upgrade Metadata
 
 No UI component performs Firestore lookups.
 
-This eliminates duplicate requests and guarantees a
-consistent Program ViewModel throughout the portal.
+---
+
+# Credential Architecture
+
+The Student Portal is a credential consumption platform.
+
+Responsibilities
+
+✓ Display Credentials
+
+✓ Display Certificates
+
+✓ Display Badges
+
+✓ Display Recognition
+
+✓ Download Assets
+
+✓ Share Assets
+
+The portal never
+
+✗ Generates Certificates
+
+✗ Generates Badges
+
+✗ Creates Credential Assets
+
+✗ Updates Credential Registry
+
+---
+
+# Credential Asset Architecture
+
+**Status**
+
+LOCKED
+
+Asset lifecycle
+
+```
+Admin Portal
+
+↓
+
+Generate Asset
+
+↓
+
+Upload Storage
+
+↓
+
+Publish Credential Asset Registry
+
+↓
+
+Student Portal
+
+↓
+
+Preview
+
+↓
+
+Download
+
+↓
+
+Share
+```
+
+The Student Portal only consumes published assets.
+
+---
+
+# Credential Detail Experience
+
+**Status**
+
+LOCKED
+
+Credential Details are displayed inside the dashboard experience.
+
+There is no separate credential details page.
+
+Navigation is intentionally minimized.
+
+Credential assets are previewed within the portal experience.
 
 ---
 
 # Credential Presentation Standard
 
-Status
-
-LOCKED
-
-Credential Header
+Program Header
 
 Line 1
 
@@ -220,14 +405,16 @@ Example
 
 Agile Outcome Practitioner
 
-This presentation standard applies consistently across
+This presentation standard applies to
 
-• Dashboard
-• Credential Details
-• Certificates
-• Recognition Assets
-• Verification
-• Future Portal Modules
+- Dashboard
+- Credential Portfolio
+- Certificates
+- Digital Badges
+- Recognition
+- Verification
+- Alumni Portal
+- Future Wallet
 
 ---
 
@@ -235,28 +422,37 @@ This presentation standard applies consistently across
 
 Resolver First
 
-Business decisions are completed before rendering.
+All business decisions complete before presentation.
+
+---
 
 Single Source of Truth
 
-Program metadata originates only from the Programs
-collection.
+Program metadata originates from ProgramService.
 
-Single Responsibility
+Credential data originates from the Credential Registry.
 
-Each service owns one responsibility.
+Published assets originate from the Credential Asset Registry.
 
-Read-only ViewModels
+---
 
-Presentation consumes immutable ViewModels only.
+Read Only Portal
 
-No Firestore Access
+The Student Portal never modifies credential data.
 
-Presentation components never access Firestore.
+---
+
+Presentation Separation
+
+Presentation contains no business logic.
+
+---
 
 Cloud Run Authority
 
 Business aggregation belongs to Cloud Run.
+
+---
 
 ProgramService Authority
 
@@ -264,24 +460,80 @@ Program metadata belongs to ProgramService.
 
 ---
 
-# Future Extensions
+Credential Registry Authority
 
-The architecture supports
-
-• Additional Programs
-• New Credential Types
-• Badge Expansion
-• Recognition Expansion
-• Learning Journey
-• Executive Insights
-• Recommendations Engine
-
-without architectural changes.
+Credential ownership belongs to the Credential Registry.
 
 ---
 
-Status
+Credential Asset Registry Authority
 
-Governance Locked
-Architecture Stable
-Production Ready
+Published assets belong to the Credential Asset Registry.
+
+---
+
+Student Portal Principle
+
+The Student Portal is a consumption platform.
+
+It never generates university assets.
+
+---
+
+# Governance References
+
+Portal Governance
+
+docs/02-governance/portal/portal-governance.md
+
+Portal UI Governance
+
+docs/02-governance/portal/portal-ui-governance.md
+
+Credential Governance
+
+docs/02-governance/credential/credential-governance.md
+
+Founding Credential Architecture
+
+docs/04-decisions/ADR-006-Founding-Credential-Architecture.md
+
+---
+
+# Future Evolution
+
+The architecture supports
+
+- Additional Programs
+- Additional Credential Types
+- Executive Services
+- Wallet Integration
+- Alumni Platform
+- AI Recommendations
+- Learning Journey
+- Professional Recognition
+- International Credentials
+
+without architectural redesign.
+
+---
+
+# Status
+
+**Architecture**
+
+LOCKED
+
+**Governance**
+
+LOCKED
+
+**Portal Pattern**
+
+Consumption First
+
+**Production Status**
+
+ACTIVE
+
+The Student & Executive Portal is the official consumption experience for the Agile AI University ecosystem and operates under the governance defined by the Credential Governance Standard and the Founding Credential Architecture decision.

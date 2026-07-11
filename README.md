@@ -1,173 +1,446 @@
-# FB-AgileAI-University
+# Agile AI University
 
-This repository is the canonical monorepo for Agile AI University.
+# Enterprise Platform Repository
 
-It contains:
-- The preserved canonical reference surface (Agile AI Functional Elements)
-- Governance and institutional records
-- Public learning and assessment surfaces
-- Runtime systems that enable portal, payment, and credential operations
-
-The repository is intentionally structured to separate:
-- Canonical definition
-- Governance records
-- Public surfaces
-- Runtime systems
-
-This separation preserves institutional clarity, authority boundaries, and long-term credibility.
+> **Architecture First. Governance Always. Enterprise by Design.**
 
 ---
 
-## 🧭 Repository Purpose
+# Repository Information
+
+| Attribute | Value |
+|------------|-------|
+| **Repository** | FB-AgileAI-University |
+| **Repository Type** | Enterprise Platform & Architecture Repository |
+| **Owner** | Agile AI University |
+| **Architect** | Dileep Appupillai |
+| **Version** | 2.0.0 |
+| **Status** | ACTIVE |
+| **Architecture Status** | FOUNDATION COMPLETE |
+
+---
+
+# Welcome
+
+Welcome to the official Agile AI University Enterprise Platform Repository.
+
+This repository contains the complete enterprise platform powering Agile AI University, including:
+
+- Enterprise Architecture
+- Platform Architecture
+- Domain Architecture
+- Governance
+- Architecture Decision Records
+- Public Applications
+- Administrative Applications
+- Learning & Assessment Platforms
+- Shared Enterprise Services
+- Operational Documentation
+- Strategic Roadmaps
+
+It serves as the single authoritative repository for designing, building, governing, operating, and evolving the Agile AI University ecosystem.
+
+---
+
+# Repository Purpose
 
 This repository exists to:
 
-- Preserve the canonical reference surface for Agile AI
-- Maintain governance and decision records
-- Operate runtime systems (portals, assessments, payments)
-- Support learning, evaluation, and credentialing
-- Enable institution-grade architecture with solopreneur manageability
+- Preserve the Agile AI Foundation
+- Maintain Enterprise Architecture
+- Document Governance
+- Define Enterprise Standards
+- Operate University Platforms
+- Deliver Learning
+- Deliver Assessments
+- Issue Credentials
+- Verify Credentials
+- Enable Enterprise Growth
+
+The repository is intentionally architecture-first.
 
 ---
 
-## 🏛 Canonical Reference (Constitutionally Locked)
+# Enterprise Philosophy
 
-### `agileai.foundation/`
+The Agile AI University ecosystem follows permanent enterprise principles.
 
-This folder contains the Agile AI Functional Elements (v1.0).
+- Architecture before Implementation
+- Governance before Automation
+- Enterprise before Application
+- Services before Platforms
+- Domains before Features
+- Registries as Institutional Truth
+- Separation of Concerns
+- Long-term Maintainability
+- Scalability by Design
 
-- Static reference surface
-- Defines WHAT must exist for Agile AI
-- Framework-agnostic and technology-neutral
-- Non-commercial
-- Non-certifying
-- Governed by explicit version discipline
-
-Changes require:
-- Version increment
-- Changelog entry
-- Governance record
-
-This surface defines meaning.  
-University layers may interpret and apply — but must not redefine.
+Every platform and service within the ecosystem inherits these principles.
 
 ---
 
-## 📚 Public & Learning Surfaces
+# Enterprise Lifecycle
 
-### `public-site/`
-Public-facing institutional surface.
+The enterprise is organised around the complete learner lifecycle.
 
-### `public-assessment/`
-Capability assessment aligned to the canon.
+```text
+Programme
 
-### `public-portal/`
-Participant-facing entry and orchestration layer.
+↓
 
-### `public-certs/`
-Public credential verification.
+Registration
 
-These surfaces apply the canon but do not alter it.
+↓
 
----
+Payment
 
-## 🎓 Learning, Assessment & Credentials
+↓
 
-The ecosystem is layered intentionally:
+Learning
 
-- Canon defines WHAT must exist.
-- Learning explains HOW it is practiced.
-- Assessment evaluates WHETHER alignment exists.
-- Credentials represent validated capability (not attendance).
+↓
 
-Reverse authority is prohibited.
+Assessment
 
----
+↓
 
-## ⚙️ Runtime & Backend Systems
+Credential
 
-### `cloudrun-portal/`
-Backend services (Google Cloud Run):
-- Authentication
-- Session control
-- Secure APIs
-- Portal orchestration
+↓
 
-### `razorpay-webhook/`
-Payment processing and webhook handling.
+Credential Assets
 
-Runtime systems may evolve independently, provided they do not alter canonical definitions.
+↓
 
----
+Recognition
 
-## 🗂 Governance & Records
+↓
 
-### `governance/`
+Verification
 
-Contains:
-- Phase locks and freezes
-- Architecture decisions
-- Version records
-- Institutional charters
+↓
 
-Governance artifacts preserve traceability and institutional discipline.
+Executive Services
+```
 
-They must not be altered retroactively.
+This lifecycle forms the foundation of the Enterprise Domain Architecture.
 
 ---
 
-## 🧰 Scripts & Tooling
+# Repository Structure
 
-### `scripts/`
+```text
+FB-AgileAI-University/
 
-Operational utilities for:
-- Validation
-- Deployment checks
-- Environment verification
+├── docs/
+│
+│   ├── 01-system/
+│   ├── 02-governance/
+│   ├── 03-architecture/
+│   ├── 04-decisions/
+│   ├── 05-estimates/
+│   ├── 06-roadmap/
+│   ├── 07-api/
+│   ├── 08-enterprise-services/
+│   ├── 09-operational/
+│   └── 10-runbooks/
+│
+├── public-site/
+├── public-admin/
+├── public-portal/
+├── public-assessment/
+├── public-learn/
+├── public-certs/
+├── public-spec/
+├── public-academy/
+├── shared/
+├── source/
+├── scripts/
+└── overrides/
+```
 
----
-
-## 🔒 Institutional Design Principles
-
-- Canon before commerce
-- Reference before runtime
-- Learning before assessment
-- Assessment before credential
-- Governance before scaling
-
-These principles are intentional and structural.
-
----
-
-## 🚫 What This Repository Is Not
-
-- Not a monolithic application
-- Not a marketing-only site
-- Not a casual experimentation space
-- Not a runtime-first architecture
-
-Each directory serves a distinct institutional role.
-
----
-
-## 📌 Change Policy
-
-- Canonical surface changes require version governance.
-- Governance records must not be rewritten.
-- Runtime code may evolve independently.
-- No component may redefine Agile AI Functional Elements outside the canonical surface.
+The repository is organised around enterprise architecture rather than source code alone.
 
 ---
 
-## 🔗 Related Properties
+# Enterprise Documentation
 
-- Canon: https://agileai.foundation
-- knowledge: https://edu.agileai.university
-- Portal & Assessment: https://portal.agileai.university
+The `/docs` folder contains the complete Enterprise Knowledge Base.
+
+It documents:
+
+- Enterprise System Context
+- Governance
+- Platform Architecture
+- Domain Architecture
+- Runtime Architecture
+- Integration Architecture
+- Security Architecture
+- Architecture Decisions
+- Estimates
+- Roadmaps
+- APIs
+- Operational Guidance
+- Runbooks
+
+Architecture documentation is the authoritative source for enterprise design.
 
 ---
 
-© Agile AI University  
-Agile AI Functional Elements v1.0
+# Documentation Reading Order
 
-This repository supports long-term credibility, clarity, and structural integrity of Agile AI as a discipline.
+The recommended reading sequence is:
+
+```text
+Enterprise System Context
+
+↓
+
+Governance
+
+↓
+
+Architecture Standards
+
+↓
+
+Platform Architecture
+
+↓
+
+Domain Architecture
+
+↓
+
+Architecture Decision Records
+
+↓
+
+Enterprise Services
+
+↓
+
+API Specifications
+
+↓
+
+Operations
+
+↓
+
+Runbooks
+
+↓
+
+Roadmap
+```
+
+Each layer builds upon the previous layer.
+
+---
+
+# Enterprise Platforms
+
+The repository currently contains the following enterprise platforms.
+
+| Platform | Purpose |
+|----------|---------|
+| Public Website | Public institutional presence |
+| Student & Executive Portal | Learner and executive experience |
+| Admin Portal | University administration |
+| Assessment Platform | Capability assessment |
+| Verification Platform | Credential verification |
+| Learning Platform | Learning delivery |
+| Shared Platform | Enterprise shared services |
+
+Each platform follows common enterprise architecture standards.
+
+---
+
+# Enterprise Domains
+
+The enterprise business architecture currently defines the following domains.
+
+- Programme
+- Registration
+- Payment
+- Learning
+- Assessment
+- Credential
+- Credential Asset
+- Recognition
+- Verification
+- Executive Services
+
+Together these domains represent the complete institutional lifecycle.
+
+---
+
+# Agile AI Foundation
+
+The repository preserves the Agile AI Foundation as the canonical reference surface.
+
+The Foundation:
+
+- Defines Agile AI concepts
+- Remains technology neutral
+- Remains framework independent
+- Preserves semantic consistency
+- Evolves under formal governance
+
+Applications may consume the Foundation but shall not redefine it.
+
+---
+
+# Architecture Decision Records
+
+Permanent architectural decisions are documented as Architecture Decision Records (ADRs).
+
+Each ADR records:
+
+- Context
+- Decision
+- Alternatives
+- Consequences
+
+ADRs preserve institutional knowledge and architectural rationale.
+
+---
+
+# Governance
+
+Enterprise governance is documented under:
+
+```
+docs/02-governance/
+```
+
+Governance defines:
+
+- Enterprise principles
+- Policies
+- Standards
+- Decision framework
+- Institutional rules
+
+Governance precedes implementation.
+
+---
+
+# Operational Applications
+
+The repository contains multiple enterprise applications including:
+
+- Public Website
+- Student Portal
+- Executive Portal
+- Admin Portal
+- Assessment Platform
+- Credential Verification
+- Learning Platform
+- Enterprise Shared Components
+
+Applications consume Enterprise Services and adhere to enterprise governance.
+
+---
+
+# Repository Principles
+
+This repository is designed to be:
+
+- Enterprise-first
+- Architecture-driven
+- Governance-led
+- Service-oriented
+- Domain-driven
+- Modular
+- Extensible
+- Auditable
+- Future-ready
+
+---
+
+# Change Policy
+
+The following policies apply throughout the repository.
+
+- Architecture changes require architectural review.
+- Governance documentation remains traceable.
+- ADRs preserve architectural decisions.
+- Enterprise standards apply across all platforms.
+- Applications shall not violate established domain boundaries.
+- Architectural consistency takes precedence over short-term implementation convenience.
+
+---
+
+# What This Repository Is Not
+
+This repository is not:
+
+- A single application
+- A marketing website
+- A prototype
+- A temporary project
+- A runtime-only codebase
+
+It is the enterprise platform repository supporting the complete Agile AI University ecosystem.
+
+---
+
+# Current Repository Status
+
+| Area | Status |
+|------|--------|
+| Enterprise Context | ✅ Complete |
+| Governance | ✅ Complete |
+| Architecture Standards | ✅ Complete |
+| Platform Architecture | ✅ Complete |
+| Domain Architecture | ✅ Complete |
+| Architecture Decision Records | ✅ Active |
+| Enterprise Services | 🚧 Planned |
+| Runtime Architecture | 🚧 In Progress |
+| Security Architecture | 🚧 In Progress |
+| API Specifications | 🚧 Planned |
+| Operations | 🚧 Planned |
+| Runbooks | 🚧 Planned |
+
+---
+
+# Future Direction
+
+The repository will continue to evolve with:
+
+- Enterprise Service Specifications
+- Registry Specifications
+- API Documentation
+- Runtime Specifications
+- Security Specifications
+- Operational Runbooks
+- Enterprise Observability
+- AI Governance
+- International Platform Support
+- Future Reference Architectures
+
+Every future addition shall inherit the enterprise architecture documented within this repository.
+
+---
+
+# Summary
+
+The Agile AI University Enterprise Platform Repository is the authoritative repository for the Agile AI University ecosystem.
+
+It documents the enterprise from strategic vision through governance, architecture, implementation guidance, platform development, and operational excellence.
+
+It establishes a scalable, governed, and future-ready foundation for every current and future Agile AI University platform.
+
+---
+
+**Status:** ACTIVE
+
+**Repository Version:** 2.0.0
+
+**Architecture Status:** FOUNDATION COMPLETE
+
+---
+
+*"Great universities are built on enduring knowledge. Great platforms are built on enduring architecture."*

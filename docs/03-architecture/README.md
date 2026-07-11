@@ -1,283 +1,113 @@
 # Agile AI University
 
-# Architecture Documentation
+# Enterprise Domain Architecture
 
-**Version:** 1.0
+> **The authoritative business architecture governing every enterprise capability within the Agile AI University ecosystem.**
 
-**Status:** ACTIVE
+---
 
-**Last Updated:** July 2026
+# Document Information
+
+| Attribute | Value |
+|------------|-------|
+| **Document** | Enterprise Domain Architecture |
+| **File** | `docs/03-architecture/domain/README.md` |
+| **Version** | **1.0.0** |
+| **Status** | **ACTIVE** |
+| **Architecture Status** | **LOCKED** |
+| **Classification** | Enterprise Domain Architecture |
+| **Owner** | Agile AI University |
+| **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This directory contains the official architecture documentation for the Agile AI University ecosystem.
+This directory defines the Enterprise Business Domains of the Agile AI University ecosystem.
 
-The documentation is organised into independent architectural domains so that each architectural concern can evolve independently while remaining governed by common platform principles.
+A Domain represents a business capability with clearly defined ownership, responsibilities, information, lifecycle, governance, and Enterprise Services.
 
-This README serves as the master navigation document for all architecture references.
+Domain Architecture is the centre of the enterprise.
 
----
-
-# Architecture Principles
-
-The Agile AI University platform follows a governed architecture based on:
-
-- Layered Architecture
-- Resolver First
-- Service First
-- Registry Driven
-- Experience Driven
-- Component Driven
-- Overlay Driven
-- Shared UI Framework
-- Single Responsibility
-- Separation of Concerns
-
-These principles are mandatory across the entire platform.
+Platforms, services, integrations, APIs, runtime components, and operational processes ultimately derive their behaviour from Enterprise Domains.
 
 ---
 
-# Architecture Documents
+# Domain Philosophy
 
-## Portal Architecture
+The Agile AI University platform follows a **Domain-Driven Enterprise Architecture**.
 
-```
-portal-architecture.md
-```
+Enterprise Domains own:
 
-Defines the overall architecture of the Student & Executive Portal including architectural layers, governance, services and long-term vision.
+- Business capabilities
+- Business rules
+- Business lifecycles
+- Business information
+- Enterprise registries
+- Enterprise governance
 
----
+Enterprise Platforms deliver user experiences.
 
-## Experience Architecture
+Enterprise Services expose domain capabilities.
 
-```
-portal/
-experience-architecture.md
-```
-
-Defines the Experience-Driven Architecture used throughout the portal.
-
-Includes
-
-- Experience lifecycle
-- Overlay architecture
-- Component standards
-- CSS standards
-- JavaScript standards
-- Governance rules
-- Future experience model
+Enterprise Registries preserve institutional truth.
 
 ---
 
-## Dashboard Gating Layer
+# Enterprise Domain Model
 
-```
-portal/
-dashboard-gating-layer.md
-```
-
-Defines dashboard orchestration, routing and access gating.
-
----
-
-## Authentication Layer
-
-```
-portal/
-portal-authentication-layer.md
-```
-
-Defines
-
-- Authentication
-- Session management
-- Login architecture
-- Identity providers
-
----
-
-## Authorization Layer
-
-```
-portal/
-portal-authorization-layer.md
-```
-
-Defines
-
-- Portal authorization
-- Role validation
-- Access control
-- Permission model
-
----
-
-## Entitlement Layer
-
-```
-portal/
-portal-entitlement-layer.md
-```
-
-Defines
-
-- Capability resolution
-- Learner entitlements
-- Executive entitlements
-- Upgrade eligibility
-
----
-
-## Recognition Governance
-
-```
-portal/
-portal-recognition-governance.md
-```
-
-Defines recognition architecture and governance standards.
-
----
-
-## Login Architecture
-
-```
-portal/
-portal-login-authentication-authorization-architecture.md
-```
-
-Defines the complete authentication, authorization and login sequence.
-
-Includes the associated architecture diagram.
-
----
-
-## Credential Architecture
-
-```
-credential-architecture.md
-```
-
-Defines the Credential Platform architecture including
-
-- Credential Registry
-- Certificate Architecture
-- Badge Architecture
-- Recognition Assets
-- Verification Architecture
-
----
-
-## Firebase Hosting
-
-```
-firebase-hosting.md
-```
-
-Defines
-
-- Multi-hosting architecture
-- Deployment model
-- Hosting targets
-- Routing strategy
-
----
-
-# Architecture Relationships
-
-The platform architecture is organised into independent but related layers.
-
-```
-Portal Architecture
-
-│
-
-├── Authentication
-
-├── Authorization
-
-├── Entitlements
-
-├── Dashboard
-
-├── Experience Architecture
-
-│      │
-
-│      ├── Credential Detail
-
-│      ├── Recognition Detail
-
-│      ├── Learning Journey
-
-│      ├── Assessment Summary
-
-│      ├── Upgrade Registration
-
-│      └── Executive Insights
-
-│
-
-├── Services
-
-├── Registries
-
-├── Shared UI Framework
-
-└── Platform Governance
-```
-
----
-
-# Shared UI Framework
-
-The portal uses common UI frameworks shared across all experiences.
-
-```
-buttons.css
-
-cards.css
-
-overlay.css
-
-design-tokens.css
-```
-
-Experience-specific styling remains isolated inside the corresponding experience.
-
-Example
-
-```
-credential-detail/
-
-    credential-detail-overlay.css
-```
-
----
-
-# Experience Model
-
-Every learner capability is implemented as an Experience.
-
-Standard experience structure
-
-```
-Experience
+```text
+Enterprise Domains
 
 ↓
 
-Overlay
+Enterprise Services
 
 ↓
 
-Header
+Enterprise Platforms
 
 ↓
 
-Information
+Enterprise Users
+```
+
+Enterprise Domains define the business.
+
+Everything else consumes Enterprise Domains.
+
+---
+
+# Enterprise Business Lifecycle
+
+The Agile AI University ecosystem is organised around a complete institutional lifecycle.
+
+```text
+Programme
+
+↓
+
+Registration
+
+↓
+
+Payment
+
+↓
+
+Learning
+
+↓
+
+Assessment
+
+↓
+
+Credential
+
+↓
+
+Credential Asset
 
 ↓
 
@@ -289,83 +119,368 @@ Verification
 
 ↓
 
-Assets
+Executive Services
+```
+
+Each domain owns one stage of the enterprise lifecycle.
+
+Together they form the complete institutional operating model.
+
+---
+
+# Current Enterprise Domains
+
+The following Enterprise Domains are defined.
+
+| Domain | Primary Responsibility |
+|----------|------------------------|
+| Programme | Academic programme governance |
+| Registration | Learner registration and enrolment intent |
+| Payment | Financial processing and settlement |
+| Learning | Learning delivery and learner progression |
+| Assessment | Academic evaluation and competency validation |
+| Credential | Institutional academic recognition |
+| Credential Asset | Digital publishing of credential assets |
+| Recognition | Institutional honours and recognition |
+| Verification | Public trust and verification |
+| Executive Services | Enterprise intelligence and executive insights |
+
+Each domain is independently governed.
+
+---
+
+# Domain Responsibilities
+
+Every Enterprise Domain shall define:
+
+- Purpose
+- Business responsibilities
+- Business lifecycle
+- Enterprise information
+- Enterprise Registry
+- Enterprise Services
+- Consumers
+- Governance Rules
+- Integration
+- Security considerations
+- Future evolution
+
+This standard ensures consistency across all business capabilities.
+
+---
+
+# Domain Ownership
+
+Each Enterprise Domain is the sole authority for its business capability.
+
+Examples include:
+
+| Domain | Owns |
+|---------|------|
+| Programme | Programme definitions and prerequisites |
+| Registration | Registration records |
+| Payment | Financial transactions |
+| Learning | Learning participation |
+| Assessment | Academic evaluation |
+| Credential | Academic credentials |
+| Credential Asset | Digital credential assets |
+| Recognition | Institutional recognitions |
+| Verification | Verification outcomes |
+| Executive Services | Executive intelligence |
+
+Business ownership shall not be duplicated.
+
+---
+
+# Enterprise Services Relationship
+
+Every Enterprise Domain exposes one or more Enterprise Services.
+
+Example:
+
+```text
+Programme
 
 ↓
 
-Actions
+ProgramService
+
+↓
+
+Student Portal
 ```
 
-Business logic remains inside Services.
+Another example:
 
-Presentation remains inside Experiences.
+```text
+Credential
 
----
+↓
 
-# Governance
+CredentialService
 
-Mandatory
+↓
 
-✓ Resolver First
+Student Portal
 
-✓ Service First
+↓
 
-✓ Registry Driven
+Verification Platform
+```
 
-✓ Experience Driven
-
-✓ Overlay Driven
-
-✓ Single Responsibility
-
-✓ Modular Components
-
-Never
-
-✗ Firestore inside UI
-
-✗ Authorization inside UI
-
-✗ Duplicate business logic
-
-✗ Duplicate rendering
-
-✗ Hardcode registry data
+Enterprise Services expose Domain capabilities without transferring Domain ownership.
 
 ---
 
-# Long-Term Vision
+# Enterprise Registry Relationship
 
-The Student & Executive Portal is evolving into the unified digital experience platform for Agile AI University.
+Every Domain owns one or more Enterprise Registries.
 
-Future experiences include
+Examples include:
 
-- Credential Detail
-- Recognition Detail
-- Learning Journey
-- Assessment Summary
-- Upgrade Registration
-- Executive Insights
-- AI Learning Assistant
-- Career Journey
-- Wallet Integration
+- Programme Registry
+- Registration Registry
+- Payment Registry
+- Learning Registry
+- Assessment Registry
+- Credential Registry
+- Credential Asset Registry
+- Recognition Registry
+- Verification Registry
 
-Every future capability must conform to the architectural standards documented within this directory.
+Registries represent the institutional source of truth.
 
 ---
 
-# Document Ownership
+# Domain Principles
 
-Owner
+Every Enterprise Domain follows these permanent principles.
 
-Agile AI University
+## Single Business Authority
 
-Architecture Governance Board
+Each business capability belongs to one Domain.
 
-Status
+---
 
-ACTIVE
+## Single Source of Truth
 
-Architecture Governance
+Every Domain owns its Enterprise Registry.
 
-LOCKED
+---
+
+## Separation of Concerns
+
+Domains do not perform the responsibilities of other Domains.
+
+---
+
+## Service-Oriented Exposure
+
+Business capabilities are exposed through Enterprise Services.
+
+---
+
+## Platform Independence
+
+Enterprise Platforms consume Domain Services.
+
+Platforms do not redefine Domain behaviour.
+
+---
+
+## Independent Evolution
+
+Domains should evolve independently while preserving integration contracts.
+
+---
+
+# Domain Relationships
+
+The following simplified flow illustrates how Enterprise Domains collaborate.
+
+```text
+Programme
+
+↓
+
+Registration
+
+↓
+
+Payment
+
+↓
+
+Learning
+
+↓
+
+Assessment
+
+↓
+
+Credential
+
+↓
+
+Credential Asset
+
+↓
+
+Recognition
+
+↓
+
+Verification
+
+↓
+
+Executive Services
+```
+
+This represents business progression rather than technical implementation.
+
+---
+
+# Relationship with Platform Architecture
+
+Domain Architecture answers:
+
+> **Who owns the business capability?**
+
+Platform Architecture answers:
+
+> **Which application delivers the experience?**
+
+Example:
+
+```text
+Student Portal
+
+↓
+
+CredentialService
+
+↓
+
+Credential Domain
+
+↓
+
+Credential Registry
+```
+
+The Student Portal provides the experience.
+
+The Credential Domain owns the business rules.
+
+---
+
+# Relationship with Integration Architecture
+
+Integration Architecture defines:
+
+- Service communication
+- Event flows
+- API boundaries
+- Platform interactions
+
+Enterprise Domains remain the authoritative business owners.
+
+---
+
+# Relationship with Runtime Architecture
+
+Runtime Architecture defines:
+
+- Deployment
+- Execution
+- Runtime orchestration
+- Infrastructure
+
+Runtime supports Domains.
+
+Runtime does not replace Domains.
+
+---
+
+# Relationship with Security Architecture
+
+Security Architecture protects:
+
+- Domain information
+- Domain Services
+- Enterprise Registries
+- Administrative operations
+
+Security is applied consistently across all Enterprise Domains.
+
+---
+
+# Future Enterprise Domains
+
+The architecture supports future Domains including:
+
+- Membership
+- Alumni
+- Corporate Learning
+- Research
+- Events
+- Community
+- Publications
+- Partnerships
+- Grants
+- AI Governance
+
+Future Domains shall inherit the Domain Architecture Standard.
+
+---
+
+# Current Architecture Status
+
+| Area | Status |
+|------|--------|
+| Programme | ✅ Complete |
+| Registration | ✅ Complete |
+| Payment | ✅ Complete |
+| Learning | ✅ Complete |
+| Assessment | ✅ Complete |
+| Credential | ✅ Complete |
+| Credential Asset | ✅ Complete |
+| Recognition | ✅ Complete |
+| Verification | ✅ Complete |
+| Executive Services | ✅ Complete |
+
+The Enterprise Domain Architecture is fully documented.
+
+---
+
+# Related Documentation
+
+- Domain Architecture Standard
+- Platform Architecture
+- Enterprise Services
+- Integration Architecture
+- Runtime Architecture
+- Security Architecture
+- Enterprise System Context
+
+---
+
+# Summary
+
+The Enterprise Domain Architecture is the business foundation of the Agile AI University ecosystem.
+
+It defines business ownership, enterprise information, lifecycle, governance, Enterprise Services, and institutional authority for every major business capability.
+
+By separating business capabilities into independently governed Enterprise Domains, the architecture provides a scalable, maintainable, and future-ready foundation for every current and future platform within the Agile AI University ecosystem.
+
+---
+
+**Status:** ACTIVE
+
+**Architecture Status:** LOCKED
+
+---
+
+*"Platforms may evolve. Technologies may change. Enterprise Domains preserve the business."*

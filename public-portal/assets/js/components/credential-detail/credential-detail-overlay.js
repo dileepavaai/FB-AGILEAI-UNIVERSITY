@@ -79,6 +79,8 @@
 
         activeAssetType: null,
 
+        activeAsset: null,
+
         isOpen: false,
 
         initialized: false,
@@ -362,6 +364,9 @@
 
             this.activeAssetType =
                 null;
+            
+            this.activeAsset =
+                null;
 
             if (!this.isOpen) {
 
@@ -394,6 +399,9 @@
             this.activeAssetType =
                 null;
 
+            this.activeAsset =
+                null;
+
             this.renderDetailsView();
 
         },
@@ -414,7 +422,7 @@
            ASSET PREVIEW VIEW
         ================================================== */
 
-        showAssetPreview(assetType) {
+        async showAssetPreview(assetType) {
 
             if (!this.activeCredential) {
 
@@ -437,8 +445,23 @@
             }
 
             if (
+                !window.CredentialAssetService ||
+                typeof window.CredentialAssetService.getAssetByType !==
+                    "function"
+            ) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] CredentialAssetService is unavailable."
+                );
+
+                return;
+
+            }
+
+            if (
                 !window.CredentialAssetPreview ||
-                typeof window.CredentialAssetPreview.render !== "function"
+                typeof window.CredentialAssetPreview.render !==
+                    "function"
             ) {
 
                 console.warn(
@@ -449,25 +472,209 @@
 
             }
 
+            const firestoreAssetType =
+                this.resolveFirestoreAssetType(
+                    assetType
+                );
+
+            if (!firestoreAssetType) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] Unsupported asset type:",
+                    assetType
+                );
+
+                return;
+
+            }
+
+            const credentialId =
+                String(
+                    this.activeCredential.credentialId ||
+                    this.activeCredential.credential_id ||
+                    this.activeCredential.id ||
+                    ""
+                ).trim();
+
+            if (!credentialId) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] Credential ID is unavailable for asset preview."
+                );
+
+                return;
+
+            }
+
+            /*
+             * Capture the current request context.
+             * This prevents a delayed response from rendering
+             * after the learner closes the overlay, returns to
+             * details, or opens another credential.
+             */
+
+            const requestedCredential =
+                this.activeCredential;
+
+            const requestedAssetType =
+                assetType;
+
             this.activeView =
                 this.views.ASSET_PREVIEW;
 
             this.activeAssetType =
                 assetType;
 
+            this.activeAsset =
+                null;
+
             this.setTitle(
-                this.resolveAssetTitle(assetType)
+                this.resolveAssetTitle(
+                    assetType
+                )
             );
 
-            this.body.innerHTML =
-                window.CredentialAssetPreview.render(
-                    this.activeCredential,
-                    assetType
-                );
+            this.body.innerHTML = `
+
+                <div
+                    class="credential-asset-preview-loading"
+                    role="status"
+                    aria-live="polite">
+
+                    <p>
+
+                        Loading published credential asset…
+
+                    </p>
+
+                </div>
+
+            `;
 
             this.renderAssetPreviewFooter();
 
             this.scrollToTop();
+
+            try {
+
+                const asset =
+                    await window.CredentialAssetService
+                        .getAssetByType(
+                            credentialId,
+                            firestoreAssetType
+                        );
+
+                /*
+                 * Ignore a stale asynchronous response.
+                 */
+
+                if (
+                    !this.isOpen ||
+                    this.activeView !==
+                        this.views.ASSET_PREVIEW ||
+                    this.activeCredential !==
+                        requestedCredential ||
+                    this.activeAssetType !==
+                        requestedAssetType
+                ) {
+
+                    return;
+
+                }
+
+                this.activeAsset =
+                    asset || null;
+
+                if (!this.activeAsset) {
+
+                    console.warn(
+                        "[CredentialDetailOverlay] Published credential asset was not found:",
+                        {
+                            credentialId,
+                            assetType:
+                                firestoreAssetType
+                        }
+                    );
+
+                }
+
+                this.body.innerHTML =
+                    window.CredentialAssetPreview.render(
+                        this.activeCredential,
+                        assetType,
+                        this.activeAsset
+                    );
+
+                this.renderAssetPreviewFooter();
+
+                this.scrollToTop();
+
+            }
+            catch (error) {
+
+                if (
+                    !this.isOpen ||
+                    this.activeView !==
+                        this.views.ASSET_PREVIEW ||
+                    this.activeCredential !==
+                        requestedCredential ||
+                    this.activeAssetType !==
+                        requestedAssetType
+                ) {
+
+                    return;
+
+                }
+
+                this.activeAsset =
+                    null;
+
+                console.error(
+                    "[CredentialDetailOverlay] Published asset loading failed:",
+                    {
+                        credentialId,
+                        assetType:
+                            firestoreAssetType,
+                        error
+                    }
+                );
+
+                this.body.innerHTML = `
+
+                    <div
+                        class="credential-asset-preview-error"
+                        role="alert">
+
+                        <h3>
+
+                            Asset unavailable
+
+                        </h3>
+
+                        <p>
+
+                            The published credential asset could not be loaded.
+                            Please try again.
+
+                        </p>
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary js-back-to-credential-details">
+
+                            ← Back to Credential Details
+
+                        </button>
+
+                    </div>
+
+                `;
+
+                this.renderAssetPreviewFooter();
+
+                this.scrollToTop();
+
+            }
 
         },
 
@@ -670,7 +877,8 @@
 
             if (
                 !window.CredentialAssetPreview ||
-                typeof window.CredentialAssetPreview.download !== "function"
+                typeof window.CredentialAssetPreview.download !==
+                    "function"
             ) {
 
                 console.warn(
@@ -681,9 +889,20 @@
 
             }
 
+            if (!this.activeAsset) {
+
+                console.warn(
+                    "[CredentialDetailOverlay] No published asset is available for download."
+                );
+
+                return;
+
+            }
+
             window.CredentialAssetPreview.download(
                 this.activeCredential,
-                assetType || this.activeAssetType
+                assetType || this.activeAssetType,
+                this.activeAsset
             );
 
         },
@@ -793,6 +1012,9 @@
             this.activeAssetType =
                 null;
 
+            this.activeAsset =
+                null;
+
             this.setTitle(
                 "Credential Details"
             );
@@ -867,6 +1089,28 @@
 
             this.body.scrollTop =
                 0;
+
+        },
+
+        resolveFirestoreAssetType(assetType) {
+
+            const assetTypes = {
+
+                "university-certificate":
+                    "university_certificate",
+
+                "trainer-certificate":
+                    "trainer_certificate",
+
+                "digital-badge":
+                    "digital_badge",
+
+                "recognition-asset":
+                    "recognition_asset"
+
+            };
+
+            return assetTypes[assetType] || "";
 
         },
 

@@ -1,0 +1,89 @@
+rules_version = '2';
+
+service firebase.storage {
+
+  match /b/{bucket}/o {
+
+    /* =====================================================
+       AGILE AI UNIVERSITY
+       CLOUD STORAGE SECURITY RULES
+
+       Version : 1.0.0
+       Status  : ACTIVE
+
+       Security Model
+       -----------------------------------------------------
+       • Firebase Authentication is required
+       • Admin Portal is the credential asset publisher
+       • Student Portal is a credential asset consumer only
+       • Credential assets are stored under credential-assets
+       • Bootstrap administrators may upload and replace assets
+       • Authenticated users may read published asset files
+       • Client-side deletion is prohibited
+       • All unspecified Storage access is denied
+    ===================================================== */
+
+
+    /* =====================================================
+       AUTHENTICATION HELPERS
+    ===================================================== */
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrapAdmin() {
+      return isSignedIn() &&
+        request.auth.token.email in [
+          "dileep@agileai.university",
+          "dileepav@gmail.com",
+          "laau.aaiu@gmail.com"
+        ];
+    }
+
+
+    /* =====================================================
+       CREDENTIAL ASSETS
+    ===================================================== */
+
+    match /credential-assets/{credentialId}/{allPaths=**} {
+
+      /*
+       * Authenticated learners and administrators may read
+       * generated credential assets.
+       *
+       * Firestore credential_assets rules remain responsible
+       * for governing which asset metadata a learner can discover.
+       */
+
+      allow read: if isSignedIn();
+
+      /*
+       * Only approved bootstrap administrators may upload or
+       * replace credential assets through the Admin Portal.
+       */
+
+      allow create, update: if
+        isBootstrapAdmin();
+
+      /*
+       * Credential asset deletion is intentionally disabled.
+       * Asset retirement should be handled through governed
+       * metadata and versioning rather than client deletion.
+       */
+
+      allow delete: if false;
+    }
+
+
+    /* =====================================================
+       DEFAULT DENY
+    ===================================================== */
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+
+  }
+
+}

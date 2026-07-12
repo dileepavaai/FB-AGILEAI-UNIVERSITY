@@ -29,7 +29,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-assessment",
       "public": "public-assessment",
@@ -59,7 +58,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-education",
       "public": "public-edu",
@@ -89,7 +87,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-learn",
       "public": "public-learn",
@@ -119,7 +116,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-certs",
       "public": "public-certs",
@@ -149,7 +145,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-spec",
       "public": "public-spec",
@@ -179,7 +174,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-academy",
       "public": "public-academy",
@@ -211,7 +205,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-portal",
       "public": "public-portal",
@@ -241,7 +234,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-admin",
       "public": "public-admin",
@@ -271,7 +263,6 @@
         }
       ]
     },
-
     {
       "target": "agileai-lab",
       "public": "public-lab",
@@ -306,6 +297,10 @@
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+
+  "storage": {
+    "rules": "storage.rules"
   },
 
   "functions": [

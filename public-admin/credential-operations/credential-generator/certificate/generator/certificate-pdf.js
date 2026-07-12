@@ -6,7 +6,7 @@ Credential Operations Suite
 Certificate Generator
 PDF Export Engine
 
-Version: 1.3.2
+Version: 1.3.3
 
 Purpose:
 - Generate PDF from Certificate Template
@@ -15,6 +15,7 @@ Purpose:
 - Publish asset metadata to credential_assets
 - Preserve local PDF download
 - Emit Storage initialization diagnostics for upload troubleshooting
+- Verify the active Firebase Storage endpoint before upload
 
 Governance:
 - Admin Portal publishes generated assets
@@ -24,8 +25,16 @@ Governance:
 - Generated assets must be uploaded before publication
 - Published asset records must contain real Storage URLs
 - Diagnostic logging must not modify credential or asset data
+- Storage uploads must use the production Storage bucket
 
 Change History:
+
+v1.3.3
+- Updated to consume Firebase Core v3.0.2
+- Logs both the configured Storage bucket and the active Storage endpoint
+- Logs the Firebase Storage host before upload
+- Confirms the resolved credential asset path before upload
+- Preserves existing PDF generation, upload, publication, and local download behaviour
 
 v1.3.2
 - Adds Firebase Storage initialization diagnostics
@@ -47,7 +56,7 @@ v1.3.1
 
 import {
     storage
-} from "../../../../assets/js/core.js?v=3.0.1";
+} from "../../../../assets/js/core.js?v=3.0.2";
 
 import {
     ref,
@@ -96,7 +105,9 @@ window.generateCertificatePdf = async function () {
 
         }
 
-        console.log("certificate.generate.started");
+        console.log(
+            "certificate.generate.started"
+        );
 
         const canvas =
             await html2canvas(
@@ -109,7 +120,9 @@ window.generateCertificatePdf = async function () {
             );
 
         const imageData =
-            canvas.toDataURL("image/png");
+            canvas.toDataURL(
+                "image/png"
+            );
 
         const {
             jsPDF
@@ -131,7 +144,9 @@ window.generateCertificatePdf = async function () {
             210
         );
 
-        console.log("certificate.generate.completed");
+        console.log(
+            "certificate.generate.completed"
+        );
 
         const credentialId =
             credential.credential_id;
@@ -148,10 +163,18 @@ window.generateCertificatePdf = async function () {
         console.info(
             "[CertificatePdf] Storage diagnostics:",
             {
-                bucket:
-                    storage?.app?.options?.storageBucket || "missing",
+                configuredBucket:
+                    storage?.app?.options?.storageBucket ||
+                    "missing",
+
                 projectId:
-                    storage?.app?.options?.projectId || "missing",
+                    storage?.app?.options?.projectId ||
+                    "missing",
+
+                storageHost:
+                    storage?._location?.bucket ||
+                    "unavailable",
+
                 storagePath
             }
         );
@@ -166,26 +189,55 @@ window.generateCertificatePdf = async function () {
             storageRef,
             pdfBlob,
             {
-                contentType: "application/pdf"
+                contentType:
+                    "application/pdf"
             }
         );
 
+        console.info(
+            "[CertificatePdf] Upload completed."
+        );
+
         const downloadUrl =
-            await getDownloadURL(storageRef);
+            await getDownloadURL(
+                storageRef
+            );
+
+        console.info(
+            "[CertificatePdf] Download URL generated:",
+            downloadUrl
+        );
 
         await window.CredentialAssetPublisher
             .publishUniversityCertificate({
-                credential_id: credentialId,
-                download_url: downloadUrl,
-                preview_url: downloadUrl,
-                storage_path: storagePath,
-                file_name: fileName,
-                version: 1
+
+                credential_id:
+                    credentialId,
+
+                download_url:
+                    downloadUrl,
+
+                preview_url:
+                    downloadUrl,
+
+                storage_path:
+                    storagePath,
+
+                file_name:
+                    fileName,
+
+                version:
+                    1
+
             });
 
-        pdf.save(fileName);
+        pdf.save(
+            fileName
+        );
 
-        console.log("certificate.download.completed");
+        console.log(
+            "certificate.download.completed"
+        );
 
         alert(
             "University Certificate generated and published successfully."

@@ -2,15 +2,18 @@
 Agile AI University
 Certificate Generator Controller
 
-Version: 1.4.1
-Phase: Admin Credential Asset Publisher Sprint
+v1.4.3
+- Adds authoritative programme title resolution for certificate display
+- Displays “Agile Outcome Practitioner (AOP)” for legacy AOP credentials
+- Preserves programme codes while rendering human-readable certificate titles
+- Prevents certificate titles from depending on incomplete registry programme_name fields
 
 Purpose:
 - Search Credential Records
 - Load Registry Data
 - Populate Read-Only Metadata Fields
 - Render Certificate Preview
-- Apply Recognition Display Governance
+- Apply Credential-Accurate Display Governance
 - Expose Selected Credential for Admin Asset Publishing
 
 Governance:
@@ -18,7 +21,7 @@ Governance:
 - No Registry Writes
 - No Certificate Generation
 - No PDF Generation
-- AOP → AIPA Recognition Display Enforcement
+- Credential-Accurate Display Enforcement
 - Student Portal Does Not Generate Assets
 
 Data Source:
@@ -28,6 +31,14 @@ Template Authority:
 certificate-template.html
 
 Change History:
+
+v1.4.2
+- Removes legacy AOP → AIPA certificate title override
+- Renders the authoritative credential programme from the credential registry
+- Ensures certificate previews reflect the actual credential being generated
+- Aligns certificate generation with producer–consumer architecture
+- Prevents upgrade and recognition logic from affecting certificate rendering
+
 v1.4.1
 - Supports dynamically loaded Admin modules
 - Initializes immediately when DOM is already ready
@@ -920,20 +931,43 @@ v1.4.1
 
     function getDisplayCredentialTitle(record) {
 
-      if (
-        record.program_code ===
-        "AOP"
-      ) {
-
-        return (
-          "Artificial Intelligence Professional Agilist (AIPA)"
-        );
-
+      if (!record) {
+        return "-";
       }
 
+      const programCode =
+        String(
+          record.program_code ||
+          record.credential_type ||
+          ""
+        )
+          .trim()
+          .toUpperCase();
+
+      const programTitles = {
+
+        AOP:
+          "Agile Outcome Practitioner (AOP)",
+
+        AIPA:
+          "Artificial Intelligence Professional Agilist (AIPA)",
+
+        AAIA:
+          "Agile AI Master Agilist (AAIA)",
+
+        AAIP:
+          "Agentic AI Professional (AAIP)",
+
+        AIAL:
+          "Agile AI Leadership (AIAL)"
+
+      };
+
       return (
-        record.current_recognition ||
+        programTitles[programCode] ||
+        record.program_name ||
         record.credential_type ||
+        record.program_code ||
         "-"
       );
 
@@ -1089,7 +1123,7 @@ v1.4.1
     loadRegistry();
 
     console.info(
-      "[CertificateGenerator] Controller v1.4.1 loaded."
+      "[CertificateGenerator] Controller v1.4.3 loaded."
     );
 
   }

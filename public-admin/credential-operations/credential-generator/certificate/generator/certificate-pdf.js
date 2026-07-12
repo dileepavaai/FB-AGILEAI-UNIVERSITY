@@ -6,7 +6,7 @@ Credential Operations Suite
 Certificate Generator
 PDF Export Engine
 
-Version: 1.3.1
+Version: 1.3.2
 
 Purpose:
 - Generate PDF from Certificate Template
@@ -14,16 +14,40 @@ Purpose:
 - Upload generated PDF to Firebase Storage
 - Publish asset metadata to credential_assets
 - Preserve local PDF download
+- Emit Storage initialization diagnostics for upload troubleshooting
 
 Governance:
 - Admin Portal publishes generated assets
 - Student Portal only consumes published assets
 - credentials collection is the source of truth
 - credential_assets is the asset registry only
+- Generated assets must be uploaded before publication
+- Published asset records must contain real Storage URLs
+- Diagnostic logging must not modify credential or asset data
+
+Change History:
+
+v1.3.2
+- Adds Firebase Storage initialization diagnostics
+- Logs the active Storage bucket before upload
+- Logs the active Firebase project ID before upload
+- Logs the resolved credential asset storage path
+- Supports troubleshooting of Admin credential asset publishing failures
+- Preserves existing PDF generation, upload, publication, and local download behaviour
+
+v1.3.1
+- Generates an ISO A4 landscape certificate PDF
+- Converts the certificate template into a PDF asset
+- Uploads the generated PDF to Firebase Storage
+- Retrieves the Firebase Storage download URL
+- Publishes certificate metadata to credential_assets
+- Preserves local certificate PDF download
 
 */
 
-import { storage } from "../../../../assets/js/core.js";
+import {
+    storage
+} from "../../../../assets/js/core.js?v=3.0.1";
 
 import {
     ref,
@@ -120,6 +144,17 @@ window.generateCertificatePdf = async function () {
 
         const pdfBlob =
             pdf.output("blob");
+
+        console.info(
+            "[CertificatePdf] Storage diagnostics:",
+            {
+                bucket:
+                    storage?.app?.options?.storageBucket || "missing",
+                projectId:
+                    storage?.app?.options?.projectId || "missing",
+                storagePath
+            }
+        );
 
         const storageRef =
             ref(

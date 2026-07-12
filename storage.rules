@@ -33,11 +33,12 @@ service firebase.storage {
     }
 
     function isBootstrapAdmin() {
-      return isSignedIn() &&
+    return isSignedIn() &&
+        request.auth.token.email != null &&
         request.auth.token.email in [
-          "dileep@agileai.university",
-          "dileepav@gmail.com",
-          "laau.aaiu@gmail.com"
+        "dileep@agileai.university",
+        "dileepav@gmail.com",
+        "laau.aaiu@gmail.com"
         ];
     }
 

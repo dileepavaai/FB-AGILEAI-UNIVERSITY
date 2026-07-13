@@ -1,23 +1,44 @@
 ############################
-# MkDocs Build Output (ONLY build output)
+# Agile AI University
+# Repository Root .gitignore
+#
+# Purpose
+# - Protect credentials and secrets
+# - Exclude local runtime artefacts
+# - Exclude generated migration reports
+# - Preserve deployable Firebase configuration
 ############################
-site/
+
 
 ############################
-# OS Files
+# MkDocs Build Output
 ############################
+
+site/
+
+
+############################
+# Operating System Files
+############################
+
 .DS_Store
 Thumbs.db
+Desktop.ini
+
 
 ############################
 # Environment Files
 ############################
+
 .env
 .env.*
+!.env.example
+
 
 ############################
 # Logs
 ############################
+
 logs/
 *.log
 npm-debug.log*
@@ -26,88 +47,197 @@ yarn-error.log*
 firebase-debug.log*
 firebase-debug.*.log*
 
+
 ############################
-# Firebase Cache (STRICTLY LOCAL)
+# Firebase Local Cache
 ############################
+
 .firebase/
 .firebase/**
 
-############################
-# Firebase Config (KEEP THIS TRACKED)
-############################
-# IMPORTANT: Do NOT ignore this file
-# It maps your project and prevents deployment errors
-# .firebaserc
 
 ############################
-# 🔴 CRITICAL: Service Account Keys (BLOCK ALL)
+# Firebase Configuration
+#
+# Keep these tracked:
+# - .firebaserc
+# - firebase.json
+# - firestore.rules
+# - firestore.indexes.json
+# - storage.rules
 ############################
+
+# Do not add .firebaserc here.
+# Do not add firebase.json here.
+
+
+############################
+# Critical Secrets
+# Service Account Credentials
+############################
+
+service-account.json
+**/service-account.json
+
 serviceAccountKey.json
 **/serviceAccountKey.json
+
+*-service-account.json
+**/*-service-account.json
+
 *-firebase-adminsdk-*.json
 **/*-firebase-adminsdk-*.json
 
+*firebase-adminsdk*.json
+**/*firebase-adminsdk*.json
+
+*gcp-service-account*.json
+**/*gcp-service-account*.json
+
+*google-credentials*.json
+**/*google-credentials*.json
+
+*application-credentials*.json
+**/*application-credentials*.json
+
+*credential-key*.json
+**/*credential-key*.json
+
+*aau-migration-key*.json
+**/*aau-migration-key*.json
+
+
 ############################
-# Other Secrets
+# Private Keys and Certificates
 ############################
-service-account.json
-**/service-account.json
+
 *.pem
 *.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Ignore private certificate material.
+# Public certificates required by the application
+# should be explicitly force-added only after review.
 *.crt
+
+
+############################
+# Migration Reports
+############################
+
+aau-backend/scripts/migration-reports/
+**/scripts/migration-reports/
+
+migration-reports/
+**/migration-reports/
+
+*-migration-report.json
+*-migration-report.csv
+
+*-dry-run-*.json
+*-dry-run-*.csv
+
+*-apply-*.json
+*-apply-*.csv
+
 
 ############################
 # Runtime Data
 ############################
+
 pids/
 *.pid
 *.seed
 *.pid.lock
 
+
 ############################
-# Coverage & Testing
+# Coverage and Testing
 ############################
+
 coverage/
 .nyc_output/
 lib-cov/
+test-results/
+playwright-report/
+
 
 ############################
-# Build / Tooling
+# Build and Tooling
 ############################
+
 .grunt/
 bower_components/
 .lock-wscript
 build/Release/
+dist/
+tmp/
+temp/
+
 
 ############################
 # Dependency Directories
 ############################
+
 node_modules/
+**/node_modules/
+
 
 ############################
-# Optional Caches
+# Package Manager Caches
 ############################
+
 .npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
 .eslintcache
 .node_repl_history
+
 
 ############################
 # Package Archives
 ############################
+
 *.tgz
+
 
 ############################
 # Yarn
 ############################
+
 .yarn-integrity
 
-############################
-# Dataconnect Generated Files
-############################
-.dataconnect/
 
 ############################
-# Workspace / Editor Files
+# Data Connect Generated Files
 ############################
+
+.dataconnect/
+
+
+############################
+# Workspace and Editor Files
+############################
+
 AgileAI-University.code-workspace
+*.code-workspace
+
 .vscode/
+.idea/
+
+
+############################
+# Local Backup and Temporary Files
+############################
+
+*.bak
+*.backup
+*.tmp
+*.temp
+*.swp
+*.swo
+*~

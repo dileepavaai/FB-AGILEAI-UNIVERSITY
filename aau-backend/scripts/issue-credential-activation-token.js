@@ -753,16 +753,21 @@ async function executeApply({
     }
 
     /*
-     * Generate values once, outside the transaction callback.
-     * Firestore may execute the callback more than once.
+     * Generate secret-bearing values once and outside the
+     * transaction callback.
+     *
+     * Firestore may execute a transaction callback more than
+     * once, so tokens must never be generated inside it.
      */
     const plainToken = generateActivationToken();
     const tokenHash = hashActivationToken(plainToken);
     const correlationId = generateCorrelationId();
 
     const now = new Date();
+
     const expiresAtDate = new Date(
-        now.getTime() + args.expiresHours * 60 * 60 * 1000
+        now.getTime() +
+        args.expiresHours * 60 * 60 * 1000
     );
 
     const activationRef = db
@@ -780,7 +785,7 @@ async function executeApply({
     const transactionResult = await db.runTransaction(
         async (transaction) => {
             /*
-             * All transaction reads occur before transaction writes.
+             * All transaction reads must occur before writes.
              */
 
             const latestCredentialSnapshot =
@@ -793,7 +798,9 @@ async function executeApply({
             }
 
             const latestCredentialResult =
-                validateCredential(latestCredentialSnapshot);
+                validateCredential(
+                    latestCredentialSnapshot
+                );
 
             if (!latestCredentialResult.valid) {
                 throw new Error(
@@ -803,139 +810,235 @@ async function executeApply({
             }
 
             const activeTokenQuery = db
-                .collection(CONFIG.activationTokensCollection)
+                .collection(
+                    CONFIG.activationTokensCollection
+                )
                 .where(
                     "credential_id",
                     "==",
                     credentialResult.credentialId
                 )
-                .where("status", "==", "issued")
+                .where(
+                    "status",
+                    "==",
+                    "issued"
+                )
                 .limit(10);
 
             const activeTokenSnapshot =
-                await transaction.get(activeTokenQuery);
+                await transaction.get(
+                    activeTokenQuery
+                );
 
-            const serverTimestamp = FieldValue.serverTimestamp();
+            const serverTimestamp =
+                FieldValue.serverTimestamp();
 
             /*
-             * Revoke any earlier issued tokens for this credential.
-             * This prevents multiple simultaneously valid invitations.
+             * Revoke any earlier issued tokens for this
+             * credential.
+             *
+             * This ensures that only the newest invitation
+             * remains valid.
              */
-            for (const activeTokenDoc of activeTokenSnapshot.docs) {
-                transaction.update(activeTokenDoc.ref, {
-                    status: "revoked",
-                    revoked_at: serverTimestamp,
-                    revoked_by: serviceAccountEmail ||
-                        "credential-activation-script",
-                    revoke_reason: "superseded_by_new_token",
-                    updated_at: serverTimestamp,
-                    version: CONFIG.schemaVersion
-                });
+            for (
+                const activeTokenDocument
+                of activeTokenSnapshot.docs
+            ) {
+                transaction.update(
+                    activeTokenDocument.ref,
+                    {
+                        status: "revoked",
+
+                        revoked_at:
+                            serverTimestamp,
+
+                        revoked_by:
+                            serviceAccountEmail ||
+                            "credential-activation-script",
+
+                        revoke_reason:
+                            "superseded_by_new_token",
+
+                        updated_at:
+                            serverTimestamp,
+
+                        version:
+                            CONFIG.schemaVersion
+                    }
+                );
             }
 
-            transaction.create(activationRef, {
-                credential_id:
-                    credentialResult.credentialId,
+            /*
+             * Store only the token hash.
+             *
+             * The plain token and complete activation URL
+             * must never be persisted.
+             */
+            transaction.create(
+                activationRef,
+                {
+                    credential_id:
+                        credentialResult.credentialId,
 
-                credential_document_id:
-                    credentialResult.credentialDocumentId,
+                    credential_document_id:
+                        credentialResult
+                            .credentialDocumentId,
 
-                email_normalized:
-                    credentialResult.emailNormalized,
+                    email_normalized:
+                        credentialResult.emailNormalized,
 
-                token_hash: tokenHash,
-                token_hash_algorithm:
-                    CONFIG.tokenHashAlgorithm,
+                    token_hash:
+                        tokenHash,
 
-                status: "issued",
-                expires_at: Timestamp.fromDate(expiresAtDate),
+                    token_hash_algorithm:
+                        CONFIG.tokenHashAlgorithm,
 
-                created_at: serverTimestamp,
-                created_by:
-                    serviceAccountEmail ||
-                    "credential-activation-script",
-
-                updated_at: serverTimestamp,
-
-                consumed_at: null,
-                consumed_by_uid: null,
-
-                revoked_at: null,
-                revoked_by: null,
-                revoke_reason: null,
-
-                blocked_at: null,
-                blocked_reason: null,
-
-                attempt_count: 0,
-                last_attempt_at: null,
-
-                source: args.source,
-                campaign_id: args.campaignId,
-                correlation_id: correlationId,
-                version: CONFIG.schemaVersion,
-
-                metadata: {
-                    programme_code:
-                        credentialResult.programCode,
-
-                    invitation_delivery:
-                        "manual_google_workspace",
-
-                    portal_url: args.portalUrl,
-
-                    prior_active_tokens_revoked:
-                        activeTokenSnapshot.size
-                }
-            });
-
-            transaction.create(auditRef, {
-                event_type: "activation_token_issued",
-
-                credential_id:
-                    credentialResult.credentialId,
-
-                credential_document_id:
-                    credentialResult.credentialDocumentId,
-
-                learner_uid: null,
-
-                email_normalized:
-                    credentialResult.emailNormalized,
-
-                actor_type: "service",
-
-                actor_id:
-                    serviceAccountEmail ||
-                    "credential-activation-script",
-
-                source: args.source,
-                result: "success",
-                reason: null,
-
-                created_at: serverTimestamp,
-
-                correlation_id: correlationId,
-                request_id: null,
-                activation_token_id: activationRef.id,
-
-                version: CONFIG.schemaVersion,
-
-                metadata: {
-                    campaign_id: args.campaignId,
-                    programme_code:
-                        credentialResult.programCode,
+                    status:
+                        "issued",
 
                     expires_at:
-                        Timestamp.fromDate(expiresAtDate),
+                        Timestamp.fromDate(
+                            expiresAtDate
+                        ),
 
-                    invitation_delivery:
-                        "manual_google_workspace",
+                    created_at:
+                        serverTimestamp,
 
-                    prior_active_tokens_revoked:
-                        activeTokenSnapshot.size
+                    created_by:
+                        serviceAccountEmail ||
+                        "credential-activation-script",
+
+                    updated_at:
+                        serverTimestamp,
+
+                    consumed_at:
+                        null,
+
+                    consumed_by_uid:
+                        null,
+
+                    revoked_at:
+                        null,
+
+                    revoked_by:
+                        null,
+
+                    revoke_reason:
+                        null,
+
+                    blocked_at:
+                        null,
+
+                    blocked_reason:
+                        null,
+
+                    attempt_count:
+                        0,
+
+                    last_attempt_at:
+                        null,
+
+                    source:
+                        args.source,
+
+                    campaign_id:
+                        args.campaignId,
+
+                    correlation_id:
+                        correlationId,
+
+                    version:
+                        CONFIG.schemaVersion,
+
+                    metadata: {
+                        programme_code:
+                            credentialResult.programCode,
+
+                        invitation_delivery:
+                            "manual_google_workspace",
+
+                        portal_url:
+                            args.portalUrl,
+
+                        prior_active_tokens_revoked:
+                            activeTokenSnapshot.size
+                    }
                 }
-            });
+            );
+
+            /*
+             * Create the permanent token-issuance audit event.
+             */
+            transaction.create(
+                auditRef,
+                {
+                    event_type:
+                        "activation_token_issued",
+
+                    credential_id:
+                        credentialResult.credentialId,
+
+                    credential_document_id:
+                        credentialResult
+                            .credentialDocumentId,
+
+                    learner_uid:
+                        null,
+
+                    email_normalized:
+                        credentialResult.emailNormalized,
+
+                    actor_type:
+                        "service",
+
+                    actor_id:
+                        serviceAccountEmail ||
+                        "credential-activation-script",
+
+                    source:
+                        args.source,
+
+                    result:
+                        "success",
+
+                    reason:
+                        null,
+
+                    created_at:
+                        serverTimestamp,
+
+                    correlation_id:
+                        correlationId,
+
+                    request_id:
+                        null,
+
+                    activation_token_id:
+                        activationRef.id,
+
+                    version:
+                        CONFIG.schemaVersion,
+
+                    metadata: {
+                        campaign_id:
+                            args.campaignId,
+
+                        programme_code:
+                            credentialResult.programCode,
+
+                        expires_at:
+                            Timestamp.fromDate(
+                                expiresAtDate
+                            ),
+
+                        invitation_delivery:
+                            "manual_google_workspace",
+
+                        prior_active_tokens_revoked:
+                            activeTokenSnapshot.size
+                    }
+                }
+            );
 
             return {
                 priorActiveTokensRevoked:
@@ -944,93 +1047,194 @@ async function executeApply({
         }
     );
 
+    /*
+     * Build the secret-bearing URL only after the Firestore
+     * transaction has completed successfully.
+     */
     const activationUrl = buildActivationUrl(
         args.portalUrl,
         plainToken
     );
 
+    /*
+     * The report deliberately excludes:
+     *
+     * - plainToken
+     * - activationUrl
+     * - tokenHash
+     */
     const report = {
-        script: "issue-credential-activation-token.js",
-        scriptVersion: "1.0.0",
-        mode: "apply",
-        result: "issued",
-        generatedAt: new Date().toISOString(),
+        script:
+            "issue-credential-activation-token.js",
+
+        scriptVersion:
+            "1.0.0",
+
+        mode:
+            "apply",
+
+        result:
+            "issued",
+
+        generatedAt:
+            new Date().toISOString(),
 
         projectId,
-        expectedProjectId: CONFIG.expectedProjectId,
-        serviceAccountEmail:
-            serviceAccountEmail || "application-default-credentials",
 
-        credentialId: credentialResult.credentialId,
+        expectedProjectId:
+            CONFIG.expectedProjectId,
+
+        serviceAccountEmail:
+            serviceAccountEmail ||
+            "application-default-credentials",
+
+        credentialId:
+            credentialResult.credentialId,
+
         credentialDocumentId:
             credentialResult.credentialDocumentId,
-        programCode: credentialResult.programCode,
-        emailMasked: credentialResult.emailMasked,
 
-        activationRecordId: activationRef.id,
-        auditEventId: auditRef.id,
+        programCode:
+            credentialResult.programCode,
 
-        status: "issued",
-        campaignId: args.campaignId,
-        source: args.source,
-        expiresHours: args.expiresHours,
-        expiresAt: expiresAtDate.toISOString(),
+        emailMasked:
+            credentialResult.emailMasked,
+
+        activationRecordId:
+            activationRef.id,
+
+        auditEventId:
+            auditRef.id,
+
+        status:
+            "issued",
+
+        campaignId:
+            args.campaignId,
+
+        source:
+            args.source,
+
+        expiresHours:
+            args.expiresHours,
+
+        expiresAt:
+            expiresAtDate.toISOString(),
 
         priorActiveTokensRevoked:
-            transactionResult.priorActiveTokensRevoked,
+            transactionResult
+                .priorActiveTokensRevoked,
 
-        invitationDelivery: "manual_google_workspace",
+        invitationDelivery:
+            "manual_google_workspace",
 
         /*
-         * Explicit proof that secret-bearing values were excluded.
+         * Explicit proof that secret-bearing values were
+         * excluded from the generated report.
          */
-        plainTokenStoredInReport: false,
-        activationUrlStoredInReport: false,
-        tokenHashStoredInReport: false,
+        plainTokenStoredInReport:
+            false,
+
+        activationUrlStoredInReport:
+            false,
+
+        tokenHashStoredInReport:
+            false,
 
         writesPerformed:
-            2 + transactionResult.priorActiveTokensRevoked
+            2 +
+            transactionResult
+                .priorActiveTokensRevoked
     };
 
     const reportPath = writeReport(report);
 
-    printHeading("ACTIVATION TOKEN ISSUED");
+    printHeading(
+        "ACTIVATION TOKEN ISSUED"
+    );
 
-    console.log(`Project                : ${projectId}`);
     console.log(
-        `Credential             : ${credentialResult.credentialId}`
+        `Project                : ${projectId}`
     );
+
     console.log(
-        `Learner                : ${credentialResult.learnerName}`
+        `Credential             : ` +
+        `${credentialResult.credentialId}`
     );
+
     console.log(
-        `Email                  : ${credentialResult.emailMasked}`
+        `Learner                : ` +
+        `${credentialResult.learnerName}`
     );
-    console.log(`Campaign               : ${args.campaignId}`);
-    console.log(`Expires                : ${expiresAtDate.toISOString()}`);
+
+    console.log(
+        `Email                  : ` +
+        `${credentialResult.emailMasked}`
+    );
+
+    console.log(
+        `Campaign               : ` +
+        `${args.campaignId}`
+    );
+
+    console.log(
+        `Expires                : ` +
+        `${expiresAtDate.toISOString()}`
+    );
+
     console.log(
         `Previous tokens revoked: ` +
         transactionResult.priorActiveTokensRevoked
     );
-    console.log(`Activation record      : ${activationRef.id}`);
-    console.log(`Audit event            : ${auditRef.id}`);
-    console.log(`Report                 : ${reportPath}`);
+
+    console.log(
+        `Activation record      : ` +
+        `${activationRef.id}`
+    );
+
+    console.log(
+        `Audit event            : ` +
+        `${auditRef.id}`
+    );
+
+    console.log(
+        `Report                 : ${reportPath}`
+    );
 
     console.log("");
     console.log("IMPORTANT SECURITY NOTICE");
     console.log("-------------------------");
+
     console.log(
-        "The activation URL below contains a one-time secret."
+        "The plain token and activation URL below contain " +
+        "a one-time secret."
     );
+
     console.log(
-        "Copy it now into the intended learner's individual email."
+        "Copy the activation URL now into the intended " +
+        "learner's individual email."
     );
+
     console.log(
-        "Do not paste it into chat, Git, tickets, screenshots or logs."
+        "Do not paste either value into chat, Git, tickets, " +
+        "documentation, screenshots or shared logs."
     );
+
     console.log(
-        "This URL is not stored in Firestore or in the report."
+        "Neither the plain token nor the activation URL is " +
+        "stored in Firestore or in the generated report."
     );
+
+    /*
+     * Secret-bearing values are deliberately displayed only
+     * once and only after all writes and report generation
+     * have completed successfully.
+     */
+    console.log("");
+    console.log("PLAIN TOKEN — DISPLAYED ONCE");
+    console.log("----------------------------");
+    console.log(plainToken);
+    console.log("----------------------------");
 
     console.log("");
     console.log("ACTIVATION URL — DISPLAYED ONCE");
@@ -1039,13 +1243,19 @@ async function executeApply({
     console.log("--------------------------------");
 
     /*
-     * Best-effort reduction of the plain token's lifetime in this
-     * process. JavaScript strings are immutable and cannot be
-     * guaranteed to be erased from memory.
+     * JavaScript strings are immutable and cannot be reliably
+     * erased from process memory.
+     *
+     * The function therefore avoids returning, persisting or
+     * including the plain token in reports.
      */
     return {
-        activationRecordId: activationRef.id,
-        auditEventId: auditRef.id,
+        activationRecordId:
+            activationRef.id,
+
+        auditEventId:
+            auditRef.id,
+
         reportPath
     };
 }

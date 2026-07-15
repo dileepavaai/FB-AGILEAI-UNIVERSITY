@@ -3,9 +3,9 @@
    Admin Credential Generator
 
    File      : credential-asset-publisher.js
-   Version   : 1.3.0
+   Version   : 1.4.0
    Status    : ACTIVE
-   Phase     : Admin Credential Asset Publisher Sprint
+   Phase     : Credential-First Asset Publication
 
    Purpose
    ----------------------------------------------------------
@@ -21,7 +21,9 @@
    Responsibilities
    ----------------------------------------------------------
    ✓ Validate credential asset publication payload
-   ✓ Enforce learner ownership metadata
+   ✓ Enforce credential-first asset authority
+   ✓ Preserve learner ownership metadata when available
+   ✓ Support historical credentials before portal activation
    ✓ Validate published Cloud Storage URLs
    ✓ Normalize credential asset metadata
    ✓ Publish latest asset metadata to Firestore
@@ -35,6 +37,8 @@
    ✗ Generate badges
    ✗ Upload binary files
    ✗ Modify credentials collection
+   ✗ Assign learner ownership
+   ✗ Perform identity reconciliation
    ✗ Authenticate users
    ✗ Authorize administrators
    ✗ Render UI
@@ -48,12 +52,29 @@
    • credential_assets is the published asset registry
    • Cloud Storage stores binary assets
    • Firestore stores asset metadata and references
-   • learner_uid is the learner ownership boundary
+   • credential_id is the permanent asset authority
+   • learner_uid is optional ownership metadata
+   • Historical credentials may be published before activation
+   • Existing learner ownership must never be removed
+   • Identity reconciliation assigns learner_uid later
    • Only published HTTPS Cloud Storage URLs are accepted
    • No credential registry duplication
 
    Change History
    ----------------------------------------------------------
+   v1.4.0
+   • Adopted credential-first asset publication
+   • Made learner_uid optional for historical credentials
+   • Preserves an existing learner_uid during republication
+   • Prevents republication from clearing established ownership
+   • Added ownership_state metadata
+   • Added learnerUidPresent diagnostics
+   • Preserved deterministic document IDs
+   • Preserved existing public publisher API
+   • Preserved Storage URL validation
+   • Preserved certificate, trainer certificate, badge
+     and recognition publication support
+
    v1.3.0
    • Added mandatory learner_uid validation
    • Added learner ownership metadata persistence
@@ -77,13 +98,21 @@ import {
 
 import {
     doc,
+    getDoc,
     setDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
 /* ==========================================================
    CONSTANTS
 ========================================================== */
+
+const MODULE_NAME =
+    "CredentialAssetPublisher";
+
+const MODULE_VERSION =
+    "1.4.0";
 
 const COLLECTION_NAME =
     "credential_assets";
@@ -101,6 +130,7 @@ const ALLOWED_STORAGE_HOSTS =
         "firebasestorage.googleapis.com",
         "storage.googleapis.com"
     ]);
+
 
 /* ==========================================================
    CREDENTIAL ASSET PUBLISHER
@@ -142,11 +172,14 @@ const CredentialAssetPublisher = {
 
     },
 
+
     /* ======================================================
        PAYLOAD NORMALIZATION
     ====================================================== */
 
-    normalizeInputPayload(payload) {
+    normalizeInputPayload(
+        payload
+    ) {
 
         const source =
             payload || {};
@@ -159,6 +192,12 @@ const CredentialAssetPublisher = {
                     source.credentialId
                 ),
 
+            /*
+             * learner_uid is optional.
+             *
+             * Historical credentials may not have a Firebase
+             * identity until the activation journey completes.
+             */
             learner_uid:
                 this.normalizeString(
                     source.learner_uid ||
@@ -257,40 +296,51 @@ const CredentialAssetPublisher = {
 
     },
 
+
     /* ======================================================
        VALIDATION
     ====================================================== */
 
-    validatePayload(payload) {
+    validatePayload(
+        payload
+    ) {
 
-        if (!payload) {
+        if (
+            !payload
+        ) {
 
             throw new Error(
-                "[CredentialAssetPublisher] Missing payload."
+                `[${MODULE_NAME}] Missing payload.`
             );
 
         }
 
-        if (!payload.credential_id) {
+        /*
+         * credential_id is the permanent asset authority.
+         */
+        if (
+            !payload.credential_id
+        ) {
 
             throw new Error(
-                "[CredentialAssetPublisher] Missing credential_id."
+                `[${MODULE_NAME}] Missing credential_id.`
             );
 
         }
 
-        if (!payload.learner_uid) {
+        /*
+         * learner_uid is deliberately not mandatory.
+         *
+         * It may be unavailable for historical credentials
+         * until identity activation is completed.
+         */
+
+        if (
+            !payload.asset_type
+        ) {
 
             throw new Error(
-                "[CredentialAssetPublisher] Missing learner_uid."
-            );
-
-        }
-
-        if (!payload.asset_type) {
-
-            throw new Error(
-                "[CredentialAssetPublisher] Missing asset_type."
+                `[${MODULE_NAME}] Missing asset_type.`
             );
 
         }
@@ -302,7 +352,8 @@ const CredentialAssetPublisher = {
         ) {
 
             throw new Error(
-                `[CredentialAssetPublisher] Invalid asset_type: ${payload.asset_type}`
+                `[${MODULE_NAME}] Invalid asset_type: ` +
+                `${payload.asset_type}`
             );
 
         }
@@ -313,23 +364,27 @@ const CredentialAssetPublisher = {
         ) {
 
             throw new Error(
-                "[CredentialAssetPublisher] Asset status must be published."
+                `[${MODULE_NAME}] Asset status must be published.`
             );
 
         }
 
-        if (!payload.storage_path) {
+        if (
+            !payload.storage_path
+        ) {
 
             throw new Error(
-                "[CredentialAssetPublisher] Missing storage_path."
+                `[${MODULE_NAME}] Missing storage_path.`
             );
 
         }
 
-        if (!payload.download_url) {
+        if (
+            !payload.download_url
+        ) {
 
             throw new Error(
-                "[CredentialAssetPublisher] Missing download_url."
+                `[${MODULE_NAME}] Missing download_url.`
             );
 
         }
@@ -339,7 +394,9 @@ const CredentialAssetPublisher = {
             "download_url"
         );
 
-        if (payload.preview_url) {
+        if (
+            payload.preview_url
+        ) {
 
             this.validatePublishedUrl(
                 payload.preview_url,
@@ -349,6 +406,11 @@ const CredentialAssetPublisher = {
         }
 
     },
+
+
+    /* ======================================================
+       PUBLISHED URL VALIDATION
+    ====================================================== */
 
     validatePublishedUrl(
         value,
@@ -360,13 +422,17 @@ const CredentialAssetPublisher = {
         try {
 
             parsedUrl =
-                new URL(value);
+                new URL(
+                    value
+                );
 
         }
-        catch (error) {
+        catch (
+            error
+        ) {
 
             throw new Error(
-                `[CredentialAssetPublisher] ${fieldName} must be a valid absolute URL.`
+                `[${MODULE_NAME}] ${fieldName} must be a valid absolute URL.`
             );
 
         }
@@ -377,7 +443,7 @@ const CredentialAssetPublisher = {
         ) {
 
             throw new Error(
-                `[CredentialAssetPublisher] ${fieldName} must use HTTPS.`
+                `[${MODULE_NAME}] ${fieldName} must use HTTPS.`
             );
 
         }
@@ -389,44 +455,101 @@ const CredentialAssetPublisher = {
         ) {
 
             throw new Error(
-                `[CredentialAssetPublisher] ${fieldName} must be a Firebase or Google Cloud Storage URL. Received host: ${parsedUrl.hostname}`
+                `[${MODULE_NAME}] ${fieldName} must be a ` +
+                `Firebase or Google Cloud Storage URL. ` +
+                `Received host: ${parsedUrl.hostname}`
             );
 
         }
 
     },
 
+
+    /* ======================================================
+       EXISTING OWNERSHIP RESOLUTION
+    ====================================================== */
+
+    async resolveExistingLearnerUid(
+        reference
+    ) {
+
+        const snapshot =
+            await getDoc(
+                reference
+            );
+
+        if (
+            !snapshot.exists()
+        ) {
+
+            return "";
+
+        }
+
+        const existingData =
+            snapshot.data() || {};
+
+        return this.normalizeString(
+            existingData.learner_uid ||
+            existingData.learnerUid
+        );
+
+    },
+
+
     /* ======================================================
        FIRESTORE NORMALIZATION
     ====================================================== */
 
-    normalizePayload(payload) {
+    normalizePayload(
+        payload,
+        effectiveLearnerUid
+    ) {
 
         const now =
             serverTimestamp();
+
+        const learnerUid =
+            this.normalizeString(
+                effectiveLearnerUid
+            );
 
         return {
 
             credential_id:
                 payload.credential_id,
 
+            /*
+             * null represents an asset published before
+             * identity activation.
+             */
             learner_uid:
-                payload.learner_uid,
+                learnerUid ||
+                null,
+
+            ownership_state:
+                learnerUid
+                    ? "claimed"
+                    : "pending_activation",
 
             learner_name:
-                payload.learner_name || "",
+                payload.learner_name ||
+                "",
 
             learner_email:
-                payload.learner_email || "",
+                payload.learner_email ||
+                "",
 
             program_code:
-                payload.program_code || "",
+                payload.program_code ||
+                "",
 
             asset_type:
                 payload.asset_type,
 
             asset_label:
-                payload.asset_label || "",
+                payload.asset_label ||
+                "",
 
             status:
                 "published",
@@ -445,19 +568,24 @@ const CredentialAssetPublisher = {
                 payload.download_url,
 
             file_name:
-                payload.file_name || "",
+                payload.file_name ||
+                "",
 
             file_extension:
-                payload.file_extension || "",
+                payload.file_extension ||
+                "",
 
             mime_type:
-                payload.mime_type || "",
+                payload.mime_type ||
+                "",
 
             asset_format:
-                payload.asset_format || "",
+                payload.asset_format ||
+                "",
 
             version:
-                payload.version || 1,
+                payload.version ||
+                1,
 
             generated_by:
                 "admin.agileai.university",
@@ -485,11 +613,14 @@ const CredentialAssetPublisher = {
 
     },
 
+
     /* ======================================================
        GENERAL PUBLICATION
     ====================================================== */
 
-    async publish(payload) {
+    async publish(
+        payload
+    ) {
 
         const normalizedPayload =
             this.normalizeInputPayload(
@@ -506,18 +637,15 @@ const CredentialAssetPublisher = {
                 normalizedPayload.asset_type
             );
 
-        if (!documentId) {
+        if (
+            !documentId
+        ) {
 
             throw new Error(
-                "[CredentialAssetPublisher] Unable to create asset document ID."
+                `[${MODULE_NAME}] Unable to create asset document ID.`
             );
 
         }
-
-        const data =
-            this.normalizePayload(
-                normalizedPayload
-            );
 
         const reference =
             doc(
@@ -526,26 +654,70 @@ const CredentialAssetPublisher = {
                 documentId
             );
 
+        /*
+         * Preserve established learner ownership.
+         *
+         * If a credential asset already contains learner_uid,
+         * republication without learner_uid must not clear it.
+         */
+        const existingLearnerUid =
+            await this.resolveExistingLearnerUid(
+                reference
+            );
+
+        const incomingLearnerUid =
+            normalizedPayload.learner_uid;
+
+        /*
+         * Existing ownership wins when the incoming payload
+         * does not contain ownership.
+         *
+         * This publisher does not perform ownership transfer.
+         */
+        const effectiveLearnerUid =
+            incomingLearnerUid ||
+            existingLearnerUid ||
+            "";
+
+        const data =
+            this.normalizePayload(
+                normalizedPayload,
+                effectiveLearnerUid
+            );
+
         try {
 
             await setDoc(
                 reference,
                 data,
                 {
-                    merge: true
+                    merge:
+                        true
                 }
             );
 
             console.info(
-                "[CredentialAssetPublisher] Asset published:",
+                `[${MODULE_NAME}] Asset published:`,
                 {
+                    moduleVersion:
+                        MODULE_VERSION,
+
                     documentId,
+
                     credentialId:
                         normalizedPayload.credential_id,
-                    learnerUid:
-                        normalizedPayload.learner_uid,
+
+                    learnerUidPresent:
+                        Boolean(
+                            effectiveLearnerUid
+                        ),
+
+                    ownershipState:
+                        data.ownership_state,
+
                     assetType:
                         normalizedPayload.asset_type,
+
                     storagePath:
                         normalizedPayload.storage_path
                 }
@@ -557,18 +729,32 @@ const CredentialAssetPublisher = {
             };
 
         }
-        catch (error) {
+        catch (
+            error
+        ) {
 
             console.error(
-                "[CredentialAssetPublisher] Asset publication failed:",
+                `[${MODULE_NAME}] Asset publication failed:`,
                 {
+                    moduleVersion:
+                        MODULE_VERSION,
+
                     documentId,
+
                     credentialId:
                         normalizedPayload.credential_id,
-                    learnerUid:
-                        normalizedPayload.learner_uid,
+
+                    learnerUidPresent:
+                        Boolean(
+                            effectiveLearnerUid
+                        ),
+
                     assetType:
                         normalizedPayload.asset_type,
+
+                    storagePath:
+                        normalizedPayload.storage_path,
+
                     error
                 }
             );
@@ -579,11 +765,14 @@ const CredentialAssetPublisher = {
 
     },
 
+
     /* ======================================================
        UNIVERSITY CERTIFICATE
     ====================================================== */
 
-    async publishUniversityCertificate(payload) {
+    async publishUniversityCertificate(
+        payload
+    ) {
 
         return this.publish({
 
@@ -614,11 +803,14 @@ const CredentialAssetPublisher = {
 
     },
 
+
     /* ======================================================
        TRAINER CERTIFICATE
     ====================================================== */
 
-    async publishTrainerCertificate(payload) {
+    async publishTrainerCertificate(
+        payload
+    ) {
 
         return this.publish({
 
@@ -649,11 +841,14 @@ const CredentialAssetPublisher = {
 
     },
 
+
     /* ======================================================
        DIGITAL BADGE
     ====================================================== */
 
-    async publishDigitalBadge(payload) {
+    async publishDigitalBadge(
+        payload
+    ) {
 
         return this.publish({
 
@@ -684,11 +879,14 @@ const CredentialAssetPublisher = {
 
     },
 
+
     /* ======================================================
        RECOGNITION ASSET
     ====================================================== */
 
-    async publishRecognitionAsset(payload) {
+    async publishRecognitionAsset(
+        payload
+    ) {
 
         return this.publish({
 
@@ -706,25 +904,43 @@ const CredentialAssetPublisher = {
 
     },
 
+
     /* ======================================================
        HELPERS
     ====================================================== */
 
-    normalizeString(value) {
+    normalizeString(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
 
         return String(
-            value || ""
+            value
         ).trim();
 
     },
 
-    normalizeVersion(value) {
+    normalizeVersion(
+        value
+    ) {
 
         const parsedVersion =
-            Number(value);
+            Number(
+                value
+            );
 
         if (
-            !Number.isFinite(parsedVersion) ||
+            !Number.isFinite(
+                parsedVersion
+            ) ||
             parsedVersion < 1
         ) {
 
@@ -746,6 +962,7 @@ const CredentialAssetPublisher = {
 
 };
 
+
 /* ==========================================================
    PUBLIC API
 ========================================================== */
@@ -754,7 +971,7 @@ window.CredentialAssetPublisher =
     CredentialAssetPublisher;
 
 console.info(
-    "[CredentialAssetPublisher] Loaded v1.3.0"
+    `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
 );
 
 export {

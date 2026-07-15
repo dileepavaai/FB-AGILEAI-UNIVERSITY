@@ -563,14 +563,26 @@ window.generateCertificatePdf =
             const learnerUid =
                 resolveLearnerUid(
                     credential
-                );
+                ) || null;
+
+            /*
+            * learner_uid is optional.
+            *
+            * Historical credentials may legitimately exist before
+            * portal activation and therefore before a Firebase UID
+            * has been assigned.
+            *
+            * Credential ownership is governed primarily by
+            * credential_id. learner_uid is attached automatically
+            * after portal activation.
+            */
 
             if (
                 !learnerUid
             ) {
 
-                console.error(
-                    `[${MODULE_NAME}] learner_uid could not be resolved.`,
+                console.info(
+                    `[${MODULE_NAME}] No learner_uid found. Continuing publication using credential authority.`,
                     {
                         credentialId,
                         availableCredentialFields:
@@ -579,12 +591,6 @@ window.generateCertificatePdf =
                             )
                     }
                 );
-
-                alert(
-                    "Learner UID is missing from the credential record. The certificate was not published."
-                );
-
-                return;
 
             }
 
@@ -644,14 +650,20 @@ window.generateCertificatePdf =
                         credential_id:
                             credentialId,
 
-                        learner_uid:
-                            learnerUid,
-
                         asset_type:
                             ASSET_TYPE,
 
                         generated_source:
-                            "admin_portal"
+                            "admin_portal",
+
+                        ...(
+                            learnerUid
+                                ? {
+                                    learner_uid:
+                                        learnerUid
+                                }
+                                : {}
+                        )
                     }
                 }
             );

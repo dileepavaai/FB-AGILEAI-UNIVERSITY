@@ -6,7 +6,7 @@ Module      : Student & Executive Portal
 Component   : Credential Renderer
 
 File        : credential-renderer.js
-Version     : 2.0.0
+Version     : 2.1.0
 Status      : ACTIVE
 
 Governance  : Portal Governance v1.0
@@ -60,6 +60,13 @@ credential-detail-actions.js
 
 ## Change History
 
+v2.1.0
+
+* Updated portfolio action terminology
+* Replaced View Credential with Open Credential Workspace
+* Aligned portfolio interaction with Credential Workspace architecture
+* Preserved shared CredentialDetailActions delegation
+
 v2.0.0
 
 * Refactored to portfolio-only renderer
@@ -82,7 +89,7 @@ v1.0.0
   "use strict";
 
   console.log(
-    "[Credential Renderer] Loaded v2.0.0"
+    "[Credential Renderer] Loaded v2.1.0"
     );
 
   if (window.__credentialsRendererInitialized === true) return;

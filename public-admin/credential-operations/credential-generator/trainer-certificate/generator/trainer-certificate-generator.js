@@ -1,1182 +1,1625 @@
-/* =====================================================
-Agile AI University
-Trainer Certificate Generator Controller
+/* ==========================================================
+   Agile AI University
+   Credential Operations Suite
 
-Version: 1.3.0
-Phase: Phase-1C
+   File      : trainer-certificate-generator.js
+   Component : Trainer Certificate Generator Controller
+   Version   : 1.4.0
+   Status    : ACTIVE
+   Phase     : Credential-First Asset Publication
 
-Purpose:
-- Search Credential Records
-- Load Registry Data
-- Populate Read-Only Metadata Fields
-- Render Trainer Certificate Preview
-- Apply Recognition Display Governance
+   Purpose
+   ----------------------------------------------------------
+   • Search authoritative credential records
+   • Populate governed read-only metadata
+   • Resolve trainer and organization context
+   • Render Trainer Certificate previews
+   • Expose the selected credential to the PDF publisher
+   • Preserve AOP as Agile Outcome Practitioner
 
-Governance:
-- Read Only
-- No Registry Writes
-- No Certificate Generation
-- No PDF Generation
-- AOP → AIPA Recognition Display Enforcement
+   Responsibilities
+   ----------------------------------------------------------
+   ✓ Load Credential Registry
+   ✓ Search credential records
+   ✓ Populate read-only credential metadata
+   ✓ Resolve batch, trainer and organization records
+   ✓ Render visible and hidden PDF surfaces
+   ✓ Enforce certificate readiness
+   ✓ Expose window.loadedCredential
+   ✓ Enable and disable generation controls
 
-Data Source:
-Existing Credential Registry API
+   Non Responsibilities
+   ----------------------------------------------------------
+   ✗ Generate PDF binaries
+   ✗ Upload files
+   ✗ Publish credential_assets
+   ✗ Modify credentials
+   ✗ Assign learner ownership
+   ✗ Perform identity reconciliation
+   ✗ Modify trainer or organization records
 
-Template Authority:
-trainer-certificate-template.html
+   Governance
+   ----------------------------------------------------------
+   • credentials is the credential source of truth
+   • AOP remains Agile Outcome Practitioner
+   • AOP must never be substituted with AIPA
+   • AIPA is a separate credential
+   • Trainer Certificate generation is read-only
+   • Historical credentials may not yet have learner_uid
+   • PDF publication is owned by trainer-certificate-pdf.js
 
-Cost Model:
-- Reuses Existing Cloud Run Endpoint
-- No Additional Infrastructure
+   Data Sources
+   ----------------------------------------------------------
+   • Credential Registry API
+   • batches
+   • trainerRegistry
+   • trainingOrganizations
 
-===================================================== */
+   Template Authority
+   ----------------------------------------------------------
+   template/trainer-certificate-template.html
 
-import { db }
-from "../../../../assets/js/core.js";
+   Change History
+   ----------------------------------------------------------
+   v1.4.0
+   • Removed legacy AOP → AIPA substitution
+   • Exposed selected record as window.loadedCredential
+   • Added approval-status readiness validation
+   • Added defensive normalization
+   • Improved date handling
+   • Consolidated reset logic
+   • Added template-response validation
+   • Preserved trainer and organization resolution
+
+   v1.3.0
+   • Added trainer and organization context resolution
+   • Added hidden PDF rendering surface
+   • Added recognition display governance
+
+========================================================== */
 
 import {
-  doc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    db
+} from "../../../../assets/js/core.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+import {
+    collection,
+    query,
+    where,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  /* =====================================================
-     Registry API
-  ===================================================== */
 
-  const REGISTRY_API =
-    "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-  let credentialData = [];
-  let loadedCredential = null;
+        "use strict";
 
-  /* =====================================================
-     Search Controls
-  ===================================================== */
 
-  const credentialIdInput =
-    document.getElementById("searchCredentialId");
+        /* ==================================================
+           CONSTANTS
+        ================================================== */
 
-  const learnerNameInput =
-    document.getElementById("searchLearnerName");
+        const MODULE_NAME =
+            "TrainerCertificateGenerator";
 
-  const emailInput =
-    document.getElementById("searchEmail");
+        const MODULE_VERSION =
+            "1.4.0";
 
-  const searchBtn =
-    document.getElementById("searchCredentialBtn");
+        const REGISTRY_API =
+            "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
-  const clearBtn =
-    document.getElementById("clearSearchBtn");
+        const TEMPLATE_URL =
+            "./template/trainer-certificate-template.html";
 
-  const generatePdfBtn =
-    document.getElementById("generatePdfBtn");
-
-  /* =====================================================
-     Preview Container
-  ===================================================== */
-
-  const trainercertificatePreview =
-    document.getElementById("renderTrainerCertificatePreview");
-
-  /* =====================================================
-     Field Mapping
-  ===================================================== */
-
-  const credentialIdValue =
-    document.getElementById("credentialIdValue");
-
-  const credentialTypeValue =
-    document.getElementById("credentialTypeValue");
-
-  const credentialFamilyValue =
-    document.getElementById("credentialFamilyValue");
-
-  const programCodeValue =
-    document.getElementById("programCodeValue");
-
-  const programNameValue =
-    document.getElementById("programNameValue");
-
-  const templateKeyValue =
-    document.getElementById("templateKeyValue");
-
-  const issueDateValue =
-    document.getElementById("issueDateValue");
-
-  const credentialStatusValue =
-    document.getElementById("credentialStatusValue");
-
-  /* =====================================================
-     Lifecycle
-  ===================================================== */
-
-  const lifecycleStateValue =
-    document.getElementById("lifecycleStateValue");
-
-  const successorProgramValue =
-    document.getElementById("successorProgramValue");
-
-  const bridgeRequiredValue =
-    document.getElementById("bridgeRequiredValue");
-
-  const bridgeCompletionStatusValue =
-    document.getElementById("bridgeCompletionStatusValue");
-
-  /* =====================================================
-     Recognition
-  ===================================================== */
-
-  const originalCredentialValue =
-    document.getElementById("originalCredentialValue");
-
-  const currentRecognitionValue =
-    document.getElementById("currentRecognitionValue");
-
-  const recognitionStatusValue =
-    document.getElementById("recognitionStatusValue");
-
-  const recognitionEffectiveDateValue =
-    document.getElementById("recognitionEffectiveDateValue");
-
-  /* =====================================================
-     Load Registry
-  ===================================================== */
-
-  async function loadRegistry() {
-
-    try {
-
-      const response = await fetch(
-        REGISTRY_API,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
-
-      const data = await response.json();
-
-      if (
-        data.status !== "success" ||
-        !Array.isArray(data.credentials)
-      ) {
-        throw new Error("Invalid registry response");
-      }
-
-      credentialData = data.credentials;
-
-      console.log(
-        "Certificate Generator Registry Loaded:",
-        credentialData.length
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Registry Load Failed:",
-        error
-      );
-
-    }
-
-  }
-
-  /* =====================================================
-   Search State Invalidation
-===================================================== */
-
-function invalidateLoadedCredentialState() {
-
-  if (!loadedCredential) {
-    return;
-  }
-
-  resetLoadedCredentialState();
-
-}
-
-  /* =====================================================
-     Search
-  ===================================================== */
-
-  async function searchCredential() {
-
-    const credentialId =
-      credentialIdInput?.value.trim().toLowerCase() || "";
-
-    const learnerName =
-      learnerNameInput?.value.trim().toLowerCase() || "";
-
-    const email =
-      emailInput?.value.trim().toLowerCase() || "";
-
-    const record = credentialData.find(item => {
-
-      const credentialMatch =
-        !credentialId ||
-        (item.credential_id || "")
-          .toLowerCase()
-          .includes(credentialId);
-
-      const nameMatch =
-        !learnerName ||
-        (item.full_name || "")
-          .toLowerCase()
-          .includes(learnerName);
-
-      const emailMatch =
-        !email ||
-        (item.email || "")
-          .toLowerCase()
-          .includes(email);
-
-      return (
-        credentialMatch &&
-        nameMatch &&
-        emailMatch
-      );
-
-    });
-
-    if (!record) {
-
-      alert("No matching credential found.");
-
-      return;
-    }
-
-    loadedCredential = record;
-
-    populateFields(record);
-
-    await renderTrainerCertificatePreview(record);
-
-    if (isCertificateReady(record)) {
-
-    enablePdfButton();
-
-    } else {
-
-    disablePdfButton();
-
-    alert(
-        "Credential is not eligible for trainer certificate generation."
-    );
-
-    }
-
-  }
-
-  /* =====================================================
-     Populate UI
-  ===================================================== */
-
-  function populateFields(record) {
-
-    credentialIdValue.textContent =
-      record.credential_id || "-";
-
-    credentialTypeValue.textContent =
-      record.credential_type || "-";
-
-    credentialFamilyValue.textContent =
-      record.credential_family || "-";
-
-    programCodeValue.textContent =
-      record.program_code || "-";
-
-    programNameValue.textContent =
-      record.program_name || "-";
-
-    templateKeyValue.textContent =
-      record.template_key || "-";
-
-    credentialStatusValue.textContent =
-      record.issued_status || "-";
-
-    issueDateValue.textContent =
-      formatDate(record.imported_at);
-
-    lifecycleStateValue.textContent =
-      record.lifecycle_state || "-";
-
-    successorProgramValue.textContent =
-      record.successor_program || "-";
-
-    bridgeRequiredValue.textContent =
-      record.bridge_required || "-";
-
-    bridgeCompletionStatusValue.textContent =
-      record.bridge_completion_status || "-";
-
-    originalCredentialValue.textContent =
-      record.original_credential || "-";
-
-    currentRecognitionValue.textContent =
-      record.current_recognition || "-";
-
-    recognitionStatusValue.textContent =
-      record.recognition_status || "-";
-
-    recognitionEffectiveDateValue.textContent =
-      record.recognition_effective_date || "-";
-
-  }
-
-  async function resolveTrainerContext(record) {
-
-    console.log("Credential Record", record);
-    console.log(
-    "training_start_date",
-    record.training_start_date
-    );
-
-    console.log(
-      "training_end_date",
-      record.training_end_date
-    );
-
-    console.log(
-      "Full Record",
-      JSON.stringify(record, null, 2)
-    );
-    console.log("Credential Keys", Object.keys(record));
-    console.log("Batch ID", record.batch_id);
-    console.log("batchId:", record.batchId);
-    console.log("batch_name:", record.batch_name);
-
-  try {
-
-    const batchName =
-      record.batch_name;
-
-    if (!batchName) {
-
-      console.warn(
-        "No batch_name found on credential record"
-      );
-
-      return null;
-
-    }
-
-    const batchQuery =
-      query(
-        collection(db, "batches"),
-        where(
-          "batch_name",
-          "==",
-          batchName
-        )
-      );
-
-    const batchResult =
-      await getDocs(batchQuery);
-
-    if (batchResult.empty) {
-
-      console.warn(
-        "No batch found for",
-        batchName
-      );
-
-      return null;
-
-    }
-
-    const batch =
-      batchResult.docs[0].data();
-
-    console.log(
-      "Batch Data",
-      batch
-    );
-
-    console.log(
-      "Batch Data Full",
-      JSON.stringify(batch, null, 2)
-    );
-
-    const trainerId =
-      batch.trainerId;
-
-    if (!trainerId) {
-
-      console.warn(
-        "Batch has no trainerId"
-      );
-
-      return null;
-
-    }
-
-    const trainerQuery =
-      query(
-        collection(
-          db,
-          "trainerRegistry"
-        ),
-        where(
-          "trainerId",
-          "==",
-          trainerId
-        )
-      );
-
-    const trainerResult =
-      await getDocs(
-        trainerQuery
-      );
-
-    if (trainerResult.empty) {
-
-      console.warn(
-        "Trainer not found",
-        trainerId
-      );
-
-      return null;
-
-    }
-
-    const trainer =
-      trainerResult.docs[0].data();
-
-    console.log(
-      "Trainer Data",
-      trainer
-    );
-
-let organization = null;
-
-try {
-
-  if (trainer.organizationId) {
-
-    const organizationQuery =
-      query(
-        collection(
-          db,
-          "trainingOrganizations"
-        ),
-        where(
-          "organizationId",
-          "==",
-          trainer.organizationId
-        )
-      );
-
-    const organizationResult =
-      await getDocs(
-        organizationQuery
-      );
-
-    if (!organizationResult.empty) {
-
-      organization =
-        organizationResult.docs[0].data();
-
-      console.log(
-        "Organization Data",
-        organization
-      );
-
-    }
-
-  }
-
-}
-catch(error) {
-
-  console.warn(
-    "Organization lookup skipped",
-    error
-  );
-
-}
-
-    return {
-      trainer,
-      organization
-    };
-
-  }
-  catch (error) {
-
-    console.error(
-      "Trainer Resolution Failed",
-      error
-    );
-
-    return null;
-
-  }
-
-}
-
-  /* =====================================================
-     Trainer Certificate Preview
-  ===================================================== */
-
-  async function renderTrainerCertificatePreview(record) {
-
-    if (!trainercertificatePreview) return;
-
-    try {
-
-      const response = await fetch(
-        "./template/trainer-certificate-template.html"
-      );
-
-      const template =
-        await response.text();
-
-        trainercertificatePreview.innerHTML =
-        template;
-
-        const pdfRenderContainer =
-        document.getElementById(
-            "pdfRenderContainer"
-        );
-
-        if (pdfRenderContainer) {
-
-        pdfRenderContainer.innerHTML =
-            template;
-
-        }
-
-      const pdfLearnerName =
-        pdfRenderContainer?.querySelector(
-            "#trainercertLearnerName"
-        );
-
-    const pdfCredentialType =
-    pdfRenderContainer?.querySelector(
-        "#trainercertCredentialType"
-    );
-
-    const pdfProgramCode =
-    pdfRenderContainer?.querySelector(
-        "#trainercertProgramCode"
-    );
-
-    const pdfCredentialId =
-    pdfRenderContainer?.querySelector(
-        "#trainercertCredentialId"
-    );
-
-    const pdfIssueDate =
-    pdfRenderContainer?.querySelector(
-        "#trainercertIssueDate"
-    );
-
-    const learnerName =
-      trainercertificatePreview.querySelector(
-        "#trainercertLearnerName"
-      );
-
-    const credentialType =
-      trainercertificatePreview.querySelector(
-        "#trainercertCredentialType"
-      );
-
-    const programCode =
-      trainercertificatePreview.querySelector(
-        "#trainercertProgramCode"
-      );
-
-    const credentialId =
-      trainercertificatePreview.querySelector(
-        "#trainercertCredentialId"
-      );
-
-    const issueDate =
-      trainercertificatePreview.querySelector(
-        "#trainercertIssueDate"
-      );
-
-    const trainerContext =
-      await resolveTrainerContext(
-        record
-      );
-
-    const trainerNameElement =
-      trainercertificatePreview.querySelector(
-        "#trainercertTrainerName"
-      );
-
-    const trainerIdElement =
-      trainercertificatePreview.querySelector(
-        "#trainercertTrainerId"
-      );
-
-    const organizationNameElement =
-      trainercertificatePreview.querySelector(
-        "#trainercertOrganizationName"
-      );
-
-    const organizationEmblemElement =
-      trainercertificatePreview.querySelector(
-        "#trainercertOrganizationEmblem"
-      );
-
-    const pdfTrainerNameElement =
-      pdfRenderContainer?.querySelector(
-        "#trainercertTrainerName"
-      );
-
-    const pdfTrainerIdElement =
-      pdfRenderContainer?.querySelector(
-        "#trainercertTrainerId"
-      );
-
-    const pdfOrganizationNameElement =
-      pdfRenderContainer?.querySelector(
-        "#trainercertOrganizationName"
-      );
-
-    const pdfOrganizationEmblemElement =
-      pdfRenderContainer?.querySelector(
-        "#trainercertOrganizationEmblem"
-      );
-
-    const programNameElement =
-      trainercertificatePreview.querySelector(
-        "#trainercertProgramName"
-      );
-
-    const trainingPeriodElement =
-      trainercertificatePreview.querySelector(
-        "#trainercertTrainingPeriod"
-      );
-
-    const pdfProgramNameElement =
-      pdfRenderContainer?.querySelector(
-        "#trainercertProgramName"
-      );
-
-    const pdfTrainingPeriodElement =
-      pdfRenderContainer?.querySelector(
-        "#trainercertTrainingPeriod"
-      );
-
-      if (trainerContext) {
-
-        console.log(
-          "trainerNameElement",
-          trainerNameElement
-        );
-
-        console.log(
-          "trainerIdElement",
-          trainerIdElement
-        );
-
-        console.log(
-          "organizationNameElement",
-          organizationNameElement
-        );
-
-        console.log(
-          "Trainer Context",
-          trainerContext
-        );
-
-        const {
-          trainer,
-          organization
-        } = trainerContext;
-
-        if (trainerNameElement) {
-          trainerNameElement.textContent =
-            trainer?.trainerName || "-";
-        }
-
-        if (pdfTrainerNameElement) {
-          pdfTrainerNameElement.textContent =
-            trainer?.trainerName || "-";
-        }
-
-        if (trainerIdElement) {
-          trainerIdElement.textContent =
-            trainer?.trainerId || "-";
-        }
-
-        if (pdfTrainerIdElement) {
-          pdfTrainerIdElement.textContent =
-            trainer?.trainerId || "-";
-        }
-
-        if (organizationNameElement) {
-          organizationNameElement.textContent =
-            organization?.organizationName || "-";
-        }
-
-        if (pdfOrganizationNameElement) {
-          pdfOrganizationNameElement.textContent =
-            organization?.organizationName || "-";
-        }
-
-        /* ==========================================
-            Training Program
-          ========================================== */
-
-          const trainingProgramName =
-            record.program_name ||
-            record.program_code ||
-            "-";
-
-          if (programNameElement) {
-
-            programNameElement.textContent =
-              trainingProgramName;
-
-          }
-
-          if (pdfProgramNameElement) {
-
-            pdfProgramNameElement.textContent =
-              trainingProgramName;
-
-          }
-
-          /* ==========================================
-            Training Period
-          ========================================== */
-
-          let trainingPeriod = "-";
-
-          if (
-            record.training_start_date &&
-            record.training_end_date
-          ) {
-
-            trainingPeriod =
-              `${record.training_start_date} - ${record.training_end_date}`;
-
-          }
-
-          if (trainingPeriodElement) {
-
-            trainingPeriodElement.textContent =
-              trainingPeriod;
-
-          }
-
-          if (pdfTrainingPeriodElement) {
-
-            pdfTrainingPeriodElement.textContent =
-              trainingPeriod;
-
-          }
-
-        /*
-        =====================================================
-        Organization Emblem Rendering
-
-        Temporary CORS Mitigation
-
-        Purpose:
-        Use locally hosted emblem assets instead of
-        Firebase Storage URLs until CORS configuration
-        is fully operational.
-
-        Governance:
-        Trainer Certificate Display Standard v1.1
-
-        Future:
-        May revert to organization.emblemUrl once
-        cross-origin image rendering is approved.
-        =====================================================
-        */
-
-        const organizationEmblemPath = 
+        const ORGANIZATION_EMBLEM_PATH =
             "/credential-operations/credential-generator/assets/images/organizations/agile-ai-academy.png";
 
-        if (organizationEmblemElement) {
 
-          organizationEmblemElement.src =
-            organizationEmblemPath;
+        /* ==================================================
+           STATE
+        ================================================== */
 
-          organizationEmblemElement.style.display =
-            "block";
+        let credentialData = [];
+
+        window.loadedCredential =
+            null;
+
+
+        /* ==================================================
+           NORMALIZATION
+        ================================================== */
+
+        function normalizeString(
+            value
+        ) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+
+                return "";
+
+            }
+
+            return String(
+                value
+            ).trim();
 
         }
 
-        if (pdfOrganizationEmblemElement) {
+        function normalizeLowercase(
+            value
+        ) {
 
-          pdfOrganizationEmblemElement.src =
-            organizationEmblemPath;
-
-          pdfOrganizationEmblemElement.style.display =
-            "block";
+            return normalizeString(
+                value
+            ).toLowerCase();
 
         }
 
-      }
+        function normalizeUppercase(
+            value
+        ) {
 
-      if (learnerName) {
-        learnerName.textContent =
-            record.full_name || "-";
+            return normalizeString(
+                value
+            ).toUpperCase();
+
         }
 
-        if (pdfLearnerName) {
-        pdfLearnerName.textContent =
-            record.full_name || "-";
+
+        /* ==================================================
+           SEARCH CONTROLS
+        ================================================== */
+
+        const credentialIdInput =
+            document.getElementById(
+                "searchCredentialId"
+            );
+
+        const learnerNameInput =
+            document.getElementById(
+                "searchLearnerName"
+            );
+
+        const emailInput =
+            document.getElementById(
+                "searchEmail"
+            );
+
+        const searchBtn =
+            document.getElementById(
+                "searchCredentialBtn"
+            );
+
+        const clearBtn =
+            document.getElementById(
+                "clearSearchBtn"
+            );
+
+        const generatePdfBtn =
+            document.getElementById(
+                "generatePdfBtn"
+            );
+
+
+        /* ==================================================
+           PREVIEW CONTAINERS
+        ================================================== */
+
+        const trainerCertificatePreview =
+            document.getElementById(
+                "renderTrainerCertificatePreview"
+            );
+
+
+        /* ==================================================
+           METADATA FIELD MAPPING
+        ================================================== */
+
+        const credentialIdValue =
+            document.getElementById(
+                "credentialIdValue"
+            );
+
+        const credentialTypeValue =
+            document.getElementById(
+                "credentialTypeValue"
+            );
+
+        const credentialFamilyValue =
+            document.getElementById(
+                "credentialFamilyValue"
+            );
+
+        const programCodeValue =
+            document.getElementById(
+                "programCodeValue"
+            );
+
+        const programNameValue =
+            document.getElementById(
+                "programNameValue"
+            );
+
+        const templateKeyValue =
+            document.getElementById(
+                "templateKeyValue"
+            );
+
+        const issueDateValue =
+            document.getElementById(
+                "issueDateValue"
+            );
+
+        const credentialStatusValue =
+            document.getElementById(
+                "credentialStatusValue"
+            );
+
+        const lifecycleStateValue =
+            document.getElementById(
+                "lifecycleStateValue"
+            );
+
+        const successorProgramValue =
+            document.getElementById(
+                "successorProgramValue"
+            );
+
+        const bridgeRequiredValue =
+            document.getElementById(
+                "bridgeRequiredValue"
+            );
+
+        const bridgeCompletionStatusValue =
+            document.getElementById(
+                "bridgeCompletionStatusValue"
+            );
+
+        const originalCredentialValue =
+            document.getElementById(
+                "originalCredentialValue"
+            );
+
+        const currentRecognitionValue =
+            document.getElementById(
+                "currentRecognitionValue"
+            );
+
+        const recognitionStatusValue =
+            document.getElementById(
+                "recognitionStatusValue"
+            );
+
+        const recognitionEffectiveDateValue =
+            document.getElementById(
+                "recognitionEffectiveDateValue"
+            );
+
+
+        /* ==================================================
+           BUTTON CONTROL
+        ================================================== */
+
+        function disablePdfButton() {
+
+            if (
+                !generatePdfBtn
+            ) {
+
+                return;
+
+            }
+
+            generatePdfBtn.disabled =
+                true;
+
+            generatePdfBtn.classList.add(
+                "tcg-btn-disabled"
+            );
+
         }
 
-      if (credentialType) {
-        credentialType.textContent =
-            getDisplayCredentialTitle(record);
+        function enablePdfButton() {
+
+            if (
+                !generatePdfBtn
+            ) {
+
+                return;
+
+            }
+
+            generatePdfBtn.disabled =
+                false;
+
+            generatePdfBtn.classList.remove(
+                "tcg-btn-disabled"
+            );
+
         }
 
-        if (pdfCredentialType) {
-        pdfCredentialType.textContent =
-            getDisplayCredentialTitle(record);
+
+        /* ==================================================
+           REGISTRY LOADING
+        ================================================== */
+
+        async function loadRegistry() {
+
+            try {
+
+                console.info(
+                    `[${MODULE_NAME}] Registry loading started.`,
+                    {
+                        endpoint:
+                            REGISTRY_API
+                    }
+                );
+
+                const response =
+                    await fetch(
+                        REGISTRY_API,
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+                if (
+                    !response.ok
+                ) {
+
+                    throw new Error(
+                        `Registry request failed with HTTP ${response.status}.`
+                    );
+
+                }
+
+                const data =
+                    await response.json();
+
+                if (
+                    data?.status !==
+                        "success" ||
+                    !Array.isArray(
+                        data?.credentials
+                    )
+                ) {
+
+                    throw new Error(
+                        "Invalid Credential Registry response."
+                    );
+
+                }
+
+                credentialData =
+                    data.credentials;
+
+                console.info(
+                    `[${MODULE_NAME}] Registry loaded.`,
+                    {
+                        recordCount:
+                            credentialData.length
+                    }
+                );
+
+            }
+            catch (
+                error
+            ) {
+
+                credentialData =
+                    [];
+
+                console.error(
+                    `[${MODULE_NAME}] Registry loading failed:`,
+                    error
+                );
+
+                alert(
+                    "Credential Registry could not be loaded."
+                );
+
+            }
+
         }
 
-      if (programCode) {
-        programCode.textContent =
-          record.program_code || "-";
-      }
 
-      if (pdfProgramCode) {
-        pdfProgramCode.textContent =
-            record.program_code || "-";
+        /* ==================================================
+           SEARCH
+        ================================================== */
+
+        function findCredential({
+            credentialId,
+            learnerName,
+            email
+        }) {
+
+            return credentialData.find(
+                (
+                    item
+                ) => {
+
+                    const credentialMatch =
+                        !credentialId ||
+                        normalizeLowercase(
+                            item?.credential_id
+                        ).includes(
+                            credentialId
+                        );
+
+                    const nameMatch =
+                        !learnerName ||
+                        normalizeLowercase(
+                            item?.full_name
+                        ).includes(
+                            learnerName
+                        );
+
+                    const emailMatch =
+                        !email ||
+                        normalizeLowercase(
+                            item?.email
+                        ).includes(
+                            email
+                        );
+
+                    return (
+                        credentialMatch &&
+                        nameMatch &&
+                        emailMatch
+                    );
+
+                }
+            );
+
         }
 
-      if (credentialId) {
-        credentialId.textContent =
-            record.credential_id || "-";
+        async function searchCredential() {
+
+            const credentialId =
+                normalizeLowercase(
+                    credentialIdInput?.value
+                );
+
+            const learnerName =
+                normalizeLowercase(
+                    learnerNameInput?.value
+                );
+
+            const email =
+                normalizeLowercase(
+                    emailInput?.value
+                );
+
+            if (
+                !credentialId &&
+                !learnerName &&
+                !email
+            ) {
+
+                alert(
+                    "Please enter at least one search criterion."
+                );
+
+                return;
+
+            }
+
+            const record =
+                findCredential({
+                    credentialId,
+                    learnerName,
+                    email
+                });
+
+            if (
+                !record
+            ) {
+
+                resetLoadedCredentialState();
+
+                alert(
+                    "No matching credential found."
+                );
+
+                return;
+
+            }
+
+            /*
+             * Shared credential authority for the PDF engine.
+             */
+            window.loadedCredential =
+                record;
+
+            populateFields(
+                record
+            );
+
+            await renderTrainerCertificatePreview(
+                record
+            );
+
+            if (
+                isCertificateReady(
+                    record
+                )
+            ) {
+
+                enablePdfButton();
+
+            }
+            else {
+
+                disablePdfButton();
+
+                alert(
+                    "Credential is not eligible for Trainer Certificate generation."
+                );
+
+            }
+
+            console.info(
+                `[${MODULE_NAME}] Credential loaded.`,
+                {
+                    credentialId:
+                        normalizeString(
+                            record?.credential_id
+                        ),
+
+                    programCode:
+                        normalizeUppercase(
+                            record?.program_code
+                        ),
+
+                    issuedStatus:
+                        normalizeLowercase(
+                            record?.issued_status
+                        ),
+
+                    approvalStatus:
+                        normalizeLowercase(
+                            record?.approval_status
+                        ),
+
+                    learnerUidPresent:
+                        Boolean(
+                            normalizeString(
+                                record?.learner_uid
+                            )
+                        )
+                }
+            );
+
         }
 
-        if (pdfCredentialId) {
-        pdfCredentialId.textContent =
-            record.credential_id || "-";
+
+        /* ==================================================
+           FIELD POPULATION
+        ================================================== */
+
+        function setText(
+            element,
+            value
+        ) {
+
+            if (
+                !element
+            ) {
+
+                return;
+
+            }
+
+            element.textContent =
+                normalizeString(
+                    value
+                ) ||
+                "-";
+
         }
 
-      if (issueDate) {
-        issueDate.textContent =
-            formatDate(record.imported_at);
+        function populateFields(
+            record
+        ) {
+
+            setText(
+                credentialIdValue,
+                record?.credential_id
+            );
+
+            setText(
+                credentialTypeValue,
+                record?.credential_type
+            );
+
+            setText(
+                credentialFamilyValue,
+                record?.credential_family
+            );
+
+            setText(
+                programCodeValue,
+                record?.program_code
+            );
+
+            setText(
+                programNameValue,
+                record?.program_name
+            );
+
+            setText(
+                templateKeyValue,
+                record?.template_key
+            );
+
+            setText(
+                credentialStatusValue,
+                record?.issued_status
+            );
+
+            setText(
+                issueDateValue,
+                formatDate(
+                    record?.issue_date ||
+                    record?.issued_at ||
+                    record?.imported_at
+                )
+            );
+
+            setText(
+                lifecycleStateValue,
+                record?.lifecycle_state
+            );
+
+            setText(
+                successorProgramValue,
+                record?.successor_program
+            );
+
+            setText(
+                bridgeRequiredValue,
+                record?.bridge_required
+            );
+
+            setText(
+                bridgeCompletionStatusValue,
+                record?.bridge_completion_status
+            );
+
+            setText(
+                originalCredentialValue,
+                record?.original_credential
+            );
+
+            setText(
+                currentRecognitionValue,
+                record?.current_recognition
+            );
+
+            setText(
+                recognitionStatusValue,
+                record?.recognition_status
+            );
+
+            setText(
+                recognitionEffectiveDateValue,
+                formatDate(
+                    record?.recognition_effective_date
+                )
+            );
+
         }
 
-        if (pdfIssueDate) {
-        pdfIssueDate.textContent =
-            formatDate(record.imported_at);
+
+        /* ==================================================
+           TRAINER CONTEXT
+        ================================================== */
+
+        async function resolveTrainerContext(
+            record
+        ) {
+
+            try {
+
+                const batchName =
+                    normalizeString(
+                        record?.batch_name
+                    );
+
+                if (
+                    !batchName
+                ) {
+
+                    console.warn(
+                        `[${MODULE_NAME}] No batch_name found on credential.`
+                    );
+
+                    return null;
+
+                }
+
+                const batchResult =
+                    await getDocs(
+                        query(
+                            collection(
+                                db,
+                                "batches"
+                            ),
+                            where(
+                                "batch_name",
+                                "==",
+                                batchName
+                            )
+                        )
+                    );
+
+                if (
+                    batchResult.empty
+                ) {
+
+                    console.warn(
+                        `[${MODULE_NAME}] Batch not found.`,
+                        {
+                            batchName
+                        }
+                    );
+
+                    return null;
+
+                }
+
+                const batch =
+                    batchResult.docs[0].data();
+
+                const trainerId =
+                    normalizeString(
+                        batch?.trainerId ||
+                        batch?.trainer_id
+                    );
+
+                if (
+                    !trainerId
+                ) {
+
+                    console.warn(
+                        `[${MODULE_NAME}] Batch has no trainer ID.`
+                    );
+
+                    return null;
+
+                }
+
+                const trainerResult =
+                    await getDocs(
+                        query(
+                            collection(
+                                db,
+                                "trainerRegistry"
+                            ),
+                            where(
+                                "trainerId",
+                                "==",
+                                trainerId
+                            )
+                        )
+                    );
+
+                if (
+                    trainerResult.empty
+                ) {
+
+                    console.warn(
+                        `[${MODULE_NAME}] Trainer not found.`,
+                        {
+                            trainerId
+                        }
+                    );
+
+                    return null;
+
+                }
+
+                const trainer =
+                    trainerResult.docs[0].data();
+
+                let organization =
+                    null;
+
+                const organizationId =
+                    normalizeString(
+                        trainer?.organizationId ||
+                        trainer?.organization_id
+                    );
+
+                if (
+                    organizationId
+                ) {
+
+                    try {
+
+                        const organizationResult =
+                            await getDocs(
+                                query(
+                                    collection(
+                                        db,
+                                        "trainingOrganizations"
+                                    ),
+                                    where(
+                                        "organizationId",
+                                        "==",
+                                        organizationId
+                                    )
+                                )
+                            );
+
+                        if (
+                            !organizationResult.empty
+                        ) {
+
+                            organization =
+                                organizationResult.docs[0].data();
+
+                        }
+
+                    }
+                    catch (
+                        error
+                    ) {
+
+                        console.warn(
+                            `[${MODULE_NAME}] Organization lookup failed.`,
+                            error
+                        );
+
+                    }
+
+                }
+
+                return {
+                    trainer,
+                    organization
+                };
+
+            }
+            catch (
+                error
+            ) {
+
+                console.error(
+                    `[${MODULE_NAME}] Trainer context resolution failed:`,
+                    error
+                );
+
+                return null;
+
+            }
+
         }
 
-    } catch (error) {
 
-      console.error(
-        "Certificate Preview Error:",
-        error
-      );
+        /* ==================================================
+           PREVIEW RENDERING
+        ================================================== */
 
-    }
+        async function renderTrainerCertificatePreview(
+            record
+        ) {
 
-  }
+            if (
+                !trainerCertificatePreview
+            ) {
 
-  /* =====================================================
-        Recognition Display Governance
-    ===================================================== */
+                throw new Error(
+                    "Trainer Certificate preview container is unavailable."
+                );
 
-function getDisplayCredentialTitle(record) {
+            }
 
-  if (record.program_code === "AOP") {
+            const response =
+                await fetch(
+                    TEMPLATE_URL,
+                    {
+                        cache:
+                            "no-store"
+                    }
+                );
 
-    return (
-      "Artificial Intelligence Professional Agilist (AIPA)"
-    );
+            if (
+                !response.ok
+            ) {
 
-  }
+                throw new Error(
+                    `Trainer Certificate template failed with HTTP ${response.status}.`
+                );
 
-  return (
-    record.current_recognition ||
-    record.credential_type ||
-    "-"
-  );
+            }
 
-}
+            const template =
+                await response.text();
 
-/* =====================================================
-   Trainer Certificate Readiness Validation
+            trainerCertificatePreview.innerHTML =
+                template;
 
-   Governance Lock:
-   June 2026
+            const pdfRenderContainer =
+                document.getElementById(
+                    "pdfRenderContainer"
+                );
 
-   Requirements:
+            if (
+                pdfRenderContainer
+            ) {
 
-   - Credential ID required
-   - Learner Name required
-   - Credential Type required
-   - Program Code required
-   - Status must equal finalized
+                pdfRenderContainer.innerHTML =
+                    template;
 
-   Certificate generation is prohibited
-   if validation fails.
+            }
 
-===================================================== */
+            const trainerContext =
+                await resolveTrainerContext(
+                    record
+                );
 
-function isCertificateReady(record) {
+            populateCertificateSurface(
+                trainerCertificatePreview,
+                record,
+                trainerContext
+            );
 
-  if (!record) return false;
+            if (
+                pdfRenderContainer
+            ) {
 
-  if (!record.credential_id) return false;
+                populateCertificateSurface(
+                    pdfRenderContainer,
+                    record,
+                    trainerContext
+                );
 
-  if (!record.full_name) return false;
+            }
 
-  if (!record.credential_type) return false;
+            console.info(
+                `[${MODULE_NAME}] Trainer Certificate preview rendered.`,
+                {
+                    credentialId:
+                        normalizeString(
+                            record?.credential_id
+                        ),
 
-  if (!record.program_code) return false;
+                    programCode:
+                        normalizeUppercase(
+                            record?.program_code
+                        ),
 
-  if (
-    (record.issued_status || "")
-      .toLowerCase() !== "finalized"
-  ) {
-    return false;
-  }
+                    trainerResolved:
+                        Boolean(
+                            trainerContext?.trainer
+                        ),
 
-  return true;
+                    organizationResolved:
+                        Boolean(
+                            trainerContext?.organization
+                        )
+                }
+            );
 
-}
+        }
 
-  /* =====================================================
-     Format Date
-  ===================================================== */
+        function populateCertificateSurface(
+            container,
+            record,
+            trainerContext
+        ) {
 
-  function formatDate(timestamp) {
+            if (
+                !container
+            ) {
 
-    if (!timestamp?._seconds) {
-      return "-";
-    }
+                return;
 
-    return new Date(
-      timestamp._seconds * 1000
-    ).toLocaleDateString();
+            }
 
-  }
+            const trainer =
+                trainerContext?.trainer ||
+                {};
 
-  function resetLoadedCredentialState() {
+            const organization =
+                trainerContext?.organization ||
+                {};
 
-  loadedCredential = null;
+            setSurfaceText(
+                container,
+                "#trainercertLearnerName",
+                record?.full_name
+            );
 
-  credentialIdValue.textContent = "Not Loaded";
-  credentialTypeValue.textContent = "Not Loaded";
-  credentialFamilyValue.textContent = "Not Loaded";
-  programCodeValue.textContent = "Not Loaded";
-  programNameValue.textContent = "Not Loaded";
-  templateKeyValue.textContent = "Not Loaded";
-  issueDateValue.textContent = "Not Loaded";
-  credentialStatusValue.textContent = "Not Loaded";
+            setSurfaceText(
+                container,
+                "#trainercertCredentialType",
+                getDisplayCredentialTitle(
+                    record
+                )
+            );
 
-  lifecycleStateValue.textContent = "Not Loaded";
-  successorProgramValue.textContent = "Not Loaded";
-  bridgeRequiredValue.textContent = "Not Loaded";
-  bridgeCompletionStatusValue.textContent = "Not Loaded";
+            setSurfaceText(
+                container,
+                "#trainercertProgramCode",
+                record?.program_code
+            );
 
-  originalCredentialValue.textContent = "Not Loaded";
-  currentRecognitionValue.textContent = "Not Loaded";
-  recognitionStatusValue.textContent = "Not Loaded";
-  recognitionEffectiveDateValue.textContent = "Not Loaded";
+            setSurfaceText(
+                container,
+                "#trainercertCredentialId",
+                record?.credential_id
+            );
 
-  if (trainercertificatePreview) {
+            setSurfaceText(
+                container,
+                "#trainercertIssueDate",
+                formatDate(
+                    record?.issue_date ||
+                    record?.issued_at ||
+                    record?.imported_at
+                )
+            );
 
-    trainercertificatePreview.innerHTML = `
-      <div>
-        <h3>Preview Placeholder</h3>
-        <p>
-          Trainer certificate preview will appear here after
-          credential loading and rendering services
-          are implemented.
-        </p>
-      </div>
-    `;
+            setSurfaceText(
+                container,
+                "#trainercertTrainerName",
+                trainer?.trainerName ||
+                trainer?.trainer_name
+            );
 
-  }
+            setSurfaceText(
+                container,
+                "#trainercertTrainerId",
+                trainer?.trainerId ||
+                trainer?.trainer_id
+            );
 
-  const pdfRenderContainer =
-    document.getElementById(
-      "pdfRenderContainer"
-    );
+            setSurfaceText(
+                container,
+                "#trainercertOrganizationName",
+                organization?.organizationName ||
+                organization?.organization_name
+            );
 
-  if (pdfRenderContainer) {
-    pdfRenderContainer.innerHTML = "";
-  }
+            setSurfaceText(
+                container,
+                "#trainercertProgramName",
+                record?.program_name ||
+                record?.program_code
+            );
 
-  disablePdfButton();
+            setSurfaceText(
+                container,
+                "#trainercertTrainingPeriod",
+                formatTrainingPeriod(
+                    record
+                )
+            );
 
-}
+            const emblem =
+                container.querySelector(
+                    "#trainercertOrganizationEmblem"
+                );
 
-  /* =====================================================
-    Reset
-    ===================================================== */
+            if (
+                emblem
+            ) {
 
-    function clearForm() {
-    
-    console.log("CLEAR STARTED");
-    console.log("RESETTING METADATA");
+                emblem.src =
+                    ORGANIZATION_EMBLEM_PATH;
 
-    credentialIdInput.value = "";
-    learnerNameInput.value = "";
-    emailInput.value = "";
+                emblem.style.display =
+                    "block";
 
-    console.log("RESETTING PREVIEW");
+            }
 
-    /* ==========================================
-        Reset Metadata
-    ========================================== */
+        }
 
-    credentialIdValue.textContent = "Not Loaded";
-    credentialTypeValue.textContent = "Not Loaded";
-    credentialFamilyValue.textContent = "Not Loaded";
-    programCodeValue.textContent = "Not Loaded";
-    programNameValue.textContent = "Not Loaded";
-    templateKeyValue.textContent = "Not Loaded";
-    issueDateValue.textContent = "Not Loaded";
-    credentialStatusValue.textContent = "Not Loaded";
+        function setSurfaceText(
+            container,
+            selector,
+            value
+        ) {
 
-    lifecycleStateValue.textContent = "Not Loaded";
-    successorProgramValue.textContent = "Not Loaded";
-    bridgeRequiredValue.textContent = "Not Loaded";
-    bridgeCompletionStatusValue.textContent = "Not Loaded";
+            const element =
+                container.querySelector(
+                    selector
+                );
 
-    originalCredentialValue.textContent = "Not Loaded";
-    currentRecognitionValue.textContent = "Not Loaded";
-    recognitionStatusValue.textContent = "Not Loaded";
-    recognitionEffectiveDateValue.textContent = "Not Loaded";
+            if (
+                !element
+            ) {
 
-    console.log("RESETTING PREVIEW");
+                return;
 
-    /* ==========================================
-        Reset Preview
-    ========================================== */
+            }
 
-    if (trainercertificatePreview) {
+            element.textContent =
+                normalizeString(
+                    value
+                ) ||
+                "-";
 
-        trainercertificatePreview.innerHTML = `
-        <div>
-            <h3>Preview Placeholder</h3>
-            <p>
-            Trainer certificate preview will appear here after
-            credential loading and rendering services
-            are implemented.
-            </p>
-        </div>
-        `;
+        }
 
-    }
 
-    /* ==========================================
-        Clear Hidden PDF Surface
-    ========================================== */
+        /* ==================================================
+           DISPLAY GOVERNANCE
+        ================================================== */
 
-    const pdfRenderContainer =
-        document.getElementById(
-        "pdfRenderContainer"
+        function getDisplayCredentialTitle(
+            record
+        ) {
+
+            const programCode =
+                normalizeUppercase(
+                    record?.program_code
+                );
+
+            if (
+                programCode ===
+                "AOP"
+            ) {
+
+                return (
+                    "Agile Outcome Practitioner (AOP)"
+                );
+
+            }
+
+            if (
+                programCode ===
+                "AIPA"
+            ) {
+
+                return (
+                    "Artificial Intelligence Professional Agilist (AIPA)"
+                );
+
+            }
+
+            return (
+                normalizeString(
+                    record?.program_name
+                ) ||
+                normalizeString(
+                    record?.credential_type
+                ) ||
+                normalizeString(
+                    record?.current_recognition
+                ) ||
+                "-"
+            );
+
+        }
+
+
+        /* ==================================================
+           READINESS VALIDATION
+        ================================================== */
+
+        function isCertificateReady(
+            record
+        ) {
+
+            if (
+                !record
+            ) {
+
+                return false;
+
+            }
+
+            if (
+                !normalizeString(
+                    record?.credential_id
+                ) ||
+                !normalizeString(
+                    record?.full_name
+                ) ||
+                !normalizeString(
+                    record?.credential_type
+                ) ||
+                !normalizeString(
+                    record?.program_code
+                )
+            ) {
+
+                return false;
+
+            }
+
+            if (
+                normalizeLowercase(
+                    record?.issued_status
+                ) !==
+                "finalized"
+            ) {
+
+                return false;
+
+            }
+
+            const approvalStatus =
+                normalizeLowercase(
+                    record?.approval_status
+                );
+
+            if (
+                approvalStatus &&
+                approvalStatus !==
+                "approved"
+            ) {
+
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+
+        /* ==================================================
+           DATE HELPERS
+        ================================================== */
+
+        function formatDate(
+            value
+        ) {
+
+            if (
+                !value
+            ) {
+
+                return "-";
+
+            }
+
+            let date =
+                null;
+
+            if (
+                typeof value?.toDate ===
+                "function"
+            ) {
+
+                date =
+                    value.toDate();
+
+            }
+            else if (
+                Number.isFinite(
+                    value?._seconds
+                )
+            ) {
+
+                date =
+                    new Date(
+                        value._seconds *
+                        1000
+                    );
+
+            }
+            else if (
+                value instanceof Date
+            ) {
+
+                date =
+                    value;
+
+            }
+            else {
+
+                const candidate =
+                    new Date(
+                        value
+                    );
+
+                if (
+                    !Number.isNaN(
+                        candidate.getTime()
+                    )
+                ) {
+
+                    date =
+                        candidate;
+
+                }
+
+            }
+
+            if (
+                !date ||
+                Number.isNaN(
+                    date.getTime()
+                )
+            ) {
+
+                return "-";
+
+            }
+
+            return date.toLocaleDateString();
+
+        }
+
+        function formatTrainingPeriod(
+            record
+        ) {
+
+            const startDate =
+                normalizeString(
+                    record?.training_start_date
+                );
+
+            const endDate =
+                normalizeString(
+                    record?.training_end_date
+                );
+
+            if (
+                startDate &&
+                endDate
+            ) {
+
+                return (
+                    `${startDate} - ${endDate}`
+                );
+
+            }
+
+            return (
+                startDate ||
+                endDate ||
+                "-"
+            );
+
+        }
+
+
+        /* ==================================================
+           STATE RESET
+        ================================================== */
+
+        function resetLoadedCredentialState() {
+
+            window.loadedCredential =
+                null;
+
+            [
+                credentialIdValue,
+                credentialTypeValue,
+                credentialFamilyValue,
+                programCodeValue,
+                programNameValue,
+                templateKeyValue,
+                issueDateValue,
+                credentialStatusValue,
+                lifecycleStateValue,
+                successorProgramValue,
+                bridgeRequiredValue,
+                bridgeCompletionStatusValue,
+                originalCredentialValue,
+                currentRecognitionValue,
+                recognitionStatusValue,
+                recognitionEffectiveDateValue
+            ].forEach(
+                (
+                    element
+                ) => {
+
+                    if (
+                        element
+                    ) {
+
+                        element.textContent =
+                            "Not Loaded";
+
+                    }
+
+                }
+            );
+
+            if (
+                trainerCertificatePreview
+            ) {
+
+                trainerCertificatePreview.innerHTML =
+                    `
+                        <div>
+                            <h3>Preview Placeholder</h3>
+                            <p>
+                                Search for an eligible credential
+                                to render its Trainer Certificate.
+                            </p>
+                        </div>
+                    `;
+
+            }
+
+            const pdfRenderContainer =
+                document.getElementById(
+                    "pdfRenderContainer"
+                );
+
+            if (
+                pdfRenderContainer
+            ) {
+
+                pdfRenderContainer.innerHTML =
+                    "";
+
+            }
+
+            disablePdfButton();
+
+        }
+
+        function clearForm() {
+
+            if (
+                credentialIdInput
+            ) {
+
+                credentialIdInput.value =
+                    "";
+
+            }
+
+            if (
+                learnerNameInput
+            ) {
+
+                learnerNameInput.value =
+                    "";
+
+            }
+
+            if (
+                emailInput
+            ) {
+
+                emailInput.value =
+                    "";
+
+            }
+
+            resetLoadedCredentialState();
+
+        }
+
+        function invalidateLoadedCredentialState() {
+
+            if (
+                window.loadedCredential
+            ) {
+
+                resetLoadedCredentialState();
+
+            }
+
+        }
+
+
+        /* ==================================================
+           EVENTS
+        ================================================== */
+
+        credentialIdInput?.addEventListener(
+            "input",
+            invalidateLoadedCredentialState
         );
 
-    if (pdfRenderContainer) {
+        learnerNameInput?.addEventListener(
+            "input",
+            invalidateLoadedCredentialState
+        );
 
-        pdfRenderContainer.innerHTML = "";
+        emailInput?.addEventListener(
+            "input",
+            invalidateLoadedCredentialState
+        );
+
+        searchBtn?.addEventListener(
+            "click",
+            () => {
+
+                searchCredential()
+                    .catch(
+                        (
+                            error
+                        ) => {
+
+                            console.error(
+                                `[${MODULE_NAME}] Search workflow failed:`,
+                                error
+                            );
+
+                            resetLoadedCredentialState();
+
+                            alert(
+                                "Trainer Certificate preview could not be prepared."
+                            );
+
+                        }
+                    );
+
+            }
+        );
+
+        clearBtn?.addEventListener(
+            "click",
+            clearForm
+        );
+
+        generatePdfBtn?.addEventListener(
+            "click",
+            async () => {
+
+                if (
+                    !isCertificateReady(
+                        window.loadedCredential
+                    )
+                ) {
+
+                    disablePdfButton();
+
+                    alert(
+                        "Select an eligible credential before generating the Trainer Certificate."
+                    );
+
+                    return;
+
+                }
+
+                if (
+                    typeof window.generateTrainerCertificatePdf !==
+                    "function"
+                ) {
+
+                    console.error(
+                        `[${MODULE_NAME}] PDF engine is unavailable.`
+                    );
+
+                    alert(
+                        "Trainer Certificate PDF engine is not available."
+                    );
+
+                    return;
+
+                }
+
+                await window.generateTrainerCertificatePdf();
+
+            }
+        );
+
+
+        /* ==================================================
+           INITIALIZATION
+        ================================================== */
+
+        disablePdfButton();
+
+        loadRegistry();
+
+        console.info(
+            `[${MODULE_NAME}] Loaded v${MODULE_VERSION}.`
+        );
 
     }
-
-    console.log("CLEAR COMPLETED");
-
-    disablePdfButton();
-
-}
-
-credentialIdInput?.addEventListener(
-  "input",
-  invalidateLoadedCredentialState
 );
-
-learnerNameInput?.addEventListener(
-  "input",
-  invalidateLoadedCredentialState
-);
-
-emailInput?.addEventListener(
-  "input",
-  invalidateLoadedCredentialState
-);
-
-  /* =====================================================
-    Events
-    ===================================================== */
-
-searchBtn?.addEventListener(
-  "click",
-  searchCredential
-);
-
-clearBtn?.addEventListener(
-  "click",
-  clearForm
-);
-
-generatePdfBtn?.addEventListener(
-  "click",
-  async () => {
-
-    if (
-      typeof window.generateTrainerCertificatePdf ===
-      "function"
-    ) {
-
-      await window.generateTrainerCertificatePdf();
-
-    }
-
-  }
-);
-
-    loadRegistry();
-    disablePdfButton();
-
-  console.log(
-    "Trainer Certificate Generator Controller v1.3.0 loaded"
-  );
-
-});
-
-function disablePdfButton() {
-
-  const generatePdfBtn =
-    document.getElementById("generatePdfBtn");
-
-  if (!generatePdfBtn) return;
-
-  generatePdfBtn.disabled = true;
-
-  generatePdfBtn.classList.add(
-    "tcg-btn-disabled"
-  );
-
-}
-
-function enablePdfButton() {
-
-  const generatePdfBtn =
-    document.getElementById("generatePdfBtn");
-
-  if (!generatePdfBtn) return;
-
-  generatePdfBtn.disabled = false;
-
-  generatePdfBtn.classList.remove(
-    "tcg-btn-disabled"
-  );
-
-}

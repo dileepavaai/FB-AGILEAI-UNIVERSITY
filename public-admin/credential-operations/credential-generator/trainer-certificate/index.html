@@ -1,370 +1,831 @@
-  <!doctype html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>TrainerCertificate – Admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!doctype html>
 
-    <!-- =====================================================
-        Agile AI University
-        Trainer Certificate Generator
-        Version: 1.1.0
-        Phase: Phase-1A Foundation
+<html lang="en">
 
-        Purpose:
-        - Credential Search
-        - Credential Loading
-        - Metadata Inspection
-        - Certificate Rendering Preparation
+<head>
 
-        Governance:
-        - Read-only operations
-        - No credential mutation
-        - No registry writes
-        - No certificate issuance
-        ===================================================== -->
+  <meta charset="utf-8" />
 
-    <!-- 🔒 CORE SYSTEM -->
-    <link rel="stylesheet" href="../../../assets/css/site.css" />
+  <title>
+    Trainer Certificate – Admin
+  </title>
 
-    <!-- 🎨 DESIGN AUTHORITY -->
-    <link rel="stylesheet" href="../../../shared/design-authority/css/refinement.css" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
 
-    <!-- 🧩 COMMON SURFACES -->
-    <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/common.css" />
-    <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/tables.css" />
-    <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/typography.css" />
-    <link rel="stylesheet" href="../../../shared/design-authority/css/surfaces/common/micro-interactions.css" />
-    <link rel="stylesheet" href="../assets/css/trainer-certificate-generator.css" />
-  </head>
+  <!-- =====================================================
+       Agile AI University
+       Credential Operations Suite
 
-  <body class="app-loading">
+       File      : trainer-certificate/index.html
+       Component : Trainer Certificate Generator
+       Version   : 1.2.0
+       Status    : ACTIVE
+       Phase     : Credential-First Asset Publication
 
-    <!-- 🔷 HEADER -->
-    <div id="headerContainer"></div>
+       Purpose
+       -----------------------------------------------------
+       • Search authoritative credential records
+       • Inspect credential metadata
+       • Resolve trainer and organization attribution
+       • Render governed Trainer Certificate previews
+       • Generate ISO A4 landscape PDF assets
+       • Upload PDFs to Firebase Storage
+       • Publish metadata to credential_assets
+       • Preserve local PDF download
 
-    <div class="layout">
+       Governance
+       -----------------------------------------------------
+       • credentials is the credential source of truth
+       • Credential Registry remains read-only
+       • No credential mutation is permitted
+       • Admin Portal is the asset-generation authority
+       • credential_assets is the asset registry
+       • credential_id is the permanent asset authority
+       • learner_uid may remain null before activation
+       • AOP remains Agile Outcome Practitioner
+       • AOP must never be substituted with AIPA
+       • Student Portal consumes published assets only
 
-      <!-- 🔷 SIDEBAR -->
-      <div id="adminSidebarContainer"></div>
+       Script Authority
+       -----------------------------------------------------
+       • trainer-certificate-generator.js
+         owns search, trainer resolution and preview
 
-      <main class="content">
+       • trainer-certificate-pdf.js
+         owns PDF generation, upload and publication
 
-        <!-- 🔐 LOGIN -->
-        <section id="loginView">
-          <h2>Admin Access</h2>
-          <p>Please sign in with your authorized account.</p>
+       • credential-asset-publisher.js
+         owns Firestore asset-publication governance
 
-          <button id="loginBtn" class="btn btn-primary">
-            Sign in with Google
-          </button>
-        </section>
+       Change History
+       -----------------------------------------------------
+       v1.2.0
+       • Added credential-first asset publication
+       • Added shared CredentialAssetPublisher
+       • Added Firebase Storage publication flow
+       • Added cache-safe module versions
+       • Added historical alumni support
+       • Preserved existing UI layout and field IDs
 
-        <!-- 🔷 APP -->
-        <section id="appView" class="hidden">
+       v1.1.0
+       • Phase-1A Trainer Certificate foundation
 
-          <div class="tcg-container">
+  ===================================================== -->
 
-            <header class="tcg-page-header">
 
-              <h1>Trainer Certificate</h1>
+  <!-- =====================================================
+       CORE SYSTEM
+  ===================================================== -->
 
-              <p>
-                Generate institution-approved trainer certificates from credential records.
-              </p>
+  <link
+    rel="stylesheet"
+    href="../../../assets/css/site.css"
+  />
 
-            </header>
 
-            <section class="tcg-notice">
-              Trainer Certificate · Phase 1 · Governance-Aware UI Shell
-            </section>
+  <!-- =====================================================
+       DESIGN AUTHORITY
+  ===================================================== -->
 
-            <!-- =====================================================
-                Credential Search
-                ===================================================== -->
+  <link
+    rel="stylesheet"
+    href="../../../shared/design-authority/css/refinement.css"
+  />
 
-            <section class="tcg-card">
 
-              <h2>Search Credential</h2>
+  <!-- =====================================================
+       COMMON SURFACES
+  ===================================================== -->
 
-              <div class="tcg-search-grid">
+  <link
+    rel="stylesheet"
+    href="../../../shared/design-authority/css/surfaces/common/common.css"
+  />
 
-                <div class="tcg-field-group">
-                  <label>Credential ID</label>
+  <link
+    rel="stylesheet"
+    href="../../../shared/design-authority/css/surfaces/common/tables.css"
+  />
 
-                  <input
-                    id="searchCredentialId"
-                    type="text"
-                    placeholder="AAU-XXXXXXXX">
-                </div>
+  <link
+    rel="stylesheet"
+    href="../../../shared/design-authority/css/surfaces/common/typography.css"
+  />
 
-                <div class="tcg-field-group">
-                  <label>Learner Name</label>
+  <link
+    rel="stylesheet"
+    href="../../../shared/design-authority/css/surfaces/common/micro-interactions.css"
+  />
 
-                  <input
-                    id="searchLearnerName"
-                    type="text"
-                    placeholder="Full Name">
-                </div>
 
-                <div class="tcg-field-group">
-                  <label>Email Address</label>
+  <!-- =====================================================
+       TRAINER CERTIFICATE GENERATOR
+  ===================================================== -->
 
-                  <input
-                    id="searchEmail"
-                    type="email"
-                    placeholder="email@example.com">
-                </div>
+  <link
+    rel="stylesheet"
+    href="../assets/css/trainer-certificate-generator.css?v=1.2.0"
+  />
+
+</head>
+
+
+<body class="app-loading">
+
+
+  <!-- =====================================================
+       HEADER
+  ===================================================== -->
+
+  <div id="headerContainer"></div>
+
+
+  <!-- =====================================================
+       APPLICATION LAYOUT
+  ===================================================== -->
+
+  <div class="layout">
+
+
+    <!-- ===================================================
+         SIDEBAR
+    =================================================== -->
+
+    <div id="adminSidebarContainer"></div>
+
+
+    <!-- ===================================================
+         MAIN CONTENT
+    =================================================== -->
+
+    <main class="content">
+
+
+      <!-- =================================================
+           LOGIN VIEW
+      ================================================= -->
+
+      <section id="loginView">
+
+        <h2>
+          Admin Access
+        </h2>
+
+        <p>
+          Please sign in with your authorized account.
+        </p>
+
+        <button
+          id="loginBtn"
+          class="btn btn-primary"
+          type="button"
+        >
+          Sign in with Google
+        </button>
+
+      </section>
+
+
+      <!-- =================================================
+           APPLICATION VIEW
+      ================================================= -->
+
+      <section
+        id="appView"
+        class="hidden"
+      >
+
+        <div class="tcg-container">
+
+
+          <!-- =============================================
+               PAGE HEADER
+          ============================================= -->
+
+          <header class="tcg-page-header">
+
+            <h1>
+              Trainer Certificate
+            </h1>
+
+            <p>
+              Generate and publish institution-approved
+              Trainer Certificates from authoritative
+              credential, trainer, and organization records.
+            </p>
+
+          </header>
+
+
+          <!-- =============================================
+               GOVERNANCE NOTICE
+          ============================================= -->
+
+          <section class="tcg-notice">
+
+            Trainer Certificate · Credential-First Asset
+            Publication · Admin Authority
+
+          </section>
+
+
+          <!-- =============================================
+               CREDENTIAL SEARCH
+          ============================================= -->
+
+          <section class="tcg-card">
+
+            <h2>
+              Search Credential
+            </h2>
+
+            <div class="tcg-search-grid">
+
+
+              <div class="tcg-field-group">
+
+                <label for="searchCredentialId">
+                  Credential ID
+                </label>
+
+                <input
+                  id="searchCredentialId"
+                  type="text"
+                  placeholder="AAU-XXXXXXXX"
+                  autocomplete="off"
+                />
 
               </div>
 
-              <div class="tcg-actions">
 
-                <button
-                  id="searchCredentialBtn"
-                  class="tcg-btn">
-                  Search Credential
-                </button>
+              <div class="tcg-field-group">
 
-                <button
-                  id="clearSearchBtn"
-                  class="tcg-btn">
-                  Clear
-                </button>
+                <label for="searchLearnerName">
+                  Learner Name
+                </label>
 
-              </div>
-
-            </section>
-
-            <!-- =====================================================
-                Credential Details
-                ===================================================== -->
-
-            <section class="tcg-card">
-
-              <h2>Credential Details</h2>
-
-              <div class="tcg-grid">
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Credential ID</div>
-                  <div id="credentialIdValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Credential Type</div>
-                  <div id="credentialTypeValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Credential Family</div>
-                  <div id="credentialFamilyValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Program Code</div>
-                  <div id="programCodeValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Program Name</div>
-                  <div id="programNameValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Template Key</div>
-                  <div id="templateKeyValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Issue Date</div>
-                  <div id="issueDateValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Credential Status</div>
-                  <div id="credentialStatusValue" class="tcg-value">Not Loaded</div>
-                </div>
+                <input
+                  id="searchLearnerName"
+                  type="text"
+                  placeholder="Full Name"
+                  autocomplete="off"
+                />
 
               </div>
 
-            </section>
 
-            <!-- =====================================================
-                Lifecycle
-                ===================================================== -->
+              <div class="tcg-field-group">
 
-            <section class="tcg-card">
+                <label for="searchEmail">
+                  Email Address
+                </label>
 
-              <h2>Lifecycle Information</h2>
-
-              <div class="tcg-grid">
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Lifecycle State</div>
-                  <div id="lifecycleStateValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Successor Program</div>
-                  <div id="successorProgramValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Bridge Required</div>
-                  <div id="bridgeRequiredValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Bridge Completion Status</div>
-                  <div id="bridgeCompletionStatusValue" class="tcg-value">Not Loaded</div>
-                </div>
+                <input
+                  id="searchEmail"
+                  type="email"
+                  placeholder="email@example.com"
+                  autocomplete="off"
+                />
 
               </div>
 
-            </section>
 
-            <!-- =====================================================
-                Recognition
-                ===================================================== -->
-
-            <section class="tcg-card">
-
-              <h2>Recognition Information</h2>
-
-              <div class="tcg-grid">
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Original Credential</div>
-                  <div id="originalCredentialValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Current Recognition</div>
-                  <div id="currentRecognitionValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Recognition Status</div>
-                  <div id="recognitionStatusValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-                <div class="tcg-field">
-                  <div class="tcg-label">Recognition Effective Date</div>
-                  <div id="recognitionEffectiveDateValue" class="tcg-value">Not Loaded</div>
-                </div>
-
-              </div>
-
-            </section>
-
-            <!-- =====================================================
-                Trainer Certificate Preview
-                ===================================================== -->
-
-            <!-- Hidden PDF Render Surface -->
-            <div
-                id="pdfRenderContainer"
-                style="
-                position:fixed;
-                left:-99999px;
-                top:0;
-                width:1123px;
-                height:794px;
-                overflow:hidden;
-                background:#ffffff;
-                "
-                >
             </div>
 
-            <section class="tcg-card">
 
-              <h2>Trainer Certificate Preview</h2>
+            <div class="tcg-actions">
 
-              <div id="renderTrainerCertificatePreview" class="tcg-preview">
+              <button
+                id="searchCredentialBtn"
+                class="tcg-btn"
+                type="button"
+              >
+                Search Credential
+              </button>
 
-                <div>
+              <button
+                id="clearSearchBtn"
+                class="tcg-btn"
+                type="button"
+              >
+                Clear
+              </button>
 
-                  <h3>Preview Placeholder</h3>
+            </div>
 
-                  <p>
-                    Trainer certificate preview will appear here after
-                    credential loading and rendering services
-                    are implemented.
-                  </p>
+          </section>
 
+
+          <!-- =============================================
+               CREDENTIAL DETAILS
+          ============================================= -->
+
+          <section class="tcg-card">
+
+            <h2>
+              Credential Details
+            </h2>
+
+            <div class="tcg-grid">
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Credential ID
+                </div>
+
+                <div
+                  id="credentialIdValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
                 </div>
 
               </div>
 
-            </section>
 
-            <!-- =====================================================
-                Actions
-                ===================================================== -->
+              <div class="tcg-field">
 
-            <section class="tcg-card">
+                <div class="tcg-label">
+                  Credential Type
+                </div>
 
-              <h2>Actions</h2>
-
-              <div class="tcg-actions">
-
-                <button
-                  id="generatePdfBtn"
-                  class="tcg-btn tcg-btn-disabled"
-                  disabled>
-                  Generate PDF
-                </button>
+                <div
+                  id="credentialTypeValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
 
               </div>
 
-            </section>
 
-            </div>      <!-- closes tcg-container -->
-</section>  <!-- closes appView -->
+              <div class="tcg-field">
 
-      </main>
+                <div class="tcg-label">
+                  Credential Family
+                </div>
 
-    </div>
+                <div
+                  id="credentialFamilyValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
 
-    <!-- 🔷 FOOTER -->
-    <div id="footerContainer"></div>
+              </div>
 
-    <!-- 🔥 ADMIN APP BOOTSTRAP -->
-    <script type="module">
 
-      import { initAdminApp }
-        from "../../../assets/js/admin-app.js";
+              <div class="tcg-field">
 
-      import { loadAdminSidebar }
-        from "../../../shared/design-authority/js/admin-sidebar.js";
+                <div class="tcg-label">
+                  Program Code
+                </div>
 
-      /*
-        Credential Registry
-        Version: 1.1.0
+                <div
+                  id="programCodeValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
 
-        Admin Navigation Authority Adoption
+              </div>
 
-        Architecture:
-        Admin
-          ↓
-        Credential Operations
-          ↓
-        Credential Registry
-      */
 
-      loadAdminSidebar(
-        "credential-operations"
-      );
+              <div class="tcg-field">
 
-      initAdminApp();
+                <div class="tcg-label">
+                  Program Name
+                </div>
 
-    </script>
+                <div
+                  id="programNameValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script type="module" src="./generator/trainer-certificate-generator.js"></script>
-    <script src="./generator/trainer-certificate-pdf.js"></script>
+              </div>
 
-  </body>
-  </html>
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Template Key
+                </div>
+
+                <div
+                  id="templateKeyValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Issue Date
+                </div>
+
+                <div
+                  id="issueDateValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Credential Status
+                </div>
+
+                <div
+                  id="credentialStatusValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+            </div>
+
+          </section>
+
+
+          <!-- =============================================
+               LIFECYCLE INFORMATION
+          ============================================= -->
+
+          <section class="tcg-card">
+
+            <h2>
+              Lifecycle Information
+            </h2>
+
+            <div class="tcg-grid">
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Lifecycle State
+                </div>
+
+                <div
+                  id="lifecycleStateValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Successor Program
+                </div>
+
+                <div
+                  id="successorProgramValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Bridge Required
+                </div>
+
+                <div
+                  id="bridgeRequiredValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Bridge Completion Status
+                </div>
+
+                <div
+                  id="bridgeCompletionStatusValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+            </div>
+
+          </section>
+
+
+          <!-- =============================================
+               RECOGNITION INFORMATION
+          ============================================= -->
+
+          <section class="tcg-card">
+
+            <h2>
+              Recognition Information
+            </h2>
+
+            <div class="tcg-grid">
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Original Credential
+                </div>
+
+                <div
+                  id="originalCredentialValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Current Recognition
+                </div>
+
+                <div
+                  id="currentRecognitionValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Recognition Status
+                </div>
+
+                <div
+                  id="recognitionStatusValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+              <div class="tcg-field">
+
+                <div class="tcg-label">
+                  Recognition Effective Date
+                </div>
+
+                <div
+                  id="recognitionEffectiveDateValue"
+                  class="tcg-value"
+                >
+                  Not Loaded
+                </div>
+
+              </div>
+
+
+            </div>
+
+          </section>
+
+
+          <!-- =============================================
+               HIDDEN PDF RENDER SURFACE
+
+               The surface remains available to the browser
+               renderer but is positioned outside the visible
+               viewport.
+
+               ISO A4 landscape approximation:
+               1123px × 794px
+          ============================================= -->
+
+          <div
+            id="pdfRenderContainer"
+            aria-hidden="true"
+            style="
+              position: fixed;
+              left: -99999px;
+              top: 0;
+              width: 1123px;
+              height: 794px;
+              overflow: hidden;
+              background: #ffffff;
+              pointer-events: none;
+              z-index: -1;
+            "
+          ></div>
+
+
+          <!-- =============================================
+               TRAINER CERTIFICATE PREVIEW
+          ============================================= -->
+
+          <section class="tcg-card">
+
+            <h2>
+              Trainer Certificate Preview
+            </h2>
+
+            <div
+              id="renderTrainerCertificatePreview"
+              class="tcg-preview"
+            >
+
+              <div>
+
+                <h3>
+                  Preview Placeholder
+                </h3>
+
+                <p>
+                  Search for an eligible credential to render
+                  its governed Trainer Certificate preview.
+                </p>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- =============================================
+               ACTIONS
+          ============================================= -->
+
+          <section class="tcg-card">
+
+            <h2>
+              Actions
+            </h2>
+
+            <div class="tcg-actions">
+
+              <button
+                id="generatePdfBtn"
+                class="tcg-btn tcg-btn-disabled"
+                type="button"
+                disabled
+              >
+                Generate and Publish PDF
+              </button>
+
+            </div>
+
+          </section>
+
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- =====================================================
+       FOOTER
+  ===================================================== -->
+
+  <div id="footerContainer"></div>
+
+
+  <!-- =====================================================
+       ADMIN APPLICATION BOOTSTRAP
+  ===================================================== -->
+
+  <script type="module">
+
+    import {
+      initAdminApp
+    } from "../../../assets/js/admin-app.js";
+
+    import {
+      loadAdminSidebar
+    } from "../../../shared/design-authority/js/admin-sidebar.js";
+
+    loadAdminSidebar(
+      "credential-operations"
+    );
+
+    initAdminApp();
+
+  </script>
+
+
+  <!-- =====================================================
+       PDF RENDERING DEPENDENCIES
+
+       These classic libraries must be loaded before the
+       Trainer Certificate PDF publication module executes.
+  ===================================================== -->
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+  ></script>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+  ></script>
+
+
+  <!-- =====================================================
+       TRAINER CERTIFICATE CONTROLLER
+
+       Owns:
+       • Credential Registry loading
+       • Credential search
+       • Trainer resolution
+       • Organization resolution
+       • Preview rendering
+       • window.loadedCredential
+  ===================================================== -->
+
+  <script
+    type="module"
+    src="./generator/trainer-certificate-generator.js?v=1.4.0"
+  ></script>
+
+
+  <!-- =====================================================
+       SHARED CREDENTIAL ASSET PUBLISHER
+
+       Must load before the PDF publication engine is used.
+
+       Actual repository path:
+
+       credential-generator/
+       ├── shared/
+       │   └── credential-asset-publisher.js
+       └── trainer-certificate/
+           └── index.html
+  ===================================================== -->
+
+  <script
+    type="module"
+    src="../shared/credential-asset-publisher.js?v=1.4.0"
+  ></script>
+
+
+  <!-- =====================================================
+       TRAINER CERTIFICATE PDF PUBLICATION ENGINE
+
+       Owns:
+       • PDF generation
+       • Firebase Storage upload
+       • Download URL resolution
+       • credential_assets publication
+       • Local PDF download
+  ===================================================== -->
+
+  <script
+    type="module"
+    src="./generator/trainer-certificate-pdf.js?v=1.4.0"
+  ></script>
+
+
+</body>
+
+</html>

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-asset-preview.js
-   Version   : 2.1.0
+   Version   : 2.2.0
    Status    : ACTIVE
    Phase     : Credential Asset Consumption
 
@@ -12,29 +12,33 @@
    Credential Asset Preview Renderer
 
    Responsibilities
-
-   ✓ Render Published Credential Asset Preview
-   ✓ Render PDF Assets
-   ✓ Render Image Assets
-   ✓ Render Preview Actions
-   ✓ Support Published Asset Download
-   ✓ Support LinkedIn Share Action
-   ✓ Handle Missing and Unsupported Assets
+   ----------------------------------------------------------
+   ✓ Render published credential asset previews
+   ✓ Render PDF assets
+   ✓ Render image assets
+   ✓ Render preview actions
+   ✓ Support published asset download
+   ✓ Support LinkedIn share action
+   ✓ Handle missing and unsupported assets
+   ✓ Validate published URLs before rendering
+   ✓ Reject legacy placeholder URL values
+   ✓ Support governed and legacy asset-type formats
 
    Non Responsibilities
-
-   ✗ Overlay Creation
-   ✗ Overlay Lifecycle
-   ✗ Firestore
+   ----------------------------------------------------------
+   ✗ Overlay creation
+   ✗ Overlay lifecycle
+   ✗ Firestore access
    ✗ Authentication
    ✗ Authorization
-   ✗ Entitlement Resolution
-   ✗ Asset Generation
-   ✗ Asset Upload
-   ✗ Payment Processing
+   ✗ Entitlement resolution
+   ✗ Asset generation
+   ✗ Asset upload
+   ✗ Payment processing
+   ✗ Credential mutation
 
    Governance
-
+   ----------------------------------------------------------
    • Credential Workspace Renderer
    • Published Asset Consumption Only
    • No Nested Overlay
@@ -43,25 +47,194 @@
    • No Authentication Logic
    • Student Portal Read-Only
    • Cloud Storage Asset Rendering
+   • Only validated HTTP or HTTPS asset URLs may render
+   • Placeholder URLs must never reach iframe, image,
+     anchor or download surfaces
+
+   Asset Type Authority
+   ----------------------------------------------------------
+   Governed values:
+
+   • university_certificate
+   • trainer_certificate
+   • digital_badge
+   • recognition_asset
+
+   Compatibility values:
+
+   • university-certificate
+   • trainer-certificate
+   • digital-badge
+   • recognition-asset
 
    Change History
    ----------------------------------------------------------
+   v2.2.0
+   • Added published URL validation
+   • Rejects placeholder and malformed preview URLs
+   • Falls back from invalid preview URL to valid download URL
+   • Supports underscore and hyphen asset-type values
+   • Normalizes asset type before title and format resolution
+   • Adds safe URL diagnostics
+   • Preserves existing public API
+   • Preserves overlay integration
+   • Preserves LinkedIn sharing
+   • Preserves read-only portal architecture
+
    v2.1.0
-   • Accepts published asset ViewModel
-   • Renders actual Cloud Storage assets
-   • Supports PDF and image previews
-   • Downloads using published asset URL
-   • Removes dependency on credential-level asset URLs
-   • Preserves LinkedIn verification sharing
-   • Adds missing and unsupported asset states
+   • Accepted published asset ViewModel
+   • Rendered actual Cloud Storage assets
+   • Supported PDF and image previews
+   • Downloaded using published asset URL
+   • Removed dependency on credential-level asset URLs
+   • Preserved LinkedIn verification sharing
+   • Added missing and unsupported asset states
 
 ========================================================== */
 
-(function (window, document) {
+(function (
+    window,
+    document
+) {
 
     "use strict";
 
+
+    /* ======================================================
+       CONSTANTS
+    ====================================================== */
+
+    const MODULE_NAME =
+        "CredentialAssetPreview";
+
+    const MODULE_VERSION =
+        "2.2.0";
+
+    const ASSET_TYPES =
+        Object.freeze({
+
+            UNIVERSITY_CERTIFICATE:
+                "university_certificate",
+
+            TRAINER_CERTIFICATE:
+                "trainer_certificate",
+
+            DIGITAL_BADGE:
+                "digital_badge",
+
+            RECOGNITION_ASSET:
+                "recognition_asset"
+
+        });
+
+    const ASSET_TYPE_ALIASES =
+        Object.freeze({
+
+            "university_certificate":
+                ASSET_TYPES.UNIVERSITY_CERTIFICATE,
+
+            "university-certificate":
+                ASSET_TYPES.UNIVERSITY_CERTIFICATE,
+
+            "trainer_certificate":
+                ASSET_TYPES.TRAINER_CERTIFICATE,
+
+            "trainer-certificate":
+                ASSET_TYPES.TRAINER_CERTIFICATE,
+
+            "digital_badge":
+                ASSET_TYPES.DIGITAL_BADGE,
+
+            "digital-badge":
+                ASSET_TYPES.DIGITAL_BADGE,
+
+            "recognition_asset":
+                ASSET_TYPES.RECOGNITION_ASSET,
+
+            "recognition-asset":
+                ASSET_TYPES.RECOGNITION_ASSET
+
+        });
+
+    const ASSET_TITLES =
+        Object.freeze({
+
+            [ASSET_TYPES.UNIVERSITY_CERTIFICATE]:
+                "University Certificate",
+
+            [ASSET_TYPES.TRAINER_CERTIFICATE]:
+                "Trainer Certificate",
+
+            [ASSET_TYPES.DIGITAL_BADGE]:
+                "Digital Badge",
+
+            [ASSET_TYPES.RECOGNITION_ASSET]:
+                "Recognition Asset"
+
+        });
+
+    const IMAGE_FILE_EXTENSIONS =
+        Object.freeze([
+            "png",
+            "jpg",
+            "jpeg",
+            "webp",
+            "gif",
+            "svg"
+        ]);
+
+    const IMAGE_ASSET_FORMATS =
+        Object.freeze([
+            "image",
+            "png",
+            "jpg",
+            "jpeg",
+            "webp",
+            "gif",
+            "svg"
+        ]);
+
+
+    /* ======================================================
+       NORMALIZATION HELPERS
+    ====================================================== */
+
+    function normalizeString(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+        return String(
+            value
+        ).trim();
+
+    }
+
+    function normalizeLowercase(
+        value
+    ) {
+
+        return normalizeString(
+            value
+        ).toLowerCase();
+
+    }
+
+
+    /* ======================================================
+       PUBLIC COMPONENT
+    ====================================================== */
+
     const CredentialAssetPreview = {
+
 
         /* ==================================================
            RENDER
@@ -85,23 +258,31 @@
 
             }
 
+            const normalizedAssetType =
+                this.normalizeAssetType(
+                    assetType
+                );
+
             const title =
                 this.resolveTitle(
-                    assetType
+                    normalizedAssetType
                 );
 
             const preview =
                 this.renderAsset(
                     credential,
-                    assetType,
+                    normalizedAssetType,
+                    asset
+                );
+
+            const downloadUrl =
+                this.resolvePublishedDownloadUrl(
                     asset
                 );
 
             const hasDownload =
                 Boolean(
-                    this.resolvePublishedDownloadUrl(
-                        asset
-                    )
+                    downloadUrl
                 );
 
             return `
@@ -109,13 +290,17 @@
                 <section
                     class="credential-asset-preview-workspace"
                     data-credential-section="asset-preview"
-                    data-credential-asset-type="${this.escape(assetType)}">
+                    data-credential-asset-type="${this.escapeAttribute(
+                        normalizedAssetType
+                    )}">
 
-                    <header class="credential-asset-preview-header">
+                    <header
+                        class="credential-asset-preview-header">
 
                         <div>
 
-                            <p class="credential-asset-preview-label">
+                            <p
+                                class="credential-asset-preview-label">
 
                                 Credential Asset Preview
 
@@ -123,7 +308,9 @@
 
                             <h2>
 
-                                ${this.escape(title)}
+                                ${this.escape(
+                                    title
+                                )}
 
                             </h2>
 
@@ -139,18 +326,22 @@
 
                     </header>
 
-                    <div class="credential-asset-preview-body">
+                    <div
+                        class="credential-asset-preview-body">
 
                         ${preview}
 
                     </div>
 
-                    <footer class="credential-asset-preview-actions">
+                    <footer
+                        class="credential-asset-preview-actions">
 
                         <button
                             type="button"
                             class="credential-asset-preview-button secondary js-download-credential-asset"
-                            data-credential-asset-type="${this.escape(assetType)}"
+                            data-credential-asset-type="${this.escapeAttribute(
+                                normalizedAssetType
+                            )}"
                             ${hasDownload ? "" : "disabled"}
                             aria-disabled="${hasDownload ? "false" : "true"}">
 
@@ -161,7 +352,9 @@
                         <button
                             type="button"
                             class="credential-asset-preview-button primary js-share-credential-linkedin"
-                            data-credential-asset-type="${this.escape(assetType)}">
+                            data-credential-asset-type="${this.escapeAttribute(
+                                normalizedAssetType
+                            )}">
 
                             Share on LinkedIn
 
@@ -169,9 +362,12 @@
 
                     </footer>
 
-                    <p class="credential-asset-preview-note">
+                    <p
+                        class="credential-asset-preview-note">
 
-                        Tip: Download the asset first, then upload it manually while sharing on LinkedIn.
+                        Tip: Download the asset first, then
+                        upload it manually while sharing on
+                        LinkedIn.
 
                     </p>
 
@@ -180,6 +376,7 @@
             `;
 
         },
+
 
         /* ==================================================
            ASSET RENDERER
@@ -191,7 +388,9 @@
             asset
         ) {
 
-            if (!asset) {
+            if (
+                !asset
+            ) {
 
                 return this.renderEmpty(
                     "Published asset unavailable",
@@ -205,11 +404,13 @@
                     asset
                 );
 
-            if (!previewUrl) {
+            if (
+                !previewUrl
+            ) {
 
                 return this.renderEmpty(
                     "Preview unavailable",
-                    "The published asset does not contain a usable preview URL."
+                    "The published asset does not contain a valid preview URL."
                 );
 
             }
@@ -220,7 +421,10 @@
                     assetType
                 );
 
-            if (assetFormat === "pdf") {
+            if (
+                assetFormat ===
+                "pdf"
+            ) {
 
                 return this.renderPdfAsset(
                     asset,
@@ -229,7 +433,10 @@
 
             }
 
-            if (assetFormat === "image") {
+            if (
+                assetFormat ===
+                "image"
+            ) {
 
                 return this.renderImageAsset(
                     credential,
@@ -247,6 +454,7 @@
 
         },
 
+
         /* ==================================================
            PDF RENDERER
         ================================================== */
@@ -256,10 +464,37 @@
             previewUrl
         ) {
 
+            if (
+                !this.isUsablePublishedUrl(
+                    previewUrl
+                )
+            ) {
+
+                return this.renderEmpty(
+                    "PDF preview unavailable",
+                    "The published PDF URL is invalid or has not yet been updated."
+                );
+
+            }
+
             const title =
-                asset.assetLabel ||
-                asset.fileName ||
+                normalizeString(
+                    asset?.assetLabel
+                ) ||
+                normalizeString(
+                    asset?.fileName
+                ) ||
                 "Credential PDF";
+
+            const escapedUrl =
+                this.escapeAttribute(
+                    previewUrl
+                );
+
+            const escapedTitle =
+                this.escapeAttribute(
+                    title
+                );
 
             return `
 
@@ -268,18 +503,20 @@
 
                     <iframe
                         class="credential-published-asset-frame"
-                        src="${this.escapeAttribute(previewUrl)}"
-                        title="${this.escapeAttribute(title)}"
-                        loading="lazy">
+                        src="${escapedUrl}"
+                        title="${escapedTitle}"
+                        loading="lazy"
+                        referrerpolicy="no-referrer">
 
                     </iframe>
 
-                    <p class="credential-published-asset-fallback">
+                    <p
+                        class="credential-published-asset-fallback">
 
                         Unable to see the PDF preview?
 
                         <a
-                            href="${this.escapeAttribute(previewUrl)}"
+                            href="${escapedUrl}"
                             target="_blank"
                             rel="noopener noreferrer">
 
@@ -295,6 +532,7 @@
 
         },
 
+
         /* ==================================================
            IMAGE RENDERER
         ================================================== */
@@ -306,17 +544,46 @@
             previewUrl
         ) {
 
+            if (
+                !this.isUsablePublishedUrl(
+                    previewUrl
+                )
+            ) {
+
+                return this.renderEmpty(
+                    "Image preview unavailable",
+                    "The published image URL is invalid or has not yet been updated."
+                );
+
+            }
+
             const credentialName =
-                credential.programName ||
-                credential.program_name ||
-                credential.credentialName ||
-                credential.credential_name ||
-                this.resolveTitle(assetType);
+                normalizeString(
+                    credential?.programName
+                ) ||
+                normalizeString(
+                    credential?.program_name
+                ) ||
+                normalizeString(
+                    credential?.credentialName
+                ) ||
+                normalizeString(
+                    credential?.credential_name
+                ) ||
+                this.resolveTitle(
+                    assetType
+                );
 
             const imageAlt =
-                asset.assetLabel ||
-                asset.fileName ||
-                `${credentialName} ${this.resolveTitle(assetType)}`;
+                normalizeString(
+                    asset?.assetLabel
+                ) ||
+                normalizeString(
+                    asset?.fileName
+                ) ||
+                `${credentialName} ${this.resolveTitle(
+                    assetType
+                )}`;
 
             return `
 
@@ -325,15 +592,21 @@
 
                     <img
                         class="credential-published-asset-image"
-                        src="${this.escapeAttribute(previewUrl)}"
-                        alt="${this.escapeAttribute(imageAlt)}"
-                        loading="lazy">
+                        src="${this.escapeAttribute(
+                            previewUrl
+                        )}"
+                        alt="${this.escapeAttribute(
+                            imageAlt
+                        )}"
+                        loading="lazy"
+                        referrerpolicy="no-referrer">
 
                 </div>
 
             `;
 
         },
+
 
         /* ==================================================
            UNSUPPORTED ASSET
@@ -345,13 +618,31 @@
         ) {
 
             const fileName =
-                asset.fileName ||
-                asset.assetLabel ||
+                normalizeString(
+                    asset?.fileName
+                ) ||
+                normalizeString(
+                    asset?.assetLabel
+                ) ||
                 "Published credential asset";
+
+            if (
+                !this.isUsablePublishedUrl(
+                    previewUrl
+                )
+            ) {
+
+                return this.renderEmpty(
+                    "Preview format unavailable",
+                    "This asset does not contain a valid published URL."
+                );
+
+            }
 
             return `
 
-                <div class="asset-preview-empty">
+                <div
+                    class="asset-preview-empty">
 
                     <h3>
 
@@ -361,18 +652,22 @@
 
                     <p>
 
-                        This published asset cannot be previewed directly
-                        in the portal.
+                        This published asset cannot be
+                        previewed directly in the portal.
 
                     </p>
 
                     <a
                         class="btn btn-secondary"
-                        href="${this.escapeAttribute(previewUrl)}"
+                        href="${this.escapeAttribute(
+                            previewUrl
+                        )}"
                         target="_blank"
                         rel="noopener noreferrer">
 
-                        Open ${this.escape(fileName)}
+                        Open ${this.escape(
+                            fileName
+                        )}
 
                     </a>
 
@@ -382,28 +677,35 @@
 
         },
 
+
         /* ==================================================
            EMPTY STATE
         ================================================== */
 
         renderEmpty(
             title = "Preview unavailable",
-            message = "This credential asset preview is not available yet."
+            message =
+                "This credential asset preview is not available yet."
         ) {
 
             return `
 
-                <div class="asset-preview-empty">
+                <div
+                    class="asset-preview-empty">
 
                     <h3>
 
-                        ${this.escape(title)}
+                        ${this.escape(
+                            title
+                        )}
 
                     </h3>
 
                     <p>
 
-                        ${this.escape(message)}
+                        ${this.escape(
+                            message
+                        )}
 
                     </p>
 
@@ -412,6 +714,7 @@
             `;
 
         },
+
 
         /* ==================================================
            DOWNLOAD
@@ -442,10 +745,12 @@
                     asset
                 );
 
-            if (!url) {
+            if (
+                !url
+            ) {
 
                 window.alert(
-                    "Download is not available for this asset yet."
+                    "Download is not available because the published URL is missing or invalid."
                 );
 
                 return;
@@ -453,7 +758,9 @@
             }
 
             const anchor =
-                document.createElement("a");
+                document.createElement(
+                    "a"
+                );
 
             anchor.href =
                 url;
@@ -464,10 +771,17 @@
             anchor.rel =
                 "noopener noreferrer";
 
-            if (asset.fileName) {
+            const fileName =
+                normalizeString(
+                    asset?.fileName
+                );
+
+            if (
+                fileName
+            ) {
 
                 anchor.download =
-                    asset.fileName;
+                    fileName;
 
             }
             else {
@@ -487,13 +801,18 @@
 
         },
 
+
         /* ==================================================
            LINKEDIN SHARE
         ================================================== */
 
-        shareOnLinkedIn(credential) {
+        shareOnLinkedIn(
+            credential
+        ) {
 
-            if (!credential) {
+            if (
+                !credential
+            ) {
 
                 window.alert(
                     "LinkedIn sharing is not available for this credential yet."
@@ -508,7 +827,9 @@
                     credential
                 );
 
-            if (!verificationUrl) {
+            if (
+                !verificationUrl
+            ) {
 
                 window.alert(
                     "LinkedIn sharing is not available for this credential yet."
@@ -532,65 +853,363 @@
 
         },
 
+
+        /* ==================================================
+           ASSET TYPE NORMALIZATION
+        ================================================== */
+
+        normalizeAssetType(
+            assetType
+        ) {
+
+            const normalizedValue =
+                normalizeLowercase(
+                    assetType
+                );
+
+            return (
+                ASSET_TYPE_ALIASES[
+                    normalizedValue
+                ] ||
+                normalizedValue
+            );
+
+        },
+
+
         /* ==================================================
            PUBLISHED URL HELPERS
         ================================================== */
 
-        resolvePublishedPreviewUrl(asset) {
+        resolvePublishedPreviewUrl(
+            asset
+        ) {
 
-            if (!asset) {
+            if (
+                !asset
+            ) {
+
                 return "";
+
             }
+
+            let servicePreviewUrl =
+                "";
+
+            let directPreviewUrl =
+                "";
+
+            let directDownloadUrl =
+                "";
 
             if (
                 window.CredentialAssetService &&
-                typeof window.CredentialAssetService.getPreviewUrl ===
+                typeof window.CredentialAssetService
+                    .getPreviewUrl ===
                     "function"
             ) {
 
-                return (
-                    window.CredentialAssetService.getPreviewUrl(
-                        asset
-                    ) || ""
+                servicePreviewUrl =
+                    normalizeString(
+                        window.CredentialAssetService
+                            .getPreviewUrl(
+                                asset
+                            )
+                    );
+
+            }
+
+            directPreviewUrl =
+                normalizeString(
+                    asset.previewUrl ||
+                    asset.preview_url
+                );
+
+            directDownloadUrl =
+                normalizeString(
+                    asset.downloadUrl ||
+                    asset.download_url
+                );
+
+            const candidates = [
+                servicePreviewUrl,
+                directPreviewUrl,
+                directDownloadUrl
+            ];
+
+            const resolvedUrl =
+                candidates.find(
+                    (
+                        candidate
+                    ) =>
+                        this.isUsablePublishedUrl(
+                            candidate
+                        )
+                ) ||
+                "";
+
+            if (
+                !resolvedUrl
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] No usable preview URL could be resolved.`,
+                    {
+                        assetType:
+                            asset.assetType ||
+                            asset.asset_type ||
+                            "",
+
+                        documentId:
+                            asset.id ||
+                            "",
+
+                        previewUrlPresent:
+                            Boolean(
+                                directPreviewUrl
+                            ),
+
+                        downloadUrlPresent:
+                            Boolean(
+                                directDownloadUrl
+                            )
+                    }
+                );
+
+            }
+            else if (
+                directPreviewUrl &&
+                !this.isUsablePublishedUrl(
+                    directPreviewUrl
+                ) &&
+                resolvedUrl ===
+                    directDownloadUrl
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] Invalid preview URL rejected. Using download URL as fallback.`,
+                    {
+                        documentId:
+                            asset.id ||
+                            "",
+
+                        assetType:
+                            asset.assetType ||
+                            asset.asset_type ||
+                            ""
+                    }
                 );
 
             }
 
-            return (
-                asset.previewUrl ||
-                asset.downloadUrl ||
-                ""
-            );
+            return resolvedUrl;
 
         },
 
-        resolvePublishedDownloadUrl(asset) {
+        resolvePublishedDownloadUrl(
+            asset
+        ) {
 
-            if (!asset) {
+            if (
+                !asset
+            ) {
+
                 return "";
+
             }
+
+            let serviceDownloadUrl =
+                "";
+
+            const directDownloadUrl =
+                normalizeString(
+                    asset.downloadUrl ||
+                    asset.download_url
+                );
+
+            const directPreviewUrl =
+                normalizeString(
+                    asset.previewUrl ||
+                    asset.preview_url
+                );
 
             if (
                 window.CredentialAssetService &&
-                typeof window.CredentialAssetService.getDownloadUrl ===
+                typeof window.CredentialAssetService
+                    .getDownloadUrl ===
                     "function"
             ) {
 
-                return (
-                    window.CredentialAssetService.getDownloadUrl(
-                        asset
-                    ) || ""
+                serviceDownloadUrl =
+                    normalizeString(
+                        window.CredentialAssetService
+                            .getDownloadUrl(
+                                asset
+                            )
+                    );
+
+            }
+
+            const candidates = [
+                serviceDownloadUrl,
+                directDownloadUrl,
+                directPreviewUrl
+            ];
+
+            const resolvedUrl =
+                candidates.find(
+                    (
+                        candidate
+                    ) =>
+                        this.isUsablePublishedUrl(
+                            candidate
+                        )
+                ) ||
+                "";
+
+            if (
+                !resolvedUrl
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] No usable download URL could be resolved.`,
+                    {
+                        documentId:
+                            asset.id ||
+                            "",
+
+                        assetType:
+                            asset.assetType ||
+                            asset.asset_type ||
+                            ""
+                    }
                 );
 
             }
 
-            return (
-                asset.downloadUrl ||
-                asset.previewUrl ||
-                ""
-            );
+            return resolvedUrl;
 
         },
+
+
+        /* ==================================================
+           URL VALIDATION
+        ================================================== */
+
+        isUsablePublishedUrl(
+            value
+        ) {
+
+            const normalizedValue =
+                normalizeString(
+                    value
+                );
+
+            if (
+                !normalizedValue
+            ) {
+
+                return false;
+
+            }
+
+            const lowercaseValue =
+                normalizedValue.toLowerCase();
+
+            /*
+             * Reject known placeholder values and incomplete
+             * documentation markers.
+             */
+            if (
+                lowercaseValue.includes(
+                    "<same as"
+                ) ||
+                lowercaseValue.includes(
+                    "same as download"
+                ) ||
+                lowercaseValue.includes(
+                    "same_as_download"
+                ) ||
+                lowercaseValue.includes(
+                    "placeholder"
+                ) ||
+                lowercaseValue ===
+                    "todo" ||
+                lowercaseValue ===
+                    "tbd" ||
+                lowercaseValue ===
+                    "null" ||
+                lowercaseValue ===
+                    "undefined"
+            ) {
+
+                return false;
+
+            }
+
+            if (
+                normalizedValue.startsWith(
+                    "<"
+                ) ||
+                normalizedValue.endsWith(
+                    ">"
+                )
+            ) {
+
+                return false;
+
+            }
+
+            let parsedUrl =
+                null;
+
+            try {
+
+                parsedUrl =
+                    new URL(
+                        normalizedValue,
+                        window.location.origin
+                    );
+
+            }
+            catch (
+                error
+            ) {
+
+                return false;
+
+            }
+
+            /*
+             * Asset URLs must be explicit HTTP or HTTPS URLs.
+             * Relative URLs are rejected so placeholder text
+             * cannot silently resolve against the portal host.
+             */
+            if (
+                !/^https?:\/\//i.test(
+                    normalizedValue
+                )
+            ) {
+
+                return false;
+
+            }
+
+            if (
+                parsedUrl.protocol !==
+                    "https:" &&
+                parsedUrl.protocol !==
+                    "http:"
+            ) {
+
+                return false;
+
+            }
+
+            return true;
+
+        },
+
 
         /* ==================================================
            ASSET FORMAT
@@ -601,31 +1220,49 @@
             assetType
         ) {
 
-            if (!asset) {
+            if (
+                !asset
+            ) {
+
                 return "";
+
             }
 
+            const normalizedAssetType =
+                this.normalizeAssetType(
+                    assetType ||
+                    asset.assetType ||
+                    asset.asset_type
+                );
+
             const mimeType =
-                String(
-                    asset.mimeType || ""
-                ).toLowerCase();
+                normalizeLowercase(
+                    asset.mimeType ||
+                    asset.mime_type
+                );
 
             const fileExtension =
-                String(
-                    asset.fileExtension || ""
-                )
-                    .toLowerCase()
-                    .replace(".", "");
+                normalizeLowercase(
+                    asset.fileExtension ||
+                    asset.file_extension
+                ).replace(
+                    ".",
+                    ""
+                );
 
             const assetFormat =
-                String(
-                    asset.assetFormat || ""
-                ).toLowerCase();
+                normalizeLowercase(
+                    asset.assetFormat ||
+                    asset.asset_format
+                );
 
             if (
-                mimeType === "application/pdf" ||
-                fileExtension === "pdf" ||
-                assetFormat === "pdf"
+                mimeType ===
+                    "application/pdf" ||
+                fileExtension ===
+                    "pdf" ||
+                assetFormat ===
+                    "pdf"
             ) {
 
                 return "pdf";
@@ -633,23 +1270,15 @@
             }
 
             if (
-                mimeType.startsWith("image/") ||
-                [
-                    "png",
-                    "jpg",
-                    "jpeg",
-                    "webp",
-                    "gif",
-                    "svg"
-                ].includes(fileExtension) ||
-                [
-                    "image",
-                    "png",
-                    "jpg",
-                    "jpeg",
-                    "webp",
-                    "svg"
-                ].includes(assetFormat)
+                mimeType.startsWith(
+                    "image/"
+                ) ||
+                IMAGE_FILE_EXTENSIONS.includes(
+                    fileExtension
+                ) ||
+                IMAGE_ASSET_FORMATS.includes(
+                    assetFormat
+                )
             ) {
 
                 return "image";
@@ -657,13 +1286,15 @@
             }
 
             /*
-             * Asset-type fallback where historical records
-             * do not yet include MIME or file metadata.
+             * Asset-type fallback for historical records that
+             * do not include MIME or file metadata.
              */
 
             if (
-                assetType === "university-certificate" ||
-                assetType === "trainer-certificate"
+                normalizedAssetType ===
+                    ASSET_TYPES.UNIVERSITY_CERTIFICATE ||
+                normalizedAssetType ===
+                    ASSET_TYPES.TRAINER_CERTIFICATE
             ) {
 
                 return "pdf";
@@ -671,7 +1302,8 @@
             }
 
             if (
-                assetType === "digital-badge"
+                normalizedAssetType ===
+                    ASSET_TYPES.DIGITAL_BADGE
             ) {
 
                 return "image";
@@ -682,38 +1314,54 @@
 
         },
 
+
         /* ==================================================
            VERIFICATION URL
         ================================================== */
 
-        resolveVerificationUrl(credential) {
+        resolveVerificationUrl(
+            credential
+        ) {
 
-            if (!credential) {
+            if (
+                !credential
+            ) {
+
                 return "";
+
             }
 
             const credentialId =
-                String(
+                normalizeString(
                     credential.credentialId ||
                     credential.credential_id ||
-                    credential.id ||
-                    ""
-                ).trim();
+                    credential.id
+                );
 
             const explicitUrl =
-                credential.verificationUrl ||
-                credential.verification_url ||
-                credential.verifyUrl ||
-                credential.verify_url ||
-                credential.registryUrl ||
-                credential.registry_url ||
-                "";
+                normalizeString(
+                    credential.verificationUrl ||
+                    credential.verification_url ||
+                    credential.verifyUrl ||
+                    credential.verify_url ||
+                    credential.registryUrl ||
+                    credential.registry_url
+                );
 
-            if (explicitUrl) {
+            if (
+                explicitUrl &&
+                this.isUsablePublishedUrl(
+                    explicitUrl
+                )
+            ) {
+
                 return explicitUrl;
+
             }
 
-            if (credentialId) {
+            if (
+                credentialId
+            ) {
 
                 return (
                     "https://verify.agileai.university/?credentialId=" +
@@ -724,38 +1372,35 @@
 
             }
 
-            return "https://verify.agileai.university";
+            return (
+                "https://verify.agileai.university"
+            );
 
         },
+
 
         /* ==================================================
            TITLE
         ================================================== */
 
-        resolveTitle(assetType) {
+        resolveTitle(
+            assetType
+        ) {
 
-            const titles = {
-
-                "university-certificate":
-                    "University Certificate",
-
-                "trainer-certificate":
-                    "Trainer Certificate",
-
-                "digital-badge":
-                    "Digital Badge",
-
-                "recognition-asset":
-                    "Recognition Asset"
-
-            };
+            const normalizedAssetType =
+                this.normalizeAssetType(
+                    assetType
+                );
 
             return (
-                titles[assetType] ||
+                ASSET_TITLES[
+                    normalizedAssetType
+                ] ||
                 "Credential Asset"
             );
 
         },
+
 
         /* ==================================================
            COMPATIBILITY
@@ -783,56 +1428,103 @@
 
             }
 
+            const normalizedAssetType =
+                this.normalizeAssetType(
+                    assetType
+                );
+
             if (
                 window.CredentialDetailOverlay &&
-                typeof window.CredentialDetailOverlay.showAssetPreview ===
+                typeof window.CredentialDetailOverlay
+                    .showAssetPreview ===
                     "function"
             ) {
 
-                window.CredentialDetailOverlay.showAssetPreview(
-                    assetType
-                );
+                window.CredentialDetailOverlay
+                    .showAssetPreview(
+                        normalizedAssetType
+                    );
 
                 return;
 
             }
 
             console.warn(
-                "[CredentialAssetPreview] open() is deprecated. Use CredentialDetailOverlay.showAssetPreview()."
+                `[${MODULE_NAME}] open() is deprecated. Use CredentialDetailOverlay.showAssetPreview().`
             );
 
         },
+
 
         /* ==================================================
            ESCAPING
         ================================================== */
 
-        escape(value) {
+        escape(
+            value
+        ) {
 
-            return String(value || "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            return normalizeString(
+                value
+            )
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
 
         },
 
-        escapeAttribute(value) {
+        escapeAttribute(
+            value
+        ) {
 
             return this.escape(
                 value
             );
 
+        },
+
+
+        /* ==================================================
+           PUBLIC CONSTANT ACCESS
+        ================================================== */
+
+        getAssetTypes() {
+
+            return {
+                ...ASSET_TYPES
+            };
+
         }
 
     };
+
+
+    /* ======================================================
+       PUBLIC REGISTRATION
+    ====================================================== */
 
     window.CredentialAssetPreview =
         CredentialAssetPreview;
 
     console.info(
-        "[CredentialAssetPreview] Loaded v2.1.0"
+        `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
     );
 
 })(window, document);

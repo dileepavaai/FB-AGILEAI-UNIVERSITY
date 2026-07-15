@@ -8,15 +8,18 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.3.0
+       Version : 2.4.0
        Status  : ACTIVE
 
        Security Model
        -----------------------------------------------------
        • Firebase Authentication UID is identity authority
        • /users/{uid} is the RBAC profile authority
+       • credentials is the credential authority
+       • credential_id is the permanent credential-asset
+         authority
+       • learner_uid is optional until identity activation
        • Students may read only their own governed records
-       • Credential assets are owned through learner_uid
        • Admin users are currently bootstrap-authorized
          through the approved email list
        • All unlisted access is denied
@@ -43,6 +46,62 @@ service cloud.firestore {
           "dileepav@gmail.com",
           "laau.aaiu@gmail.com"
         ];
+    }
+
+
+    /* =====================================================
+       CREDENTIAL-ASSET HELPERS
+    ===================================================== */
+
+    function hasRequiredCredentialAssetFields(data) {
+      return
+        "credential_id" in data &&
+        data.credential_id is string &&
+        data.credential_id.size() > 0 &&
+
+        "asset_type" in data &&
+        data.asset_type is string &&
+        data.asset_type.size() > 0 &&
+
+        "status" in data &&
+        data.status == "published" &&
+
+        "is_latest" in data &&
+        data.is_latest == true &&
+
+        "storage_path" in data &&
+        data.storage_path is string &&
+        data.storage_path.size() > 0 &&
+
+        "download_url" in data &&
+        data.download_url is string &&
+        data.download_url.size() > 0;
+    }
+
+    function hasValidOptionalLearnerUid(data) {
+      return
+        !("learner_uid" in data) ||
+        data.learner_uid == null ||
+        data.learner_uid is string;
+    }
+
+    function hasValidAssetType(data) {
+      return
+        data.asset_type in [
+          "university_certificate",
+          "trainer_certificate",
+          "digital_badge",
+          "recognition_asset"
+        ];
+    }
+
+    function preservesCredentialAssetIdentity() {
+      return
+        request.resource.data.credential_id ==
+          resource.data.credential_id &&
+
+        request.resource.data.asset_type ==
+          resource.data.asset_type;
     }
 
 
@@ -129,41 +188,96 @@ service cloud.firestore {
         isSignedIn() ||
         isBootstrapAdmin();
 
+      /*
+       * Client-side credential writes remain disabled.
+       * Credential ownership and lifecycle changes must flow
+       * through governed backend services.
+       */
+
       allow create, update, delete: if false;
     }
 
 
     /* =====================================================
-       CREDENTIAL ASSETS — LEARNER OWNED
+       CREDENTIAL ASSETS — CREDENTIAL FIRST
     ===================================================== */
 
     match /credential_assets/{docId} {
 
       /*
-       * A learner may read a published latest asset only when
-       * learner_uid matches their authenticated Firebase UID.
+       * Learners may read only published, latest assets that
+       * are assigned to their authenticated Firebase UID.
        *
-       * This supports:
-       * • direct document reads
-       * • learner_uid filtered queries
-       * • credential_id filtered queries where the query also
-       *   guarantees ownership
+       * Historical assets may exist before activation with
+       * learner_uid set to null. Those assets remain
+       * inaccessible to learners until identity
+       * reconciliation assigns ownership.
        */
 
       allow get, list: if
         (
           isSignedIn() &&
-          resource.data.learner_uid == request.auth.uid &&
-          resource.data.status == "published" &&
-          resource.data.is_latest == true
+
+          "learner_uid" in resource.data &&
+          resource.data.learner_uid != null &&
+          resource.data.learner_uid ==
+            request.auth.uid &&
+
+          resource.data.status ==
+            "published" &&
+
+          resource.data.is_latest ==
+            true
         ) ||
         isBootstrapAdmin();
 
       /*
-       * Student Portal never generates or modifies assets.
+       * Bootstrap administrators may publish asset metadata.
+       *
+       * credential_id is the permanent asset authority.
+       * learner_uid may be null for historical credentials
+       * that have not completed activation.
        */
 
-      allow create, update, delete: if false;
+      allow create: if
+        isBootstrapAdmin() &&
+        hasRequiredCredentialAssetFields(
+          request.resource.data
+        ) &&
+        hasValidOptionalLearnerUid(
+          request.resource.data
+        ) &&
+        hasValidAssetType(
+          request.resource.data
+        );
+
+      /*
+       * Bootstrap administrators may republish or update
+       * asset metadata.
+       *
+       * The permanent credential and asset identity cannot
+       * be changed through an update.
+       */
+
+      allow update: if
+        isBootstrapAdmin() &&
+        preservesCredentialAssetIdentity() &&
+        hasRequiredCredentialAssetFields(
+          request.resource.data
+        ) &&
+        hasValidOptionalLearnerUid(
+          request.resource.data
+        ) &&
+        hasValidAssetType(
+          request.resource.data
+        );
+
+      /*
+       * Deletion remains an explicit administrator action.
+       */
+
+      allow delete: if
+        isBootstrapAdmin();
     }
 
 
@@ -209,6 +323,12 @@ service cloud.firestore {
       allow list: if
         isBootstrapAdmin();
 
+      /*
+       * Client-side entitlement writes remain disabled.
+       * Entitlement assignment must occur through governed
+       * backend services.
+       */
+
       allow create, update, delete: if false;
     }
 
@@ -218,7 +338,9 @@ service cloud.firestore {
     ===================================================== */
 
     match /leads/{docId} {
-      allow read, write: if isBootstrapAdmin();
+
+      allow read, write: if
+        isBootstrapAdmin();
     }
 
 
@@ -227,7 +349,9 @@ service cloud.firestore {
     ===================================================== */
 
     match /lead_communications/{docId} {
-      allow read, write: if isBootstrapAdmin();
+
+      allow read, write: if
+        isBootstrapAdmin();
     }
 
 
@@ -236,7 +360,9 @@ service cloud.firestore {
     ===================================================== */
 
     match /batches/{docId} {
-      allow read, write: if isBootstrapAdmin();
+
+      allow read, write: if
+        isBootstrapAdmin();
     }
 
 
@@ -245,7 +371,9 @@ service cloud.firestore {
     ===================================================== */
 
     match /trainerRegistry/{docId} {
-      allow read, write: if isBootstrapAdmin();
+
+      allow read, write: if
+        isBootstrapAdmin();
     }
 
 
@@ -254,7 +382,9 @@ service cloud.firestore {
     ===================================================== */
 
     match /trainingOrganizations/{docId} {
-      allow read, write: if isBootstrapAdmin();
+
+      allow read, write: if
+        isBootstrapAdmin();
     }
 
 
@@ -278,6 +408,7 @@ service cloud.firestore {
     ===================================================== */
 
     match /{document=**} {
+
       allow read, write: if false;
     }
 

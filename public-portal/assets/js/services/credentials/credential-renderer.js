@@ -725,11 +725,24 @@ v1.0.0
                 </div>
 
                 <div
-                    class="credential-portfolio-validity">
+                    class="credential-portfolio-validity-block"
+                    aria-label="Credential validity">
 
-                    ${escapeHtml(
-                        validity
-                    )}
+                    <span
+                        class="credential-portfolio-validity-label">
+
+                        Validity
+
+                    </span>
+
+                    <span
+                        class="credential-portfolio-validity-value">
+
+                        ${escapeHtml(
+                            validity
+                        )}
+
+                    </span>
 
                 </div>
 

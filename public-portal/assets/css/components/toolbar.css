@@ -3,39 +3,98 @@
    Student & Executive Portal
 
    File      : toolbar.css
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
+   Phase     : Portal Identity Experience
 
    Purpose
    ----------------------------------------------------------
-   Shared Executive Toolbar
+   Shared Student & Executive Portal Toolbar
 
    Responsibilities
-
+   ----------------------------------------------------------
    ✓ Toolbar Layout
    ✓ Breadcrumb
    ✓ Page Title
    ✓ Search
    ✓ Notifications
-   ✓ User Menu
+   ✓ Learner Identity Presentation
+   ✓ Learner Avatar Presentation
+   ✓ Learner Name Truncation
+   ✓ Role Presentation
+   ✓ Responsive Behaviour
+   ✓ Light and Dark Theme Compatibility
+   ✓ Accessible Focus States
 
    Non Responsibilities
-
+   ----------------------------------------------------------
    ✗ Authentication
    ✗ Authorization
+   ✗ Identity Resolution
+   ✗ Entitlement Resolution
    ✗ Sidebar
    ✗ Dashboard Cards
    ✗ Page Content
+   ✗ User Menu Behaviour
+   ✗ Profile Persistence
+
+   Architectural Position
+   ----------------------------------------------------------
+   Resolved Learner Identity
+        ↓
+   toolbar.js
+        ↓
+   toolbar.css
+        ↓
+   Shared Portal Toolbar
 
    Governance
-
+   ----------------------------------------------------------
    • Shared UI Component
+
    • Enterprise Dashboard Standard
+
    • HBR / MIT Inspired
+
    • Light Theme Default
 
-==========================================================*/
+   • Design Token Driven
 
+   • Learner name is the primary identity label.
+
+   • Portal role is secondary supporting information.
+
+   • Long learner names must truncate safely without
+     widening or breaking the toolbar.
+
+   • Avatar initials must remain compact and readable.
+
+   • Mobile presentation may hide identity text while
+     preserving the learner avatar.
+
+   Change History
+   ----------------------------------------------------------
+   v1.1.0
+
+   • Added learner identity copy container
+   • Added two-line learner name and role presentation
+   • Added safe long-name truncation
+   • Added minimum and maximum user-control widths
+   • Added avatar flex protection
+   • Added responsive identity behaviour
+   • Added dark-theme compatibility
+   • Improved user-control hover and focus states
+   • Preserved existing toolbar architecture
+
+   v1.0.0
+
+   • Initial governed toolbar styling
+   • Added breadcrumb and page title
+   • Added search and notification controls
+   • Added placeholder user menu
+   • Added responsive behaviour
+
+========================================================== */
 
 
 /* ==========================================================
@@ -44,28 +103,47 @@
 
 .portal-toolbar {
 
-    display: flex;
+    position:
+        sticky;
 
-    justify-content: space-between;
+    top:
+        0;
 
-    align-items: center;
+    z-index:
+        var(
+            --z-sticky
+        );
 
-    gap: 24px;
+    display:
+        flex;
 
-    padding: 20px 40px;
+    align-items:
+        center;
 
-    background: var(--surface-card);
+    justify-content:
+        space-between;
 
-    border-bottom: 1px solid var(--border-default);
+    gap:
+        24px;
 
-    position: sticky;
+    min-width:
+        0;
 
-    top: 0;
+    padding:
+        20px 40px;
 
-    z-index:var(--z-sticky);
+    background:
+        var(
+            --surface-card
+        );
+
+    border-bottom:
+        1px solid
+        var(
+            --border-default
+        );
 
 }
-
 
 
 /* ==========================================================
@@ -74,14 +152,19 @@
 
 .portal-toolbar-left {
 
-    display: flex;
+    display:
+        flex;
 
-    flex-direction: column;
+    flex-direction:
+        column;
 
-    gap: 6px;
+    gap:
+        6px;
+
+    min-width:
+        0;
 
 }
-
 
 
 /* ==========================================================
@@ -90,38 +173,71 @@
 
 .portal-breadcrumb {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 8px;
+    gap:
+        8px;
 
-    font-size: var(--font-size-sm);
+    min-width:
+        0;
 
-    color: var(--text-muted);
+    color:
+        var(
+            --text-muted
+        );
+
+    font-size:
+        var(
+            --font-size-sm
+        );
 
 }
 
 .breadcrumb-home {
 
-    color: var(--text-secondary);
+    color:
+        var(
+            --text-secondary
+        );
 
 }
 
 .breadcrumb-separator {
 
-    opacity: .5;
+    opacity:
+        0.5;
 
 }
 
 .breadcrumb-current {
 
-    color: var(--text-primary);
+    min-width:
+        0;
 
-    font-weight: var(--font-semibold);
+    overflow:
+        hidden;
+
+    color:
+        var(
+            --text-primary
+        );
+
+    font-weight:
+        var(
+            --font-semibold
+        );
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
-
 
 
 /* ==========================================================
@@ -130,16 +246,38 @@
 
 .portal-page-title {
 
-    margin: 0;
+    min-width:
+        0;
 
-    font-size: 2rem;
+    margin:
+        0;
 
-    font-weight: var(--font-bold);
+    overflow:
+        hidden;
 
-    color: var(--text-primary);
+    color:
+        var(
+            --text-primary
+        );
+
+    font-size:
+        2rem;
+
+    font-weight:
+        var(
+            --font-bold
+        );
+
+    line-height:
+        1.2;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
-
 
 
 /* ==========================================================
@@ -148,14 +286,22 @@
 
 .portal-toolbar-right {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 18px;
+    justify-content:
+        flex-end;
+
+    gap:
+        18px;
+
+    min-width:
+        0;
 
 }
-
 
 
 /* ==========================================================
@@ -164,57 +310,118 @@
 
 .portal-search {
 
-    width: 320px;
+    width:
+        320px;
+
+    min-width:
+        180px;
 
 }
 
 .portal-search input {
 
-    width: 100%;
+    width:
+        100%;
 
-    height: 44px;
+    height:
+        44px;
 
-    padding: 0 16px;
+    padding:
+        0 16px;
 
-    border: 1px solid var(--border-default);
+    background:
+        var(
+            --surface-card
+        );
 
-    border-radius: var(--radius-pill);
+    border:
+        1px solid
+        var(
+            --border-default
+        );
 
-    background: var(--surface-card);
+    border-radius:
+        var(
+            --radius-pill
+        );
 
-    color: var(--text-primary);
+    color:
+        var(
+            --text-primary
+        );
 
-    font-size: var(--font-size-sm);
+    font-size:
+        var(
+            --font-size-sm
+        );
 
     transition:
-        background var(--transition-fast),
-        border-color var(--transition-fast),
-        box-shadow var(--transition-fast);
+        background
+        var(
+            --transition-fast
+        ),
+        border-color
+        var(
+            --transition-fast
+        ),
+        box-shadow
+        var(
+            --transition-fast
+        );
+
+}
+
+.portal-search input:hover {
+
+    background:
+        var(
+            --surface-secondary
+        );
 
 }
 
 .portal-search input:focus {
 
-    outline: none;
+    outline:
+        none;
 
-    border-color: var(--brand-primary);
+    border-color:
+        var(
+            --brand-primary
+        );
 
-    box-shadow: var(--focus-ring);
+    box-shadow:
+        var(
+            --focus-ring
+        );
 
 }
 
-.portal-search input::placeholder{
+.portal-search input::placeholder {
 
-    color:var(--text-muted);
+    color:
+        var(
+            --text-muted
+        );
 
 }
+
+
+/* ==========================================================
+   FOCUS STATES
+========================================================== */
 
 .toolbar-button:focus-visible,
-.toolbar-user:focus-visible{
+.toolbar-user:focus-visible {
 
-    outline:2px solid var(--border-focus);
+    outline:
+        2px solid
+        var(
+            --border-focus
+        );
 
-    outline-offset:2px;
+    outline-offset:
+        2px;
 
 }
 
@@ -225,38 +432,78 @@
 
 .toolbar-button {
 
-    width: 44px;
+    display:
+        flex;
 
-    height: 44px;
+    align-items:
+        center;
 
-    border: 1px solid var(--border-default);
+    justify-content:
+        center;
 
-    border-radius: 50%;
+    width:
+        44px;
 
-    background: var(--surface-card);
+    height:
+        44px;
 
-    display: flex;
+    flex:
+        0 0 44px;
 
-    justify-content: center;
+    padding:
+        0;
 
-    align-items: center;
+    background:
+        var(
+            --surface-card
+        );
 
-    cursor: pointer;
+    border:
+        1px solid
+        var(
+            --border-default
+        );
+
+    border-radius:
+        50%;
+
+    color:
+        var(
+            --text-primary
+        );
+
+    cursor:
+        pointer;
 
     transition:
-        border-color var(--transition-fast),
-        box-shadow var(--transition-fast);
+        background
+        var(
+            --transition-fast
+        ),
+        border-color
+        var(
+            --transition-fast
+        ),
+        box-shadow
+        var(
+            --transition-fast
+        );
 
 }
 
 .toolbar-button:hover {
 
-    background: var(--surface-secondary);
+    background:
+        var(
+            --surface-secondary
+        );
 
-    border-color: var(--brand-primary);
+    border-color:
+        var(
+            --brand-primary
+        );
 
 }
-
 
 
 /* ==========================================================
@@ -265,34 +512,95 @@
 
 .toolbar-user {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 12px;
+    gap:
+        12px;
 
-    padding: 6px 12px;
+    min-width:
+        210px;
 
-    border: 1px solid var(--border-default);
+    max-width:
+        320px;
 
-    border-radius: var(--radius-pill);
+    min-height:
+        54px;
 
-    background: var(--surface-card);
+    padding:
+        6px 12px 6px 7px;
 
-    cursor: pointer;
+    overflow:
+        hidden;
+
+    background:
+        var(
+            --surface-card
+        );
+
+    border:
+        1px solid
+        var(
+            --border-default
+        );
+
+    border-radius:
+        var(
+            --radius-pill
+        );
+
+    color:
+        var(
+            --text-primary
+        );
+
+    text-align:
+        left;
+
+    cursor:
+        pointer;
 
     transition:
-        border-color var(--transition-fast),
-        box-shadow var(--transition-fast);
+        background
+        var(
+            --transition-fast
+        ),
+        border-color
+        var(
+            --transition-fast
+        ),
+        box-shadow
+        var(
+            --transition-fast
+        );
 
 }
 
 .toolbar-user:hover {
 
-    background: var(--surface-secondary);
+    background:
+        var(
+            --surface-secondary
+        );
+
+    border-color:
+        var(
+            --brand-primary
+        );
 
 }
 
+.toolbar-user:active {
+
+    background:
+        var(
+            --surface-secondary
+        );
+
+}
 
 
 /* ==========================================================
@@ -301,28 +609,93 @@
 
 .toolbar-avatar {
 
-    width: 40px;
+    display:
+        flex;
 
-    height: 40px;
+    align-items:
+        center;
 
-    border-radius: 50%;
+    justify-content:
+        center;
 
-    display: flex;
+    width:
+        40px;
 
-    justify-content: center;
+    height:
+        40px;
 
-    align-items: center;
+    flex:
+        0 0 40px;
 
-    background: var(--brand-primary);
+    overflow:
+        hidden;
 
-    color:var(--text-inverse);
+    background:
+        var(
+            --brand-primary
+        );
 
-    font-size: var(--font-size-sm);
+    border-radius:
+        50%;
 
-    font-weight: var(--font-bold);
+    color:
+        var(
+            --text-inverse
+        );
+
+    font-size:
+        var(
+            --font-size-sm
+        );
+
+    font-weight:
+        var(
+            --font-bold
+        );
+
+    letter-spacing:
+        0.02em;
+
+    line-height:
+        1;
+
+    text-align:
+        center;
+
+    text-transform:
+        uppercase;
 
 }
 
+
+/* ==========================================================
+   USER IDENTITY COPY
+========================================================== */
+
+.toolbar-user-copy {
+
+    display:
+        flex;
+
+    flex:
+        1 1 auto;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        center;
+
+    gap:
+        2px;
+
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+}
 
 
 /* ==========================================================
@@ -331,16 +704,81 @@
 
 .toolbar-name {
 
-    font-size: var(--font-size-sm);
+    display:
+        block;
 
-    font-weight: var(--font-semibold);
+    min-width:
+        0;
 
-    color: var(--text-primary);
+    overflow:
+        hidden;
 
-    white-space: nowrap;
+    color:
+        var(
+            --text-primary
+        );
+
+    font-size:
+        var(
+            --font-size-sm
+        );
+
+    font-weight:
+        var(
+            --font-semibold
+        );
+
+    line-height:
+        1.3;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
 
+
+/* ==========================================================
+   USER ROLE
+========================================================== */
+
+.toolbar-role {
+
+    display:
+        block;
+
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+    color:
+        var(
+            --text-muted
+        );
+
+    font-size:
+        0.75rem;
+
+    font-weight:
+        var(
+            --font-medium,
+            500
+        );
+
+    line-height:
+        1.25;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+
+}
 
 
 /* ==========================================================
@@ -349,89 +787,408 @@
 
 .toolbar-arrow {
 
-    color: var(--text-muted);
+    flex:
+        0 0 auto;
 
-    font-size: 12px;
+    color:
+        var(
+            --text-muted
+        );
+
+    font-size:
+        12px;
+
+    line-height:
+        1;
 
 }
 
 
+/* ==========================================================
+   DARK THEME FALLBACKS
+========================================================== */
+
+html[data-theme="dark"]
+.portal-toolbar,
+body[data-theme="dark"]
+.portal-toolbar,
+.dark-theme
+.portal-toolbar,
+.theme-dark
+.portal-toolbar {
+
+    background:
+        var(
+            --surface-card,
+            #111827
+        );
+
+    border-bottom-color:
+        var(
+            --border-default,
+            #334155
+        );
+
+}
+
+html[data-theme="dark"]
+.toolbar-button,
+body[data-theme="dark"]
+.toolbar-button,
+.dark-theme
+.toolbar-button,
+.theme-dark
+.toolbar-button,
+html[data-theme="dark"]
+.toolbar-user,
+body[data-theme="dark"]
+.toolbar-user,
+.dark-theme
+.toolbar-user,
+.theme-dark
+.toolbar-user,
+html[data-theme="dark"]
+.portal-search input,
+body[data-theme="dark"]
+.portal-search input,
+.dark-theme
+.portal-search input,
+.theme-dark
+.portal-search input {
+
+    background:
+        var(
+            --surface-card,
+            #111827
+        );
+
+    border-color:
+        var(
+            --border-default,
+            #334155
+        );
+
+}
+
+html[data-theme="dark"]
+.toolbar-button:hover,
+body[data-theme="dark"]
+.toolbar-button:hover,
+.dark-theme
+.toolbar-button:hover,
+.theme-dark
+.toolbar-button:hover,
+html[data-theme="dark"]
+.toolbar-user:hover,
+body[data-theme="dark"]
+.toolbar-user:hover,
+.dark-theme
+.toolbar-user:hover,
+.theme-dark
+.toolbar-user:hover,
+html[data-theme="dark"]
+.portal-search input:hover,
+body[data-theme="dark"]
+.portal-search input:hover,
+.dark-theme
+.portal-search input:hover,
+.theme-dark
+.portal-search input:hover {
+
+    background:
+        var(
+            --surface-secondary,
+            #1e293b
+        );
+
+}
+
+html[data-theme="dark"]
+.toolbar-name,
+body[data-theme="dark"]
+.toolbar-name,
+.dark-theme
+.toolbar-name,
+.theme-dark
+.toolbar-name,
+html[data-theme="dark"]
+.portal-page-title,
+body[data-theme="dark"]
+.portal-page-title,
+.dark-theme
+.portal-page-title,
+.theme-dark
+.portal-page-title,
+html[data-theme="dark"]
+.breadcrumb-current,
+body[data-theme="dark"]
+.breadcrumb-current,
+.dark-theme
+.breadcrumb-current,
+.theme-dark
+.breadcrumb-current {
+
+    color:
+        var(
+            --text-primary,
+            #f8fafc
+        );
+
+}
+
+html[data-theme="dark"]
+.toolbar-role,
+body[data-theme="dark"]
+.toolbar-role,
+.dark-theme
+.toolbar-role,
+.theme-dark
+.toolbar-role,
+html[data-theme="dark"]
+.toolbar-arrow,
+body[data-theme="dark"]
+.toolbar-arrow,
+.dark-theme
+.toolbar-arrow,
+.theme-dark
+.toolbar-arrow,
+html[data-theme="dark"]
+.portal-breadcrumb,
+body[data-theme="dark"]
+.portal-breadcrumb,
+.dark-theme
+.portal-breadcrumb,
+.theme-dark
+.portal-breadcrumb {
+
+    color:
+        var(
+            --text-muted,
+            #94a3b8
+        );
+
+}
+
 
 /* ==========================================================
-   RESPONSIVE
+   RESPONSIVE — DESKTOP
 ========================================================== */
 
 @media (max-width: 1200px) {
 
     .portal-toolbar {
 
-        padding: 18px 24px;
+        padding:
+            18px 24px;
 
     }
 
     .portal-search {
 
-        width: 240px;
+        width:
+            240px;
+
+    }
+
+    .toolbar-user {
+
+        min-width:
+            190px;
+
+        max-width:
+            260px;
 
     }
 
 }
 
 
+/* ==========================================================
+   RESPONSIVE — TABLET
+========================================================== */
 
 @media (max-width: 992px) {
 
     .portal-toolbar {
 
-        flex-direction: column;
+        align-items:
+            stretch;
 
-        align-items: stretch;
+        flex-direction:
+            column;
 
-        gap: 16px;
+        gap:
+            16px;
 
     }
 
     .portal-toolbar-right {
 
-        justify-content: space-between;
+        justify-content:
+            space-between;
+
+        width:
+            100%;
 
     }
 
     .portal-search {
 
-        flex: 1;
+        flex:
+            1 1 auto;
 
-        width: auto;
+        width:
+            auto;
+
+        min-width:
+            0;
+
+    }
+
+    .toolbar-user {
+
+        flex:
+            0 1 280px;
+
+        min-width:
+            180px;
+
+        max-width:
+            280px;
 
     }
 
 }
 
 
+/* ==========================================================
+   RESPONSIVE — MOBILE
+========================================================== */
 
 @media (max-width: 640px) {
 
     .portal-toolbar {
 
-        padding: 16px;
-
-    }
-
-    .toolbar-name {
-
-        display: none;
+        padding:
+            16px;
 
     }
 
     .portal-page-title {
 
-        font-size: 1.5rem;
+        font-size:
+            1.5rem;
 
     }
 
     .portal-search {
 
-        display: none;
+        display:
+            none;
+
+    }
+
+    .portal-toolbar-right {
+
+        justify-content:
+            flex-end;
+
+        gap:
+            12px;
+
+    }
+
+    .toolbar-user {
+
+        width:
+            54px;
+
+        min-width:
+            54px;
+
+        max-width:
+            54px;
+
+        min-height:
+            54px;
+
+        padding:
+            6px;
+
+        justify-content:
+            center;
+
+        gap:
+            0;
+
+    }
+
+    .toolbar-user-copy,
+    .toolbar-arrow {
+
+        display:
+            none;
+
+    }
+
+    .toolbar-avatar {
+
+        width:
+            40px;
+
+        height:
+            40px;
+
+        flex-basis:
+            40px;
+
+    }
+
+}
+
+
+/* ==========================================================
+   VERY SMALL MOBILE
+========================================================== */
+
+@media (max-width: 420px) {
+
+    .portal-toolbar {
+
+        gap:
+            12px;
+
+    }
+
+    .portal-breadcrumb {
+
+        font-size:
+            0.78rem;
+
+    }
+
+    .portal-page-title {
+
+        font-size:
+            1.35rem;
+
+    }
+
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .portal-search input,
+    .toolbar-button,
+    .toolbar-user {
+
+        transition:
+            none;
 
     }
 

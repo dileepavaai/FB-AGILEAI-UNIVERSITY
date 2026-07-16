@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-detail-overlay.js
-   Version   : 3.1.1
+   Version   : 3.1.2
    Status    : ACTIVE
    Phase     : Sprint 2E.1
 
@@ -20,9 +20,10 @@
    ✓ Render Credential Asset Preview View
    ✓ Manage Workspace Navigation
    ✓ Manage Overlay Lifecycle
-   ✓ Coordinate credential asset actions
-   ✓ Preserve single-overlay workspace architecture
-   ✓ Provide stable delegated close handling
+   ✓ Coordinate Credential Asset Actions
+   ✓ Preserve Single-Overlay Workspace Architecture
+   ✓ Provide Stable Delegated Event Handling
+   ✓ Maintain Explicit Overlay Visibility State
 
    Non Responsibilities
    ----------------------------------------------------------
@@ -42,9 +43,23 @@
    • Enterprise Portal Standard
    • CredentialAssetPreview owns preview actions
    • CredentialDetailOverlay owns shell and lifecycle
+   • Native hidden state is authoritative
+   • aria-hidden must remain synchronized
+   • Async responses must never reopen a closed workspace
 
    Change History
    ----------------------------------------------------------
+   v3.1.2
+
+   • Added explicit native hidden-state lifecycle
+   • Added aria-hidden synchronization
+   • Prevented cleared overlay shell from remaining visible
+   • Made close idempotent and deterministic
+   • Made open explicitly restore visibility
+   • Preserved delegated close handling
+   • Preserved asset-preview request integrity
+   • Preserved single-overlay workspace architecture
+
    v3.1.1
 
    • Added delegated overlay close handling
@@ -81,12 +96,20 @@
     "use strict";
 
 
+    /* ======================================================
+       MODULE
+    ====================================================== */
+
     const MODULE_NAME =
         "CredentialDetailOverlay";
 
     const MODULE_VERSION =
-        "3.1.1";
+        "3.1.2";
 
+
+    /* ======================================================
+       COMPONENT
+    ====================================================== */
 
     const CredentialDetailOverlay = {
 
@@ -149,6 +172,9 @@
         initialized:
             false,
 
+        escapeHandler:
+            null,
+
 
         /* ==================================================
            INITIALIZATION
@@ -162,7 +188,18 @@
 
             }
 
-            this.createOverlay();
+            const created =
+                this.createOverlay();
+
+            if (!created) {
+
+                console.error(
+                    `[${MODULE_NAME}] Initialization failed because the overlay could not be created.`
+                );
+
+                return;
+
+            }
 
             this.initialized =
                 true;
@@ -182,7 +219,25 @@
 
             if (this.overlay) {
 
-                return;
+                return true;
+
+            }
+
+            /*
+             * Defensive cleanup.
+             *
+             * A stale overlay from an earlier script load must
+             * never coexist with the governed active overlay.
+             */
+
+            const existingOverlay =
+                document.getElementById(
+                    "credential-detail-overlay"
+                );
+
+            if (existingOverlay) {
+
+                existingOverlay.remove();
 
             }
 
@@ -192,7 +247,7 @@
                 );
 
             wrapper.innerHTML =
-                this.render();
+                this.render().trim();
 
             this.overlay =
                 wrapper.firstElementChild;
@@ -203,7 +258,7 @@
                     `[${MODULE_NAME}] Overlay creation failed.`
                 );
 
-                return;
+                return false;
 
             }
 
@@ -244,7 +299,25 @@
                     `[${MODULE_NAME}] Required overlay elements are unavailable.`
                 );
 
-                return;
+                this.overlay =
+                    null;
+
+                this.backdrop =
+                    null;
+
+                this.container =
+                    null;
+
+                this.title =
+                    null;
+
+                this.body =
+                    null;
+
+                this.footer =
+                    null;
+
+                return false;
 
             }
 
@@ -253,6 +326,8 @@
             );
 
             this.bindEvents();
+
+            return true;
 
         },
 
@@ -266,10 +341,13 @@
             return `
 
                 <div
+                    id="credential-detail-overlay"
                     class="overlay credential-detail-overlay"
                     role="dialog"
                     aria-modal="true"
-                    aria-labelledby="credential-detail-overlay-title">
+                    aria-labelledby="credential-detail-overlay-title"
+                    aria-hidden="true"
+                    hidden>
 
                     <div
                         class="overlay-backdrop"
@@ -277,7 +355,8 @@
                     </div>
 
                     <div
-                        class="overlay-container">
+                        class="overlay-container"
+                        role="document">
 
                         <div
                             class="overlay-header">
@@ -360,9 +439,8 @@
             /*
              * Overlay-level delegated click handling.
              *
-             * This keeps Close behaviour stable even when
-             * footer content is replaced while switching
-             * between Details and Asset Preview views.
+             * This remains stable when the footer or body is
+             * recreated while switching views.
              */
 
             this.overlay.addEventListener(
@@ -389,11 +467,8 @@
                     }
 
                     /*
-                     * Close only when the actual backdrop is
-                     * clicked.
-                     *
-                     * Clicking inside the dialog must not close
-                     * the workspace.
+                     * Backdrop closes only when the backdrop
+                     * itself is the event target.
                      */
 
                     if (
@@ -403,6 +478,8 @@
 
                         event.preventDefault();
 
+                        event.stopPropagation();
+
                         this.close();
 
                     }
@@ -411,18 +488,41 @@
 
             );
 
-            document.addEventListener(
-                "keydown",
-                this.handleEscape.bind(
-                    this
-                )
-            );
+            /*
+             * Body actions remain delegated because body HTML
+             * is recreated between details and preview views.
+             */
 
             this.body.addEventListener(
+
                 "click",
-                this.handleBodyClick.bind(
-                    this
-                )
+
+                event => {
+
+                    this.handleBodyClick(
+                        event
+                    );
+
+                }
+
+            );
+
+            /*
+             * Keep a stable handler reference.
+             */
+
+            this.escapeHandler =
+                event => {
+
+                    this.handleEscape(
+                        event
+                    );
+
+                };
+
+            document.addEventListener(
+                "keydown",
+                this.escapeHandler
             );
 
         },
@@ -436,6 +536,12 @@
             event
         ) {
 
+            if (!event) {
+
+                return;
+
+            }
+
             const assetButton =
                 event.target.closest(
                     ".js-open-credential-asset-preview"
@@ -444,6 +550,8 @@
             if (assetButton) {
 
                 event.preventDefault();
+
+                event.stopPropagation();
 
                 const assetType =
                     assetButton.dataset
@@ -467,6 +575,8 @@
 
                 event.preventDefault();
 
+                event.stopPropagation();
+
                 this.showDetails();
 
                 return;
@@ -482,6 +592,8 @@
             if (downloadButton) {
 
                 event.preventDefault();
+
+                event.stopPropagation();
 
                 this.downloadActiveAsset(
                     downloadButton.dataset
@@ -501,6 +613,8 @@
             if (linkedInButton) {
 
                 event.preventDefault();
+
+                event.stopPropagation();
 
                 this.shareActiveCredentialOnLinkedIn();
 
@@ -558,19 +672,31 @@
             this.activeAsset =
                 null;
 
-            if (!this.isOpen) {
+            /*
+             * Explicit visibility restoration.
+             *
+             * Native hidden state is authoritative. The
+             * is-open class remains for generic overlay
+             * animation and styling compatibility.
+             */
 
-                this.overlay.classList.add(
-                    "is-open"
-                );
+            this.overlay.hidden =
+                false;
 
-                document.body.style.overflow =
-                    "hidden";
+            this.overlay.setAttribute(
+                "aria-hidden",
+                "false"
+            );
 
-                this.isOpen =
-                    true;
+            this.overlay.classList.add(
+                "is-open"
+            );
 
-            }
+            document.body.style.overflow =
+                "hidden";
+
+            this.isOpen =
+                true;
 
             this.renderDetailsView();
 
@@ -585,7 +711,10 @@
 
         showDetails() {
 
-            if (!this.activeCredential) {
+            if (
+                !this.isOpen ||
+                !this.activeCredential
+            ) {
 
                 return;
 
@@ -606,6 +735,15 @@
 
 
         renderDetailsView() {
+
+            if (
+                !this.isOpen ||
+                !this.activeCredential
+            ) {
+
+                return;
+
+            }
 
             this.setTitle(
                 "Credential Details"
@@ -628,10 +766,13 @@
             assetType
         ) {
 
-            if (!this.activeCredential) {
+            if (
+                !this.isOpen ||
+                !this.activeCredential
+            ) {
 
                 console.warn(
-                    `[${MODULE_NAME}] No active credential for asset preview.`
+                    `[${MODULE_NAME}] No active credential is available for asset preview.`
                 );
 
                 return;
@@ -721,11 +862,7 @@
             }
 
             /*
-             * Capture the active request context.
-             *
-             * A delayed response must not render after the
-             * learner closes the overlay, returns to details,
-             * or opens another credential.
+             * Capture the exact request context.
              */
 
             const requestedCredential =
@@ -780,6 +917,11 @@
                             firestoreAssetType
                         );
 
+                /*
+                 * Never render a delayed response after close,
+                 * navigation, or credential replacement.
+                 */
+
                 if (
                     !this.isCurrentAssetRequest(
                         requestedCredential,
@@ -797,7 +939,7 @@
                 if (!this.activeAsset) {
 
                     console.warn(
-                        `[${MODULE_NAME}] Published credential asset was not found:`,
+                        `[${MODULE_NAME}] Published credential asset was not found.`,
                         {
                             credentialId,
                             assetType:
@@ -836,7 +978,7 @@
                     null;
 
                 console.error(
-                    `[${MODULE_NAME}] Published asset loading failed:`,
+                    `[${MODULE_NAME}] Published asset loading failed.`,
                     {
                         credentialId,
                         assetType:
@@ -897,7 +1039,11 @@
 
             return (
 
-                this.isOpen &&
+                this.isOpen === true &&
+
+                this.overlay !== null &&
+
+                this.overlay.hidden === false &&
 
                 this.activeView ===
                     this.views.ASSET_PREVIEW &&
@@ -1066,8 +1212,7 @@
              * Credential Details owns only the standard
              * overlay Close action.
              *
-             * Click handling is delegated to the overlay,
-             * so this button requires no direct listener.
+             * Click handling is delegated to the overlay.
              */
 
             this.footer.hidden =
@@ -1101,15 +1246,13 @@
             }
 
             /*
-             * CredentialAssetPreview owns all preview-mode
-             * navigation and actions:
+             * CredentialAssetPreview owns:
              *
              * • Back to Credential Details
              * • Download
              * • Share on LinkedIn
              *
-             * The parent overlay footer remains hidden during
-             * asset preview to prevent duplicated controls.
+             * The parent footer remains hidden in preview.
              */
 
             this.footer.innerHTML =
@@ -1142,7 +1285,7 @@
             ) {
 
                 console.warn(
-                    `[${MODULE_NAME}] Download handler unavailable.`
+                    `[${MODULE_NAME}] Download handler is unavailable.`
                 );
 
                 return;
@@ -1180,8 +1323,14 @@
             ) {
 
                 console.warn(
-                    `[${MODULE_NAME}] LinkedIn share handler unavailable.`
+                    `[${MODULE_NAME}] LinkedIn share handler is unavailable.`
                 );
+
+                return;
+
+            }
+
+            if (!this.activeCredential) {
 
                 return;
 
@@ -1271,21 +1420,44 @@
 
         close() {
 
-            if (
-                !this.overlay ||
-                !this.isOpen
-            ) {
+            if (!this.overlay) {
 
                 return;
 
             }
 
+            /*
+             * Mark closed before resetting any workspace data.
+             *
+             * This immediately invalidates in-flight asset
+             * preview responses.
+             */
+
+            this.isOpen =
+                false;
+
+            /*
+             * Hide the visual shell before changing content.
+             */
+
             this.overlay.classList.remove(
                 "is-open"
             );
 
+            this.overlay.hidden =
+                true;
+
+            this.overlay.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
             document.body.style.overflow =
                 "";
+
+            /*
+             * Reset workspace state.
+             */
 
             this.activeCredential =
                 null;
@@ -1320,12 +1492,12 @@
 
                 `;
 
+                this.body.scrollTop =
+                    0;
+
             }
 
             this.renderDefaultFooter();
-
-            this.isOpen =
-                false;
 
         },
 
@@ -1339,8 +1511,9 @@
         ) {
 
             if (
+                !event ||
                 event.key !==
-                "Escape"
+                    "Escape"
             ) {
 
                 return;
@@ -1352,6 +1525,8 @@
                 return;
 
             }
+
+            event.preventDefault();
 
             if (
                 this.activeView ===
@@ -1423,7 +1598,7 @@
         ) {
 
             const assetTypes =
-                {
+                Object.freeze({
 
                     "university-certificate":
                         "university_certificate",
@@ -1449,7 +1624,7 @@
                     "recognition_asset":
                         "recognition_asset"
 
-                };
+                });
 
             return (
                 assetTypes[
@@ -1466,7 +1641,7 @@
         ) {
 
             const titles =
-                {
+                Object.freeze({
 
                     "university-certificate":
                         "University Certificate",
@@ -1492,7 +1667,7 @@
                     "recognition_asset":
                         "Recognition Asset"
 
-                };
+                });
 
             return (
                 titles[
@@ -1548,6 +1723,10 @@
 
     };
 
+
+    /* ======================================================
+       PUBLIC REGISTRATION
+    ====================================================== */
 
     window.CredentialDetailOverlay =
         CredentialDetailOverlay;

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-card.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Credential Workspace Stabilization
 
@@ -15,10 +15,12 @@
    ----------------------------------------------------------
    ✓ Render Credential Card
    ✓ Render Credential Identifier
+   ✓ Render Credential Validity
    ✓ Render Credential Assets
    ✓ Render Empty Credential State
    ✓ Normalize Credential Display Values
    ✓ Escape Dynamic Presentation Values
+   ✓ Delegate Credential Workspace Actions
 
    Non Responsibilities
    ----------------------------------------------------------
@@ -32,6 +34,7 @@
    ✗ DOM Manipulation
    ✗ Credential Detail Rendering
    ✗ Asset Preview Rendering
+   ✗ Credential Workspace Lifecycle
 
    Architectural Position
    ----------------------------------------------------------
@@ -56,17 +59,35 @@
    • Credential visibility must be resolved before this
      component is called.
 
-   • Credential ID is presented as subtle supporting
-     metadata and must not compete with programme identity.
+   • Credential ID is supporting metadata and must not
+     compete visually with programme identity.
 
    • Credential Card must not resolve authorization,
      entitlement or business rules.
 
-   • Credential Card delegates all user actions through
+   • Credential Card delegates user actions through
      governed action classes and credential identifiers.
+
+   • The primary action terminology must align with the
+     governed Credential Workspace architecture.
+
+   • Issuer information belongs inside Credential Details
+     and must not overload the compact card.
 
    Change History
    ----------------------------------------------------------
+   v1.2.0
+
+   • Standardised dashboard credential-card hierarchy
+   • Changed primary CTA to Open Credential Workspace
+   • Retained subtle Credential ID presentation
+   • Retained validity as essential summary metadata
+   • Removed redundant Issued By card metadata
+   • Added missing-identifier action protection
+   • Preserved credential asset action classes
+   • Preserved shared dashboard-card structure
+   • Preserved presentation-only responsibility
+
    v1.1.0
 
    • Added subtle Credential ID presentation
@@ -93,12 +114,20 @@
     "use strict";
 
 
+    /* ======================================================
+       MODULE IDENTITY
+    ====================================================== */
+
     const MODULE_NAME =
         "CredentialCard";
 
     const MODULE_VERSION =
-        "1.1.0";
+        "1.2.0";
 
+
+    /* ======================================================
+       COMPONENT
+    ====================================================== */
 
     const CredentialCard = {
 
@@ -176,6 +205,12 @@
                     credential
                 );
 
+            if (!credentialId) {
+
+                return "";
+
+            }
+
             const escapedCredentialId =
                 this.escapeAttribute(
                     credentialId
@@ -183,7 +218,11 @@
 
             return [
 
-                assets.universityCertificate === true
+                this.isAssetAvailable(
+                    assets,
+                    "universityCertificate",
+                    "university_certificate"
+                )
                     ? `
 
                         <a
@@ -199,7 +238,11 @@
                     : "",
 
 
-                assets.trainerCertificate === true
+                this.isAssetAvailable(
+                    assets,
+                    "trainerCertificate",
+                    "trainer_certificate"
+                )
                     ? `
 
                         <a
@@ -215,7 +258,11 @@
                     : "",
 
 
-                assets.digitalBadge === true
+                this.isAssetAvailable(
+                    assets,
+                    "digitalBadge",
+                    "digital_badge"
+                )
                     ? `
 
                         <a
@@ -231,7 +278,11 @@
                     : "",
 
 
-                assets.recognitionAsset === true
+                this.isAssetAvailable(
+                    assets,
+                    "recognitionAsset",
+                    "recognition_asset"
+                )
                     ? `
 
                         <a
@@ -327,21 +378,6 @@
                 );
 
 
-            const issuedBy =
-                this.firstValue([
-
-                    credential.issuedBy,
-
-                    credential.issued_by,
-
-                    credential.issuerName,
-
-                    credential.issuer_name
-
-                ]) ||
-                "Agile AI University";
-
-
             const validity =
                 this.firstValue([
 
@@ -355,18 +391,21 @@
                 "Lifetime";
 
 
-            const assets =
-                program.availableAssets ||
-                program.available_assets ||
-                credential.availableAssets ||
-                credential.available_assets ||
-                {};
-
-
             const escapedCredentialId =
                 this.escapeAttribute(
                     credentialId
                 );
+
+
+            const actionDisabled =
+                credentialId
+
+                    ? ""
+
+                    : `
+                        aria-disabled="true"
+                        tabindex="-1"
+                    `;
 
 
             return `
@@ -414,7 +453,8 @@
                                     class="credential-card-id-value">
 
                                     ${this.escape(
-                                        credentialId || "—"
+                                        credentialId ||
+                                        "Not available"
                                     )}
 
                                 </span>
@@ -428,29 +468,18 @@
                     <div
                         class="dashboard-card-body">
 
-                        <p>
+                        <div
+                            class="credential-card-validity">
 
-                            <strong>
-                                Issued By:
-                            </strong>
+                            <span
+                                class="credential-card-validity-label">
 
-                            <span>
-
-                                ${this.escape(
-                                    issuedBy
-                                )}
+                                Validity
 
                             </span>
 
-                        </p>
-
-                        <p>
-
-                            <strong>
-                                Validity:
-                            </strong>
-
-                            <span>
+                            <span
+                                class="credential-card-validity-value">
 
                                 ${this.escape(
                                     validity
@@ -458,7 +487,7 @@
 
                             </span>
 
-                        </p>
+                        </div>
 
                     </div>
 
@@ -471,9 +500,10 @@
                             <a
                                 href="#"
                                 class="btn btn-primary js-view-credential"
-                                data-credential-id="${escapedCredentialId}">
+                                data-credential-id="${escapedCredentialId}"
+                                ${actionDisabled}>
 
-                                View Credential
+                                Open Credential Workspace
 
                             </a>
 
@@ -516,7 +546,42 @@
 
 
         /* ==================================================
-           FIRST VALUE
+           ASSET AVAILABILITY
+        ================================================== */
+
+        isAssetAvailable(
+            assets,
+            camelCaseKey,
+            snakeCaseKey
+        ) {
+
+            if (
+                !assets ||
+                typeof assets !==
+                    "object"
+            ) {
+
+                return false;
+
+            }
+
+            return (
+
+                assets[
+                    camelCaseKey
+                ] === true ||
+
+                assets[
+                    snakeCaseKey
+                ] === true
+
+            );
+
+        },
+
+
+        /* ==================================================
+           FIRST NON-EMPTY VALUE
         ================================================== */
 
         firstValue(
@@ -612,6 +677,10 @@
 
     };
 
+
+    /* ======================================================
+       PUBLIC REGISTRATION
+    ====================================================== */
 
     Object.freeze(
         CredentialCard

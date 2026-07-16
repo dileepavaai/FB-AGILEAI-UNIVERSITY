@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : cards.css
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Credential Workspace Stabilization
 
@@ -19,8 +19,11 @@
    ✓ Card Footer
    ✓ Card Hover States
    ✓ Credential Card Identifier Presentation
+   ✓ Credential Validity Presentation
+   ✓ Disabled Credential Action Presentation
    ✓ Light and Dark Theme Compatibility
    ✓ Responsive Behaviour
+   ✓ Reduced Motion Support
 
    Non Responsibilities
    ----------------------------------------------------------
@@ -31,8 +34,20 @@
    ✗ Authorization
    ✗ Credential Resolution
    ✗ Entitlement Resolution
+   ✗ Credential Filtering
+   ✗ Credential Workspace Lifecycle
    ✗ Business Logic
    ✗ JavaScript Behaviour
+
+   Architectural Position
+   ----------------------------------------------------------
+   Shared Design Tokens
+        ↓
+   Shared Card Components
+        ↓
+   Credential Card Presentation
+        ↓
+   Credential Workspace Action
 
    Governance
    ----------------------------------------------------------
@@ -45,13 +60,31 @@
    • Credential ID is supporting metadata and must not
      compete visually with programme identity.
 
-   • Credential ID rendering remains owned by
+   • Validity is essential credential summary metadata.
+
+   • Credential ID and validity rendering remain owned by
      credential-card.js.
+
+   • Primary credential actions must remain visually clear
+     and accessible.
+
+   • Disabled credential actions must not appear interactive.
 
    • This stylesheet controls presentation only.
 
    Change History
    ----------------------------------------------------------
+   v1.2.0
+
+   • Added governed credential validity presentation
+   • Added validity label and value hierarchy
+   • Added disabled credential action presentation
+   • Added dark-theme validity compatibility
+   • Added responsive validity typography
+   • Preserved Credential ID presentation
+   • Preserved shared card architecture
+   • Preserved design-token-driven styling
+
    v1.1.0
 
    • Added subtle Credential ID presentation
@@ -83,6 +116,9 @@
 
     flex-direction:
         column;
+
+    min-width:
+        0;
 
     padding:
         var(
@@ -143,6 +179,9 @@
 
 .portal-card-header {
 
+    min-width:
+        0;
+
     margin-bottom:
         var(
             --space-5
@@ -156,6 +195,9 @@
 ========================================================== */
 
 .portal-card-title {
+
+    max-width:
+        100%;
 
     margin:
         0;
@@ -175,6 +217,9 @@
             --font-bold
         );
 
+    overflow-wrap:
+        anywhere;
+
 }
 
 
@@ -183,6 +228,9 @@
 ========================================================== */
 
 .portal-card-subtitle {
+
+    max-width:
+        100%;
 
     margin-top:
         var(
@@ -198,6 +246,12 @@
         var(
             --font-size-sm
         );
+
+    line-height:
+        1.5;
+
+    overflow-wrap:
+        anywhere;
 
 }
 
@@ -223,6 +277,9 @@
 
 .portal-card-footer {
 
+    min-width:
+        0;
+
     margin-top:
         var(
             --space-6
@@ -232,8 +289,15 @@
 
 
 /* ==========================================================
-   CREDENTIAL CARD IDENTITY
+   CREDENTIAL CARD
 ========================================================== */
+
+.credential-card {
+
+    min-width:
+        0;
+
+}
 
 .credential-card-identity {
 
@@ -249,6 +313,7 @@
    Credential ID is supporting metadata.
 
    It must remain visually subordinate to:
+
    • Programme Code
    • Programme Name
    • Primary Workspace Action
@@ -337,10 +402,177 @@
 
 
 /* ==========================================================
+   CREDENTIAL CARD VALIDITY
+
+   Validity is essential summary metadata.
+
+   It should remain more visible than the Credential ID,
+   while remaining subordinate to programme identity.
+========================================================== */
+
+.credential-card-validity {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        0.2rem;
+
+    min-width:
+        0;
+
+    margin-top:
+        var(
+            --space-4,
+            1rem
+        );
+
+}
+
+.credential-card-validity-label {
+
+    color:
+        var(
+            --text-muted,
+            #64748b
+        );
+
+    font-size:
+        0.68rem;
+
+    font-weight:
+        var(
+            --font-bold,
+            700
+        );
+
+    line-height:
+        1.35;
+
+    letter-spacing:
+        0.08em;
+
+    text-transform:
+        uppercase;
+
+}
+
+.credential-card-validity-value {
+
+    max-width:
+        100%;
+
+    color:
+        var(
+            --credential-validity-active,
+            #0f766e
+        );
+
+    font-size:
+        0.9rem;
+
+    font-weight:
+        var(
+            --font-bold,
+            700
+        );
+
+    line-height:
+        1.4;
+
+    overflow-wrap:
+        anywhere;
+
+}
+
+
+/* ==========================================================
+   CREDENTIAL CARD ACTIONS
+========================================================== */
+
+.credential-card
+.dashboard-card-actions {
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        var(
+            --space-3,
+            0.75rem
+        );
+
+}
+
+.credential-card
+.dashboard-card-actions
+.btn {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-width:
+        0;
+
+    text-align:
+        center;
+
+}
+
+.credential-card
+.dashboard-card-actions
+.btn-primary {
+
+    width:
+        100%;
+
+}
+
+
+/* ==========================================================
+   DISABLED CREDENTIAL ACTION
+
+   Used when a credential identifier is unavailable.
+========================================================== */
+
+.credential-card
+.btn[aria-disabled="true"] {
+
+    opacity:
+        0.55;
+
+    pointer-events:
+        none;
+
+    cursor:
+        not-allowed;
+
+    box-shadow:
+        none;
+
+    transform:
+        none;
+
+}
+
+
+/* ==========================================================
    DARK THEME FALLBACKS
 
-   These selectors provide compatibility when the global
-   design-token theme has not yet overridden all card tokens.
+   These selectors provide compatibility when global theme
+   tokens have not yet overridden all shared card tokens.
 ========================================================== */
 
 html[data-theme="dark"]
@@ -350,7 +582,15 @@ body[data-theme="dark"]
 .dark-theme
 .credential-card-id-label,
 .theme-dark
-.credential-card-id-label {
+.credential-card-id-label,
+html[data-theme="dark"]
+.credential-card-validity-label,
+body[data-theme="dark"]
+.credential-card-validity-label,
+.dark-theme
+.credential-card-validity-label,
+.theme-dark
+.credential-card-validity-label {
 
     color:
         var(
@@ -377,10 +617,28 @@ body[data-theme="dark"]
 
 }
 
+html[data-theme="dark"]
+.credential-card-validity-value,
+body[data-theme="dark"]
+.credential-card-validity-value,
+.dark-theme
+.credential-card-validity-value,
+.theme-dark
+.credential-card-validity-value {
+
+    color:
+        var(
+            --credential-validity-active,
+            #5eead4
+        );
+
+}
+
 
 /* ==========================================================
    LEGACY SUPPORT
-   Supports existing portal markup.
+
+   Supports existing portal-card markup.
 ========================================================== */
 
 .portal-card h2 {
@@ -431,7 +689,8 @@ body[data-theme="dark"]
 
     }
 
-    .credential-card-id {
+    .credential-card-id,
+    .credential-card-validity {
 
         margin-top:
             var(
@@ -441,7 +700,8 @@ body[data-theme="dark"]
 
     }
 
-    .credential-card-id-label {
+    .credential-card-id-label,
+    .credential-card-validity-label {
 
         font-size:
             0.65rem;
@@ -452,6 +712,30 @@ body[data-theme="dark"]
 
         font-size:
             0.84rem;
+
+    }
+
+    .credential-card-validity-value {
+
+        font-size:
+            0.86rem;
+
+    }
+
+    .credential-card
+    .dashboard-card-actions {
+
+        flex-direction:
+            column;
+
+    }
+
+    .credential-card
+    .dashboard-card-actions
+    .btn {
+
+        width:
+            100%;
 
     }
 

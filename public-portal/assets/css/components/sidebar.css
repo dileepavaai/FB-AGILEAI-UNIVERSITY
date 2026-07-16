@@ -3,37 +3,102 @@
    Student & Executive Portal
 
    File      : sidebar.css
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
+   Phase     : Portal Identity Experience
 
    Purpose
    ----------------------------------------------------------
-   Shared Executive Portal Sidebar
+   Shared Student & Executive Portal Sidebar
 
    Responsibilities
-
+   ----------------------------------------------------------
    ✓ Sidebar Layout
    ✓ Navigation
-   ✓ Profile Card
+   ✓ Learner Profile Card
+   ✓ Learner Avatar Presentation
+   ✓ Learner Name Presentation
+   ✓ Membership Presentation
    ✓ Portfolio Summary
+   ✓ Long Name Protection
+   ✓ Light and Dark Theme Compatibility
+   ✓ Responsive Behaviour
+   ✓ Accessible Focus States
 
    Non Responsibilities
-
+   ----------------------------------------------------------
    ✗ Shell Layout
    ✗ Toolbar
-   ✗ Dashboard
+   ✗ Dashboard Rendering
    ✗ Credential Cards
    ✗ Authentication
+   ✗ Authorization
+   ✗ Identity Resolution
+   ✗ Membership Resolution
+   ✗ Entitlement Resolution
+   ✗ JavaScript Behaviour
+
+   Architectural Position
+   ----------------------------------------------------------
+   Resolved Learner Identity
+        ↓
+   sidebar.js
+        ↓
+   sidebar.css
+        ↓
+   Shared Portal Sidebar
 
    Governance
-
+   ----------------------------------------------------------
    • Shared Navigation Authority
+
    • Enterprise Dashboard Standard
+
    • HBR / MIT Inspired
+
    • Light Theme Default
 
-==========================================================*/
+   • Design Token Driven
 
+   • Learner name is the primary profile label.
+
+   • Membership is secondary supporting information.
+
+   • Avatar must display compact learner initials only.
+
+   • Generic words such as Student must not be rendered
+     inside the avatar.
+
+   • Long learner names must truncate safely without
+     widening the sidebar.
+
+   • Sidebar presentation must remain compatible with
+     both light and dark portal themes.
+
+   Change History
+   ----------------------------------------------------------
+   v1.1.0
+
+   • Added governed learner identity presentation
+   • Added initials-only avatar presentation
+   • Added long learner-name truncation
+   • Added profile-copy container support
+   • Added membership truncation protection
+   • Improved profile-card spacing and alignment
+   • Added dark-theme compatibility
+   • Added reduced-motion support
+   • Preserved existing sidebar and navigation architecture
+
+   v1.0.0
+
+   • Initial governed sidebar styling
+   • Added sidebar layout
+   • Added navigation
+   • Added profile card
+   • Added portfolio summary
+   • Added responsive behaviour
+
+========================================================== */
 
 
 /* ==========================================================
@@ -42,24 +107,45 @@
 
 .portal-sidebar {
 
-    background: var(--surface-card);
+    display:
+        flex;
 
-    border-right: 1px solid var(--border-default);
+    flex-direction:
+        column;
 
-    padding: 32px 20px;
+    gap:
+        28px;
 
-    display: flex;
+    min-width:
+        0;
 
-    flex-direction: column;
+    padding:
+        32px 20px;
 
-    scrollbar-width: thin;
+    overflow-x:
+        hidden;
 
-    scrollbar-color: var(--border-dark) transparent;
+    background:
+        var(
+            --surface-card
+        );
 
-    gap: 28px;
+    border-right:
+        1px solid
+        var(
+            --border-default
+        );
+
+    scrollbar-width:
+        thin;
+
+    scrollbar-color:
+        var(
+            --border-dark
+        )
+        transparent;
 
 }
-
 
 
 /* ==========================================================
@@ -68,48 +154,117 @@
 
 .portal-sidebar-brand {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 14px;
+    gap:
+        14px;
 
-    padding-bottom: 20px;
+    min-width:
+        0;
 
-    border-bottom: 1px solid var(--border-light);
+    padding-bottom:
+        20px;
+
+    border-bottom:
+        1px solid
+        var(
+            --border-light
+        );
 
 }
 
 .portal-sidebar-logo {
 
-    width: 46px;
+    width:
+        46px;
 
-    height: 46px;
+    height:
+        46px;
 
-    object-fit: contain;
+    flex:
+        0 0 46px;
+
+    object-fit:
+        contain;
+
+}
+
+.portal-sidebar-brand-copy {
+
+    min-width:
+        0;
 
 }
 
 .portal-sidebar-title {
 
-    font-size: var(--font-size-lg);
+    min-width:
+        0;
 
-    font-weight: var(--font-bold);
+    overflow:
+        hidden;
 
-    color: var(--text-primary);
+    color:
+        var(
+            --text-primary
+        );
+
+    font-size:
+        var(
+            --font-size-lg
+        );
+
+    font-weight:
+        var(
+            --font-bold
+        );
+
+    line-height:
+        1.3;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
 
 .portal-sidebar-subtitle {
 
-    margin-top: 4px;
+    min-width:
+        0;
 
-    font-size: var(--font-size-sm);
+    margin-top:
+        4px;
 
-    color: var(--text-secondary);
+    overflow:
+        hidden;
+
+    color:
+        var(
+            --text-secondary
+        );
+
+    font-size:
+        var(
+            --font-size-sm
+        );
+
+    line-height:
+        1.4;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
-
 
 
 /* ==========================================================
@@ -118,155 +273,411 @@
 
 .portal-navigation {
 
-    display: flex;
+    display:
+        flex;
 
-    flex-direction: column;
+    flex-direction:
+        column;
 
-    gap: 8px;
+    gap:
+        8px;
+
+    min-width:
+        0;
 
 }
 
 .portal-nav-item {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 14px;
+    gap:
+        14px;
 
-    padding: 12px 14px;
+    min-width:
+        0;
 
-    border-radius: var(--radius-md);
+    padding:
+        12px 14px;
 
-    color: var(--text-secondary);
+    border-radius:
+        var(
+            --radius-md
+        );
 
-    text-decoration: none;
+    color:
+        var(
+            --text-secondary
+        );
 
-    font-weight: var(--font-medium);
+    font-weight:
+        var(
+            --font-medium
+        );
+
+    text-decoration:
+        none;
 
     transition:
-        background var(--transition-fast),
-        color var(--transition-fast),
-        transform var(--transition-fast);
+        background
+        var(
+            --transition-fast
+        ),
+        color
+        var(
+            --transition-fast
+        ),
+        transform
+        var(
+            --transition-fast
+        );
 
 }
 
 .portal-nav-item:hover {
 
-    background: var(--surface-secondary);
+    background:
+        var(
+            --surface-secondary
+        );
 
-    color: var(--text-primary);
+    color:
+        var(
+            --text-primary
+        );
 
 }
 
 .portal-nav-item.active {
 
-    --surface-selected: rgba(30,58,138,.08);
+    --surface-selected:
+        rgba(
+            30,
+            58,
+            138,
+            0.08
+        );
 
-    background: var(--surface-selected);
+    background:
+        var(
+            --surface-selected
+        );
 
-    color: var(--brand-primary);
+    color:
+        var(
+            --brand-primary
+        );
 
-    font-weight: var(--font-semibold);
+    font-weight:
+        var(
+            --font-semibold
+        );
 
 }
 
-.portal-nav-item:focus-visible{
+.portal-nav-item:focus-visible {
 
-    outline:2px solid var(--border-focus);
+    outline:
+        2px solid
+        var(
+            --border-focus
+        );
 
-    outline-offset:2px;
+    outline-offset:
+        2px;
 
 }
 
 .portal-nav-icon {
 
-    width: 22px;
+    display:
+        flex;
 
-    display: flex;
+    align-items:
+        center;
 
-    justify-content: center;
+    justify-content:
+        center;
 
-    font-size: 18px;
+    width:
+        22px;
+
+    flex:
+        0 0 22px;
+
+    font-size:
+        18px;
 
 }
 
 .portal-nav-title {
 
-    flex: 1;
+    flex:
+        1 1 auto;
+
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
 
 
-
 /* ==========================================================
-   PROFILE
+   PROFILE CARD
 ========================================================== */
 
 .portal-sidebar-profile {
 
-    margin-top: auto;
+    display:
+        flex;
 
-    display: flex;
+    align-items:
+        center;
 
-    align-items: center;
+    gap:
+        14px;
 
-    gap: 14px;
+    min-width:
+        0;
 
-    padding: 18px;
+    margin-top:
+        auto;
 
-    border: 1px solid var(--border-default);
+    padding:
+        18px;
 
-    border-radius: var(--radius-lg);
+    overflow:
+        hidden;
 
-    background: var(--surface-secondary);
+    background:
+        var(
+            --surface-secondary
+        );
+
+    border:
+        1px solid
+        var(
+            --border-default
+        );
+
+    border-radius:
+        var(
+            --radius-lg
+        );
+
+    color:
+        var(
+            --text-primary
+        );
 
 }
+
+
+/* ==========================================================
+   PROFILE AVATAR
+========================================================== */
 
 .profile-avatar {
 
-    width: 52px;
+    display:
+        flex;
 
-    height: 52px;
+    align-items:
+        center;
 
-    border-radius: 50%;
+    justify-content:
+        center;
 
-    display: flex;
+    width:
+        52px;
 
-    align-items: center;
+    height:
+        52px;
 
-    justify-content: center;
+    flex:
+        0 0 52px;
 
-    background: var(--brand-primary);
+    overflow:
+        hidden;
 
-    color: var(--text-inverse);
+    background:
+        var(
+            --brand-primary
+        );
 
-    font-size: 18px;
+    border-radius:
+        50%;
 
-    font-weight: 700;
+    color:
+        var(
+            --text-inverse
+        );
 
-    flex-shrink: 0;
+    font-size:
+        15px;
+
+    font-weight:
+        var(
+            --font-bold,
+            700
+        );
+
+    letter-spacing:
+        0.03em;
+
+    line-height:
+        1;
+
+    text-align:
+        center;
+
+    text-transform:
+        uppercase;
+
+    white-space:
+        nowrap;
 
 }
+
+
+/* ==========================================================
+   PROFILE COPY
+
+   Expected markup:
+
+   .portal-sidebar-profile
+       .profile-avatar
+       .sidebar-profile-copy
+           #sidebarUserName
+           #sidebarMembership
+========================================================== */
+
+.sidebar-profile-copy,
+.portal-sidebar-profile-copy,
+.profile-copy {
+
+    display:
+        flex;
+
+    flex:
+        1 1 auto;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        center;
+
+    gap:
+        4px;
+
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+}
+
+
+/* ==========================================================
+   LEARNER NAME
+========================================================== */
 
 #sidebarUserName {
 
-    font-weight: var(--font-semibold);
+    display:
+        block;
 
-    color: var(--text-primary);
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+    color:
+        var(
+            --text-primary
+        );
+
+    font-size:
+        var(
+            --font-size-sm
+        );
+
+    font-weight:
+        var(
+            --font-semibold
+        );
+
+    line-height:
+        1.35;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
+
+
+/* ==========================================================
+   MEMBERSHIP
+========================================================== */
 
 #sidebarMembership {
 
-    margin-top: 4px;
+    display:
+        block;
 
-    font-size: var(--font-size-sm);
+    min-width:
+        0;
 
-    color: var(--text-secondary);
+    margin-top:
+        0;
+
+    overflow:
+        hidden;
+
+    color:
+        var(
+            --text-secondary
+        );
+
+    font-size:
+        var(
+            --font-size-sm
+        );
+
+    font-weight:
+        var(
+            --font-medium,
+            500
+        );
+
+    line-height:
+        1.4;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
-
 
 
 /* ==========================================================
@@ -275,48 +686,102 @@
 
 .portal-sidebar-summary {
 
-    margin-top: 18px;
+    margin-top:
+        18px;
 
-    padding: 22px;
+    padding:
+        22px;
 
-    border-radius: var(--radius-lg);
+    overflow:
+        hidden;
 
-    background: var(--brand-primary);
+    background:
+        var(
+            --brand-primary
+        );
 
-    color: var(--text-inverse);
+    border-radius:
+        var(
+            --radius-lg
+        );
 
-    box-shadow: var(--shadow-md);
+    box-shadow:
+        var(
+            --shadow-md
+        );
+
+    color:
+        var(
+            --text-inverse
+        );
 
 }
 
 .summary-title {
 
-    font-size: var(--font-size-sm);
+    overflow:
+        hidden;
 
-    opacity: .9;
+    font-size:
+        var(
+            --font-size-sm
+        );
+
+    line-height:
+        1.4;
+
+    opacity:
+        0.9;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
 
 .summary-count {
 
-    margin: 12px 0 6px;
+    margin:
+        12px 0 6px;
 
-    font-size: var(--font-size-4xl);
+    font-size:
+        var(
+            --font-size-4xl
+        );
 
-    font-weight: 700;
+    font-weight:
+        700;
 
-    line-height: 1;
+    line-height:
+        1;
 
 }
 
 .summary-subtitle {
 
-    font-size: var(--font-size-sm);
+    overflow:
+        hidden;
 
-    opacity: .9;
+    font-size:
+        var(
+            --font-size-sm
+        );
+
+    line-height:
+        1.4;
+
+    opacity:
+        0.9;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
 
 }
-
 
 
 /* ==========================================================
@@ -325,12 +790,19 @@
 
 .portal-sidebar hr {
 
-    border: 0;
+    margin:
+        0;
 
-    border-top: 1px solid var(--border-light);
+    border:
+        0;
+
+    border-top:
+        1px solid
+        var(
+            --border-light
+        );
 
 }
-
 
 
 /* ==========================================================
@@ -339,18 +811,185 @@
 
 .portal-sidebar::-webkit-scrollbar {
 
-    width: 6px;
+    width:
+        6px;
 
 }
 
 .portal-sidebar::-webkit-scrollbar-thumb {
 
-    background: var(--border-dark);
+    background:
+        var(
+            --border-dark
+        );
 
-    border-radius: 999px;
+    border-radius:
+        999px;
 
 }
 
+
+/* ==========================================================
+   DARK THEME FALLBACKS
+========================================================== */
+
+html[data-theme="dark"]
+.portal-sidebar,
+body[data-theme="dark"]
+.portal-sidebar,
+.dark-theme
+.portal-sidebar,
+.theme-dark
+.portal-sidebar {
+
+    background:
+        var(
+            --surface-card,
+            #111827
+        );
+
+    border-right-color:
+        var(
+            --border-default,
+            #334155
+        );
+
+}
+
+html[data-theme="dark"]
+.portal-sidebar-profile,
+body[data-theme="dark"]
+.portal-sidebar-profile,
+.dark-theme
+.portal-sidebar-profile,
+.theme-dark
+.portal-sidebar-profile {
+
+    background:
+        var(
+            --surface-secondary,
+            #1e293b
+        );
+
+    border-color:
+        var(
+            --border-default,
+            #334155
+        );
+
+}
+
+html[data-theme="dark"]
+#sidebarUserName,
+body[data-theme="dark"]
+#sidebarUserName,
+.dark-theme
+#sidebarUserName,
+.theme-dark
+#sidebarUserName,
+html[data-theme="dark"]
+.portal-sidebar-title,
+body[data-theme="dark"]
+.portal-sidebar-title,
+.dark-theme
+.portal-sidebar-title,
+.theme-dark
+.portal-sidebar-title {
+
+    color:
+        var(
+            --text-primary,
+            #f8fafc
+        );
+
+}
+
+html[data-theme="dark"]
+#sidebarMembership,
+body[data-theme="dark"]
+#sidebarMembership,
+.dark-theme
+#sidebarMembership,
+.theme-dark
+#sidebarMembership,
+html[data-theme="dark"]
+.portal-sidebar-subtitle,
+body[data-theme="dark"]
+.portal-sidebar-subtitle,
+.dark-theme
+.portal-sidebar-subtitle,
+.theme-dark
+.portal-sidebar-subtitle {
+
+    color:
+        var(
+            --text-secondary,
+            #cbd5e1
+        );
+
+}
+
+html[data-theme="dark"]
+.portal-nav-item,
+body[data-theme="dark"]
+.portal-nav-item,
+.dark-theme
+.portal-nav-item,
+.theme-dark
+.portal-nav-item {
+
+    color:
+        var(
+            --text-secondary,
+            #cbd5e1
+        );
+
+}
+
+html[data-theme="dark"]
+.portal-nav-item:hover,
+body[data-theme="dark"]
+.portal-nav-item:hover,
+.dark-theme
+.portal-nav-item:hover,
+.theme-dark
+.portal-nav-item:hover {
+
+    background:
+        var(
+            --surface-secondary,
+            #1e293b
+        );
+
+    color:
+        var(
+            --text-primary,
+            #f8fafc
+        );
+
+}
+
+html[data-theme="dark"]
+.portal-nav-item.active,
+body[data-theme="dark"]
+.portal-nav-item.active,
+.dark-theme
+.portal-nav-item.active,
+.theme-dark
+.portal-nav-item.active {
+
+    --surface-selected:
+        rgba(
+            147,
+            197,
+            253,
+            0.12
+        );
+
+    color:
+        #bfdbfe;
+
+}
 
 
 /* ==========================================================
@@ -361,11 +1000,13 @@
 
     .portal-sidebar {
 
-        display: none;
+        display:
+            none;
 
     }
 
 }
+
 
 /* ==========================================================
    LARGE DESKTOP
@@ -375,11 +1016,29 @@
 
     .portal-sidebar {
 
-        padding: 36px 24px;
+        padding:
+            36px 24px;
 
     }
 
 }
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .portal-nav-item {
+
+        transition:
+            none;
+
+    }
+
+}
+
 
 /* ==========================================================
    FUTURE EXTENSIONS

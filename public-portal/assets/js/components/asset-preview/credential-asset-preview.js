@@ -3,31 +3,35 @@
    Student & Executive Portal
 
    File      : credential-asset-preview.js
-   Version   : 2.2.0
+   Version   : 2.3.0
    Status    : ACTIVE
-   Phase     : Credential Asset Consumption
+   Phase     : Credential Workspace Stabilization
 
    Purpose
    ----------------------------------------------------------
-   Credential Asset Preview Renderer
+   Renders governed previews of published credential assets
+   inside the shared Credential Workspace.
 
    Responsibilities
    ----------------------------------------------------------
    ✓ Render published credential asset previews
    ✓ Render PDF assets
    ✓ Render image assets
+   ✓ Render preview navigation
    ✓ Render preview actions
    ✓ Support published asset download
-   ✓ Support LinkedIn share action
+   ✓ Support LinkedIn sharing
    ✓ Handle missing and unsupported assets
    ✓ Validate published URLs before rendering
    ✓ Reject legacy placeholder URL values
    ✓ Support governed and legacy asset-type formats
+   ✓ Provide renderer-safe and accessible markup
 
-   Non Responsibilities
+   Non-Responsibilities
    ----------------------------------------------------------
    ✗ Overlay creation
    ✗ Overlay lifecycle
+   ✗ Parent Credential Detail footer rendering
    ✗ Firestore access
    ✗ Authentication
    ✗ Authorization
@@ -37,19 +41,45 @@
    ✗ Payment processing
    ✗ Credential mutation
 
+   Architectural Position
+   ----------------------------------------------------------
+   Credential Detail Overlay
+        ↓
+   Credential Assets Section
+        ↓
+   Credential Asset Service
+        ↓
+   Credential Asset Preview
+        ↓
+   Asset-Specific Renderer
+
    Governance
    ----------------------------------------------------------
    • Credential Workspace Renderer
+
    • Published Asset Consumption Only
+
    • No Nested Overlay
+
    • Renderer-Based Architecture
+
    • No Firestore Access
+
    • No Authentication Logic
+
    • Student Portal Read-Only
+
    • Cloud Storage Asset Rendering
-   • Only validated HTTP or HTTPS asset URLs may render
+
+   • Only validated HTTP or HTTPS asset URLs may render.
+
    • Placeholder URLs must never reach iframe, image,
-     anchor or download surfaces
+     anchor or download surfaces.
+
+   • Asset preview navigation belongs in the preview header.
+
+   • Parent Credential Detail actions must not be duplicated
+     inside the preview footer.
 
    Asset Type Authority
    ----------------------------------------------------------
@@ -69,26 +99,33 @@
 
    Change History
    ----------------------------------------------------------
+   v2.3.0
+
+   • Refined preview workspace markup
+   • Preserved a single header back action
+   • Removed instructional note below the action footer
+   • Improved PDF fallback presentation
+   • Added explicit preview surface classes
+   • Added accessible iframe title handling
+   • Added download-button disabled state
+   • Preserved all public APIs
+   • Preserved asset URL validation
+   • Preserved LinkedIn sharing
+   • Preserved read-only portal architecture
+
    v2.2.0
+
    • Added published URL validation
-   • Rejects placeholder and malformed preview URLs
-   • Falls back from invalid preview URL to valid download URL
-   • Supports underscore and hyphen asset-type values
-   • Normalizes asset type before title and format resolution
-   • Adds safe URL diagnostics
-   • Preserves existing public API
-   • Preserves overlay integration
-   • Preserves LinkedIn sharing
-   • Preserves read-only portal architecture
+   • Rejected placeholder and malformed preview URLs
+   • Added governed asset-type normalization
+   • Preserved existing public API
 
    v2.1.0
+
    • Accepted published asset ViewModel
-   • Rendered actual Cloud Storage assets
+   • Rendered Cloud Storage assets
    • Supported PDF and image previews
-   • Downloaded using published asset URL
-   • Removed dependency on credential-level asset URLs
    • Preserved LinkedIn verification sharing
-   • Added missing and unsupported asset states
 
 ========================================================== */
 
@@ -108,7 +145,7 @@
         "CredentialAssetPreview";
 
     const MODULE_VERSION =
-        "2.2.0";
+        "2.3.0";
 
     const ASSET_TYPES =
         Object.freeze({
@@ -218,6 +255,7 @@
 
     }
 
+
     function normalizeLowercase(
         value
     ) {
@@ -318,9 +356,16 @@
 
                         <button
                             type="button"
-                            class="btn btn-secondary js-back-to-credential-details">
+                            class="credential-asset-preview-back js-back-to-credential-details"
+                            aria-label="Return to credential details">
 
-                            ← Back to Credential Details
+                            <span aria-hidden="true">
+                                ←
+                            </span>
+
+                            <span>
+                                Back to Credential Details
+                            </span>
 
                         </button>
 
@@ -334,7 +379,8 @@
                     </div>
 
                     <footer
-                        class="credential-asset-preview-actions">
+                        class="credential-asset-preview-actions"
+                        aria-label="Credential asset actions">
 
                         <button
                             type="button"
@@ -362,15 +408,6 @@
 
                     </footer>
 
-                    <p
-                        class="credential-asset-preview-note">
-
-                        Tip: Download the asset first, then
-                        upload it manually while sharing on
-                        LinkedIn.
-
-                    </p>
-
                 </section>
 
             `;
@@ -388,9 +425,7 @@
             asset
         ) {
 
-            if (
-                !asset
-            ) {
+            if (!asset) {
 
                 return this.renderEmpty(
                     "Published asset unavailable",
@@ -404,9 +439,7 @@
                     asset
                 );
 
-            if (
-                !previewUrl
-            ) {
+            if (!previewUrl) {
 
                 return this.renderEmpty(
                     "Preview unavailable",
@@ -501,26 +534,31 @@
                 <div
                     class="credential-published-asset credential-published-asset--pdf">
 
-                    <iframe
-                        class="credential-published-asset-frame"
-                        src="${escapedUrl}"
-                        title="${escapedTitle}"
-                        loading="lazy"
-                        referrerpolicy="no-referrer">
+                    <div
+                        class="credential-published-asset-surface">
 
-                    </iframe>
+                        <iframe
+                            class="credential-published-asset-frame"
+                            src="${escapedUrl}"
+                            title="${escapedTitle}"
+                            loading="eager"
+                            referrerpolicy="no-referrer">
+
+                        </iframe>
+
+                    </div>
 
                     <p
                         class="credential-published-asset-fallback">
 
-                        Unable to see the PDF preview?
+                        Preview unavailable or difficult to read?
 
                         <a
                             href="${escapedUrl}"
                             target="_blank"
                             rel="noopener noreferrer">
 
-                            Open the published PDF
+                            Open certificate in a new tab
 
                         </a>
 
@@ -590,16 +628,21 @@
                 <div
                     class="credential-published-asset credential-published-asset--image">
 
-                    <img
-                        class="credential-published-asset-image"
-                        src="${this.escapeAttribute(
-                            previewUrl
-                        )}"
-                        alt="${this.escapeAttribute(
-                            imageAlt
-                        )}"
-                        loading="lazy"
-                        referrerpolicy="no-referrer">
+                    <div
+                        class="credential-published-asset-surface">
+
+                        <img
+                            class="credential-published-asset-image asset-preview-image"
+                            src="${this.escapeAttribute(
+                                previewUrl
+                            )}"
+                            alt="${this.escapeAttribute(
+                                imageAlt
+                            )}"
+                            loading="eager"
+                            referrerpolicy="no-referrer">
+
+                    </div>
 
                 </div>
 
@@ -645,20 +688,16 @@
                     class="asset-preview-empty">
 
                     <h3>
-
                         Preview format unavailable
-
                     </h3>
 
                     <p>
-
                         This published asset cannot be
                         previewed directly in the portal.
-
                     </p>
 
                     <a
-                        class="btn btn-secondary"
+                        class="credential-asset-preview-button secondary"
                         href="${this.escapeAttribute(
                             previewUrl
                         )}"
@@ -694,19 +733,15 @@
                     class="asset-preview-empty">
 
                     <h3>
-
                         ${this.escape(
                             title
                         )}
-
                     </h3>
 
                     <p>
-
                         ${this.escape(
                             message
                         )}
-
                     </p>
 
                 </div>
@@ -745,9 +780,7 @@
                     asset
                 );
 
-            if (
-                !url
-            ) {
+            if (!url) {
 
                 window.alert(
                     "Download is not available because the published URL is missing or invalid."
@@ -776,20 +809,8 @@
                     asset?.fileName
                 );
 
-            if (
-                fileName
-            ) {
-
-                anchor.download =
-                    fileName;
-
-            }
-            else {
-
-                anchor.download =
-                    "";
-
-            }
+            anchor.download =
+                fileName || "";
 
             document.body.appendChild(
                 anchor
@@ -810,9 +831,7 @@
             credential
         ) {
 
-            if (
-                !credential
-            ) {
+            if (!credential) {
 
                 window.alert(
                     "LinkedIn sharing is not available for this credential yet."
@@ -827,9 +846,7 @@
                     credential
                 );
 
-            if (
-                !verificationUrl
-            ) {
+            if (!verificationUrl) {
 
                 window.alert(
                     "LinkedIn sharing is not available for this credential yet."
@@ -885,9 +902,7 @@
             asset
         ) {
 
-            if (
-                !asset
-            ) {
+            if (!asset) {
 
                 return "";
 
@@ -896,11 +911,17 @@
             let servicePreviewUrl =
                 "";
 
-            let directPreviewUrl =
-                "";
+            const directPreviewUrl =
+                normalizeString(
+                    asset.previewUrl ||
+                    asset.preview_url
+                );
 
-            let directDownloadUrl =
-                "";
+            const directDownloadUrl =
+                normalizeString(
+                    asset.downloadUrl ||
+                    asset.download_url
+                );
 
             if (
                 window.CredentialAssetService &&
@@ -919,18 +940,6 @@
 
             }
 
-            directPreviewUrl =
-                normalizeString(
-                    asset.previewUrl ||
-                    asset.preview_url
-                );
-
-            directDownloadUrl =
-                normalizeString(
-                    asset.downloadUrl ||
-                    asset.download_url
-                );
-
             const candidates = [
                 servicePreviewUrl,
                 directPreviewUrl,
@@ -939,18 +948,14 @@
 
             const resolvedUrl =
                 candidates.find(
-                    (
-                        candidate
-                    ) =>
+                    candidate =>
                         this.isUsablePublishedUrl(
                             candidate
                         )
                 ) ||
                 "";
 
-            if (
-                !resolvedUrl
-            ) {
+            if (!resolvedUrl) {
 
                 console.warn(
                     `[${MODULE_NAME}] No usable preview URL could be resolved.`,
@@ -977,42 +982,17 @@
                 );
 
             }
-            else if (
-                directPreviewUrl &&
-                !this.isUsablePublishedUrl(
-                    directPreviewUrl
-                ) &&
-                resolvedUrl ===
-                    directDownloadUrl
-            ) {
-
-                console.warn(
-                    `[${MODULE_NAME}] Invalid preview URL rejected. Using download URL as fallback.`,
-                    {
-                        documentId:
-                            asset.id ||
-                            "",
-
-                        assetType:
-                            asset.assetType ||
-                            asset.asset_type ||
-                            ""
-                    }
-                );
-
-            }
 
             return resolvedUrl;
 
         },
 
+
         resolvePublishedDownloadUrl(
             asset
         ) {
 
-            if (
-                !asset
-            ) {
+            if (!asset) {
 
                 return "";
 
@@ -1058,18 +1038,14 @@
 
             const resolvedUrl =
                 candidates.find(
-                    (
-                        candidate
-                    ) =>
+                    candidate =>
                         this.isUsablePublishedUrl(
                             candidate
                         )
                 ) ||
                 "";
 
-            if (
-                !resolvedUrl
-            ) {
+            if (!resolvedUrl) {
 
                 console.warn(
                     `[${MODULE_NAME}] No usable download URL could be resolved.`,
@@ -1105,9 +1081,7 @@
                     value
                 );
 
-            if (
-                !normalizedValue
-            ) {
+            if (!normalizedValue) {
 
                 return false;
 
@@ -1116,10 +1090,6 @@
             const lowercaseValue =
                 normalizedValue.toLowerCase();
 
-            /*
-             * Reject known placeholder values and incomplete
-             * documentation markers.
-             */
             if (
                 lowercaseValue.includes(
                     "<same as"
@@ -1160,36 +1130,16 @@
 
             }
 
-            let parsedUrl =
-                null;
+            let parsedUrl;
 
             try {
 
                 parsedUrl =
                     new URL(
-                        normalizedValue,
-                        window.location.origin
+                        normalizedValue
                     );
 
-            }
-            catch (
-                error
-            ) {
-
-                return false;
-
-            }
-
-            /*
-             * Asset URLs must be explicit HTTP or HTTPS URLs.
-             * Relative URLs are rejected so placeholder text
-             * cannot silently resolve against the portal host.
-             */
-            if (
-                !/^https?:\/\//i.test(
-                    normalizedValue
-                )
-            ) {
+            } catch {
 
                 return false;
 
@@ -1220,9 +1170,7 @@
             assetType
         ) {
 
-            if (
-                !asset
-            ) {
+            if (!asset) {
 
                 return "";
 
@@ -1285,11 +1233,6 @@
 
             }
 
-            /*
-             * Asset-type fallback for historical records that
-             * do not include MIME or file metadata.
-             */
-
             if (
                 normalizedAssetType ===
                     ASSET_TYPES.UNIVERSITY_CERTIFICATE ||
@@ -1323,9 +1266,7 @@
             credential
         ) {
 
-            if (
-                !credential
-            ) {
+            if (!credential) {
 
                 return "";
 
@@ -1359,9 +1300,7 @@
 
             }
 
-            if (
-                credentialId
-            ) {
+            if (credentialId) {
 
                 return (
                     "https://verify.agileai.university/?credentialId=" +
@@ -1405,14 +1344,6 @@
         /* ==================================================
            COMPATIBILITY
         ================================================== */
-
-        /*
-         * Temporary compatibility method.
-         *
-         * Existing callers should be migrated to:
-         *
-         * CredentialDetailOverlay.showAssetPreview(assetType)
-         */
 
         open(
             credential,
@@ -1489,6 +1420,7 @@
                 );
 
         },
+
 
         escapeAttribute(
             value

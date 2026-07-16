@@ -1,670 +1,561 @@
-/* ==========================================================
-   Agile AI University
-   Student & Executive Portal
+    /* ==========================================================
+    Agile AI University
+    Student & Executive Portal
 
-   File      : credential-detail-overlay.js
-   Version   : 3.0.0
-   Status    : ACTIVE
-   Phase     : Sprint 2E.1
+    File      : credential-detail-overlay.js
+    Version   : 3.1.0
+    Status    : ACTIVE
+    Phase     : Sprint 2E.1
 
-   Purpose
-   ----------------------------------------------------------
-   Credential Detail Workspace Overlay
+    Purpose
+    ----------------------------------------------------------
+    Credential Detail Workspace Overlay
 
-   Responsibilities
+    Responsibilities
 
-   ✓ Create Overlay
-   ✓ Open Overlay
-   ✓ Close Overlay
-   ✓ Render Credential Details View
-   ✓ Render Credential Asset Preview View
-   ✓ Manage Workspace Navigation
-   ✓ Manage Overlay Lifecycle
+    ✓ Create Overlay
+    ✓ Open Overlay
+    ✓ Close Overlay
+    ✓ Render Credential Details View
+    ✓ Render Credential Asset Preview View
+    ✓ Manage Workspace Navigation
+    ✓ Manage Overlay Lifecycle
 
-   Non Responsibilities
+    Non Responsibilities
 
-   ✗ Authentication
-   ✗ Authorization
-   ✗ Firestore
-   ✗ Business Logic
-   ✗ Credential Generation
-   ✗ Payment Processing
+    ✗ Authentication
+    ✗ Authorization
+    ✗ Firestore
+    ✗ Business Logic
+    ✗ Credential Generation
+    ✗ Payment Processing
 
-   Governance
+    Governance
 
-   • Credential Workspace Authority
-   • Single Overlay Experience
-   • No Nested Overlay
-   • Presentation Orchestration Layer
-   • Enterprise Portal Standard
+    • Credential Workspace Authority
+    • Single Overlay Experience
+    • No Nested Overlay
+    • Presentation Orchestration Layer
+    • Enterprise Portal Standard
 
-========================================================== */
+    Change History
+    ----------------------------------------------------------
+    v3.1.0
 
-(function (window, document) {
+    • Removed duplicated asset-preview footer actions
+    • Delegated preview actions to CredentialAssetPreview
+    • Hid the parent overlay footer during asset preview
+    • Restored the Close footer when returning to details
+    • Preserved the single-overlay architecture
 
-    "use strict";
+    ========================================================== */
 
-    const CredentialDetailOverlay = {
+    (function (window, document) {
 
-        /* ==================================================
-           CONSTANTS
-        ================================================== */
+        "use strict";
 
-        views: {
-            DETAILS: "details",
-            ASSET_PREVIEW: "asset-preview"
-        },
+        const CredentialDetailOverlay = {
 
-        /* ==================================================
-           STATE
-        ================================================== */
+            /* ==================================================
+            CONSTANTS
+            ================================================== */
 
-        overlay: null,
+            views: {
+                DETAILS: "details",
+                ASSET_PREVIEW: "asset-preview"
+            },
 
-        backdrop: null,
+            /* ==================================================
+            STATE
+            ================================================== */
 
-        container: null,
+            overlay: null,
 
-        title: null,
+            backdrop: null,
 
-        body: null,
+            container: null,
 
-        footer: null,
+            title: null,
 
-        activeCredential: null,
+            body: null,
 
-        activeOptions: {},
+            footer: null,
 
-        activeView: "details",
+            activeCredential: null,
 
-        activeAssetType: null,
+            activeOptions: {},
 
-        activeAsset: null,
+            activeView: "details",
 
-        isOpen: false,
+            activeAssetType: null,
 
-        initialized: false,
+            activeAsset: null,
 
-        /* ==================================================
-           INITIALIZATION
-        ================================================== */
+            isOpen: false,
 
-        initialize() {
+            initialized: false,
 
-            if (this.initialized) {
-                return;
-            }
+            /* ==================================================
+            INITIALIZATION
+            ================================================== */
 
-            this.createOverlay();
+            initialize() {
 
-            this.initialized = true;
+                if (this.initialized) {
+                    return;
+                }
 
-        },
+                this.createOverlay();
 
-        /* ==================================================
-           CREATE OVERLAY
-        ================================================== */
+                this.initialized = true;
 
-        createOverlay() {
+            },
 
-            if (this.overlay) {
-                return;
-            }
+            /* ==================================================
+            CREATE OVERLAY
+            ================================================== */
 
-            const wrapper =
-                document.createElement("div");
+            createOverlay() {
 
-            wrapper.innerHTML =
-                this.render();
+                if (this.overlay) {
+                    return;
+                }
 
-            this.overlay =
-                wrapper.firstElementChild;
+                const wrapper =
+                    document.createElement("div");
 
-            this.backdrop =
-                this.overlay.querySelector(
-                    ".overlay-backdrop"
+                wrapper.innerHTML =
+                    this.render();
+
+                this.overlay =
+                    wrapper.firstElementChild;
+
+                this.backdrop =
+                    this.overlay.querySelector(
+                        ".overlay-backdrop"
+                    );
+
+                this.container =
+                    this.overlay.querySelector(
+                        ".overlay-container"
+                    );
+
+                this.title =
+                    this.overlay.querySelector(
+                        ".overlay-title"
+                    );
+
+                this.body =
+                    this.overlay.querySelector(
+                        ".overlay-body"
+                    );
+
+                this.footer =
+                    this.overlay.querySelector(
+                        ".overlay-footer"
+                    );
+
+                document.body.appendChild(
+                    this.overlay
                 );
 
-            this.container =
-                this.overlay.querySelector(
-                    ".overlay-container"
-                );
+                this.bindEvents();
 
-            this.title =
-                this.overlay.querySelector(
-                    ".overlay-title"
-                );
+            },
 
-            this.body =
-                this.overlay.querySelector(
-                    ".overlay-body"
-                );
+            /* ==================================================
+            RENDER SHELL
+            ================================================== */
 
-            this.footer =
-                this.overlay.querySelector(
-                    ".overlay-footer"
-                );
+            render() {
 
-            document.body.appendChild(
-                this.overlay
-            );
+                return `
 
-            this.bindEvents();
+                    <div class="overlay credential-detail-overlay">
 
-        },
-
-        /* ==================================================
-           RENDER SHELL
-        ================================================== */
-
-        render() {
-
-            return `
-
-                <div class="overlay credential-detail-overlay">
-
-                    <div class="overlay-backdrop">
-                    </div>
-
-                    <div class="overlay-container">
-
-                        <div class="overlay-header">
-
-                            <h2 class="overlay-title">
-
-                                Credential Details
-
-                            </h2>
-
-                            <button
-                                type="button"
-                                class="overlay-close"
-                                aria-label="Close">
-
-                                ×
-
-                            </button>
-
+                        <div class="overlay-backdrop">
                         </div>
 
-                        <div class="overlay-body">
+                        <div class="overlay-container">
 
-                            <div class="credential-empty">
+                            <div class="overlay-header">
 
-                                Select a credential to
-                                view its details.
+                                <h2 class="overlay-title">
+
+                                    Credential Details
+
+                                </h2>
+
+                                <button
+                                    type="button"
+                                    class="overlay-close"
+                                    aria-label="Close">
+
+                                    ×
+
+                                </button>
+
+                            </div>
+
+                            <div class="overlay-body">
+
+                                <div class="credential-empty">
+
+                                    Select a credential to
+                                    view its details.
+
+                                </div>
+
+                            </div>
+
+                            <div class="overlay-footer">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary overlay-close-button">
+
+                                    Close
+
+                                </button>
 
                             </div>
 
                         </div>
 
-                        <div class="overlay-footer">
-
-                            <button
-                                type="button"
-                                class="btn btn-secondary overlay-close-button">
-
-                                Close
-
-                            </button>
-
-                        </div>
-
                     </div>
 
-                </div>
+                `;
 
-            `;
+            },
 
-        },
+            /* ==================================================
+            EVENT BINDING
+            ================================================== */
 
-        /* ==================================================
-           EVENT BINDING
-        ================================================== */
+            bindEvents() {
 
-        bindEvents() {
+                if (!this.overlay) {
+                    return;
+                }
 
-            if (!this.overlay) {
-                return;
-            }
+                this.overlay
+                    .querySelector(".overlay-close")
+                    .addEventListener(
+                        "click",
+                        this.close.bind(this)
+                    );
 
-            this.overlay
-                .querySelector(".overlay-close")
-                .addEventListener(
+                this.overlay
+                    .querySelector(".overlay-close-button")
+                    .addEventListener(
+                        "click",
+                        this.close.bind(this)
+                    );
+
+                this.backdrop.addEventListener(
                     "click",
                     this.close.bind(this)
                 );
 
-            this.overlay
-                .querySelector(".overlay-close-button")
-                .addEventListener(
+                document.addEventListener(
+                    "keydown",
+                    this.handleEscape.bind(this)
+                );
+
+                this.body.addEventListener(
                     "click",
-                    this.close.bind(this)
+                    this.handleBodyClick.bind(this)
                 );
 
-            this.backdrop.addEventListener(
-                "click",
-                this.close.bind(this)
-            );
+            },
 
-            document.addEventListener(
-                "keydown",
-                this.handleEscape.bind(this)
-            );
+            /* ==================================================
+            BODY CLICK ROUTER
+            ================================================== */
 
-            this.body.addEventListener(
-                "click",
-                this.handleBodyClick.bind(this)
-            );
+            handleBodyClick(event) {
 
-        },
+                const assetButton =
+                    event.target.closest(
+                        ".js-open-credential-asset-preview"
+                    );
 
-        /* ==================================================
-           BODY CLICK ROUTER
-        ================================================== */
+                if (assetButton) {
 
-        handleBodyClick(event) {
+                    event.preventDefault();
 
-            const assetButton =
-                event.target.closest(
-                    ".js-open-credential-asset-preview"
-                );
+                    const assetType =
+                        assetButton.dataset.credentialAssetType;
 
-            if (assetButton) {
-
-                event.preventDefault();
-
-                const assetType =
-                    assetButton.dataset.credentialAssetType;
-
-                this.showAssetPreview(
-                    assetType
-                );
-
-                return;
-
-            }
-
-            const backButton =
-                event.target.closest(
-                    ".js-back-to-credential-details"
-                );
-
-            if (backButton) {
-
-                event.preventDefault();
-
-                this.showDetails();
-
-                return;
-
-            }
-
-            const downloadButton =
-                event.target.closest(
-                    ".js-download-credential-asset"
-                );
-
-            if (downloadButton) {
-
-                event.preventDefault();
-
-                this.downloadActiveAsset(
-                    downloadButton.dataset.credentialAssetType
-                );
-
-                return;
-
-            }
-
-            const linkedInButton =
-                event.target.closest(
-                    ".js-share-credential-linkedin"
-                );
-
-            if (linkedInButton) {
-
-                event.preventDefault();
-
-                this.shareActiveCredentialOnLinkedIn();
-
-            }
-
-        },
-
-        /* ==================================================
-           OPEN
-        ================================================== */
-
-        open(
-            credential,
-            options = {}
-        ) {
-
-            this.initialize();
-
-            if (!credential) {
-
-                console.warn(
-                    "[CredentialDetailOverlay] Missing credential."
-                );
-
-                return;
-
-            }
-
-            this.activeCredential =
-                credential;
-
-            this.activeOptions =
-                options || {};
-
-            this.activeView =
-                this.views.DETAILS;
-
-            this.activeAssetType =
-                null;
-            
-            this.activeAsset =
-                null;
-
-            if (!this.isOpen) {
-
-                this.overlay.classList.add(
-                    "is-open"
-                );
-
-                document.body.style.overflow =
-                    "hidden";
-
-                this.isOpen = true;
-
-            }
-
-            this.renderDetailsView();
-
-            this.focusRequestedSection();
-
-        },
-
-        /* ==================================================
-           DETAILS VIEW
-        ================================================== */
-
-        showDetails() {
-
-            this.activeView =
-                this.views.DETAILS;
-
-            this.activeAssetType =
-                null;
-
-            this.activeAsset =
-                null;
-
-            this.renderDetailsView();
-
-        },
-
-        renderDetailsView() {
-
-            this.setTitle(
-                "Credential Details"
-            );
-
-            this.renderSections();
-
-            this.renderDefaultFooter();
-
-        },
-
-        /* ==================================================
-           ASSET PREVIEW VIEW
-        ================================================== */
-
-        async showAssetPreview(assetType) {
-
-            if (!this.activeCredential) {
-
-                console.warn(
-                    "[CredentialDetailOverlay] No active credential for asset preview."
-                );
-
-                return;
-
-            }
-
-            if (!assetType) {
-
-                console.warn(
-                    "[CredentialDetailOverlay] Missing asset type."
-                );
-
-                return;
-
-            }
-
-            if (
-                !window.CredentialAssetService ||
-                typeof window.CredentialAssetService.getAssetByType !==
-                    "function"
-            ) {
-
-                console.warn(
-                    "[CredentialDetailOverlay] CredentialAssetService is unavailable."
-                );
-
-                return;
-
-            }
-
-            if (
-                !window.CredentialAssetPreview ||
-                typeof window.CredentialAssetPreview.render !==
-                    "function"
-            ) {
-
-                console.warn(
-                    "[CredentialDetailOverlay] CredentialAssetPreview renderer is unavailable."
-                );
-
-                return;
-
-            }
-
-            const firestoreAssetType =
-                this.resolveFirestoreAssetType(
-                    assetType
-                );
-
-            if (!firestoreAssetType) {
-
-                console.warn(
-                    "[CredentialDetailOverlay] Unsupported asset type:",
-                    assetType
-                );
-
-                return;
-
-            }
-
-            const credentialId =
-                String(
-                    this.activeCredential.credentialId ||
-                    this.activeCredential.credential_id ||
-                    this.activeCredential.id ||
-                    ""
-                ).trim();
-
-            if (!credentialId) {
-
-                console.warn(
-                    "[CredentialDetailOverlay] Credential ID is unavailable for asset preview."
-                );
-
-                return;
-
-            }
-
-            /*
-             * Capture the current request context.
-             * This prevents a delayed response from rendering
-             * after the learner closes the overlay, returns to
-             * details, or opens another credential.
-             */
-
-            const requestedCredential =
-                this.activeCredential;
-
-            const requestedAssetType =
-                assetType;
-
-            this.activeView =
-                this.views.ASSET_PREVIEW;
-
-            this.activeAssetType =
-                assetType;
-
-            this.activeAsset =
-                null;
-
-            this.setTitle(
-                this.resolveAssetTitle(
-                    assetType
-                )
-            );
-
-            this.body.innerHTML = `
-
-                <div
-                    class="credential-asset-preview-loading"
-                    role="status"
-                    aria-live="polite">
-
-                    <p>
-
-                        Loading published credential asset…
-
-                    </p>
-
-                </div>
-
-            `;
-
-            this.renderAssetPreviewFooter();
-
-            this.scrollToTop();
-
-            try {
-
-                const asset =
-                    await window.CredentialAssetService
-                        .getAssetByType(
-                            credentialId,
-                            firestoreAssetType
-                        );
-
-                /*
-                 * Ignore a stale asynchronous response.
-                 */
-
-                if (
-                    !this.isOpen ||
-                    this.activeView !==
-                        this.views.ASSET_PREVIEW ||
-                    this.activeCredential !==
-                        requestedCredential ||
-                    this.activeAssetType !==
-                        requestedAssetType
-                ) {
+                    this.showAssetPreview(
+                        assetType
+                    );
 
                     return;
 
                 }
 
-                this.activeAsset =
-                    asset || null;
+                const backButton =
+                    event.target.closest(
+                        ".js-back-to-credential-details"
+                    );
 
-                if (!this.activeAsset) {
+                if (backButton) {
+
+                    event.preventDefault();
+
+                    this.showDetails();
+
+                    return;
+
+                }
+
+                const downloadButton =
+                    event.target.closest(
+                        ".js-download-credential-asset"
+                    );
+
+                if (downloadButton) {
+
+                    event.preventDefault();
+
+                    this.downloadActiveAsset(
+                        downloadButton.dataset.credentialAssetType
+                    );
+
+                    return;
+
+                }
+
+                const linkedInButton =
+                    event.target.closest(
+                        ".js-share-credential-linkedin"
+                    );
+
+                if (linkedInButton) {
+
+                    event.preventDefault();
+
+                    this.shareActiveCredentialOnLinkedIn();
+
+                }
+
+            },
+
+            /* ==================================================
+            OPEN
+            ================================================== */
+
+            open(
+                credential,
+                options = {}
+            ) {
+
+                this.initialize();
+
+                if (!credential) {
 
                     console.warn(
-                        "[CredentialDetailOverlay] Published credential asset was not found:",
-                        {
-                            credentialId,
-                            assetType:
-                                firestoreAssetType
-                        }
+                        "[CredentialDetailOverlay] Missing credential."
                     );
-
-                }
-
-                this.body.innerHTML =
-                    window.CredentialAssetPreview.render(
-                        this.activeCredential,
-                        assetType,
-                        this.activeAsset
-                    );
-
-                this.renderAssetPreviewFooter();
-
-                this.scrollToTop();
-
-            }
-            catch (error) {
-
-                if (
-                    !this.isOpen ||
-                    this.activeView !==
-                        this.views.ASSET_PREVIEW ||
-                    this.activeCredential !==
-                        requestedCredential ||
-                    this.activeAssetType !==
-                        requestedAssetType
-                ) {
 
                     return;
 
                 }
+
+                this.activeCredential =
+                    credential;
+
+                this.activeOptions =
+                    options || {};
+
+                this.activeView =
+                    this.views.DETAILS;
+
+                this.activeAssetType =
+                    null;
+                
+                this.activeAsset =
+                    null;
+
+                if (!this.isOpen) {
+
+                    this.overlay.classList.add(
+                        "is-open"
+                    );
+
+                    document.body.style.overflow =
+                        "hidden";
+
+                    this.isOpen = true;
+
+                }
+
+                this.renderDetailsView();
+
+                this.focusRequestedSection();
+
+            },
+
+            /* ==================================================
+            DETAILS VIEW
+            ================================================== */
+
+            showDetails() {
+
+                this.activeView =
+                    this.views.DETAILS;
+
+                this.activeAssetType =
+                    null;
 
                 this.activeAsset =
                     null;
 
-                console.error(
-                    "[CredentialDetailOverlay] Published asset loading failed:",
-                    {
-                        credentialId,
-                        assetType:
-                            firestoreAssetType,
-                        error
-                    }
+                this.renderDetailsView();
+
+            },
+
+            renderDetailsView() {
+
+                this.setTitle(
+                    "Credential Details"
+                );
+
+                this.renderSections();
+
+                this.renderDefaultFooter();
+
+            },
+
+            /* ==================================================
+            ASSET PREVIEW VIEW
+            ================================================== */
+
+            async showAssetPreview(assetType) {
+
+                if (!this.activeCredential) {
+
+                    console.warn(
+                        "[CredentialDetailOverlay] No active credential for asset preview."
+                    );
+
+                    return;
+
+                }
+
+                if (!assetType) {
+
+                    console.warn(
+                        "[CredentialDetailOverlay] Missing asset type."
+                    );
+
+                    return;
+
+                }
+
+                if (
+                    !window.CredentialAssetService ||
+                    typeof window.CredentialAssetService.getAssetByType !==
+                        "function"
+                ) {
+
+                    console.warn(
+                        "[CredentialDetailOverlay] CredentialAssetService is unavailable."
+                    );
+
+                    return;
+
+                }
+
+                if (
+                    !window.CredentialAssetPreview ||
+                    typeof window.CredentialAssetPreview.render !==
+                        "function"
+                ) {
+
+                    console.warn(
+                        "[CredentialDetailOverlay] CredentialAssetPreview renderer is unavailable."
+                    );
+
+                    return;
+
+                }
+
+                const firestoreAssetType =
+                    this.resolveFirestoreAssetType(
+                        assetType
+                    );
+
+                if (!firestoreAssetType) {
+
+                    console.warn(
+                        "[CredentialDetailOverlay] Unsupported asset type:",
+                        assetType
+                    );
+
+                    return;
+
+                }
+
+                const credentialId =
+                    String(
+                        this.activeCredential.credentialId ||
+                        this.activeCredential.credential_id ||
+                        this.activeCredential.id ||
+                        ""
+                    ).trim();
+
+                if (!credentialId) {
+
+                    console.warn(
+                        "[CredentialDetailOverlay] Credential ID is unavailable for asset preview."
+                    );
+
+                    return;
+
+                }
+
+                /*
+                * Capture the current request context.
+                * This prevents a delayed response from rendering
+                * after the learner closes the overlay, returns to
+                * details, or opens another credential.
+                */
+
+                const requestedCredential =
+                    this.activeCredential;
+
+                const requestedAssetType =
+                    assetType;
+
+                this.activeView =
+                    this.views.ASSET_PREVIEW;
+
+                this.activeAssetType =
+                    assetType;
+
+                this.activeAsset =
+                    null;
+
+                this.setTitle(
+                    this.resolveAssetTitle(
+                        assetType
+                    )
                 );
 
                 this.body.innerHTML = `
 
                     <div
-                        class="credential-asset-preview-error"
-                        role="alert">
-
-                        <h3>
-
-                            Asset unavailable
-
-                        </h3>
+                        class="credential-asset-preview-loading"
+                        role="status"
+                        aria-live="polite">
 
                         <p>
 
-                            The published credential asset could not be loaded.
-                            Please try again.
+                            Loading published credential asset…
 
                         </p>
-
-                        <button
-                            type="button"
-                            class="btn btn-secondary js-back-to-credential-details">
-
-                            ← Back to Credential Details
-
-                        </button>
 
                     </div>
 
@@ -674,111 +565,230 @@
 
                 this.scrollToTop();
 
-            }
+                try {
 
-        },
+                    const asset =
+                        await window.CredentialAssetService
+                            .getAssetByType(
+                                credentialId,
+                                firestoreAssetType
+                            );
+
+                    /*
+                    * Ignore a stale asynchronous response.
+                    */
+
+                    if (
+                        !this.isOpen ||
+                        this.activeView !==
+                            this.views.ASSET_PREVIEW ||
+                        this.activeCredential !==
+                            requestedCredential ||
+                        this.activeAssetType !==
+                            requestedAssetType
+                    ) {
+
+                        return;
+
+                    }
+
+                    this.activeAsset =
+                        asset || null;
+
+                    if (!this.activeAsset) {
+
+                        console.warn(
+                            "[CredentialDetailOverlay] Published credential asset was not found:",
+                            {
+                                credentialId,
+                                assetType:
+                                    firestoreAssetType
+                            }
+                        );
+
+                    }
+
+                    this.body.innerHTML =
+                        window.CredentialAssetPreview.render(
+                            this.activeCredential,
+                            assetType,
+                            this.activeAsset
+                        );
+
+                    this.renderAssetPreviewFooter();
+
+                    this.scrollToTop();
+
+                }
+                catch (error) {
+
+                    if (
+                        !this.isOpen ||
+                        this.activeView !==
+                            this.views.ASSET_PREVIEW ||
+                        this.activeCredential !==
+                            requestedCredential ||
+                        this.activeAssetType !==
+                            requestedAssetType
+                    ) {
+
+                        return;
+
+                    }
+
+                    this.activeAsset =
+                        null;
+
+                    console.error(
+                        "[CredentialDetailOverlay] Published asset loading failed:",
+                        {
+                            credentialId,
+                            assetType:
+                                firestoreAssetType,
+                            error
+                        }
+                    );
+
+                    this.body.innerHTML = `
+
+                        <div
+                            class="credential-asset-preview-error"
+                            role="alert">
+
+                            <h3>
+
+                                Asset unavailable
+
+                            </h3>
+
+                            <p>
+
+                                The published credential asset could not be loaded.
+                                Please try again.
+
+                            </p>
+
+                            <button
+                                type="button"
+                                class="btn btn-secondary js-back-to-credential-details">
+
+                                ← Back to Credential Details
+
+                            </button>
+
+                        </div>
+
+                    `;
+
+                    this.renderAssetPreviewFooter();
+
+                    this.scrollToTop();
+
+                }
+
+            },
+
+            /* ==================================================
+            RENDER SECTIONS
+            ================================================== */
+
+            renderSections() {
+
+                if (!this.body) {
+                    return;
+                }
+
+                if (!this.activeCredential) {
+
+                    this.body.innerHTML = `
+
+                        <div class="credential-empty">
+
+                            Select a credential
+                            to view its details.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+                const sections = [];
+
+                if (
+                    window.CredentialDetailHeader &&
+                    typeof window.CredentialDetailHeader.render === "function"
+                ) {
+
+                    sections.push(
+                        window.CredentialDetailHeader.render(
+                            this.activeCredential
+                        )
+                    );
+
+                }
+
+                if (
+                    window.CredentialInformationSection &&
+                    typeof window.CredentialInformationSection.render === "function"
+                ) {
+
+                    sections.push(
+                        window.CredentialInformationSection.render(
+                            this.activeCredential
+                        )
+                    );
+
+                }
+
+                if (
+                    window.CredentialRecognitionSection &&
+                    typeof window.CredentialRecognitionSection.render === "function"
+                ) {
+
+                    sections.push(
+                        window.CredentialRecognitionSection.render(
+                            this.activeCredential
+                        )
+                    );
+
+                }
+
+                if (
+                    window.CredentialVerificationSection &&
+                    typeof window.CredentialVerificationSection.render === "function"
+                ) {
+
+                    sections.push(
+                        window.CredentialVerificationSection.render(
+                            this.activeCredential
+                        )
+                    );
+
+                }
+
+                if (
+                    window.CredentialAssetsSection &&
+                    typeof window.CredentialAssetsSection.render === "function"
+                ) {
+
+                    sections.push(
+                        window.CredentialAssetsSection.render(
+                            this.activeCredential
+                        )
+                    );
+
+                }
+
+                this.body.innerHTML =
+                    sections.join("");
+
+            },
 
         /* ==================================================
-           RENDER SECTIONS
-        ================================================== */
-
-        renderSections() {
-
-            if (!this.body) {
-                return;
-            }
-
-            if (!this.activeCredential) {
-
-                this.body.innerHTML = `
-
-                    <div class="credential-empty">
-
-                        Select a credential
-                        to view its details.
-
-                    </div>
-
-                `;
-
-                return;
-
-            }
-
-            const sections = [];
-
-            if (
-                window.CredentialDetailHeader &&
-                typeof window.CredentialDetailHeader.render === "function"
-            ) {
-
-                sections.push(
-                    window.CredentialDetailHeader.render(
-                        this.activeCredential
-                    )
-                );
-
-            }
-
-            if (
-                window.CredentialInformationSection &&
-                typeof window.CredentialInformationSection.render === "function"
-            ) {
-
-                sections.push(
-                    window.CredentialInformationSection.render(
-                        this.activeCredential
-                    )
-                );
-
-            }
-
-            if (
-                window.CredentialRecognitionSection &&
-                typeof window.CredentialRecognitionSection.render === "function"
-            ) {
-
-                sections.push(
-                    window.CredentialRecognitionSection.render(
-                        this.activeCredential
-                    )
-                );
-
-            }
-
-            if (
-                window.CredentialVerificationSection &&
-                typeof window.CredentialVerificationSection.render === "function"
-            ) {
-
-                sections.push(
-                    window.CredentialVerificationSection.render(
-                        this.activeCredential
-                    )
-                );
-
-            }
-
-            if (
-                window.CredentialAssetsSection &&
-                typeof window.CredentialAssetsSection.render === "function"
-            ) {
-
-                sections.push(
-                    window.CredentialAssetsSection.render(
-                        this.activeCredential
-                    )
-                );
-
-            }
-
-            this.body.innerHTML =
-                sections.join("");
-
-        },
-
-        /* ==================================================
-           FOOTERS
+        FOOTERS
         ================================================== */
 
         renderDefaultFooter() {
@@ -786,6 +796,18 @@
             if (!this.footer) {
                 return;
             }
+
+            /*
+            * Credential Details owns the standard
+            * overlay Close action.
+            */
+
+            this.footer.hidden =
+                false;
+
+            this.footer.removeAttribute(
+                "aria-hidden"
+            );
 
             this.footer.innerHTML = `
 
@@ -799,14 +821,22 @@
 
             `;
 
-            this.footer
-                .querySelector(".overlay-close-button")
-                .addEventListener(
+            const closeButton =
+                this.footer.querySelector(
+                    ".overlay-close-button"
+                );
+
+            if (closeButton) {
+
+                closeButton.addEventListener(
                     "click",
                     this.close.bind(this)
                 );
 
+            }
+
         },
+
 
         renderAssetPreviewFooter() {
 
@@ -814,63 +844,33 @@
                 return;
             }
 
-            this.footer.innerHTML = `
+            /*
+            * CredentialAssetPreview owns all preview-mode
+            * navigation and actions:
+            *
+            * • Back to Credential Details
+            * • Download
+            * • Share on LinkedIn
+            *
+            * The parent overlay footer remains hidden during
+            * asset preview to prevent duplicated controls.
+            */
 
-                <button
-                    type="button"
-                    class="btn btn-secondary js-back-to-credential-details">
+            this.footer.innerHTML =
+                "";
 
-                    ← Back to Credential Details
+            this.footer.hidden =
+                true;
 
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-secondary js-download-credential-asset"
-                    data-credential-asset-type="${this.escape(this.activeAssetType)}">
-
-                    Download
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn js-share-credential-linkedin"
-                    data-credential-asset-type="${this.escape(this.activeAssetType)}">
-
-                    Share on LinkedIn
-
-                </button>
-
-            `;
-
-            this.footer
-                .querySelector(".js-back-to-credential-details")
-                .addEventListener(
-                    "click",
-                    this.showDetails.bind(this)
-                );
-
-            this.footer
-                .querySelector(".js-download-credential-asset")
-                .addEventListener(
-                    "click",
-                    () => this.downloadActiveAsset(
-                        this.activeAssetType
-                    )
-                );
-
-            this.footer
-                .querySelector(".js-share-credential-linkedin")
-                .addEventListener(
-                    "click",
-                    this.shareActiveCredentialOnLinkedIn.bind(this)
-                );
+            this.footer.setAttribute(
+                "aria-hidden",
+                "true"
+            );
 
         },
 
         /* ==================================================
-           ACTIONS
+        ACTIONS
         ================================================== */
 
         downloadActiveAsset(assetType) {
@@ -929,7 +929,7 @@
         },
 
         /* ==================================================
-           FOCUS REQUESTED SECTION
+        FOCUS REQUESTED SECTION
         ================================================== */
 
         focusRequestedSection() {
@@ -981,7 +981,7 @@
         },
 
         /* ==================================================
-           CLOSE
+        CLOSE
         ================================================== */
 
         close() {
@@ -1042,7 +1042,7 @@
         },
 
         /* ==================================================
-           ESCAPE
+        ESCAPE
         ================================================== */
 
         handleEscape(event) {
@@ -1067,7 +1067,7 @@
         },
 
         /* ==================================================
-           HELPERS
+        HELPERS
         ================================================== */
 
         setTitle(value) {

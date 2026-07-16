@@ -1,0 +1,635 @@
+<!doctype html>
+
+<!-- ==========================================================
+     Agile AI University
+     Student & Executive Portal
+
+     File        : login.html
+     Version     : 1.1.0
+     Status      : ACTIVE
+     Phase       : Dedicated Authentication Experience
+
+     Purpose
+     ----------------------------------------------------------
+     Provides the dedicated authentication entry point for the
+     Agile AI University Student & Executive Portal.
+
+     Responsibilities
+     ----------------------------------------------------------
+     ✓ Present the governed portal sign-in experience
+     ✓ Support Google authentication
+     ✓ Support passwordless email-link authentication
+     ✓ Present authentication status and errors
+     ✓ Support safe authenticated-user redirection
+     ✓ Provide accessible authentication controls
+     ✓ Communicate portal services and learner value
+     ✓ Provide institutional support information
+
+     Non Responsibilities
+     ----------------------------------------------------------
+     ✗ Dashboard rendering
+     ✗ Authorization decisions
+     ✗ Entitlement resolution
+     ✗ Credential retrieval
+     ✗ Learning-resource retrieval
+     ✗ Firestore queries
+     ✗ Session termination
+     ✗ Business rules
+     ✗ Portal shell rendering
+     ✗ Sidebar or toolbar rendering
+
+     Architectural Position
+     ----------------------------------------------------------
+     Dedicated Login Experience
+          ↓
+     Login Page Controller
+          ↓
+     Portal Authentication Authority
+          ↓
+     Firebase Authentication
+          ↓
+     Authenticated Portal Dashboard
+
+     Authentication Lifecycle
+     ----------------------------------------------------------
+     login.html
+          ↓
+     login.js
+          ↓
+     portal-auth.js
+          ↓
+     Firebase Authentication
+          ↓
+     /index.html
+
+     Governance
+     ----------------------------------------------------------
+     • This page is the dedicated authentication entry point
+       for the Student & Executive Portal.
+
+     • Authentication operations remain owned by
+       portal-auth.js.
+
+     • login.js remains the page-level UI controller.
+
+     • This page must not resolve authorization or
+       entitlements.
+
+     • This page must not render authenticated dashboard data.
+
+     • Already authenticated users must be redirected to the
+       dashboard through governed authentication handling.
+
+     • Authentication status must be communicated through an
+       accessible live region.
+
+     • Passwordless email authentication must only use the
+       learner's registered email address.
+
+     • The page must remain compatible with future identity
+       providers, MFA and enterprise SSO.
+
+     Required Element Contracts
+     ----------------------------------------------------------
+     btnGoogle
+     • Google sign-in action
+
+     emailInput
+     • Registered email input
+
+     btnEmailLink
+     • Passwordless email-link action
+
+     emailStatus
+     • Login status and error presentation
+
+     statusText
+     • General authentication status compatibility hook
+
+     Change History
+     ----------------------------------------------------------
+     v1.1.0
+
+     • Added dedicated login-page context
+     • Added authentication experience metadata
+     • Added governed compatibility IDs
+     • Added accessible status regions
+     • Added email input accessibility attributes
+     • Added button loading-status compatibility
+     • Added semantic authentication form structure
+     • Added secure support and institutional footer
+     • Added no-script fallback
+     • Preserved Google and passwordless email authentication
+     • Preserved dedicated authentication architecture
+
+     v1.0.0
+
+     • Introduced dedicated portal login page
+     • Added Google sign-in action
+     • Added passwordless email-link action
+     • Added portal feature summary
+     • Added support contact
+
+========================================================== -->
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <meta
+        name="description"
+        content="Securely sign in to the Agile AI University Student & Executive Portal to access credentials, learning resources, assessments and professional services.">
+
+    <meta
+        name="robots"
+        content="noindex, nofollow">
+
+    <meta
+        name="referrer"
+        content="strict-origin-when-cross-origin">
+
+    <meta
+        name="theme-color"
+        content="#1e3a5f">
+
+    <title>
+        Sign In | Agile AI University
+    </title>
+
+
+    <!-- ==================================================
+         CORE STYLES
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/site.css">
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/portal.css">
+
+
+    <!-- ==================================================
+         LOGIN EXPERIENCE
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/login.css">
+
+</head>
+
+
+<body
+    class="portal-login"
+    data-page="login"
+    data-experience="authentication-entry">
+
+
+    <!-- ==================================================
+         LOGIN EXPERIENCE
+    ================================================== -->
+
+    <main
+        id="main-content"
+        class="login-page">
+
+        <section
+            id="signedOutUI"
+            class="login-card"
+            aria-labelledby="loginTitle">
+
+
+            <!-- ==============================================
+                 INSTITUTIONAL IDENTITY
+            =============================================== -->
+
+            <header class="login-header">
+
+                <img
+                    src="/assets/images/aau-emblem.png"
+                    alt="Agile AI University"
+                    class="login-logo"
+                    width="88"
+                    height="88">
+
+                <h1
+                    id="loginTitle"
+                    class="login-title">
+
+                    Agile AI University
+
+                </h1>
+
+                <p class="login-subtitle">
+
+                    Student &amp; Executive Portal
+
+                </p>
+
+                <p class="login-description">
+
+                    Secure access to your credentials,
+                    licensed learning resources, assessments,
+                    recognitions and executive services.
+
+                </p>
+
+            </header>
+
+
+            <!-- ==============================================
+                 AUTHENTICATION STATUS
+            =============================================== -->
+
+            <p
+                id="statusText"
+                class="login-status login-status-general"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true">
+
+                Sign in using your registered Google account
+                or request a secure passwordless email link.
+
+            </p>
+
+
+            <!-- ==============================================
+                 GOOGLE AUTHENTICATION
+            =============================================== -->
+
+            <section
+                class="login-authentication"
+                aria-label="Portal authentication">
+
+                <button
+                    id="btnGoogle"
+                    class="btn btn-primary login-button"
+                    type="button"
+                    aria-describedby="statusText">
+
+                    <span
+                        class="login-button-label">
+
+                        Continue with Google
+
+                    </span>
+
+                </button>
+
+
+                <!-- ==========================================
+                     AUTHENTICATION DIVIDER
+                =========================================== -->
+
+                <div
+                    class="login-divider"
+                    role="separator"
+                    aria-label="Or use email authentication">
+
+                    <span aria-hidden="true">
+
+                        OR
+
+                    </span>
+
+                </div>
+
+
+                <!-- ==========================================
+                     PASSWORDLESS EMAIL AUTHENTICATION
+                =========================================== -->
+
+                <div
+                    class="login-form login-email"
+                    role="group"
+                    aria-labelledby="emailLoginLabel">
+
+                    <label
+                        id="emailLoginLabel"
+                        for="emailInput">
+
+                        Email Address
+
+                    </label>
+
+                    <input
+                        id="emailInput"
+                        name="email"
+                        type="email"
+                        inputmode="email"
+                        autocomplete="email"
+                        autocapitalize="none"
+                        spellcheck="false"
+                        placeholder="Enter your registered email"
+                        aria-describedby="emailHelp emailStatus">
+
+                    <p
+                        id="emailHelp"
+                        class="login-help">
+
+                        We will send a secure, passwordless
+                        sign-in link to your registered email.
+
+                    </p>
+
+                    <button
+                        id="btnEmailLink"
+                        class="btn btn-secondary login-email-button"
+                        type="button">
+
+                        Send Secure Login Link
+
+                    </button>
+
+                </div>
+
+
+                <!-- ==========================================
+                     EMAIL AUTHENTICATION STATUS
+                =========================================== -->
+
+                <p
+                    id="emailStatus"
+                    class="login-status login-message"
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true">
+                </p>
+
+            </section>
+
+
+            <!-- ==============================================
+                 PORTAL VALUE
+            =============================================== -->
+
+            <section
+                class="login-features"
+                aria-labelledby="portalIncludesTitle">
+
+                <h2 id="portalIncludesTitle">
+
+                    Your Portal Includes
+
+                </h2>
+
+                <ul>
+
+                    <li>
+
+                        Credential Portfolio
+
+                    </li>
+
+                    <li>
+
+                        Official Licensed Learning Resources
+
+                    </li>
+
+                    <li>
+
+                        University Certificates
+
+                    </li>
+
+                    <li>
+
+                        Trainer Certificates
+
+                    </li>
+
+                    <li>
+
+                        Digital Badges
+
+                    </li>
+
+                    <li>
+
+                        Recognition Assets
+
+                    </li>
+
+                    <li>
+
+                        Executive Insights
+
+                    </li>
+
+                    <li>
+
+                        Assessment Platform
+
+                    </li>
+
+                </ul>
+
+            </section>
+
+
+            <!-- ==============================================
+                 SUPPORT AND INSTITUTIONAL FOOTER
+            =============================================== -->
+
+            <footer class="login-footer">
+
+                <div class="login-support">
+
+                    <p>
+
+                        Need assistance accessing your account?
+
+                    </p>
+
+                    <a
+                        href="mailto:support@agileai.university">
+
+                        support@agileai.university
+
+                    </a>
+
+                </div>
+
+                <nav
+                    class="login-policy-links"
+                    aria-label="Institutional policies">
+
+                    <a href="https://agileai.university/terms.html">
+
+                        Terms &amp; Conditions
+
+                    </a>
+
+                    <span aria-hidden="true">
+
+                        ·
+
+                    </span>
+
+                    <a href="https://agileai.university/privacy.html">
+
+                        Privacy Policy
+
+                    </a>
+
+                </nav>
+
+                <p class="login-security-note">
+
+                    Authentication is protected through
+                    Firebase Authentication and governed
+                    Agile AI University access controls.
+
+                </p>
+
+                <p class="login-copyright">
+
+                    © 2026 Agile AI University.
+                    All rights reserved.
+
+                </p>
+
+            </footer>
+
+        </section>
+
+
+        <!-- ==================================================
+             AUTHENTICATED REDIRECT STATE
+
+             This is not an authenticated portal experience.
+             It exists only as a compatibility and transition
+             hook while an existing authenticated session is
+             redirected to the dashboard.
+        ================================================== -->
+
+        <section
+            id="signedInUI"
+            class="login-redirect-state"
+            aria-live="polite"
+            hidden>
+
+            <p>
+
+                Your authenticated session was found.
+                Redirecting to the portal dashboard…
+
+            </p>
+
+        </section>
+
+
+        <!-- ==================================================
+             JAVASCRIPT REQUIREMENT
+        ================================================== -->
+
+        <noscript>
+
+            <section class="login-card login-noscript">
+
+                <h1>
+
+                    JavaScript Required
+
+                </h1>
+
+                <p>
+
+                    The Agile AI University portal requires
+                    JavaScript for secure authentication.
+
+                </p>
+
+                <p>
+
+                    Please enable JavaScript and reload this
+                    page.
+
+                </p>
+
+            </section>
+
+        </noscript>
+
+    </main>
+
+
+    <!-- ==================================================
+         PORTAL CONTEXT
+
+         This context must be available before authentication
+         scripts initialize.
+    ================================================== -->
+
+    <script>
+
+        window.__AAIU_CONTEXT =
+            "portal-login";
+
+        window.__AAIU_PAGE =
+            "login";
+
+        window.__AAIU_EXPERIENCE =
+            "authentication-entry";
+
+        window.__AAIU_PORTAL_DASHBOARD_URL__ =
+            "/index.html";
+
+        window.__AAIU_PORTAL_LOGIN_URL__ =
+            "/login.html";
+
+    </script>
+
+
+    <!-- ==================================================
+         FIREBASE SDK
+
+         Firestore is retained because the existing shared
+         Firebase bootstrap may initialize it together with
+         Firebase Authentication.
+    ================================================== -->
+
+    <script
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+
+    <script
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+
+    <script
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+
+    <!-- ==================================================
+         AUTHENTICATION FOUNDATION
+    ================================================== -->
+
+    <script src="/assets/js/auth/firebase-init.js"></script>
+
+    <script src="/assets/js/auth/portal-auth.js"></script>
+
+
+    <!-- ==================================================
+         LOGIN PAGE CONTROLLER
+
+         Must load after Firebase initialization and the
+         authentication authority.
+    ================================================== -->
+
+    <script src="/assets/js/auth/login.js"></script>
+
+</body>
+
+</html>

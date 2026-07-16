@@ -3,9 +3,9 @@
    Student & Executive Portal
 
    File      : toolbar.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
-   Phase     : Portal Identity Experience
+   Phase     : Portal Identity Stabilization
 
    Purpose
    ----------------------------------------------------------
@@ -13,14 +13,18 @@
 
    Responsibilities
    ----------------------------------------------------------
-   ✓ Page title
-   ✓ Breadcrumb
-   ✓ Search placeholder
-   ✓ Notification placeholder
-   ✓ Learner identity presentation
-   ✓ Learner initials generation
-   ✓ Identity fallback handling
-   ✓ Identity update API
+   ✓ Render page title
+   ✓ Render breadcrumb
+   ✓ Render search placeholder
+   ✓ Render notification placeholder
+   ✓ Render resolved learner identity
+   ✓ Generate learner avatar initials
+   ✓ Render learner role
+   ✓ Reject generic identity placeholders
+   ✓ Consume shared portal identity state
+   ✓ Support identity update events
+   ✓ Reconcile identity after asynchronous readiness
+   ✓ Expose governed identity presentation API
 
    Non Responsibilities
    ----------------------------------------------------------
@@ -28,15 +32,21 @@
    ✗ Authorization
    ✗ Entitlement resolution
    ✗ Firestore queries
-   ✗ API calls
+   ✗ External API calls
    ✗ Business logic
+   ✗ Identity persistence
    ✗ Profile persistence
+   ✗ Membership decisions
+   ✗ Credential filtering
+   ✗ Credential retrieval
 
    Architectural Position
    ----------------------------------------------------------
-   Authentication / Portal State
+   Authentication
         ↓
-   Resolved Learner Identity
+   Entitlement / Credential Resolution
+        ↓
+   Shared Portal Identity
         ↓
    Toolbar Presentation
 
@@ -48,29 +58,73 @@
 
    • Single Responsibility
 
-   • Toolbar consumes available identity state only.
+   • Toolbar consumes available resolved identity only.
 
    • Toolbar must not determine portal access.
 
    • Toolbar must not query Firestore or external APIs.
 
-   • Full learner name is preferred over generic role labels.
+   • Learner name is the primary identity label.
 
-   • Initials are derived from the resolved learner name.
+   • Role is secondary supporting information.
 
-   • Role remains secondary supporting information.
+   • Avatar must contain compact learner initials only.
+
+   • Generic identity placeholders must not override a
+     resolved learner name.
+
+   • Toolbar and sidebar must follow the same identity
+     resolution and initials standard.
+
+   • Identity resolution remains defensive because portal
+     state may become available asynchronously.
 
    Identity Resolution Order
    ----------------------------------------------------------
-   1. Explicit identity supplied through updateIdentity()
-   2. Shared portal profile state
-   3. Shared entitlement credential full name
-   4. Firebase authenticated user display name
-   5. Authenticated email prefix
-   6. Student
+   1. Explicit non-placeholder identity update
+   2. Shared profile full name
+   3. Resolver-approved credential full name
+   4. Shared portal user full name
+   5. Firebase authenticated display name
+   6. Authenticated email-derived name
+   7. Learner fallback
+
+   Initials Standard
+   ----------------------------------------------------------
+   • Use the first letters of the first two meaningful
+     words in the resolved learner name.
+
+   Examples
+
+   Test AOP Bridge Program User
+   → TA
+
+   Dileep Appupillai
+   → DA
+
+   Single-word name
+   → First two characters
 
    Change History
    ----------------------------------------------------------
+   v1.2.0
+
+   • Fixed Student placeholder overriding learner name
+   • Added generic identity placeholder rejection
+   • Prioritized profile and credential full names
+   • Added broader portal-state compatibility
+   • Added nested credential-state compatibility
+   • Changed initials to first-two-word standard
+   • Added identity-quality protection
+   • Added Firebase authentication refresh
+   • Added entitlement readiness refresh
+   • Added credential resolution refresh
+   • Added credential render completion refresh
+   • Added delayed identity reconciliation
+   • Added safe data-attribute cleanup
+   • Preserved toolbar public API
+   • Preserved presentation-only architecture
+
    v1.1.0
 
    • Replaced hardcoded AA avatar
@@ -108,7 +162,40 @@
         "Toolbar";
 
     const MODULE_VERSION =
-        "1.1.0";
+        "1.2.0";
+
+
+    /* ======================================================
+       GENERIC IDENTITY VALUES
+
+       These values are valid role or fallback labels, but
+       must not outrank a real learner name.
+    ====================================================== */
+
+    const GENERIC_IDENTITY_VALUES =
+        new Set([
+
+            "student",
+
+            "learner",
+
+            "user",
+
+            "member",
+
+            "university member",
+
+            "agile ai university user",
+
+            "portal user",
+
+            "authenticated user",
+
+            "unknown",
+
+            "guest"
+
+        ]);
 
 
     /* ======================================================
@@ -118,7 +205,7 @@
     let activeIdentity = {
 
         displayName:
-            "Student",
+            "Learner",
 
         email:
             "",
@@ -127,9 +214,16 @@
             "Student",
 
         membershipLabel:
-            ""
+            "University Member",
+
+        initials:
+            "LE"
 
     };
+
+
+    let identityRefreshTimer =
+        null;
 
 
     /* ======================================================
@@ -142,7 +236,9 @@
             document.body?.dataset?.page ||
             "";
 
-        switch (page) {
+        switch (
+            page
+        ) {
 
             case "dashboard":
 
@@ -159,6 +255,16 @@
                 return "Recognition Assets";
 
 
+            case "certificates":
+
+                return "Certificates";
+
+
+            case "badges":
+
+                return "Digital Badges";
+
+
             case "verification":
 
                 return "Credential Verification";
@@ -167,6 +273,16 @@
             case "assessment":
 
                 return "Assessment Platform";
+
+
+            case "learning":
+
+                return "Learning Journey";
+
+
+            case "executive":
+
+                return "Executive Insights";
 
 
             case "profile":
@@ -227,14 +343,47 @@
 
 
     /* ======================================================
-       VALUE HELPERS
+       NORMALIZE VALUE
+    ====================================================== */
+
+    function normalizeValue(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+        return String(
+            value
+        )
+            .trim()
+            .replace(
+                /\s+/g,
+                " "
+            );
+
+    }
+
+
+    /* ======================================================
+       FIRST NON-EMPTY VALUE
     ====================================================== */
 
     function firstValue(
         values
     ) {
 
-        if (!Array.isArray(values)) {
+        if (
+            !Array.isArray(
+                values
+            )
+        ) {
 
             return "";
 
@@ -244,21 +393,14 @@
             const value of values
         ) {
 
-            if (
-                value === null ||
-                value === undefined
-            ) {
-
-                continue;
-
-            }
-
             const normalized =
-                String(
+                normalizeValue(
                     value
-                ).trim();
+                );
 
-            if (normalized) {
+            if (
+                normalized
+            ) {
 
                 return normalized;
 
@@ -270,6 +412,88 @@
 
     }
 
+
+    /* ======================================================
+       GENERIC IDENTITY CHECK
+    ====================================================== */
+
+    function isGenericIdentityValue(
+        value
+    ) {
+
+        const normalized =
+            normalizeValue(
+                value
+            )
+                .toLowerCase();
+
+        if (
+            !normalized
+        ) {
+
+            return true;
+
+        }
+
+        return GENERIC_IDENTITY_VALUES
+            .has(
+                normalized
+            );
+
+    }
+
+
+    /* ======================================================
+       FIRST MEANINGFUL NAME
+
+       Generic values such as Student are ignored while
+       searching for a genuine learner identity.
+    ====================================================== */
+
+    function firstMeaningfulName(
+        values
+    ) {
+
+        if (
+            !Array.isArray(
+                values
+            )
+        ) {
+
+            return "";
+
+        }
+
+        for (
+            const value of values
+        ) {
+
+            const normalized =
+                normalizeValue(
+                    value
+                );
+
+            if (
+                normalized &&
+                !isGenericIdentityValue(
+                    normalized
+                )
+            ) {
+
+                return normalized;
+
+            }
+
+        }
+
+        return "";
+
+    }
+
+
+    /* ======================================================
+       HTML ESCAPING
+    ====================================================== */
 
     function escapeHtml(
         value
@@ -307,8 +531,54 @@
     }
 
 
+    function escapeAttribute(
+        value
+    ) {
+
+        return escapeHtml(
+            value
+        );
+
+    }
+
+
     /* ======================================================
-       EMAIL DISPLAY FALLBACK
+       OBJECT HELPERS
+    ====================================================== */
+
+    function asObject(
+        value
+    ) {
+
+        return (
+            value &&
+            typeof value ===
+                "object" &&
+            !Array.isArray(
+                value
+            )
+        )
+            ? value
+            : {};
+
+    }
+
+
+    function asArray(
+        value
+    ) {
+
+        return Array.isArray(
+            value
+        )
+            ? value
+            : [];
+
+    }
+
+
+    /* ======================================================
+       EMAIL-DERIVED NAME
     ====================================================== */
 
     function buildNameFromEmail(
@@ -316,15 +586,16 @@
     ) {
 
         const normalizedEmail =
-            String(
-                email || ""
+            normalizeValue(
+                email
             )
-                .trim()
                 .toLowerCase();
 
         if (
             !normalizedEmail ||
-            !normalizedEmail.includes("@")
+            !normalizedEmail.includes(
+                "@"
+            )
         ) {
 
             return "";
@@ -332,7 +603,11 @@
         }
 
         const localPart =
-            normalizedEmail.split("@")[0];
+            normalizedEmail
+                .split(
+                    "@"
+                )[0];
+
 
         return localPart
             .split(
@@ -342,9 +617,19 @@
                 Boolean
             )
             .map(
+
                 part =>
-                    part.charAt(0).toUpperCase() +
-                    part.slice(1)
+
+                    part
+                        .charAt(
+                            0
+                        )
+                        .toUpperCase() +
+
+                    part.slice(
+                        1
+                    )
+
             )
             .join(
                 " "
@@ -355,6 +640,11 @@
 
     /* ======================================================
        INITIALS
+
+       Uses the first two meaningful words.
+
+       Test AOP Bridge Program User
+       → TA
     ====================================================== */
 
     function buildInitials(
@@ -362,30 +652,42 @@
     ) {
 
         const normalizedName =
-            String(
-                displayName || ""
-            )
-                .trim()
-                .replace(
-                    /\s+/g,
-                    " "
-                );
+            normalizeValue(
+                displayName
+            );
 
-        if (!normalizedName) {
+        if (
+            !normalizedName
+        ) {
 
-            return "ST";
+            return "LE";
 
         }
 
         const words =
             normalizedName
-                .split(" ")
+                .split(
+                    " "
+                )
                 .filter(
                     Boolean
                 );
 
 
-        if (words.length === 1) {
+        if (
+            words.length ===
+            0
+        ) {
+
+            return "LE";
+
+        }
+
+
+        if (
+            words.length ===
+            1
+        ) {
 
             return words[0]
                 .slice(
@@ -398,9 +700,19 @@
 
 
         return (
-            words[0].charAt(0) +
-            words[words.length - 1].charAt(0)
-        ).toUpperCase();
+
+            words[0]
+                .charAt(
+                    0
+                ) +
+
+            words[1]
+                .charAt(
+                    0
+                )
+
+        )
+            .toUpperCase();
 
     }
 
@@ -413,36 +725,75 @@
         identity = {}
     ) {
 
+        const source =
+            asObject(
+                identity
+            );
+
+
         const email =
             firstValue([
 
-                identity.email,
+                source.email,
 
-                identity.userEmail,
+                source.userEmail,
 
-                identity.user_email
+                source.user_email,
+
+                source.learnerEmail,
+
+                source.learner_email
 
             ]);
 
 
+        const emailName =
+            buildNameFromEmail(
+                email
+            );
+
+
         const displayName =
+            firstMeaningfulName([
+
+                source.displayName,
+
+                source.display_name,
+
+                source.fullName,
+
+                source.full_name,
+
+                source.learnerName,
+
+                source.learner_name,
+
+                source.credentialHolderName,
+
+                source.credential_holder_name,
+
+                source.holderName,
+
+                source.holder_name,
+
+                source.name,
+
+                emailName
+
+            ]) ||
             firstValue([
 
-                identity.displayName,
+                source.displayName,
 
-                identity.display_name,
+                source.fullName,
 
-                identity.fullName,
+                source.learnerName,
 
-                identity.full_name,
+                source.name,
 
-                identity.name,
+                emailName,
 
-                buildNameFromEmail(
-                    email
-                ),
-
-                "Student"
+                "Learner"
 
             ]);
 
@@ -450,15 +801,19 @@
         const roleLabel =
             firstValue([
 
-                identity.roleLabel,
+                source.roleLabel,
 
-                identity.role_label,
+                source.role_label,
 
-                identity.role,
+                source.role,
 
-                identity.userRole,
+                source.userRole,
 
-                identity.user_role,
+                source.user_role,
+
+                source.portalRole,
+
+                source.portal_role,
 
                 "Student"
 
@@ -468,15 +823,17 @@
         const membershipLabel =
             firstValue([
 
-                identity.membershipLabel,
+                source.membershipLabel,
 
-                identity.membership_label,
+                source.membership_label,
 
-                identity.membership,
+                source.membership,
 
-                identity.membershipType,
+                source.membershipType,
 
-                identity.membership_type
+                source.membership_type,
+
+                "University Member"
 
             ]);
 
@@ -502,96 +859,432 @@
 
 
     /* ======================================================
-       SHARED STATE RESOLUTION
+       PORTAL STATE RESOLUTION
+    ====================================================== */
+
+    function resolvePortalState() {
+
+        return asObject(
+
+            window.__AAIU_PORTAL_STATE__ ||
+
+            window.__AAIU_SHARED_PORTAL_STATE__ ||
+
+            window.__AAIU_ENTITLEMENTS__ ||
+
+            window.__PORTAL_ENTITLEMENTS__ ||
+
+            window.__AAIU_RESOLVED_PORTAL_STATE__ ||
+
+            window.__AAIU_PORTAL_ACCESS__ ||
+
+            {}
+
+        );
+
+    }
+
+
+    /* ======================================================
+       PROFILE RESOLUTION
+    ====================================================== */
+
+    function resolveProfile(
+        portalState
+    ) {
+
+        return asObject(
+
+            portalState.profile ||
+
+            portalState.userProfile ||
+
+            portalState.user_profile ||
+
+            portalState.identity ||
+
+            portalState.learner ||
+
+            portalState.user ||
+
+            portalState.authUser ||
+
+            portalState.auth_user ||
+
+            {}
+
+        );
+
+    }
+
+
+    /* ======================================================
+       CREDENTIAL COLLECTION RESOLUTION
+    ====================================================== */
+
+    function resolveCredentials(
+        portalState
+    ) {
+
+        const directCredentials =
+            asArray(
+                portalState.credentials
+            );
+
+
+        if (
+            directCredentials.length >
+            0
+        ) {
+
+            return directCredentials;
+
+        }
+
+
+        const resolvedCredentials =
+            asArray(
+
+                portalState.resolvedCredentials ||
+
+                portalState.resolved_credentials
+
+            );
+
+
+        if (
+            resolvedCredentials.length >
+            0
+        ) {
+
+            return resolvedCredentials;
+
+        }
+
+
+        const visibleCredentials =
+            asArray(
+
+                portalState.visibleCredentials ||
+
+                portalState.visible_credentials
+
+            );
+
+
+        if (
+            visibleCredentials.length >
+            0
+        ) {
+
+            return visibleCredentials;
+
+        }
+
+
+        const userEntitlements =
+            asObject(
+
+                portalState.userEntitlements ||
+
+                portalState.user_entitlements
+
+            );
+
+
+        const entitlementCredentials =
+            asArray(
+                userEntitlements.credentials
+            );
+
+
+        if (
+            entitlementCredentials.length >
+            0
+        ) {
+
+            return entitlementCredentials;
+
+        }
+
+
+        const entitlementState =
+            asObject(
+                portalState.entitlements
+            );
+
+
+        const nestedCredentials =
+            asArray(
+                entitlementState.credentials
+            );
+
+
+        if (
+            nestedCredentials.length >
+            0
+        ) {
+
+            return nestedCredentials;
+
+        }
+
+
+        const singleCredential =
+            asObject(
+
+                portalState.credential ||
+
+                portalState.resolvedCredential ||
+
+                portalState.resolved_credential
+
+            );
+
+
+        if (
+            Object.keys(
+                singleCredential
+            ).length >
+            0
+        ) {
+
+            return [
+                singleCredential
+            ];
+
+        }
+
+
+        return [];
+
+    }
+
+
+    /* ======================================================
+       FIREBASE USER
+    ====================================================== */
+
+    function resolveFirebaseUser() {
+
+        try {
+
+            if (
+                window.firebase &&
+                typeof window.firebase.auth ===
+                    "function"
+            ) {
+
+                return window.firebase
+                    .auth()
+                    .currentUser;
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.warn(
+                `[${MODULE_NAME}] Unable to read Firebase user.`,
+                error
+            );
+
+        }
+
+        return null;
+
+    }
+
+
+    /* ======================================================
+       SIDEBAR IDENTITY
+
+       The sidebar may already have resolved a better identity.
+       Generic sidebar placeholders are ignored.
+    ====================================================== */
+
+    function resolveSidebarIdentity() {
+
+        try {
+
+            if (
+                window.PortalSidebar &&
+                typeof window.PortalSidebar
+                    .getIdentity ===
+                    "function"
+            ) {
+
+                return asObject(
+
+                    window.PortalSidebar
+                        .getIdentity()
+
+                );
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.warn(
+                `[${MODULE_NAME}] Unable to read PortalSidebar identity.`,
+                error
+            );
+
+        }
+
+        return {};
+
+    }
+
+
+    /* ======================================================
+       SHARED IDENTITY RESOLUTION
     ====================================================== */
 
     function resolveSharedIdentity() {
 
         const portalState =
-            window.__AAIU_PORTAL_STATE__ ||
-            window.__AAIU_SHARED_PORTAL_STATE__ ||
-            window.__AAIU_ENTITLEMENTS__ ||
-            {};
+            resolvePortalState();
 
 
         const profile =
-            portalState.profile ||
-            portalState.userProfile ||
-            portalState.user_profile ||
-            portalState.user ||
-            {};
+            resolveProfile(
+                portalState
+            );
 
 
         const credentials =
-            Array.isArray(
-                portalState.credentials
-            )
-
-                ? portalState.credentials
-
-                : [];
+            resolveCredentials(
+                portalState
+            );
 
 
         const firstCredential =
-            credentials[0] ||
-            {};
+            asObject(
+                credentials[0]
+            );
 
 
-        let firebaseUser =
-            null;
+        const sidebarIdentity =
+            resolveSidebarIdentity();
 
 
-        try {
+        const firebaseUser =
+            resolveFirebaseUser();
 
-            firebaseUser =
-                window.firebase &&
-                typeof window.firebase.auth ===
-                    "function"
 
-                    ? window.firebase.auth()
-                        .currentUser
+        const email =
+            firstValue([
 
-                    : null;
+                profile.email,
 
-        } catch {
+                profile.userEmail,
 
-            firebaseUser =
-                null;
+                profile.user_email,
 
-        }
+                profile.learnerEmail,
+
+                profile.learner_email,
+
+                firstCredential.email,
+
+                firstCredential.user_email,
+
+                firstCredential.learner_email,
+
+                portalState.email,
+
+                portalState.userEmail,
+
+                portalState.user_email,
+
+                sidebarIdentity.email,
+
+                firebaseUser?.email
+
+            ]);
+
+
+        const resolvedDisplayName =
+            firstMeaningfulName([
+
+                profile.full_name,
+
+                profile.fullName,
+
+                profile.display_name,
+
+                profile.displayName,
+
+                profile.learner_name,
+
+                profile.learnerName,
+
+                profile.credential_holder_name,
+
+                profile.credentialHolderName,
+
+                profile.name,
+
+                firstCredential.full_name,
+
+                firstCredential.fullName,
+
+                firstCredential.learner_name,
+
+                firstCredential.learnerName,
+
+                firstCredential.display_name,
+
+                firstCredential.displayName,
+
+                firstCredential.credential_holder_name,
+
+                firstCredential.credentialHolderName,
+
+                firstCredential.holder_name,
+
+                firstCredential.holderName,
+
+                portalState.full_name,
+
+                portalState.fullName,
+
+                portalState.display_name,
+
+                portalState.displayName,
+
+                portalState.learner_name,
+
+                portalState.learnerName,
+
+                firebaseUser?.displayName,
+
+                sidebarIdentity.full_name,
+
+                sidebarIdentity.fullName,
+
+                sidebarIdentity.display_name,
+
+                sidebarIdentity.displayName,
+
+                buildNameFromEmail(
+                    email
+                )
+
+            ]);
 
 
         return normalizeIdentity({
 
             displayName:
-                firstValue([
+                resolvedDisplayName ||
+                "Learner",
 
-                    profile.displayName,
-
-                    profile.display_name,
-
-                    profile.fullName,
-
-                    profile.full_name,
-
-                    firstCredential.full_name,
-
-                    firstCredential.fullName,
-
-                    firebaseUser?.displayName
-
-                ]),
-
-            email:
-                firstValue([
-
-                    profile.email,
-
-                    firstCredential.email,
-
-                    firebaseUser?.email
-
-                ]),
+            email,
 
             roleLabel:
                 firstValue([
@@ -602,9 +1295,21 @@
 
                     profile.role,
 
+                    profile.userRole,
+
+                    profile.user_role,
+
                     portalState.roleLabel,
 
+                    portalState.role_label,
+
                     portalState.role,
+
+                    sidebarIdentity.roleLabel,
+
+                    sidebarIdentity.role_label,
+
+                    sidebarIdentity.role,
 
                     "Student"
 
@@ -619,9 +1324,23 @@
 
                     profile.membership,
 
+                    profile.membershipType,
+
+                    profile.membership_type,
+
                     portalState.membershipLabel,
 
-                    portalState.membership
+                    portalState.membership_label,
+
+                    portalState.membership,
+
+                    sidebarIdentity.membershipLabel,
+
+                    sidebarIdentity.membership_label,
+
+                    sidebarIdentity.membership,
+
+                    "University Member"
 
                 ])
 
@@ -631,17 +1350,101 @@
 
 
     /* ======================================================
+       IDENTITY QUALITY
+
+       Quality 0
+       Generic placeholder
+
+       Quality 1
+       Email-derived identity
+
+       Quality 2
+       Resolved profile / credential identity
+    ====================================================== */
+
+    function identityQuality(
+        identity
+    ) {
+
+        const normalized =
+            normalizeIdentity(
+                identity
+            );
+
+
+        if (
+            !normalized.displayName ||
+            isGenericIdentityValue(
+                normalized.displayName
+            )
+        ) {
+
+            return 0;
+
+        }
+
+
+        const emailDerivedName =
+            buildNameFromEmail(
+                normalized.email
+            );
+
+
+        if (
+            normalized.email &&
+            emailDerivedName &&
+            normalized.displayName
+                .toLowerCase() ===
+                emailDerivedName.toLowerCase()
+        ) {
+
+            return 1;
+
+        }
+
+
+        return 2;
+
+    }
+
+
+    /* ======================================================
        APPLY IDENTITY
     ====================================================== */
 
     function applyIdentity(
-        identity
+        identity,
+        options = {}
     ) {
 
-        activeIdentity =
+        const normalizedIdentity =
             normalizeIdentity(
                 identity
             );
+
+
+        const force =
+            options.force ===
+            true;
+
+
+        if (
+            !force &&
+            identityQuality(
+                normalizedIdentity
+            ) <
+            identityQuality(
+                activeIdentity
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        activeIdentity =
+            normalizedIdentity;
 
 
         const avatar =
@@ -649,15 +1452,18 @@
                 "toolbarAvatar"
             );
 
+
         const userName =
             document.getElementById(
                 "toolbarUserName"
             );
 
+
         const userRole =
             document.getElementById(
                 "toolbarUserRole"
             );
+
 
         const userButton =
             document.getElementById(
@@ -665,10 +1471,15 @@
             );
 
 
-        if (avatar) {
+        if (
+            avatar
+        ) {
 
             avatar.textContent =
                 activeIdentity.initials;
+
+            avatar.title =
+                activeIdentity.displayName;
 
             avatar.setAttribute(
                 "aria-hidden",
@@ -678,7 +1489,9 @@
         }
 
 
-        if (userName) {
+        if (
+            userName
+        ) {
 
             userName.textContent =
                 activeIdentity.displayName;
@@ -689,15 +1502,22 @@
         }
 
 
-        if (userRole) {
+        if (
+            userRole
+        ) {
 
             userRole.textContent =
+                activeIdentity.roleLabel;
+
+            userRole.title =
                 activeIdentity.roleLabel;
 
         }
 
 
-        if (userButton) {
+        if (
+            userButton
+        ) {
 
             userButton.setAttribute(
 
@@ -707,14 +1527,85 @@
 
             );
 
-            if (activeIdentity.email) {
+
+            if (
+                activeIdentity.email
+            ) {
 
                 userButton.dataset.userEmail =
                     activeIdentity.email;
 
+            } else {
+
+                delete userButton.dataset.userEmail;
+
             }
 
+
+            userButton.dataset.identityInitials =
+                activeIdentity.initials;
+
         }
+
+    }
+
+
+    /* ======================================================
+       IDENTITY RECONCILIATION
+    ====================================================== */
+
+    function reconcileIdentity(
+        options = {}
+    ) {
+
+        applyIdentity(
+
+            resolveSharedIdentity(),
+
+            options
+
+        );
+
+    }
+
+
+    function scheduleIdentityReconciliation() {
+
+        if (
+            identityRefreshTimer
+        ) {
+
+            window.clearTimeout(
+                identityRefreshTimer
+            );
+
+        }
+
+
+        identityRefreshTimer =
+            window.setTimeout(
+
+                function () {
+
+                    reconcileIdentity();
+
+                },
+
+                250
+
+            );
+
+
+        window.setTimeout(
+            reconcileIdentity,
+            1000
+        );
+
+
+        window.setTimeout(
+            reconcileIdentity,
+            2500
+        );
 
     }
 
@@ -730,7 +1621,10 @@
                 "portal-toolbar"
             );
 
-        if (!toolbar) {
+
+        if (
+            !toolbar
+        ) {
 
             return;
 
@@ -798,11 +1692,16 @@
                     class="toolbar-user"
                     id="toolbarUser"
                     type="button"
-                    aria-label="Signed in user">
+                    aria-label="${escapeAttribute(
+                        `Signed in as ${identity.displayName}, ${identity.roleLabel}`
+                    )}">
 
                     <span
                         class="toolbar-avatar"
                         id="toolbarAvatar"
+                        title="${escapeAttribute(
+                            identity.displayName
+                        )}"
                         aria-hidden="true">
 
                         ${escapeHtml(
@@ -817,7 +1716,7 @@
                         <span
                             class="toolbar-name"
                             id="toolbarUserName"
-                            title="${escapeHtml(
+                            title="${escapeAttribute(
                                 identity.displayName
                             )}">
 
@@ -829,7 +1728,10 @@
 
                         <span
                             class="toolbar-role"
-                            id="toolbarUserRole">
+                            id="toolbarUserRole"
+                            title="${escapeAttribute(
+                                identity.roleLabel
+                            )}">
 
                             ${escapeHtml(
                                 identity.roleLabel
@@ -854,15 +1756,16 @@
         `;
 
 
-        applyIdentity(
-            resolveSharedIdentity()
-        );
+        reconcileIdentity({
+            force:
+                true
+        });
 
     }
 
 
     /* ======================================================
-       PUBLIC UPDATE API
+       PUBLIC IDENTITY UPDATE
     ====================================================== */
 
     function updateIdentity(
@@ -873,10 +1776,146 @@
             identity
         );
 
+
         console.info(
             `[${MODULE_NAME}] Learner identity updated.`,
             activeIdentity
         );
+
+    }
+
+
+    /* ======================================================
+       CREDENTIAL EVENT IDENTITY
+    ====================================================== */
+
+    function applyCredentialEventIdentity(
+        credentials
+    ) {
+
+        if (
+            !Array.isArray(
+                credentials
+            ) ||
+            credentials.length ===
+                0
+        ) {
+
+            return;
+
+        }
+
+
+        const firstCredential =
+            asObject(
+                credentials[0]
+            );
+
+
+        const credentialName =
+            firstMeaningfulName([
+
+                firstCredential.full_name,
+
+                firstCredential.fullName,
+
+                firstCredential.learner_name,
+
+                firstCredential.learnerName,
+
+                firstCredential.display_name,
+
+                firstCredential.displayName,
+
+                firstCredential.credential_holder_name,
+
+                firstCredential.credentialHolderName,
+
+                firstCredential.holder_name,
+
+                firstCredential.holderName
+
+            ]);
+
+
+        if (
+            !credentialName
+        ) {
+
+            return;
+
+        }
+
+
+        updateIdentity({
+
+            displayName:
+                credentialName,
+
+            email:
+                firstValue([
+
+                    firstCredential.email,
+
+                    firstCredential.user_email,
+
+                    firstCredential.learner_email,
+
+                    activeIdentity.email
+
+                ]),
+
+            roleLabel:
+                activeIdentity.roleLabel ||
+                "Student",
+
+            membershipLabel:
+                activeIdentity.membershipLabel ||
+                "University Member"
+
+        });
+
+    }
+
+
+    /* ======================================================
+       FIREBASE AUTH REFRESH
+    ====================================================== */
+
+    function bindFirebaseAuthRefresh() {
+
+        try {
+
+            if (
+                window.firebase &&
+                typeof window.firebase.auth ===
+                    "function"
+            ) {
+
+                window.firebase
+                    .auth()
+                    .onAuthStateChanged(
+
+                        function () {
+
+                            scheduleIdentityReconciliation();
+
+                        }
+
+                    );
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.warn(
+                `[${MODULE_NAME}] Firebase auth refresh binding failed.`,
+                error
+            );
+
+        }
 
     }
 
@@ -900,6 +1939,8 @@
                     {}
                 );
 
+                scheduleIdentityReconciliation();
+
             }
 
         );
@@ -918,6 +1959,8 @@
                     {}
                 );
 
+                scheduleIdentityReconciliation();
+
             }
 
         );
@@ -927,13 +1970,58 @@
 
             "entitlements:ready",
 
-            function () {
+            scheduleIdentityReconciliation
 
-                applyIdentity(
-                    resolveSharedIdentity()
+        );
+
+
+        document.addEventListener(
+
+            "credentials:rendered",
+
+            scheduleIdentityReconciliation
+
+        );
+
+
+        document.addEventListener(
+
+            "credentials:resolved",
+
+            function (
+                event
+            ) {
+
+                const credentials =
+                    event?.detail?.credentials;
+
+
+                applyCredentialEventIdentity(
+                    credentials
                 );
 
+
+                scheduleIdentityReconciliation();
+
             }
+
+        );
+
+
+        document.addEventListener(
+
+            "portal:ready",
+
+            scheduleIdentityReconciliation
+
+        );
+
+
+        document.addEventListener(
+
+            "dashboard:ready",
+
+            scheduleIdentityReconciliation
 
         );
 
@@ -948,13 +2036,22 @@
 
         bindIdentityEvents();
 
+        bindFirebaseAuthRefresh();
+
+
         activeIdentity =
             resolveSharedIdentity();
 
+
         renderToolbar();
 
+
+        scheduleIdentityReconciliation();
+
+
         console.info(
-            `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
+            `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`,
+            activeIdentity
         );
 
     }
@@ -971,6 +2068,9 @@
                 renderToolbar,
 
             updateIdentity,
+
+            refreshIdentity:
+                scheduleIdentityReconciliation,
 
             getIdentity() {
 

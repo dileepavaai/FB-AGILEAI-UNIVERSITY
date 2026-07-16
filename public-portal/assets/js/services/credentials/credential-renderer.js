@@ -364,7 +364,7 @@ const container =
             type="button"
             class="credential-portfolio-action">
 
-            View Credential
+            Open Credential Workspace
 
           </button>
 

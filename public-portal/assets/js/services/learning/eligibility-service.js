@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : eligibility-service.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -40,6 +40,13 @@
 
    Change History
 
+   v1.3.0
+
+   • Extended AOP Bridge offer through 22 July 2026
+   • Added authoritative offer-expiry enforcement
+   • Added India business-time-zone date evaluation
+   • Prevents expired bridge offers from reaching the UI
+
    v1.2.0
 
    • Consumes CredentialService credential cache
@@ -59,7 +66,7 @@
     "use strict";
 
     console.log(
-        "[EligibilityService] Loaded v1.2.0"
+        "[EligibilityService] Loaded v1.3.0"
     );
 
     const PROGRAM_HIERARCHY = Object.freeze({
@@ -94,7 +101,117 @@
     ================================================== */
 
     const BRIDGE_OFFER_END_DATE =
-        "2026-06-10";
+        "2026-07-22";
+
+    const COMMERCIAL_TIME_ZONE =
+        "Asia/Kolkata";
+
+    /* ==================================================
+       COMMERCIAL DATE GOVERNANCE
+    ================================================== */
+
+    function getBusinessDateKey(date = new Date()) {
+
+        try {
+
+            const parts =
+                new Intl.DateTimeFormat(
+                    "en-US",
+                    {
+                        timeZone:
+                            COMMERCIAL_TIME_ZONE,
+
+                        year: "numeric",
+
+                        month: "2-digit",
+
+                        day: "2-digit"
+                    }
+                ).formatToParts(date);
+
+            const values = {};
+
+            parts.forEach(function (part) {
+
+                if (
+                    part.type === "year" ||
+                    part.type === "month" ||
+                    part.type === "day"
+                ) {
+
+                    values[part.type] =
+                        part.value;
+
+                }
+
+            });
+
+            if (
+                values.year &&
+                values.month &&
+                values.day
+            ) {
+
+                return (
+                    values.year +
+                    "-" +
+                    values.month +
+                    "-" +
+                    values.day
+                );
+
+            }
+
+        }
+        catch (error) {
+
+            console.warn(
+                "[EligibilityService] Business date resolution failed.",
+                error
+            );
+
+        }
+
+        const year =
+            date.getFullYear();
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+        return (
+            year +
+            "-" +
+            month +
+            "-" +
+            day
+        );
+
+    }
+
+    function isOfferActive(endDate) {
+
+        if (
+            typeof endDate !== "string" ||
+            !/^\d{4}-\d{2}-\d{2}$/.test(endDate)
+        ) {
+
+            return false;
+
+        }
+
+        return (
+            getBusinessDateKey() <=
+            endDate
+        );
+
+    }
 
     /*
      * Future Commercial Constants
@@ -356,6 +473,25 @@
                 case "AOP":
 
                 case "AAIA":
+
+                    if (
+                        !isOfferActive(
+                            BRIDGE_OFFER_END_DATE
+                        )
+                    ) {
+
+                        return {
+
+                            eligible: false,
+
+                            nextProgram: null,
+
+                            reason:
+                                "The current bridge programme offer has ended."
+
+                        };
+
+                    }
 
                     return {
 

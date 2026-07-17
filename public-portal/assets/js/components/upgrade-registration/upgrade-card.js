@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : upgrade-card.js
-   Version   : 1.3.0
+   Version   : 1.4.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -39,6 +39,14 @@
 
    Change History
    ----------------------------------------------------------
+
+   v1.4.0
+
+   • Added resolved GST rate presentation
+   • Added resolved GST amount presentation
+   • Added resolved total payable presentation
+   • Added checkout confirmation messaging
+   • Preserved presentation-only commercial governance
 
    v1.3.0
 
@@ -195,6 +203,40 @@
         }
 
         return amount.toLocaleString(
+            "en-IN",
+            {
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+    function formatPercentage(value) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+
+            return null;
+
+        }
+
+        const percentage =
+            Number(value);
+
+        if (
+            !Number.isFinite(percentage) ||
+            percentage < 0 ||
+            percentage > 100
+        ) {
+
+            return null;
+
+        }
+
+        return percentage.toLocaleString(
             "en-IN",
             {
                 maximumFractionDigits: 2
@@ -381,6 +423,26 @@
                     model.fullProgrammeFee
                 );
 
+            const gstRate =
+                formatPercentage(
+                    model.gstRate
+                );
+
+            const gstAmount =
+                formatCurrency(
+                    model.gstAmount
+                );
+
+            const totalPayable =
+                formatCurrency(
+                    model.totalPayable
+                );
+
+            const taxDisclaimer =
+                normalizeText(
+                    model.taxDisclaimer
+                );
+
             const gstApplicable =
                 model.gstApplicable === true;
 
@@ -442,6 +504,10 @@
 
                             <div class="upgrade-card__price">
 
+                                <span>
+                                    Bridge Programme Fee:
+                                </span>
+
                                 <strong>
                                     ₹ ${escapeHtml(baseFee)}
                                 </strong>
@@ -474,9 +540,42 @@
                                 ? `
                                     <div class="upgrade-card__gst">
 
-                                        Applicable GST will be added
-                                        during secure payment checkout.
+                                        ${
+                                            gstRate !== null &&
+                                            gstAmount !== null
+                                                ? `
+                                                    GST
+                                                    (${escapeHtml(gstRate)}%):
+                                                    ₹ ${escapeHtml(gstAmount)}
+                                                `
+                                                : `
+                                                    Applicable GST will be
+                                                    confirmed during secure
+                                                    checkout.
+                                                `
+                                        }
 
+                                    </div>
+                                `
+                                : ""}
+
+                            ${totalPayable !== null
+                                ? `
+                                    <div class="upgrade-card__total">
+
+                                        <strong>
+                                            Total Payable:
+                                            ₹ ${escapeHtml(totalPayable)}
+                                        </strong>
+
+                                    </div>
+                                `
+                                : ""}
+
+                            ${taxDisclaimer
+                                ? `
+                                    <div class="upgrade-card__tax-disclaimer">
+                                        ${escapeHtml(taxDisclaimer)}
                                     </div>
                                 `
                                 : ""}

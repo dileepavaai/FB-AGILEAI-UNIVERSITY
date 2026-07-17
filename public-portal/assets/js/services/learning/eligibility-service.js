@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : eligibility-service.js
-   Version   : 1.3.0
+   Version   : 1.4.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -40,6 +40,14 @@
 
    Change History
 
+   v1.4.0
+
+   • Added governed GST rate of 18 percent
+   • Added service-owned GST amount calculation
+   • Added service-owned total payable calculation
+   • Added checkout tax confirmation messaging
+   • Preserved payment gateway as final amount authority
+
    v1.3.0
 
    • Extended AOP Bridge offer through 22 July 2026
@@ -66,7 +74,7 @@
     "use strict";
 
     console.log(
-        "[EligibilityService] Loaded v1.3.0"
+        "[EligibilityService] Loaded v1.4.0"
     );
 
     const PROGRAM_HIERARCHY = Object.freeze({
@@ -105,6 +113,12 @@
 
     const COMMERCIAL_TIME_ZONE =
         "Asia/Kolkata";
+
+    const GST_RATE_PERCENT =
+        18;
+
+    const TAX_CONFIRMATION_MESSAGE =
+        "Final tax and payable amount will be confirmed during secure checkout.";
 
     /* ==================================================
        COMMERCIAL DATE GOVERNANCE
@@ -210,6 +224,114 @@
             getBusinessDateKey() <=
             endDate
         );
+
+    }
+
+    function roundCurrency(value) {
+
+        const amount =
+            Number(value);
+
+        if (!Number.isFinite(amount)) {
+
+            return null;
+
+        }
+
+        return Math.round(
+            (amount + Number.EPSILON) * 100
+        ) / 100;
+
+    }
+
+    function calculateCommercialTotals(
+        baseFee,
+        gstApplicable,
+        gstRate
+    ) {
+
+        const fee =
+            roundCurrency(baseFee);
+
+        if (
+            fee === null ||
+            fee < 0
+        ) {
+
+            return {
+
+                gstRate: null,
+
+                gstAmount: null,
+
+                totalPayable: null,
+
+                taxDisclaimer: null
+
+            };
+
+        }
+
+        if (gstApplicable !== true) {
+
+            return {
+
+                gstRate: 0,
+
+                gstAmount: 0,
+
+                totalPayable: fee,
+
+                taxDisclaimer:
+                    TAX_CONFIRMATION_MESSAGE
+
+            };
+
+        }
+
+        const rate =
+            Number(gstRate);
+
+        if (
+            !Number.isFinite(rate) ||
+            rate < 0 ||
+            rate > 100
+        ) {
+
+            return {
+
+                gstRate: null,
+
+                gstAmount: null,
+
+                totalPayable: null,
+
+                taxDisclaimer: null
+
+            };
+
+        }
+
+        const gstAmount =
+            roundCurrency(
+                fee * rate / 100
+            );
+
+        return {
+
+            gstRate: rate,
+
+            gstAmount: gstAmount,
+
+            totalPayable:
+                roundCurrency(
+                    fee + gstAmount
+                ),
+
+            taxDisclaimer:
+                TAX_CONFIRMATION_MESSAGE
+
+        };
 
     }
 
@@ -591,6 +713,14 @@
 
                     gstApplicable: false,
 
+                    gstRate: null,
+
+                    gstAmount: null,
+
+                    totalPayable: null,
+
+                    taxDisclaimer: null,
+
                     offerEndsOn: null,
 
                     ctaText: "View Learning Journey"
@@ -626,9 +756,10 @@
             *
             * GST
             *
-            * • GST is NOT calculated here.
-            * • GST is automatically calculated
-            *   by the payment gateway during checkout.
+            * • EligibilityService calculates the displayed
+            *   GST estimate and total payable.
+            * • The payment gateway remains authoritative
+            *   for the final tax and payable amount.
             *
             * Future
             *
@@ -647,6 +778,13 @@
                 ) &&
                 eligibility.nextProgram === "AIPA"
             ) {
+
+                const commercialTotals =
+                    calculateCommercialTotals(
+                        7500,
+                        true,
+                        GST_RATE_PERCENT
+                    );
 
                 return {
 
@@ -671,6 +809,18 @@
                     currency: "INR",
 
                     gstApplicable: true,
+
+                    gstRate:
+                        commercialTotals.gstRate,
+
+                    gstAmount:
+                        commercialTotals.gstAmount,
+
+                    totalPayable:
+                        commercialTotals.totalPayable,
+
+                    taxDisclaimer:
+                        commercialTotals.taxDisclaimer,
 
                     offerEndsOn: BRIDGE_OFFER_END_DATE,
 
@@ -704,6 +854,14 @@
                 currency: "INR",
 
                 gstApplicable: false,
+
+                gstRate: null,
+
+                gstAmount: null,
+
+                totalPayable: null,
+
+                taxDisclaimer: null,
 
                 offerEndsOn: null,
 
@@ -803,6 +961,18 @@
 
                 gstApplicable:
                     pricing.gstApplicable,
+
+                gstRate:
+                    pricing.gstRate,
+
+                gstAmount:
+                    pricing.gstAmount,
+
+                totalPayable:
+                    pricing.totalPayable,
+
+                taxDisclaimer:
+                    pricing.taxDisclaimer,
 
                 offerEndsOn:
                     pricing.offerEndsOn,

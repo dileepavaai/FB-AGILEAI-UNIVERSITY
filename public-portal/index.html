@@ -4,7 +4,7 @@
 
      File        : index.html
      Page        : Portal Dashboard
-     Version     : 3.2.0
+     Version     : 3.3.0
      Status      : ACTIVE
      Date        : July 2026
 
@@ -98,6 +98,16 @@
 
      Change History
      ----------------------------------------------------------
+     v3.3.0
+
+     • Converted dashboard to authenticated-only experience
+     • Removed legacy embedded sign-in interface
+     • Removed legacy dashboard Sign out action
+     • Added fail-closed authentication pending state
+     • Added governed toolbar account-menu stylesheet
+     • Versioned changed authentication and toolbar assets
+     • Preserved dashboard and credential orchestration
+
      v3.2.0
 
      • Added View All Credentials portfolio navigation
@@ -113,7 +123,9 @@
 
 <!doctype html>
 
-<html lang="en">
+<html
+    lang="en"
+    data-portal-auth-state="pending">
 
 <head>
 
@@ -143,6 +155,36 @@
     <link
         rel="stylesheet"
         href="/assets/css/portal.css">
+
+
+    <!-- ==================================================
+         SHARED PORTAL TOOLBAR
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/components/toolbar.css?v=1.2.0">
+
+
+    <!-- ==================================================
+         AUTHENTICATION CONTENT PROTECTION
+
+         The portal shell remains unavailable until
+         PortalAuth confirms an authenticated Firebase user.
+    ================================================== -->
+
+    <style>
+
+        html[data-portal-auth-state="pending"]
+        .portal-shell,
+        html[data-portal-auth-state="unauthenticated"]
+        .portal-shell {
+
+            visibility: hidden;
+
+        }
+
+    </style>
 
 
     <!-- ==================================================
@@ -250,89 +292,30 @@
 
 
                     <!-- ======================================
-                         SIGNED-OUT EXPERIENCE
+                         SIGNED-IN EXPERIENCE
                     ======================================= -->
 
-                    <section id="signedOutUI">
+                    <section
+                        id="signedInUI"
+                        class="dashboard"
+                        hidden>
 
-                        <div class="portal-grid">
 
-                            <section class="dashboard-card">
+                        <!-- ==================================
+                             QUICK ACCESS
+                        =================================== -->
 
-                                <h2>
-                                    Sign In
-                                </h2>
-
-                                <p id="statusText">
-
-                                    Sign in to access assessments,
-                                    credentials, recognitions,
-                                    reports and university services.
-
-                                </p>
-
-                                <button
-                                    id="btnGoogle"
-                                    class="btn"
-                                    type="button">
-
-                                    Sign in with Google
-
-                                </button>
-
-                                <div class="divider">
-                                    OR
-                                </div>
-
-                                <div class="auth-box">
-
-                                    <label
-                                        class="sr-only"
-                                        for="emailInput">
-
-                                        Email address
-
-                                    </label>
-
-                                    <input
-                                        id="emailInput"
-                                        type="email"
-                                        placeholder="Enter your email"
-                                        autocomplete="email">
-
-                                    <button
-                                        id="btnEmailLink"
-                                        class="btn"
-                                        type="button">
-
-                                        Send Login Link
-
-                                    </button>
-
-                                    <p
-                                        id="emailStatus"
-                                        class="status-message"
-                                        aria-live="polite">
-                                    </p>
-
-                                    <p class="portal-help">
-
-                                        Secure access using Google
-                                        Sign-In or a passwordless
-                                        email link.
-
-                                    </p>
-
-                                </div>
-
-                            </section>
-
+                        <div class="dashboard-section">
 
                             <section class="dashboard-card quick-access">
 
-                                <h2>
-                                    Quick Access
-                                </h2>
+                                <div class="dashboard-card-header">
+
+                                    <h2 class="dashboard-card-title">
+                                        Quick Access
+                                    </h2>
+
+                                </div>
 
                                 <div
                                     id="dashboardQuickAccess"
@@ -342,18 +325,6 @@
                             </section>
 
                         </div>
-
-                    </section>
-
-
-                    <!-- ======================================
-                         SIGNED-IN EXPERIENCE
-                    ======================================= -->
-
-                    <section
-                        id="signedInUI"
-                        class="dashboard"
-                        hidden>
 
 
                         <!-- ==================================
@@ -656,23 +627,6 @@
                         </section>
 
 
-                        <!-- ==================================
-                             SIGN OUT
-                        =================================== -->
-
-                        <section class="dashboard-section">
-
-                            <button
-                                id="btnSignOut"
-                                class="btn"
-                                type="button">
-
-                                Sign Out
-
-                            </button>
-
-                        </section>
-
                     </section>
 
                 </div>
@@ -699,6 +653,9 @@
         window.__AAIU_EXPERIENCE =
             "operational-home";
 
+        window.__AAIU_PORTAL_LOGIN_URL__ =
+            "/login.html";
+
     </script>
 
 
@@ -723,11 +680,11 @@
          AUTHENTICATION FOUNDATION
     ================================================== -->
 
-    <script src="/assets/js/auth/firebase-init.js"></script>
+    <script src="/assets/js/auth/firebase-init.js?v=1.4.0"></script>
 
-    <script src="/assets/js/auth/portal-auth.js"></script>
+    <script src="/assets/js/auth/portal-auth.js?v=2.0.0"></script>
     
-    <script src="/assets/js/auth/portal-session-service.js"></script>
+    <script src="/assets/js/auth/portal-session-service.js?v=1.2.0"></script>
 
 
     <!-- ==================================================
@@ -758,7 +715,7 @@
 
     <script src="/assets/js/components/sidebar.js"></script>
 
-    <script src="/assets/js/components/toolbar.js"></script>
+    <script src="/assets/js/components/toolbar.js?v=1.3.0"></script>
 
 
     <!-- ==================================================

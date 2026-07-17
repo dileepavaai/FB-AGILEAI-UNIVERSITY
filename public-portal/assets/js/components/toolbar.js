@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : toolbar.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Phase     : Portal Identity Stabilization
 
@@ -25,6 +25,10 @@
    ✓ Support identity update events
    ✓ Reconcile identity after asynchronous readiness
    ✓ Expose governed identity presentation API
+   ✓ Render accessible learner account menu
+   ✓ Coordinate explicit sign-out through PortalSessionService
+   ✓ Support keyboard, outside-click and Escape dismissal
+   ✓ Present recoverable sign-out status
 
    Non Responsibilities
    ----------------------------------------------------------
@@ -39,6 +43,8 @@
    ✗ Membership decisions
    ✗ Credential filtering
    ✗ Credential retrieval
+   ✗ Firebase sign-out orchestration
+   ✗ Session, cache or storage cleanup
 
    Architectural Position
    ----------------------------------------------------------
@@ -107,6 +113,17 @@
 
    Change History
    ----------------------------------------------------------
+   v1.3.0
+
+   • Added governed learner account menu
+   • Added professional Sign out action
+   • Integrated PortalSessionService as sole sign-out authority
+   • Added accessible menu trigger and menu semantics
+   • Added Escape, outside-click and keyboard handling
+   • Added duplicate-handler and duplicate-action protection
+   • Added sign-out progress, success and failure synchronization
+   • Added safe initialization after DOMContentLoaded
+
    v1.2.0
 
    • Fixed Student placeholder overriding learner name
@@ -162,7 +179,7 @@
         "Toolbar";
 
     const MODULE_VERSION =
-        "1.2.0";
+        "1.3.0";
 
 
     /* ======================================================
@@ -224,6 +241,18 @@
 
     let identityRefreshTimer =
         null;
+
+    let initialized =
+        false;
+
+    let accountMenuOpen =
+        false;
+
+    let signOutRequestActive =
+        false;
+
+    let accountEventsBound =
+        false;
 
 
     /* ======================================================
@@ -1471,6 +1500,18 @@
             );
 
 
+        const accountName =
+            document.getElementById(
+                "toolbarAccountName"
+            );
+
+
+        const accountEmail =
+            document.getElementById(
+                "toolbarAccountEmail"
+            );
+
+
         if (
             avatar
         ) {
@@ -1523,7 +1564,7 @@
 
                 "aria-label",
 
-                `Signed in as ${activeIdentity.displayName}, ${activeIdentity.roleLabel}`
+                `Signed in as ${activeIdentity.displayName}, ${activeIdentity.roleLabel}. Open account menu.`
 
             );
 
@@ -1544,6 +1585,34 @@
 
             userButton.dataset.identityInitials =
                 activeIdentity.initials;
+
+        }
+
+
+        if (
+            accountName
+        ) {
+
+            accountName.textContent =
+                activeIdentity.displayName;
+
+            accountName.title =
+                activeIdentity.displayName;
+
+        }
+
+
+        if (
+            accountEmail
+        ) {
+
+            accountEmail.textContent =
+                activeIdentity.email ||
+                "Signed-in learner";
+
+            accountEmail.title =
+                activeIdentity.email ||
+                "";
 
         }
 
@@ -1615,6 +1684,9 @@
     ====================================================== */
 
     function renderToolbar() {
+
+        accountMenuOpen =
+            false;
 
         const toolbar =
             document.getElementById(
@@ -1688,68 +1760,152 @@
 
                 </button>
 
-                <button
-                    class="toolbar-user"
-                    id="toolbarUser"
-                    type="button"
-                    aria-label="${escapeAttribute(
-                        `Signed in as ${identity.displayName}, ${identity.roleLabel}`
-                    )}">
+                <div
+                    class="toolbar-account"
+                    id="toolbarAccount">
 
-                    <span
-                        class="toolbar-avatar"
-                        id="toolbarAvatar"
-                        title="${escapeAttribute(
-                            identity.displayName
-                        )}"
-                        aria-hidden="true">
-
-                        ${escapeHtml(
-                            identity.initials
-                        )}
-
-                    </span>
-
-                    <span
-                        class="toolbar-user-copy">
+                    <button
+                        class="toolbar-user"
+                        id="toolbarUser"
+                        type="button"
+                        aria-haspopup="menu"
+                        aria-expanded="false"
+                        aria-controls="toolbarAccountMenu"
+                        aria-label="${escapeAttribute(
+                            `Signed in as ${identity.displayName}, ${identity.roleLabel}. Open account menu.`
+                        )}">
 
                         <span
-                            class="toolbar-name"
-                            id="toolbarUserName"
+                            class="toolbar-avatar"
+                            id="toolbarAvatar"
                             title="${escapeAttribute(
                                 identity.displayName
-                            )}">
+                            )}"
+                            aria-hidden="true">
 
                             ${escapeHtml(
-                                identity.displayName
+                                identity.initials
                             )}
 
                         </span>
 
                         <span
-                            class="toolbar-role"
-                            id="toolbarUserRole"
-                            title="${escapeAttribute(
-                                identity.roleLabel
-                            )}">
+                            class="toolbar-user-copy">
 
-                            ${escapeHtml(
-                                identity.roleLabel
-                            )}
+                            <span
+                                class="toolbar-name"
+                                id="toolbarUserName"
+                                title="${escapeAttribute(
+                                    identity.displayName
+                                )}">
+
+                                ${escapeHtml(
+                                    identity.displayName
+                                )}
+
+                            </span>
+
+                            <span
+                                class="toolbar-role"
+                                id="toolbarUserRole"
+                                title="${escapeAttribute(
+                                    identity.roleLabel
+                                )}">
+
+                                ${escapeHtml(
+                                    identity.roleLabel
+                                )}
+
+                            </span>
 
                         </span>
 
-                    </span>
+                        <span
+                            class="toolbar-arrow"
+                            aria-hidden="true">
 
-                    <span
-                        class="toolbar-arrow"
-                        aria-hidden="true">
+                            ▼
 
-                        ▼
+                        </span>
 
-                    </span>
+                    </button>
 
-                </button>
+                    <div
+                        class="toolbar-account-menu"
+                        id="toolbarAccountMenu"
+                        role="menu"
+                        aria-label="Learner account"
+                        hidden>
+
+                        <div
+                            class="toolbar-account-summary"
+                            role="presentation">
+
+                            <span
+                                class="toolbar-account-name"
+                                id="toolbarAccountName">
+
+                                ${escapeHtml(identity.displayName)}
+
+                            </span>
+
+                            <span
+                                class="toolbar-account-email"
+                                id="toolbarAccountEmail">
+
+                                ${escapeHtml(
+                                    identity.email ||
+                                    "Signed-in learner"
+                                )}
+
+                            </span>
+
+                        </div>
+
+                        <hr
+                            class="toolbar-account-separator"
+                            role="separator">
+
+                        <div
+                            class="toolbar-account-actions"
+                            role="presentation">
+
+                            <button
+                                class="toolbar-account-action"
+                                id="toolbarAccountSignOut"
+                                type="button"
+                                role="menuitem">
+
+                                <span
+                                    class="toolbar-account-action-icon"
+                                    aria-hidden="true">
+
+                                    ↪
+
+                                </span>
+
+                                <span
+                                    data-sign-out-label>
+
+                                    Sign out
+
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                        <p
+                            class="toolbar-account-status"
+                            id="toolbarAccountStatus"
+                            role="status"
+                            aria-live="polite"
+                            hidden>
+                        </p>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -1760,6 +1916,415 @@
             force:
                 true
         });
+
+    }
+
+
+    /* ======================================================
+       ACCOUNT MENU
+    ====================================================== */
+
+    function setAccountStatus(
+        message = "",
+        status = ""
+    ) {
+
+        const statusElement =
+            document.getElementById(
+                "toolbarAccountStatus"
+            );
+
+        if (
+            !statusElement
+        ) {
+
+            return;
+
+        }
+
+        const normalizedMessage =
+            normalizeValue(
+                message
+            );
+
+        statusElement.textContent =
+            normalizedMessage;
+
+        statusElement.hidden =
+            !normalizedMessage;
+
+        if (
+            status
+        ) {
+
+            statusElement.dataset.status =
+                status;
+
+        } else {
+
+            delete statusElement.dataset.status;
+
+        }
+
+    }
+
+
+    function setSignOutControlState(
+        active
+    ) {
+
+        const control =
+            document.getElementById(
+                "toolbarAccountSignOut"
+            );
+
+        if (
+            !control
+        ) {
+
+            return;
+
+        }
+
+        const label =
+            control.querySelector(
+                "[data-sign-out-label]"
+            );
+
+        control.disabled =
+            Boolean(active);
+
+        control.setAttribute(
+            "aria-busy",
+            active ? "true" : "false"
+        );
+
+        if (
+            label
+        ) {
+
+            label.textContent =
+                active
+                    ? "Signing out…"
+                    : "Sign out";
+
+        }
+
+    }
+
+
+    function setAccountMenuOpen(
+        open,
+        options = {}
+    ) {
+
+        const trigger =
+            document.getElementById(
+                "toolbarUser"
+            );
+
+        const menu =
+            document.getElementById(
+                "toolbarAccountMenu"
+            );
+
+        if (
+            !trigger ||
+            !menu
+        ) {
+
+            accountMenuOpen =
+                false;
+
+            return;
+
+        }
+
+        const nextOpen =
+            Boolean(open) &&
+            !signOutRequestActive;
+
+        accountMenuOpen =
+            nextOpen;
+
+        trigger.setAttribute(
+            "aria-expanded",
+            nextOpen ? "true" : "false"
+        );
+
+        menu.hidden =
+            !nextOpen;
+
+        if (
+            nextOpen
+        ) {
+
+            setAccountStatus();
+
+            if (
+                options.focusFirst === true
+            ) {
+
+                document.getElementById(
+                    "toolbarAccountSignOut"
+                )?.focus();
+
+            }
+
+        } else if (
+            options.restoreFocus === true
+        ) {
+
+            trigger.focus();
+
+        }
+
+    }
+
+
+    function closeAccountMenu(
+        options = {}
+    ) {
+
+        setAccountMenuOpen(
+            false,
+            options
+        );
+
+    }
+
+
+    async function requestSignOut() {
+
+        if (
+            signOutRequestActive
+        ) {
+
+            return;
+
+        }
+
+        const sessionService =
+            window.PortalSessionService;
+
+        if (
+            !sessionService ||
+            typeof sessionService.signOut !==
+                "function"
+        ) {
+
+            setAccountStatus(
+                "Sign out is temporarily unavailable. Please refresh and try again.",
+                "error"
+            );
+
+            console.error(
+                `[${MODULE_NAME}] PortalSessionService is unavailable.`
+            );
+
+            return;
+
+        }
+
+        signOutRequestActive =
+            true;
+
+        setSignOutControlState(
+            true
+        );
+
+        setAccountStatus(
+            "Ending your secure portal session…"
+        );
+
+        try {
+
+            await sessionService.signOut();
+
+        } catch (
+            error
+        ) {
+
+            signOutRequestActive =
+                false;
+
+            setSignOutControlState(
+                false
+            );
+
+            setAccountStatus(
+                "We couldn’t sign you out. Please check your connection and try again.",
+                "error"
+            );
+
+            console.error(
+                `[${MODULE_NAME}] Sign-out request failed.`,
+                error
+            );
+
+        }
+
+    }
+
+
+    function bindAccountMenuEvents() {
+
+        if (
+            accountEventsBound
+        ) {
+
+            return;
+
+        }
+
+        accountEventsBound =
+            true;
+
+        document.addEventListener(
+            "click",
+            function (
+                event
+            ) {
+
+                const trigger =
+                    event.target.closest?.(
+                        "#toolbarUser"
+                    );
+
+                if (
+                    trigger
+                ) {
+
+                    setAccountMenuOpen(
+                        !accountMenuOpen
+                    );
+
+                    return;
+
+                }
+
+                const signOutControl =
+                    event.target.closest?.(
+                        "#toolbarAccountSignOut"
+                    );
+
+                if (
+                    signOutControl
+                ) {
+
+                    event.preventDefault();
+                    requestSignOut();
+                    return;
+
+                }
+
+                if (
+                    accountMenuOpen &&
+                    !event.target.closest?.(
+                        "#toolbarAccount"
+                    )
+                ) {
+
+                    closeAccountMenu();
+
+                }
+
+            }
+        );
+
+        document.addEventListener(
+            "keydown",
+            function (
+                event
+            ) {
+
+                if (
+                    event.key === "Escape" &&
+                    accountMenuOpen
+                ) {
+
+                    event.preventDefault();
+
+                    closeAccountMenu({
+                        restoreFocus: true
+                    });
+
+                    return;
+
+                }
+
+                if (
+                    (
+                        event.key === "ArrowDown" ||
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) &&
+                    event.target?.id ===
+                        "toolbarUser"
+                ) {
+
+                    event.preventDefault();
+
+                    setAccountMenuOpen(
+                        true,
+                        {
+                            focusFirst: true
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+        document.addEventListener(
+            "portal:signout-started",
+            function () {
+
+                signOutRequestActive =
+                    true;
+
+                setSignOutControlState(
+                    true
+                );
+
+            }
+        );
+
+        document.addEventListener(
+            "portal:signout-failed",
+            function () {
+
+                signOutRequestActive =
+                    false;
+
+                setSignOutControlState(
+                    false
+                );
+
+            }
+        );
+
+        document.addEventListener(
+            "portal:signout-completed",
+            function () {
+
+                applyIdentity(
+                    {
+                        displayName: "Learner",
+                        email: "",
+                        roleLabel: "Student",
+                        membershipLabel: "University Member"
+                    },
+                    {
+                        force: true
+                    }
+                );
+
+                closeAccountMenu();
+
+            }
+        );
 
     }
 
@@ -2034,9 +2599,22 @@
 
     function initialize() {
 
+        if (
+            initialized
+        ) {
+
+            return;
+
+        }
+
+        initialized =
+            true;
+
         bindIdentityEvents();
 
         bindFirebaseAuthRefresh();
+
+        bindAccountMenuEvents();
 
 
         activeIdentity =
@@ -2072,6 +2650,14 @@
             refreshIdentity:
                 scheduleIdentityReconciliation,
 
+            closeAccountMenu,
+
+            isAccountMenuOpen() {
+
+                return accountMenuOpen;
+
+            },
+
             getIdentity() {
 
                 return Object.freeze({
@@ -2083,10 +2669,24 @@
         });
 
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        initialize
-    );
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize,
+            {
+                once: true
+            }
+        );
+
+    } else {
+
+        initialize();
+
+    }
 
 
 })(window, document);

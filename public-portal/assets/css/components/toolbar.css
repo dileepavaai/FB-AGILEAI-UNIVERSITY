@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : toolbar.css
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Portal Identity Experience
 
@@ -35,7 +35,7 @@
    ✗ Sidebar
    ✗ Dashboard Cards
    ✗ Page Content
-   ✗ User Menu Behaviour
+   ✗ User Menu Behaviour (owned by toolbar.js)
    ✗ Profile Persistence
 
    Architectural Position
@@ -74,6 +74,15 @@
 
    Change History
    ----------------------------------------------------------
+   v1.2.0
+
+   • Added governed learner account-menu presentation
+   • Added account identity summary and email truncation
+   • Added accessible open, focus and keyboard states
+   • Added professional Sign out action presentation
+   • Added signing-out, disabled and error states
+   • Added responsive and dark-theme menu support
+
    v1.1.0
 
    • Added learner identity copy container
@@ -412,7 +421,8 @@
 ========================================================== */
 
 .toolbar-button:focus-visible,
-.toolbar-user:focus-visible {
+.toolbar-user:focus-visible,
+.toolbar-account-action:focus-visible {
 
     outline:
         2px solid
@@ -509,6 +519,14 @@
 /* ==========================================================
    USER MENU
 ========================================================== */
+
+.toolbar-account {
+
+    position: relative;
+    flex: 0 1 auto;
+    min-width: 0;
+
+}
 
 .toolbar-user {
 
@@ -1192,4 +1210,211 @@ body[data-theme="dark"]
 
     }
 
+}
+
+.toolbar-user[aria-expanded="true"] {
+
+    background: var(--surface-secondary);
+    border-color: var(--brand-primary);
+    box-shadow: var(--focus-ring);
+
+}
+
+.toolbar-user[disabled],
+.toolbar-user[aria-disabled="true"] {
+
+    cursor: not-allowed;
+    opacity: 0.7;
+
+}
+
+
+/* ==========================================================
+   ACCOUNT MENU — v1.2.0
+========================================================== */
+
+.toolbar-user[aria-expanded="true"] .toolbar-arrow {
+    transform: rotate(180deg);
+}
+
+.toolbar-arrow {
+    transition: transform var(--transition-fast);
+}
+
+.toolbar-account-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: calc(var(--z-sticky, 100) + 1);
+    width: 300px;
+    max-width: calc(100vw - 32px);
+    overflow: hidden;
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: var(
+        --shadow-lg,
+        0 18px 45px rgba(15, 23, 42, 0.16)
+    );
+}
+
+.toolbar-account-menu[hidden],
+.toolbar-account-status[hidden] {
+    display: none;
+}
+
+.toolbar-account-summary {
+    padding: 18px;
+}
+
+.toolbar-account-name,
+.toolbar-account-email {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.toolbar-account-name {
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-semibold);
+    line-height: 1.4;
+}
+
+.toolbar-account-email {
+    margin-top: 3px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+.toolbar-account-separator {
+    height: 1px;
+    margin: 0;
+    background: var(--border-default);
+    border: 0;
+}
+
+.toolbar-account-actions {
+    padding: 8px;
+}
+
+.toolbar-account-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-md, 10px);
+    color: var(--text-primary);
+    font: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-medium, 500);
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast);
+}
+
+.toolbar-account-action:hover {
+    background: var(--surface-secondary);
+}
+
+.toolbar-account-action[disabled],
+.toolbar-account-action[aria-disabled="true"] {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.toolbar-account-action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.toolbar-account-status {
+    margin: 0;
+    padding: 0 12px 12px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+
+.toolbar-account-status[data-status="error"] {
+    color: var(--color-danger, #b42318);
+}
+
+.portal-signing-out .toolbar-user,
+.portal-signing-out .toolbar-account-action {
+    pointer-events: none;
+}
+
+html[data-theme="dark"] .toolbar-account-menu,
+body[data-theme="dark"] .toolbar-account-menu,
+.dark-theme .toolbar-account-menu,
+.theme-dark .toolbar-account-menu {
+    background: var(--surface-card, #111827);
+    border-color: var(--border-default, #334155);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.42);
+}
+
+html[data-theme="dark"] .toolbar-account-action:hover,
+body[data-theme="dark"] .toolbar-account-action:hover,
+.dark-theme .toolbar-account-action:hover,
+.theme-dark .toolbar-account-action:hover {
+    background: var(--surface-secondary, #1e293b);
+}
+
+html[data-theme="dark"] .toolbar-account-name,
+body[data-theme="dark"] .toolbar-account-name,
+.dark-theme .toolbar-account-name,
+.theme-dark .toolbar-account-name,
+html[data-theme="dark"] .toolbar-account-action,
+body[data-theme="dark"] .toolbar-account-action,
+.dark-theme .toolbar-account-action,
+.theme-dark .toolbar-account-action {
+    color: var(--text-primary, #f8fafc);
+}
+
+@media (max-width: 992px) {
+    .toolbar-account {
+        flex: 0 1 280px;
+        min-width: 180px;
+        max-width: 280px;
+    }
+
+    .toolbar-account .toolbar-user {
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .toolbar-account {
+        width: 54px;
+        min-width: 54px;
+        max-width: 54px;
+        flex: 0 0 54px;
+    }
+
+    .toolbar-account-menu {
+        width: min(300px, calc(100vw - 32px));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toolbar-arrow,
+    .toolbar-account-action {
+        transition: none;
+    }
 }

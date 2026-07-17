@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : portal-session-service.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Dedicated Login and Session Stabilization
 
@@ -152,6 +152,15 @@
 
    Change History
    ----------------------------------------------------------
+   v1.2.0
+
+   • Added toolbar.js v1.3.0 account-menu compatibility
+   • Added dedicated account Sign out control discovery
+   • Preserved nested icons and accessible button markup
+   • Updated only governed sign-out label elements
+   • Added account-menu closure through PortalToolbar
+   • Added toolbar account identity DOM cleanup coverage
+
    v1.1.0
 
    • Changed default redirect to dedicated /login.html
@@ -199,7 +208,7 @@
         "PortalSessionService";
 
     const MODULE_VERSION =
-        "1.1.0";
+        "1.2.0";
 
 
     /* ======================================================
@@ -594,6 +603,8 @@
 
             "#sidebarSignOut",
 
+            "#toolbarAccountSignOut",
+
             ".js-portal-sign-out",
 
             "[data-portal-sign-out]"
@@ -633,7 +644,22 @@
                                 );
 
 
+                                const label =
+                                    element.querySelector?.(
+                                        "[data-sign-out-label]"
+                                    );
+
+
                                 if (
+                                    label
+                                ) {
+
+                                    label.textContent =
+                                        active
+                                            ? "Signing out…"
+                                            : "Sign out";
+
+                                } else if (
                                     active
                                 ) {
 
@@ -643,7 +669,7 @@
                                             "";
 
                                     element.textContent =
-                                        "Signing Out…";
+                                        "Signing out…";
 
                                 } else if (
                                     element.dataset
@@ -770,6 +796,18 @@
     async function closeOpenWorkspaces() {
 
         const cleanupTargets = [
+
+            {
+                owner:
+                    window.PortalToolbar,
+
+                methods: [
+                    "closeAccountMenu"
+                ],
+
+                label:
+                    "Portal account menu cleanup"
+            },
 
             {
                 owner:
@@ -1451,6 +1489,10 @@
             "#userName",
 
             "#userEmail",
+
+            "#toolbarAccountName",
+
+            "#toolbarAccountEmail",
 
             "[data-sensitive-portal-content]"
 

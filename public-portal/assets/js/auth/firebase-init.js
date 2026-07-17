@@ -1,253 +1,857 @@
 /* ==========================================================
-   Agile AI University Portal
-   Firebase Auth Service
+   Agile AI University
+   Student & Executive Portal
 
-   File: firebase-init.js
-   Version: 1.3.0
-   Status: ACTIVE
+   File      : firebase-init.js
+   Version   : 1.4.0
+   Status    : ACTIVE
+   Phase     : Dedicated Authentication Stabilization
 
-   Authentication Providers
+   Purpose
+   ----------------------------------------------------------
+   Initializes Firebase and exposes the governed low-level
+   authentication service used by the portal authentication
+   facade and dedicated sign-in experience.
 
-   • Google Sign-In
-   • Email Magic Link Sign-In
+   Responsibilities
+   ----------------------------------------------------------
+   ✓ Initialize Firebase once
+   ✓ Expose Firebase Authentication runtime
+   ✓ Expose Firestore runtime for governed read services
+   ✓ Provide Google sign-in
+   ✓ Send passwordless email sign-in links
+   ✓ Complete passwordless email-link sign-in
+   ✓ Maintain the authentication-readiness contract
+   ✓ Preserve backward compatibility with legacy email keys
+   ✓ Avoid browser-prompt authentication collection
+   ✓ Publish authentication lifecycle diagnostics
+
+   Non Responsibilities
+   ----------------------------------------------------------
+   ✗ Portal authorization
+   ✗ Entitlement resolution
+   ✗ Credential retrieval
+   ✗ Dashboard rendering
+   ✗ Login-page UI rendering
+   ✗ Protected-route redirection
+   ✗ Explicit sign-out orchestration
+   ✗ Portal cache or runtime cleanup
 
    Governance
+   ----------------------------------------------------------
+   • Firebase Authentication is the identity authority.
 
-   • Authentication Service Authority
-   • Firebase Initialization Authority
-   • Exposes Auth and Firestore Runtime Handles
-   • No Portal Authorization Logic
-   • No Entitlement Logic
-   • No Credential Logic
+   • window.AAIUAuth is the low-level authentication API.
+
+   • portal-auth.js owns the governed public PortalAuth API.
+
+   • login.js owns dedicated sign-in-page interaction.
+
+   • PortalSessionService is the sole explicit sign-out
+     authority.
+
+   • Authentication readiness resolves only after Firebase
+     restores the initial authentication state.
+
+   • An email-link return remains pending until the dedicated
+     login controller completes it.
+
+   • Portal-owned email-link state uses the namespaced key:
+
+       aaiu.portal.emailForSignIn
+
+   • Legacy keys are read temporarily and removed after a
+     successful email-link completion.
 
    Change History
+   ----------------------------------------------------------
+   v1.4.0
+
+   • Standardized the email-link return URL on /login.html
+   • Standardized portal-owned email-link storage
+   • Added legacy email-key compatibility and cleanup
+   • Removed browser prompt dependency
+   • Added explicit email-confirmation-required result
+   • Added current-user and email-link inspection APIs
+   • Added defensive storage handling
+   • Aligned the configured production Storage bucket
+   • Preserved Google sign-in and auth-readiness contracts
 
    v1.3.0
-   • Added Firestore compat initialization
-   • Exposes window.db for read-only portal services
-   • Preserves auth readiness contract
 
-   v1.2.0
-   • Fixed auth readiness timing issue
-   • Waits for Firebase auth restoration
-   • Resolves __AAIU_AUTH_READY__ only after
-     first auth state resolution
-   • Added governance diagnostics
+   • Added Firestore compat initialization
+   • Exposed window.db for read-only portal services
+   • Preserved auth readiness contract
 
 ========================================================== */
 
-(function () {
+(function (
+    window
+) {
 
-"use strict";
+    "use strict";
 
-console.log(
-  "[AAIU Auth] Firebase Auth Service v1.3.0 initializing"
-);
-
-window.__AAIU_AUTH_READY__ =
-new Promise((resolve) => {
-
-  try {
 
     /* ======================================================
-       FIREBASE INITIALIZATION
+       MODULE IDENTITY
     ====================================================== */
 
-    if (!firebase.apps.length) {
+    const MODULE_NAME =
+        "AAIUAuth";
 
-      firebase.initializeApp({
-        apiKey: "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
-        authDomain: "fb-agileai-university.firebaseapp.com",
-        projectId: "fb-agileai-university",
-        storageBucket: "fb-agileai-university.appspot.com",
-        messagingSenderId: "458881040066",
-        appId: "1:458881040066:web:c832c420f9b4282e76c55b"
-      });
+    const MODULE_VERSION =
+        "1.4.0";
 
-      console.log(
-        "[AAIU Auth] Firebase initialized"
-      );
-
-    }
-
-    const auth =
-      firebase.auth();
 
     /* ======================================================
-       FIRESTORE INITIALIZATION
-       Read service dependency for portal services
+       CONFIGURATION
     ====================================================== */
 
-    if (
-      firebase.firestore &&
-      typeof firebase.firestore === "function"
+    const FIREBASE_CONFIG =
+        Object.freeze({
+
+            apiKey:
+                "AIzaSyCti7ubJjnU8LJTghNaXhaSZzqCpozkeXg",
+
+            authDomain:
+                "fb-agileai-university.firebaseapp.com",
+
+            projectId:
+                "fb-agileai-university",
+
+            storageBucket:
+                "fb-agileai-university.firebasestorage.app",
+
+            messagingSenderId:
+                "458881040066",
+
+            appId:
+                "1:458881040066:web:c832c420f9b4282e76c55b"
+
+        });
+
+
+    const DEFAULT_EMAIL_LINK_RETURN_URL =
+        "https://portal.agileai.university/login.html";
+
+
+    const EMAIL_STORAGE_KEY =
+        "aaiu.portal.emailForSignIn";
+
+
+    const LEGACY_EMAIL_STORAGE_KEYS =
+        Object.freeze([
+
+            "aaiuEmailForSignIn",
+
+            "emailForSignIn"
+
+        ]);
+
+
+    /* ======================================================
+       STATE
+    ====================================================== */
+
+    let auth =
+        null;
+
+    let db =
+        null;
+
+    let authReadyResolved =
+        false;
+
+    let resolveAuthReady =
+        null;
+
+
+    /* ======================================================
+       AUTHENTICATION READINESS CONTRACT
+    ====================================================== */
+
+    window.__AAIU_AUTH_READY__ =
+        new Promise(
+            function (
+                resolve
+            ) {
+
+                resolveAuthReady =
+                    resolve;
+
+            }
+        );
+
+
+    function resolveReadiness(
+        user,
+        error = null
     ) {
 
-      const db =
-        firebase.firestore();
-
-      window.db =
-        db;
-
-      console.log(
-        "[AAIU Auth] Firestore ready"
-      );
-
-    } else {
-
-      console.warn(
-        "[AAIU Auth] Firestore compat SDK not loaded"
-      );
-
-    }
-
-    /* ======================================================
-       AUTH SERVICE API
-    ====================================================== */
-
-    window.AAIUAuth = {
-
-      async signInWithGoogle() {
-
-        const provider =
-          new firebase.auth.GoogleAuthProvider();
-
-        return auth.signInWithPopup(
-          provider
-        );
-
-      },
-
-      async sendEmailLink(email) {
-
-        const actionCodeSettings = {
-
-          url:
-            "https://portal.agileai.university/",
-
-          handleCodeInApp: true
-
-        };
-
-        await auth.sendSignInLinkToEmail(
-          email,
-          actionCodeSettings
-        );
-
-        window.localStorage.setItem(
-          "aaiuEmailForSignIn",
-          email
-        );
-
-      },
-
-      async completeEmailLinkSignIn() {
-
-        const currentUrl =
-          window.location.href;
-
         if (
-          !auth.isSignInWithEmailLink(
-            currentUrl
-          )
+            authReadyResolved
         ) {
 
-          return null;
+            return;
 
         }
 
-        let email =
-          window.localStorage.getItem(
-            "aaiuEmailForSignIn"
-          );
+        authReadyResolved =
+            true;
 
-        if (!email) {
+        resolveAuthReady?.({
 
-          email =
-            window.prompt(
-              "Please confirm your email address."
+            auth,
+
+            user:
+                user ||
+                null,
+
+            db:
+                db ||
+                null,
+
+            error:
+                error ||
+                null
+
+        });
+
+    }
+
+
+    /* ======================================================
+       VALUE HELPERS
+    ====================================================== */
+
+    function normalizeString(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+        return String(
+            value
+        )
+            .trim();
+
+    }
+
+
+    function normalizeEmail(
+        value
+    ) {
+
+        return normalizeString(
+            value
+        )
+            .toLowerCase();
+
+    }
+
+
+    function resolveEmailLinkReturnUrl() {
+
+        return normalizeString(
+            window.__AAIU_EMAIL_LINK_RETURN_URL__
+        ) ||
+        DEFAULT_EMAIL_LINK_RETURN_URL;
+
+    }
+
+
+    /* ======================================================
+       STORAGE HELPERS
+    ====================================================== */
+
+    function readStoredEmail() {
+
+        const keys = [
+
+            EMAIL_STORAGE_KEY,
+
+            ...LEGACY_EMAIL_STORAGE_KEYS
+
+        ];
+
+        for (
+            const key of keys
+        ) {
+
+            try {
+
+                const email =
+                    normalizeEmail(
+                        window.localStorage
+                            .getItem(
+                                key
+                            )
+                    );
+
+                if (
+                    email
+                ) {
+
+                    return email;
+
+                }
+
+            } catch (
+                error
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] Unable to read email-link state.`,
+                    error
+                );
+
+                return "";
+
+            }
+
+        }
+
+        return "";
+
+    }
+
+
+    function storeEmail(
+        email
+    ) {
+
+        const normalizedEmail =
+            normalizeEmail(
+                email
+            );
+
+        if (
+            !normalizedEmail
+        ) {
+
+            return;
+
+        }
+
+        try {
+
+            window.localStorage
+                .setItem(
+                    EMAIL_STORAGE_KEY,
+                    normalizedEmail
+                );
+
+        } catch (
+            error
+        ) {
+
+            console.warn(
+                `[${MODULE_NAME}] Unable to preserve email-link state.`,
+                error
             );
 
         }
 
-        if (!email) {
+    }
 
-          return null;
+
+    function clearStoredEmail() {
+
+        const keys = [
+
+            EMAIL_STORAGE_KEY,
+
+            ...LEGACY_EMAIL_STORAGE_KEYS
+
+        ];
+
+        keys.forEach(
+            function (
+                key
+            ) {
+
+                try {
+
+                    window.localStorage
+                        .removeItem(
+                            key
+                        );
+
+                } catch (
+                    error
+                ) {
+
+                    console.warn(
+                        `[${MODULE_NAME}] Unable to clear email-link state.`,
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ======================================================
+       RUNTIME ACCESS
+    ====================================================== */
+
+    function getAuth() {
+
+        return auth;
+
+    }
+
+
+    function getCurrentUser() {
+
+        return auth?.currentUser ||
+            null;
+
+    }
+
+
+    function isEmailLink(
+        url = window.location.href
+    ) {
+
+        if (
+            !auth ||
+            typeof auth.isSignInWithEmailLink !==
+                "function"
+        ) {
+
+            return false;
+
+        }
+
+        try {
+
+            return auth.isSignInWithEmailLink(
+                url
+            );
+
+        } catch (
+            error
+        ) {
+
+            console.warn(
+                `[${MODULE_NAME}] Unable to inspect email sign-in link.`,
+                error
+            );
+
+            return false;
+
+        }
+
+    }
+
+
+    /* ======================================================
+       GOOGLE SIGN-IN
+    ====================================================== */
+
+    async function signInWithGoogle() {
+
+        if (
+            !auth
+        ) {
+
+            throw new Error(
+                "Firebase Authentication is unavailable."
+            );
+
+        }
+
+        const provider =
+            new window.firebase.auth
+                .GoogleAuthProvider();
+
+        return auth.signInWithPopup(
+            provider
+        );
+
+    }
+
+
+    /* ======================================================
+       SEND EMAIL SIGN-IN LINK
+    ====================================================== */
+
+    async function sendEmailLink(
+        email
+    ) {
+
+        if (
+            !auth
+        ) {
+
+            throw new Error(
+                "Firebase Authentication is unavailable."
+            );
+
+        }
+
+        const normalizedEmail =
+            normalizeEmail(
+                email
+            );
+
+        if (
+            !normalizedEmail
+        ) {
+
+            throw new Error(
+                "A valid email address is required."
+            );
+
+        }
+
+        const actionCodeSettings = {
+
+            url:
+                resolveEmailLinkReturnUrl(),
+
+            handleCodeInApp:
+                true
+
+        };
+
+        await auth.sendSignInLinkToEmail(
+            normalizedEmail,
+            actionCodeSettings
+        );
+
+        storeEmail(
+            normalizedEmail
+        );
+
+        return Object.freeze({
+
+            success:
+                true,
+
+            email:
+                normalizedEmail,
+
+            returnUrl:
+                actionCodeSettings.url
+
+        });
+
+    }
+
+
+    /* ======================================================
+       COMPLETE EMAIL-LINK SIGN-IN
+    ====================================================== */
+
+    async function completeEmailLinkSignIn(
+        suppliedEmail = ""
+    ) {
+
+        if (
+            !auth
+        ) {
+
+            throw new Error(
+                "Firebase Authentication is unavailable."
+            );
+
+        }
+
+        const currentUrl =
+            window.location.href;
+
+        if (
+            !isEmailLink(
+                currentUrl
+            )
+        ) {
+
+            return Object.freeze({
+
+                completed:
+                    false,
+
+                requiresEmail:
+                    false,
+
+                reason:
+                    "not-email-link"
+
+            });
+
+        }
+
+        const email =
+            normalizeEmail(
+                suppliedEmail
+            ) ||
+            readStoredEmail();
+
+        if (
+            !email
+        ) {
+
+            return Object.freeze({
+
+                completed:
+                    false,
+
+                requiresEmail:
+                    true,
+
+                reason:
+                    "email-confirmation-required"
+
+            });
 
         }
 
         const result =
-          await auth.signInWithEmailLink(
-            email,
-            currentUrl
-          );
+            await auth.signInWithEmailLink(
+                email,
+                currentUrl
+            );
 
-        window.localStorage.removeItem(
-          "aaiuEmailForSignIn"
+        clearStoredEmail();
+
+        resolveReadiness(
+            result?.user ||
+            auth.currentUser ||
+            null
         );
 
-        return result;
+        return Object.freeze({
 
-      }
+            completed:
+                true,
 
-    };
+            requiresEmail:
+                false,
+
+            user:
+                result?.user ||
+                auth.currentUser ||
+                null,
+
+            result
+
+        });
+
+    }
+
 
     /* ======================================================
-       AUTH READINESS CONTRACT
-       WAIT FOR FIREBASE TO RESTORE SESSION
+       PUBLIC AUTHENTICATION API
     ====================================================== */
 
-    let authResolved =
-      false;
+    function registerPublicApi() {
 
-    auth.onAuthStateChanged((user) => {
+        window.AAIUAuth =
+            Object.freeze({
 
-      if (authResolved) {
-        return;
-      }
+                signInWithGoogle,
 
-      const emailLinkFlow =
-        auth.isSignInWithEmailLink(
-          window.location.href
+                sendEmailLink,
+
+                completeEmailLinkSignIn,
+
+                getAuth,
+
+                getCurrentUser,
+
+                isEmailLink,
+
+                getStoredEmail() {
+
+                    return readStoredEmail();
+
+                },
+
+                clearStoredEmail,
+
+                getState() {
+
+                    return Object.freeze({
+
+                        initialized:
+                            Boolean(auth),
+
+                        authReadyResolved,
+
+                        hasCurrentUser:
+                            Boolean(
+                                getCurrentUser()
+                            ),
+
+                        isEmailLink:
+                            isEmailLink(),
+
+                        version:
+                            MODULE_VERSION
+
+                    });
+
+                }
+
+            });
+
+    }
+
+
+    /* ======================================================
+       INITIALIZATION
+    ====================================================== */
+
+    function initialize() {
+
+        console.info(
+            `[${MODULE_NAME}] Firebase Auth Service v${MODULE_VERSION} initializing.`
         );
 
-      if (!user && emailLinkFlow) {
+        try {
 
-        console.log(
-          "[AAIU Auth] Waiting for email-link completion"
-        );
+            if (
+                !window.firebase
+            ) {
 
-        return;
+                throw new Error(
+                    "Firebase SDK is unavailable."
+                );
 
-      }
+            }
 
-      authResolved =
-        true;
+            if (
+                !window.firebase.apps.length
+            ) {
 
-      console.log(
-        "[AAIU Auth] Auth ready:",
-        user?.email || "anonymous"
-      );
+                window.firebase.initializeApp(
+                    FIREBASE_CONFIG
+                );
 
-      resolve({
-        auth,
-        user,
-        db: window.db || null
-      });
+                console.info(
+                    `[${MODULE_NAME}] Firebase initialized.`
+                );
 
-    });
+            }
 
-  } catch (err) {
+            auth =
+                window.firebase.auth();
 
-    console.error(
-      "[AAIU Auth] Initialization failed",
-      err
-    );
+            if (
+                window.firebase.firestore &&
+                typeof window.firebase.firestore ===
+                    "function"
+            ) {
 
-    resolve(null);
+                db =
+                    window.firebase.firestore();
 
-  }
+                window.db =
+                    db;
 
-});
+                console.info(
+                    `[${MODULE_NAME}] Firestore ready.`
+                );
 
-})();
+            } else {
+
+                console.warn(
+                    `[${MODULE_NAME}] Firestore compat SDK is not loaded.`
+                );
+
+            }
+
+            registerPublicApi();
+
+            auth.onAuthStateChanged(
+                function (
+                    user
+                ) {
+
+                    if (
+                        authReadyResolved
+                    ) {
+
+                        return;
+
+                    }
+
+                    if (
+                        !user &&
+                        isEmailLink()
+                    ) {
+
+                        console.info(
+                            `[${MODULE_NAME}] Waiting for email-link completion.`
+                        );
+
+                        return;
+
+                    }
+
+                    console.info(
+                        `[${MODULE_NAME}] Authentication ready:`,
+                        user?.email ||
+                        "anonymous"
+                    );
+
+                    resolveReadiness(
+                        user ||
+                        null
+                    );
+
+                },
+                function (
+                    error
+                ) {
+
+                    console.error(
+                        `[${MODULE_NAME}] Authentication-state restoration failed.`,
+                        error
+                    );
+
+                    resolveReadiness(
+                        null,
+                        error
+                    );
+
+                }
+            );
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                `[${MODULE_NAME}] Initialization failed.`,
+                error
+            );
+
+            registerPublicApi();
+
+            resolveReadiness(
+                null,
+                error
+            );
+
+        }
+
+    }
+
+
+    initialize();
+
+
+})(window);

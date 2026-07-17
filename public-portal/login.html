@@ -5,7 +5,7 @@
      Student & Executive Portal
 
      File        : login.html
-     Version     : 1.1.0
+     Version     : 1.2.0
      Status      : ACTIVE
      Phase       : Dedicated Authentication Experience
 
@@ -108,6 +108,14 @@
 
      Change History
      ----------------------------------------------------------
+     v1.2.0
+
+     • Standardized professional Sign in terminology
+     • Added stable authentication-button label contracts
+     • Added governed email-link return configuration
+     • Versioned changed authentication JavaScript assets
+     • Preserved the existing accessible login layout
+
      v1.1.0
 
      • Added dedicated login-page context
@@ -277,9 +285,10 @@
                     aria-describedby="statusText">
 
                     <span
-                        class="login-button-label">
+                        class="login-button-label"
+                        data-login-button-label>
 
-                        Continue with Google
+                        Sign in with Google
 
                     </span>
 
@@ -346,7 +355,13 @@
                         class="btn btn-secondary login-email-button"
                         type="button">
 
-                        Send Secure Login Link
+                        <span
+                            class="login-button-label"
+                            data-login-button-label>
+
+                            Send secure sign-in link
+
+                        </span>
 
                     </button>
 
@@ -588,6 +603,10 @@
         window.__AAIU_PORTAL_LOGIN_URL__ =
             "/login.html";
 
+        window.__AAIU_EMAIL_LINK_RETURN_URL__ =
+            window.location.origin +
+            "/login.html";
+
     </script>
 
 
@@ -616,9 +635,9 @@
          AUTHENTICATION FOUNDATION
     ================================================== -->
 
-    <script src="/assets/js/auth/firebase-init.js"></script>
+    <script src="/assets/js/auth/firebase-init.js?v=1.4.0"></script>
 
-    <script src="/assets/js/auth/portal-auth.js"></script>
+    <script src="/assets/js/auth/portal-auth.js?v=2.0.0"></script>
 
 
     <!-- ==================================================
@@ -628,7 +647,7 @@
          authentication authority.
     ================================================== -->
 
-    <script src="/assets/js/auth/login.js"></script>
+    <script src="/assets/js/auth/login.js?v=1.2.0"></script>
 
 </body>
 

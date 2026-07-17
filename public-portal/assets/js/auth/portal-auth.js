@@ -1,1008 +1,1052 @@
-/* ============================================================
-   Agile AI University Portal
-   Portal Authentication Controller
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
 
-   File       : portal-auth.js
-   Version    : 1.2.1
-   Status     : ACTIVE
-   Governance : LOCKED
-   Owner      : Agile AI University
+   File      : portal-auth.js
+   Version   : 2.0.0
+   Status    : ACTIVE
+   Phase     : Identity-First Portal Authentication
 
    Purpose
-   ------------------------------------------------------------
-   Coordinates portal authentication interactions and safely
-   updates authentication-related UI regions when those regions
-   exist on the current page.
+   ----------------------------------------------------------
+   Provides the governed portal authentication facade and
+   protects authenticated portal pages before learner content
+   becomes available.
 
    Responsibilities
-   ------------------------------------------------------------
-   ✓ Google Sign-In
-   ✓ Email Magic Link Sign-In
-   ✓ Email Link Completion
-   ✓ Authentication State Resolution
-   ✓ Portal Authentication UI State Management
-   ✓ Sign-Out
-   ✓ Page-safe DOM updates
-   ✓ Authentication lifecycle diagnostics
+   ----------------------------------------------------------
+   ✓ Expose the public window.PortalAuth API
+   ✓ Delegate authentication operations to window.AAIUAuth
+   ✓ Resolve restored Firebase authentication state
+   ✓ Protect authenticated portal pages
+   ✓ Redirect unauthenticated users to /login.html
+   ✓ Publish authentication and identity lifecycle events
+   ✓ Revalidate protected pages restored from browser cache
+   ✓ Reveal authenticated UI only after auth resolution
+   ✓ Prevent duplicate redirects and observers
 
-   Non-Responsibilities
-   ------------------------------------------------------------
-   ✗ Credential retrieval
-   ✗ Credential rendering
-   ✗ Credential visibility decisions
+   Non Responsibilities
+   ----------------------------------------------------------
+   ✗ Firebase application initialization
+   ✗ Login-page button binding
+   ✗ Login-page status presentation
+   ✗ Explicit sign-out orchestration
+   ✗ Portal cache or storage cleanup
+   ✗ Authorization decisions
    ✗ Entitlement resolution
-   ✗ Authorization rules
-   ✗ Registry access
-   ✗ Firestore queries
-   ✗ Cloud Storage access
-   ✗ Dashboard orchestration
-
-   Dependencies
-   ------------------------------------------------------------
-   • firebase-init.js
-   • Firebase Auth compat SDK
-   • window.AAIUAuth
-   • window.__AAIU_AUTH_READY__
+   ✗ Credential retrieval
+   ✗ Firestore security
 
    Architectural Position
-   ------------------------------------------------------------
-   Firebase Authentication
+   ----------------------------------------------------------
+   firebase-init.js / AAIUAuth
         ↓
-   firebase-init.js
-        ↓
-   window.AAIUAuth
-        ↓
-   portal-auth.js
-        ↓
-   Page Authentication UI
+   PortalAuth
+        ├── login.js authentication delegation
+        └── protected-page authentication guard
+                 ↓
+             Authorization
+                 ↓
+             Entitlements
 
-   Design Principles
-   ------------------------------------------------------------
-   • UI Controller Only
-   • No Credential Logic
-   • No Entitlement Logic
-   • No Registry Logic
-   • Authentication Orchestration Only
-   • Shared Across Portal Pages
-   • DOM Access Must Be Null-Safe
-   • Page-Specific Elements Are Optional
+   Governance
+   ----------------------------------------------------------
+   • Firebase Authentication remains the identity authority.
 
-   Public Behaviour
-   ------------------------------------------------------------
-   Dashboard pages may provide:
+   • AAIUAuth remains the low-level authentication service.
 
-   • signedOutUI
-   • signedInUI
-   • userName
-   • userEmail
-   • btnGoogle
-   • btnEmailLink
-   • btnSignOut
-   • emailInput
-   • emailStatus
+   • PortalAuth is the public portal authentication facade.
 
-   Other authenticated portal pages may omit some or all
-   of these elements.
+   • login.js is the sole sign-in-page UI controller.
 
-   Missing optional elements must never cause authentication
-   initialization to fail.
+   • PortalSessionService is the sole explicit sign-out
+     authority.
+
+   • PortalAuth must never bind a Sign out button or call
+     Firebase signOut() directly.
+
+   • Protected content must remain unavailable until Firebase
+     restores and confirms an authenticated user.
+
+   • Unauthenticated protected routes redirect using
+     location.replace() so browser Back does not restore a
+     usable authenticated route.
 
    Change History
-   ------------------------------------------------------------
-   v1.2.1
+   ----------------------------------------------------------
+   v2.0.0
 
-   • Made profile DOM updates page-safe
-   • Added null protection for userName
-   • Added null protection for all optional UI elements
-   • Removed dashboard-only DOM assumptions
-   • Added safer AAIUAuth dependency checks
-   • Added safer Firebase Auth dependency checks
-   • Added safe display-name normalization
-   • Preserved Google Sign-In flow
-   • Preserved passwordless email-link flow
-   • Preserved auth readiness architecture
+   • Replaced legacy mixed page-controller architecture
+   • Added governed public PortalAuth API
+   • Removed login-page event bindings
+   • Removed direct Firebase sign-out
+   • Added authenticated-page protection
+   • Added fail-closed unauthenticated redirection
+   • Added browser back-forward cache revalidation
+   • Added authentication lifecycle and identity events
+   • Preserved Google and passwordless email delegation
 
-   v1.2.0
+========================================================== */
 
-   • Fixed auth readiness consistency
-   • Added safe email validation
-   • Added governance logging
-   • Added user-visible diagnostics
-   • Added defensive null protection
-   • Preserved existing authentication flow
+(function (
+    window,
+    document
+) {
 
-   v1.0.0
-
-   • Initial MVP implementation
-
-============================================================ */
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    async function initializePortalAuthentication() {
-
-        "use strict";
+    "use strict";
 
 
-        /* ==================================================
-           CONTROLLER IDENTITY
-        ================================================== */
+    /* ======================================================
+       MODULE IDENTITY
+    ====================================================== */
 
-        const VERSION =
-            "1.2.1";
+    const MODULE_NAME =
+        "PortalAuth";
 
-        const CONTROLLER_NAME =
-            "Portal Auth";
+    const MODULE_VERSION =
+        "2.0.0";
 
 
-        console.log(
-            `[${CONTROLLER_NAME}] Controller v${VERSION} initializing`
+    /* ======================================================
+       CONFIGURATION
+    ====================================================== */
+
+    const DEFAULT_LOGIN_URL =
+        "/login.html";
+
+
+    const LOGIN_CONTEXTS =
+        new Set([
+
+            "portal-login",
+
+            "login",
+
+            "authentication-entry"
+
+        ]);
+
+
+    /* ======================================================
+       STATE
+    ====================================================== */
+
+    let initialized =
+        false;
+
+    let authStateResolved =
+        false;
+
+    let currentUser =
+        null;
+
+    let redirectStarted =
+        false;
+
+    let authUnsubscribe =
+        null;
+
+    let readyResolve =
+        null;
+
+
+    const readyPromise =
+        new Promise(
+            function (
+                resolve
+            ) {
+
+                readyResolve =
+                    resolve;
+
+            }
         );
 
 
-        /* ==================================================
-           DOM REFERENCES
+    /* ======================================================
+       VALUE HELPERS
+    ====================================================== */
 
-           Governance
-           --------------------------------------------------
-           Every reference is optional.
+    function normalizeString(
+        value
+    ) {
 
-           portal-auth.js is shared by multiple pages and
-           must never assume dashboard-specific elements
-           exist.
-        ================================================== */
+        if (
+            value === null ||
+            value === undefined
+        ) {
 
-        const signedOutUI =
-            document.getElementById(
-                "signedOutUI"
-            );
-
-        const signedInUI =
-            document.getElementById(
-                "signedInUI"
-            );
-
-        const userName =
-            document.getElementById(
-                "userName"
-            );
-
-        const userEmail =
-            document.getElementById(
-                "userEmail"
-            );
-
-        const btnGoogle =
-            document.getElementById(
-                "btnGoogle"
-            );
-
-        const btnEmailLink =
-            document.getElementById(
-                "btnEmailLink"
-            );
-
-        const btnSignOut =
-            document.getElementById(
-                "btnSignOut"
-            );
-
-        const emailInput =
-            document.getElementById(
-                "emailInput"
-            );
-
-        const emailStatus =
-            document.getElementById(
-                "emailStatus"
-            );
-
-        const statusText =
-            document.getElementById(
-                "statusText"
-            );
-
-
-        /* ==================================================
-           DEPENDENCY HELPERS
-        ================================================== */
-
-        function getAAIUAuth() {
-
-            if (
-                !window.AAIUAuth ||
-                typeof window.AAIUAuth !==
-                    "object"
-            ) {
-
-                return null;
-
-            }
-
-            return window.AAIUAuth;
+            return "";
 
         }
 
-
-        function getFirebaseAuth() {
-
-            try {
-
-                if (
-                    !window.firebase ||
-                    typeof window.firebase.auth !==
-                        "function"
-                ) {
-
-                    return null;
-
-                }
-
-                return window.firebase.auth();
-
-            } catch (error) {
-
-                console.error(
-                    `[${CONTROLLER_NAME}] Firebase Auth resolution failed`,
-                    error
-                );
-
-                return null;
-
-            }
-
-        }
-
-
-        /* ==================================================
-           TEXT NORMALIZATION
-        ================================================== */
-
-        function normalizeText(
+        return String(
             value
-        ) {
+        )
+            .trim();
 
-            if (
-                value === null ||
-                value === undefined
-            ) {
+    }
 
-                return "";
 
-            }
+    function resolveLoginUrl() {
 
-            return String(value)
-                .trim();
+        return normalizeString(
+            window.__AAIU_PORTAL_LOGIN_URL__
+        ) ||
+        DEFAULT_LOGIN_URL;
 
-        }
+    }
 
 
-        function resolveDisplayName(
-            user
-        ) {
+    function resolvePageContext() {
 
-            const displayName =
-                normalizeText(
-                    user?.displayName
-                );
+        return normalizeString(
+            window.__AAIU_CONTEXT ||
+            window.__AAIU_PAGE ||
+            window.__AAIU_EXPERIENCE ||
+            document.body?.dataset?.page ||
+            document.body?.dataset?.experience
+        )
+            .toLowerCase();
 
-            if (displayName) {
+    }
 
-                return displayName;
 
-            }
+    function isLoginPage() {
 
-            const email =
-                normalizeText(
-                    user?.email
-                );
+        const values = [
 
-            if (email) {
+            window.__AAIU_CONTEXT,
 
-                const emailName =
-                    email.split("@")[0];
+            window.__AAIU_PAGE,
 
-                if (emailName) {
+            window.__AAIU_EXPERIENCE,
 
-                    return emailName;
+            document.body?.dataset?.page,
 
-                }
+            document.body?.dataset?.experience
 
-            }
-
-            return "Agile AI University User";
-
-        }
-
-
-        /* ==================================================
-           STATUS HELPERS
-        ================================================== */
-
-        function setStatusText(
-            message
-        ) {
-
-            if (!statusText) {
-                return;
-            }
-
-            statusText.textContent =
-                normalizeText(
-                    message
-                );
-
-        }
-
-
-        function setEmailStatus(
-            message,
-            type = "neutral"
-        ) {
-
-            if (!emailStatus) {
-                return;
-            }
-
-            emailStatus.textContent =
-                normalizeText(
-                    message
-                );
-
-            switch (type) {
-
-                case "success":
-
-                    emailStatus.style.color =
-                        "#15803d";
-
-                    break;
-
-                case "error":
-
-                    emailStatus.style.color =
-                        "#b91c1c";
-
-                    break;
-
-                default:
-
-                    emailStatus.style.color =
-                        "";
-
-                    break;
-
-            }
-
-        }
-
-
-        /* ==================================================
-           UI HELPERS
-        ================================================== */
-
-        function showSignedOut() {
-
-            if (signedOutUI) {
-
-                signedOutUI.hidden =
-                    false;
-
-                signedOutUI.style.display =
-                    "block";
-
-            }
-
-            if (signedInUI) {
-
-                signedInUI.hidden =
-                    true;
-
-                signedInUI.style.display =
-                    "none";
-
-            }
-
-            if (userName) {
-
-                userName.textContent =
-                    "";
-
-            }
-
-            if (userEmail) {
-
-                userEmail.textContent =
-                    "";
-
-            }
-
-        }
-
-
-        function showSignedIn(
-            user
-        ) {
-
-            if (signedOutUI) {
-
-                signedOutUI.hidden =
-                    true;
-
-                signedOutUI.style.display =
-                    "none";
-
-            }
-
-            if (signedInUI) {
-
-                signedInUI.hidden =
-                    false;
-
-                signedInUI.style.display =
-                    "block";
-
-            }
-
-            if (userName) {
-
-                userName.textContent =
-                    resolveDisplayName(
-                        user
-                    );
-
-            }
-
-            if (userEmail) {
-
-                userEmail.textContent =
-                    normalizeText(
-                        user?.email
-                    );
-
-            }
-
-        }
-
-
-        /* ==================================================
-           COMPLETE EMAIL LINK SIGN-IN
-        ================================================== */
-
-        async function completeEmailLinkSignIn() {
-
-            const authService =
-                getAAIUAuth();
-
-            if (
-                !authService ||
-                typeof authService
-                    .completeEmailLinkSignIn !==
-                    "function"
-            ) {
-
-                console.warn(
-                    `[${CONTROLLER_NAME}] Email-link completion service not available`
-                );
-
-                return;
-
-            }
-
-            try {
-
-                await authService
-                    .completeEmailLinkSignIn();
-
-                console.log(
-                    `[${CONTROLLER_NAME}] Email link completion processed`
-                );
-
-            } catch (error) {
-
-                console.error(
-                    `[${CONTROLLER_NAME}] Email link sign-in failed`,
-                    error
-                );
-
-                setEmailStatus(
-                    error?.message ||
-                    "Unable to complete email sign-in.",
-                    "error"
-                );
-
-            }
-
-        }
-
-
-        /* ==================================================
-           AUTH READINESS
-        ================================================== */
-
-        async function resolveInitialAuthenticationState() {
-
-            try {
-
-                if (
-                    !window.__AAIU_AUTH_READY__
-                ) {
-
-                    console.warn(
-                        `[${CONTROLLER_NAME}] __AAIU_AUTH_READY__ not available`
-                    );
-
-                    showSignedOut();
-
-                    return null;
-
-                }
-
-                const authState =
-                    await window
-                        .__AAIU_AUTH_READY__;
-
-                if (authState?.user) {
-
-                    console.log(
-                        `[${CONTROLLER_NAME}] Existing authenticated session found`
-                    );
-
-                    showSignedIn(
-                        authState.user
-                    );
-
-                    return authState.user;
-
-                }
-
-                showSignedOut();
-
-                return null;
-
-            } catch (error) {
-
-                console.error(
-                    `[${CONTROLLER_NAME}] Auth initialization failed`,
-                    error
-                );
-
-                showSignedOut();
-
-                return null;
-
-            }
-
-        }
-
-
-        /* ==================================================
-           AUTH STATE LISTENER
-        ================================================== */
-
-        function registerAuthStateListener() {
-
-            const firebaseAuth =
-                getFirebaseAuth();
-
-            if (
-                !firebaseAuth ||
-                typeof firebaseAuth
-                    .onAuthStateChanged !==
-                    "function"
-            ) {
-
-                console.warn(
-                    `[${CONTROLLER_NAME}] Firebase Auth state listener not available`
-                );
-
-                return;
-
-            }
-
-            firebaseAuth.onAuthStateChanged(
-
-                function handleAuthStateChanged(
-                    user
-                ) {
-
-                    if (user) {
-
-                        console.log(
-                            `[${CONTROLLER_NAME}] Authenticated:`,
-                            user.email ||
-                            user.uid ||
-                            "authenticated user"
-                        );
-
-                        showSignedIn(
-                            user
-                        );
-
-                    } else {
-
-                        console.log(
-                            `[${CONTROLLER_NAME}] Signed out`
-                        );
-
-                        showSignedOut();
-
-                    }
-
-                },
-
-                function handleAuthStateError(
-                    error
-                ) {
-
-                    console.error(
-                        `[${CONTROLLER_NAME}] Auth state listener failed`,
-                        error
-                    );
-
-                    showSignedOut();
-
-                }
-
+        ]
+            .map(
+                value =>
+                    normalizeString(
+                        value
+                    )
+                        .toLowerCase()
             );
 
-        }
-
-
-        /* ==================================================
-           GOOGLE SIGN-IN
-        ================================================== */
-
-        if (btnGoogle) {
-
-            btnGoogle.addEventListener(
-
-                "click",
-
-                async function handleGoogleSignIn() {
-
-                    const authService =
-                        getAAIUAuth();
-
-                    if (
-                        !authService ||
-                        typeof authService
-                            .signInWithGoogle !==
-                            "function"
-                    ) {
-
-                        console.error(
-                            `[${CONTROLLER_NAME}] Google sign-in service not available`
-                        );
-
-                        setStatusText(
-                            "Google Sign-In is temporarily unavailable."
-                        );
-
-                        return;
-
-                    }
-
-                    btnGoogle.disabled =
-                        true;
-
-                    try {
-
-                        setStatusText(
-                            "Opening secure Google Sign-In..."
-                        );
-
-                        await authService
-                            .signInWithGoogle();
-
-                    } catch (error) {
-
-                        console.error(
-                            `[${CONTROLLER_NAME}] Google sign-in failed`,
-                            error
-                        );
-
-                        setStatusText(
-                            error?.message ||
-                            "Unable to sign in with Google."
-                        );
-
-                    } finally {
-
-                        btnGoogle.disabled =
-                            false;
-
-                    }
-
-                }
-
-            );
-
-        }
-
-
-        /* ==================================================
-           EMAIL VALIDATION
-        ================================================== */
-
-        function isValidEmail(
-            value
-        ) {
-
-            const email =
-                normalizeText(
+        return values.some(
+            value =>
+                LOGIN_CONTEXTS.has(
                     value
-                );
-
-            if (!email) {
-
-                return false;
-
-            }
-
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-                .test(email);
-
-        }
-
-
-        /* ==================================================
-           EMAIL MAGIC LINK
-        ================================================== */
-
-        if (btnEmailLink) {
-
-            btnEmailLink.addEventListener(
-
-                "click",
-
-                async function handleEmailLinkRequest() {
-
-                    const email =
-                        normalizeText(
-                            emailInput?.value
-                        );
-
-                    if (!email) {
-
-                        setEmailStatus(
-                            "Please enter your email address.",
-                            "error"
-                        );
-
-                        emailInput?.focus();
-
-                        return;
-
-                    }
-
-                    if (
-                        !isValidEmail(
-                            email
-                        )
-                    ) {
-
-                        setEmailStatus(
-                            "Please enter a valid email address.",
-                            "error"
-                        );
-
-                        emailInput?.focus();
-
-                        return;
-
-                    }
-
-                    const authService =
-                        getAAIUAuth();
-
-                    if (
-                        !authService ||
-                        typeof authService
-                            .sendEmailLink !==
-                            "function"
-                    ) {
-
-                        console.error(
-                            `[${CONTROLLER_NAME}] Email-link service not available`
-                        );
-
-                        setEmailStatus(
-                            "Email sign-in is temporarily unavailable.",
-                            "error"
-                        );
-
-                        return;
-
-                    }
-
-                    btnEmailLink.disabled =
-                        true;
-
-                    setEmailStatus(
-                        "Sending secure login link...",
-                        "neutral"
-                    );
-
-                    try {
-
-                        await authService
-                            .sendEmailLink(
-                                email
-                            );
-
-                        setEmailStatus(
-                            "Login link sent. Check your email.",
-                            "success"
-                        );
-
-                        console.log(
-                            `[${CONTROLLER_NAME}] Login link sent`,
-                            email
-                        );
-
-                    } catch (error) {
-
-                        console.error(
-                            `[${CONTROLLER_NAME}] Email link failed`,
-                            error
-                        );
-
-                        setEmailStatus(
-                            error?.message ||
-                            error?.code ||
-                            "Unable to send login link.",
-                            "error"
-                        );
-
-                    } finally {
-
-                        btnEmailLink.disabled =
-                            false;
-
-                    }
-
-                }
-
-            );
-
-        }
-
-
-        /* ==================================================
-           EMAIL INPUT EXPERIENCE
-        ================================================== */
-
-        if (emailInput) {
-
-            emailInput.addEventListener(
-
-                "input",
-
-                function handleEmailInput() {
-
-                    if (
-                        emailStatus &&
-                        emailStatus.textContent
-                    ) {
-
-                        setEmailStatus(
-                            "",
-                            "neutral"
-                        );
-
-                    }
-
-                }
-
-            );
-
-            emailInput.addEventListener(
-
-                "keydown",
-
-                function handleEmailEnter(
-                    event
-                ) {
-
-                    if (
-                        event.key ===
-                        "Enter" &&
-                        btnEmailLink
-                    ) {
-
-                        event.preventDefault();
-
-                        btnEmailLink.click();
-
-                    }
-
-                }
-
-            );
-
-        }
-
-
-        /* ==================================================
-           SIGN OUT
-        ================================================== */
-
-        if (btnSignOut) {
-
-            btnSignOut.addEventListener(
-
-                "click",
-
-                async function handleSignOut() {
-
-                    const firebaseAuth =
-                        getFirebaseAuth();
-
-                    if (
-                        !firebaseAuth ||
-                        typeof firebaseAuth.signOut !==
-                            "function"
-                    ) {
-
-                        console.error(
-                            `[${CONTROLLER_NAME}] Sign-out service not available`
-                        );
-
-                        return;
-
-                    }
-
-                    btnSignOut.disabled =
-                        true;
-
-                    try {
-
-                        await firebaseAuth
-                            .signOut();
-
-                        console.log(
-                            `[${CONTROLLER_NAME}] Sign out successful`
-                        );
-
-                    } catch (error) {
-
-                        console.error(
-                            `[${CONTROLLER_NAME}] Sign out failed`,
-                            error
-                        );
-
-                    } finally {
-
-                        btnSignOut.disabled =
-                            false;
-
-                    }
-
-                }
-
-            );
-
-        }
-
-
-        /* ==================================================
-           INITIALIZATION SEQUENCE
-        ================================================== */
-
-        await completeEmailLinkSignIn();
-
-        await resolveInitialAuthenticationState();
-
-        registerAuthStateListener();
-
-
-        console.log(
-            `[${CONTROLLER_NAME}] Controller v${VERSION} ready`
+                )
         );
 
     }
 
-);
+
+    function isProtectedPage() {
+
+        return !isLoginPage();
+
+    }
+
+
+    /* ======================================================
+       EVENT PUBLISHING
+    ====================================================== */
+
+    function publishEvent(
+        eventName,
+        detail = {}
+    ) {
+
+        try {
+
+            document.dispatchEvent(
+                new CustomEvent(
+                    eventName,
+                    {
+                        detail: {
+
+                            source:
+                                MODULE_NAME,
+
+                            version:
+                                MODULE_VERSION,
+
+                            timestamp:
+                                new Date()
+                                    .toISOString(),
+
+                            ...detail
+
+                        }
+                    }
+                )
+            );
+
+        } catch (
+            error
+        ) {
+
+            console.warn(
+                `[${MODULE_NAME}] Unable to publish ${eventName}.`,
+                error
+            );
+
+        }
+
+    }
+
+
+    /* ======================================================
+       AUTHENTICATION SERVICE RESOLUTION
+    ====================================================== */
+
+    function resolveAAIUAuth() {
+
+        const service =
+            window.AAIUAuth;
+
+        if (
+            !service ||
+            typeof service !==
+                "object"
+        ) {
+
+            return null;
+
+        }
+
+        return service;
+
+    }
+
+
+    function resolveFirebaseAuth() {
+
+        const service =
+            resolveAAIUAuth();
+
+        if (
+            service &&
+            typeof service.getAuth ===
+                "function"
+        ) {
+
+            return service.getAuth();
+
+        }
+
+        try {
+
+            if (
+                window.firebase &&
+                typeof window.firebase.auth ===
+                    "function"
+            ) {
+
+                return window.firebase.auth();
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                `[${MODULE_NAME}] Firebase Authentication resolution failed.`,
+                error
+            );
+
+        }
+
+        return null;
+
+    }
+
+
+    function getCurrentUser() {
+
+        const service =
+            resolveAAIUAuth();
+
+        if (
+            service &&
+            typeof service.getCurrentUser ===
+                "function"
+        ) {
+
+            return service.getCurrentUser();
+
+        }
+
+        return resolveFirebaseAuth()
+            ?.currentUser ||
+            currentUser ||
+            null;
+
+    }
+
+
+    /* ======================================================
+       AUTHENTICATION DELEGATION
+    ====================================================== */
+
+    async function signInWithGoogle() {
+
+        const service =
+            resolveAAIUAuth();
+
+        if (
+            !service ||
+            typeof service.signInWithGoogle !==
+                "function"
+        ) {
+
+            throw new Error(
+                "Google authentication is unavailable."
+            );
+
+        }
+
+        return service.signInWithGoogle();
+
+    }
+
+
+    async function sendEmailLink(
+        email
+    ) {
+
+        const service =
+            resolveAAIUAuth();
+
+        if (
+            !service ||
+            typeof service.sendEmailLink !==
+                "function"
+        ) {
+
+            throw new Error(
+                "Email authentication is unavailable."
+            );
+
+        }
+
+        return service.sendEmailLink(
+            email
+        );
+
+    }
+
+
+    async function completeEmailLinkSignIn(
+        email = ""
+    ) {
+
+        const service =
+            resolveAAIUAuth();
+
+        if (
+            !service ||
+            typeof service.completeEmailLinkSignIn !==
+                "function"
+        ) {
+
+            throw new Error(
+                "Email-link completion is unavailable."
+            );
+
+        }
+
+        return service.completeEmailLinkSignIn(
+            email
+        );
+
+    }
+
+
+    function isEmailLink() {
+
+        const service =
+            resolveAAIUAuth();
+
+        return Boolean(
+            service &&
+            typeof service.isEmailLink ===
+                "function" &&
+            service.isEmailLink()
+        );
+
+    }
+
+
+    /* ======================================================
+       PROTECTED PAGE PRESENTATION
+    ====================================================== */
+
+    function setPageAuthState(
+        state
+    ) {
+
+        const normalizedState =
+            normalizeString(
+                state
+            );
+
+        try {
+
+            if (
+                normalizedState
+            ) {
+
+                document.documentElement
+                    .setAttribute(
+                        "data-portal-auth-state",
+                        normalizedState
+                    );
+
+                document.body
+                    ?.setAttribute(
+                        "data-portal-auth-state",
+                        normalizedState
+                    );
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.warn(
+                `[${MODULE_NAME}] Unable to update page authentication state.`,
+                error
+            );
+
+        }
+
+    }
+
+
+    function revealAuthenticatedUi(
+        user
+    ) {
+
+        setPageAuthState(
+            "authenticated"
+        );
+
+        const signedOutUi =
+            document.getElementById(
+                "signedOutUI"
+            );
+
+        const signedInUi =
+            document.getElementById(
+                "signedInUI"
+            );
+
+        if (
+            signedOutUi
+        ) {
+
+            signedOutUi.hidden =
+                true;
+
+            signedOutUi.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+        }
+
+        if (
+            signedInUi
+        ) {
+
+            signedInUi.hidden =
+                false;
+
+            signedInUi.removeAttribute(
+                "aria-hidden"
+            );
+
+        }
+
+        publishEvent(
+            "portal:identity-ready",
+            {
+                displayName:
+                    normalizeString(
+                        user?.displayName
+                    ),
+
+                email:
+                    normalizeString(
+                        user?.email
+                    ),
+
+                uid:
+                    normalizeString(
+                        user?.uid
+                    ),
+
+                user
+            }
+        );
+
+        publishEvent(
+            "portal:auth-authenticated",
+            {
+                email:
+                    normalizeString(
+                        user?.email
+                    ),
+
+                uid:
+                    normalizeString(
+                        user?.uid
+                    )
+            }
+        );
+
+    }
+
+
+    function redirectToLogin(
+        reason = "authentication-required"
+    ) {
+
+        if (
+            redirectStarted ||
+            !isProtectedPage()
+        ) {
+
+            return;
+
+        }
+
+        redirectStarted =
+            true;
+
+        setPageAuthState(
+            "unauthenticated"
+        );
+
+        publishEvent(
+            "portal:auth-redirecting",
+            {
+                reason,
+
+                loginUrl:
+                    resolveLoginUrl()
+            }
+        );
+
+        window.location.replace(
+            resolveLoginUrl()
+        );
+
+    }
+
+
+    /* ======================================================
+       AUTH STATE HANDLING
+    ====================================================== */
+
+    function handleResolvedUser(
+        user,
+        source
+    ) {
+
+        authStateResolved =
+            true;
+
+        currentUser =
+            user ||
+            null;
+
+        readyResolve?.({
+            user:
+                currentUser,
+
+            authenticated:
+                Boolean(currentUser),
+
+            source
+        });
+
+        readyResolve =
+            null;
+
+        if (
+            !isProtectedPage()
+        ) {
+
+            publishEvent(
+                "portal:auth-state-resolved",
+                {
+                    authenticated:
+                        Boolean(currentUser),
+
+                    source
+                }
+            );
+
+            return;
+
+        }
+
+        if (
+            currentUser
+        ) {
+
+            redirectStarted =
+                false;
+
+            revealAuthenticatedUi(
+                currentUser
+            );
+
+            return;
+
+        }
+
+        redirectToLogin(
+            source ||
+            "authentication-required"
+        );
+
+    }
+
+
+    function bindAuthStateObserver() {
+
+        if (
+            authUnsubscribe
+        ) {
+
+            return true;
+
+        }
+
+        const auth =
+            resolveFirebaseAuth();
+
+        if (
+            !auth ||
+            typeof auth.onAuthStateChanged !==
+                "function"
+        ) {
+
+            console.error(
+                `[${MODULE_NAME}] Firebase auth-state observer is unavailable.`
+            );
+
+            if (
+                isProtectedPage()
+            ) {
+
+                redirectToLogin(
+                    "authentication-unavailable"
+                );
+
+            }
+
+            return false;
+
+        }
+
+        authUnsubscribe =
+            auth.onAuthStateChanged(
+                function (
+                    user
+                ) {
+
+                    handleResolvedUser(
+                        user,
+                        "firebase-auth-state"
+                    );
+
+                },
+                function (
+                    error
+                ) {
+
+                    console.error(
+                        `[${MODULE_NAME}] Authentication-state observation failed.`,
+                        error
+                    );
+
+                    publishEvent(
+                        "portal:auth-state-failed",
+                        {
+                            message:
+                                normalizeString(
+                                    error?.message ||
+                                    error?.code
+                                )
+                        }
+                    );
+
+                    if (
+                        isProtectedPage()
+                    ) {
+
+                        redirectToLogin(
+                            "authentication-state-failed"
+                        );
+
+                    }
+
+                }
+            );
+
+        return true;
+
+    }
+
+
+    async function resolveInitialState() {
+
+        if (
+            isProtectedPage()
+        ) {
+
+            setPageAuthState(
+                "pending"
+            );
+
+        }
+
+        bindAuthStateObserver();
+
+        try {
+
+            const readiness =
+                await window.__AAIU_AUTH_READY__;
+
+            if (
+                readiness?.user
+            ) {
+
+                handleResolvedUser(
+                    readiness.user,
+                    "authentication-readiness"
+                );
+
+            } else if (
+                isProtectedPage() &&
+                !authStateResolved
+            ) {
+
+                handleResolvedUser(
+                    null,
+                    "authentication-readiness"
+                );
+
+            }
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                `[${MODULE_NAME}] Authentication readiness failed.`,
+                error
+            );
+
+            if (
+                isProtectedPage()
+            ) {
+
+                redirectToLogin(
+                    "authentication-readiness-failed"
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* ======================================================
+       BROWSER CACHE REVALIDATION
+    ====================================================== */
+
+    function bindPageRestoreValidation() {
+
+        window.addEventListener(
+            "pageshow",
+            function (
+                event
+            ) {
+
+                if (
+                    !isProtectedPage() ||
+                    !event.persisted
+                ) {
+
+                    return;
+
+                }
+
+                const user =
+                    getCurrentUser();
+
+                if (
+                    user
+                ) {
+
+                    revealAuthenticatedUi(
+                        user
+                    );
+
+                    return;
+
+                }
+
+                redirectToLogin(
+                    "browser-cache-restoration"
+                );
+
+            }
+        );
+
+    }
+
+
+    /* ======================================================
+       PUBLIC API
+    ====================================================== */
+
+    window.PortalAuth =
+        Object.freeze({
+
+            signInWithGoogle,
+
+            googleSignIn:
+                signInWithGoogle,
+
+            sendEmailLink,
+
+            sendSignInLink:
+                sendEmailLink,
+
+            completeEmailLinkSignIn,
+
+            getCurrentUser,
+
+            isEmailLink,
+
+            whenReady() {
+
+                return readyPromise;
+
+            },
+
+            isAuthenticated() {
+
+                return Boolean(
+                    getCurrentUser()
+                );
+
+            },
+
+            getState() {
+
+                return Object.freeze({
+
+                    initialized,
+
+                    authStateResolved,
+
+                    authenticated:
+                        Boolean(
+                            getCurrentUser()
+                        ),
+
+                    pageContext:
+                        resolvePageContext(),
+
+                    protectedPage:
+                        isProtectedPage(),
+
+                    redirectStarted,
+
+                    loginUrl:
+                        resolveLoginUrl(),
+
+                    version:
+                        MODULE_VERSION
+
+                });
+
+            }
+
+        });
+
+
+    /* ======================================================
+       INITIALIZATION
+    ====================================================== */
+
+    function initialize() {
+
+        if (
+            initialized
+        ) {
+
+            return;
+
+        }
+
+        initialized =
+            true;
+
+        console.info(
+            `[${MODULE_NAME}] Initializing v${MODULE_VERSION}.`
+        );
+
+        bindPageRestoreValidation();
+
+        resolveInitialState();
+
+        publishEvent(
+            "portal:auth-service-ready",
+            {
+                pageContext:
+                    resolvePageContext(),
+
+                protectedPage:
+                    isProtectedPage()
+            }
+        );
+
+    }
+
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize,
+            {
+                once: true
+            }
+        );
+
+    } else {
+
+        initialize();
+
+    }
+
+
+})(window, document);

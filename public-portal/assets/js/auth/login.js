@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : login.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Dedicated Authentication Stabilization
 
@@ -27,6 +27,9 @@
    ✓ Support asynchronous authentication readiness
    ✓ Preserve compatibility with PortalAuth
    ✓ Recover safely when optional APIs are unavailable
+   ✓ Complete returned email sign-in links
+   ✓ Request email confirmation through the page form
+   ✓ Preserve nested authentication-button markup
 
    Non Responsibilities
    ----------------------------------------------------------
@@ -130,6 +133,16 @@
 
    Change History
    ----------------------------------------------------------
+   v1.2.0
+
+   • Added governed email-link return completion
+   • Removed browser-prompt dependency
+   • Added same-device and cross-device email confirmation
+   • Delegated email state ownership to AAIUAuth
+   • Added markup-safe button label updates
+   • Standardized Sign in terminology
+   • Preserved authenticated-session redirect behaviour
+
    v1.1.0
 
    • Corrected login-page element IDs
@@ -173,7 +186,7 @@
         "LoginController";
 
     const MODULE_VERSION =
-        "1.1.0";
+        "1.2.0";
 
 
     /* ======================================================
@@ -213,6 +226,9 @@
 
     let authRestoreTimer =
         null;
+
+    let emailConfirmationRequired =
+        false;
 
 
     /* ======================================================
@@ -694,8 +710,14 @@
         }
 
 
+        const label =
+            button.querySelector(
+                "[data-login-button-label], .login-button-label"
+            );
+
         button.dataset.originalLabel =
             normalizeString(
+                label?.textContent ||
                 button.textContent
             );
 
@@ -716,12 +738,63 @@
         }
 
 
-        button.textContent =
-            button.dataset.originalLabel;
+        const label =
+            button.querySelector(
+                "[data-login-button-label], .login-button-label"
+            );
+
+        if (
+            label
+        ) {
+
+            label.textContent =
+                button.dataset.originalLabel;
+
+        } else {
+
+            button.textContent =
+                button.dataset.originalLabel;
+
+        }
 
 
         delete button.dataset
             .originalLabel;
+
+    }
+
+
+    function setButtonLabel(
+        button,
+        labelText
+    ) {
+
+        if (
+            !button
+        ) {
+
+            return;
+
+        }
+
+        const label =
+            button.querySelector(
+                "[data-login-button-label], .login-button-label"
+            );
+
+        if (
+            label
+        ) {
+
+            label.textContent =
+                labelText;
+
+        } else {
+
+            button.textContent =
+                labelText;
+
+        }
 
     }
 
@@ -803,8 +876,10 @@
             elements.googleButton
         ) {
 
-            elements.googleButton.textContent =
-                "Opening Google Sign-In…";
+            setButtonLabel(
+                elements.googleButton,
+                "Opening Google sign-in…"
+            );
 
         }
 
@@ -816,8 +891,12 @@
             elements.emailButton
         ) {
 
-            elements.emailButton.textContent =
-                "Sending Secure Link…";
+            setButtonLabel(
+                elements.emailButton,
+                emailConfirmationRequired
+                    ? "Completing sign-in…"
+                    : "Sending secure link…"
+            );
 
         }
 
@@ -1164,10 +1243,21 @@
 
                     showLoginState();
 
+                    if (
+                        emailConfirmationRequired
+                    ) {
 
-                    showGeneralMessage(
-                        "Sign in using your registered Google account or request a secure passwordless email link."
-                    );
+                        showGeneralMessage(
+                            "For security, enter the same email address that received this sign-in link."
+                        );
+
+                    } else {
+
+                        showGeneralMessage(
+                            "Sign in using your registered Google account or request a secure passwordless email link."
+                        );
+
+                    }
 
 
                     publishEvent(
@@ -1405,6 +1495,205 @@
     }
 
 
+    function resolveEmailLinkCompletionMethod() {
+
+        const portalAuth =
+            window.PortalAuth;
+
+        if (
+            !portalAuth ||
+            typeof portalAuth.completeEmailLinkSignIn !==
+                "function"
+        ) {
+
+            return null;
+
+        }
+
+        return portalAuth
+            .completeEmailLinkSignIn
+            .bind(
+                portalAuth
+            );
+
+    }
+
+
+    function isEmailLinkReturn() {
+
+        try {
+
+            return Boolean(
+                window.PortalAuth &&
+                typeof window.PortalAuth.isEmailLink ===
+                    "function" &&
+                window.PortalAuth.isEmailLink()
+            );
+
+        } catch (
+            error
+        ) {
+
+            console.warn(
+                `[${MODULE_NAME}] Unable to inspect email-link return.`,
+                error
+            );
+
+            return false;
+
+        }
+
+    }
+
+
+    async function completeEmailLinkReturn(
+        suppliedEmail = ""
+    ) {
+
+        if (
+            !isEmailLinkReturn()
+        ) {
+
+            return false;
+
+        }
+
+        const completionMethod =
+            resolveEmailLinkCompletionMethod();
+
+        if (
+            !completionMethod
+        ) {
+
+            showGeneralError(
+                "Email sign-in completion is currently unavailable. Please refresh the page."
+            );
+
+            return false;
+
+        }
+
+        const email =
+            normalizeEmail(
+                suppliedEmail
+            );
+
+        emailConfirmationRequired =
+            true;
+
+        setBusy(
+            true,
+            "email"
+        );
+
+        showGeneralMessage(
+            "Completing your secure sign-in…"
+        );
+
+        try {
+
+            const completion =
+                await Promise.resolve(
+                    completionMethod(
+                        email
+                    )
+                );
+
+            if (
+                completion?.requiresEmail
+            ) {
+
+                emailConfirmationRequired =
+                    true;
+
+                showLoginState();
+
+                showGeneralMessage(
+                    "For security, enter the same email address that received this sign-in link."
+                );
+
+                showEmailError(
+                    "Enter your email address to complete sign-in."
+                );
+
+                elements.emailInput
+                    ?.focus();
+
+                return false;
+
+            }
+
+            const user =
+                completion?.user ||
+                completion?.result?.user ||
+                resolveCurrentUser();
+
+            if (
+                completion?.completed &&
+                user
+            ) {
+
+                emailConfirmationRequired =
+                    false;
+
+                redirectToDashboard(
+                    user,
+                    "email-link-completed"
+                );
+
+                return true;
+
+            }
+
+            return false;
+
+        } catch (
+            error
+        ) {
+
+            console.error(
+                `[${MODULE_NAME}] Email-link completion failed.`,
+                error
+            );
+
+            emailConfirmationRequired =
+                true;
+
+            showLoginState();
+
+            const message =
+                getFriendlyErrorMessage(
+                    error,
+                    "We couldn’t complete this sign-in link. Confirm your email address or request a new link."
+                );
+
+            showEmailError(
+                message
+            );
+
+            showGeneralError(
+                message
+            );
+
+            return false;
+
+        } finally {
+
+            if (
+                !redirectStarted
+            ) {
+
+                setBusy(
+                    false
+                );
+
+            }
+
+        }
+
+    }
+
+
     /* ======================================================
        GOOGLE SIGN-IN
     ====================================================== */
@@ -1608,6 +1897,20 @@
         }
 
 
+        if (
+            emailConfirmationRequired ||
+            isEmailLinkReturn()
+        ) {
+
+            await completeEmailLinkReturn(
+                email
+            );
+
+            return;
+
+        }
+
+
         const emailLinkMethod =
             resolveEmailLinkMethod();
 
@@ -1662,39 +1965,13 @@
             );
 
 
-            /*
-             * Keep a portal-owned email fallback for
-             * completion flows that need to recover the
-             * originating email address.
-             */
-
-            try {
-
-                window.localStorage
-                    .setItem(
-                        "emailForSignIn",
-                        email
-                    );
-
-            } catch (
-                storageError
-            ) {
-
-                console.warn(
-                    `[${MODULE_NAME}] Unable to store email-link completion hint.`,
-                    storageError
-                );
-
-            }
-
-
             showEmailMessage(
                 "A secure sign-in link has been sent. Please check your email and open the link on this device."
             );
 
 
             showGeneralMessage(
-                "Secure login link sent successfully."
+                "Secure sign-in link sent successfully."
             );
 
 
@@ -1922,7 +2199,7 @@
        INITIALIZATION
     ====================================================== */
 
-    function initialize() {
+    async function initialize() {
 
         if (
             initialized
@@ -1960,6 +2237,20 @@
         showGeneralMessage(
             "Checking for an existing authenticated session…"
         );
+
+
+        const emailLinkCompleted =
+            await completeEmailLinkReturn();
+
+
+        if (
+            emailLinkCompleted ||
+            redirectStarted
+        ) {
+
+            return;
+
+        }
 
 
         const immediateRedirect =
@@ -2009,6 +2300,8 @@
 
             signInWithEmail,
 
+            completeEmailLinkReturn,
+
             redirectIfAuthenticated,
 
             getState() {
@@ -2022,6 +2315,8 @@
                     redirectStarted,
 
                     authStateResolved,
+
+                    emailConfirmationRequired,
 
                     dashboardUrl:
                         resolveDashboardUrl(),

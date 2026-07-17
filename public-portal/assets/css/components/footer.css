@@ -1,0 +1,124 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : footer.css
+   Version   : 2.0.0
+   Status    : ACTIVE
+   Date      : July 2026
+
+   Purpose
+   ----------------------------------------------------------
+   Authenticated Portal Institutional Footer
+
+   Governance
+   ----------------------------------------------------------
+   • Scoped Portal Footer Presentation Authority
+   • No Business Logic
+   • No Identity Presentation
+   • Responsive and Accessible
+
+========================================================== */
+
+.portal-footer {
+    width: 100%;
+    margin-top: 3rem;
+    border-top: 1px solid #dfe5ec;
+    background: #ffffff;
+    color: #334155;
+}
+
+.portal-footer__container {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 2rem 3.75rem;
+}
+
+.portal-footer p {
+    margin: 0;
+}
+
+.portal-footer__identity {
+    max-width: 760px;
+}
+
+.portal-footer__institution {
+    color: #0f172a;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.portal-footer__description,
+.portal-footer__assurance,
+.portal-footer__copyright {
+    margin-top: 0.5rem;
+    color: #64748b;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.portal-footer__navigation,
+.portal-footer__governance {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 1rem;
+}
+
+.portal-footer a {
+    color: #24415e;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-decoration: none;
+    text-underline-offset: 0.2em;
+}
+
+.portal-footer a:hover {
+    text-decoration: underline;
+}
+
+.portal-footer a:focus-visible {
+    border-radius: 0.25rem;
+    outline: 3px solid rgba(37, 99, 235, 0.35);
+    outline-offset: 0.2rem;
+}
+
+.portal-footer__assurance {
+    max-width: 760px;
+    padding-top: 1rem;
+}
+
+.portal-footer__copyright {
+    padding-top: 1rem;
+    border-top: 1px solid #edf1f5;
+}
+
+@media (max-width: 900px) {
+    .portal-footer {
+        margin-top: 2rem;
+    }
+
+    .portal-footer__container {
+        padding: 1.5rem 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .portal-footer__navigation,
+    .portal-footer__governance {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.625rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portal-footer *,
+    .portal-footer *::before,
+    .portal-footer *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}

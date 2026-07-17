@@ -4,7 +4,7 @@
 
      File        : index.html
      Page        : Portal Dashboard
-     Version     : 3.3.9
+     Version     : 3.4.0
      Status      : ACTIVE
      Date        : July 2026
 
@@ -98,6 +98,14 @@
 
      Change History
      ----------------------------------------------------------
+     v3.4.0
+
+     • Added governed authenticated portal footer mount
+     • Added PortalFooter v2.0.0 component dependency
+     • Added scoped portal footer stylesheet dependency
+     • Preserved authenticated portal shell architecture
+     • Preserved dashboard orchestration and dependency order
+
      v3.3.9
 
      • Versioned UpgradeWidget v1.3.0
@@ -230,6 +238,15 @@
     <link
         rel="stylesheet"
         href="/assets/css/components/toolbar.css?v=1.2.0">
+
+
+    <!-- ==================================================
+         AUTHENTICATED PORTAL FOOTER
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/components/footer.css?v=2.0.0">
 
 
     <!-- ==================================================
@@ -682,6 +699,13 @@
 
             </main>
 
+
+            <!-- ==============================================
+                 INSTITUTIONAL PORTAL FOOTER
+            =============================================== -->
+
+            <div id="site-footer"></div>
+
         </section>
 
     </div>
@@ -765,6 +789,8 @@
     <script src="/assets/js/components/sidebar.js?v=1.5.0"></script>
 
     <script src="/assets/js/components/toolbar.js?v=1.4.0"></script>
+
+    <script src="/assets/js/footer.js?v=2.0.0"></script>
 
 
     <!-- ==================================================

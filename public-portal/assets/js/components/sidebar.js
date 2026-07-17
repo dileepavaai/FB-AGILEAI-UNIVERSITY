@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.3.0
+   Version   : 1.4.0
    Status    : ACTIVE
    Phase     : Portal Identity Stabilization
 
@@ -99,6 +99,15 @@
 
    Change History
    ----------------------------------------------------------
+   v1.4.0
+
+   • Aligned sidebar identity with toolbar identity contract
+   • Added visibleCredentials collection compatibility
+   • Added credential-holder name field compatibility
+   • Prioritized resolved toolbar identity before Firebase fallback
+   • Added portal and dashboard readiness reconciliation
+   • Added safe idempotent initialization
+
    v1.3.0
 
    • Fixed Student placeholder overriding learner name
@@ -158,7 +167,7 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.3.0";
+        "1.4.0";
 
 
     /* ======================================================
@@ -364,6 +373,9 @@
 
     let identityRefreshTimer =
         null;
+
+    let initialized =
+        false;
 
 
     /* ======================================================
@@ -1054,6 +1066,25 @@
         }
 
 
+        const visibleCredentials =
+            asArray(
+
+                portalState.visibleCredentials ||
+                portalState.visible_credentials
+
+            );
+
+
+        if (
+            visibleCredentials.length >
+            0
+        ) {
+
+            return visibleCredentials;
+
+        }
+
+
         const userEntitlements =
             asObject(
 
@@ -1299,6 +1330,14 @@
 
                 firstCredential.displayName,
 
+                firstCredential.credential_holder_name,
+
+                firstCredential.credentialHolderName,
+
+                firstCredential.holder_name,
+
+                firstCredential.holderName,
+
                 portalState.full_name,
 
                 portalState.fullName,
@@ -1307,8 +1346,6 @@
 
                 portalState.displayName,
 
-                firebaseUser?.displayName,
-
                 toolbarIdentity.full_name,
 
                 toolbarIdentity.fullName,
@@ -1316,6 +1353,8 @@
                 toolbarIdentity.display_name,
 
                 toolbarIdentity.displayName,
+
+                firebaseUser?.displayName,
 
                 buildNameFromEmail(
                     email
@@ -1417,10 +1456,12 @@
 
         if (
             normalized.email &&
-            normalized.displayName ===
+            normalized.displayName
+                .toLowerCase() ===
             buildNameFromEmail(
                 normalized.email
             )
+                .toLowerCase()
         ) {
 
             return 1;
@@ -2018,7 +2059,19 @@
 
                             firstCredential.learner_name,
 
-                            firstCredential.learnerName
+                            firstCredential.learnerName,
+
+                            firstCredential.display_name,
+
+                            firstCredential.displayName,
+
+                            firstCredential.credential_holder_name,
+
+                            firstCredential.credentialHolderName,
+
+                            firstCredential.holder_name,
+
+                            firstCredential.holderName
 
                         ]);
 
@@ -2054,6 +2107,47 @@
 
         );
 
+
+        document.addEventListener(
+
+            "portal:ready",
+
+            scheduleIdentityReconciliation
+
+        );
+
+
+        document.addEventListener(
+
+            "dashboard:ready",
+
+            scheduleIdentityReconciliation
+
+        );
+
+
+        document.addEventListener(
+
+            "portal:signout-completed",
+
+            function () {
+
+                applyIdentity(
+                    {
+                        displayName: "Learner",
+                        email: "",
+                        roleLabel: "Student",
+                        membershipLabel: "University Member"
+                    },
+                    {
+                        force: true
+                    }
+                );
+
+            }
+
+        );
+
     }
 
 
@@ -2062,6 +2156,17 @@
     ====================================================== */
 
     function initialize() {
+
+        if (
+            initialized
+        ) {
+
+            return;
+
+        }
+
+        initialized =
+            true;
 
         bindIdentityEvents();
 
@@ -2110,10 +2215,24 @@
         });
 
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        initialize
-    );
+    if (
+        document.readyState ===
+            "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize,
+            {
+                once: true
+            }
+        );
+
+    } else {
+
+        initialize();
+
+    }
 
 
 })(window, document);

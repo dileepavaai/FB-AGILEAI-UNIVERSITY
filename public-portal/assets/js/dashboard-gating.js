@@ -1,5 +1,5 @@
 /* =========================================================
-Dashboard Gating — Phase-9.4.1
+Dashboard Gating — Phase-9.4.2
 
 RESOLVER-LED · AUTHORIZATION-AWARE
 FINAL · LOCKED · PRODUCTION-SAFE
@@ -39,6 +39,13 @@ Entitlement Resolution
 
 Change History
 
+## Phase-9.4.2
+
+* Removed duplicate authorized action presentation hook
+* Removed full entitlement and resolver-state console logging
+* Preserved privacy-safe count diagnostics
+* Preserved authentication, authorization and resolver boundaries
+
 ## Phase-9.4.1
 
 * Added explicit authentication boundary
@@ -69,7 +76,7 @@ Change History
 "use strict";
 
 console.log(
-"[Dashboard Gating] Initializing (Resolver-led · Phase-9.4.1)"
+"[Dashboard Gating] Initializing (Resolver-led · Phase-9.4.2)"
 );
 
 window.__dashboardGatingRan = true;
@@ -193,35 +200,23 @@ const state =
 
 ------------------------------------------------------- */
 
-console.group(
-  `[Dashboard State] (${reason})`
-);
+console.info(
+  `[Dashboard Gating] State resolved (${reason})`,
+  {
+    credentialCount:
+      Array.isArray(data.credentials)
+        ? data.credentials.length
+        : 0,
 
-console.log(
-  "Portal Data",
-  data
-);
+    visibleCredentialCount:
+      Array.isArray(state.visibleCredentials)
+        ? state.visibleCredentials.length
+        : 0,
 
-console.log(
-  "Resolved State",
-  state
+    executiveInsightAccess:
+      state.executiveInsight?.hasAccess === true
+  }
 );
-
-console.log(
-  "Credential Count",
-  Array.isArray(data.credentials)
-    ? data.credentials.length
-    : 0
-);
-
-console.log(
-  "Visible Credential Count",
-  Array.isArray(state.visibleCredentials)
-    ? state.visibleCredentials.length
-    : 0
-);
-
-console.groupEnd();
 
 /* -------------------------------------------------------
    GOVERNED HANDOFF
@@ -241,11 +236,6 @@ if (
   );
 
 }
-
-console.log(
-  `[Dashboard Gating] Resolved entitlement state (${reason})`,
-  state
-);
 
 /* -------------------------------------------------------
    AUTHORIZATION BOUNDARY
@@ -269,14 +259,6 @@ if (!authorized) {
 
   document
     .getElementById(
-      "authorizedPortalUI"
-    )
-    ?.classList.add(
-      "hidden"
-    );
-
-  document
-    .getElementById(
       "noServicesUI"
     )
     ?.classList.remove(
@@ -286,9 +268,7 @@ if (!authorized) {
   console.error(
     "[Dashboard Authorization Failed]",
     {
-      reason,
-      state,
-      entitlementData: data
+      reason
     }
   );
 
@@ -303,14 +283,6 @@ console.log(
   "[Dashboard Gating] Access granted"
 );
 document
-  .getElementById(
-    "authorizedPortalUI"
-  )
-  ?.classList.remove(
-    "hidden"
-  );
-
-  document
   .getElementById(
     "noServicesUI"
   )

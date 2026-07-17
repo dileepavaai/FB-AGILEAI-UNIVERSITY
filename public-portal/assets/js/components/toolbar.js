@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : toolbar.js
-   Version   : 1.3.0
+   Version   : 1.4.0
    Status    : ACTIVE
    Phase     : Portal Identity Stabilization
 
@@ -15,8 +15,6 @@
    ----------------------------------------------------------
    ✓ Render page title
    ✓ Render breadcrumb
-   ✓ Render search placeholder
-   ✓ Render notification placeholder
    ✓ Render resolved learner identity
    ✓ Generate learner avatar initials
    ✓ Render learner role
@@ -113,6 +111,13 @@
 
    Change History
    ----------------------------------------------------------
+   v1.4.0
+
+   • Removed non-functional portal search placeholder
+   • Removed non-functional notification placeholder
+   • Preserved learner identity and account menu
+   • Preserved governed sign-out lifecycle
+
    v1.3.0
 
    • Added governed learner account menu
@@ -179,7 +184,7 @@
         "Toolbar";
 
     const MODULE_VERSION =
-        "1.3.0";
+        "1.4.0";
 
 
     /* ======================================================
@@ -1734,31 +1739,6 @@
 
             <div
                 class="portal-toolbar-right">
-
-                <div
-                    class="portal-search">
-
-                    <input
-                        type="search"
-                        placeholder="Search portal..."
-                        aria-label="Search portal">
-
-                </div>
-
-                <button
-                    class="toolbar-button"
-                    id="notificationButton"
-                    aria-label="Notifications"
-                    type="button">
-
-                    <span
-                        aria-hidden="true">
-
-                        🔔
-
-                    </span>
-
-                </button>
 
                 <div
                     class="toolbar-account"

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.4.0
+   Version   : 1.5.0
    Status    : ACTIVE
    Phase     : Portal Identity Stabilization
 
@@ -99,6 +99,14 @@
 
    Change History
    ----------------------------------------------------------
+   v1.5.0
+
+   • Removed placeholder and duplicate navigation entries
+   • Retained only confirmed working learner destinations
+   • Corrected Assessment Platform canonical URL
+   • Added secure external-link navigation support
+   • Preserved identity and credential summary behaviour
+
    v1.4.0
 
    • Aligned sidebar identity with toolbar identity contract
@@ -167,7 +175,7 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.4.0";
+        "1.5.0";
 
 
     /* ======================================================
@@ -206,62 +214,6 @@
 
         {
             id:
-                "recognition",
-
-            title:
-                "Recognition Assets",
-
-            icon:
-                "🏅",
-
-            url:
-                "/recognition/"
-        },
-
-        {
-            id:
-                "certificates",
-
-            title:
-                "Certificates",
-
-            icon:
-                "📄",
-
-            url:
-                "/certificates/"
-        },
-
-        {
-            id:
-                "badges",
-
-            title:
-                "Digital Badges",
-
-            icon:
-                "🛡️",
-
-            url:
-                "/badges/"
-        },
-
-        {
-            id:
-                "verification",
-
-            title:
-                "Verification",
-
-            icon:
-                "✔️",
-
-            url:
-                "/verification/"
-        },
-
-        {
-            id:
                 "assessment",
 
             title:
@@ -271,49 +223,10 @@
                 "📝",
 
             url:
-                "/assessment.html"
-        },
+                "https://assessment.agileai.university/assessment.html",
 
-        {
-            id:
-                "learning",
-
-            title:
-                "Learning Journey",
-
-            icon:
-                "📈",
-
-            url:
-                "#"
-        },
-
-        {
-            id:
-                "executive",
-
-            title:
-                "Executive Insights",
-
-            icon:
-                "📊",
-
-            url:
-                "#"
-        },
-
-        {
-            id:
-                "settings",
-
-            title:
-                "Settings",
-
-            icon:
-                "⚙️",
-
-            url:
-                "#"
+            openMode:
+                "new-tab"
         }
 
     ];
@@ -874,6 +787,11 @@
                         item.url === "#";
 
 
+                    const openInNewTab =
+                        item.openMode ===
+                            "new-tab";
+
+
                     return `
 
                         <a
@@ -896,6 +814,10 @@
                             }
                             ${unavailable
                                 ? 'aria-disabled="true"'
+                                : ""
+                            }
+                            ${openInNewTab
+                                ? 'target="_blank" rel="noopener noreferrer"'
                                 : ""
                             }>
 

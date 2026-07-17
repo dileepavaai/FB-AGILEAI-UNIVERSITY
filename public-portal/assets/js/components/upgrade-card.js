@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : upgrade-card.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -13,28 +13,43 @@
 
    Responsibilities
 
-   ✓ Render upgrade recommendation
+   ✓ Render actionable upgrade recommendation
    ✓ Render commercial offer summary
-   ✓ Render CTA
-   ✓ UI Rendering only
+   ✓ Render governed CTA
+   ✓ Escape presentation content
+   ✓ Reject unsafe or incomplete render models
+   ✓ UI rendering only
 
    Non Responsibilities
 
-   ✗ Eligibility
+   ✗ Eligibility Resolution
    ✗ Firestore
    ✗ Payments
    ✗ Routing Logic
-   ✗ Business Rules
+   ✗ Commercial Business Rules
+   ✗ Dashboard Section Visibility
 
    Governance
 
    • Presentation Component
-   • Consumes Upgrade ViewModel
+   • Consumes Governed Upgrade ViewModel
    • Stateless
+   • Fail Closed
    • Enterprise Portal Standard
 
    Change History
    ----------------------------------------------------------
+
+   v1.3.0
+
+   • Added fail-closed actionable-model validation
+   • Prevented rendering of ineligible recommendations
+   • Added HTML escaping for ViewModel content
+   • Added safe internal and HTTPS URL validation
+   • Rejected placeholder and unsafe CTA URLs
+   • Added defensive currency formatting
+   • Added accessible CTA labelling
+   • Preserved external-link security attributes
 
    v1.2.0
 
@@ -54,7 +69,230 @@
 
     "use strict";
 
+    /* ======================================================
+       PRIVATE PRESENTATION HELPERS
+    ====================================================== */
+
+    function escapeHtml(value) {
+
+        return String(
+            value ?? ""
+        )
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+
+    }
+
+    function normalizeText(value) {
+
+        if (
+            typeof value !== "string" &&
+            typeof value !== "number"
+        ) {
+
+            return "";
+
+        }
+
+        return String(value).trim();
+
+    }
+
+    function getSafeUrl(value) {
+
+        const url =
+            normalizeText(value);
+
+        if (
+            !url ||
+            url === "#" ||
+            /^javascript:/i.test(url) ||
+            /^data:/i.test(url) ||
+            /^vbscript:/i.test(url) ||
+            /^\/\//.test(url)
+        ) {
+
+            return null;
+
+        }
+
+        /*
+         * Governed internal portal route.
+         */
+
+        if (
+            url.startsWith("/") &&
+            !url.startsWith("//")
+        ) {
+
+            return url;
+
+        }
+
+        /*
+         * Governed external destination.
+         * Only HTTPS destinations are accepted.
+         */
+
+        try {
+
+            const parsedUrl =
+                new URL(url);
+
+            if (
+                parsedUrl.protocol !== "https:"
+            ) {
+
+                return null;
+
+            }
+
+            return parsedUrl.href;
+
+        }
+        catch (error) {
+
+            return null;
+
+        }
+
+    }
+
+    function isExternalUrl(url) {
+
+        return (
+            typeof url === "string" &&
+            /^https:\/\//i.test(url)
+        );
+
+    }
+
+    function formatCurrency(value) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+
+            return null;
+
+        }
+
+        const amount =
+            Number(value);
+
+        if (
+            !Number.isFinite(amount) ||
+            amount < 0
+        ) {
+
+            return null;
+
+        }
+
+        return amount.toLocaleString(
+            "en-IN",
+            {
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+    function getProgramCode(currentProgram) {
+
+        if (
+            currentProgram &&
+            typeof currentProgram === "object"
+        ) {
+
+            return normalizeText(
+                currentProgram.code
+            );
+
+        }
+
+        return normalizeText(
+            currentProgram
+        );
+
+    }
+
+    function getSafeReasons(reasons) {
+
+        if (!Array.isArray(reasons)) {
+
+            return [];
+
+        }
+
+        return reasons
+
+            .map(function (reason) {
+
+                return normalizeText(
+                    reason
+                );
+
+            })
+
+            .filter(function (reason) {
+
+                return Boolean(reason);
+
+            });
+
+    }
+
+
     const UpgradeCard = {
+
+        /* ==================================================
+           RENDERABILITY CONTRACT
+
+           Eligibility remains owned by the resolver.
+
+           This method performs presentation validation only.
+           It does not calculate or infer eligibility.
+        ================================================== */
+
+        isRenderable(model = {}) {
+
+            if (
+                !model ||
+                typeof model !== "object"
+            ) {
+
+                return false;
+
+            }
+
+            const eligible =
+                model.eligible === true;
+
+            const safeUrl =
+                getSafeUrl(
+                    model.url
+                );
+
+            const buttonText =
+                normalizeText(
+                    model.buttonText ||
+                    "View Upgrade Path"
+                );
+
+            return Boolean(
+                eligible &&
+                safeUrl &&
+                buttonText
+            );
+
+        },
+
 
         /* ==================================================
            RENDER
@@ -62,66 +300,117 @@
 
         render(model = {}) {
 
-            const {
+            if (
+                !this.isRenderable(model)
+            ) {
 
-                eligible = false,
+                return "";
 
-                title = "Your Next Agile AI Capability",
+            }
 
-                description =
-                    "Based on your current credentials, you're ready to advance to the next Agile AI capability.",
+            const title =
+                normalizeText(
+                    model.title
+                ) ||
+                "Your Next Agile AI Capability";
 
-                currentProgram = null,
+            const description =
+                normalizeText(
+                    model.description
+                ) ||
+                "Based on your current credentials, you are ready to advance to the next Agile AI capability.";
 
-                nextProgram = null,
+            const currentProgramCode =
+                getProgramCode(
+                    model.currentProgram
+                );
 
-                programName = null,
+            const nextProgram =
+                normalizeText(
+                    model.nextProgram
+                );
 
-                campaignName = null,
+            const programName =
+                normalizeText(
+                    model.programName
+                );
 
-                bridgeProgram = null,
+            const campaignName =
+                normalizeText(
+                    model.campaignName
+                );
 
-                baseFee = null,
+            const bridgeProgram =
+                normalizeText(
+                    model.bridgeProgram
+                );
 
-                standardFee = null,
+            const offerEndsOn =
+                normalizeText(
+                    model.offerEndsOn
+                );
 
-                fullProgrammeFee = null,
+            const buttonText =
+                normalizeText(
+                    model.buttonText
+                ) ||
+                "View Upgrade Path";
 
-                gstApplicable = false,
-
-                offerEndsOn = null,
-
-                buttonText = "View Upgrade Path",
-
-                url = "/upgrade/upgrade.html",
-
-                reasons = []
-
-            } = model;
+            const safeUrl =
+                getSafeUrl(
+                    model.url
+                );
 
             const safeReasons =
-                Array.isArray(reasons)
-                    ? reasons
-                    : [];
+                getSafeReasons(
+                    model.reasons
+                );
 
-            const isExternalUrl =
-                typeof url === "string" &&
-                /^https?:\/\//i.test(url);
+            const baseFee =
+                formatCurrency(
+                    model.baseFee
+                );
+
+            const standardFee =
+                formatCurrency(
+                    model.standardFee
+                );
+
+            const fullProgrammeFee =
+                formatCurrency(
+                    model.fullProgrammeFee
+                );
+
+            const gstApplicable =
+                model.gstApplicable === true;
+
+            const external =
+                isExternalUrl(
+                    safeUrl
+                );
 
             const targetAttributes =
-                isExternalUrl
-                    ? `target="_blank" rel="noopener noreferrer"`
+                external
+                    ? 'target="_blank" rel="noopener noreferrer"'
                     : "";
 
             const reasonHtml =
                 safeReasons.length > 0
                     ? `
                         <ul class="upgrade-card__reasons">
+
                             ${safeReasons
                                 .map(function (reason) {
-                                    return `<li>${reason}</li>`;
+
+                                    return `
+                                        <li>
+                                            ${escapeHtml(reason)}
+                                        </li>
+                                    `;
+
                                 })
                                 .join("")}
+
                         </ul>
                     `
                     : "";
@@ -129,89 +418,95 @@
             const priceHtml =
                 baseFee !== null
                     ? `
-
                         <div class="upgrade-card__pricing">
 
-                            ${campaignName ? `
-                                <div class="upgrade-card__campaign">
+                            ${campaignName
+                                ? `
+                                    <div class="upgrade-card__campaign">
+                                        ${escapeHtml(campaignName)}
+                                    </div>
+                                `
+                                : ""}
 
-                                    ${campaignName}
+                            ${bridgeProgram
+                                ? `
+                                    <div class="upgrade-card__bridge">
 
-                                </div>
-                            ` : ""}
+                                        <strong>
+                                            ${escapeHtml(bridgeProgram)}
+                                        </strong>
 
-                            ${bridgeProgram ? `
-                                <div class="upgrade-card__bridge">
-
-                                    <strong>
-
-                                        ${bridgeProgram}
-
-                                    </strong>
-
-                                </div>
-                            ` : ""}
+                                    </div>
+                                `
+                                : ""}
 
                             <div class="upgrade-card__price">
 
                                 <strong>
-
-                                    ₹ ${Number(baseFee).toLocaleString()}
-
+                                    ₹ ${escapeHtml(baseFee)}
                                 </strong>
 
                             </div>
 
-                            ${standardFee ? `
-                                <div class="upgrade-card__standard-price">
+                            ${standardFee !== null
+                                ? `
+                                    <div class="upgrade-card__standard-price">
 
-                                    Regular Bridge Fee:
-                                    ₹ ${Number(standardFee).toLocaleString()}
+                                        Regular Bridge Fee:
+                                        ₹ ${escapeHtml(standardFee)}
 
-                                </div>
-                            ` : ""}
+                                    </div>
+                                `
+                                : ""}
 
-                            ${fullProgrammeFee ? `
-                                <div class="upgrade-card__full-price">
+                            ${fullProgrammeFee !== null
+                                ? `
+                                    <div class="upgrade-card__full-price">
 
-                                    Full Programme Fee:
-                                    ₹ ${Number(fullProgrammeFee).toLocaleString()}
+                                        Full Programme Fee:
+                                        ₹ ${escapeHtml(fullProgrammeFee)}
 
-                                </div>
-                            ` : ""}
+                                    </div>
+                                `
+                                : ""}
 
-                            ${gstApplicable ? `
-                                <div class="upgrade-card__gst">
+                            ${gstApplicable
+                                ? `
+                                    <div class="upgrade-card__gst">
 
-                                    Applicable GST will be added during secure payment checkout.
+                                        Applicable GST will be added
+                                        during secure payment checkout.
 
-                                </div>
-                            ` : ""}
+                                    </div>
+                                `
+                                : ""}
 
-                            ${offerEndsOn ? `
-                                <div class="upgrade-card__offer">
+                            ${offerEndsOn
+                                ? `
+                                    <div class="upgrade-card__offer">
 
-                                    Offer valid until
-                                    ${offerEndsOn}
+                                        Offer valid until
+                                        ${escapeHtml(offerEndsOn)}
 
-                                </div>
-                            ` : ""}
+                                    </div>
+                                `
+                                : ""}
 
                         </div>
-
                     `
                     : "";
 
             const journeyHtml =
-                currentProgram && nextProgram
+                currentProgramCode &&
+                nextProgram
                     ? `
                         <div class="upgrade-card__journey">
 
                             <strong>
 
-                                ${currentProgram.code || "Current"}
+                                ${escapeHtml(currentProgramCode)}
                                 →
-                                ${nextProgram}
+                                ${escapeHtml(nextProgram)}
 
                             </strong>
 
@@ -220,15 +515,12 @@
                     : "";
 
             return `
-
                 <section class="upgrade-card">
 
                     <div class="upgrade-card__header">
 
                         <h3>
-
-                            ${title}
-
+                            ${escapeHtml(title)}
                         </h3>
 
                     </div>
@@ -236,40 +528,38 @@
                     <div class="upgrade-card__body">
 
                         <p>
-
-                            ${description}
-
+                            ${escapeHtml(description)}
                         </p>
 
                         ${journeyHtml}
 
-                        ${bridgeProgram ? `
-                            <p>
+                        ${bridgeProgram
+                            ? `
+                                <p>
 
-                                <strong>
+                                    <strong>
+                                        Bridge Programme:
+                                    </strong>
 
-                                    Bridge Programme:
+                                    ${escapeHtml(bridgeProgram)}
 
-                                </strong>
+                                </p>
+                            `
+                            : ""}
 
-                                ${bridgeProgram}
+                        ${programName
+                            ? `
+                                <p>
 
-                            </p>
-                        ` : ""}
+                                    <strong>
+                                        Upgrade To:
+                                    </strong>
 
-                        ${programName ? `
-                            <p>
+                                    ${escapeHtml(programName)}
 
-                                <strong>
-
-                                    Upgrade To:
-
-                                </strong>
-
-                                ${programName}
-
-                            </p>
-                        ` : ""}
+                                </p>
+                            `
+                            : ""}
 
                         ${priceHtml}
 
@@ -280,18 +570,18 @@
                     <div class="upgrade-card__footer">
 
                         <a
-                            href="${url}"
-                            class="btn ${eligible ? "btn-primary" : "btn-secondary"}"
+                            href="${escapeHtml(safeUrl)}"
+                            class="btn btn-primary"
+                            aria-label="${escapeHtml(buttonText)}"
                             ${targetAttributes}>
 
-                            ${buttonText}
+                            ${escapeHtml(buttonText)}
 
                         </a>
 
                     </div>
 
                 </section>
-
             `;
 
         }

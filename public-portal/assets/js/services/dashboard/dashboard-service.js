@@ -1,3 +1,67 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : dashboard-service.js
+   Version   : 1.3.0
+   Status    : ACTIVE
+   Phase     : Dashboard Value Hardening
+
+   Purpose
+   ----------------------------------------------------------
+   Creates the governed dashboard ViewModel consumed by the
+   Student & Executive Portal presentation layer.
+
+   Responsibilities
+   ----------------------------------------------------------
+   ✓ Create dashboard summary data
+   ✓ Create KPI data
+   ✓ Supply implemented Quick Access capabilities
+   ✓ Enrich recent credentials through ProgramService
+   ✓ Supply upgrade recommendations through EligibilityService
+   ✓ Consume resolver-approved portal credentials
+
+   Non Responsibilities
+   ----------------------------------------------------------
+   ✗ Authentication decisions
+   ✗ Authorization decisions
+   ✗ Entitlement resolution
+   ✗ Direct Firestore access
+   ✗ Direct Storage access
+   ✗ HTML rendering
+   ✗ DOM manipulation
+   ✗ Credential visibility decisions
+
+   Governance
+   ----------------------------------------------------------
+   • DashboardService supplies ViewModels only.
+
+   • Only implemented, valuable and actionable capabilities
+     may enter the Quick Access ViewModel.
+
+   • Certificate and badge actions remain inside the governed
+     Credential Workspace and are not duplicated here.
+
+   • The Assessment Platform opens through its canonical
+     production URL in a new tab.
+
+   • Placeholder URLs and future capabilities must not enter
+     the learner-facing dashboard model.
+
+   Change History
+   ----------------------------------------------------------
+   v1.3.0
+
+   • Removed non-working /certificates/ Quick Access route
+   • Removed duplicate standalone Digital Badges shortcut
+   • Preserved My Credentials as the credential entry point
+   • Corrected Assessment Platform canonical URL
+   • Added explicit capability presentation flags
+   • Removed credential payload debug logging
+   • Preserved dashboard and upgrade ViewModel contracts
+
+========================================================== */
+
 (function (window) {
 
     "use strict";
@@ -51,16 +115,6 @@
 
             const membership =
                 user.membership ?? "University Member";
-
-            console.log(
-                    "[DashboardService] Recent Credentials ViewModel",
-                    recentCredentials
-                );
-            
-            console.log(
-                    "FIRST CREDENTIAL",
-                    JSON.stringify(recentCredentials[0], null, 2)
-                );
 
             /* ==================================================
             UPGRADE VIEW MODEL
@@ -230,29 +284,67 @@
 
             return [
 
-                {
-                    title: "My Credentials",
-                    url: "/credentials/my-credentials.html",
-                    icon: "🎓"
-                },
+                Object.freeze({
 
-                {
-                    title: "Certificates",
-                    url: "/certificates/",
-                    icon: "📄"
-                },
+                    id:
+                        "credentials",
 
-                {
-                    title: "Digital Badges",
-                    url: "/badges/",
-                    icon: "🛡️"
-                },
+                    title:
+                        "My Credentials",
 
-                {
-                    title: "Assessment Platform",
-                    url: "/assessment.html",
-                    icon: "📝"
-                }
+                    url:
+                        "/credentials/my-credentials.html",
+
+                    icon:
+                        "🎓",
+
+                    available:
+                        true,
+
+                    entitled:
+                        true,
+
+                    visible:
+                        true,
+
+                    actionable:
+                        true,
+
+                    openMode:
+                        "same-tab"
+
+                }),
+
+                Object.freeze({
+
+                    id:
+                        "assessment",
+
+                    title:
+                        "Assessment Platform",
+
+                    url:
+                        "https://assessment.agileai.university/assessment.html",
+
+                    icon:
+                        "📝",
+
+                    available:
+                        true,
+
+                    entitled:
+                        true,
+
+                    visible:
+                        true,
+
+                    actionable:
+                        true,
+
+                    openMode:
+                        "new-tab"
+
+                })
 
             ];
 

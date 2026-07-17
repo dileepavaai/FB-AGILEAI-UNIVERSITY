@@ -4,7 +4,7 @@
 
      File        : index.html
      Page        : Portal Dashboard
-     Version     : 3.3.0
+     Version     : 3.3.9
      Status      : ACTIVE
      Date        : July 2026
 
@@ -98,6 +98,72 @@
 
      Change History
      ----------------------------------------------------------
+     v3.3.9
+
+     • Versioned UpgradeWidget v1.3.0
+     • Activated fail-closed upgrade section orchestration
+     • Added actionable-card verification before presentation
+     • Added accessible upgrade section visibility management
+     • Preserved safe link and optional overlay behavior
+
+     v3.3.8
+
+     • Versioned UpgradeCard v1.3.0
+     • Activated fail-closed upgrade card rendering
+     • Made Recommended Upgrade presentation default hidden
+     • Prepared governed section visibility for UpgradeWidget
+     • Preserved dashboard dependency order
+
+     v3.3.7
+
+     • Versioned DashboardWidgets v3.1.0
+     • Activated dependency-safe widget orchestration
+     • Isolated individual widget rendering failures
+     • Removed full dashboard ViewModel diagnostics
+     • Preserved dashboard widget dependency order
+
+     v3.3.6
+
+     • Versioned DashboardRenderer v1.1.0
+     • Activated privacy-safe dashboard rendering diagnostics
+     • Preserved DashboardWidgets dependency order
+     • Preserved authenticated dashboard orchestration
+
+     v3.3.5
+
+     • Removed duplicate authorized Assessment action
+     • Retained Assessment Platform through governed Quick Access
+     • Versioned privacy-safe Dashboard Gating Phase-9.4.2
+     • Preserved authorization and no-services experience
+
+     v3.3.4
+
+     • Versioned Sidebar v1.5.0 release navigation
+     • Versioned Toolbar v1.4.0 value hardening
+     • Removed visible placeholder navigation and controls
+     • Preserved authentication and dashboard orchestration
+
+     v3.3.3
+
+     • Versioned DashboardService v1.3.0
+     • Activated governed Quick Access capability model
+     • Preserved dashboard service dependency order
+
+     v3.3.2
+
+     • Versioned QuickAccessCard v1.1.0
+     • Activated placeholder and unsafe-link rejection
+     • Preserved Quick Access widget dependency order
+     • Preserved authenticated dashboard orchestration
+
+     v3.3.1
+
+     • Added governed Quick Access section identity
+     • Made the Quick Access presentation default hidden
+     • Added accessible empty-section state
+     • Versioned QuickAccessWidget v1.1.0
+     • Preserved authenticated dashboard orchestration
+
      v3.3.0
 
      • Converted dashboard to authenticated-only experience
@@ -305,7 +371,11 @@
                              QUICK ACCESS
                         =================================== -->
 
-                        <div class="dashboard-section">
+                        <div
+                            id="dashboardQuickAccessSection"
+                            class="dashboard-section"
+                            hidden
+                            aria-hidden="true">
 
                             <section class="dashboard-card quick-access">
 
@@ -538,7 +608,11 @@
                              RECOMMENDED UPGRADE
                         =================================== -->
 
-                        <div class="dashboard-section">
+                        <div
+                            id="dashboardUpgradeSection"
+                            class="dashboard-section"
+                            hidden
+                            aria-hidden="true">
 
                             <section class="dashboard-card">
 
@@ -558,31 +632,6 @@
                             </section>
 
                         </div>
-
-
-                        <!-- ==================================
-                             AUTHORIZED PORTAL ACTIONS
-                        =================================== -->
-
-                        <section class="dashboard-section">
-
-                            <div
-                                id="authorizedPortalUI"
-                                class="dashboard-card-actions hidden">
-
-                                <a
-                                    href="https://assessment.agileai.university/assessment.html"
-                                    class="btn"
-                                    target="_blank"
-                                    rel="noopener noreferrer">
-
-                                    Assessment Platform
-
-                                </a>
-
-                            </div>
-
-                        </section>
 
 
                         <!-- ==================================
@@ -706,16 +755,16 @@
         src="/assets/js/services/authorization/portal-authorization.js">
     </script>
 
-    <script src="/assets/js/dashboard-gating.js"></script>
+    <script src="/assets/js/dashboard-gating.js?v=9.4.2"></script>
 
 
     <!-- ==================================================
          SHARED PORTAL LAYOUT
     ================================================== -->
 
-    <script src="/assets/js/components/sidebar.js?v=1.4.0"></script>
+    <script src="/assets/js/components/sidebar.js?v=1.5.0"></script>
 
-    <script src="/assets/js/components/toolbar.js?v=1.3.0"></script>
+    <script src="/assets/js/components/toolbar.js?v=1.4.0"></script>
 
 
     <!-- ==================================================
@@ -835,7 +884,7 @@
     ================================================== -->
 
     <script
-        src="/assets/js/services/dashboard/dashboard-service.js">
+        src="/assets/js/services/dashboard/dashboard-service.js?v=1.3.0">
     </script>
 
 
@@ -845,14 +894,14 @@
 
     <script src="/assets/js/components/credential-card.js"></script>
 
-    <script src="/assets/js/components/quick-access-card.js"></script>
+    <script src="/assets/js/components/quick-access-card.js?v=1.1.0"></script>
 
     <script src="/assets/js/components/recognition-card.js"></script>
 
     <script src="/assets/js/components/notification-card.js"></script>
 
     <script
-        src="/assets/js/components/upgrade-registration/upgrade-card.js">
+        src="/assets/js/components/upgrade-registration/upgrade-card.js?v=1.3.0">
     </script>
 
     <script
@@ -873,11 +922,11 @@
     </script>
 
     <script
-        src="/assets/js/components/dashboard/quick-access-widget.js">
+        src="/assets/js/components/dashboard/quick-access-widget.js?v=1.1.0">
     </script>
 
     <script
-        src="/assets/js/components/dashboard/upgrade-widget.js">
+        src="/assets/js/components/dashboard/upgrade-widget.js?v=1.3.0">
     </script>
 
     <script
@@ -898,11 +947,11 @@
     ================================================== -->
 
     <script
-        src="/assets/js/components/dashboard/widgets.js">
+        src="/assets/js/components/dashboard/widgets.js?v=3.1.0">
     </script>
 
     <script
-        src="/assets/js/components/dashboard/dashboard-renderer.js">
+        src="/assets/js/components/dashboard/dashboard-renderer.js?v=1.1.0">
     </script>
 
     <script

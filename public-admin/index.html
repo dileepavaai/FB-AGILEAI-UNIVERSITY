@@ -12,147 +12,387 @@
   <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
 
   <!-- 🧩 COMMON SURFACES -->
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/common.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/tables.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/typography.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/micro-interactions.css"
+  />
 
   <!-- 📊 PAGE SURFACE -->
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/dashboard.css" />
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/dashboard.css"
+  />
 </head>
 
 <body class="app-loading">
 
-<!-- 🔷 HEADER -->
-<div id="headerContainer"></div>
+  <!-- 🔷 HEADER -->
+  <div id="headerContainer"></div>
 
-<div class="layout">
+  <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
-  <nav class="sidebar" id="adminNav" style="display:none;">
-    <ul>
-      <li><a href="index.html" class="active">Dashboard</a></li>
-      <li><a href="leads.html">Lead Intelligence</a></li>
-      <li><a href="credential-operations/">Credential Operations</a></li>
-      <li><a href="trainer-management/dashboard/index.html">Trainer Management</a></li>
-      <li><a href="reconciliation.html">Reconciliation</a></li>
-      <li><a href="audit-logs.html">Audit Logs</a></li>
-    </ul>
-  </nav>
+    <!-- 🔷 CENTRALIZED ADMIN SIDEBAR -->
+    <div id="adminSidebarContainer"></div>
 
-  <main class="content">
+    <main class="content">
 
-    <!-- 🔐 LOGIN -->
-    <section id="loginView">
-      <h2>Admin Access</h2>
-      <p class="page-subtitle">Secure access to Agile AI control system</p>
-      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
-    </section>
+      <!-- 🔐 LOGIN -->
+      <section id="loginView">
 
-    <!-- 🔷 APP -->
-    <section id="appView" class="hidden">
+        <h2>Admin Access</h2>
 
-      <!-- 🧠 HEADER -->
-      <div class="section">
-        <h2>Admin Dashboard</h2>
         <p class="page-subtitle">
-          System overview and operational intelligence
+          Secure access to Agile AI control system
         </p>
-      </div>
 
-      <!-- 📊 SYSTEM METRICS -->
-      <div class="section">
-        <div class="card">
-          <div class="card-title">System Metrics</div>
+        <button
+          id="loginBtn"
+          class="btn btn-primary"
+          type="button">
+          Sign in with Google
+        </button>
 
-          <div class="metrics">
-            <div class="metric-card">
-              <div class="metric-label">Leads</div>
-              <div class="metric-value" id="metricLeads">—</div>
-            </div>
+      </section>
 
-            <div class="metric-card">
-              <div class="metric-label">Batches</div>
-              <div class="metric-value" id="metricBatches">—</div>
-            </div>
+      <!-- 🔷 APP -->
+      <section
+        id="appView"
+        class="hidden">
 
-            <div class="metric-card">
-              <div class="metric-label">Credentials</div>
-              <div class="metric-value" id="metricCredentials">—</div>
-            </div>
+        <!-- 🧠 HEADER -->
+        <div class="section">
 
-            <div class="metric-card">
-              <div class="metric-label">Transactions</div>
-              <div class="metric-value" id="metricTransactions">—</div>
-            </div>
-          </div>
+          <h2>Admin Dashboard</h2>
+
+          <p class="page-subtitle">
+            System overview and operational intelligence
+          </p>
+
         </div>
-      </div>
 
-      <!-- 🔄 FUNNEL -->
-      <div class="section">
-        <div class="card">
-          <div class="card-title">Conversion Funnel</div>
+        <!-- 📊 SYSTEM METRICS -->
+        <div class="section">
 
-          <div class="grid-2">
-            <div>
-              <div class="data-row"><span class="data-label">Leads</span><span id="funnelLeads">—</span></div>
-              <div class="data-row"><span class="data-label">Qualified</span><span id="funnelQualified">—</span></div>
-              <div class="data-row"><span class="data-label">Converted</span><span id="funnelConverted">—</span></div>
+          <div class="card">
+
+            <div class="card-title">
+              System Metrics
             </div>
 
-            <div>
-              <div class="data-row"><span class="data-label">Lead → Qualified</span><span id="funnelLQ">—</span></div>
-              <div class="data-row"><span class="data-label">Qualified → Converted</span><span id="funnelQC">—</span></div>
-              <div class="data-row"><span class="data-label">Lead → Converted</span><span id="funnelLC">—</span></div>
+            <div class="metrics">
+
+              <div class="metric-card">
+
+                <div class="metric-label">
+                  Leads
+                </div>
+
+                <div
+                  class="metric-value"
+                  id="metricLeads">
+                  —
+                </div>
+
+              </div>
+
+              <div class="metric-card">
+
+                <div class="metric-label">
+                  Batches
+                </div>
+
+                <div
+                  class="metric-value"
+                  id="metricBatches">
+                  —
+                </div>
+
+              </div>
+
+              <div class="metric-card">
+
+                <div class="metric-label">
+                  Credentials
+                </div>
+
+                <div
+                  class="metric-value"
+                  id="metricCredentials">
+                  —
+                </div>
+
+              </div>
+
+              <div class="metric-card">
+
+                <div class="metric-label">
+                  Transactions
+                </div>
+
+                <div
+                  class="metric-value"
+                  id="metricTransactions">
+                  —
+                </div>
+
+              </div>
+
             </div>
+
           </div>
+
         </div>
-      </div>
 
-      <!-- 💰 REVENUE -->
-      <div class="section">
-        <div class="card">
-          <div class="card-title">Revenue Intelligence</div>
+        <!-- 🔄 CONVERSION FUNNEL -->
+        <div class="section">
 
-          <div class="grid-2">
-            <div class="data-row"><span class="data-label">Total Revenue</span><span id="revTotal">—</span></div>
-            <div class="data-row"><span class="data-label">Transactions</span><span id="revCount">—</span></div>
-            <div class="data-row"><span class="data-label">Average Revenue</span><span id="revAvg">—</span></div>
-            <div class="data-row"><span class="data-label">Currency</span><span id="revCurrency">—</span></div>
+          <div class="card">
+
+            <div class="card-title">
+              Conversion Funnel
+            </div>
+
+            <div class="grid-2">
+
+              <div>
+
+                <div class="data-row">
+                  <span class="data-label">
+                    Leads
+                  </span>
+
+                  <span id="funnelLeads">
+                    —
+                  </span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">
+                    Qualified
+                  </span>
+
+                  <span id="funnelQualified">
+                    —
+                  </span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">
+                    Converted
+                  </span>
+
+                  <span id="funnelConverted">
+                    —
+                  </span>
+                </div>
+
+              </div>
+
+              <div>
+
+                <div class="data-row">
+                  <span class="data-label">
+                    Lead → Qualified
+                  </span>
+
+                  <span id="funnelLQ">
+                    —
+                  </span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">
+                    Qualified → Converted
+                  </span>
+
+                  <span id="funnelQC">
+                    —
+                  </span>
+                </div>
+
+                <div class="data-row">
+                  <span class="data-label">
+                    Lead → Converted
+                  </span>
+
+                  <span id="funnelLC">
+                    —
+                  </span>
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
+
         </div>
-      </div>
 
-      <!-- 📚 PROGRAM -->
-      <div class="section">
-        <div class="card">
-          <div class="card-title">Program Intelligence</div>
+        <!-- 💰 REVENUE -->
+        <div class="section">
 
-          <div class="grid-2">
-            <div class="data-row"><span class="data-label">AOP</span><span id="progAOP">—</span></div>
-            <div class="data-row"><span class="data-label">AIPA</span><span id="progAIPA">—</span></div>
-            <div class="data-row"><span class="data-label">AAIA</span><span id="progAAIA">—</span></div>
-            <div class="data-row"><span class="data-label">Top Program</span><span id="topProgram">—</span></div>
+          <div class="card">
+
+            <div class="card-title">
+              Revenue Intelligence
+            </div>
+
+            <div class="grid-2">
+
+              <div class="data-row">
+                <span class="data-label">
+                  Total Revenue
+                </span>
+
+                <span id="revTotal">
+                  —
+                </span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">
+                  Transactions
+                </span>
+
+                <span id="revCount">
+                  —
+                </span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">
+                  Average Revenue
+                </span>
+
+                <span id="revAvg">
+                  —
+                </span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">
+                  Currency
+                </span>
+
+                <span id="revCurrency">
+                  —
+                </span>
+              </div>
+
+            </div>
+
           </div>
+
         </div>
-      </div>
 
-    </section>
+        <!-- 📚 PROGRAM -->
+        <div class="section">
 
-  </main>
-</div>
+          <div class="card">
 
-<!-- 🔷 FOOTER -->
-<div id="footerContainer"></div>
+            <div class="card-title">
+              Program Intelligence
+            </div>
 
-<!-- 🔥 ADMIN CONTROLLER -->
-<script type="module">
-import { initAdminApp } from "./assets/js/admin-app.js";
+            <div class="grid-2">
 
-/* ✅ CONNECT DASHBOARD MODULE */
-initAdminApp("dashboard.js");
-</script>
+              <div class="data-row">
+                <span class="data-label">
+                  AOP
+                </span>
+
+                <span id="progAOP">
+                  —
+                </span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">
+                  AIPA
+                </span>
+
+                <span id="progAIPA">
+                  —
+                </span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">
+                  AAIA
+                </span>
+
+                <span id="progAAIA">
+                  —
+                </span>
+              </div>
+
+              <div class="data-row">
+                <span class="data-label">
+                  Top Program
+                </span>
+
+                <span id="topProgram">
+                  —
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- 🔷 FOOTER -->
+  <div id="footerContainer"></div>
+
+  <!-- 🔥 ADMIN CONTROLLER -->
+  <script type="module">
+
+    import { initAdminApp }
+      from "./assets/js/admin-app.js";
+
+    import { loadAdminSidebar }
+      from "./shared/design-authority/js/admin-sidebar.js";
+
+    /*
+      Render navigation from the centralized
+      ADMIN_MENU authority and activate Dashboard.
+    */
+
+    loadAdminSidebar(
+      "dashboard"
+    );
+
+    /*
+      Connect the existing dashboard data module.
+    */
+
+    initAdminApp(
+      "dashboard.js"
+    );
+
+  </script>
 
 </body>
 </html>

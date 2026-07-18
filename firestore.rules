@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.4.0
+       Version : 2.5.0
        Status  : ACTIVE
 
        Security Model
@@ -19,10 +19,38 @@ service cloud.firestore {
        • credential_id is the permanent credential-asset
          authority
        • learner_uid is optional until identity activation
+       • learning_resources is the governed learning-resource
+         metadata and publication registry
+       • Protected learning-resource files remain in Storage
+       • Learning-resource records are programme-scoped
        • Students may read only their own governed records
+       • Students cannot directly read learning_resources
        • Admin users are currently bootstrap-authorized
          through the approved email list
+       • Learning resources follow draft → published →
+         withdrawn lifecycle
+       • Learning-resource deletion is prohibited
        • All unlisted access is denied
+
+       Change History
+       -----------------------------------------------------
+       v2.5.0
+       • Added learning_resources registry
+       • Added learning-resource contract validation
+       • Added programme and document identity validation
+       • Added delivery configuration validation
+       • Added draft, publication and withdrawal lifecycle
+       • Added authenticated administrator audit validation
+       • Added published asset-authority preservation
+       • Prohibited learner direct access
+       • Prohibited client-side deletion
+       • Preserved existing production collection rules
+
+       v2.4.0
+       • Established credential-first asset authority
+       • Supported pre-activation credential assets
+       • Preserved learner ownership during republication
+       • Maintained default-deny access model
     ===================================================== */
 
 
@@ -31,21 +59,37 @@ service cloud.firestore {
     ===================================================== */
 
     function isSignedIn() {
-      return request.auth != null;
+
+      return
+        request.auth != null;
+
     }
 
-    function isOwner(uid) {
-      return isSignedIn() &&
-             request.auth.uid == uid;
+
+    function isOwner(
+      uid
+    ) {
+
+      return
+        isSignedIn() &&
+        request.auth.uid == uid;
+
     }
+
 
     function isBootstrapAdmin() {
-      return isSignedIn() &&
+
+      return
+        isSignedIn() &&
+
+        request.auth.token.email != null &&
+
         request.auth.token.email in [
           "dileep@agileai.university",
           "dileepav@gmail.com",
           "laau.aaiu@gmail.com"
         ];
+
     }
 
 
@@ -53,7 +97,10 @@ service cloud.firestore {
        CREDENTIAL-ASSET HELPERS
     ===================================================== */
 
-    function hasRequiredCredentialAssetFields(data) {
+    function hasRequiredCredentialAssetFields(
+      data
+    ) {
+
       return
         "credential_id" in data &&
         data.credential_id is string &&
@@ -76,16 +123,26 @@ service cloud.firestore {
         "download_url" in data &&
         data.download_url is string &&
         data.download_url.size() > 0;
+
     }
 
-    function hasValidOptionalLearnerUid(data) {
+
+    function hasValidOptionalLearnerUid(
+      data
+    ) {
+
       return
         !("learner_uid" in data) ||
         data.learner_uid == null ||
         data.learner_uid is string;
+
     }
 
-    function hasValidAssetType(data) {
+
+    function hasValidAssetType(
+      data
+    ) {
+
       return
         data.asset_type in [
           "university_certificate",
@@ -93,15 +150,798 @@ service cloud.firestore {
           "digital_badge",
           "recognition_asset"
         ];
+
     }
 
+
     function preservesCredentialAssetIdentity() {
+
       return
         request.resource.data.credential_id ==
           resource.data.credential_id &&
 
         request.resource.data.asset_type ==
           resource.data.asset_type;
+
+    }
+
+
+    /* =====================================================
+       LEARNING-RESOURCE HELPERS
+    ===================================================== */
+
+    function hasRequiredLearningResourceFields(
+      data
+    ) {
+
+      return
+        "resource_id" in data &&
+        "program_code" in data &&
+        "title" in data &&
+        "description" in data &&
+        "resource_type" in data &&
+        "category" in data &&
+        "delivery_type" in data &&
+
+        "storage_path" in data &&
+        "external_url" in data &&
+
+        "file_name" in data &&
+        "file_extension" in data &&
+        "mime_type" in data &&
+        "file_size" in data &&
+
+        "preview_allowed" in data &&
+        "download_allowed" in data &&
+        "embed_allowed" in data &&
+
+        "status" in data &&
+        "is_active" in data &&
+        "is_latest" in data &&
+
+        "version" in data &&
+        "display_order" in data &&
+
+        "created_by_uid" in data &&
+        "created_by_email" in data &&
+        "created_at" in data &&
+
+        "published_by_uid" in data &&
+        "published_by_email" in data &&
+        "published_at" in data &&
+
+        "withdrawn_by_uid" in data &&
+        "withdrawn_by_email" in data &&
+        "withdrawn_at" in data &&
+        "withdrawal_reason" in data &&
+
+        "updated_at" in data &&
+        "source" in data;
+
+    }
+
+
+    function hasValidLearningResourceDocumentId(
+      documentId
+    ) {
+
+      /*
+       * Canonical document ID:
+       *
+       * {resource-id}_v{version}
+       *
+       * Example:
+       * aop-licensed-material_v1
+       */
+
+      return
+        documentId.matches(
+          '^[a-z0-9][a-z0-9-]{2,79}_v[1-9][0-9]*$'
+        );
+
+    }
+
+
+    function hasValidLearningResourceIdentity(
+      data
+    ) {
+
+      return
+        data.resource_id is string &&
+
+        data.resource_id.matches(
+          '^[a-z0-9][a-z0-9-]{2,79}$'
+        ) &&
+
+        data.program_code is string &&
+
+        data.program_code.matches(
+          '^[A-Z0-9][A-Z0-9_-]{1,19}$'
+        ) &&
+
+        data.version is int &&
+        data.version >= 1;
+
+    }
+
+
+    function hasValidLearningResourceText(
+      data
+    ) {
+
+      return
+        data.title is string &&
+        data.title.size() > 0 &&
+        data.title.size() <= 160 &&
+
+        data.description is string &&
+        data.description.size() <= 2000 &&
+
+        data.withdrawal_reason is string &&
+        data.withdrawal_reason.size() <= 1000;
+
+    }
+
+
+    function hasValidLearningResourceType(
+      data
+    ) {
+
+      return
+        data.resource_type in [
+          "document",
+          "image",
+          "external_video",
+          "external_link"
+        ];
+
+    }
+
+
+    function hasValidLearningResourceCategory(
+      data
+    ) {
+
+      return
+        data.category in [
+          "licensed_course_material",
+          "supporting_document",
+          "reference_material",
+          "video",
+          "download"
+        ];
+
+    }
+
+
+    function hasValidLearningResourceDeliveryType(
+      data
+    ) {
+
+      return
+        data.delivery_type in [
+          "protected_storage",
+          "external_video",
+          "external_link"
+        ];
+
+    }
+
+
+    function hasValidNullableLearningResourceStrings(
+      data
+    ) {
+
+      return
+        (
+          data.storage_path == null ||
+          data.storage_path is string
+        ) &&
+
+        (
+          data.external_url == null ||
+          data.external_url is string
+        ) &&
+
+        (
+          data.file_name == null ||
+          data.file_name is string
+        ) &&
+
+        (
+          data.file_extension == null ||
+          data.file_extension is string
+        ) &&
+
+        (
+          data.mime_type == null ||
+          data.mime_type is string
+        );
+
+    }
+
+
+    function hasValidLearningResourcePolicies(
+      data
+    ) {
+
+      return
+        data.preview_allowed is bool &&
+        data.download_allowed is bool &&
+        data.embed_allowed is bool;
+
+    }
+
+
+    function hasValidLearningResourcePresentation(
+      data
+    ) {
+
+      return
+        data.display_order is int &&
+        data.display_order >= 0 &&
+        data.display_order <= 10000 &&
+
+        data.file_size is int &&
+        data.file_size >= 0 &&
+        data.file_size <= 52428800;
+
+    }
+
+
+    function hasValidLearningResourceStatus(
+      data
+    ) {
+
+      return
+        data.status in [
+          "draft",
+          "published",
+          "withdrawn"
+        ];
+
+    }
+
+
+    function hasConsistentLearningResourceState(
+      data
+    ) {
+
+      return
+        (
+          data.status == "draft" &&
+          data.is_active == false
+        ) ||
+
+        (
+          data.status == "published" &&
+          data.is_active == true
+        ) ||
+
+        (
+          data.status == "withdrawn" &&
+          data.is_active == false
+        );
+
+    }
+
+
+    function hasValidLearningResourceFlags(
+      data
+    ) {
+
+      return
+        data.is_active is bool &&
+        data.is_latest is bool &&
+
+        hasConsistentLearningResourceState(
+          data
+        );
+
+    }
+
+
+    function hasValidHttpsExternalUrl(
+      value
+    ) {
+
+      return
+        value is string &&
+
+        value.matches(
+          '^https://[^ ]+$'
+        );
+
+    }
+
+
+    function hasValidProtectedStoragePath(
+      data
+    ) {
+
+      return
+        data.storage_path is string &&
+
+        data.storage_path.matches(
+          '^learning-resources/[A-Z0-9][A-Z0-9_-]{1,19}/[a-z0-9][a-z0-9-]{2,79}/v[1-9][0-9]*/[A-Za-z0-9][A-Za-z0-9._-]{0,149}$'
+        );
+
+    }
+
+
+    function hasValidPublishedDeliveryConfiguration(
+      data
+    ) {
+
+      return
+        (
+          data.delivery_type ==
+            "protected_storage" &&
+
+          hasValidProtectedStoragePath(
+            data
+          ) &&
+
+          (
+            data.external_url == null ||
+            data.external_url == ""
+          ) &&
+
+          data.file_name is string &&
+          data.file_name.size() > 0 &&
+
+          data.file_extension is string &&
+          data.file_extension.size() > 0 &&
+
+          data.mime_type is string &&
+          data.mime_type.size() > 0 &&
+
+          data.file_size > 0
+        ) ||
+
+        (
+          data.delivery_type ==
+            "external_video" &&
+
+          hasValidHttpsExternalUrl(
+            data.external_url
+          ) &&
+
+          (
+            data.storage_path == null ||
+            data.storage_path == ""
+          ) &&
+
+          data.download_allowed == false
+        ) ||
+
+        (
+          data.delivery_type ==
+            "external_link" &&
+
+          hasValidHttpsExternalUrl(
+            data.external_url
+          ) &&
+
+          (
+            data.storage_path == null ||
+            data.storage_path == ""
+          )
+        );
+
+    }
+
+
+    function hasValidLearningResourceDeliveryConfiguration(
+      data
+    ) {
+
+      /*
+       * Drafts may be saved before a file or external URL
+       * has been supplied.
+       *
+       * Published and withdrawn records must retain a valid
+       * delivery configuration.
+       */
+
+      return
+        data.status == "draft" ||
+
+        (
+          data.status in [
+            "published",
+            "withdrawn"
+          ] &&
+
+          hasValidPublishedDeliveryConfiguration(
+            data
+          )
+        );
+
+    }
+
+
+    function hasValidLearningResourceSource(
+      data
+    ) {
+
+      return
+        data.source ==
+          "admin_portal";
+
+    }
+
+
+    function hasValidLearningResourceAuditTypes(
+      data
+    ) {
+
+      return
+        data.created_by_uid is string &&
+        data.created_by_uid.size() > 0 &&
+
+        data.created_by_email is string &&
+        data.created_by_email.size() > 0 &&
+
+        (
+          data.published_by_uid == null ||
+          data.published_by_uid is string
+        ) &&
+
+        (
+          data.published_by_email == null ||
+          data.published_by_email is string
+        ) &&
+
+        (
+          data.published_at == null ||
+          data.published_at is timestamp
+        ) &&
+
+        (
+          data.withdrawn_by_uid == null ||
+          data.withdrawn_by_uid is string
+        ) &&
+
+        (
+          data.withdrawn_by_email == null ||
+          data.withdrawn_by_email is string
+        ) &&
+
+        (
+          data.withdrawn_at == null ||
+          data.withdrawn_at is timestamp
+        );
+
+    }
+
+
+    function hasValidLearningResourceContract(
+      data
+    ) {
+
+      return
+        hasRequiredLearningResourceFields(
+          data
+        ) &&
+
+        hasValidLearningResourceIdentity(
+          data
+        ) &&
+
+        hasValidLearningResourceText(
+          data
+        ) &&
+
+        hasValidLearningResourceType(
+          data
+        ) &&
+
+        hasValidLearningResourceCategory(
+          data
+        ) &&
+
+        hasValidLearningResourceDeliveryType(
+          data
+        ) &&
+
+        hasValidNullableLearningResourceStrings(
+          data
+        ) &&
+
+        hasValidLearningResourcePolicies(
+          data
+        ) &&
+
+        hasValidLearningResourcePresentation(
+          data
+        ) &&
+
+        hasValidLearningResourceStatus(
+          data
+        ) &&
+
+        hasValidLearningResourceFlags(
+          data
+        ) &&
+
+        hasValidLearningResourceDeliveryConfiguration(
+          data
+        ) &&
+
+        hasValidLearningResourceSource(
+          data
+        ) &&
+
+        hasValidLearningResourceAuditTypes(
+          data
+        );
+
+    }
+
+
+    function isValidLearningResourceCreate(
+      documentId
+    ) {
+
+      return
+        hasValidLearningResourceDocumentId(
+          documentId
+        ) &&
+
+        hasValidLearningResourceContract(
+          request.resource.data
+        ) &&
+
+        request.resource.data.status ==
+          "draft" &&
+
+        request.resource.data.is_active ==
+          false &&
+
+        request.resource.data.is_latest ==
+          true &&
+
+        request.resource.data.created_by_uid ==
+          request.auth.uid &&
+
+        request.resource.data.created_by_email ==
+          request.auth.token.email &&
+
+        request.resource.data.created_at ==
+          request.time &&
+
+        request.resource.data.updated_at ==
+          request.time &&
+
+        request.resource.data.published_by_uid ==
+          null &&
+
+        request.resource.data.published_by_email ==
+          null &&
+
+        request.resource.data.published_at ==
+          null &&
+
+        request.resource.data.withdrawn_by_uid ==
+          null &&
+
+        request.resource.data.withdrawn_by_email ==
+          null &&
+
+        request.resource.data.withdrawn_at ==
+          null &&
+
+        request.resource.data.withdrawal_reason ==
+          "";
+
+    }
+
+
+    function preservesLearningResourceIdentity() {
+
+      return
+        request.resource.data.resource_id ==
+          resource.data.resource_id &&
+
+        request.resource.data.program_code ==
+          resource.data.program_code &&
+
+        request.resource.data.version ==
+          resource.data.version &&
+
+        request.resource.data.source ==
+          resource.data.source &&
+
+        request.resource.data.created_by_uid ==
+          resource.data.created_by_uid &&
+
+        request.resource.data.created_by_email ==
+          resource.data.created_by_email &&
+
+        request.resource.data.created_at ==
+          resource.data.created_at;
+
+    }
+
+
+    function hasValidLearningResourceTransition() {
+
+      return
+        (
+          resource.data.status ==
+            "draft" &&
+
+          request.resource.data.status in [
+            "draft",
+            "published"
+          ]
+        ) ||
+
+        (
+          resource.data.status ==
+            "published" &&
+
+          request.resource.data.status in [
+            "published",
+            "withdrawn"
+          ]
+        );
+
+    }
+
+
+    function preservesPublishedLearningAssetAuthority() {
+
+      return
+        resource.data.status ==
+          "draft" ||
+
+        (
+          request.resource.data.delivery_type ==
+            resource.data.delivery_type &&
+
+          request.resource.data.storage_path ==
+            resource.data.storage_path &&
+
+          request.resource.data.external_url ==
+            resource.data.external_url &&
+
+          request.resource.data.file_name ==
+            resource.data.file_name &&
+
+          request.resource.data.file_extension ==
+            resource.data.file_extension &&
+
+          request.resource.data.mime_type ==
+            resource.data.mime_type &&
+
+          request.resource.data.file_size ==
+            resource.data.file_size
+        );
+
+    }
+
+
+    function hasValidPublicationAudit() {
+
+      return
+        (
+          request.resource.data.status ==
+            "draft" &&
+
+          request.resource.data.published_by_uid ==
+            null &&
+
+          request.resource.data.published_by_email ==
+            null &&
+
+          request.resource.data.published_at ==
+            null
+        ) ||
+
+        (
+          resource.data.status ==
+            "draft" &&
+
+          request.resource.data.status ==
+            "published" &&
+
+          request.resource.data.published_by_uid ==
+            request.auth.uid &&
+
+          request.resource.data.published_by_email ==
+            request.auth.token.email &&
+
+          request.resource.data.published_at ==
+            request.time
+        ) ||
+
+        (
+          resource.data.status ==
+            "published" &&
+
+          request.resource.data.published_by_uid ==
+            resource.data.published_by_uid &&
+
+          request.resource.data.published_by_email ==
+            resource.data.published_by_email &&
+
+          request.resource.data.published_at ==
+            resource.data.published_at
+        );
+
+    }
+
+
+    function hasValidWithdrawalAudit() {
+
+      return
+        (
+          request.resource.data.status !=
+            "withdrawn" &&
+
+          request.resource.data.withdrawn_by_uid ==
+            null &&
+
+          request.resource.data.withdrawn_by_email ==
+            null &&
+
+          request.resource.data.withdrawn_at ==
+            null &&
+
+          request.resource.data.withdrawal_reason ==
+            ""
+        ) ||
+
+        (
+          resource.data.status ==
+            "published" &&
+
+          request.resource.data.status ==
+            "withdrawn" &&
+
+          request.resource.data.withdrawn_by_uid ==
+            request.auth.uid &&
+
+          request.resource.data.withdrawn_by_email ==
+            request.auth.token.email &&
+
+          request.resource.data.withdrawn_at ==
+            request.time &&
+
+          request.resource.data.withdrawal_reason is string &&
+
+          request.resource.data.withdrawal_reason.size() >
+            0
+        );
+
+    }
+
+
+    function isValidLearningResourceUpdate() {
+
+      return
+        resource.data.status !=
+          "withdrawn" &&
+
+        hasValidLearningResourceContract(
+          request.resource.data
+        ) &&
+
+        preservesLearningResourceIdentity() &&
+
+        hasValidLearningResourceTransition() &&
+
+        preservesPublishedLearningAssetAuthority() &&
+
+        hasValidPublicationAudit() &&
+
+        hasValidWithdrawalAudit() &&
+
+        request.resource.data.updated_at ==
+          request.time;
+
     }
 
 
@@ -111,29 +951,18 @@ service cloud.firestore {
 
     match /users/{uid} {
 
-      /*
-       * A signed-in user may read only their own profile.
-       * Bootstrap administrators may read all user profiles.
-       */
-
       allow get: if
-        isOwner(uid) ||
+        isOwner(
+          uid
+        ) ||
         isBootstrapAdmin();
-
-      /*
-       * Collection-wide user listing is restricted to admins.
-       */
 
       allow list: if
         isBootstrapAdmin();
 
-      /*
-       * Client-side writes are disabled.
-       * Profiles must be maintained through trusted admin or
-       * backend workflows.
-       */
+      allow create, update, delete: if
+        false;
 
-      allow create, update, delete: if false;
     }
 
 
@@ -143,10 +972,12 @@ service cloud.firestore {
 
     match /faqs/{docId} {
 
-      allow read: if true;
+      allow read: if
+        true;
 
       allow create, update, delete: if
         isBootstrapAdmin();
+
     }
 
 
@@ -156,45 +987,39 @@ service cloud.firestore {
 
     match /credentials/{docId} {
 
-      /*
-       * Public verification remains available only for
-       * finalized and approved credentials.
-       *
-       * Students may also read their own credential where
-       * learner_uid is present.
-       */
-
       allow get: if
         (
-          resource.data.issued_status == "finalized" &&
+          resource.data.issued_status ==
+            "finalized" &&
+
           (
-            !("approval_status" in resource.data) ||
-            resource.data.approval_status == "approved"
+            !(
+              "approval_status" in resource.data
+            ) ||
+
+            resource.data.approval_status ==
+              "approved"
           )
         ) ||
+
         (
           isSignedIn() &&
-          "learner_uid" in resource.data &&
-          resource.data.learner_uid == request.auth.uid
-        ) ||
-        isBootstrapAdmin();
 
-      /*
-       * Queries must only be permitted when every possible
-       * returned credential satisfies the rule.
-       */
+          "learner_uid" in resource.data &&
+
+          resource.data.learner_uid ==
+            request.auth.uid
+        ) ||
+
+        isBootstrapAdmin();
 
       allow list: if
         isSignedIn() ||
         isBootstrapAdmin();
 
-      /*
-       * Client-side credential writes remain disabled.
-       * Credential ownership and lifecycle changes must flow
-       * through governed backend services.
-       */
+      allow create, update, delete: if
+        false;
 
-      allow create, update, delete: if false;
     }
 
 
@@ -204,22 +1029,15 @@ service cloud.firestore {
 
     match /credential_assets/{docId} {
 
-      /*
-       * Learners may read only published, latest assets that
-       * are assigned to their authenticated Firebase UID.
-       *
-       * Historical assets may exist before activation with
-       * learner_uid set to null. Those assets remain
-       * inaccessible to learners until identity
-       * reconciliation assigns ownership.
-       */
-
       allow get, list: if
         (
           isSignedIn() &&
 
           "learner_uid" in resource.data &&
-          resource.data.learner_uid != null &&
+
+          resource.data.learner_uid !=
+            null &&
+
           resource.data.learner_uid ==
             request.auth.uid &&
 
@@ -229,55 +1047,99 @@ service cloud.firestore {
           resource.data.is_latest ==
             true
         ) ||
+
+        isBootstrapAdmin();
+
+      allow create: if
+        isBootstrapAdmin() &&
+
+        hasRequiredCredentialAssetFields(
+          request.resource.data
+        ) &&
+
+        hasValidOptionalLearnerUid(
+          request.resource.data
+        ) &&
+
+        hasValidAssetType(
+          request.resource.data
+        );
+
+      allow update: if
+        isBootstrapAdmin() &&
+
+        preservesCredentialAssetIdentity() &&
+
+        hasRequiredCredentialAssetFields(
+          request.resource.data
+        ) &&
+
+        hasValidOptionalLearnerUid(
+          request.resource.data
+        ) &&
+
+        hasValidAssetType(
+          request.resource.data
+        );
+
+      allow delete: if
+        isBootstrapAdmin();
+
+    }
+
+
+    /* =====================================================
+       LEARNING RESOURCES — ADMIN PUBLICATION AUTHORITY
+    ===================================================== */
+
+    match /learning_resources/{documentId} {
+
+      /*
+       * Direct client access is restricted to bootstrap
+       * administrators.
+       *
+       * Learner delivery must flow through the future
+       * authorized learning-resource access broker.
+       */
+
+      allow get, list: if
         isBootstrapAdmin();
 
       /*
-       * Bootstrap administrators may publish asset metadata.
-       *
-       * credential_id is the permanent asset authority.
-       * learner_uid may be null for historical credentials
-       * that have not completed activation.
+       * New records must begin as governed drafts.
        */
 
       allow create: if
         isBootstrapAdmin() &&
-        hasRequiredCredentialAssetFields(
-          request.resource.data
-        ) &&
-        hasValidOptionalLearnerUid(
-          request.resource.data
-        ) &&
-        hasValidAssetType(
-          request.resource.data
+
+        isValidLearningResourceCreate(
+          documentId
         );
 
       /*
-       * Bootstrap administrators may republish or update
-       * asset metadata.
+       * Permitted lifecycle:
        *
-       * The permanent credential and asset identity cannot
-       * be changed through an update.
+       * draft     → draft
+       * draft     → published
+       * published → published
+       * published → withdrawn
+       *
+       * Withdrawn records are terminal.
        */
 
       allow update: if
         isBootstrapAdmin() &&
-        preservesCredentialAssetIdentity() &&
-        hasRequiredCredentialAssetFields(
-          request.resource.data
-        ) &&
-        hasValidOptionalLearnerUid(
-          request.resource.data
-        ) &&
-        hasValidAssetType(
-          request.resource.data
-        );
+
+        isValidLearningResourceUpdate();
 
       /*
-       * Deletion remains an explicit administrator action.
+       * Physical metadata deletion is prohibited.
+       * Withdrawal preserves audit and version history.
        */
 
       allow delete: if
-        isBootstrapAdmin();
+        false;
+
     }
 
 
@@ -287,10 +1149,12 @@ service cloud.firestore {
 
     match /verification_requests/{docId} {
 
-      allow create: if true;
+      allow create: if
+        true;
 
       allow read, update, delete: if
         isBootstrapAdmin();
+
     }
 
 
@@ -302,11 +1166,15 @@ service cloud.firestore {
 
       allow get: if
         isSignedIn() &&
-        request.auth.token.email == email;
+        request.auth.token.email ==
+          email;
 
-      allow list: if false;
+      allow list: if
+        false;
 
-      allow create, update, delete: if false;
+      allow create, update, delete: if
+        false;
+
     }
 
 
@@ -317,19 +1185,17 @@ service cloud.firestore {
     match /user_entitlements/{uid} {
 
       allow get: if
-        isOwner(uid) ||
+        isOwner(
+          uid
+        ) ||
         isBootstrapAdmin();
 
       allow list: if
         isBootstrapAdmin();
 
-      /*
-       * Client-side entitlement writes remain disabled.
-       * Entitlement assignment must occur through governed
-       * backend services.
-       */
+      allow create, update, delete: if
+        false;
 
-      allow create, update, delete: if false;
     }
 
 
@@ -341,6 +1207,7 @@ service cloud.firestore {
 
       allow read, write: if
         isBootstrapAdmin();
+
     }
 
 
@@ -352,6 +1219,7 @@ service cloud.firestore {
 
       allow read, write: if
         isBootstrapAdmin();
+
     }
 
 
@@ -363,6 +1231,7 @@ service cloud.firestore {
 
       allow read, write: if
         isBootstrapAdmin();
+
     }
 
 
@@ -374,6 +1243,7 @@ service cloud.firestore {
 
       allow read, write: if
         isBootstrapAdmin();
+
     }
 
 
@@ -385,6 +1255,7 @@ service cloud.firestore {
 
       allow read, write: if
         isBootstrapAdmin();
+
     }
 
 
@@ -400,6 +1271,7 @@ service cloud.firestore {
 
       allow create, update, delete: if
         isBootstrapAdmin();
+
     }
 
 
@@ -409,7 +1281,9 @@ service cloud.firestore {
 
     match /{document=**} {
 
-      allow read, write: if false;
+      allow read, write: if
+        false;
+
     }
 
   }

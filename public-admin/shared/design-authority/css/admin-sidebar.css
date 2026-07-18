@@ -1,0 +1,97 @@
+/* ==================================================
+   CENTRALIZED ADMIN SIDEBAR APPEARANCE
+   Version: 1.0.0
+================================================== */
+
+#adminSidebarContainer {
+  width: 330px;
+  min-width: 330px;
+  flex: 0 0 330px;
+}
+
+#adminSidebarContainer .sidebar {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  padding: 18px 12px;
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  box-sizing: border-box;
+}
+
+#adminSidebarContainer .sidebar ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#adminSidebarContainer .sidebar li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#adminSidebarContainer .sidebar a {
+  display: flex;
+  align-items: center;
+  min-height: 58px;
+  padding: 12px 24px;
+  box-sizing: border-box;
+
+  color: #64748b;
+  background: transparent;
+  border: 0;
+  border-left: 4px solid transparent;
+  border-radius: 12px;
+
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-decoration: none;
+
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+#adminSidebarContainer .sidebar a:hover {
+  color: #1d4ed8;
+  background: #f1f5f9;
+}
+
+#adminSidebarContainer .sidebar a.active,
+#adminSidebarContainer .sidebar a[aria-current="page"] {
+  color: #2563eb;
+  background: #e8efff;
+  border-left-color: #2563eb;
+  font-weight: 500;
+}
+
+#adminSidebarContainer .sidebar a:focus-visible {
+  outline: 3px solid rgb(37 99 235 / 28%);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  #adminSidebarContainer {
+    width: 100%;
+    min-width: 0;
+    flex-basis: auto;
+  }
+
+  #adminSidebarContainer .sidebar {
+    min-height: auto;
+    border-right: 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  #adminSidebarContainer .sidebar a {
+    min-height: 50px;
+    font-size: 17px;
+  }
+}

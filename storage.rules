@@ -8,19 +8,63 @@ service firebase.storage {
        AGILE AI UNIVERSITY
        CLOUD STORAGE SECURITY RULES
 
-       Version : 1.0.0
+       Version : 1.1.0
        Status  : ACTIVE
 
        Security Model
        -----------------------------------------------------
-       • Firebase Authentication is required
-       • Admin Portal is the credential asset publisher
-       • Student Portal is a credential asset consumer only
-       • Credential assets are stored under credential-assets
-       • Bootstrap administrators may upload and replace assets
-       • Authenticated users may read published asset files
+       • Firebase Authentication is the identity authority
+       • Bootstrap administrators are publication authorities
+       • Admin Portal publishes credential assets
+       • Admin Portal manages protected learning resources
+       • Student Portal consumes governed resources only
+       • Credential assets retain existing authenticated access
+       • Licensed learning resources remain admin-only in Storage
+       • Learning-resource files are immutable after upload
+       • Replacement requires a new version path
        • Client-side deletion is prohibited
        • All unspecified Storage access is denied
+
+       Storage Domains
+       -----------------------------------------------------
+       credential-assets/
+         Existing generated credential artifacts.
+
+       learning-resources/
+         Protected programme learning resources and licensed
+         course materials.
+
+       Protected Learning Delivery
+       -----------------------------------------------------
+       Learners must not access learning-resources directly.
+
+       A governed backend access broker must:
+       • authenticate the learner;
+       • verify the learner's programme entitlement;
+       • verify resource publication state;
+       • verify preview/download policy;
+       • provide short-lived authorized access.
+
+       Change History
+       -----------------------------------------------------
+       v1.1.0
+       • Added protected learning-resources domain
+       • Added programme-code validation
+       • Added resource-ID validation
+       • Added immutable version-path validation
+       • Added safe filename validation
+       • Added file-size validation
+       • Added governed MIME-type validation
+       • Restricted direct learning-resource reads to admins
+       • Prohibited overwrite and deletion of learning resources
+       • Preserved existing credential-assets behaviour
+
+       v1.0.0
+       • Established credential-assets security rules
+       • Enabled authenticated credential-asset reads
+       • Enabled bootstrap-admin asset publication
+       • Prohibited client-side deletion
+       • Established default-deny policy
     ===================================================== */
 
 
@@ -29,22 +73,220 @@ service firebase.storage {
     ===================================================== */
 
     function isSignedIn() {
-      return request.auth != null;
+
+      return
+        request.auth != null;
+
     }
 
+
     function isBootstrapAdmin() {
-    return isSignedIn() &&
+
+      return
+        isSignedIn() &&
+
         request.auth.token.email != null &&
+
         request.auth.token.email in [
-        "dileep@agileai.university",
-        "dileepav@gmail.com",
-        "laau.aaiu@gmail.com"
+          "dileep@agileai.university",
+          "dileepav@gmail.com",
+          "laau.aaiu@gmail.com"
         ];
+
+    }
+
+
+    /* =====================================================
+       LEARNING-RESOURCE HELPERS
+    ===================================================== */
+
+    function hasValidLearningProgramCode(
+      programCode
+    ) {
+
+      /*
+       * Programme codes must use uppercase letters, numbers,
+       * underscores or hyphens.
+       *
+       * Examples:
+       * AOP
+       * AIPA
+       * AAIA
+       * AAIP
+       */
+
+      return
+        programCode is string &&
+
+        programCode.matches(
+          '^[A-Z0-9][A-Z0-9_-]{1,19}$'
+        );
+
+    }
+
+
+    function hasValidLearningResourceId(
+      resourceId
+    ) {
+
+      /*
+       * Resource IDs are stable lowercase identifiers.
+       *
+       * Examples:
+       * aop-licensed-material
+       * aop-reference-guide
+       */
+
+      return
+        resourceId is string &&
+
+        resourceId.matches(
+          '^[a-z0-9][a-z0-9-]{2,79}$'
+        );
+
+    }
+
+
+    function hasValidLearningResourceVersion(
+      version
+    ) {
+
+      /*
+       * Storage versions use:
+       * v1
+       * v2
+       * v3
+       */
+
+      return
+        version is string &&
+
+        version.matches(
+          '^v[1-9][0-9]*$'
+        );
+
+    }
+
+
+    function hasValidLearningResourceFileName(
+      fileName
+    ) {
+
+      /*
+       * Filenames must:
+       * • begin with a letter or number;
+       * • contain only letters, numbers, dots,
+       *   underscores and hyphens;
+       * • remain within 150 characters.
+       */
+
+      return
+        fileName is string &&
+
+        fileName.matches(
+          '^[A-Za-z0-9][A-Za-z0-9._-]{0,149}$'
+        );
+
+    }
+
+
+    function hasValidLearningResourceSize() {
+
+      /*
+       * Initial protected-resource limit:
+       * 50 MiB per uploaded object.
+       *
+       * Large videos should use a governed external provider
+       * or a separately designed video-delivery architecture.
+       */
+
+      return
+        request.resource.size > 0 &&
+
+        request.resource.size <=
+          50 * 1024 * 1024;
+
+    }
+
+
+    function hasValidLearningResourceContentType() {
+
+      /*
+       * Approved initial resource formats:
+       *
+       * • PDF
+       * • Plain text
+       * • CSV
+       * • Microsoft Word
+       * • Microsoft PowerPoint
+       * • Microsoft Excel
+       * • OpenDocument text
+       * • OpenDocument presentation
+       * • OpenDocument spreadsheet
+       * • PNG
+       * • JPEG
+       *
+       * Executables, HTML, JavaScript, archives and unknown
+       * binary formats are deliberately excluded.
+       */
+
+      return
+        request.resource.contentType != null &&
+
+        request.resource.contentType in [
+          "application/pdf",
+          "text/plain",
+          "text/csv",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "application/vnd.ms-powerpoint",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "application/vnd.ms-excel",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "application/vnd.oasis.opendocument.text",
+          "application/vnd.oasis.opendocument.presentation",
+          "application/vnd.oasis.opendocument.spreadsheet",
+          "image/png",
+          "image/jpeg"
+        ];
+
+    }
+
+
+    function isValidLearningResourceUpload(
+      programCode,
+      resourceId,
+      version,
+      fileName
+    ) {
+
+      return
+        hasValidLearningProgramCode(
+          programCode
+        ) &&
+
+        hasValidLearningResourceId(
+          resourceId
+        ) &&
+
+        hasValidLearningResourceVersion(
+          version
+        ) &&
+
+        hasValidLearningResourceFileName(
+          fileName
+        ) &&
+
+        hasValidLearningResourceSize() &&
+
+        hasValidLearningResourceContentType();
+
     }
 
 
     /* =====================================================
        CREDENTIAL ASSETS
+       EXISTING PRODUCTION BEHAVIOUR PRESERVED
     ===================================================== */
 
     match /credential-assets/{credentialId}/{allPaths=**} {
@@ -54,14 +296,18 @@ service firebase.storage {
        * generated credential assets.
        *
        * Firestore credential_assets rules remain responsible
-       * for governing which asset metadata a learner can discover.
+       * for governing which asset metadata a learner can
+       * discover.
        */
 
-      allow read: if isSignedIn();
+      allow read: if
+        isSignedIn();
 
       /*
        * Only approved bootstrap administrators may upload or
        * replace credential assets through the Admin Portal.
+       *
+       * Existing credential-generation behaviour is preserved.
        */
 
       allow create, update: if
@@ -69,11 +315,93 @@ service firebase.storage {
 
       /*
        * Credential asset deletion is intentionally disabled.
-       * Asset retirement should be handled through governed
-       * metadata and versioning rather than client deletion.
+       *
+       * Asset retirement must be handled through governed
+       * metadata and versioning.
        */
 
-      allow delete: if false;
+      allow delete: if
+        false;
+
+    }
+
+
+    /* =====================================================
+       PROTECTED LEARNING RESOURCES
+
+       Canonical Path
+       -----------------------------------------------------
+       learning-resources/
+         {programCode}/
+           {resourceId}/
+             {version}/
+               {fileName}
+
+       Example
+       -----------------------------------------------------
+       learning-resources/
+         AOP/
+           aop-licensed-material/
+             v1/
+               aop-licensed-material.pdf
+    ===================================================== */
+
+    match /learning-resources/{programCode}/{resourceId}/{version}/{fileName} {
+
+      /*
+       * Direct Storage reads are restricted to approved
+       * administrators.
+       *
+       * Learners must obtain access through the future
+       * authorized learning-resource access broker.
+       */
+
+      allow read: if
+        isBootstrapAdmin();
+
+      /*
+       * Administrators may create a new immutable resource
+       * object only when:
+       *
+       * • the path follows the governed convention;
+       * • the file is not empty;
+       * • the file is within the size limit;
+       * • the MIME type is approved.
+       */
+
+      allow create: if
+        isBootstrapAdmin() &&
+
+        isValidLearningResourceUpload(
+          programCode,
+          resourceId,
+          version,
+          fileName
+        );
+
+      /*
+       * Existing protected learning-resource objects cannot
+       * be overwritten.
+       *
+       * Replacement requires a new version path, such as:
+       *
+       * v1 → v2
+       */
+
+      allow update: if
+        false;
+
+      /*
+       * Client-side deletion is prohibited.
+       *
+       * Resource withdrawal is performed through governed
+       * Firestore publication metadata. Physical retention
+       * preserves auditability and version history.
+       */
+
+      allow delete: if
+        false;
+
     }
 
 
@@ -82,7 +410,10 @@ service firebase.storage {
     ===================================================== */
 
     match /{allPaths=**} {
-      allow read, write: if false;
+
+      allow read, write: if
+        false;
+
     }
 
   }

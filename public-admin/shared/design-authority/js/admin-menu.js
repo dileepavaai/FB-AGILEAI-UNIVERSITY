@@ -10,14 +10,14 @@
 
    Governance
    ------------------------------------------
-   - Introduced centralized admin menu authority
-   - Introduced centralized admin sidebar renderer
-   - Credential Operations adopted as pilot surface
+   - Introduced centralized Admin menu authority
+   - Introduced centralized Admin sidebar renderer
+   - Credential Operations adopted as a pilot surface
    - Learning Resource Management registered as an
      authoritative Admin publication surface
-   - Legacy pages remain compatible
-   - Active-state conflicts eliminated
-   - Future menu additions managed from a
+   - Legacy Admin pages remain compatible
+   - Active-state conflicts are eliminated
+   - Future menu additions are managed through this
      single navigation authority file
 
    Architecture
@@ -30,9 +30,11 @@
 
    Change Policy
    ------------------------------------------
-   New admin navigation items must be added
-   here first before being rendered across
-   admin surfaces.
+   New Admin navigation items must be registered
+   here before being rendered across Admin surfaces.
+
+   Existing IDs and URLs must not be changed without
+   reviewing all dependent Admin surfaces.
 
    Change History
    ------------------------------------------
@@ -45,48 +47,48 @@
    - Established centralized Admin navigation
 ================================================== */
 
-export const ADMIN_MENU = [
+export const ADMIN_MENU = Object.freeze([
 
-  {
+  Object.freeze({
     id: "dashboard",
     label: "Dashboard",
     href: "/index.html"
-  },
+  }),
 
-  {
+  Object.freeze({
     id: "lead-intelligence",
     label: "Lead Intelligence",
     href: "/leads.html"
-  },
+  }),
 
-  {
+  Object.freeze({
     id: "credential-operations",
     label: "Credential Operations",
     href: "/credential-operations/"
-  },
+  }),
 
-  {
+  Object.freeze({
     id: "learning-resource-management",
     label: "Learning Resource Management",
     href: "/learning-resource-management/"
-  },
+  }),
 
-  {
+  Object.freeze({
     id: "trainer-management",
     label: "Trainer Management",
     href: "/trainer-management/"
-  },
+  }),
 
-  {
+  Object.freeze({
     id: "reconciliation",
     label: "Reconciliation",
     href: "/reconciliation.html"
-  },
+  }),
 
-  {
+  Object.freeze({
     id: "audit-logs",
     label: "Audit Logs",
     href: "/audit-logs.html"
-  }
+  })
 
-];
+]);

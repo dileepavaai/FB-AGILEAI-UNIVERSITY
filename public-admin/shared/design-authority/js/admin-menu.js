@@ -1,6 +1,6 @@
 /* ==================================================
    ADMIN NAVIGATION AUTHORITY
-   Version: 1.0.0
+   Version: 1.1.0
    Status: PILOT DEPLOYED
 
    Purpose
@@ -13,6 +13,8 @@
    - Introduced centralized admin menu authority
    - Introduced centralized admin sidebar renderer
    - Credential Operations adopted as pilot surface
+   - Learning Resource Management registered as an
+     authoritative Admin publication surface
    - Legacy pages remain compatible
    - Active-state conflicts eliminated
    - Future menu additions managed from a
@@ -31,6 +33,16 @@
    New admin navigation items must be added
    here first before being rendered across
    admin surfaces.
+
+   Change History
+   ------------------------------------------
+   v1.1.0
+   - Added Learning Resource Management
+   - Preserved all existing navigation IDs
+   - Preserved all existing navigation URLs
+
+   v1.0.0
+   - Established centralized Admin navigation
 ================================================== */
 
 export const ADMIN_MENU = [
@@ -54,11 +66,17 @@ export const ADMIN_MENU = [
   },
 
   {
+    id: "learning-resource-management",
+    label: "Learning Resource Management",
+    href: "/learning-resource-management/"
+  },
+
+  {
     id: "trainer-management",
     label: "Trainer Management",
     href: "/trainer-management/"
-},
-  
+  },
+
   {
     id: "reconciliation",
     label: "Reconciliation",

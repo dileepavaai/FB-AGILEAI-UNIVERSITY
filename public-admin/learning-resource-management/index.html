@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <title>Learning Resource Management – Admin</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <!-- 🔒 CORE SYSTEM -->
+  <link
+    rel="stylesheet"
+    href="../assets/css/site.css"
+  />
+
+  <!-- 🎨 DESIGN AUTHORITY -->
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/refinement.css"
+  />
+
+  <!-- 🧩 COMMON SURFACES -->
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/common.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/tables.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/typography.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/micro-interactions.css"
+  />
+
+  <!-- 📚 LEARNING RESOURCE MANAGEMENT -->
+  <link
+    rel="stylesheet"
+    href="./assets/css/learning-resource-management.css"
+  />
+
+  <!-- =====================================================
+       AGILE AI UNIVERSITY
+       LEARNING RESOURCE MANAGEMENT
+
+       Version : 1.0.1
+       Status  : ADMIN AUTHORITY
+
+       Governance
+       -----------------------------------------------------
+       • Admin Portal owns learning-resource registration
+       • Firestore stores governed resource metadata
+       • Firebase Storage stores protected resource files
+       • Protected files are immutable after upload
+       • Replacements require a new version
+       • Resources follow draft → published → withdrawn
+       • Students cannot directly administer resources
+       • Client-side deletion is prohibited
+  ====================================================== -->
+</head>
+
+<body class="app-loading">
+
+  <!-- 🔷 HEADER -->
+  <div id="headerContainer"></div>
+
+  <div class="layout">
+
+    <!-- 🔷 SIDEBAR -->
+    <div id="adminSidebarContainer"></div>
+
+    <main
+      id="learning-resource-management"
+      class="content"
+    >
+
+      <!-- 🔐 LOGIN -->
+      <section id="loginView">
+
+        <h2>Admin Access</h2>
+
+        <p>
+          Please sign in with your authorized administrative account.
+        </p>
+
+        <button
+          id="loginBtn"
+          class="btn btn-primary"
+          type="button"
+        >
+          Sign in with Google
+        </button>
+
+      </section>
+
+      <!-- 🔷 APPLICATION -->
+      <section
+        id="appView"
+        class="hidden"
+      >
+
+        <!-- PAGE HEADER -->
+        <div class="section">
+
+          <div class="learning-resource-page-header">
+
+            <div>
+
+              <h2>Learning Resource Management</h2>
+
+              <p class="page-subtitle">
+                Register, upload, publish, version, and withdraw governed
+                learning resources and licensed course materials.
+              </p>
+
+            </div>
+
+            <div class="learning-resource-page-actions">
+
+              <button
+                id="learning-resource-refresh"
+                class="btn btn-secondary"
+                type="button"
+              >
+                Refresh
+              </button>
+
+              <button
+                id="learning-resource-create"
+                class="btn btn-primary"
+                type="button"
+              >
+                Create Resource
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- STATUS -->
+        <div
+          id="learning-resource-status"
+          class="learning-resource-status hidden"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+        <!-- LOADING -->
+        <div
+          id="learning-resource-loading"
+          class="section hidden"
+          aria-live="polite"
+        >
+          <div class="card">
+            Loading learning resources…
+          </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="section">
+
+          <div class="card">
+
+            <div class="card-title">
+              Resource Summary
+            </div>
+
+            <div
+              id="learning-resource-summary"
+              class="learning-resource-summary-grid"
+            ></div>
+
+          </div>
+
+        </div>
+
+        <!-- FILTERS -->
+        <div class="section">
+
+          <div class="card">
+
+            <div class="card-title">
+              Resource Registry
+            </div>
+
+            <div class="learning-resource-filter-grid">
+
+              <div class="form-group">
+
+                <label for="learning-resource-filter-search">
+                  Search
+                </label>
+
+                <input
+                  id="learning-resource-filter-search"
+                  type="search"
+                  placeholder="Search by title or resource ID"
+                  autocomplete="off"
+                />
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="learning-resource-filter-program">
+                  Programme
+                </label>
+
+                <input
+                  id="learning-resource-filter-program"
+                  type="text"
+                  placeholder="All programmes"
+                  autocomplete="off"
+                />
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="learning-resource-filter-status">
+                  Status
+                </label>
+
+                <select id="learning-resource-filter-status">
+                  <option value="">All statuses</option>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="withdrawn">Withdrawn</option>
+                </select>
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="learning-resource-filter-category">
+                  Category
+                </label>
+
+                <select id="learning-resource-filter-category">
+                  <option value="">All categories</option>
+                  <option value="reference_material">
+                    Reference Material
+                  </option>
+                  <option value="licensed_course_material">
+                    Licensed Course Material
+                  </option>
+                  <option value="supporting_document">
+                    Supporting Document
+                  </option>
+                  <option value="video">Video</option>
+                  <option value="download">Download</option>
+                </select>
+
+              </div>
+
+              <div class="form-group">
+
+                <label for="learning-resource-filter-type">
+                  Resource Type
+                </label>
+
+                <select id="learning-resource-filter-type">
+                  <option value="">All resource types</option>
+                  <option value="document">Document</option>
+                  <option value="image">Image</option>
+                  <option value="external_video">External Video</option>
+                  <option value="external_link">External Link</option>
+                </select>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RESOURCE LIST -->
+        <div class="section">
+
+          <div
+            id="learning-resource-list"
+            class="learning-resource-list"
+          ></div>
+
+          <div
+            id="learning-resource-empty-state"
+            class="card learning-resource-empty-state hidden"
+          >
+            <h3>No learning resources found</h3>
+
+            <p>
+              Create a governed learning-resource draft or adjust the
+              current registry filters.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- RESOURCE FORM -->
+        <section
+          id="learning-resource-form-panel"
+          class="section hidden"
+          aria-labelledby="learning-resource-form-heading"
+        >
+
+          <div class="card">
+
+            <div class="learning-resource-form-header">
+
+              <div>
+
+                <div
+                  id="learning-resource-form-heading"
+                  class="card-title"
+                >
+                  Create Learning Resource
+                </div>
+
+                <p>
+                  Register governed metadata before publishing a learning
+                  resource.
+                </p>
+
+              </div>
+
+              <button
+                id="learning-resource-form-cancel"
+                class="btn btn-secondary"
+                type="button"
+              >
+                Close
+              </button>
+
+            </div>
+
+            <form
+              id="learning-resource-form"
+              novalidate
+            >
+
+              <div class="learning-resource-form-grid">
+
+                <div class="form-group">
+
+                  <label for="learning-resource-program-code">
+                    Programme Code
+                  </label>
+
+                  <input
+                    id="learning-resource-program-code"
+                    name="program_code"
+                    type="text"
+                    placeholder="AOP"
+                    required
+                    maxlength="40"
+                    autocomplete="off"
+                  />
+
+                </div>
+
+                <div class="form-group">
+
+                  <label for="learning-resource-id">
+                    Resource ID
+                  </label>
+
+                  <input
+                    id="learning-resource-id"
+                    name="resource_id"
+                    type="text"
+                    placeholder="aop-reference-guide"
+                    required
+                    maxlength="100"
+                    autocomplete="off"
+                  />
+
+                </div>
+
+                <div class="form-group">
+
+                  <label for="learning-resource-version">
+                    Version
+                  </label>
+
+                  <input
+                    id="learning-resource-version"
+                    name="version"
+                    type="number"
+                    value="1"
+                    min="1"
+                    step="1"
+                    required
+                  />
+
+                </div>
+
+                <div class="form-group learning-resource-form-wide">
+
+                  <label for="learning-resource-title">
+                    Title
+                  </label>
+
+                  <input
+                    id="learning-resource-title"
+                    name="title"
+                    type="text"
+                    required
+                    maxlength="200"
+                    autocomplete="off"
+                  />
+
+                </div>
+
+                <div class="form-group learning-resource-form-wide">
+
+                  <label for="learning-resource-description">
+                    Description
+                  </label>
+
+                  <textarea
+                    id="learning-resource-description"
+                    name="description"
+                    rows="5"
+                    required
+                    maxlength="2000"
+                  ></textarea>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label for="learning-resource-type">
+                    Resource Type
+                  </label>
+
+                  <select
+                    id="learning-resource-type"
+                    name="resource_type"
+                    required
+                  >
+                    <option value="">Select resource type</option>
+                    <option value="document">Document</option>
+                    <option value="image">Image</option>
+                    <option value="external_video">
+                      External Video
+                    </option>
+                    <option value="external_link">External Link</option>
+                  </select>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label for="learning-resource-category">
+                    Category
+                  </label>
+
+                  <select
+                    id="learning-resource-category"
+                    name="category"
+                    required
+                  >
+                    <option value="">Select category</option>
+
+                    <option value="reference_material">
+                      Reference Material
+                    </option>
+
+                    <option value="licensed_course_material">
+                      Licensed Course Material
+                    </option>
+
+                    <option value="supporting_document">
+                      Supporting Document
+                    </option>
+
+                    <option value="video">
+                      Video
+                    </option>
+
+                    <option value="download">
+                      Download
+                    </option>
+                  </select>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label for="learning-resource-delivery-type">
+                    Delivery Type
+                  </label>
+
+                  <select
+                    id="learning-resource-delivery-type"
+                    name="delivery_type"
+                    required
+                  >
+                    <option value="">Select delivery type</option>
+                    <option value="protected_storage">
+                      Protected Storage
+                    </option>
+                    <option value="external_video">
+                      External Video
+                    </option>
+                    <option value="external_link">
+                      External Link
+                    </option>
+                  </select>
+
+                </div>
+
+                <div class="form-group learning-resource-form-wide">
+
+                  <label for="learning-resource-external-url">
+                    External URL
+                  </label>
+
+                  <input
+                    id="learning-resource-external-url"
+                    name="external_url"
+                    type="url"
+                    placeholder="https://"
+                    autocomplete="url"
+                  />
+
+                  <small>
+                    Required only for External Video or External Link delivery.
+                  </small>
+
+                </div>
+
+                <div class="form-group learning-resource-form-wide">
+
+                  <label for="learning-resource-file">
+                    Protected Resource File
+                  </label>
+
+                  <input
+                    id="learning-resource-file"
+                    name="resource_file"
+                    type="file"
+                  />
+
+                  <small>
+                    Uploaded files are immutable. Replacing a protected file
+                    requires a new resource version.
+                  </small>
+
+                </div>
+
+                <div class="form-group">
+
+                  <label for="learning-resource-display-order">
+                    Display Order
+                  </label>
+
+                  <input
+                    id="learning-resource-display-order"
+                    name="display_order"
+                    type="number"
+                    value="0"
+                    min="0"
+                    step="1"
+                  />
+
+                </div>
+
+              </div>
+
+              <fieldset class="learning-resource-permissions">
+
+                <legend>Consumption Controls</legend>
+
+                <label class="learning-resource-checkbox">
+
+                  <input
+                    name="preview_allowed"
+                    type="checkbox"
+                  />
+
+                  <span>Preview allowed</span>
+
+                </label>
+
+                <label class="learning-resource-checkbox">
+
+                  <input
+                    name="download_allowed"
+                    type="checkbox"
+                  />
+
+                  <span>Download allowed</span>
+
+                </label>
+
+                <label class="learning-resource-checkbox">
+
+                  <input
+                    name="embed_allowed"
+                    type="checkbox"
+                  />
+
+                  <span>Embedding allowed</span>
+
+                </label>
+
+              </fieldset>
+
+              <div class="learning-resource-form-actions">
+
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                >
+                  Save Draft
+                </button>
+
+                <button
+                  id="learning-resource-form-cancel-secondary"
+                  type="button"
+                  class="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+
+        </section>
+
+        <!-- GOVERNANCE NOTICE -->
+        <div class="section">
+
+          <div class="card">
+
+            <div class="card-title">
+              Governance Notice
+            </div>
+
+            <p>
+              Learning Resource Management is the authoritative
+              administrative surface for registering and publishing
+              learning-resource metadata within Agile AI University.
+            </p>
+
+            <p>
+              Protected licensed materials remain in Firebase Storage and
+              are not exposed using permanent client-side download URLs.
+              Student access will be provided through governed entitlement
+              and credential verification.
+            </p>
+
+            <p>
+              Published resource versions are immutable. Corrections and
+              replacements require a new version, while withdrawn resources
+              remain available for governance and audit history.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- 🔷 FOOTER -->
+  <div id="footerContainer"></div>
+
+  <!-- 🔥 ADMIN APPLICATION BOOTSTRAP -->
+  <script type="module">
+
+    import {
+      initAdminApp
+    } from "../assets/js/admin-app.js";
+
+    import {
+      loadAdminSidebar
+    } from "../shared/design-authority/js/admin-sidebar.js";
+
+    import {
+      initialize as initializeLearningResourceManagement
+    } from "./assets/js/learning-resource-controller.js";
+
+
+    loadAdminSidebar(
+      "learning-resource-management"
+    );
+
+
+    initAdminApp();
+
+
+    const initializePage = () => {
+
+      initializeLearningResourceManagement()
+        .catch(
+          (error) => {
+
+            console.error(
+              "[LearningResourceManagement] Initialization failed:",
+              error
+            );
+
+          }
+        );
+
+    };
+
+
+    if (
+      document.readyState === "loading"
+    ) {
+
+      document.addEventListener(
+        "DOMContentLoaded",
+        initializePage,
+        {
+          once: true
+        }
+      );
+
+    }
+    else {
+
+      initializePage();
+
+    }
+
+  </script>
+
+</body>
+</html>

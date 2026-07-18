@@ -1,0 +1,1325 @@
+/* ==========================================================
+   Agile AI University
+   Admin Learning Resource Management
+
+   File    : learning-resource-management.css
+   Version : 1.0.0
+   Status  : ACTIVE
+
+   Scope
+   ----------------------------------------------------------
+   Styles are restricted to the Learning Resource Management
+   Admin surface and do not modify shared Admin components.
+========================================================== */
+
+
+/* ==========================================================
+   PAGE
+========================================================== */
+
+#learning-resource-management {
+    --lrm-border:
+        #dfe3ea;
+
+    --lrm-border-strong:
+        #cbd2dc;
+
+    --lrm-surface:
+        #ffffff;
+
+    --lrm-surface-muted:
+        #f7f8fa;
+
+    --lrm-text:
+        #111827;
+
+    --lrm-text-muted:
+        #667085;
+
+    --lrm-primary:
+        #2457f5;
+
+    --lrm-primary-soft:
+        #edf2ff;
+
+    --lrm-success:
+        #08783e;
+
+    --lrm-success-soft:
+        #eaf8f0;
+
+    --lrm-warning:
+        #9a5b00;
+
+    --lrm-warning-soft:
+        #fff6e5;
+
+    --lrm-danger:
+        #b42318;
+
+    --lrm-danger-soft:
+        #fff0ee;
+
+    --lrm-info:
+        #175cd3;
+
+    --lrm-info-soft:
+        #eff6ff;
+
+    --lrm-radius:
+        14px;
+
+    --lrm-radius-small:
+        9px;
+
+    --lrm-shadow:
+        0 4px 14px rgba(16, 24, 40, 0.06);
+
+    color:
+        var(--lrm-text);
+}
+
+
+#learning-resource-management [hidden] {
+    display:
+        none !important;
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.learning-resource-page-header {
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        24px;
+}
+
+
+.learning-resource-page-header h2 {
+    margin:
+        0 0 8px;
+}
+
+
+.learning-resource-page-actions {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-end;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        10px;
+}
+
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.learning-resource-status {
+    margin:
+        0 0 20px;
+
+    padding:
+        13px 16px;
+
+    border:
+        1px solid var(--lrm-border);
+
+    border-radius:
+        var(--lrm-radius-small);
+
+    background:
+        var(--lrm-surface);
+
+    color:
+        var(--lrm-text);
+
+    font-size:
+        0.95rem;
+
+    line-height:
+        1.5;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.learning-resource-status--info {
+    border-color:
+        #b2ccff;
+
+    background:
+        var(--lrm-info-soft);
+
+    color:
+        var(--lrm-info);
+}
+
+
+.learning-resource-status--success {
+    border-color:
+        #a6e3bf;
+
+    background:
+        var(--lrm-success-soft);
+
+    color:
+        var(--lrm-success);
+}
+
+
+.learning-resource-status--warning {
+    border-color:
+        #f2cf83;
+
+    background:
+        var(--lrm-warning-soft);
+
+    color:
+        var(--lrm-warning);
+}
+
+
+.learning-resource-status--error {
+    border-color:
+        #f5b7b1;
+
+    background:
+        var(--lrm-danger-soft);
+
+    color:
+        var(--lrm-danger);
+}
+
+
+/* ==========================================================
+   LOADING
+========================================================== */
+
+#learning-resource-loading .card {
+    position:
+        relative;
+
+    padding-left:
+        50px;
+
+    color:
+        var(--lrm-text-muted);
+}
+
+
+#learning-resource-loading .card::before {
+    position:
+        absolute;
+
+    top:
+        50%;
+
+    left:
+        20px;
+
+    width:
+        17px;
+
+    height:
+        17px;
+
+    margin-top:
+        -10px;
+
+    border:
+        3px solid #dbe3f5;
+
+    border-top-color:
+        var(--lrm-primary);
+
+    border-radius:
+        50%;
+
+    content:
+        "";
+
+    animation:
+        learning-resource-spin 0.8s linear infinite;
+}
+
+
+@keyframes learning-resource-spin {
+    to {
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+/* ==========================================================
+   SUMMARY
+========================================================== */
+
+.learning-resource-summary-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(5, minmax(120px, 1fr));
+
+    gap:
+        14px;
+
+    margin-top:
+        16px;
+}
+
+
+.learning-resource-metric {
+    display:
+        flex;
+
+    min-width:
+        0;
+
+    min-height:
+        92px;
+
+    padding:
+        16px;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        center;
+
+    gap:
+        7px;
+
+    border:
+        1px solid var(--lrm-border);
+
+    border-radius:
+        var(--lrm-radius-small);
+
+    background:
+        var(--lrm-surface-muted);
+}
+
+
+.learning-resource-metric__value {
+    color:
+        var(--lrm-text);
+
+    font-size:
+        1.7rem;
+
+    font-weight:
+        700;
+
+    line-height:
+        1;
+}
+
+
+.learning-resource-metric__label {
+    color:
+        var(--lrm-text-muted);
+
+    font-size:
+        0.86rem;
+
+    line-height:
+        1.35;
+}
+
+
+.learning-resource-metric--draft {
+    border-color:
+        #f2cf83;
+
+    background:
+        var(--lrm-warning-soft);
+}
+
+
+.learning-resource-metric--published {
+    border-color:
+        #a6e3bf;
+
+    background:
+        var(--lrm-success-soft);
+}
+
+
+.learning-resource-metric--withdrawn {
+    border-color:
+        #f5b7b1;
+
+    background:
+        var(--lrm-danger-soft);
+}
+
+
+/* ==========================================================
+   FILTERS
+========================================================== */
+
+.learning-resource-filter-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(220px, 2fr)
+        repeat(4, minmax(150px, 1fr));
+
+    align-items:
+        end;
+
+    gap:
+        14px;
+
+    margin-top:
+        18px;
+}
+
+
+#learning-resource-management .form-group {
+    display:
+        flex;
+
+    min-width:
+        0;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+}
+
+
+#learning-resource-management .form-group label {
+    color:
+        var(--lrm-text);
+
+    font-size:
+        0.88rem;
+
+    font-weight:
+        600;
+}
+
+
+#learning-resource-management .form-group small {
+    color:
+        var(--lrm-text-muted);
+
+    font-size:
+        0.78rem;
+
+    line-height:
+        1.45;
+}
+
+
+#learning-resource-management input,
+#learning-resource-management select,
+#learning-resource-management textarea {
+    box-sizing:
+        border-box;
+
+    width:
+        100%;
+
+    min-height:
+        42px;
+
+    padding:
+        9px 11px;
+
+    border:
+        1px solid var(--lrm-border-strong);
+
+    border-radius:
+        8px;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--lrm-text);
+
+    font:
+        inherit;
+
+    transition:
+        border-color 140ms ease,
+        box-shadow 140ms ease,
+        background-color 140ms ease;
+}
+
+
+#learning-resource-management textarea {
+    min-height:
+        120px;
+
+    resize:
+        vertical;
+}
+
+
+#learning-resource-management input:focus,
+#learning-resource-management select:focus,
+#learning-resource-management textarea:focus {
+    border-color:
+        var(--lrm-primary);
+
+    outline:
+        none;
+
+    box-shadow:
+        0 0 0 3px rgba(36, 87, 245, 0.14);
+}
+
+
+#learning-resource-management input:disabled,
+#learning-resource-management select:disabled,
+#learning-resource-management textarea:disabled {
+    cursor:
+        not-allowed;
+
+    background:
+        #f0f2f5;
+
+    color:
+        #7b8494;
+}
+
+
+/* ==========================================================
+   RESOURCE LIST
+========================================================== */
+
+.learning-resource-list {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap:
+        18px;
+}
+
+
+.learning-resource-list[aria-busy="true"] {
+    opacity:
+        0.7;
+
+    pointer-events:
+        none;
+}
+
+
+/* ==========================================================
+   RESOURCE CARD
+========================================================== */
+
+.learning-resource-card {
+    display:
+        flex;
+
+    min-width:
+        0;
+
+    padding:
+        20px;
+
+    flex-direction:
+        column;
+
+    gap:
+        16px;
+
+    border:
+        1px solid var(--lrm-border);
+
+    border-radius:
+        var(--lrm-radius);
+
+    background:
+        var(--lrm-surface);
+
+    box-shadow:
+        var(--lrm-shadow);
+}
+
+
+.learning-resource-card__header {
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        16px;
+}
+
+
+.learning-resource-card__heading {
+    min-width:
+        0;
+}
+
+
+.learning-resource-card__title {
+    margin:
+        0;
+
+    color:
+        var(--lrm-text);
+
+    font-size:
+        1.08rem;
+
+    line-height:
+        1.4;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.learning-resource-card__identity {
+    margin:
+        6px 0 0;
+
+    color:
+        var(--lrm-text-muted);
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+    font-size:
+        0.78rem;
+
+    line-height:
+        1.45;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.learning-resource-card__description {
+    margin:
+        0;
+
+    color:
+        var(--lrm-text-muted);
+
+    font-size:
+        0.92rem;
+
+    line-height:
+        1.6;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* ==========================================================
+   STATUS BADGES
+========================================================== */
+
+.learning-resource-badge {
+    display:
+        inline-flex;
+
+    flex:
+        0 0 auto;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        5px 10px;
+
+    border:
+        1px solid var(--lrm-border);
+
+    border-radius:
+        999px;
+
+    background:
+        var(--lrm-surface-muted);
+
+    color:
+        var(--lrm-text-muted);
+
+    font-size:
+        0.72rem;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        0.02em;
+
+    line-height:
+        1.2;
+}
+
+
+.learning-resource-badge--draft {
+    border-color:
+        #f2cf83;
+
+    background:
+        var(--lrm-warning-soft);
+
+    color:
+        var(--lrm-warning);
+}
+
+
+.learning-resource-badge--published {
+    border-color:
+        #a6e3bf;
+
+    background:
+        var(--lrm-success-soft);
+
+    color:
+        var(--lrm-success);
+}
+
+
+.learning-resource-badge--withdrawn {
+    border-color:
+        #f5b7b1;
+
+    background:
+        var(--lrm-danger-soft);
+
+    color:
+        var(--lrm-danger);
+}
+
+
+/* ==========================================================
+   METADATA
+========================================================== */
+
+.learning-resource-card__metadata {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap:
+        12px;
+
+    margin:
+        0;
+}
+
+
+.learning-resource-card__metadata-item {
+    min-width:
+        0;
+
+    padding:
+        10px 12px;
+
+    border:
+        1px solid var(--lrm-border);
+
+    border-radius:
+        8px;
+
+    background:
+        var(--lrm-surface-muted);
+}
+
+
+.learning-resource-card__metadata-label {
+    margin:
+        0 0 4px;
+
+    color:
+        var(--lrm-text-muted);
+
+    font-size:
+        0.72rem;
+
+    font-weight:
+        600;
+
+    text-transform:
+        uppercase;
+}
+
+
+.learning-resource-card__metadata-value {
+    margin:
+        0;
+
+    color:
+        var(--lrm-text);
+
+    font-size:
+        0.84rem;
+
+    line-height:
+        1.4;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+/* ==========================================================
+   POLICIES
+========================================================== */
+
+.learning-resource-card__policies {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        7px;
+}
+
+
+.learning-resource-policy {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    padding:
+        4px 8px;
+
+    border:
+        1px solid var(--lrm-border);
+
+    border-radius:
+        999px;
+
+    font-size:
+        0.72rem;
+
+    line-height:
+        1.2;
+}
+
+
+.learning-resource-policy--enabled {
+    border-color:
+        #a6e3bf;
+
+    background:
+        var(--lrm-success-soft);
+
+    color:
+        var(--lrm-success);
+}
+
+
+.learning-resource-policy--disabled {
+    background:
+        #f3f4f6;
+
+    color:
+        #6b7280;
+}
+
+
+/* ==========================================================
+   RESOURCE ACTIONS
+========================================================== */
+
+.learning-resource-card__actions {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        8px;
+
+    margin-top:
+        auto;
+
+    padding-top:
+        4px;
+}
+
+
+.learning-resource-action {
+    min-height:
+        36px;
+
+    padding:
+        7px 11px;
+
+    border:
+        1px solid var(--lrm-border-strong);
+
+    border-radius:
+        7px;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--lrm-text);
+
+    cursor:
+        pointer;
+
+    font:
+        inherit;
+
+    font-size:
+        0.8rem;
+
+    font-weight:
+        600;
+
+    transition:
+        background-color 140ms ease,
+        border-color 140ms ease,
+        color 140ms ease,
+        transform 140ms ease;
+}
+
+
+.learning-resource-action:hover:not(:disabled) {
+    border-color:
+        var(--lrm-primary);
+
+    color:
+        var(--lrm-primary);
+
+    transform:
+        translateY(-1px);
+}
+
+
+.learning-resource-action--primary {
+    border-color:
+        var(--lrm-primary);
+
+    background:
+        var(--lrm-primary);
+
+    color:
+        #ffffff;
+}
+
+
+.learning-resource-action--primary:hover:not(:disabled) {
+    background:
+        #1947d1;
+
+    color:
+        #ffffff;
+}
+
+
+.learning-resource-action--danger {
+    border-color:
+        #efb0aa;
+
+    background:
+        var(--lrm-danger-soft);
+
+    color:
+        var(--lrm-danger);
+}
+
+
+.learning-resource-action--danger:hover:not(:disabled) {
+    border-color:
+        var(--lrm-danger);
+
+    background:
+        var(--lrm-danger);
+
+    color:
+        #ffffff;
+}
+
+
+.learning-resource-action:disabled {
+    cursor:
+        not-allowed;
+
+    opacity:
+        0.55;
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.learning-resource-empty-state {
+    padding:
+        38px 24px;
+
+    text-align:
+        center;
+}
+
+
+.learning-resource-empty-state h3 {
+    margin:
+        0 0 8px;
+}
+
+
+.learning-resource-empty-state p {
+    max-width:
+        620px;
+
+    margin:
+        0 auto;
+
+    color:
+        var(--lrm-text-muted);
+
+    line-height:
+        1.55;
+}
+
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+.learning-resource-form-header {
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    margin-bottom:
+        22px;
+}
+
+
+.learning-resource-form-header p {
+    margin:
+        8px 0 0;
+
+    color:
+        var(--lrm-text-muted);
+
+    line-height:
+        1.5;
+}
+
+
+.learning-resource-form-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap:
+        18px;
+}
+
+
+.learning-resource-form-wide {
+    grid-column:
+        1 / -1;
+}
+
+
+.learning-resource-permissions {
+    display:
+        flex;
+
+    margin:
+        22px 0 0;
+
+    padding:
+        16px;
+
+    align-items:
+        center;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        14px 22px;
+
+    border:
+        1px solid var(--lrm-border);
+
+    border-radius:
+        var(--lrm-radius-small);
+
+    background:
+        var(--lrm-surface-muted);
+}
+
+
+.learning-resource-permissions legend {
+    padding:
+        0 7px;
+
+    color:
+        var(--lrm-text);
+
+    font-size:
+        0.88rem;
+
+    font-weight:
+        700;
+}
+
+
+.learning-resource-checkbox {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    color:
+        var(--lrm-text);
+
+    cursor:
+        pointer;
+
+    font-size:
+        0.88rem;
+}
+
+
+#learning-resource-management
+.learning-resource-checkbox input {
+    width:
+        17px;
+
+    min-height:
+        17px;
+
+    height:
+        17px;
+
+    margin:
+        0;
+
+    padding:
+        0;
+}
+
+
+.learning-resource-form-actions {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-end;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        10px;
+
+    margin-top:
+        22px;
+
+    padding-top:
+        18px;
+
+    border-top:
+        1px solid var(--lrm-border);
+}
+
+
+/* ==========================================================
+   ACCESSIBILITY
+========================================================== */
+
+#learning-resource-management button:focus-visible,
+#learning-resource-management input:focus-visible,
+#learning-resource-management select:focus-visible,
+#learning-resource-management textarea:focus-visible {
+    outline:
+        3px solid rgba(36, 87, 245, 0.25);
+
+    outline-offset:
+        2px;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    #learning-resource-management *,
+    #learning-resource-management *::before,
+    #learning-resource-management *::after {
+        scroll-behavior:
+            auto !important;
+
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+
+        transition-duration:
+            0.01ms !important;
+    }
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 1200px) {
+    .learning-resource-summary-grid {
+        grid-template-columns:
+            repeat(3, minmax(120px, 1fr));
+    }
+
+    .learning-resource-filter-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .learning-resource-card__metadata {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 900px) {
+    .learning-resource-page-header,
+    .learning-resource-form-header {
+        flex-direction:
+            column;
+    }
+
+    .learning-resource-page-actions {
+        width:
+            100%;
+
+        justify-content:
+            flex-start;
+    }
+
+    .learning-resource-list {
+        grid-template-columns:
+            minmax(0, 1fr);
+    }
+
+    .learning-resource-form-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 640px) {
+    .learning-resource-summary-grid,
+    .learning-resource-filter-grid,
+    .learning-resource-form-grid,
+    .learning-resource-card__metadata {
+        grid-template-columns:
+            minmax(0, 1fr);
+    }
+
+    .learning-resource-form-wide {
+        grid-column:
+            auto;
+    }
+
+    .learning-resource-card {
+        padding:
+            16px;
+    }
+
+    .learning-resource-card__header {
+        flex-direction:
+            column;
+    }
+
+    .learning-resource-form-actions {
+        align-items:
+            stretch;
+
+        flex-direction:
+            column;
+    }
+
+    .learning-resource-form-actions .btn {
+        width:
+            100%;
+    }
+}

@@ -3,155 +3,303 @@
 <head>
   <meta charset="utf-8" />
   <title>Reconciliation – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
 
   <!-- 🔒 BASE -->
-  <link rel="stylesheet" href="assets/css/site.css" />
+  <link
+    rel="stylesheet"
+    href="assets/css/site.css"
+  />
 
   <!-- 🎨 DESIGN SYSTEM -->
-  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/refinement.css"
+  />
 
   <!-- 🧩 COMMON -->
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/common.css"
+  />
 
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/tables.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/micro-interactions.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/typography.css"
+  />
 </head>
 
 <body class="app-loading">
 
-<div id="headerContainer"></div>
+  <!-- 🔷 HEADER -->
+  <div id="headerContainer"></div>
 
-<div class="layout">
+  <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
-  <nav class="sidebar" id="adminNav" style="display:none;">
-    <ul>
-      <li><a href="index.html" class="active">Dashboard</a></li>
-      <li><a href="leads.html">Lead Intelligence</a></li>
-      <li><a href="credential-operations/">Credential Operations</a></li>
-      <li><a href="trainer-management/dashboard/index.html">Trainer Management</a></li>
-      <li><a href="reconciliation.html">Reconciliation</a></li>
-      <li><a href="audit-logs.html">Audit Logs</a></li>
-    </ul>
-  </nav>
+    <!--
+      🔷 CENTRALIZED ADMIN SIDEBAR
 
-  <main class="content">
+      Navigation is generated from:
+      shared/design-authority/js/admin-menu.js
+    -->
+    <div id="adminSidebarContainer"></div>
 
-    <!-- 🔐 LOGIN -->
-    <section id="loginView">
-      <h2>Admin Access</h2>
-      <p>Please sign in with your authorized account.</p>
-      <button id="loginBtn" class="btn btn-primary">Sign in with Google</button>
-    </section>
+    <main class="content">
 
-    <!-- 🔷 APP -->
-    <section id="appView" class="hidden">
+      <!-- 🔐 LOGIN -->
+      <section id="loginView">
 
-      <!-- 🧠 HEADER -->
-      <div class="section">
-        <h2>Reconciliation</h2>
-        <p class="page-subtitle">
-          Read-only financial and entitlement reconciliation. All records are system-generated and audit-safe.
+        <h2>Admin Access</h2>
+
+        <p>
+          Please sign in with your authorized account.
         </p>
-      </div>
 
-      <!-- 📊 SUMMARY -->
-      <div class="metrics section">
-        <div class="metric-card">
-          <div class="metric-label">Transactions</div>
-          <div class="metric-value" id="summary-total-count">—</div>
-        </div>
+        <button
+          id="loginBtn"
+          class="btn btn-primary"
+          type="button"
+        >
+          Sign in with Google
+        </button>
 
-        <div class="metric-card">
-          <div class="metric-label">Total Amount</div>
-          <div class="metric-value" id="summary-total-amount">—</div>
-        </div>
+      </section>
 
-        <div class="metric-card">
-          <div class="metric-label">Failed / Refunded</div>
-          <div class="metric-value" id="summary-failed-amount">—</div>
-        </div>
+      <!-- 🔷 APP -->
+      <section
+        id="appView"
+        class="hidden"
+      >
 
-        <div class="metric-card">
-          <div class="metric-label">Currency</div>
-          <div class="metric-value" id="summary-currency">—</div>
-        </div>
-      </div>
+        <!-- 🧠 HEADER -->
+        <div class="section">
 
-      <!-- 🔍 FILTERS -->
-      <div class="card section">
+          <h2>Reconciliation</h2>
 
-        <div class="card-title">Filters</div>
-
-        <div class="leads-filters">
-
-          <select id="filter-status">
-            <option value="">All Statuses</option>
-            <option value="captured">Captured</option>
-            <option value="failed">Failed</option>
-            <option value="refunded">Refunded</option>
-          </select>
-
-          <select id="filter-currency">
-            <option value="">All Currencies</option>
-            <option value="INR">INR</option>
-            <option value="USD">USD</option>
-          </select>
-
-          <input type="date" id="filter-from" />
-          <input type="date" id="filter-to" />
-
-          <button id="exportCsvBtn" class="btn btn-secondary">
-            Export CSV
-          </button>
+          <p class="page-subtitle">
+            Read-only financial and entitlement reconciliation.
+            All records are system-generated and audit-safe.
+          </p>
 
         </div>
 
-      </div>
+        <!-- 📊 SUMMARY -->
+        <div class="metrics section">
 
-      <!-- 📊 TABLE -->
-      <div class="card section">
+          <div class="metric-card">
 
-        <div class="card-title">Transactions</div>
+            <div class="metric-label">
+              Transactions
+            </div>
 
-        <div class="table-wrapper">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Payment ID</th>
-                <th>Email</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Captured At</th>
-              </tr>
-            </thead>
-            <tbody id="reconBody">
-              <tr>
-                <td colspan="6">Loading...</td>
-              </tr>
-            </tbody>
-          </table>
+            <div
+              class="metric-value"
+              id="summary-total-count"
+            >
+              —
+            </div>
+
+          </div>
+
+          <div class="metric-card">
+
+            <div class="metric-label">
+              Total Amount
+            </div>
+
+            <div
+              class="metric-value"
+              id="summary-total-amount"
+            >
+              —
+            </div>
+
+          </div>
+
+          <div class="metric-card">
+
+            <div class="metric-label">
+              Failed / Refunded
+            </div>
+
+            <div
+              class="metric-value"
+              id="summary-failed-amount"
+            >
+              —
+            </div>
+
+          </div>
+
+          <div class="metric-card">
+
+            <div class="metric-label">
+              Currency
+            </div>
+
+            <div
+              class="metric-value"
+              id="summary-currency"
+            >
+              —
+            </div>
+
+          </div>
+
         </div>
 
-      </div>
+        <!-- 🔍 FILTERS -->
+        <div class="card section">
 
-    </section>
+          <div class="card-title">
+            Filters
+          </div>
 
-  </main>
-</div>
+          <div class="leads-filters">
 
-<div id="footerContainer"></div>
+            <select id="filter-status">
 
-<!-- 🔥 ADMIN -->
-<script type="module">
-import { initAdminApp } from "./assets/js/admin-app.js";
+              <option value="">
+                All Statuses
+              </option>
 
-/* FIXED PATH */
-initAdminApp("reconciliation.js");
-</script>
+              <option value="captured">
+                Captured
+              </option>
+
+              <option value="failed">
+                Failed
+              </option>
+
+              <option value="refunded">
+                Refunded
+              </option>
+
+            </select>
+
+            <select id="filter-currency">
+
+              <option value="">
+                All Currencies
+              </option>
+
+              <option value="INR">
+                INR
+              </option>
+
+              <option value="USD">
+                USD
+              </option>
+
+            </select>
+
+            <input
+              type="date"
+              id="filter-from"
+            />
+
+            <input
+              type="date"
+              id="filter-to"
+            />
+
+            <button
+              id="exportCsvBtn"
+              class="btn btn-secondary"
+              type="button"
+            >
+              Export CSV
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- 📊 TABLE -->
+        <div class="card section">
+
+          <div class="card-title">
+            Transactions
+          </div>
+
+          <div class="table-wrapper">
+
+            <table class="table">
+
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Payment ID</th>
+                  <th>Email</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Captured At</th>
+                </tr>
+              </thead>
+
+              <tbody id="reconBody">
+                <tr>
+                  <td colspan="6">
+                    Loading...
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- 🔷 FOOTER -->
+  <div id="footerContainer"></div>
+
+  <!-- 🔥 ADMIN BOOTSTRAP -->
+  <script type="module">
+
+    import { initAdminApp }
+      from "./assets/js/admin-app.js";
+
+    import { loadAdminSidebar }
+      from "./shared/design-authority/js/admin-sidebar.js";
+
+    /*
+      Render navigation from the centralized ADMIN_MENU authority
+      and mark Reconciliation as the active Admin surface.
+    */
+
+    loadAdminSidebar(
+      "reconciliation"
+    );
+
+    /*
+      Preserve the existing Reconciliation application module.
+    */
+
+    initAdminApp(
+      "reconciliation.js"
+    );
+
+  </script>
 
 </body>
 </html>

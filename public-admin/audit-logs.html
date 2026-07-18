@@ -2,135 +2,232 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+
   <title>Audit Logs – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
 
   <!-- 🔒 BASE -->
-  <link rel="stylesheet" href="assets/css/site.css" />
+  <link
+    rel="stylesheet"
+    href="assets/css/site.css"
+  />
 
   <!-- 🎨 DESIGN SYSTEM -->
-  <link rel="stylesheet" href="shared/design-authority/css/refinement.css" />
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/refinement.css"
+  />
 
   <!-- 🧩 COMMON -->
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/micro-interactions.css" />
-  <link rel="stylesheet" href="shared/design-authority/css/surfaces/common/typography.css" />
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/common.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/tables.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/micro-interactions.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="shared/design-authority/css/surfaces/common/typography.css"
+  />
 </head>
 
 <body class="app-loading">
 
-<div id="headerContainer"></div>
+  <!-- 🔷 HEADER -->
+  <div id="headerContainer"></div>
 
-<div class="layout">
+  <div class="layout">
 
-  <!-- 🔷 SIDEBAR -->
-  <nav class="sidebar" id="adminNav" style="display:none;">
-    <ul>
-      <li><a href="index.html" class="active">Dashboard</a></li>
-      <li><a href="leads.html">Lead Intelligence</a></li>
-      <li><a href="credential-operations/">Credential Operations</a></li>
-      <li><a href="trainer-management/dashboard/index.html">Trainer Management</a></li>
-      <li><a href="reconciliation.html">Reconciliation</a></li>
-      <li><a href="audit-logs.html">Audit Logs</a></li>
-    </ul>
-  </nav>
+    <!--
+      🔷 CENTRALIZED ADMIN SIDEBAR
 
-  <main class="content">
+      Navigation is generated from:
+      shared/design-authority/js/admin-menu.js
+    -->
+    <div id="adminSidebarContainer"></div>
 
-    <!-- 🔐 LOGIN -->
-    <section id="loginView">
-      <h2>Admin Access</h2>
-      <p class="page-subtitle">Restricted to authorized administrators</p>
-      <button id="loginBtn" class="btn btn-primary">Sign in</button>
-    </section>
+    <main class="content">
 
-    <!-- 🔷 APP -->
-    <section id="appView" class="hidden">
+      <!-- 🔐 LOGIN -->
+      <section id="loginView">
 
-      <!-- 🧠 HEADER -->
-      <div class="section">
-        <h2>Audit Logs</h2>
+        <h2>Admin Access</h2>
+
         <p class="page-subtitle">
-          Immutable history of learner status updates (audit-safe)
+          Restricted to authorized administrators
         </p>
-      </div>
 
-      <!-- 🔍 FILTER BAR -->
-      <div class="card section">
+        <button
+          id="loginBtn"
+          class="btn btn-primary"
+          type="button"
+        >
+          Sign in
+        </button>
 
-        <div class="card-title">Filters</div>
+      </section>
 
-        <div class="toolbar">
+      <!-- 🔷 APP -->
+      <section
+        id="appView"
+        class="hidden"
+      >
 
-          <select id="filter-status" onchange="applyAuditFilters()">
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
-            <option value="dropped">Dropped</option>
-          </select>
+        <!-- 🧠 HEADER -->
+        <div class="section">
 
-          <input
-            id="filter-email"
-            placeholder="Search by email"
-            oninput="applyAuditFilters()"
-          />
+          <h2>Audit Logs</h2>
 
-          <button class="btn btn-secondary" onclick="applyAuditFilters()">
-            Apply
-          </button>
-
-          <button class="btn btn-primary" onclick="exportAuditCSV()">
-            Export CSV
-          </button>
+          <p class="page-subtitle">
+            Immutable history of learner status updates (audit-safe)
+          </p>
 
         </div>
 
-      </div>
+        <!-- 🔍 FILTER BAR -->
+        <div class="card section">
 
-      <!-- 📊 TABLE -->
-      <div class="card section">
+          <div class="card-title">
+            Filters
+          </div>
 
-        <div class="card-title">Audit Trail</div>
+          <div class="toolbar">
 
-        <div class="table-wrapper">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Learner</th>
-                <th>Email</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Updated By</th>
-                <th>Time</th>
-              </tr>
-            </thead>
+            <select
+              id="filter-status"
+              onchange="applyAuditFilters()"
+            >
+              <option value="">
+                All Status
+              </option>
 
-            <tbody id="auditTable">
-              <tr>
-                <td colspan="6">Loading audit logs...</td>
-              </tr>
-            </tbody>
+              <option value="active">
+                Active
+              </option>
 
-          </table>
+              <option value="completed">
+                Completed
+              </option>
+
+              <option value="dropped">
+                Dropped
+              </option>
+            </select>
+
+            <input
+              id="filter-email"
+              type="search"
+              placeholder="Search by email"
+              oninput="applyAuditFilters()"
+            />
+
+            <button
+              class="btn btn-secondary"
+              type="button"
+              onclick="applyAuditFilters()"
+            >
+              Apply
+            </button>
+
+            <button
+              class="btn btn-primary"
+              type="button"
+              onclick="exportAuditCSV()"
+            >
+              Export CSV
+            </button>
+
+          </div>
+
         </div>
 
-      </div>
+        <!-- 📊 TABLE -->
+        <div class="card section">
 
-    </section>
+          <div class="card-title">
+            Audit Trail
+          </div>
 
-  </main>
-</div>
+          <div class="table-wrapper">
 
-<div id="footerContainer"></div>
+            <table class="table">
 
-<!-- 🔥 ADMIN SYSTEM -->
-<script type="module">
-import { initAdminApp } from "./assets/js/admin-app.js";
+              <thead>
+                <tr>
+                  <th>Learner</th>
+                  <th>Email</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Updated By</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
 
-/* ✅ CONNECTED TO AUDIT MODULE */
-initAdminApp("audit-logs.js");
-</script>
+              <tbody id="auditTable">
+
+                <tr>
+                  <td colspan="6">
+                    Loading audit logs...
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- 🔷 FOOTER -->
+  <div id="footerContainer"></div>
+
+  <!-- 🔥 ADMIN SYSTEM -->
+  <script type="module">
+
+    import { initAdminApp }
+      from "./assets/js/admin-app.js";
+
+    import { loadAdminSidebar }
+      from "./shared/design-authority/js/admin-sidebar.js";
+
+    /*
+      Render navigation from the centralized
+      ADMIN_MENU authority and mark Audit Logs active.
+    */
+
+    loadAdminSidebar(
+      "audit-logs"
+    );
+
+    /*
+      Preserve the existing Audit Logs module.
+    */
+
+    initAdminApp(
+      "audit-logs.js"
+    );
+
+  </script>
 
 </body>
 </html>

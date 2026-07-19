@@ -3,47 +3,47 @@
    Admin Learning Resource Management
 
    File      : learning-resource-service.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
-   Phase     : Admin Learning Resource Discovery
+   Authority : Admin Portal
 
    Purpose
    ----------------------------------------------------------
-   Provides read-only Admin access to governed learning-resource
-   metadata stored in Firestore.
+   Provides read-only administrative access to governed
+   learning-resource metadata stored in Firestore.
 
    Responsibilities
    ----------------------------------------------------------
-   ✓ Require an authorized administrator
-   ✓ Retrieve a resource by document ID
-   ✓ List governed learning resources
-   ✓ Filter by programme, status, category and type
-   ✓ Search resource titles and descriptions
-   ✓ Resolve resource version history
-   ✓ Resolve the latest published version
-   ✓ Normalize Firestore records into read-only ViewModels
-   ✓ Fail closed when records are malformed
+   • Require an authorized administrator
+   • Retrieve a resource by Firestore document ID
+   • List governed learning resources
+   • Filter resources by governed metadata
+   • Search resource metadata
+   • Resolve resource version history
+   • Resolve the latest published version
+   • Produce administrative summary information
+   • Normalize Firestore records into immutable ViewModels
+   • Exclude malformed records safely
+   • Deduplicate simultaneous registry reads
 
-   Non Responsibilities
+   Non-Responsibilities
    ----------------------------------------------------------
-   ✗ Create or update records
-   ✗ Upload files
-   ✗ Publish resources
-   ✗ Withdraw resources
-   ✗ Delete records
-   ✗ Generate download URLs
-   ✗ Resolve learner entitlement
-   ✗ Render HTML
+   • Create or update records
+   • Upload protected files
+   • Publish or withdraw resources
+   • Delete records
+   • Generate learner download URLs
+   • Resolve learner entitlement
+   • Render HTML
 
    Governance
    ----------------------------------------------------------
    • This is an Admin read service
    • Publisher owns lifecycle mutations
    • Storage service owns protected uploads
-   • Student delivery must use an authorized backend
-   • Malformed records are excluded
-   • Permanent protected download URLs are not exposed
-
+   • Student delivery requires an authorized backend
+   • Malformed records fail closed
+   • Protected download URLs are never exposed here
 ========================================================== */
 
 import {
@@ -74,15 +74,125 @@ const MODULE_NAME =
     "LearningResourceService";
 
 const MODULE_VERSION =
-    "1.0.0";
+    "1.1.0";
 
 const COLLECTION_NAME =
     "learning_resources";
 
 
+/*
+ * Used only to deduplicate simultaneous reads such as:
+ *
+ * listResources()
+ * getSummary()
+ *
+ * The promise is cleared immediately after completion, ensuring
+ * that later refreshes perform a new authoritative Firestore read.
+ */
+let activeRegistryReadPromise =
+    null;
+
+
 /* ==========================================================
-   HELPERS
+   GENERAL HELPERS
 ========================================================== */
+
+function normalizeString(
+    value
+) {
+
+    return LearningResourceContract.normalizeString(
+        value
+    );
+
+}
+
+
+function normalizeNullableString(
+    value
+) {
+
+    return (
+        normalizeString(
+            value
+        ) ||
+        null
+    );
+
+}
+
+
+function normalizeLowercase(
+    value
+) {
+
+    return normalizeString(
+        value
+    ).toLowerCase();
+
+}
+
+
+function normalizeBoolean(
+    value
+) {
+
+    return value === true;
+
+}
+
+
+function normalizeNonNegativeInteger(
+    value,
+    fallback = 0
+) {
+
+    const normalizedValue =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isInteger(
+            normalizedValue
+        ) ||
+        normalizedValue < 0
+    ) {
+
+        return fallback;
+
+    }
+
+    return normalizedValue;
+
+}
+
+
+function normalizePositiveInteger(
+    value,
+    fallback = 1
+) {
+
+    const normalizedValue =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isInteger(
+            normalizedValue
+        ) ||
+        normalizedValue < 1
+    ) {
+
+        return fallback;
+
+    }
+
+    return normalizedValue;
+
+}
+
 
 function toIsoString(
     value
@@ -139,6 +249,11 @@ function toIsoString(
         error
     ) {
 
+        console.warn(
+            `[${MODULE_NAME}] Timestamp normalization failed:`,
+            error
+        );
+
         return null;
 
     }
@@ -146,20 +261,20 @@ function toIsoString(
 }
 
 
-function normalizeNullableString(
-    value
+function freezeArray(
+    values
 ) {
 
-    const normalizedValue =
-        LearningResourceContract.normalizeString(
-            value
-        );
-
-    return normalizedValue ||
-        null;
+    return Object.freeze([
+        ...values
+    ]);
 
 }
 
+
+/* ==========================================================
+   RECORD NORMALIZATION
+========================================================== */
 
 function normalizeRecord(
     snapshot
@@ -167,6 +282,7 @@ function normalizeRecord(
 
     if (
         !snapshot ||
+        typeof snapshot.exists !== "function" ||
         !snapshot.exists()
     ) {
 
@@ -179,7 +295,7 @@ function normalizeRecord(
         {};
 
     const documentId =
-        LearningResourceContract.normalizeString(
+        normalizeString(
             snapshot.id
         );
 
@@ -193,35 +309,78 @@ function normalizeRecord(
             data.program_code
         );
 
-    const version =
-        LearningResourceContract.normalizeVersion(
-            data.version
+    const resourceType =
+        normalizeLowercase(
+            data.resource_type
         );
 
-    if (
+    const category =
+        normalizeLowercase(
+            data.category
+        );
+
+    const deliveryType =
+        normalizeLowercase(
+            data.delivery_type
+        );
+
+    const status =
+        normalizeLowercase(
+            data.status
+        );
+
+    const version =
+        normalizePositiveInteger(
+            LearningResourceContract.normalizeVersion(
+                data.version
+            ),
+            1
+        );
+
+    const title =
+        normalizeString(
+            data.title
+        );
+
+    const malformed =
         !LearningResourceContract.isValidDocumentId(
             documentId
         ) ||
         !resourceId ||
         !programCode ||
+        !title ||
         !LearningResourceContract.resourceTypes.includes(
-            data.resource_type
+            resourceType
         ) ||
         !LearningResourceContract.categories.includes(
-            data.category
+            category
         ) ||
         !LearningResourceContract.deliveryTypes.includes(
-            data.delivery_type
+            deliveryType
         ) ||
         !LearningResourceContract.statuses.includes(
-            data.status
-        )
+            status
+        );
+
+    if (
+        malformed
     ) {
 
         console.warn(
             `[${MODULE_NAME}] Malformed record excluded:`,
             {
-                documentId
+                documentId:
+                    documentId ||
+                    snapshot.id ||
+                    null,
+
+                resourceId:
+                    resourceId ||
+                    null,
+
+                programCode:
+                    programCode ||
+                    null
             }
         );
 
@@ -237,24 +396,18 @@ function normalizeRecord(
 
         programCode,
 
-        title:
-            LearningResourceContract.normalizeString(
-                data.title
-            ),
+        title,
 
         description:
-            LearningResourceContract.normalizeString(
+            normalizeString(
                 data.description
             ),
 
-        resourceType:
-            data.resource_type,
+        resourceType,
 
-        category:
-            data.category,
+        category,
 
-        deliveryType:
-            data.delivery_type,
+        deliveryType,
 
         storagePath:
             normalizeNullableString(
@@ -282,47 +435,45 @@ function normalizeRecord(
             ),
 
         fileSize:
-            Number.isFinite(
-                Number(
-                    data.file_size
-                )
-            )
-                ? Number(
-                    data.file_size
-                )
-                : 0,
+            normalizeNonNegativeInteger(
+                data.file_size,
+                0
+            ),
 
         previewAllowed:
-            data.preview_allowed ===
-            true,
+            normalizeBoolean(
+                data.preview_allowed
+            ),
 
         downloadAllowed:
-            data.download_allowed ===
-            true,
+            normalizeBoolean(
+                data.download_allowed
+            ),
 
         embedAllowed:
-            data.embed_allowed ===
-            true,
+            normalizeBoolean(
+                data.embed_allowed
+            ),
 
-        status:
-            data.status,
+        status,
 
         isActive:
-            data.is_active ===
-            true,
+            normalizeBoolean(
+                data.is_active
+            ),
 
         isLatest:
-            data.is_latest ===
-            true,
+            normalizeBoolean(
+                data.is_latest
+            ),
 
         version,
 
         displayOrder:
-            Number.isInteger(
-                data.display_order
-            )
-                ? data.display_order
-                : 10000,
+            normalizeNonNegativeInteger(
+                data.display_order,
+                10000
+            ),
 
         createdByUid:
             normalizeNullableString(
@@ -370,7 +521,7 @@ function normalizeRecord(
             ),
 
         withdrawalReason:
-            LearningResourceContract.normalizeString(
+            normalizeString(
                 data.withdrawal_reason
             ),
 
@@ -380,26 +531,11 @@ function normalizeRecord(
             ),
 
         source:
-            LearningResourceContract.normalizeString(
+            normalizeString(
                 data.source
             )
 
     };
-
-    if (
-        !viewModel.title
-    ) {
-
-        console.warn(
-            `[${MODULE_NAME}] Untitled record excluded:`,
-            {
-                documentId
-            }
-        );
-
-        return null;
-
-    }
 
     return Object.freeze(
         viewModel
@@ -407,6 +543,10 @@ function normalizeRecord(
 
 }
 
+
+/* ==========================================================
+   RESOURCE SORTING
+========================================================== */
 
 function compareResources(
     first,
@@ -427,7 +567,12 @@ function compareResources(
 
     const titleComparison =
         first.title.localeCompare(
-            second.title
+            second.title,
+            undefined,
+            {
+                sensitivity:
+                    "base"
+            }
         );
 
     if (
@@ -438,6 +583,17 @@ function compareResources(
 
     }
 
+    if (
+        first.resourceId !==
+        second.resourceId
+    ) {
+
+        return first.resourceId.localeCompare(
+            second.resourceId
+        );
+
+    }
+
     return (
         second.version -
         first.version
@@ -445,6 +601,10 @@ function compareResources(
 
 }
 
+
+/* ==========================================================
+   FILTER NORMALIZATION
+========================================================== */
 
 function normalizeFilters(
     filters = {}
@@ -459,44 +619,46 @@ function normalizeFilters(
             ),
 
         status:
-            LearningResourceContract.normalizeString(
+            normalizeLowercase(
                 filters.status
             ),
 
         category:
-            LearningResourceContract.normalizeString(
+            normalizeLowercase(
                 filters.category
             ),
 
         resourceType:
-            LearningResourceContract.normalizeString(
+            normalizeLowercase(
                 filters.resourceType ||
                 filters.resource_type
             ),
 
         deliveryType:
-            LearningResourceContract.normalizeString(
+            normalizeLowercase(
                 filters.deliveryType ||
                 filters.delivery_type
             ),
 
         search:
-            LearningResourceContract.normalizeString(
+            normalizeLowercase(
                 filters.search
-            ).toLowerCase(),
+            ),
 
         latestOnly:
-            filters.latestOnly ===
-            true,
+            filters.latestOnly === true,
 
         activeOnly:
-            filters.activeOnly ===
-            true
+            filters.activeOnly === true
 
     });
 
 }
 
+
+/* ==========================================================
+   FILTER MATCHING
+========================================================== */
 
 function matchesFilters(
     resource,
@@ -576,14 +738,28 @@ function matchesFilters(
     ) {
 
         const searchableText = [
+
             resource.documentId,
+
             resource.resourceId,
+
             resource.programCode,
+
             resource.title,
+
             resource.description,
+
             resource.category,
+
             resource.resourceType,
-            resource.fileName || ""
+
+            resource.deliveryType,
+
+            resource.status,
+
+            resource.fileName ||
+                ""
+
         ]
             .join(
                 " "
@@ -608,6 +784,87 @@ function matchesFilters(
 
 
 /* ==========================================================
+   AUTHORITATIVE REGISTRY READ
+========================================================== */
+
+async function readRegistry() {
+
+    await requireAuthorizedAdmin();
+
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                COLLECTION_NAME
+            )
+        );
+
+    const resources =
+        [];
+
+    snapshot.forEach(
+        (
+            documentSnapshot
+        ) => {
+
+            const resource =
+                normalizeRecord(
+                    documentSnapshot
+                );
+
+            if (
+                resource
+            ) {
+
+                resources.push(
+                    resource
+                );
+
+            }
+
+        }
+    );
+
+    resources.sort(
+        compareResources
+    );
+
+    return freezeArray(
+        resources
+    );
+
+}
+
+
+/*
+ * Concurrent calls share one active Firestore operation.
+ * The active promise is always cleared after completion.
+ */
+async function getRegistrySnapshot() {
+
+    if (
+        !activeRegistryReadPromise
+    ) {
+
+        activeRegistryReadPromise =
+            readRegistry()
+                .finally(
+                    () => {
+
+                        activeRegistryReadPromise =
+                            null;
+
+                    }
+                );
+
+    }
+
+    return activeRegistryReadPromise;
+
+}
+
+
+/* ==========================================================
    GET RESOURCE
 ========================================================== */
 
@@ -618,7 +875,7 @@ async function getResource(
     await requireAuthorizedAdmin();
 
     const normalizedDocumentId =
-        LearningResourceContract.normalizeString(
+        normalizeString(
             documentId
         );
 
@@ -634,26 +891,50 @@ async function getResource(
 
     }
 
-    const snapshot =
-        await getDoc(
-            doc(
-                db,
-                COLLECTION_NAME,
-                normalizedDocumentId
-            )
+    try {
+
+        const snapshot =
+            await getDoc(
+                doc(
+                    db,
+                    COLLECTION_NAME,
+                    normalizedDocumentId
+                )
+            );
+
+        if (
+            !snapshot.exists()
+        ) {
+
+            return null;
+
+        }
+
+        return normalizeRecord(
+            snapshot
         );
 
-    if (
-        !snapshot.exists()
+    }
+    catch (
+        error
     ) {
 
-        return null;
+        console.error(
+            `[${MODULE_NAME}] Resource retrieval failed:`,
+            {
+                moduleVersion:
+                    MODULE_VERSION,
+
+                documentId:
+                    normalizedDocumentId,
+
+                error
+            }
+        );
+
+        throw error;
 
     }
-
-    return normalizeRecord(
-        snapshot
-    );
 
 }
 
@@ -666,8 +947,6 @@ async function listResources(
     filters = {}
 ) {
 
-    await requireAuthorizedAdmin();
-
     const normalizedFilters =
         normalizeFilters(
             filters
@@ -675,46 +954,20 @@ async function listResources(
 
     try {
 
-        const snapshot =
-            await getDocs(
-                collection(
-                    db,
-                    COLLECTION_NAME
-                )
-            );
+        const registryResources =
+            await getRegistrySnapshot();
 
-        const resources = [];
-
-        snapshot.forEach(
-            (
-                documentSnapshot
-            ) => {
-
-                const resource =
-                    normalizeRecord(
-                        documentSnapshot
-                    );
-
-                if (
-                    resource &&
+        const filteredResources =
+            registryResources.filter(
+                (
+                    resource
+                ) => (
                     matchesFilters(
                         resource,
                         normalizedFilters
                     )
-                ) {
-
-                    resources.push(
-                        resource
-                    );
-
-                }
-
-            }
-        );
-
-        resources.sort(
-            compareResources
-        );
+                )
+            );
 
         console.info(
             `[${MODULE_NAME}] Resources resolved:`,
@@ -722,17 +975,20 @@ async function listResources(
                 moduleVersion:
                     MODULE_VERSION,
 
-                total:
-                    resources.length,
+                registryTotal:
+                    registryResources.length,
+
+                filteredTotal:
+                    filteredResources.length,
 
                 filters:
                     normalizedFilters
             }
         );
 
-        return Object.freeze([
-            ...resources
-        ]);
+        return freezeArray(
+            filteredResources
+        );
 
     }
     catch (
@@ -783,7 +1039,7 @@ async function listVersions(
     }
 
     const resources =
-        await listResources();
+        await getRegistrySnapshot();
 
     const versions =
         resources
@@ -805,9 +1061,9 @@ async function listVersions(
                 )
             );
 
-    return Object.freeze([
-        ...versions
-    ]);
+    return freezeArray(
+        versions
+    );
 
 }
 
@@ -845,65 +1101,71 @@ async function getLatestPublishedVersion(
 
 
 /* ==========================================================
-   ADMIN SUMMARY
+   SUMMARY
 ========================================================== */
 
-async function getSummary() {
+function summarizeResources(
+    resources = []
+) {
 
-    const resources =
-        await listResources();
+    const normalizedResources =
+        Array.isArray(
+            resources
+        )
+            ? resources
+            : [];
 
-    const summary = {
+    const programmes =
+        new Set();
 
-        total:
-            resources.length,
+    let drafts =
+        0;
 
-        drafts:
-            0,
+    let published =
+        0;
 
-        published:
-            0,
+    let withdrawn =
+        0;
 
-        withdrawn:
-            0,
+    let active =
+        0;
 
-        active:
-            0,
+    let licensedMaterials =
+        0;
 
-        programmes:
-            new Set()
+    let referenceMaterials =
+        0;
 
-    };
-
-    resources.forEach(
+    normalizedResources.forEach(
         (
             resource
         ) => {
 
-            if (
-                resource.status ===
-                "draft"
+            switch (
+                resource.status
             ) {
 
-                summary.drafts += 1;
+                case "draft":
 
-            }
+                    drafts += 1;
 
-            if (
-                resource.status ===
-                "published"
-            ) {
+                    break;
 
-                summary.published += 1;
+                case "published":
 
-            }
+                    published += 1;
 
-            if (
-                resource.status ===
-                "withdrawn"
-            ) {
+                    break;
 
-                summary.withdrawn += 1;
+                case "withdrawn":
+
+                    withdrawn += 1;
+
+                    break;
+
+                default:
+
+                    break;
 
             }
 
@@ -911,7 +1173,25 @@ async function getSummary() {
                 resource.isActive
             ) {
 
-                summary.active += 1;
+                active += 1;
+
+            }
+
+            if (
+                resource.category ===
+                "licensed_course_material"
+            ) {
+
+                licensedMaterials += 1;
+
+            }
+
+            if (
+                resource.category ===
+                "reference_material"
+            ) {
+
+                referenceMaterials += 1;
 
             }
 
@@ -919,7 +1199,7 @@ async function getSummary() {
                 resource.programCode
             ) {
 
-                summary.programmes.add(
+                programmes.add(
                     resource.programCode
                 );
 
@@ -928,36 +1208,72 @@ async function getSummary() {
         }
     );
 
+    const programmeList =
+        Array
+            .from(
+                programmes
+            )
+            .sort();
+
     return Object.freeze({
 
         total:
-            summary.total,
+            normalizedResources.length,
 
-        drafts:
-            summary.drafts,
+        drafts,
 
-        published:
-            summary.published,
+        published,
 
-        withdrawn:
-            summary.withdrawn,
+        withdrawn,
 
-        active:
-            summary.active,
+        active,
+
+        licensedMaterials,
+
+        referenceMaterials,
 
         programmeCount:
-            summary.programmes.size,
+            programmeList.length,
 
         programmes:
-            Object.freeze(
-                Array
-                    .from(
-                        summary.programmes
-                    )
-                    .sort()
+            freezeArray(
+                programmeList
             )
 
     });
+
+}
+
+
+async function getSummary() {
+
+    try {
+
+        const resources =
+            await getRegistrySnapshot();
+
+        return summarizeResources(
+            resources
+        );
+
+    }
+    catch (
+        error
+    ) {
+
+        console.error(
+            `[${MODULE_NAME}] Summary resolution failed:`,
+            {
+                moduleVersion:
+                    MODULE_VERSION,
+
+                error
+            }
+        );
+
+        throw error;
+
+    }
 
 }
 
@@ -979,9 +1295,15 @@ const LearningResourceService =
             COLLECTION_NAME,
 
         getResource,
+
         listResources,
+
         listVersions,
+
         getLatestPublishedVersion,
+
+        summarizeResources,
+
         getSummary
 
     });
@@ -990,15 +1312,26 @@ const LearningResourceService =
 window.LearningResourceService =
     LearningResourceService;
 
+
 console.info(
     `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
 );
 
+
 export {
+
     LearningResourceService,
+
     getResource,
+
     listResources,
+
     listVersions,
+
     getLatestPublishedVersion,
+
+    summarizeResources,
+
     getSummary
+
 };

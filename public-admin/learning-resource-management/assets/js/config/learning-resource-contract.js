@@ -3,9 +3,9 @@
    Admin Learning Resource Management
 
    File      : learning-resource-contract.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
-   Phase     : Learning Resource Administration Foundation
+   Authority : Admin Portal
 
    Purpose
    ----------------------------------------------------------
@@ -14,28 +14,30 @@
 
    Responsibilities
    ----------------------------------------------------------
-   ✓ Define supported resource types
-   ✓ Define governed resource categories
-   ✓ Define delivery types
-   ✓ Define lifecycle states
-   ✓ Define approved MIME types
-   ✓ Normalize resource input
-   ✓ Validate draft and publication payloads
-   ✓ Generate stable resource and document identifiers
-   ✓ Generate protected Storage paths
-   ✓ Normalize safe filenames
+   • Define supported resource types
+   • Define governed resource categories
+   • Define delivery types
+   • Define lifecycle states
+   • Define approved MIME types
+   • Normalize resource input
+   • Validate draft and publication payloads
+   • Generate stable resource and document identifiers
+   • Generate protected Storage paths
+   • Normalize safe filenames
+   • Validate protected Storage paths
+   • Enforce draft and publication lifecycle invariants
 
-   Non Responsibilities
+   Non-Responsibilities
    ----------------------------------------------------------
-   ✗ Authentication
-   ✗ Authorization
-   ✗ Firestore operations
-   ✗ Storage uploads
-   ✗ Publication
-   ✗ Withdrawal
-   ✗ Entitlement resolution
-   ✗ HTML rendering
-   ✗ Student Portal consumption
+   • Authentication
+   • Authorization
+   • Firestore operations
+   • Storage uploads
+   • Publication mutations
+   • Withdrawal mutations
+   • Entitlement resolution
+   • HTML rendering
+   • Student Portal delivery
 
    Governance
    ----------------------------------------------------------
@@ -43,12 +45,13 @@
    • Firestore learning_resources is the metadata registry
    • Firebase Storage holds protected binary assets
    • Every resource begins as a draft
+   • Drafts are inactive and are not latest
+   • Only a published version may be latest
    • Published assets are immutable
    • Replacement requires a new version
    • Withdrawn records are retained
    • No learner identity is stored in resource records
    • No permanent protected download URL is stored
-
 ========================================================== */
 
 
@@ -60,10 +63,16 @@ const MODULE_NAME =
     "LearningResourceContract";
 
 const MODULE_VERSION =
-    "1.0.0";
+    "1.1.0";
 
 const MAX_FILE_SIZE_BYTES =
     50 * 1024 * 1024;
+
+const MAX_DISPLAY_ORDER =
+    10000;
+
+const PROTECTED_STORAGE_ROOT =
+    "learning-resources/";
 
 
 /* ==========================================================
@@ -171,6 +180,17 @@ function normalizeString(
 }
 
 
+function normalizeLowercase(
+    value
+) {
+
+    return normalizeString(
+        value
+    ).toLowerCase();
+
+}
+
+
 function normalizeProgramCode(
     value
 ) {
@@ -190,6 +210,13 @@ function normalizeResourceId(
         value
     )
         .toLowerCase()
+        .normalize(
+            "NFKD"
+        )
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
         .replace(
             /[^a-z0-9]+/g,
             "-"
@@ -253,7 +280,7 @@ function normalizeDisplayOrder(
 
     return Math.min(
         displayOrder,
-        10000
+        MAX_DISPLAY_ORDER
     );
 
 }
@@ -274,6 +301,33 @@ function normalizeBoolean(
     }
 
     return fallback;
+
+}
+
+
+function normalizeFileSize(
+    value
+) {
+
+    const fileSize =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isFinite(
+            fileSize
+        ) ||
+        fileSize < 0
+    ) {
+
+        return 0;
+
+    }
+
+    return Math.trunc(
+        fileSize
+    );
 
 }
 
@@ -465,9 +519,15 @@ function isValidFileName(
     fileName
 ) {
 
-    return SAFE_FILE_NAME_PATTERN.test(
+    const normalizedFileName =
         normalizeString(
             fileName
+        );
+
+    return (
+        normalizedFileName.length <= 150 &&
+        SAFE_FILE_NAME_PATTERN.test(
+            normalizedFileName
         )
     );
 
@@ -478,12 +538,35 @@ function isValidFileName(
    STORAGE PATH
 ========================================================== */
 
+function normalizeStoragePath(
+    value
+) {
+
+    return normalizeString(
+        value
+    )
+        .replace(
+            /\\/g,
+            "/"
+        )
+        .replace(
+            /\/{2,}/g,
+            "/"
+        )
+        .replace(
+            /^\/+/,
+            ""
+        );
+
+}
+
+
 function buildStoragePath({
     programCode,
     resourceId,
     version,
     fileName
-}) {
+} = {}) {
 
     const normalizedProgramCode =
         normalizeProgramCode(
@@ -522,11 +605,129 @@ function buildStoragePath({
     }
 
     return (
-        "learning-resources/" +
+        PROTECTED_STORAGE_ROOT +
         `${normalizedProgramCode}/` +
         `${normalizedResourceId}/` +
         `v${normalizedVersion}/` +
         normalizedFileName
+    );
+
+}
+
+
+function isValidProtectedStoragePath(
+    storagePath
+) {
+
+    const normalizedPath =
+        normalizeStoragePath(
+            storagePath
+        );
+
+    if (
+        !normalizedPath ||
+        !normalizedPath.startsWith(
+            PROTECTED_STORAGE_ROOT
+        )
+    ) {
+
+        return false;
+
+    }
+
+    const segments =
+        normalizedPath.split(
+            "/"
+        );
+
+    if (
+        segments.length !== 5
+    ) {
+
+        return false;
+
+    }
+
+    const [
+        root,
+        programCode,
+        resourceId,
+        versionSegment,
+        fileName
+    ] = segments;
+
+    if (
+        root !==
+            PROTECTED_STORAGE_ROOT.slice(
+                0,
+                -1
+            ) ||
+        !PROGRAM_CODE_PATTERN.test(
+            programCode
+        ) ||
+        !RESOURCE_ID_PATTERN.test(
+            resourceId
+        ) ||
+        !/^v[1-9][0-9]*$/.test(
+            versionSegment
+        ) ||
+        !isValidFileName(
+            fileName
+        )
+    ) {
+
+        return false;
+
+    }
+
+    return normalizedPath.length <=
+        1000;
+
+}
+
+
+function storagePathMatchesResource(
+    storagePath,
+    resource
+) {
+
+    if (
+        !resource ||
+        !isValidProtectedStoragePath(
+            storagePath
+        )
+    ) {
+
+        return false;
+
+    }
+
+    const expectedPath =
+        buildStoragePath({
+
+            programCode:
+                resource.program_code ||
+                resource.programCode,
+
+            resourceId:
+                resource.resource_id ||
+                resource.resourceId,
+
+            version:
+                resource.version,
+
+            fileName:
+                resource.file_name ||
+                resource.fileName
+
+        });
+
+    return (
+        expectedPath &&
+        normalizeStoragePath(
+            storagePath
+        ) ===
+            expectedPath
     );
 
 }
@@ -562,7 +763,20 @@ function parseHttpsUrl(
 
         if (
             parsedUrl.protocol !==
-            "https:"
+                "https:" ||
+            !parsedUrl.hostname
+        ) {
+
+            return null;
+
+        }
+
+        /*
+         * Credentials embedded in managed URLs are prohibited.
+         */
+        if (
+            parsedUrl.username ||
+            parsedUrl.password
         ) {
 
             return null;
@@ -629,9 +843,9 @@ function isApprovedMimeType(
 ) {
 
     return APPROVED_MIME_TYPES.includes(
-        normalizeString(
+        normalizeLowercase(
             mimeType
-        ).toLowerCase()
+        )
     );
 
 }
@@ -667,17 +881,23 @@ function normalizeResourceInput(
 ) {
 
     const deliveryType =
-        normalizeString(
+        normalizeLowercase(
             input.delivery_type ||
             input.deliveryType ||
             "protected_storage"
         );
 
     const resourceType =
-        normalizeString(
+        normalizeLowercase(
             input.resource_type ||
             input.resourceType ||
             "document"
+        );
+
+    const category =
+        normalizeLowercase(
+            input.category ||
+            "supporting_document"
         );
 
     const fileName =
@@ -685,6 +905,10 @@ function normalizeResourceInput(
             input.file_name ||
             input.fileName
         );
+
+    const protectedDelivery =
+        deliveryType ===
+        "protected_storage";
 
     return {
 
@@ -714,55 +938,69 @@ function normalizeResourceInput(
         resource_type:
             resourceType,
 
-        category:
-            normalizeString(
-                input.category ||
-                "supporting_document"
-            ),
+        category,
 
         delivery_type:
             deliveryType,
 
         storage_path:
-            normalizeString(
-                input.storage_path ||
-                input.storagePath
-            ) ||
-            null,
+            protectedDelivery
+                ? (
+                    normalizeStoragePath(
+                        input.storage_path ||
+                        input.storagePath
+                    ) ||
+                    null
+                )
+                : null,
 
         external_url:
-            normalizeString(
-                input.external_url ||
-                input.externalUrl
-            ) ||
-            null,
+            protectedDelivery
+                ? null
+                : (
+                    normalizeString(
+                        input.external_url ||
+                        input.externalUrl
+                    ) ||
+                    null
+                ),
 
         file_name:
-            fileName ||
-            null,
+            protectedDelivery
+                ? (
+                    fileName ||
+                    null
+                )
+                : null,
 
         file_extension:
-            getFileExtension(
-                fileName
-            ) ||
-            null,
+            protectedDelivery
+                ? (
+                    getFileExtension(
+                        fileName
+                    ) ||
+                    null
+                )
+                : null,
 
         mime_type:
-            normalizeString(
-                input.mime_type ||
-                input.mimeType
-            ).toLowerCase() ||
-            null,
+            protectedDelivery
+                ? (
+                    normalizeLowercase(
+                        input.mime_type ||
+                        input.mimeType
+                    ) ||
+                    null
+                )
+                : null,
 
         file_size:
-            Math.max(
-                0,
-                Number(
-                    input.file_size ||
-                    input.fileSize ||
-                    0
+            protectedDelivery
+                ? normalizeFileSize(
+                    input.file_size ??
+                    input.fileSize
                 )
-            ),
+                : 0,
 
         preview_allowed:
             normalizeBoolean(
@@ -775,8 +1013,7 @@ function normalizeResourceInput(
             normalizeBoolean(
                 input.download_allowed ??
                 input.downloadAllowed,
-                deliveryType ===
-                    "protected_storage"
+                protectedDelivery
             ),
 
         embed_allowed:
@@ -793,8 +1030,11 @@ function normalizeResourceInput(
         is_active:
             false,
 
+        /*
+         * Drafts are not latest published versions.
+         */
         is_latest:
-            true,
+            false,
 
         version:
             normalizeVersion(
@@ -816,14 +1056,35 @@ function normalizeResourceInput(
 
 
 /* ==========================================================
-   VALIDATION
+   VALIDATION RESULT
+========================================================== */
+
+function buildValidationResult(
+    errors
+) {
+
+    return Object.freeze({
+
+        valid:
+            errors.length === 0,
+
+        errors:
+            Object.freeze([
+                ...errors
+            ])
+
+    });
+
+}
+
+
+/* ==========================================================
+   DRAFT VALIDATION
 ========================================================== */
 
 function validateDraft(
     resource
 ) {
-
-    const errors = [];
 
     if (
         !resource ||
@@ -831,20 +1092,20 @@ function validateDraft(
             "object"
     ) {
 
-        return {
-            valid:
-                false,
-
-            errors: [
-                "Learning resource payload is required."
-            ]
-        };
+        return buildValidationResult([
+            "Learning resource payload is required."
+        ]);
 
     }
 
+    const errors =
+        [];
+
     if (
         !RESOURCE_ID_PATTERN.test(
-            resource.resource_id
+            normalizeString(
+                resource.resource_id
+            )
         )
     ) {
 
@@ -856,7 +1117,9 @@ function validateDraft(
 
     if (
         !PROGRAM_CODE_PATTERN.test(
-            resource.program_code
+            normalizeString(
+                resource.program_code
+            )
         )
     ) {
 
@@ -866,9 +1129,14 @@ function validateDraft(
 
     }
 
+    const title =
+        normalizeString(
+            resource.title
+        );
+
     if (
-        !resource.title ||
-        resource.title.length > 160
+        !title ||
+        title.length > 160
     ) {
 
         errors.push(
@@ -877,8 +1145,13 @@ function validateDraft(
 
     }
 
+    const description =
+        normalizeString(
+            resource.description
+        );
+
     if (
-        resource.description.length > 2000
+        description.length > 2000
     ) {
 
         errors.push(
@@ -889,7 +1162,9 @@ function validateDraft(
 
     if (
         !RESOURCE_TYPES.includes(
-            resource.resource_type
+            normalizeLowercase(
+                resource.resource_type
+            )
         )
     ) {
 
@@ -901,7 +1176,9 @@ function validateDraft(
 
     if (
         !RESOURCE_CATEGORIES.includes(
-            resource.category
+            normalizeLowercase(
+                resource.category
+            )
         )
     ) {
 
@@ -913,7 +1190,9 @@ function validateDraft(
 
     if (
         !DELIVERY_TYPES.includes(
-            resource.delivery_type
+            normalizeLowercase(
+                resource.delivery_type
+            )
         )
     ) {
 
@@ -929,7 +1208,7 @@ function validateDraft(
     ) {
 
         errors.push(
-            "New learning resources must begin as drafts."
+            "Learning-resource drafts must have draft status."
         );
 
     }
@@ -947,11 +1226,11 @@ function validateDraft(
 
     if (
         resource.is_latest !==
-            true
+            false
     ) {
 
         errors.push(
-            "A new learning-resource version must be marked as latest."
+            "Draft learning resources cannot be marked as the latest published version."
         );
 
     }
@@ -974,7 +1253,8 @@ function validateDraft(
             resource.display_order
         ) ||
         resource.display_order < 0 ||
-        resource.display_order > 10000
+        resource.display_order >
+            MAX_DISPLAY_ORDER
     ) {
 
         errors.push(
@@ -983,45 +1263,101 @@ function validateDraft(
 
     }
 
-    return {
-        valid:
-            errors.length === 0,
-
+    return buildValidationResult(
         errors
-    };
+    );
 
 }
 
+
+/* ==========================================================
+   PUBLICATION VALIDATION
+========================================================== */
 
 function validateForPublication(
     resource
 ) {
 
+    if (
+        !resource ||
+        typeof resource !==
+            "object"
+    ) {
+
+        return buildValidationResult([
+            "Learning resource payload is required."
+        ]);
+
+    }
+
+    /*
+     * Firestore records use snake-case fields. This normalized
+     * draft projection ensures the same authoritative contract
+     * is applied before publication.
+     */
+    const normalizedDraft =
+        normalizeResourceInput(
+            resource
+        );
+
     const draftValidation =
-        validateDraft({
-            ...resource,
-
-            status:
-                "draft",
-
-            is_active:
-                false,
-
-            is_latest:
-                true
-        });
+        validateDraft(
+            normalizedDraft
+        );
 
     const errors = [
         ...draftValidation.errors
     ];
 
+    const deliveryType =
+        normalizeLowercase(
+            resource.delivery_type ||
+            resource.deliveryType
+        );
+
+    const storagePath =
+        normalizeStoragePath(
+            resource.storage_path ||
+            resource.storagePath
+        );
+
+    const externalUrl =
+        normalizeString(
+            resource.external_url ||
+            resource.externalUrl
+        );
+
+    const fileName =
+        normalizeFileName(
+            resource.file_name ||
+            resource.fileName
+        );
+
+    const mimeType =
+        normalizeLowercase(
+            resource.mime_type ||
+            resource.mimeType
+        );
+
+    const fileSize =
+        normalizeFileSize(
+            resource.file_size ??
+            resource.fileSize
+        );
+
+    const downloadAllowed =
+        (
+            resource.download_allowed ??
+            resource.downloadAllowed
+        ) === true;
+
     if (
-        resource.delivery_type ===
-            "protected_storage"
+        deliveryType ===
+        "protected_storage"
     ) {
 
         if (
-            !resource.storage_path
+            !storagePath
         ) {
 
             errors.push(
@@ -1029,9 +1365,20 @@ function validateForPublication(
             );
 
         }
+        else if (
+            !isValidProtectedStoragePath(
+                storagePath
+            )
+        ) {
+
+            errors.push(
+                "The protected Storage path is invalid."
+            );
+
+        }
 
         if (
-            resource.external_url
+            externalUrl
         ) {
 
             errors.push(
@@ -1041,9 +1388,9 @@ function validateForPublication(
         }
 
         if (
-            !resource.file_name ||
+            !fileName ||
             !isValidFileName(
-                resource.file_name
+                fileName
             )
         ) {
 
@@ -1054,8 +1401,37 @@ function validateForPublication(
         }
 
         if (
+            storagePath &&
+            fileName &&
+            !storagePathMatchesResource(
+                storagePath,
+                {
+                    program_code:
+                        resource.program_code ||
+                        resource.programCode,
+
+                    resource_id:
+                        resource.resource_id ||
+                        resource.resourceId,
+
+                    version:
+                        resource.version,
+
+                    file_name:
+                        fileName
+                }
+            )
+        ) {
+
+            errors.push(
+                "The protected Storage path does not match the resource identity, version, and filename."
+            );
+
+        }
+
+        if (
             !isApprovedMimeType(
-                resource.mime_type
+                mimeType
             )
         ) {
 
@@ -1067,7 +1443,7 @@ function validateForPublication(
 
         if (
             !isValidFileSize(
-                resource.file_size
+                fileSize
             )
         ) {
 
@@ -1080,13 +1456,13 @@ function validateForPublication(
     }
 
     if (
-        resource.delivery_type ===
-            "external_video"
+        deliveryType ===
+        "external_video"
     ) {
 
         if (
             !isApprovedExternalVideoUrl(
-                resource.external_url
+                externalUrl
             )
         ) {
 
@@ -1097,7 +1473,7 @@ function validateForPublication(
         }
 
         if (
-            resource.storage_path
+            storagePath
         ) {
 
             errors.push(
@@ -1107,7 +1483,7 @@ function validateForPublication(
         }
 
         if (
-            resource.download_allowed
+            downloadAllowed
         ) {
 
             errors.push(
@@ -1119,13 +1495,13 @@ function validateForPublication(
     }
 
     if (
-        resource.delivery_type ===
-            "external_link"
+        deliveryType ===
+        "external_link"
     ) {
 
         if (
             !isValidHttpsUrl(
-                resource.external_url
+                externalUrl
             )
         ) {
 
@@ -1136,7 +1512,7 @@ function validateForPublication(
         }
 
         if (
-            resource.storage_path
+            storagePath
         ) {
 
             errors.push(
@@ -1147,12 +1523,9 @@ function validateForPublication(
 
     }
 
-    return {
-        valid:
-            errors.length === 0,
-
+    return buildValidationResult(
         errors
-    };
+    );
 
 }
 
@@ -1173,6 +1546,12 @@ const LearningResourceContract =
         maxFileSizeBytes:
             MAX_FILE_SIZE_BYTES,
 
+        maxDisplayOrder:
+            MAX_DISPLAY_ORDER,
+
+        protectedStorageRoot:
+            PROTECTED_STORAGE_ROOT,
+
         resourceTypes:
             RESOURCE_TYPES,
 
@@ -1192,21 +1571,45 @@ const LearningResourceContract =
             APPROVED_EXTERNAL_VIDEO_HOSTS,
 
         normalizeString,
+
         normalizeProgramCode,
+
         normalizeResourceId,
+
         normalizeVersion,
+
+        normalizeDisplayOrder,
+
         normalizeFileName,
+
         getFileExtension,
+
+        normalizeStoragePath,
+
         buildDocumentId,
+
         buildStoragePath,
+
         isValidDocumentId,
+
         isValidFileName,
+
+        isValidProtectedStoragePath,
+
+        storagePathMatchesResource,
+
         isValidHttpsUrl,
+
         isApprovedExternalVideoUrl,
+
         isApprovedMimeType,
+
         isValidFileSize,
+
         normalizeResourceInput,
+
         validateDraft,
+
         validateForPublication
 
     });
@@ -1215,34 +1618,70 @@ const LearningResourceContract =
 window.LearningResourceContract =
     LearningResourceContract;
 
+
 console.info(
     `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
 );
 
+
 export {
+
     LearningResourceContract,
+
     RESOURCE_TYPES,
+
     RESOURCE_CATEGORIES,
+
     DELIVERY_TYPES,
+
     RESOURCE_STATUSES,
+
     APPROVED_MIME_TYPES,
+
     APPROVED_EXTERNAL_VIDEO_HOSTS,
+
     MAX_FILE_SIZE_BYTES,
+
     normalizeString,
+
     normalizeProgramCode,
+
     normalizeResourceId,
+
     normalizeVersion,
+
+    normalizeDisplayOrder,
+
     normalizeFileName,
+
     getFileExtension,
+
+    normalizeStoragePath,
+
     buildDocumentId,
+
     buildStoragePath,
+
     isValidDocumentId,
+
     isValidFileName,
+
+    isValidProtectedStoragePath,
+
+    storagePathMatchesResource,
+
     isValidHttpsUrl,
+
     isApprovedExternalVideoUrl,
+
     isApprovedMimeType,
+
     isValidFileSize,
+
     normalizeResourceInput,
+
     validateDraft,
+
     validateForPublication
+
 };

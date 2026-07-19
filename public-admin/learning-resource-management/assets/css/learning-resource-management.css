@@ -2,19 +2,29 @@
    Agile AI University
    Admin Learning Resource Management
 
-   File    : learning-resource-management.css
-   Version : 1.0.0
-   Status  : ACTIVE
+   File      : learning-resource-management.css
+   Version   : 1.1.0
+   Status    : ACTIVE
+   Authority : Admin Portal
 
    Scope
    ----------------------------------------------------------
-   Styles are restricted to the Learning Resource Management
-   Admin surface and do not modify shared Admin components.
+   Styles are strictly restricted to the Learning Resource
+   Management Admin surface.
+
+   Governance
+   ----------------------------------------------------------
+   • No shared Admin component is redefined globally
+   • All module selectors are scoped to the module root
+   • Hidden content remains authoritative
+   • Focus states remain keyboard visible
+   • Reduced-motion preferences are respected
+   • Responsive behaviour supports desktop, tablet and mobile
 ========================================================== */
 
 
 /* ==========================================================
-   PAGE
+   MODULE ROOT
 ========================================================== */
 
 #learning-resource-management {
@@ -38,6 +48,9 @@
 
     --lrm-primary:
         #2457f5;
+
+    --lrm-primary-hover:
+        #1947d1;
 
     --lrm-primary-soft:
         #edf2ff;
@@ -75,8 +88,19 @@
     --lrm-shadow:
         0 4px 14px rgba(16, 24, 40, 0.06);
 
+    min-width:
+        0;
+
     color:
         var(--lrm-text);
+}
+
+
+#learning-resource-management *,
+#learning-resource-management *::before,
+#learning-resource-management *::after {
+    box-sizing:
+        border-box;
 }
 
 
@@ -86,10 +110,17 @@
 }
 
 
+#learning-resource-management[aria-busy="true"] {
+    cursor:
+        progress;
+}
+
+
 /* ==========================================================
    PAGE HEADER
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-page-header {
     display:
         flex;
@@ -105,12 +136,14 @@
 }
 
 
+#learning-resource-management
 .learning-resource-page-header h2 {
     margin:
         0 0 8px;
 }
 
 
+#learning-resource-management
 .learning-resource-page-actions {
     display:
         flex;
@@ -130,9 +163,10 @@
 
 
 /* ==========================================================
-   STATUS
+   STATUS MESSAGE
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-status {
     margin:
         0 0 20px;
@@ -163,6 +197,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-status--info {
     border-color:
         #b2ccff;
@@ -175,6 +210,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-status--success {
     border-color:
         #a6e3bf;
@@ -187,6 +223,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-status--warning {
     border-color:
         #f2cf83;
@@ -199,6 +236,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-status--error {
     border-color:
         #f5b7b1;
@@ -215,6 +253,7 @@
    LOADING
 ========================================================== */
 
+#learning-resource-management
 #learning-resource-loading .card {
     position:
         relative;
@@ -227,6 +266,7 @@
 }
 
 
+#learning-resource-management
 #learning-resource-loading .card::before {
     position:
         absolute;
@@ -275,6 +315,7 @@
    SUMMARY
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-summary-grid {
     display:
         grid;
@@ -290,6 +331,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-metric {
     display:
         flex;
@@ -323,6 +365,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-metric__value {
     color:
         var(--lrm-text);
@@ -338,6 +381,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-metric__label {
     color:
         var(--lrm-text-muted);
@@ -350,6 +394,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-metric--draft {
     border-color:
         #f2cf83;
@@ -359,6 +404,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-metric--published {
     border-color:
         #a6e3bf;
@@ -368,6 +414,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-metric--withdrawn {
     border-color:
         #f5b7b1;
@@ -381,6 +428,7 @@
    FILTERS
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-filter-grid {
     display:
         grid;
@@ -400,7 +448,12 @@
 }
 
 
-#learning-resource-management .form-group {
+/* ==========================================================
+   FORM CONTROLS
+========================================================== */
+
+#learning-resource-management
+.form-group {
     display:
         flex;
 
@@ -415,7 +468,8 @@
 }
 
 
-#learning-resource-management .form-group label {
+#learning-resource-management
+.form-group label {
     color:
         var(--lrm-text);
 
@@ -427,7 +481,8 @@
 }
 
 
-#learning-resource-management .form-group small {
+#learning-resource-management
+.form-group small {
     color:
         var(--lrm-text-muted);
 
@@ -442,9 +497,6 @@
 #learning-resource-management input,
 #learning-resource-management select,
 #learning-resource-management textarea {
-    box-sizing:
-        border-box;
-
     width:
         100%;
 
@@ -461,7 +513,7 @@
         8px;
 
     background:
-        #ffffff;
+        var(--lrm-surface);
 
     color:
         var(--lrm-text);
@@ -472,7 +524,8 @@
     transition:
         border-color 140ms ease,
         box-shadow 140ms ease,
-        background-color 140ms ease;
+        background-color 140ms ease,
+        color 140ms ease;
 }
 
 
@@ -482,6 +535,14 @@
 
     resize:
         vertical;
+}
+
+
+#learning-resource-management input:hover:not(:disabled),
+#learning-resource-management select:hover:not(:disabled),
+#learning-resource-management textarea:hover:not(:disabled) {
+    border-color:
+        #aab3c2;
 }
 
 
@@ -505,11 +566,67 @@
     cursor:
         not-allowed;
 
+    border-color:
+        #d5dae2;
+
     background:
         #f0f2f5;
 
     color:
         #7b8494;
+
+    opacity:
+        1;
+}
+
+
+#learning-resource-management input[type="file"] {
+    padding:
+        7px;
+}
+
+
+#learning-resource-management
+input[type="file"]::file-selector-button {
+    margin-right:
+        10px;
+
+    padding:
+        7px 10px;
+
+    border:
+        1px solid var(--lrm-border-strong);
+
+    border-radius:
+        6px;
+
+    background:
+        var(--lrm-surface-muted);
+
+    color:
+        var(--lrm-text);
+
+    cursor:
+        pointer;
+
+    font:
+        inherit;
+
+    font-size:
+        0.82rem;
+
+    font-weight:
+        600;
+}
+
+
+#learning-resource-management
+input[type="file"]::file-selector-button:hover {
+    border-color:
+        var(--lrm-primary);
+
+    color:
+        var(--lrm-primary);
 }
 
 
@@ -517,9 +634,13 @@
    RESOURCE LIST
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-list {
     display:
         grid;
+
+    min-width:
+        0;
 
     grid-template-columns:
         repeat(2, minmax(0, 1fr));
@@ -529,11 +650,15 @@
 }
 
 
+#learning-resource-management
 .learning-resource-list[aria-busy="true"] {
     opacity:
-        0.7;
+        0.62;
 
     pointer-events:
+        none;
+
+    user-select:
         none;
 }
 
@@ -542,6 +667,7 @@
    RESOURCE CARD
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-card {
     display:
         flex;
@@ -572,6 +698,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-card__header {
     display:
         flex;
@@ -587,12 +714,14 @@
 }
 
 
+#learning-resource-management
 .learning-resource-card__heading {
     min-width:
         0;
 }
 
 
+#learning-resource-management
 .learning-resource-card__title {
     margin:
         0;
@@ -611,6 +740,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-card__identity {
     margin:
         6px 0 0;
@@ -637,6 +767,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-card__description {
     margin:
         0;
@@ -659,6 +790,7 @@
    STATUS BADGES
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-badge {
     display:
         inline-flex;
@@ -701,6 +833,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-badge--draft {
     border-color:
         #f2cf83;
@@ -713,6 +846,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-badge--published {
     border-color:
         #a6e3bf;
@@ -725,6 +859,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-badge--withdrawn {
     border-color:
         #f5b7b1;
@@ -737,10 +872,24 @@
 }
 
 
+#learning-resource-management
+.learning-resource-badge--unknown {
+    border-color:
+        var(--lrm-border-strong);
+
+    background:
+        #f3f4f6;
+
+    color:
+        #596273;
+}
+
+
 /* ==========================================================
    METADATA
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-card__metadata {
     display:
         grid;
@@ -756,6 +905,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-card__metadata-item {
     min-width:
         0;
@@ -774,6 +924,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-card__metadata-label {
     margin:
         0 0 4px;
@@ -792,6 +943,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-card__metadata-value {
     margin:
         0;
@@ -814,6 +966,7 @@
    POLICIES
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-card__policies {
     display:
         flex;
@@ -829,6 +982,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-policy {
     display:
         inline-flex;
@@ -853,6 +1007,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-policy--enabled {
     border-color:
         #a6e3bf;
@@ -865,6 +1020,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-policy--disabled {
     background:
         #f3f4f6;
@@ -878,6 +1034,7 @@
    RESOURCE ACTIONS
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-card__actions {
     display:
         flex;
@@ -899,6 +1056,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-action {
     min-height:
         36px;
@@ -913,7 +1071,7 @@
         7px;
 
     background:
-        #ffffff;
+        var(--lrm-surface);
 
     color:
         var(--lrm-text);
@@ -934,10 +1092,12 @@
         background-color 140ms ease,
         border-color 140ms ease,
         color 140ms ease,
-        transform 140ms ease;
+        transform 140ms ease,
+        opacity 140ms ease;
 }
 
 
+#learning-resource-management
 .learning-resource-action:hover:not(:disabled) {
     border-color:
         var(--lrm-primary);
@@ -950,6 +1110,14 @@
 }
 
 
+#learning-resource-management
+.learning-resource-action:active:not(:disabled) {
+    transform:
+        translateY(0);
+}
+
+
+#learning-resource-management
 .learning-resource-action--primary {
     border-color:
         var(--lrm-primary);
@@ -962,15 +1130,17 @@
 }
 
 
+#learning-resource-management
 .learning-resource-action--primary:hover:not(:disabled) {
     background:
-        #1947d1;
+        var(--lrm-primary-hover);
 
     color:
         #ffffff;
 }
 
 
+#learning-resource-management
 .learning-resource-action--danger {
     border-color:
         #efb0aa;
@@ -983,6 +1153,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-action--danger:hover:not(:disabled) {
     border-color:
         var(--lrm-danger);
@@ -995,12 +1166,16 @@
 }
 
 
+#learning-resource-management
 .learning-resource-action:disabled {
     cursor:
         not-allowed;
 
     opacity:
         0.55;
+
+    transform:
+        none;
 }
 
 
@@ -1008,6 +1183,7 @@
    EMPTY STATE
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-empty-state {
     padding:
         38px 24px;
@@ -1017,12 +1193,14 @@
 }
 
 
+#learning-resource-management
 .learning-resource-empty-state h3 {
     margin:
         0 0 8px;
 }
 
 
+#learning-resource-management
 .learning-resource-empty-state p {
     max-width:
         620px;
@@ -1042,6 +1220,7 @@
    FORM
 ========================================================== */
 
+#learning-resource-management
 .learning-resource-form-header {
     display:
         flex;
@@ -1060,6 +1239,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-form-header p {
     margin:
         8px 0 0;
@@ -1072,6 +1252,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-form-grid {
     display:
         grid;
@@ -1084,12 +1265,14 @@
 }
 
 
+#learning-resource-management
 .learning-resource-form-wide {
     grid-column:
         1 / -1;
 }
 
 
+#learning-resource-management
 .learning-resource-permissions {
     display:
         flex;
@@ -1120,6 +1303,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-permissions legend {
     padding:
         0 7px;
@@ -1135,6 +1319,7 @@
 }
 
 
+#learning-resource-management
 .learning-resource-checkbox {
     display:
         inline-flex;
@@ -1157,6 +1342,19 @@
 
 
 #learning-resource-management
+.learning-resource-checkbox:has(input:disabled) {
+    cursor:
+        not-allowed;
+
+    color:
+        var(--lrm-text-muted);
+
+    opacity:
+        0.7;
+}
+
+
+#learning-resource-management
 .learning-resource-checkbox input {
     width:
         17px;
@@ -1172,9 +1370,13 @@
 
     padding:
         0;
+
+    accent-color:
+        var(--lrm-primary);
 }
 
 
+#learning-resource-management
 .learning-resource-form-actions {
     display:
         flex;
@@ -1203,7 +1405,7 @@
 
 
 /* ==========================================================
-   ACCESSIBILITY
+   KEYBOARD ACCESSIBILITY
 ========================================================== */
 
 #learning-resource-management button:focus-visible,
@@ -1218,7 +1420,12 @@
 }
 
 
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
 @media (prefers-reduced-motion: reduce) {
+
     #learning-resource-management *,
     #learning-resource-management *::before,
     #learning-resource-management *::after {
@@ -1234,38 +1441,56 @@
         transition-duration:
             0.01ms !important;
     }
+
 }
 
 
 /* ==========================================================
-   RESPONSIVE
+   RESPONSIVE — MEDIUM DESKTOP
 ========================================================== */
 
 @media (max-width: 1200px) {
+
+    #learning-resource-management
     .learning-resource-summary-grid {
         grid-template-columns:
             repeat(3, minmax(120px, 1fr));
     }
 
+
+    #learning-resource-management
     .learning-resource-filter-grid {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
     }
 
+
+    #learning-resource-management
     .learning-resource-card__metadata {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
     }
+
 }
 
 
+/* ==========================================================
+   RESPONSIVE — TABLET
+========================================================== */
+
 @media (max-width: 900px) {
+
+    #learning-resource-management
     .learning-resource-page-header,
+
+    #learning-resource-management
     .learning-resource-form-header {
         flex-direction:
             column;
     }
 
+
+    #learning-resource-management
     .learning-resource-page-actions {
         width:
             100%;
@@ -1274,43 +1499,77 @@
             flex-start;
     }
 
+
+    #learning-resource-management
     .learning-resource-list {
         grid-template-columns:
             minmax(0, 1fr);
     }
 
+
+    #learning-resource-management
     .learning-resource-form-grid {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
     }
+
 }
 
 
+/* ==========================================================
+   RESPONSIVE — MOBILE
+========================================================== */
+
 @media (max-width: 640px) {
+
+    #learning-resource-management
     .learning-resource-summary-grid,
+
+    #learning-resource-management
     .learning-resource-filter-grid,
+
+    #learning-resource-management
     .learning-resource-form-grid,
+
+    #learning-resource-management
     .learning-resource-card__metadata {
         grid-template-columns:
             minmax(0, 1fr);
     }
 
+
+    #learning-resource-management
     .learning-resource-form-wide {
         grid-column:
             auto;
     }
 
+
+    #learning-resource-management
     .learning-resource-card {
         padding:
             16px;
     }
 
+
+    #learning-resource-management
     .learning-resource-card__header {
         flex-direction:
             column;
     }
 
+
+    #learning-resource-management
+    .learning-resource-page-actions,
+
+    #learning-resource-management
+    .learning-resource-card__actions,
+
+    #learning-resource-management
     .learning-resource-form-actions {
+        width:
+            100%;
+
         align-items:
             stretch;
 
@@ -1318,8 +1577,33 @@
             column;
     }
 
-    .learning-resource-form-actions .btn {
+
+    #learning-resource-management
+    .learning-resource-page-actions > button,
+
+    #learning-resource-management
+    .learning-resource-page-actions > .btn,
+
+    #learning-resource-management
+    .learning-resource-card__actions > button,
+
+    #learning-resource-management
+    .learning-resource-form-actions > button,
+
+    #learning-resource-management
+    .learning-resource-form-actions > .btn {
         width:
             100%;
     }
+
+
+    #learning-resource-management
+    .learning-resource-permissions {
+        align-items:
+            flex-start;
+
+        flex-direction:
+            column;
+    }
+
 }

@@ -3,9 +3,9 @@
    Admin Learning Resource Management
 
    File      : learning-resource-storage.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
-   Phase     : Protected Learning Resource Storage
+   Authority : Admin Portal
 
    Purpose
    ----------------------------------------------------------
@@ -14,36 +14,37 @@
 
    Responsibilities
    ----------------------------------------------------------
-   ✓ Require an authenticated administrator
-   ✓ Validate administrator role
-   ✓ Validate file type and size
-   ✓ Normalize protected Storage paths
-   ✓ Prevent accidental object replacement
-   ✓ Upload immutable learning-resource versions
-   ✓ Return safe Storage metadata
-   ✓ Avoid permanent Firebase download URLs
+   • Require an authenticated administrator
+   • Validate the administrator role
+   • Validate file name, type, extension, and size
+   • Normalize protected Storage paths
+   • Detect existing immutable Storage objects
+   • Upload governed learning-resource versions
+   • Verify persisted Storage metadata
+   • Return safe immutable Storage metadata
+   • Avoid permanent Firebase download URLs
 
-   Non Responsibilities
+   Non-Responsibilities
    ----------------------------------------------------------
-   ✗ Create Firestore resource records
-   ✗ Publish resources
-   ✗ Withdraw resources
-   ✗ Generate download URLs
-   ✗ Delete Storage objects
-   ✗ Resolve learner entitlement
-   ✗ Render UI
-   ✗ Provide Student Portal access
+   • Create Firestore resource records
+   • Publish resources
+   • Withdraw resources
+   • Generate permanent download URLs
+   • Delete Storage objects
+   • Resolve learner entitlement
+   • Render UI
+   • Provide Student Portal delivery
 
    Governance
    ----------------------------------------------------------
    • Admin Portal is the upload authority
    • learning-resources is a protected Storage domain
-   • Existing objects must never be overwritten
+   • Existing protected objects must not be overwritten
    • Replacement requires a new version path
+   • Storage Rules must independently deny object updates
    • Client-side deletion is prohibited
    • getDownloadURL() must not be used for protected files
-   • Student access requires the future authorized broker
-
+   • Student access requires an authorized delivery broker
 ========================================================== */
 
 import {
@@ -72,13 +73,258 @@ const MODULE_NAME =
     "LearningResourceStorage";
 
 const MODULE_VERSION =
-    "1.0.0";
+    "1.1.0";
+
+const PROTECTED_ROOT =
+    "learning-resources/";
 
 const ALLOWED_ADMIN_ROLES =
     Object.freeze([
         "super_admin",
         "admin"
     ]);
+
+
+/* ==========================================================
+   GENERAL HELPERS
+========================================================== */
+
+function normalizeString(
+    value
+) {
+
+    return LearningResourceContract.normalizeString(
+        value
+    );
+
+}
+
+
+function normalizeNullableString(
+    value
+) {
+
+    return (
+        normalizeString(
+            value
+        ) ||
+        null
+    );
+
+}
+
+
+function normalizeFileSize(
+    value
+) {
+
+    const fileSize =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isFinite(
+            fileSize
+        ) ||
+        fileSize < 0
+    ) {
+
+        return 0;
+
+    }
+
+    return Math.trunc(
+        fileSize
+    );
+
+}
+
+
+function normalizeVersion(
+    value
+) {
+
+    const version =
+        LearningResourceContract.normalizeVersion(
+            value
+        );
+
+    if (
+        !Number.isInteger(
+            version
+        ) ||
+        version < 1
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Version must be a positive integer.`
+        );
+
+    }
+
+    return version;
+
+}
+
+
+function normalizeStoragePath(
+    value
+) {
+
+    return normalizeString(
+        value
+    )
+        .replace(
+            /\\/g,
+            "/"
+        )
+        .replace(
+            /\/{2,}/g,
+            "/"
+        )
+        .replace(
+            /^\/+/,
+            ""
+        );
+
+}
+
+
+function validateProtectedStoragePath(
+    storagePath
+) {
+
+    const normalizedPath =
+        normalizeStoragePath(
+            storagePath
+        );
+
+    if (
+        !normalizedPath ||
+        !normalizedPath.startsWith(
+            PROTECTED_ROOT
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Invalid protected Storage path.`
+        );
+
+    }
+
+    if (
+        normalizedPath ===
+        PROTECTED_ROOT.slice(
+            0,
+            -1
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] A protected Storage object path is required.`
+        );
+
+    }
+
+    const pathSegments =
+        normalizedPath.split(
+            "/"
+        );
+
+    if (
+        pathSegments.some(
+            (
+                segment
+            ) => (
+                !segment ||
+                segment === "." ||
+                segment === ".."
+            )
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected Storage path contains an invalid segment.`
+        );
+
+    }
+
+    if (
+        normalizedPath.length >
+        1000
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected Storage path is too long.`
+        );
+
+    }
+
+    return normalizedPath;
+
+}
+
+
+function getStorageErrorMessage(
+    error,
+    fallback =
+        "The protected resource operation could not be completed."
+) {
+
+    const code =
+        normalizeString(
+            error?.code
+        );
+
+    switch (
+        code
+    ) {
+
+        case "storage/unauthenticated":
+
+            return "Administrator authentication is required for protected resource storage.";
+
+        case "storage/unauthorized":
+
+            return "The authenticated account is not authorized to access this protected resource.";
+
+        case "storage/object-not-found":
+
+            return "The protected learning-resource file was not found.";
+
+        case "storage/quota-exceeded":
+
+            return "Firebase Storage quota has been exceeded.";
+
+        case "storage/retry-limit-exceeded":
+
+            return "The protected resource upload could not complete after repeated retries.";
+
+        case "storage/canceled":
+
+            return "The protected resource upload was cancelled.";
+
+        case "storage/invalid-checksum":
+
+            return "The uploaded resource failed integrity validation.";
+
+        case "storage/server-file-wrong-size":
+
+            return "The uploaded resource size does not match the stored object.";
+
+        default:
+
+            return (
+                normalizeString(
+                    error?.message
+                ) ||
+                fallback
+            );
+
+    }
+
+}
 
 
 /* ==========================================================
@@ -100,11 +346,28 @@ async function requireAuthorizedAdmin() {
 
     }
 
-    const role =
-        await getUserRole(
-            user.uid,
-            user.email
+    const uid =
+        normalizeString(
+            user.uid
         );
+
+    if (
+        !uid
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Authenticated administrator identity is invalid.`
+        );
+
+    }
+
+    const role =
+        normalizeString(
+            await getUserRole(
+                uid,
+                user.email
+            )
+        ).toLowerCase();
 
     if (
         !ALLOWED_ADMIN_ROLES.includes(
@@ -120,13 +383,13 @@ async function requireAuthorizedAdmin() {
 
     return Object.freeze({
 
-        uid:
-            user.uid,
+        uid,
 
         email:
             normalizeEmail(
                 user.email
-            ),
+            ) ||
+            "",
 
         role
 
@@ -173,8 +436,25 @@ function validateFile(
 
     }
 
+    const fileExtension =
+        normalizeString(
+            LearningResourceContract.getFileExtension(
+                fileName
+            )
+        ).toLowerCase();
+
+    if (
+        !fileExtension
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] The file must have a valid extension.`
+        );
+
+    }
+
     const mimeType =
-        LearningResourceContract.normalizeString(
+        normalizeString(
             file.type
         ).toLowerCase();
 
@@ -192,7 +472,7 @@ function validateFile(
     }
 
     const fileSize =
-        Number(
+        normalizeFileSize(
             file.size
         );
 
@@ -213,10 +493,7 @@ function validateFile(
 
         fileName,
 
-        fileExtension:
-            LearningResourceContract.getFileExtension(
-                fileName
-            ),
+        fileExtension,
 
         mimeType,
 
@@ -228,35 +505,32 @@ function validateFile(
 
 
 /* ==========================================================
-   UPLOAD INPUT VALIDATION
+   UPLOAD INPUT
 ========================================================== */
 
 function normalizeUploadInput(
     input = {}
 ) {
 
-    const programCode =
-        LearningResourceContract.normalizeProgramCode(
-            input.program_code ||
-            input.programCode
-        );
-
-    const resourceId =
-        LearningResourceContract.normalizeResourceId(
-            input.resource_id ||
-            input.resourceId
-        );
-
-    const version =
-        LearningResourceContract.normalizeVersion(
-            input.version
-        );
-
     return Object.freeze({
 
-        programCode,
-        resourceId,
-        version,
+        programCode:
+            LearningResourceContract.normalizeProgramCode(
+                input.program_code ||
+                input.programCode
+            ),
+
+        resourceId:
+            LearningResourceContract.normalizeResourceId(
+                input.resource_id ||
+                input.resourceId
+            ),
+
+        version:
+            normalizeVersion(
+                input.version
+            ),
+
         file:
             input.file ||
             null
@@ -335,13 +609,13 @@ function validateUploadIdentity(
 ========================================================== */
 
 async function objectExists(
-    reference
+    storageReference
 ) {
 
     try {
 
         await getMetadata(
-            reference
+            storageReference
         );
 
         return true;
@@ -361,13 +635,193 @@ async function objectExists(
         }
 
         console.error(
-            `[${MODULE_NAME}] Unable to inspect Storage object:`,
-            error
+            `[${MODULE_NAME}] Unable to inspect protected Storage object:`,
+            {
+                storagePath:
+                    storageReference?.fullPath ||
+                    null,
+
+                code:
+                    error?.code ||
+                    null,
+
+                error
+            }
         );
 
-        throw error;
+        throw new Error(
+            getStorageErrorMessage(
+                error,
+                "Unable to verify whether the protected resource already exists."
+            ),
+            {
+                cause:
+                    error
+            }
+        );
 
     }
+
+}
+
+
+/* ==========================================================
+   UPLOAD METADATA
+========================================================== */
+
+function buildUploadMetadata(
+    normalizedInput,
+    fileMetadata,
+    actor
+) {
+
+    return {
+
+        contentType:
+            fileMetadata.mimeType,
+
+        cacheControl:
+            "private,max-age=0,no-store",
+
+        customMetadata: {
+
+            program_code:
+                normalizedInput.programCode,
+
+            resource_id:
+                normalizedInput.resourceId,
+
+            version:
+                String(
+                    normalizedInput.version
+                ),
+
+            source:
+                "admin_portal",
+
+            governance_domain:
+                "learning_resources",
+
+            immutable_version:
+                "true",
+
+            uploaded_by_uid:
+                actor.uid,
+
+            uploaded_by_email:
+                actor.email ||
+                ""
+
+        }
+
+    };
+
+}
+
+
+/* ==========================================================
+   PERSISTED METADATA VALIDATION
+========================================================== */
+
+function validatePersistedMetadata(
+    persistedMetadata,
+    expected
+) {
+
+    const persistedPath =
+        validateProtectedStoragePath(
+            persistedMetadata?.fullPath ||
+            expected.storagePath
+        );
+
+    if (
+        persistedPath !==
+        expected.storagePath
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Persisted Storage path does not match the requested path.`
+        );
+
+    }
+
+    const persistedSize =
+        normalizeFileSize(
+            persistedMetadata?.size
+        );
+
+    if (
+        persistedSize > 0 &&
+        persistedSize !==
+            expected.fileSize
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Persisted file size does not match the uploaded file.`
+        );
+
+    }
+
+    const persistedMimeType =
+        normalizeString(
+            persistedMetadata?.contentType
+        ).toLowerCase();
+
+    if (
+        persistedMimeType &&
+        persistedMimeType !==
+            expected.mimeType
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Persisted MIME type does not match the uploaded file.`
+        );
+
+    }
+
+    return Object.freeze({
+
+        storagePath:
+            persistedPath,
+
+        fullPath:
+            persistedPath,
+
+        bucket:
+            normalizeString(
+                persistedMetadata?.bucket
+            ),
+
+        fileName:
+            expected.fileName,
+
+        fileExtension:
+            expected.fileExtension,
+
+        mimeType:
+            persistedMimeType ||
+            expected.mimeType,
+
+        fileSize:
+            persistedSize ||
+            expected.fileSize,
+
+        generation:
+            normalizeString(
+                persistedMetadata?.generation
+            ),
+
+        metageneration:
+            normalizeString(
+                persistedMetadata?.metageneration
+            ),
+
+        uploadedAt:
+            normalizeNullableString(
+                persistedMetadata?.timeCreated
+            )
+
+    });
 
 }
 
@@ -397,7 +851,7 @@ async function uploadProtectedResource(
             normalizedInput.file
         );
 
-    const storagePath =
+    const generatedStoragePath =
         LearningResourceContract.buildStoragePath({
 
             programCode:
@@ -415,7 +869,7 @@ async function uploadProtectedResource(
         });
 
     if (
-        !storagePath
+        !generatedStoragePath
     ) {
 
         throw new Error(
@@ -424,6 +878,11 @@ async function uploadProtectedResource(
 
     }
 
+    const storagePath =
+        validateProtectedStoragePath(
+            generatedStoragePath
+        );
+
     const storageReference =
         ref(
             storage,
@@ -431,11 +890,11 @@ async function uploadProtectedResource(
         );
 
     /*
-     * Preflight protection provides a clear operational error.
+     * This preflight provides a clear administrative error.
      *
-     * Storage Rules independently deny updates, so an object
-     * cannot be overwritten even if a race occurs after this
-     * check.
+     * It is not an atomic overwrite guard. Firebase Storage Rules
+     * must independently reject updates to existing objects so an
+     * object cannot be overwritten if a race occurs after this read.
      */
     const alreadyExists =
         await objectExists(
@@ -447,45 +906,18 @@ async function uploadProtectedResource(
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] This resource version already exists. ` +
+            `[${MODULE_NAME}] This protected resource version already exists. ` +
             `Create a new version instead of replacing it.`
         );
 
     }
 
-    const uploadMetadata = {
-
-        contentType:
-            fileMetadata.mimeType,
-
-        cacheControl:
-            "private,max-age=0,no-store",
-
-        customMetadata: {
-
-            program_code:
-                normalizedInput.programCode,
-
-            resource_id:
-                normalizedInput.resourceId,
-
-            version:
-                String(
-                    normalizedInput.version
-                ),
-
-            source:
-                "admin_portal",
-
-            uploaded_by_uid:
-                actor.uid,
-
-            uploaded_by_email:
-                actor.email
-
-        }
-
-    };
+    const uploadMetadata =
+        buildUploadMetadata(
+            normalizedInput,
+            fileMetadata,
+            actor
+        );
 
     try {
 
@@ -496,51 +928,65 @@ async function uploadProtectedResource(
                 uploadMetadata
             );
 
-        const persistedMetadata =
-            uploadResult.metadata ||
-            {};
+        if (
+            !uploadResult ||
+            !uploadResult.metadata
+        ) {
+
+            throw new Error(
+                `[${MODULE_NAME}] Firebase Storage returned no persisted upload metadata.`
+            );
+
+        }
+
+        const persisted =
+            validatePersistedMetadata(
+                uploadResult.metadata,
+                {
+                    storagePath,
+                    fileName:
+                        fileMetadata.fileName,
+                    fileExtension:
+                        fileMetadata.fileExtension,
+                    mimeType:
+                        fileMetadata.mimeType,
+                    fileSize:
+                        fileMetadata.fileSize
+                }
+            );
 
         const result =
             Object.freeze({
 
                 storagePath:
-                    storagePath,
+                    persisted.storagePath,
 
                 fullPath:
-                    persistedMetadata.fullPath ||
-                    storagePath,
+                    persisted.fullPath,
 
                 bucket:
-                    persistedMetadata.bucket ||
-                    "",
+                    persisted.bucket,
 
                 fileName:
-                    fileMetadata.fileName,
+                    persisted.fileName,
 
                 fileExtension:
-                    fileMetadata.fileExtension,
+                    persisted.fileExtension,
 
                 mimeType:
-                    persistedMetadata.contentType ||
-                    fileMetadata.mimeType,
+                    persisted.mimeType,
 
                 fileSize:
-                    Number(
-                        persistedMetadata.size ||
-                        fileMetadata.fileSize
-                    ),
+                    persisted.fileSize,
 
                 generation:
-                    persistedMetadata.generation ||
-                    "",
+                    persisted.generation,
 
                 metageneration:
-                    persistedMetadata.metageneration ||
-                    "",
+                    persisted.metageneration,
 
                 uploadedAt:
-                    persistedMetadata.timeCreated ||
-                    null,
+                    persisted.uploadedAt,
 
                 uploadedByUid:
                     actor.uid,
@@ -567,6 +1013,12 @@ async function uploadProtectedResource(
 
                 storagePath:
                     result.storagePath,
+
+                bucket:
+                    result.bucket,
+
+                generation:
+                    result.generation,
 
                 programCode:
                     result.programCode,
@@ -615,11 +1067,36 @@ async function uploadProtectedResource(
                 uploadedByUid:
                     actor.uid,
 
+                code:
+                    error?.code ||
+                    null,
+
                 error
             }
         );
 
-        throw error;
+        if (
+            normalizeString(
+                error?.message
+            ).startsWith(
+                `[${MODULE_NAME}]`
+            )
+        ) {
+
+            throw error;
+
+        }
+
+        throw new Error(
+            getStorageErrorMessage(
+                error,
+                "Protected learning-resource upload failed."
+            ),
+            {
+                cause:
+                    error
+            }
+        );
 
     }
 
@@ -637,21 +1114,9 @@ async function getProtectedResourceMetadata(
     await requireAuthorizedAdmin();
 
     const normalizedStoragePath =
-        LearningResourceContract.normalizeString(
+        validateProtectedStoragePath(
             storagePath
         );
-
-    if (
-        !normalizedStoragePath.startsWith(
-            "learning-resources/"
-        )
-    ) {
-
-        throw new Error(
-            `[${MODULE_NAME}] Invalid protected Storage path.`
-        );
-
-    }
 
     try {
 
@@ -663,45 +1128,67 @@ async function getProtectedResourceMetadata(
                 )
             );
 
+        const resolvedStoragePath =
+            validateProtectedStoragePath(
+                metadata.fullPath ||
+                normalizedStoragePath
+            );
+
+        if (
+            resolvedStoragePath !==
+            normalizedStoragePath
+        ) {
+
+            throw new Error(
+                `[${MODULE_NAME}] Returned Storage metadata does not match the requested object.`
+            );
+
+        }
+
         return Object.freeze({
 
             storagePath:
-                metadata.fullPath ||
-                normalizedStoragePath,
+                resolvedStoragePath,
 
             bucket:
-                metadata.bucket ||
-                "",
+                normalizeString(
+                    metadata.bucket
+                ),
 
             fileName:
-                metadata.name ||
-                "",
+                normalizeString(
+                    metadata.name
+                ),
 
             mimeType:
-                metadata.contentType ||
-                "",
+                normalizeString(
+                    metadata.contentType
+                ).toLowerCase(),
 
             fileSize:
-                Number(
-                    metadata.size ||
-                    0
+                normalizeFileSize(
+                    metadata.size
                 ),
 
             generation:
-                metadata.generation ||
-                "",
+                normalizeString(
+                    metadata.generation
+                ),
 
             metageneration:
-                metadata.metageneration ||
-                "",
+                normalizeString(
+                    metadata.metageneration
+                ),
 
             createdAt:
-                metadata.timeCreated ||
-                null,
+                normalizeNullableString(
+                    metadata.timeCreated
+                ),
 
             updatedAt:
-                metadata.updated ||
-                null,
+                normalizeNullableString(
+                    metadata.updated
+                ),
 
             customMetadata:
                 Object.freeze({
@@ -724,11 +1211,36 @@ async function getProtectedResourceMetadata(
                 storagePath:
                     normalizedStoragePath,
 
+                code:
+                    error?.code ||
+                    null,
+
                 error
             }
         );
 
-        throw error;
+        if (
+            normalizeString(
+                error?.message
+            ).startsWith(
+                `[${MODULE_NAME}]`
+            )
+        ) {
+
+            throw error;
+
+        }
+
+        throw new Error(
+            getStorageErrorMessage(
+                error,
+                "Unable to retrieve protected resource metadata."
+            ),
+            {
+                cause:
+                    error
+            }
+        );
 
     }
 
@@ -748,6 +1260,9 @@ const LearningResourceStorage =
         version:
             MODULE_VERSION,
 
+        protectedRoot:
+            PROTECTED_ROOT,
+
         maxFileSizeBytes:
             LearningResourceContract.maxFileSizeBytes,
 
@@ -755,8 +1270,11 @@ const LearningResourceStorage =
             LearningResourceContract.approvedMimeTypes,
 
         requireAuthorizedAdmin,
+
         validateFile,
+
         uploadProtectedResource,
+
         getProtectedResourceMetadata
 
     });
@@ -765,14 +1283,22 @@ const LearningResourceStorage =
 window.LearningResourceStorage =
     LearningResourceStorage;
 
+
 console.info(
     `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
 );
 
+
 export {
+
     LearningResourceStorage,
+
     requireAuthorizedAdmin,
+
     validateFile,
+
     uploadProtectedResource,
+
     getProtectedResourceMetadata
+
 };

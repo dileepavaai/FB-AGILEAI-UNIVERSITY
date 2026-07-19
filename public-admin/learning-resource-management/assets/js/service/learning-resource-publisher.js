@@ -3,9 +3,9 @@
    Admin Learning Resource Management
 
    File      : learning-resource-publisher.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
-   Phase     : Governed Learning Resource Publication
+   Authority : Admin Portal
 
    Purpose
    ----------------------------------------------------------
@@ -14,37 +14,38 @@
 
    Responsibilities
    ----------------------------------------------------------
-   ✓ Create learning-resource drafts
-   ✓ Update existing drafts
-   ✓ Attach protected Storage metadata
-   ✓ Publish validated resources
-   ✓ Mark previous published versions as non-latest
-   ✓ Withdraw published resources
-   ✓ Preserve immutable identity and audit metadata
-   ✓ Prevent metadata deletion
+   • Create learning-resource drafts
+   • Update existing drafts
+   • Preserve attached protected assets during metadata edits
+   • Attach protected Storage metadata
+   • Publish validated resources
+   • Mark previous published versions as non-latest
+   • Withdraw published resources
+   • Preserve immutable identity and audit metadata
+   • Prevent metadata deletion
 
-   Non Responsibilities
+   Non-Responsibilities
    ----------------------------------------------------------
-   ✗ Upload files
-   ✗ Generate permanent download URLs
-   ✗ Delete files
-   ✗ Delete Firestore records
-   ✗ Authenticate learners
-   ✗ Resolve learner entitlement
-   ✗ Render UI
-   ✗ Provide Student Portal delivery
+   • Upload files
+   • Generate permanent download URLs
+   • Delete files
+   • Delete Firestore records
+   • Authenticate learners
+   • Resolve learner entitlement
+   • Render UI
+   • Provide Student Portal delivery
 
    Governance
    ----------------------------------------------------------
    • Admin Portal is the publication authority
    • New resources always begin as drafts
+   • Drafts are never marked as latest published versions
    • Published resource assets are immutable
    • Replacement requires a new version
    • Only one published version should remain latest
    • Withdrawal is terminal
    • Physical deletion is prohibited
    • Learner identity must not be stored
-
 ========================================================== */
 
 import {
@@ -59,8 +60,7 @@ import {
     query,
     runTransaction,
     serverTimestamp,
-    where,
-    writeBatch
+    where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
@@ -80,15 +80,40 @@ const MODULE_NAME =
     "LearningResourcePublisher";
 
 const MODULE_VERSION =
-    "1.0.0";
+    "1.1.0";
 
 const COLLECTION_NAME =
     "learning_resources";
 
 
 /* ==========================================================
-   HELPERS
+   NORMALIZATION HELPERS
 ========================================================== */
+
+function normalizeString(
+    value
+) {
+
+    return LearningResourceContract.normalizeString(
+        value
+    );
+
+}
+
+
+function normalizeNullableString(
+    value
+) {
+
+    return (
+        normalizeString(
+            value
+        ) ||
+        null
+    );
+
+}
+
 
 function normalizeFileSize(
     value
@@ -117,12 +142,76 @@ function normalizeFileSize(
 }
 
 
+function normalizeVersion(
+    value
+) {
+
+    const version =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isInteger(
+            version
+        ) ||
+        version < 1
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Invalid resource version.`
+        );
+
+    }
+
+    return version;
+
+}
+
+
+function normalizeActor(
+    actor
+) {
+
+    const uid =
+        normalizeString(
+            actor?.uid
+        );
+
+    if (
+        !uid
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Authorized administrator identity is missing.`
+        );
+
+    }
+
+    return Object.freeze({
+
+        uid,
+
+        email:
+            normalizeNullableString(
+                actor?.email
+            )
+
+    });
+
+}
+
+
+/* ==========================================================
+   DOCUMENT REFERENCE
+========================================================== */
+
 function buildReference(
     documentId
 ) {
 
     const normalizedDocumentId =
-        LearningResourceContract.normalizeString(
+        normalizeString(
             documentId
         );
 
@@ -147,6 +236,10 @@ function buildReference(
 }
 
 
+/* ==========================================================
+   DRAFT DATA
+========================================================== */
+
 function buildDraftData(
     normalizedResource,
     actor
@@ -154,6 +247,10 @@ function buildDraftData(
 
     const timestamp =
         serverTimestamp();
+
+    const protectedDelivery =
+        normalizedResource.delivery_type ===
+        "protected_storage";
 
     return {
 
@@ -179,33 +276,58 @@ function buildDraftData(
             normalizedResource.delivery_type,
 
         storage_path:
-            normalizedResource.storage_path,
+            protectedDelivery
+                ? normalizeNullableString(
+                    normalizedResource.storage_path
+                )
+                : null,
 
         external_url:
-            normalizedResource.external_url,
+            protectedDelivery
+                ? null
+                : normalizeNullableString(
+                    normalizedResource.external_url
+                ),
 
         file_name:
-            normalizedResource.file_name,
+            protectedDelivery
+                ? normalizeNullableString(
+                    normalizedResource.file_name
+                )
+                : null,
 
         file_extension:
-            normalizedResource.file_extension,
+            protectedDelivery
+                ? normalizeNullableString(
+                    normalizedResource.file_extension
+                )
+                : null,
 
         mime_type:
-            normalizedResource.mime_type,
+            protectedDelivery
+                ? normalizeNullableString(
+                    normalizedResource.mime_type
+                )
+                : null,
 
         file_size:
-            normalizeFileSize(
-                normalizedResource.file_size
-            ),
+            protectedDelivery
+                ? normalizeFileSize(
+                    normalizedResource.file_size
+                )
+                : 0,
 
         preview_allowed:
-            normalizedResource.preview_allowed,
+            normalizedResource.preview_allowed ===
+            true,
 
         download_allowed:
-            normalizedResource.download_allowed,
+            normalizedResource.download_allowed ===
+            true,
 
         embed_allowed:
-            normalizedResource.embed_allowed,
+            normalizedResource.embed_allowed ===
+            true,
 
         status:
             "draft",
@@ -213,11 +335,17 @@ function buildDraftData(
         is_active:
             false,
 
+        /*
+         * A draft is not the latest published version.
+         * This becomes true only during publication.
+         */
         is_latest:
-            true,
+            false,
 
         version:
-            normalizedResource.version,
+            normalizeVersion(
+                normalizedResource.version
+            ),
 
         display_order:
             normalizedResource.display_order,
@@ -263,18 +391,79 @@ function buildDraftData(
 }
 
 
+/* ==========================================================
+   EDITABLE DRAFT DATA
+========================================================== */
+
 function buildEditableDraftData(
     normalizedResource,
     existingData
 ) {
 
+    const protectedDelivery =
+        normalizedResource.delivery_type ===
+        "protected_storage";
+
+    /*
+     * The Admin form does not submit protected-file metadata.
+     * Therefore, an ordinary metadata edit must preserve the
+     * asset already attached to the draft.
+     *
+     * Switching to an external delivery type deliberately clears
+     * protected Storage metadata.
+     */
+    const protectedAsset = {
+
+        storagePath:
+            protectedDelivery
+                ? normalizeNullableString(
+                    existingData.storage_path
+                )
+                : null,
+
+        fileName:
+            protectedDelivery
+                ? normalizeNullableString(
+                    existingData.file_name
+                )
+                : null,
+
+        fileExtension:
+            protectedDelivery
+                ? normalizeNullableString(
+                    existingData.file_extension
+                )
+                : null,
+
+        mimeType:
+            protectedDelivery
+                ? normalizeNullableString(
+                    existingData.mime_type
+                )
+                : null,
+
+        fileSize:
+            protectedDelivery
+                ? normalizeFileSize(
+                    existingData.file_size
+                )
+                : 0
+
+    };
+
     return {
 
+        /*
+         * Immutable logical identity.
+         */
         resource_id:
             existingData.resource_id,
 
         program_code:
             existingData.program_code,
+
+        version:
+            existingData.version,
 
         title:
             normalizedResource.title,
@@ -292,33 +481,38 @@ function buildEditableDraftData(
             normalizedResource.delivery_type,
 
         storage_path:
-            normalizedResource.storage_path,
+            protectedAsset.storagePath,
 
         external_url:
-            normalizedResource.external_url,
+            protectedDelivery
+                ? null
+                : normalizeNullableString(
+                    normalizedResource.external_url
+                ),
 
         file_name:
-            normalizedResource.file_name,
+            protectedAsset.fileName,
 
         file_extension:
-            normalizedResource.file_extension,
+            protectedAsset.fileExtension,
 
         mime_type:
-            normalizedResource.mime_type,
+            protectedAsset.mimeType,
 
         file_size:
-            normalizeFileSize(
-                normalizedResource.file_size
-            ),
+            protectedAsset.fileSize,
 
         preview_allowed:
-            normalizedResource.preview_allowed,
+            normalizedResource.preview_allowed ===
+            true,
 
         download_allowed:
-            normalizedResource.download_allowed,
+            normalizedResource.download_allowed ===
+            true,
 
         embed_allowed:
-            normalizedResource.embed_allowed,
+            normalizedResource.embed_allowed ===
+            true,
 
         status:
             "draft",
@@ -327,22 +521,25 @@ function buildEditableDraftData(
             false,
 
         is_latest:
-            true,
-
-        version:
-            existingData.version,
+            false,
 
         display_order:
             normalizedResource.display_order,
 
+        /*
+         * Preserve original creation audit identity.
+         */
         created_by_uid:
-            existingData.created_by_uid,
+            existingData.created_by_uid ||
+            null,
 
         created_by_email:
-            existingData.created_by_email,
+            existingData.created_by_email ||
+            null,
 
         created_at:
-            existingData.created_at,
+            existingData.created_at ||
+            serverTimestamp(),
 
         published_by_uid:
             null,
@@ -369,9 +566,50 @@ function buildEditableDraftData(
             serverTimestamp(),
 
         source:
-            existingData.source
+            existingData.source ||
+            "admin_portal"
 
     };
+
+}
+
+
+/* ==========================================================
+   PUBLICATION VALIDATION
+========================================================== */
+
+function validatePublicationData(
+    data
+) {
+
+    if (
+        data.status !==
+        "draft"
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Only draft resources can be published.`
+        );
+
+    }
+
+    const validation =
+        LearningResourceContract.validateForPublication(
+            data
+        );
+
+    if (
+        !validation.valid
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Publication rejected: ` +
+            validation.errors.join(
+                " "
+            )
+        );
+
+    }
 
 }
 
@@ -385,7 +623,9 @@ async function createDraft(
 ) {
 
     const actor =
-        await requireAuthorizedAdmin();
+        normalizeActor(
+            await requireAuthorizedAdmin()
+        );
 
     const normalizedResource =
         LearningResourceContract.normalizeResourceInput(
@@ -489,15 +729,24 @@ async function createDraft(
     );
 
     return Object.freeze({
+
         documentId,
+
         resourceId:
             normalizedResource.resource_id,
+
         programCode:
             normalizedResource.program_code,
+
         version:
             normalizedResource.version,
+
         status:
-            "draft"
+            "draft",
+
+        isLatest:
+            false
+
     });
 
 }
@@ -595,22 +844,38 @@ async function updateDraft(
                     existingData
                 );
 
+            /*
+             * Full controlled replacement is intentional:
+             * immutable identity and audit fields are explicitly
+             * preserved by buildEditableDraftData().
+             */
             transaction.set(
                 reference,
                 updatedData
             );
 
             return Object.freeze({
+
                 documentId:
                     snapshot.id,
+
                 resourceId:
                     existingData.resource_id,
+
                 programCode:
                     existingData.program_code,
+
                 version:
                     existingData.version,
+
                 status:
-                    "draft"
+                    "draft",
+
+                hasProtectedAsset:
+                    Boolean(
+                        updatedData.storage_path
+                    )
+
             });
 
         }
@@ -630,13 +895,34 @@ async function attachProtectedAsset(
 
     await requireAuthorizedAdmin();
 
+    const storagePath =
+        normalizeString(
+            uploadResult?.storagePath
+        );
+
+    const resourceId =
+        LearningResourceContract.normalizeResourceId(
+            uploadResult?.resourceId
+        );
+
+    const programCode =
+        LearningResourceContract.normalizeProgramCode(
+            uploadResult?.programCode
+        );
+
+    const version =
+        normalizeVersion(
+            uploadResult?.version
+        );
+
     if (
-        !uploadResult ||
-        !uploadResult.storagePath
+        !storagePath ||
+        !resourceId ||
+        !programCode
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Protected upload metadata is required.`
+            `[${MODULE_NAME}] Complete protected upload metadata is required.`
         );
 
     }
@@ -683,12 +969,18 @@ async function attachProtectedAsset(
             }
 
             if (
-                uploadResult.resourceId !==
-                    existingData.resource_id ||
-                uploadResult.programCode !==
-                    existingData.program_code ||
-                uploadResult.version !==
-                    existingData.version
+                resourceId !==
+                    LearningResourceContract.normalizeResourceId(
+                        existingData.resource_id
+                    ) ||
+                programCode !==
+                    LearningResourceContract.normalizeProgramCode(
+                        existingData.program_code
+                    ) ||
+                version !==
+                    normalizeVersion(
+                        existingData.version
+                    )
             ) {
 
                 throw new Error(
@@ -704,24 +996,36 @@ async function attachProtectedAsset(
                         "protected_storage",
 
                     storage_path:
-                        uploadResult.storagePath,
+                        storagePath,
 
                     external_url:
                         null,
 
                     file_name:
-                        uploadResult.fileName,
+                        normalizeNullableString(
+                            uploadResult.fileName
+                        ),
 
                     file_extension:
-                        uploadResult.fileExtension,
+                        normalizeNullableString(
+                            uploadResult.fileExtension
+                        ),
 
                     mime_type:
-                        uploadResult.mimeType,
+                        normalizeNullableString(
+                            uploadResult.mimeType
+                        ),
 
                     file_size:
                         normalizeFileSize(
                             uploadResult.fileSize
                         ),
+
+                    is_active:
+                        false,
+
+                    is_latest:
+                        false,
 
                     updated_at:
                         serverTimestamp()
@@ -729,12 +1033,21 @@ async function attachProtectedAsset(
             );
 
             return Object.freeze({
+
                 documentId:
                     snapshot.id,
-                storagePath:
-                    uploadResult.storagePath,
+
+                resourceId,
+
+                programCode,
+
+                version,
+
+                storagePath,
+
                 status:
                     "draft"
+
             });
 
         }
@@ -752,20 +1065,29 @@ async function publishResource(
 ) {
 
     const actor =
-        await requireAuthorizedAdmin();
+        normalizeActor(
+            await requireAuthorizedAdmin()
+        );
 
     const reference =
         buildReference(
             documentId
         );
 
-    const snapshot =
+    /*
+     * Preliminary read is required to resolve the logical
+     * resource ID used by the version-history query.
+     *
+     * Publication eligibility is checked again inside the
+     * transaction before any mutation is committed.
+     */
+    const preliminarySnapshot =
         await getDoc(
             reference
         );
 
     if (
-        !snapshot.exists()
+        !preliminarySnapshot.exists()
     ) {
 
         throw new Error(
@@ -774,147 +1096,226 @@ async function publishResource(
 
     }
 
-    const existingData =
-        snapshot.data() ||
+    const preliminaryData =
+        preliminarySnapshot.data() ||
         {};
 
+    validatePublicationData(
+        preliminaryData
+    );
+
+    const resourceId =
+        LearningResourceContract.normalizeResourceId(
+            preliminaryData.resource_id
+        );
+
     if (
-        existingData.status !==
-        "draft"
+        !resourceId
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Only draft resources can be published.`
+            `[${MODULE_NAME}] Resource identity is invalid.`
         );
 
     }
 
-    const publicationValidation =
-        LearningResourceContract.validateForPublication(
-            existingData
-        );
-
-    if (
-        !publicationValidation.valid
-    ) {
-
-        throw new Error(
-            `[${MODULE_NAME}] Publication rejected: ` +
-            publicationValidation.errors.join(
-                " "
-            )
-        );
-
-    }
-
-    /*
-     * Resolve previously published versions of the same
-     * logical resource. Only currently published/latest
-     * records are superseded.
-     */
-    const previousVersionsQuery =
-        query(
-            collection(
-                db,
-                COLLECTION_NAME
-            ),
-            where(
-                "resource_id",
-                "==",
-                existingData.resource_id
-            )
-        );
-
-    const previousVersionsSnapshot =
+    const versionsSnapshot =
         await getDocs(
-            previousVersionsQuery
+            query(
+                collection(
+                    db,
+                    COLLECTION_NAME
+                ),
+                where(
+                    "resource_id",
+                    "==",
+                    resourceId
+                )
+            )
         );
 
-    const batch =
-        writeBatch(
-            db
-        );
+    const versionReferences =
+        versionsSnapshot.docs
+            .map(
+                (
+                    versionSnapshot
+                ) => versionSnapshot.ref
+            );
 
-    previousVersionsSnapshot.forEach(
-        (
-            previousSnapshot
-        ) => {
+    const result =
+        await runTransaction(
+            db,
+            async (
+                transaction
+            ) => {
 
-            if (
-                previousSnapshot.id ===
-                    documentId
-            ) {
+                /*
+                 * All reads are completed before transaction writes.
+                 */
+                const targetSnapshot =
+                    await transaction.get(
+                        reference
+                    );
 
-                return;
+                if (
+                    !targetSnapshot.exists()
+                ) {
 
-            }
+                    throw new Error(
+                        `[${MODULE_NAME}] Draft not found during publication.`
+                    );
 
-            const previousData =
-                previousSnapshot.data() ||
-                {};
+                }
 
-            if (
-                previousData.status ===
-                    "published" &&
-                previousData.is_latest ===
-                    true
-            ) {
+                const targetData =
+                    targetSnapshot.data() ||
+                    {};
 
-                batch.update(
-                    previousSnapshot.ref,
+                validatePublicationData(
+                    targetData
+                );
+
+                const currentResourceId =
+                    LearningResourceContract.normalizeResourceId(
+                        targetData.resource_id
+                    );
+
+                if (
+                    currentResourceId !==
+                    resourceId
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Resource identity changed during publication.`
+                    );
+
+                }
+
+                const otherReferences =
+                    versionReferences.filter(
+                        (
+                            versionReference
+                        ) => (
+                            versionReference.path !==
+                            reference.path
+                        )
+                    );
+
+                const otherSnapshots =
+                    await Promise.all(
+                        otherReferences.map(
+                            (
+                                versionReference
+                            ) => transaction.get(
+                                versionReference
+                            )
+                        )
+                    );
+
+                otherSnapshots.forEach(
+                    (
+                        versionSnapshot
+                    ) => {
+
+                        if (
+                            !versionSnapshot.exists()
+                        ) {
+
+                            return;
+
+                        }
+
+                        const previousData =
+                            versionSnapshot.data() ||
+                            {};
+
+                        if (
+                            previousData.resource_id ===
+                                resourceId &&
+                            previousData.status ===
+                                "published" &&
+                            previousData.is_latest ===
+                                true
+                        ) {
+
+                            transaction.update(
+                                versionSnapshot.ref,
+                                {
+                                    is_latest:
+                                        false,
+
+                                    updated_at:
+                                        serverTimestamp()
+                                }
+                            );
+
+                        }
+
+                    }
+                );
+
+                transaction.update(
+                    reference,
                     {
+                        status:
+                            "published",
+
+                        is_active:
+                            true,
+
                         is_latest:
-                            false,
+                            true,
+
+                        published_by_uid:
+                            actor.uid,
+
+                        published_by_email:
+                            actor.email,
+
+                        published_at:
+                            serverTimestamp(),
+
+                        withdrawn_by_uid:
+                            null,
+
+                        withdrawn_by_email:
+                            null,
+
+                        withdrawn_at:
+                            null,
+
+                        withdrawal_reason:
+                            "",
 
                         updated_at:
                             serverTimestamp()
                     }
                 );
 
+                return Object.freeze({
+
+                    documentId:
+                        targetSnapshot.id,
+
+                    resourceId:
+                        targetData.resource_id,
+
+                    programCode:
+                        targetData.program_code,
+
+                    version:
+                        targetData.version,
+
+                    status:
+                        "published",
+
+                    isLatest:
+                        true
+
+                });
+
             }
-
-        }
-    );
-
-    batch.update(
-        reference,
-        {
-            status:
-                "published",
-
-            is_active:
-                true,
-
-            is_latest:
-                true,
-
-            published_by_uid:
-                actor.uid,
-
-            published_by_email:
-                actor.email,
-
-            published_at:
-                serverTimestamp(),
-
-            withdrawn_by_uid:
-                null,
-
-            withdrawn_by_email:
-                null,
-
-            withdrawn_at:
-                null,
-
-            withdrawal_reason:
-                "",
-
-            updated_at:
-                serverTimestamp()
-        }
-    );
-
-    await batch.commit();
+        );
 
     console.info(
         `[${MODULE_NAME}] Resource published:`,
@@ -922,35 +1323,24 @@ async function publishResource(
             moduleVersion:
                 MODULE_VERSION,
 
-            documentId,
+            documentId:
+                result.documentId,
 
             resourceId:
-                existingData.resource_id,
+                result.resourceId,
 
             programCode:
-                existingData.program_code,
+                result.programCode,
 
             version:
-                existingData.version,
+                result.version,
 
             publishedByUid:
                 actor.uid
         }
     );
 
-    return Object.freeze({
-        documentId,
-        resourceId:
-            existingData.resource_id,
-        programCode:
-            existingData.program_code,
-        version:
-            existingData.version,
-        status:
-            "published",
-        isLatest:
-            true
-    });
+    return result;
 
 }
 
@@ -965,10 +1355,12 @@ async function withdrawResource(
 ) {
 
     const actor =
-        await requireAuthorizedAdmin();
+        normalizeActor(
+            await requireAuthorizedAdmin()
+        );
 
     const normalizedReason =
-        LearningResourceContract.normalizeString(
+        normalizeString(
             reason
         );
 
@@ -983,12 +1375,12 @@ async function withdrawResource(
     }
 
     if (
-        normalizedReason.length > 1000
+        normalizedReason.length >
+        1000
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Withdrawal reason must not exceed ` +
-            `1,000 characters.`
+            `[${MODULE_NAME}] Withdrawal reason must not exceed 1,000 characters.`
         );
 
     }
@@ -1043,6 +1435,9 @@ async function withdrawResource(
                     is_active:
                         false,
 
+                    is_latest:
+                        false,
+
                     withdrawn_by_uid:
                         actor.uid,
 
@@ -1061,16 +1456,25 @@ async function withdrawResource(
             );
 
             return Object.freeze({
+
                 documentId:
                     snapshot.id,
+
                 resourceId:
                     existingData.resource_id,
+
                 programCode:
                     existingData.program_code,
+
                 version:
                     existingData.version,
+
                 status:
-                    "withdrawn"
+                    "withdrawn",
+
+                isLatest:
+                    false
+
             });
 
         }
@@ -1096,9 +1500,13 @@ const LearningResourcePublisher =
             COLLECTION_NAME,
 
         createDraft,
+
         updateDraft,
+
         attachProtectedAsset,
+
         publishResource,
+
         withdrawResource
 
     });
@@ -1107,15 +1515,24 @@ const LearningResourcePublisher =
 window.LearningResourcePublisher =
     LearningResourcePublisher;
 
+
 console.info(
     `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
 );
 
+
 export {
+
     LearningResourcePublisher,
+
     createDraft,
+
     updateDraft,
+
     attachProtectedAsset,
+
     publishResource,
+
     withdrawResource
+
 };

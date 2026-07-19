@@ -2,9 +2,37 @@
    Agile AI University
    Admin Learning Resource Management
 
-   File    : learning-resource-controller.js
-   Version : 1.0.1
-   Status  : ACTIVE
+   File       : learning-resource-controller.js
+   Version    : 1.1.0
+   Status     : ACTIVE
+   Authority  : Admin Portal
+
+   Purpose
+   ----------------------------------------------------------
+   Orchestrates the governed administrative lifecycle for
+   learning resources and licensed course materials.
+
+   Responsibilities
+   ----------------------------------------------------------
+   • Wait for authenticated administrative identity
+   • Enforce administrative authorization
+   • Coordinate resource registry loading
+   • Coordinate draft creation and updates
+   • Coordinate protected-resource upload
+   • Coordinate publication and withdrawal
+   • Coordinate filtering and version-history display
+   • Delegate rendering to LearningResourceRenderer
+   • Keep Firestore and Storage logic outside the controller
+
+   Governance
+   ----------------------------------------------------------
+   • Admin Portal is the resource-management authority
+   • Drafts may be edited
+   • Published versions are immutable
+   • Protected resources require an attached delivery asset
+   • External resources require an external URL
+   • Withdrawn resources remain available for audit history
+   • Client-side deletion is prohibited
 ========================================================== */
 
 import {
@@ -33,152 +61,408 @@ import {
     LearningResourceRenderer
 } from "./ui/learning-resource-renderer.js";
 
-const MODULE_NAME = "LearningResourceController";
-const MODULE_VERSION = "1.0.1";
+
+const MODULE_NAME =
+    "LearningResourceController";
+
+const MODULE_VERSION =
+    "1.1.0";
+
+const SEARCH_DEBOUNCE_MS =
+    250;
+
 
 const state = {
-    initialized: false,
-    authorized: false,
-    busy: false,
-    resources: [],
+
+    initialized:
+        false,
+
+    authorized:
+        false,
+
+    busy:
+        false,
+
+    resources:
+        [],
+
     filters: {
-        programCode: "",
-        status: "",
-        category: "",
-        resourceType: "",
-        search: ""
-    }
+
+        programCode:
+            "",
+
+        status:
+            "",
+
+        category:
+            "",
+
+        resourceType:
+            "",
+
+        search:
+            ""
+
+    },
+
+    searchTimer:
+        null
+
 };
 
-function getElement(id) {
-    return document.getElementById(id);
+
+/* ==========================================================
+   DOM HELPERS
+========================================================== */
+
+function getElement(
+    id
+) {
+
+    return document.getElementById(
+        id
+    );
+
 }
 
-function getFormField(form, fieldName) {
-    return form?.elements?.namedItem(fieldName) || null;
+
+function getFormField(
+    form,
+    fieldName
+) {
+
+    return (
+        form?.elements?.namedItem(
+            fieldName
+        ) ||
+        null
+    );
+
 }
 
-function getFieldValue(form, fieldName) {
-    const field = getFormField(form, fieldName);
-    return field ? String(field.value || "").trim() : "";
+
+function getFieldValue(
+    form,
+    fieldName
+) {
+
+    const field =
+        getFormField(
+            form,
+            fieldName
+        );
+
+    return field
+        ? String(
+            field.value || ""
+        ).trim()
+        : "";
+
 }
 
-function getFieldChecked(form, fieldName) {
-    return getFormField(form, fieldName)?.checked === true;
+
+function getFieldChecked(
+    form,
+    fieldName
+) {
+
+    return (
+        getFormField(
+            form,
+            fieldName
+        )?.checked === true
+    );
+
 }
 
-function getSelectedFile(form) {
-    return getFormField(form, "resource_file")?.files?.[0] || null;
+
+function getSelectedFile(
+    form
+) {
+
+    return (
+        getFormField(
+            form,
+            "resource_file"
+        )?.files?.[0] ||
+        null
+    );
+
 }
 
-function setBusy(busy) {
-    state.busy = busy === true;
-    LearningResourceRenderer.setLoading(state.busy);
 
-    const page = getElement("learning-resource-management");
+/* ==========================================================
+   VALUE HELPERS
+========================================================== */
 
-    if (!page) {
-        return;
-    }
+function normalizeText(
+    value
+) {
 
-    page
-        .querySelectorAll("button, input, select, textarea")
-        .forEach((element) => {
-            if (element.dataset.keepEnabled === "true") {
-                return;
-            }
+    return String(
+        value || ""
+    ).trim();
 
-            if (state.busy) {
-                if (!element.disabled) {
-                    element.disabled = true;
-                    element.dataset.disabledByBusy = "true";
-                }
-                return;
-            }
-
-            if (element.dataset.disabledByBusy === "true") {
-                element.disabled = false;
-                delete element.dataset.disabledByBusy;
-            }
-        });
 }
+
+
+function normalizeLowercase(
+    value
+) {
+
+    return normalizeText(
+        value
+    ).toLowerCase();
+
+}
+
 
 function getErrorMessage(
     error,
-    fallback = "The operation could not be completed."
+    fallback =
+        "The operation could not be completed."
 ) {
-    return String(error?.message || "").trim() || fallback;
+
+    return (
+        normalizeText(
+            error?.message
+        ) ||
+        fallback
+    );
+
 }
 
-function handleError(context, error) {
-    console.error(`[${MODULE_NAME}] ${context}:`, error);
+
+/* ==========================================================
+   BUSY STATE
+========================================================== */
+
+function setBusy(
+    busy
+) {
+
+    state.busy =
+        busy === true;
+
+    LearningResourceRenderer.setLoading(
+        state.busy
+    );
+
+    const page =
+        getElement(
+            "learning-resource-management"
+        );
+
+    if (!page) {
+
+        return;
+
+    }
+
+    page
+        .querySelectorAll(
+            "button, input, select, textarea"
+        )
+        .forEach(
+            (
+                element
+            ) => {
+
+                if (
+                    element.dataset.keepEnabled ===
+                    "true"
+                ) {
+
+                    return;
+
+                }
+
+                if (
+                    state.busy
+                ) {
+
+                    if (
+                        !element.disabled
+                    ) {
+
+                        element.disabled =
+                            true;
+
+                        element.dataset.disabledByBusy =
+                            "true";
+
+                    }
+
+                    return;
+
+                }
+
+                if (
+                    element.dataset.disabledByBusy ===
+                    "true"
+                ) {
+
+                    element.disabled =
+                        false;
+
+                    delete element.dataset.disabledByBusy;
+
+                }
+
+            }
+        );
+
+}
+
+
+/* ==========================================================
+   ERROR HANDLING
+========================================================== */
+
+function handleError(
+    context,
+    error
+) {
+
+    console.error(
+        `[${MODULE_NAME}] ${context}:`,
+        error
+    );
 
     LearningResourceRenderer.setStatus(
-        getErrorMessage(error),
+        getErrorMessage(
+            error
+        ),
         "error"
     );
+
 }
+
+
+/* ==========================================================
+   FILTERS
+========================================================== */
 
 function readFilters() {
+
     state.filters = {
+
         programCode:
-            getElement("learning-resource-filter-program")?.value || "",
+            normalizeText(
+                getElement(
+                    "learning-resource-filter-program"
+                )?.value
+            ),
 
         status:
-            getElement("learning-resource-filter-status")?.value || "",
+            normalizeLowercase(
+                getElement(
+                    "learning-resource-filter-status"
+                )?.value
+            ),
 
         category:
-            getElement("learning-resource-filter-category")?.value || "",
+            normalizeLowercase(
+                getElement(
+                    "learning-resource-filter-category"
+                )?.value
+            ),
 
         resourceType:
-            getElement("learning-resource-filter-type")?.value || "",
+            normalizeLowercase(
+                getElement(
+                    "learning-resource-filter-type"
+                )?.value
+            ),
 
         search:
-            getElement("learning-resource-filter-search")?.value || ""
+            normalizeText(
+                getElement(
+                    "learning-resource-filter-search"
+                )?.value
+            )
+
     };
 
-    return state.filters;
+    return {
+        ...state.filters
+    };
+
 }
+
+
+/* ==========================================================
+   RESOURCE LOADING
+========================================================== */
 
 async function loadResources({
     preserveStatus = false
 } = {}) {
-    if (state.busy || !state.authorized) {
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
         return;
+
     }
 
-    setBusy(true);
+    setBusy(
+        true
+    );
 
-    if (!preserveStatus) {
+    if (
+        !preserveStatus
+    ) {
+
         LearningResourceRenderer.clearStatus();
+
     }
 
     try {
+
+        const filters =
+            readFilters();
+
         const [
             resources,
             summary
-        ] = await Promise.all([
-            LearningResourceService.listResources(
-                readFilters()
-            ),
+        ] =
+            await Promise.all([
 
-            LearningResourceService.getSummary()
-        ]);
+                LearningResourceService.listResources(
+                    filters
+                ),
 
-        state.resources = [
-            ...resources
-        ];
+                LearningResourceService.getSummary()
+
+            ]);
+
+        state.resources =
+            Array.isArray(
+                resources
+            )
+                ? [
+                    ...resources
+                ]
+                : [];
 
         LearningResourceRenderer.renderSummary(
-            summary
+            summary || {}
         );
 
         LearningResourceRenderer.renderResources(
-            resources
+            state.resources
         );
+
     }
-    catch (error) {
-        state.resources = [];
+    catch (
+        error
+    ) {
+
+        state.resources =
+            [];
 
         LearningResourceRenderer.renderResources(
             []
@@ -188,14 +472,29 @@ async function loadResources({
             "Resource loading failed",
             error
         );
+
     }
     finally {
-        setBusy(false);
+
+        setBusy(
+            false
+        );
+
     }
+
 }
 
-function readResourceForm(form) {
+
+/* ==========================================================
+   FORM DATA
+========================================================== */
+
+function readResourceForm(
+    form
+) {
+
     return {
+
         program_code:
             getFieldValue(
                 form,
@@ -213,7 +512,8 @@ function readResourceForm(form) {
                 getFieldValue(
                     form,
                     "version"
-                ) || 1
+                ) ||
+                1
             ),
 
         title:
@@ -247,17 +547,21 @@ function readResourceForm(form) {
             ),
 
         external_url:
-            getFieldValue(
-                form,
-                "external_url"
-            ) || null,
+            (
+                getFieldValue(
+                    form,
+                    "external_url"
+                ) ||
+                null
+            ),
 
         display_order:
             Number(
                 getFieldValue(
                     form,
                     "display_order"
-                ) || 10
+                ) ||
+                0
             ),
 
         preview_allowed:
@@ -277,14 +581,29 @@ function readResourceForm(form) {
                 form,
                 "embed_allowed"
             )
+
     };
+
 }
 
-async function handleFormSubmit(event) {
+
+/* ==========================================================
+   DRAFT CREATION AND UPDATE
+========================================================== */
+
+async function handleFormSubmit(
+    event
+) {
+
     event.preventDefault();
 
-    if (state.busy || !state.authorized) {
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
         return;
+
     }
 
     const form =
@@ -295,22 +614,28 @@ async function handleFormSubmit(event) {
         "create";
 
     const existingDocumentId =
-        form.dataset.documentId ||
-        "";
+        normalizeText(
+            form.dataset.documentId
+        );
 
     const normalizedInput =
-        LearningResourceContract.normalizeResourceInput(
-            readResourceForm(
-                form
-            )
-        );
+        LearningResourceContract
+            .normalizeResourceInput(
+                readResourceForm(
+                    form
+                )
+            );
 
     const validation =
-        LearningResourceContract.validateDraft(
-            normalizedInput
-        );
+        LearningResourceContract
+            .validateDraft(
+                normalizedInput
+            );
 
-    if (!validation.valid) {
+    if (
+        !validation.valid
+    ) {
+
         LearningResourceRenderer.setStatus(
             validation.errors.join(
                 " "
@@ -319,9 +644,12 @@ async function handleFormSubmit(event) {
         );
 
         return;
+
     }
 
-    setBusy(true);
+    setBusy(
+        true
+    );
 
     LearningResourceRenderer.setStatus(
         mode === "edit"
@@ -330,30 +658,53 @@ async function handleFormSubmit(event) {
         "info"
     );
 
-    try { 
+    try {
+
         let documentId =
             existingDocumentId;
 
-        if (mode === "edit") {
-            if (!documentId) {
+        if (
+            mode === "edit"
+        ) {
+
+            if (
+                !documentId
+            ) {
+
                 throw new Error(
                     "Draft document identity is missing."
                 );
+
             }
 
             await LearningResourcePublisher.updateDraft(
                 documentId,
                 normalizedInput
             );
+
         }
         else {
+
             const createdDraft =
                 await LearningResourcePublisher.createDraft(
                     normalizedInput
                 );
 
             documentId =
-                createdDraft.documentId;
+                normalizeText(
+                    createdDraft?.documentId
+                );
+
+            if (
+                !documentId
+            ) {
+
+                throw new Error(
+                    "The learning-resource draft was created without a document identity."
+                );
+
+            }
+
         }
 
         const selectedFile =
@@ -366,30 +717,36 @@ async function handleFormSubmit(event) {
                 "protected_storage" &&
             selectedFile
         ) {
+
             LearningResourceRenderer.setStatus(
                 "Uploading protected learning resource…",
                 "info"
             );
 
             const uploadResult =
-                await LearningResourceStorage.uploadProtectedResource({
-                    programCode:
-                        normalizedInput.program_code,
+                await LearningResourceStorage
+                    .uploadProtectedResource({
 
-                    resourceId:
-                        normalizedInput.resource_id,
+                        programCode:
+                            normalizedInput.program_code,
 
-                    version:
-                        normalizedInput.version,
+                        resourceId:
+                            normalizedInput.resource_id,
 
-                    file:
-                        selectedFile
-                });
+                        version:
+                            normalizedInput.version,
 
-            await LearningResourcePublisher.attachProtectedAsset(
-                documentId,
-                uploadResult
-            );
+                        file:
+                            selectedFile
+
+                    });
+
+            await LearningResourcePublisher
+                .attachProtectedAsset(
+                    documentId,
+                    uploadResult
+                );
+
         }
 
         LearningResourceRenderer.closeForm();
@@ -400,114 +757,375 @@ async function handleFormSubmit(event) {
                 : "Learning-resource draft created.",
             "success"
         );
+
     }
-    catch (error) {
+    catch (
+        error
+    ) {
+
         handleError(
             "Draft save failed",
             error
         );
 
         return;
+
     }
     finally {
-        setBusy(false);
+
+        setBusy(
+            false
+        );
+
     }
 
     await loadResources({
-        preserveStatus: true
+        preserveStatus:
+            true
     });
+
 }
 
+
+/* ==========================================================
+   CREATE FORM
+========================================================== */
+
 function handleCreateResource() {
-    if (state.busy || !state.authorized) {
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
         return;
+
     }
 
     LearningResourceRenderer.clearStatus();
 
     LearningResourceRenderer.openForm({
-        mode: "create"
+        mode:
+            "create"
     });
+
 }
+
+
+/* ==========================================================
+   EDIT AND UPLOAD
+========================================================== */
 
 async function handleEditResource(
     documentId,
     focusFile = false
 ) {
-    if (state.busy || !state.authorized) {
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
         return;
+
     }
 
-    setBusy(true);
+    setBusy(
+        true
+    );
 
     try {
+
         const resource =
             await LearningResourceService.getResource(
                 documentId
             );
 
-        if (!resource) {
+        if (
+            !resource
+        ) {
+
             throw new Error(
                 "Learning-resource draft was not found."
             );
+
         }
 
-        if (resource.status !== "draft") {
+        if (
+            resource.status !== "draft"
+        ) {
+
             throw new Error(
                 "Only draft resources can be edited."
             );
+
         }
 
         LearningResourceRenderer.openForm({
-            mode: "edit",
+            mode:
+                "edit",
+
             resource
         });
 
-        if (focusFile) {
-            getFormField(
-                getElement(
-                    "learning-resource-form"
-                ),
-                "resource_file"
-            )?.focus();
+        if (
+            focusFile
+        ) {
+
+            window.requestAnimationFrame(
+                () => {
+
+                    getFormField(
+                        getElement(
+                            "learning-resource-form"
+                        ),
+                        "resource_file"
+                    )?.focus();
+
+                }
+            );
+
         }
+
     }
-    catch (error) {
+    catch (
+        error
+    ) {
+
         handleError(
             "Unable to open resource",
             error
         );
+
     }
     finally {
-        setBusy(false);
+
+        setBusy(
+            false
+        );
+
     }
+
 }
+
+
+/* ==========================================================
+   PUBLICATION PREFLIGHT
+========================================================== */
+
+function hasProtectedAsset(
+    resource
+) {
+
+    return Boolean(
+
+        normalizeText(
+            resource?.storagePath
+        ) ||
+
+        normalizeText(
+            resource?.fileName
+        ) ||
+
+        normalizeText(
+            resource?.asset?.storagePath
+        ) ||
+
+        normalizeText(
+            resource?.asset?.fileName
+        )
+
+    );
+
+}
+
+
+function hasExternalDeliveryUrl(
+    resource
+) {
+
+    return Boolean(
+
+        normalizeText(
+            resource?.externalUrl
+        ) ||
+
+        normalizeText(
+            resource?.external_url
+        )
+
+    );
+
+}
+
+
+function validatePublicationReadiness(
+    resource
+) {
+
+    if (
+        !resource
+    ) {
+
+        return {
+            valid:
+                false,
+
+            message:
+                "Learning resource was not found."
+        };
+
+    }
+
+    if (
+        resource.status !== "draft"
+    ) {
+
+        return {
+            valid:
+                false,
+
+            message:
+                "Only draft resources can be published."
+        };
+
+    }
+
+    const deliveryType =
+        normalizeLowercase(
+            resource.deliveryType ||
+            resource.delivery_type
+        );
+
+    if (
+        deliveryType ===
+            "protected_storage" &&
+        !hasProtectedAsset(
+            resource
+        )
+    ) {
+
+        return {
+            valid:
+                false,
+
+            message:
+                "Upload the protected learning-resource file before publication."
+        };
+
+    }
+
+    if (
+        (
+            deliveryType ===
+                "external_video" ||
+            deliveryType ===
+                "external_link"
+        ) &&
+        !hasExternalDeliveryUrl(
+            resource
+        )
+    ) {
+
+        return {
+            valid:
+                false,
+
+            message:
+                "Add the external delivery URL before publication."
+        };
+
+    }
+
+    return {
+        valid:
+            true,
+
+        message:
+            ""
+    };
+
+}
+
+
+/* ==========================================================
+   PUBLISH RESOURCE
+========================================================== */
 
 async function handlePublishResource(
     documentId
 ) {
-    if (state.busy || !state.authorized) {
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
         return;
+
     }
 
-    const confirmed =
-        window.confirm(
-            "Publish this learning resource? " +
-            "Its delivery asset will become immutable."
-        );
-
-    if (!confirmed) {
-        return;
-    }
-
-    setBusy(true);
+    setBusy(
+        true
+    );
 
     LearningResourceRenderer.setStatus(
-        "Publishing learning resource…",
+        "Validating publication readiness…",
         "info"
     );
 
     try {
+
+        const resource =
+            await LearningResourceService.getResource(
+                documentId
+            );
+
+        const readiness =
+            validatePublicationReadiness(
+                resource
+            );
+
+        if (
+            !readiness.valid
+        ) {
+
+            throw new Error(
+                readiness.message
+            );
+
+        }
+
+        setBusy(
+            false
+        );
+
+        const confirmed =
+            window.confirm(
+                "Publish this learning resource? " +
+                "The published version and its delivery asset " +
+                "will become immutable."
+            );
+
+        if (
+            !confirmed
+        ) {
+
+            LearningResourceRenderer.clearStatus();
+
+            return;
+
+        }
+
+        setBusy(
+            true
+        );
+
+        LearningResourceRenderer.setStatus(
+            "Publishing learning resource…",
+            "info"
+        );
+
         await LearningResourcePublisher.publishResource(
             documentId
         );
@@ -516,29 +1134,51 @@ async function handlePublishResource(
             "Learning resource published successfully.",
             "success"
         );
+
     }
-    catch (error) {
+    catch (
+        error
+    ) {
+
         handleError(
             "Publication failed",
             error
         );
 
         return;
+
     }
     finally {
-        setBusy(false);
+
+        setBusy(
+            false
+        );
+
     }
 
     await loadResources({
-        preserveStatus: true
+        preserveStatus:
+            true
     });
+
 }
+
+
+/* ==========================================================
+   WITHDRAW RESOURCE
+========================================================== */
 
 async function handleWithdrawResource(
     documentId
 ) {
-    if (state.busy || !state.authorized) {
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
         return;
+
     }
 
     const reason =
@@ -546,35 +1186,50 @@ async function handleWithdrawResource(
             "Enter the reason for withdrawing this resource:"
         );
 
-    if (reason === null) {
+    if (
+        reason === null
+    ) {
+
         return;
+
     }
 
     const normalizedReason =
-        String(
+        normalizeText(
             reason
-        ).trim();
+        );
 
-    if (!normalizedReason) {
+    if (
+        !normalizedReason
+    ) {
+
         LearningResourceRenderer.setStatus(
             "A withdrawal reason is required.",
             "error"
         );
 
         return;
+
     }
 
     const confirmed =
         window.confirm(
             "Withdraw this learning resource? " +
-            "Learner delivery will be disabled."
+            "Learner delivery will be disabled, while the " +
+            "resource remains available for governance history."
         );
 
-    if (!confirmed) {
+    if (
+        !confirmed
+    ) {
+
         return;
+
     }
 
-    setBusy(true);
+    setBusy(
+        true
+    );
 
     LearningResourceRenderer.setStatus(
         "Withdrawing learning resource…",
@@ -582,6 +1237,7 @@ async function handleWithdrawResource(
     );
 
     try {
+
         await LearningResourcePublisher.withdrawResource(
             documentId,
             normalizedReason
@@ -591,54 +1247,97 @@ async function handleWithdrawResource(
             "Learning resource withdrawn.",
             "success"
         );
+
     }
-    catch (error) {
+    catch (
+        error
+    ) {
+
         handleError(
             "Withdrawal failed",
             error
         );
 
         return;
+
     }
     finally {
-        setBusy(false);
+
+        setBusy(
+            false
+        );
+
     }
 
     await loadResources({
-        preserveStatus: true
+        preserveStatus:
+            true
     });
+
 }
+
+
+/* ==========================================================
+   RESOURCE DETAILS
+========================================================== */
 
 async function handleViewResource(
     documentId
 ) {
-    if (state.busy || !state.authorized) {
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
         return;
+
     }
 
-    setBusy(true);
+    setBusy(
+        true
+    );
 
     try {
+
         const resource =
             await LearningResourceService.getResource(
                 documentId
             );
 
-        if (!resource) {
+        if (
+            !resource
+        ) {
+
             throw new Error(
                 "Learning resource was not found."
             );
+
         }
 
         LearningResourceRenderer.setStatus(
             [
-                resource.title,
 
-                `${resource.programCode} · v${resource.version}`,
+                resource.title ||
+                    "Untitled resource",
 
-                `Status: ${resource.status}`,
+                `${
+                    resource.programCode ||
+                    "No programme"
+                } · v${
+                    resource.version ||
+                    1
+                }`,
 
-                `Delivery: ${resource.deliveryType}`,
+                `Status: ${
+                    resource.status ||
+                    "unknown"
+                }`,
+
+                `Delivery: ${
+                    resource.deliveryType ||
+                    "not configured"
+                }`,
 
                 `File: ${
                     resource.fileName ||
@@ -649,42 +1348,71 @@ async function handleViewResource(
                     resource.updatedAt ||
                     "Not available"
                 }`
+
             ].join(
                 " | "
             ),
             "info"
         );
+
     }
-    catch (error) {
+    catch (
+        error
+    ) {
+
         handleError(
             "Unable to display details",
             error
         );
+
     }
     finally {
-        setBusy(false);
+
+        setBusy(
+            false
+        );
+
     }
+
 }
+
+
+/* ==========================================================
+   VERSION HISTORY
+========================================================== */
 
 async function handleViewVersions(
     documentId
 ) {
-    if (state.busy || !state.authorized) {
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
         return;
+
     }
 
-    setBusy(true);
+    setBusy(
+        true
+    );
 
     try {
+
         const resource =
             await LearningResourceService.getResource(
                 documentId
             );
 
-        if (!resource) {
+        if (
+            !resource
+        ) {
+
             throw new Error(
                 "Learning resource was not found."
             );
+
         }
 
         const versions =
@@ -692,85 +1420,188 @@ async function handleViewVersions(
                 resource.resourceId
             );
 
+        const normalizedVersions =
+            Array.isArray(
+                versions
+            )
+                ? versions
+                : [];
+
         LearningResourceRenderer.renderResources(
-            versions
+            normalizedVersions
         );
 
         LearningResourceRenderer.setStatus(
-            `Showing ${versions.length} version(s) for ${resource.title}.`,
+            `Showing ${normalizedVersions.length} version(s) for ${resource.title}.`,
             "info"
         );
+
     }
-    catch (error) {
+    catch (
+        error
+    ) {
+
         handleError(
             "Version history failed",
             error
         );
+
     }
     finally {
-        setBusy(false);
+
+        setBusy(
+            false
+        );
+
     }
+
 }
 
-async function handleResourceAction(event) {
+
+/* ==========================================================
+   ACTION ROUTING
+========================================================== */
+
+async function handleResourceAction(
+    event
+) {
+
     const button =
         event.target.closest(
             "[data-action]"
         );
 
-    if (!button) {
+    if (
+        !button ||
+        !event.currentTarget.contains(
+            button
+        )
+    ) {
+
         return;
+
     }
 
     const action =
-        button.dataset.action ||
-        "";
+        normalizeText(
+            button.dataset.action
+        );
 
     const documentId =
-        button.dataset.documentId ||
-        "";
+        normalizeText(
+            button.dataset.documentId
+        );
 
-    if (!documentId) {
+    if (
+        !action ||
+        !documentId
+    ) {
+
         return;
+
     }
 
     const handlers = {
+
         "view-resource":
-            () => handleViewResource(
-                documentId
-            ),
+            () =>
+                handleViewResource(
+                    documentId
+                ),
 
         "edit-resource":
-            () => handleEditResource(
-                documentId
-            ),
+            () =>
+                handleEditResource(
+                    documentId
+                ),
 
         "upload-resource":
-            () => handleEditResource(
-                documentId,
-                true
-            ),
+            () =>
+                handleEditResource(
+                    documentId,
+                    true
+                ),
 
         "publish-resource":
-            () => handlePublishResource(
-                documentId
-            ),
+            () =>
+                handlePublishResource(
+                    documentId
+                ),
 
         "withdraw-resource":
-            () => handleWithdrawResource(
-                documentId
-            ),
+            () =>
+                handleWithdrawResource(
+                    documentId
+                ),
 
         "view-versions":
-            () => handleViewVersions(
-                documentId
-            )
+            () =>
+                handleViewVersions(
+                    documentId
+                )
+
     };
 
-    await handlers[action]?.();
+    const handler =
+        handlers[
+            action
+        ];
+
+    if (
+        typeof handler !== "function"
+    ) {
+
+        console.warn(
+            `[${MODULE_NAME}] Unsupported action:`,
+            action
+        );
+
+        return;
+
+    }
+
+    await handler();
+
 }
 
+
+/* ==========================================================
+   EVENT BINDING
+========================================================== */
+
+function scheduleFilteredLoad() {
+
+    window.clearTimeout(
+        state.searchTimer
+    );
+
+    state.searchTimer =
+        window.setTimeout(
+            () => {
+
+                loadResources()
+                    .catch(
+                        (
+                            error
+                        ) => {
+
+                            handleError(
+                                "Filtered resource loading failed",
+                                error
+                            );
+
+                        }
+                    );
+
+            },
+            SEARCH_DEBOUNCE_MS
+        );
+
+}
+
+
 function bindEvents() {
+
     getElement(
         "learning-resource-create"
     )?.addEventListener(
@@ -782,21 +1613,39 @@ function bindEvents() {
         "learning-resource-refresh"
     )?.addEventListener(
         "click",
-        () => loadResources()
+        () => {
+
+            loadResources()
+                .catch(
+                    (
+                        error
+                    ) => {
+
+                        handleError(
+                            "Resource refresh failed",
+                            error
+                        );
+
+                    }
+                );
+
+        }
     );
 
     getElement(
         "learning-resource-form-cancel"
     )?.addEventListener(
         "click",
-        () => LearningResourceRenderer.closeForm()
+        () =>
+            LearningResourceRenderer.closeForm()
     );
 
     getElement(
         "learning-resource-form-cancel-secondary"
     )?.addEventListener(
         "click",
-        () => LearningResourceRenderer.closeForm()
+        () =>
+            LearningResourceRenderer.closeForm()
     );
 
     getElement(
@@ -822,45 +1671,99 @@ function bindEvents() {
         (
             elementId
         ) => {
+
             getElement(
                 elementId
             )?.addEventListener(
                 "change",
-                () => loadResources()
+                () => {
+
+                    loadResources()
+                        .catch(
+                            (
+                                error
+                            ) => {
+
+                                handleError(
+                                    "Filtered resource loading failed",
+                                    error
+                                );
+
+                            }
+                        );
+
+                }
             );
+
         }
     );
-
-    let searchTimer =
-        null;
 
     getElement(
         "learning-resource-filter-search"
     )?.addEventListener(
         "input",
-        () => {
-            window.clearTimeout(
-                searchTimer
-            );
-
-            searchTimer =
-                window.setTimeout(
-                    () => loadResources(),
-                    250
-                );
-        }
+        scheduleFilteredLoad
     );
+
 }
 
+
+/* ==========================================================
+   AUTHORIZATION
+========================================================== */
+
+function deactivateAuthorizedView() {
+
+    state.authorized =
+        false;
+
+    state.resources =
+        [];
+
+    window.clearTimeout(
+        state.searchTimer
+    );
+
+    state.searchTimer =
+        null;
+
+    setBusy(
+        false
+    );
+
+    if (
+        state.initialized
+    ) {
+
+        LearningResourceRenderer.closeForm();
+
+        LearningResourceRenderer.renderResources(
+            []
+        );
+
+        LearningResourceRenderer.setStatus(
+            "Administrator authentication is required.",
+            "error"
+        );
+
+    }
+
+}
+
+
 async function activateAuthorizedView() {
+
     if (
         state.authorized ||
         !auth.currentUser
     ) {
+
         return;
+
     }
 
     try {
+
         await requireAuthorizedAdmin();
 
         state.authorized =
@@ -871,8 +1774,12 @@ async function activateAuthorizedView() {
         console.info(
             `[${MODULE_NAME}] Initialized v${MODULE_VERSION}`
         );
+
     }
-    catch (error) {
+    catch (
+        error
+    ) {
+
         state.authorized =
             false;
 
@@ -880,45 +1787,79 @@ async function activateAuthorizedView() {
             "Authorization failed",
             error
         );
+
     }
+
 }
 
+
+/* ==========================================================
+   INITIALIZATION
+========================================================== */
+
 async function initialize() {
-    if (!state.initialized) {
+
+    if (
+        !state.initialized
+    ) {
+
         state.initialized =
             true;
 
         LearningResourceRenderer.initialize();
 
         bindEvents();
+
     }
 
     await activateAuthorizedView();
+
 }
+
 
 onAuthStateChanged(
     auth,
     async (
         user
     ) => {
-        if (!user) {
-            state.authorized =
-                false;
 
-            LearningResourceRenderer.setStatus(
-                "Administrator authentication is required.",
-                "error"
-            );
+        if (
+            !user
+        ) {
+
+            deactivateAuthorizedView();
 
             return;
+
         }
 
-        await initialize();
+        try {
+
+            await initialize();
+
+        }
+        catch (
+            error
+        ) {
+
+            handleError(
+                "Controller initialization failed",
+                error
+            );
+
+        }
+
     }
 );
 
+
+/* ==========================================================
+   PUBLIC API
+========================================================== */
+
 const LearningResourceController =
     Object.freeze({
+
         moduleName:
             MODULE_NAME,
 
@@ -926,14 +1867,22 @@ const LearningResourceController =
             MODULE_VERSION,
 
         initialize,
+
         loadResources
+
     });
+
 
 window.LearningResourceController =
     LearningResourceController;
 
+
 export {
+
     LearningResourceController,
+
     initialize,
+
     loadResources
+
 };

@@ -3,9 +3,9 @@
    Admin Learning Resource Management
 
    File      : learning-resource-renderer.js
-   Version   : 1.0.0
+   Version   : 1.1.0
    Status    : ACTIVE
-   Phase     : Admin Learning Resource Presentation
+   Authority : Admin Portal
 
    Purpose
    ----------------------------------------------------------
@@ -13,24 +13,25 @@
 
    Responsibilities
    ----------------------------------------------------------
-   ✓ Render resource summary
-   ✓ Render resource cards
-   ✓ Render lifecycle status
-   ✓ Render safe administrative actions
-   ✓ Render loading, success and error messages
-   ✓ Render empty states
-   ✓ Populate the resource form for editing
-   ✓ Control presentation visibility
+   • Render administrative summary metrics
+   • Render governed learning-resource cards
+   • Render lifecycle and policy indicators
+   • Render administrative action controls
+   • Render loading, success, information, and error messages
+   • Render empty states
+   • Populate the resource form for draft editing
+   • Reset form presentation safely between modes
+   • Control presentation visibility and accessibility state
 
-   Non Responsibilities
+   Non-Responsibilities
    ----------------------------------------------------------
-   ✗ Authentication
-   ✗ Authorization
-   ✗ Firestore operations
-   ✗ Storage operations
-   ✗ Publication decisions
-   ✗ Entitlement resolution
-   ✗ Business validation
+   • Authentication
+   • Authorization
+   • Firestore operations
+   • Storage operations
+   • Publication decisions
+   • Entitlement resolution
+   • Business validation
 
    Governance
    ----------------------------------------------------------
@@ -40,7 +41,7 @@
    • Renderer never publishes or withdraws resources
    • Dynamic values are inserted through textContent
    • Action buttons expose intent through data attributes
-
+   • Service and Publisher remain lifecycle authorities
 ========================================================== */
 
 
@@ -52,7 +53,15 @@ const MODULE_NAME =
     "LearningResourceRenderer";
 
 const MODULE_VERSION =
-    "1.0.0";
+    "1.1.0";
+
+const ALLOWED_STATUS_TYPES =
+    Object.freeze([
+        "info",
+        "success",
+        "warning",
+        "error"
+    ]);
 
 
 /* ==========================================================
@@ -129,10 +138,190 @@ function initialize() {
 
     };
 
+    if (
+        elements.statusMessage
+    ) {
+
+        elements.statusMessage.setAttribute(
+            "role",
+            "status"
+        );
+
+        elements.statusMessage.setAttribute(
+            "aria-live",
+            "polite"
+        );
+
+        elements.statusMessage.setAttribute(
+            "aria-atomic",
+            "true"
+        );
+
+    }
+
+    if (
+        elements.loadingState
+    ) {
+
+        elements.loadingState.setAttribute(
+            "role",
+            "status"
+        );
+
+        elements.loadingState.setAttribute(
+            "aria-live",
+            "polite"
+        );
+
+    }
+
+    if (
+        elements.formPanel
+    ) {
+
+        elements.formPanel.setAttribute(
+            "aria-hidden",
+            elements.formPanel.hidden
+                ? "true"
+                : "false"
+        );
+
+    }
+
     initialized =
         true;
 
     return elements;
+
+}
+
+
+/* ==========================================================
+   GENERAL HELPERS
+========================================================== */
+
+function normalizeText(
+    value
+) {
+
+    return String(
+        value ?? ""
+    ).trim();
+
+}
+
+
+function normalizeCount(
+    value
+) {
+
+    const count =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isFinite(
+            count
+        ) ||
+        count < 0
+    ) {
+
+        return 0;
+
+    }
+
+    return Math.trunc(
+        count
+    );
+
+}
+
+
+function getFormField(
+    fieldName
+) {
+
+    initialize();
+
+    return (
+        elements.form?.elements?.namedItem(
+            fieldName
+        ) ||
+        null
+    );
+
+}
+
+
+function setFieldValue(
+    fieldName,
+    value
+) {
+
+    const field =
+        getFormField(
+            fieldName
+        );
+
+    if (
+        !field
+    ) {
+
+        return;
+
+    }
+
+    field.value =
+        value ?? "";
+
+}
+
+
+function setFieldChecked(
+    fieldName,
+    checked
+) {
+
+    const field =
+        getFormField(
+            fieldName
+        );
+
+    if (
+        !field
+    ) {
+
+        return;
+
+    }
+
+    field.checked =
+        checked === true;
+
+}
+
+
+function setFieldDisabled(
+    fieldName,
+    disabled
+) {
+
+    const field =
+        getFormField(
+            fieldName
+        );
+
+    if (
+        !field
+    ) {
+
+        return;
+
+    }
+
+    field.disabled =
+        disabled === true;
 
 }
 
@@ -146,12 +335,15 @@ function formatLabel(
 ) {
 
     const normalizedValue =
-        String(
-            value || ""
+        normalizeText(
+            value
         )
-            .trim()
             .replace(
                 /[_-]+/g,
+                " "
+            )
+            .replace(
+                /\s+/g,
                 " "
             );
 
@@ -250,12 +442,13 @@ function formatFileSize(
 
     }
 
-    const units = [
-        "B",
-        "KB",
-        "MB",
-        "GB"
-    ];
+    const units =
+        Object.freeze([
+            "B",
+            "KB",
+            "MB",
+            "GB"
+        ]);
 
     let size =
         bytes;
@@ -269,8 +462,11 @@ function formatFileSize(
             units.length - 1
     ) {
 
-        size /= 1024;
-        unitIndex += 1;
+        size /=
+            1024;
+
+        unitIndex +=
+            1;
 
     }
 
@@ -343,7 +539,9 @@ function createMetric(
         createElement(
             "strong",
             "learning-resource-metric__value",
-            value
+            normalizeCount(
+                value
+            )
         );
 
     const metricLabel =
@@ -403,7 +601,8 @@ function createActionButton({
     action,
     documentId,
     style = "secondary",
-    disabled = false
+    disabled = false,
+    title = ""
 }) {
 
     const button =
@@ -417,13 +616,26 @@ function createActionButton({
         "button";
 
     button.dataset.action =
-        action;
+        normalizeText(
+            action
+        );
 
     button.dataset.documentId =
-        documentId;
+        normalizeText(
+            documentId
+        );
 
     button.disabled =
-        disabled;
+        disabled === true;
+
+    if (
+        title
+    ) {
+
+        button.title =
+            title;
+
+    }
 
     return button;
 
@@ -431,7 +643,7 @@ function createActionButton({
 
 
 /* ==========================================================
-   STATUS
+   STATUS PRESENTATION
 ========================================================== */
 
 function setStatus(
@@ -450,9 +662,16 @@ function setStatus(
     }
 
     const normalizedMessage =
-        String(
-            message || ""
-        ).trim();
+        normalizeText(
+            message
+        );
+
+    const normalizedType =
+        ALLOWED_STATUS_TYPES.includes(
+            type
+        )
+            ? type
+            : "info";
 
     elements.statusMessage.textContent =
         normalizedMessage;
@@ -465,17 +684,27 @@ function setStatus(
     ) {
 
         elements.statusMessage.classList.add(
-            `learning-resource-status--${type}`
+            `learning-resource-status--${normalizedType}`
         );
 
         elements.statusMessage.hidden =
             false;
+
+        elements.statusMessage.setAttribute(
+            "aria-hidden",
+            "false"
+        );
 
     }
     else {
 
         elements.statusMessage.hidden =
             true;
+
+        elements.statusMessage.setAttribute(
+            "aria-hidden",
+            "true"
+        );
 
     }
 
@@ -497,12 +726,22 @@ function setLoading(
 
     initialize();
 
+    const normalizedLoading =
+        loading === true;
+
     if (
         elements.loadingState
     ) {
 
         elements.loadingState.hidden =
-            !loading;
+            !normalizedLoading;
+
+        elements.loadingState.setAttribute(
+            "aria-hidden",
+            normalizedLoading
+                ? "false"
+                : "true"
+        );
 
     }
 
@@ -512,7 +751,20 @@ function setLoading(
 
         elements.resourceList.setAttribute(
             "aria-busy",
-            loading
+            normalizedLoading
+                ? "true"
+                : "false"
+        );
+
+    }
+
+    if (
+        elements.page
+    ) {
+
+        elements.page.setAttribute(
+            "aria-busy",
+            normalizedLoading
                 ? "true"
                 : "false"
         );
@@ -542,36 +794,43 @@ function renderSummary(
 
     elements.summary.replaceChildren();
 
-    elements.summary.append(
+    const fragment =
+        document.createDocumentFragment();
+
+    fragment.append(
 
         createMetric(
             "Total Resources",
-            summary.total || 0
+            summary.total
         ),
 
         createMetric(
             "Drafts",
-            summary.drafts || 0,
+            summary.drafts,
             "learning-resource-metric--draft"
         ),
 
         createMetric(
             "Published",
-            summary.published || 0,
+            summary.published,
             "learning-resource-metric--published"
         ),
 
         createMetric(
             "Withdrawn",
-            summary.withdrawn || 0,
+            summary.withdrawn,
             "learning-resource-metric--withdrawn"
         ),
 
         createMetric(
             "Programmes",
-            summary.programmeCount || 0
+            summary.programmeCount
         )
 
+    );
+
+    elements.summary.append(
+        fragment
     );
 
 }
@@ -585,21 +844,46 @@ function createStatusBadge(
     resource
 ) {
 
+    const normalizedStatus =
+        normalizeText(
+            resource.status
+        ).toLowerCase();
+
+    const safeStatus =
+        [
+            "draft",
+            "published",
+            "withdrawn"
+        ].includes(
+            normalizedStatus
+        )
+            ? normalizedStatus
+            : "unknown";
+
     const badge =
         createElement(
             "span",
-            `learning-resource-badge learning-resource-badge--${resource.status}`,
+            `learning-resource-badge learning-resource-badge--${safeStatus}`,
             formatLabel(
-                resource.status
+                normalizedStatus
             )
         );
 
     if (
-        resource.isLatest
+        resource.isLatest === true &&
+        normalizedStatus ===
+            "published"
     ) {
 
         badge.title =
-            "Latest resource version";
+            "Latest published resource version";
+
+        badge.setAttribute(
+            "aria-label",
+            `${formatLabel(
+                normalizedStatus
+            )}, latest published version`
+        );
 
     }
 
@@ -626,8 +910,10 @@ function createResourceActions(
         createActionButton({
             label:
                 "View details",
+
             action:
                 "view-resource",
+
             documentId:
                 resource.documentId
         })
@@ -642,8 +928,10 @@ function createResourceActions(
             createActionButton({
                 label:
                     "Edit draft",
+
                 action:
                     "edit-resource",
+
                 documentId:
                     resource.documentId
             })
@@ -659,23 +947,37 @@ function createResourceActions(
                 createActionButton({
                     label:
                         "Upload file",
+
                     action:
                         "upload-resource",
+
                     documentId:
-                        resource.documentId
+                        resource.documentId,
+
+                    title:
+                        "Attach the protected file required for publication."
                 })
             );
 
         }
 
+        /*
+         * Publication readiness remains enforced by the
+         * Contract and Publisher. The button remains available
+         * so the administrator receives the authoritative
+         * validation message when publication is attempted.
+         */
         actions.append(
             createActionButton({
                 label:
                     "Publish",
+
                 action:
                     "publish-resource",
+
                 documentId:
                     resource.documentId,
+
                 style:
                     "primary"
             })
@@ -692,10 +994,13 @@ function createResourceActions(
             createActionButton({
                 label:
                     "Withdraw",
+
                 action:
                     "withdraw-resource",
+
                 documentId:
                     resource.documentId,
+
                 style:
                     "danger"
             })
@@ -707,8 +1012,10 @@ function createResourceActions(
         createActionButton({
             label:
                 "Version history",
+
             action:
                 "view-versions",
+
             documentId:
                 resource.documentId
         })
@@ -734,7 +1041,9 @@ function createResourceCard(
         );
 
     card.dataset.documentId =
-        resource.documentId;
+        normalizeText(
+            resource.documentId
+        );
 
     const header =
         createElement(
@@ -752,14 +1061,24 @@ function createResourceCard(
         createElement(
             "h3",
             "learning-resource-card__title",
-            resource.title
+            resource.title ||
+            "Untitled resource"
         );
 
     const identity =
         createElement(
             "p",
             "learning-resource-card__identity",
-            `${resource.programCode} · ${resource.resourceId} · v${resource.version}`
+            `${
+                resource.programCode ||
+                "No programme"
+            } · ${
+                resource.resourceId ||
+                "No resource ID"
+            } · v${
+                resource.version ||
+                1
+            }`
         );
 
     headingGroup.append(
@@ -814,14 +1133,22 @@ function createResourceCard(
         createMetadataItem(
             "File",
             resource.fileName ||
-            "Not attached"
+            (
+                resource.deliveryType ===
+                    "protected_storage"
+                    ? "Not attached"
+                    : "Not applicable"
+            )
         ),
 
         createMetadataItem(
             "File size",
-            formatFileSize(
-                resource.fileSize
-            )
+            resource.deliveryType ===
+                "protected_storage"
+                ? formatFileSize(
+                    resource.fileSize
+                )
+                : "Not applicable"
         ),
 
         createMetadataItem(
@@ -839,24 +1166,25 @@ function createResourceCard(
             "learning-resource-card__policies"
         );
 
-    const policies = [
-        [
-            "Preview",
-            resource.previewAllowed
-        ],
-        [
-            "Download",
-            resource.downloadAllowed
-        ],
-        [
-            "Embed",
-            resource.embedAllowed
-        ],
-        [
-            "Latest",
-            resource.isLatest
-        ]
-    ];
+    const policies =
+        Object.freeze([
+            [
+                "Preview",
+                resource.previewAllowed
+            ],
+            [
+                "Download",
+                resource.downloadAllowed
+            ],
+            [
+                "Embed",
+                resource.embedAllowed
+            ],
+            [
+                "Latest",
+                resource.isLatest
+            ]
+        ]);
 
     policies.forEach(
         ([
@@ -864,13 +1192,16 @@ function createResourceCard(
             enabled
         ]) => {
 
+            const policyEnabled =
+                enabled === true;
+
             const policy =
                 createElement(
                     "span",
-                    enabled
+                    policyEnabled
                         ? "learning-resource-policy learning-resource-policy--enabled"
                         : "learning-resource-policy learning-resource-policy--disabled",
-                    `${label}: ${enabled ? "Yes" : "No"}`
+                    `${label}: ${policyEnabled ? "Yes" : "No"}`
                 );
 
             policyList.append(
@@ -899,6 +1230,28 @@ function createResourceCard(
    RESOURCE LIST
 ========================================================== */
 
+function isRenderableResource(
+    resource
+) {
+
+    return Boolean(
+        resource &&
+        typeof resource ===
+            "object" &&
+        normalizeText(
+            resource.documentId
+        ) &&
+        normalizeText(
+            resource.resourceId
+        ) &&
+        normalizeText(
+            resource.programCode
+        )
+    );
+
+}
+
+
 function renderResources(
     resources = []
 ) {
@@ -919,7 +1272,9 @@ function renderResources(
         Array.isArray(
             resources
         )
-            ? resources
+            ? resources.filter(
+                isRenderableResource
+            )
             : [];
 
     if (
@@ -932,6 +1287,11 @@ function renderResources(
 
             elements.emptyState.hidden =
                 false;
+
+            elements.emptyState.setAttribute(
+                "aria-hidden",
+                "false"
+            );
 
         }
 
@@ -946,6 +1306,11 @@ function renderResources(
         elements.emptyState.hidden =
             true;
 
+        elements.emptyState.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
     }
 
     const fragment =
@@ -956,18 +1321,11 @@ function renderResources(
             resource
         ) => {
 
-            if (
-                resource &&
-                resource.documentId
-            ) {
-
-                fragment.append(
-                    createResourceCard(
-                        resource
-                    )
-                );
-
-            }
+            fragment.append(
+                createResourceCard(
+                    resource
+                )
+            );
 
         }
     );
@@ -975,6 +1333,82 @@ function renderResources(
     elements.resourceList.append(
         fragment
     );
+
+}
+
+
+/* ==========================================================
+   FORM RESET
+========================================================== */
+
+function resetFormPresentation() {
+
+    initialize();
+
+    if (
+        !elements.form
+    ) {
+
+        return;
+
+    }
+
+    elements.form.reset();
+
+    elements.form.dataset.mode =
+        "create";
+
+    elements.form.dataset.documentId =
+        "";
+
+    /*
+     * Identity fields are disabled only while editing.
+     * They must always be restored before another form mode opens.
+     */
+    setFieldDisabled(
+        "program_code",
+        false
+    );
+
+    setFieldDisabled(
+        "resource_id",
+        false
+    );
+
+    setFieldDisabled(
+        "version",
+        false
+    );
+
+    const fileField =
+        getFormField(
+            "resource_file"
+        );
+
+    if (
+        fileField &&
+        "value" in fileField
+    ) {
+
+        try {
+
+            fileField.value =
+                "";
+
+        }
+        catch (
+            error
+        ) {
+
+            /*
+             * Browser security may prevent programmatic file-value
+             * changes in some environments. form.reset() remains the
+             * authoritative fallback.
+             */
+
+        }
+
+    }
 
 }
 
@@ -999,197 +1433,164 @@ function openForm({
 
     }
 
-    elements.form.reset();
+    resetFormPresentation();
+
+    const normalizedMode =
+        mode === "edit" &&
+        resource
+            ? "edit"
+            : "create";
 
     elements.form.dataset.mode =
-        mode;
+        normalizedMode;
 
     elements.form.dataset.documentId =
-        resource?.documentId ||
-        "";
+        normalizedMode ===
+            "edit"
+            ? normalizeText(
+                resource.documentId
+            )
+            : "";
 
     if (
         elements.formHeading
     ) {
 
         elements.formHeading.textContent =
-            mode === "edit"
+            normalizedMode === "edit"
                 ? "Edit Learning Resource Draft"
                 : "Create Learning Resource Draft";
 
     }
 
     if (
-        resource
+        normalizedMode ===
+            "edit"
     ) {
 
-        const assignValue = (
-            fieldName,
-            value
-        ) => {
-
-            const field =
-                elements.form.elements.namedItem(
-                    fieldName
-                );
-
-            if (
-                field
-            ) {
-
-                field.value =
-                    value ??
-                    "";
-
-            }
-
-        };
-
-        const assignChecked = (
-            fieldName,
-            value
-        ) => {
-
-            const field =
-                elements.form.elements.namedItem(
-                    fieldName
-                );
-
-            if (
-                field
-            ) {
-
-                field.checked =
-                    value === true;
-
-            }
-
-        };
-
-        assignValue(
+        setFieldValue(
             "program_code",
             resource.programCode
         );
 
-        assignValue(
+        setFieldValue(
             "resource_id",
             resource.resourceId
         );
 
-        assignValue(
+        setFieldValue(
             "version",
             resource.version
         );
 
-        assignValue(
+        setFieldValue(
             "title",
             resource.title
         );
 
-        assignValue(
+        setFieldValue(
             "description",
             resource.description
         );
 
-        assignValue(
+        setFieldValue(
             "resource_type",
             resource.resourceType
         );
 
-        assignValue(
+        setFieldValue(
             "category",
             resource.category
         );
 
-        assignValue(
+        setFieldValue(
             "delivery_type",
             resource.deliveryType
         );
 
-        assignValue(
+        setFieldValue(
             "external_url",
             resource.externalUrl
         );
 
-        assignValue(
+        setFieldValue(
             "display_order",
             resource.displayOrder
         );
 
-        assignChecked(
+        setFieldChecked(
             "preview_allowed",
             resource.previewAllowed
         );
 
-        assignChecked(
+        setFieldChecked(
             "download_allowed",
             resource.downloadAllowed
         );
 
-        assignChecked(
+        setFieldChecked(
             "embed_allowed",
             resource.embedAllowed
         );
 
-        const programCodeField =
-            elements.form.elements.namedItem(
-                "program_code"
-            );
+        setFieldDisabled(
+            "program_code",
+            true
+        );
 
-        const resourceIdField =
-            elements.form.elements.namedItem(
-                "resource_id"
-            );
+        setFieldDisabled(
+            "resource_id",
+            true
+        );
 
-        const versionField =
-            elements.form.elements.namedItem(
-                "version"
-            );
-
-        if (
-            mode === "edit"
-        ) {
-
-            if (
-                programCodeField
-            ) {
-
-                programCodeField.disabled =
-                    true;
-
-            }
-
-            if (
-                resourceIdField
-            ) {
-
-                resourceIdField.disabled =
-                    true;
-
-            }
-
-            if (
-                versionField
-            ) {
-
-                versionField.disabled =
-                    true;
-
-            }
-
-        }
+        setFieldDisabled(
+            "version",
+            true
+        );
 
     }
 
     elements.formPanel.hidden =
         false;
 
+    elements.formPanel.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
     elements.formPanel.scrollIntoView({
         behavior:
             "smooth",
+
         block:
             "start"
     });
+
+    window.requestAnimationFrame(
+        () => {
+
+            const firstEditableField =
+                Array
+                    .from(
+                        elements.form.elements
+                    )
+                    .find(
+                        (
+                            field
+                        ) => (
+                            field &&
+                            !field.disabled &&
+                            field.type !==
+                                "hidden" &&
+                            typeof field.focus ===
+                                "function"
+                        )
+                    );
+
+            firstEditableField?.focus();
+
+        }
+    );
 
 }
 
@@ -1209,38 +1610,12 @@ function closeForm() {
     elements.formPanel.hidden =
         true;
 
-    if (
-        elements.form
-    ) {
+    elements.formPanel.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 
-        elements.form.reset();
-        elements.form.dataset.mode =
-            "create";
-        elements.form.dataset.documentId =
-            "";
-
-        Array
-            .from(
-                elements.form.elements
-            )
-            .forEach(
-                (
-                    field
-                ) => {
-
-                    if (
-                        "disabled" in field
-                    ) {
-
-                        field.disabled =
-                            false;
-
-                    }
-
-                }
-            );
-
-    }
+    resetFormPresentation();
 
 }
 
@@ -1259,15 +1634,25 @@ const LearningResourceRenderer =
             MODULE_VERSION,
 
         initialize,
+
         setStatus,
+
         clearStatus,
+
         setLoading,
+
         renderSummary,
+
         renderResources,
+
         openForm,
+
         closeForm,
+
         formatLabel,
+
         formatDate,
+
         formatFileSize
 
     });
@@ -1276,21 +1661,36 @@ const LearningResourceRenderer =
 window.LearningResourceRenderer =
     LearningResourceRenderer;
 
+
 console.info(
     `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
 );
 
+
 export {
+
     LearningResourceRenderer,
+
     initialize,
+
     setStatus,
+
     clearStatus,
+
     setLoading,
+
     renderSummary,
+
     renderResources,
+
     openForm,
+
     closeForm,
+
     formatLabel,
+
     formatDate,
+
     formatFileSize
+
 };

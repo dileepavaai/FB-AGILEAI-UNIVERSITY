@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-contract.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -52,6 +52,20 @@
    • Withdrawn records are retained
    • No learner identity is stored in resource records
    • No permanent protected download URL is stored
+
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Added Markdown resource support
+   • Added image/jpg compatibility support
+   • Aligned approved MIME types with Storage Rules v1.2.0
+
+   v1.1.0
+   • Added governed lifecycle validation
+   • Added protected Storage path validation
+   • Added filename and file-size validation
+   • Added external URL validation
+   • Enforced draft is_latest = false
 ========================================================== */
 
 
@@ -63,7 +77,7 @@ const MODULE_NAME =
     "LearningResourceContract";
 
 const MODULE_VERSION =
-    "1.1.0";
+    "1.2.0";
 
 const MAX_FILE_SIZE_BYTES =
     50 * 1024 * 1024;
@@ -114,6 +128,7 @@ const APPROVED_MIME_TYPES =
     Object.freeze([
         "application/pdf",
         "text/plain",
+        "text/markdown",
         "text/csv",
         "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -125,7 +140,8 @@ const APPROVED_MIME_TYPES =
         "application/vnd.oasis.opendocument.presentation",
         "application/vnd.oasis.opendocument.spreadsheet",
         "image/png",
-        "image/jpeg"
+        "image/jpeg",
+        "image/jpg"
     ]);
 
 const APPROVED_EXTERNAL_VIDEO_HOSTS =

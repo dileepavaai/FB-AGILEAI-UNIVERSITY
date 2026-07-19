@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-publisher.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -14,38 +14,57 @@
 
    Responsibilities
    ----------------------------------------------------------
-   • Create learning-resource drafts
+   • Create governed learning-resource drafts
    • Update existing drafts
-   • Preserve attached protected assets during metadata edits
-   • Attach protected Storage metadata
-   • Publish validated resources
-   • Mark previous published versions as non-latest
+   • Preserve protected assets during metadata edits
+   • Attach validated protected Storage metadata
+   • Publish contract-valid resources
+   • Supersede previous latest published versions
    • Withdraw published resources
    • Preserve immutable identity and audit metadata
-   • Prevent metadata deletion
+   • Prevent physical metadata deletion
 
    Non-Responsibilities
    ----------------------------------------------------------
    • Upload files
    • Generate permanent download URLs
-   • Delete files
+   • Delete Storage objects
    • Delete Firestore records
    • Authenticate learners
    • Resolve learner entitlement
    • Render UI
-   • Provide Student Portal delivery
+   • Deliver resources to the Student Portal
 
    Governance
    ----------------------------------------------------------
    • Admin Portal is the publication authority
    • New resources always begin as drafts
-   • Drafts are never marked as latest published versions
+   • Drafts are inactive and never latest
    • Published resource assets are immutable
-   • Replacement requires a new version
+   • Replacement requires a new resource version
    • Only one published version should remain latest
    • Withdrawal is terminal
    • Physical deletion is prohibited
    • Learner identity must not be stored
+   • Audit identity must match the authenticated administrator
+
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Required complete administrator audit identity
+   • Added canonical Firestore document identity validation
+   • Added strict protected-asset attachment validation
+   • Required Storage paths to match resource identity
+   • Required approved MIME type and valid file size
+   • Preserved immutable creation audit fields strictly
+   • Strengthened publication and withdrawal validation
+   • Aligned with Contract v1.2.0 and Firestore Rules v2.5.1
+
+   v1.1.0
+   • Corrected draft is_latest lifecycle state
+   • Preserved protected assets during metadata edits
+   • Added transactional publication and supersession
+   • Enforced terminal withdrawal lifecycle
 ========================================================== */
 
 import {
@@ -80,7 +99,7 @@ const MODULE_NAME =
     "LearningResourcePublisher";
 
 const MODULE_VERSION =
-    "1.1.0";
+    "1.2.0";
 
 const COLLECTION_NAME =
     "learning_resources";
@@ -97,6 +116,17 @@ function normalizeString(
     return LearningResourceContract.normalizeString(
         value
     );
+
+}
+
+
+function normalizeLowercase(
+    value
+) {
+
+    return normalizeString(
+        value
+    ).toLowerCase();
 
 }
 
@@ -178,12 +208,27 @@ function normalizeActor(
             actor?.uid
         );
 
+    const email =
+        normalizeLowercase(
+            actor?.email
+        );
+
     if (
         !uid
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Authorized administrator identity is missing.`
+            `[${MODULE_NAME}] Authorized administrator UID is missing.`
+        );
+
+    }
+
+    if (
+        !email
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Authorized administrator email is missing.`
         );
 
     }
@@ -192,10 +237,7 @@ function normalizeActor(
 
         uid,
 
-        email:
-            normalizeNullableString(
-                actor?.email
-            )
+        email
 
     });
 
@@ -203,7 +245,7 @@ function normalizeActor(
 
 
 /* ==========================================================
-   DOCUMENT REFERENCE
+   DOCUMENT IDENTITY
 ========================================================== */
 
 function buildReference(
@@ -232,6 +274,89 @@ function buildReference(
         COLLECTION_NAME,
         normalizedDocumentId
     );
+
+}
+
+
+function buildCanonicalDocumentId(
+    resourceId,
+    version
+) {
+
+    const documentId =
+        LearningResourceContract.buildDocumentId(
+            resourceId,
+            version
+        );
+
+    if (
+        !documentId ||
+        !LearningResourceContract.isValidDocumentId(
+            documentId
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Unable to build the canonical resource document ID.`
+        );
+
+    }
+
+    return documentId;
+
+}
+
+
+function validateDocumentIdentity(
+    documentId,
+    data
+) {
+
+    const expectedDocumentId =
+        buildCanonicalDocumentId(
+            data?.resource_id,
+            data?.version
+        );
+
+    if (
+        normalizeString(
+            documentId
+        ) !==
+        expectedDocumentId
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Firestore document ID does not match the resource identity and version.`
+        );
+
+    }
+
+}
+
+
+/* ==========================================================
+   AUDIT VALIDATION
+========================================================== */
+
+function validateCreationAudit(
+    data
+) {
+
+    if (
+        !normalizeString(
+            data?.created_by_uid
+        ) ||
+        !normalizeString(
+            data?.created_by_email
+        ) ||
+        !data?.created_at
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Existing creation audit metadata is incomplete.`
+        );
+
+    }
 
 }
 
@@ -335,10 +460,6 @@ function buildDraftData(
         is_active:
             false,
 
-        /*
-         * A draft is not the latest published version.
-         * This becomes true only during publication.
-         */
         is_latest:
             false,
 
@@ -400,17 +521,21 @@ function buildEditableDraftData(
     existingData
 ) {
 
+    validateCreationAudit(
+        existingData
+    );
+
     const protectedDelivery =
         normalizedResource.delivery_type ===
         "protected_storage";
 
     /*
-     * The Admin form does not submit protected-file metadata.
-     * Therefore, an ordinary metadata edit must preserve the
-     * asset already attached to the draft.
+     * Ordinary draft edits must preserve an already attached
+     * protected asset because the administrative form does not
+     * submit protected-file metadata.
      *
-     * Switching to an external delivery type deliberately clears
-     * protected Storage metadata.
+     * Switching to an external delivery type intentionally
+     * clears protected Storage metadata.
      */
     const protectedAsset = {
 
@@ -527,19 +652,16 @@ function buildEditableDraftData(
             normalizedResource.display_order,
 
         /*
-         * Preserve original creation audit identity.
+         * Original creation audit identity is immutable.
          */
         created_by_uid:
-            existingData.created_by_uid ||
-            null,
+            existingData.created_by_uid,
 
         created_by_email:
-            existingData.created_by_email ||
-            null,
+            existingData.created_by_email,
 
         created_at:
-            existingData.created_at ||
-            serverTimestamp(),
+            existingData.created_at,
 
         published_by_uid:
             null,
@@ -575,12 +697,188 @@ function buildEditableDraftData(
 
 
 /* ==========================================================
+   PROTECTED ASSET VALIDATION
+========================================================== */
+
+function normalizeProtectedUploadResult(
+    uploadResult
+) {
+
+    const storagePath =
+        LearningResourceContract.normalizeStoragePath(
+            uploadResult?.storagePath
+        );
+
+    const resourceId =
+        LearningResourceContract.normalizeResourceId(
+            uploadResult?.resourceId
+        );
+
+    const programCode =
+        LearningResourceContract.normalizeProgramCode(
+            uploadResult?.programCode
+        );
+
+    const version =
+        normalizeVersion(
+            uploadResult?.version
+        );
+
+    const fileName =
+        LearningResourceContract.normalizeFileName(
+            uploadResult?.fileName
+        );
+
+    const fileExtension =
+        normalizeLowercase(
+            uploadResult?.fileExtension
+        );
+
+    const mimeType =
+        normalizeLowercase(
+            uploadResult?.mimeType
+        );
+
+    const fileSize =
+        normalizeFileSize(
+            uploadResult?.fileSize
+        );
+
+    if (
+        !storagePath ||
+        !resourceId ||
+        !programCode ||
+        !fileName ||
+        !fileExtension ||
+        !mimeType ||
+        fileSize <= 0
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Complete protected upload metadata is required.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.isValidProtectedStoragePath(
+            storagePath
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected upload Storage path is invalid.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.isValidFileName(
+            fileName
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected upload filename is invalid.`
+        );
+
+    }
+
+    if (
+        LearningResourceContract.getFileExtension(
+            fileName
+        ) !==
+        fileExtension
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected upload extension does not match its filename.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.isApprovedMimeType(
+            mimeType
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected upload MIME type is not approved.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.isValidFileSize(
+            fileSize
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected upload file size is invalid.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.storagePathMatchesResource(
+            storagePath,
+            {
+                programCode,
+                resourceId,
+                version,
+                fileName
+            }
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected upload path does not match its resource identity.`
+        );
+
+    }
+
+    return Object.freeze({
+
+        storagePath,
+
+        resourceId,
+
+        programCode,
+
+        version,
+
+        fileName,
+
+        fileExtension,
+
+        mimeType,
+
+        fileSize
+
+    });
+
+}
+
+
+/* ==========================================================
    PUBLICATION VALIDATION
 ========================================================== */
 
 function validatePublicationData(
+    documentId,
     data
 ) {
+
+    validateDocumentIdentity(
+        documentId,
+        data
+    );
+
+    validateCreationAudit(
+        data
+    );
 
     if (
         data.status !==
@@ -651,20 +949,10 @@ async function createDraft(
     }
 
     const documentId =
-        LearningResourceContract.buildDocumentId(
+        buildCanonicalDocumentId(
             normalizedResource.resource_id,
             normalizedResource.version
         );
-
-    if (
-        !documentId
-    ) {
-
-        throw new Error(
-            `[${MODULE_NAME}] Unable to build resource document ID.`
-        );
-
-    }
 
     const reference =
         buildReference(
@@ -761,7 +1049,9 @@ async function updateDraft(
     input = {}
 ) {
 
-    await requireAuthorizedAdmin();
+    normalizeActor(
+        await requireAuthorizedAdmin()
+    );
 
     const reference =
         buildReference(
@@ -792,6 +1082,15 @@ async function updateDraft(
             const existingData =
                 snapshot.data() ||
                 {};
+
+            validateDocumentIdentity(
+                snapshot.id,
+                existingData
+            );
+
+            validateCreationAudit(
+                existingData
+            );
 
             if (
                 existingData.status !==
@@ -845,9 +1144,9 @@ async function updateDraft(
                 );
 
             /*
-             * Full controlled replacement is intentional:
-             * immutable identity and audit fields are explicitly
-             * preserved by buildEditableDraftData().
+             * Controlled replacement is intentional.
+             * The authoritative field set is reconstructed while
+             * immutable identity and audit fields are preserved.
              */
             transaction.set(
                 reference,
@@ -893,39 +1192,14 @@ async function attachProtectedAsset(
     uploadResult
 ) {
 
-    await requireAuthorizedAdmin();
+    normalizeActor(
+        await requireAuthorizedAdmin()
+    );
 
-    const storagePath =
-        normalizeString(
-            uploadResult?.storagePath
+    const protectedUpload =
+        normalizeProtectedUploadResult(
+            uploadResult
         );
-
-    const resourceId =
-        LearningResourceContract.normalizeResourceId(
-            uploadResult?.resourceId
-        );
-
-    const programCode =
-        LearningResourceContract.normalizeProgramCode(
-            uploadResult?.programCode
-        );
-
-    const version =
-        normalizeVersion(
-            uploadResult?.version
-        );
-
-    if (
-        !storagePath ||
-        !resourceId ||
-        !programCode
-    ) {
-
-        throw new Error(
-            `[${MODULE_NAME}] Complete protected upload metadata is required.`
-        );
-
-    }
 
     const reference =
         buildReference(
@@ -957,6 +1231,15 @@ async function attachProtectedAsset(
                 snapshot.data() ||
                 {};
 
+            validateDocumentIdentity(
+                snapshot.id,
+                existingData
+            );
+
+            validateCreationAudit(
+                existingData
+            );
+
             if (
                 existingData.status !==
                 "draft"
@@ -969,15 +1252,15 @@ async function attachProtectedAsset(
             }
 
             if (
-                resourceId !==
+                protectedUpload.resourceId !==
                     LearningResourceContract.normalizeResourceId(
                         existingData.resource_id
                     ) ||
-                programCode !==
+                protectedUpload.programCode !==
                     LearningResourceContract.normalizeProgramCode(
                         existingData.program_code
                     ) ||
-                version !==
+                protectedUpload.version !==
                     normalizeVersion(
                         existingData.version
                     )
@@ -989,6 +1272,16 @@ async function attachProtectedAsset(
 
             }
 
+            if (
+                existingData.storage_path
+            ) {
+
+                throw new Error(
+                    `[${MODULE_NAME}] This draft already has a protected asset. Create a new version instead of replacing it.`
+                );
+
+            }
+
             transaction.update(
                 reference,
                 {
@@ -996,30 +1289,22 @@ async function attachProtectedAsset(
                         "protected_storage",
 
                     storage_path:
-                        storagePath,
+                        protectedUpload.storagePath,
 
                     external_url:
                         null,
 
                     file_name:
-                        normalizeNullableString(
-                            uploadResult.fileName
-                        ),
+                        protectedUpload.fileName,
 
                     file_extension:
-                        normalizeNullableString(
-                            uploadResult.fileExtension
-                        ),
+                        protectedUpload.fileExtension,
 
                     mime_type:
-                        normalizeNullableString(
-                            uploadResult.mimeType
-                        ),
+                        protectedUpload.mimeType,
 
                     file_size:
-                        normalizeFileSize(
-                            uploadResult.fileSize
-                        ),
+                        protectedUpload.fileSize,
 
                     is_active:
                         false,
@@ -1037,13 +1322,26 @@ async function attachProtectedAsset(
                 documentId:
                     snapshot.id,
 
-                resourceId,
+                resourceId:
+                    protectedUpload.resourceId,
 
-                programCode,
+                programCode:
+                    protectedUpload.programCode,
 
-                version,
+                version:
+                    protectedUpload.version,
 
-                storagePath,
+                storagePath:
+                    protectedUpload.storagePath,
+
+                fileName:
+                    protectedUpload.fileName,
+
+                mimeType:
+                    protectedUpload.mimeType,
+
+                fileSize:
+                    protectedUpload.fileSize,
 
                 status:
                     "draft"
@@ -1075,9 +1373,8 @@ async function publishResource(
         );
 
     /*
-     * Preliminary read is required to resolve the logical
-     * resource ID used by the version-history query.
-     *
+     * The preliminary read resolves the immutable logical
+     * resource identity used to locate existing versions.
      * Publication eligibility is checked again inside the
      * transaction before any mutation is committed.
      */
@@ -1101,6 +1398,7 @@ async function publishResource(
         {};
 
     validatePublicationData(
+        preliminarySnapshot.id,
         preliminaryData
     );
 
@@ -1108,16 +1406,6 @@ async function publishResource(
         LearningResourceContract.normalizeResourceId(
             preliminaryData.resource_id
         );
-
-    if (
-        !resourceId
-    ) {
-
-        throw new Error(
-            `[${MODULE_NAME}] Resource identity is invalid.`
-        );
-
-    }
 
     const versionsSnapshot =
         await getDocs(
@@ -1135,12 +1423,11 @@ async function publishResource(
         );
 
     const versionReferences =
-        versionsSnapshot.docs
-            .map(
-                (
-                    versionSnapshot
-                ) => versionSnapshot.ref
-            );
+        versionsSnapshot.docs.map(
+            (
+                versionSnapshot
+            ) => versionSnapshot.ref
+        );
 
     const result =
         await runTransaction(
@@ -1150,7 +1437,7 @@ async function publishResource(
             ) => {
 
                 /*
-                 * All reads are completed before transaction writes.
+                 * Transaction reads must complete before writes.
                  */
                 const targetSnapshot =
                     await transaction.get(
@@ -1172,6 +1459,7 @@ async function publishResource(
                     {};
 
                 validatePublicationData(
+                    targetSnapshot.id,
                     targetData
                 );
 
@@ -1229,8 +1517,15 @@ async function publishResource(
                             versionSnapshot.data() ||
                             {};
 
+                        validateDocumentIdentity(
+                            versionSnapshot.id,
+                            previousData
+                        );
+
                         if (
-                            previousData.resource_id ===
+                            LearningResourceContract.normalizeResourceId(
+                                previousData.resource_id
+                            ) ===
                                 resourceId &&
                             previousData.status ===
                                 "published" &&
@@ -1414,6 +1709,15 @@ async function withdrawResource(
             const existingData =
                 snapshot.data() ||
                 {};
+
+            validateDocumentIdentity(
+                snapshot.id,
+                existingData
+            );
+
+            validateCreationAudit(
+                existingData
+            );
 
             if (
                 existingData.status !==

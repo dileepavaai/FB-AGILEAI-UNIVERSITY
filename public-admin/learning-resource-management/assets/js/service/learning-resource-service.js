@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-service.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -23,7 +23,12 @@
    • Resolve the latest published version
    • Produce administrative summary information
    • Normalize Firestore records into immutable ViewModels
+   • Validate canonical document identity
+   • Validate resource lifecycle consistency
+   • Validate protected asset metadata
+   • Validate external delivery metadata
    • Exclude malformed records safely
+   • Detect inconsistent latest-version states
    • Deduplicate simultaneous registry reads
 
    Non-Responsibilities
@@ -44,6 +49,29 @@
    • Student delivery requires an authorized backend
    • Malformed records fail closed
    • Protected download URLs are never exposed here
+   • Firestore document identity is canonical
+   • Published lifecycle inconsistencies are rejected
+   • Only one active latest published version is valid
+
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Added canonical document identity validation
+   • Added strict version validation
+   • Added programme-code and resource-ID validation
+   • Added lifecycle-state validation
+   • Added protected Storage metadata validation
+   • Added external delivery validation
+   • Added duplicate latest-version detection
+   • Added registry diagnostics
+   • Aligned with Learning Resource Contract v1.2.0
+   • Preserved existing public API
+
+   v1.1.0
+   • Added immutable ViewModels
+   • Added malformed-record exclusion
+   • Added registry read deduplication
+   • Added version-history and summary resolution
 ========================================================== */
 
 import {
@@ -74,7 +102,7 @@ const MODULE_NAME =
     "LearningResourceService";
 
 const MODULE_VERSION =
-    "1.1.0";
+    "1.2.0";
 
 const COLLECTION_NAME =
     "learning_resources";
@@ -168,9 +196,8 @@ function normalizeNonNegativeInteger(
 }
 
 
-function normalizePositiveInteger(
-    value,
-    fallback = 1
+function normalizeStrictPositiveInteger(
+    value
 ) {
 
     const normalizedValue =
@@ -185,7 +212,7 @@ function normalizePositiveInteger(
         normalizedValue < 1
     ) {
 
-        return fallback;
+        return null;
 
     }
 
@@ -273,6 +300,518 @@ function freezeArray(
 
 
 /* ==========================================================
+   IDENTITY VALIDATION
+========================================================== */
+
+function hasValidProgramCode(
+    programCode
+) {
+
+    return (
+        typeof programCode ===
+            "string" &&
+        /^[A-Z0-9][A-Z0-9_-]{1,19}$/.test(
+            programCode
+        )
+    );
+
+}
+
+
+function hasValidResourceId(
+    resourceId
+) {
+
+    return (
+        typeof resourceId ===
+            "string" &&
+        /^[a-z0-9][a-z0-9-]{2,79}$/.test(
+            resourceId
+        )
+    );
+
+}
+
+
+function hasCanonicalDocumentIdentity(
+    documentId,
+    resourceId,
+    version
+) {
+
+    const expectedDocumentId =
+        LearningResourceContract.buildDocumentId(
+            resourceId,
+            version
+        );
+
+    return (
+        Boolean(
+            expectedDocumentId
+        ) &&
+        documentId ===
+            expectedDocumentId
+    );
+
+}
+
+
+/* ==========================================================
+   DELIVERY VALIDATION
+========================================================== */
+
+function hasValidProtectedDelivery(
+    data,
+    identity
+) {
+
+    const storagePath =
+        normalizeString(
+            data.storage_path
+        );
+
+    const fileName =
+        LearningResourceContract.normalizeFileName(
+            data.file_name
+        );
+
+    const fileExtension =
+        normalizeLowercase(
+            data.file_extension
+        );
+
+    const mimeType =
+        normalizeLowercase(
+            data.mime_type
+        );
+
+    const fileSize =
+        normalizeStrictPositiveInteger(
+            data.file_size
+        );
+
+    /*
+     * Draft protected resources may exist before a file is
+     * attached. In that state, all protected-asset fields must
+     * remain empty together.
+     */
+    const hasNoAttachedAsset =
+        !storagePath &&
+        !normalizeString(
+            data.file_name
+        ) &&
+        !fileExtension &&
+        !mimeType &&
+        (
+            data.file_size ===
+                null ||
+            data.file_size ===
+                undefined ||
+            Number(
+                data.file_size
+            ) ===
+                0
+        );
+
+    if (
+        identity.status ===
+        "draft" &&
+        hasNoAttachedAsset
+    ) {
+
+        return true;
+
+    }
+
+    if (
+        !storagePath ||
+        !fileName ||
+        !fileExtension ||
+        !mimeType ||
+        !fileSize
+    ) {
+
+        return false;
+
+    }
+
+    if (
+        !LearningResourceContract.isValidProtectedStoragePath(
+            storagePath
+        )
+    ) {
+
+        return false;
+
+    }
+
+    if (
+        !LearningResourceContract.isValidFileName(
+            fileName
+        )
+    ) {
+
+        return false;
+
+    }
+
+    if (
+        LearningResourceContract.getFileExtension(
+            fileName
+        ) !==
+        fileExtension
+    ) {
+
+        return false;
+
+    }
+
+    if (
+        !LearningResourceContract.isApprovedMimeType(
+            mimeType
+        )
+    ) {
+
+        return false;
+
+    }
+
+    if (
+        !LearningResourceContract.isValidFileSize(
+            fileSize
+        )
+    ) {
+
+        return false;
+
+    }
+
+    if (
+        !LearningResourceContract.storagePathMatchesResource(
+            storagePath,
+            {
+                programCode:
+                    identity.programCode,
+
+                resourceId:
+                    identity.resourceId,
+
+                version:
+                    identity.version,
+
+                fileName
+            }
+        )
+    ) {
+
+        return false;
+
+    }
+
+    return (
+        !normalizeString(
+            data.external_url
+        )
+    );
+
+}
+
+
+function hasValidExternalVideoDelivery(
+    data
+) {
+
+    return (
+        LearningResourceContract.isApprovedExternalVideoUrl(
+            data.external_url
+        ) &&
+        !normalizeString(
+            data.storage_path
+        ) &&
+        !normalizeString(
+            data.file_name
+        ) &&
+        !normalizeString(
+            data.file_extension
+        ) &&
+        !normalizeString(
+            data.mime_type
+        ) &&
+        normalizeNonNegativeInteger(
+            data.file_size,
+            0
+        ) ===
+            0 &&
+        data.download_allowed !==
+            true
+    );
+
+}
+
+
+function hasValidExternalLinkDelivery(
+    data
+) {
+
+    return (
+        LearningResourceContract.isValidHttpsUrl(
+            data.external_url
+        ) &&
+        !normalizeString(
+            data.storage_path
+        ) &&
+        !normalizeString(
+            data.file_name
+        ) &&
+        !normalizeString(
+            data.file_extension
+        ) &&
+        !normalizeString(
+            data.mime_type
+        ) &&
+        normalizeNonNegativeInteger(
+            data.file_size,
+            0
+        ) ===
+            0
+    );
+
+}
+
+
+function hasValidDeliveryData(
+    data,
+    identity
+) {
+
+    switch (
+        identity.deliveryType
+    ) {
+
+        case "protected_storage":
+
+            return hasValidProtectedDelivery(
+                data,
+                identity
+            );
+
+        case "external_video":
+
+            return hasValidExternalVideoDelivery(
+                data
+            );
+
+        case "external_link":
+
+            return hasValidExternalLinkDelivery(
+                data
+            );
+
+        default:
+
+            return false;
+
+    }
+
+}
+
+
+/* ==========================================================
+   LIFECYCLE VALIDATION
+========================================================== */
+
+function hasValidCreationAudit(
+    data
+) {
+
+    return (
+        Boolean(
+            normalizeString(
+                data.created_by_uid
+            )
+        ) &&
+        Boolean(
+            normalizeString(
+                data.created_by_email
+            )
+        ) &&
+        Boolean(
+            toIsoString(
+                data.created_at
+            )
+        )
+    );
+
+}
+
+
+function hasValidDraftLifecycle(
+    data
+) {
+
+    return (
+        data.status ===
+            "draft" &&
+        data.is_active ===
+            false &&
+        data.is_latest ===
+            false &&
+        !normalizeString(
+            data.published_by_uid
+        ) &&
+        !normalizeString(
+            data.published_by_email
+        ) &&
+        !toIsoString(
+            data.published_at
+        ) &&
+        !normalizeString(
+            data.withdrawn_by_uid
+        ) &&
+        !normalizeString(
+            data.withdrawn_by_email
+        ) &&
+        !toIsoString(
+            data.withdrawn_at
+        ) &&
+        !normalizeString(
+            data.withdrawal_reason
+        )
+    );
+
+}
+
+
+function hasValidPublishedLifecycle(
+    data
+) {
+
+    return (
+        data.status ===
+            "published" &&
+        data.is_active ===
+            true &&
+        typeof data.is_latest ===
+            "boolean" &&
+        Boolean(
+            normalizeString(
+                data.published_by_uid
+            )
+        ) &&
+        Boolean(
+            normalizeString(
+                data.published_by_email
+            )
+        ) &&
+        Boolean(
+            toIsoString(
+                data.published_at
+            )
+        ) &&
+        !normalizeString(
+            data.withdrawn_by_uid
+        ) &&
+        !normalizeString(
+            data.withdrawn_by_email
+        ) &&
+        !toIsoString(
+            data.withdrawn_at
+        ) &&
+        !normalizeString(
+            data.withdrawal_reason
+        )
+    );
+
+}
+
+
+function hasValidWithdrawnLifecycle(
+    data
+) {
+
+    return (
+        data.status ===
+            "withdrawn" &&
+        data.is_active ===
+            false &&
+        data.is_latest ===
+            false &&
+        Boolean(
+            normalizeString(
+                data.published_by_uid
+            )
+        ) &&
+        Boolean(
+            normalizeString(
+                data.published_by_email
+            )
+        ) &&
+        Boolean(
+            toIsoString(
+                data.published_at
+            )
+        ) &&
+        Boolean(
+            normalizeString(
+                data.withdrawn_by_uid
+            )
+        ) &&
+        Boolean(
+            normalizeString(
+                data.withdrawn_by_email
+            )
+        ) &&
+        Boolean(
+            toIsoString(
+                data.withdrawn_at
+            )
+        ) &&
+        Boolean(
+            normalizeString(
+                data.withdrawal_reason
+            )
+        )
+    );
+
+}
+
+
+function hasValidLifecycle(
+    data
+) {
+
+    switch (
+        data.status
+    ) {
+
+        case "draft":
+
+            return hasValidDraftLifecycle(
+                data
+            );
+
+        case "published":
+
+            return hasValidPublishedLifecycle(
+                data
+            );
+
+        case "withdrawn":
+
+            return hasValidWithdrawnLifecycle(
+                data
+            );
+
+        default:
+
+            return false;
+
+    }
+
+}
+
+
+/* ==========================================================
    RECORD NORMALIZATION
 ========================================================== */
 
@@ -282,7 +821,8 @@ function normalizeRecord(
 
     if (
         !snapshot ||
-        typeof snapshot.exists !== "function" ||
+        typeof snapshot.exists !==
+            "function" ||
         !snapshot.exists()
     ) {
 
@@ -299,14 +839,24 @@ function normalizeRecord(
             snapshot.id
         );
 
+    const rawResourceId =
+        normalizeString(
+            data.resource_id
+        );
+
+    const rawProgramCode =
+        normalizeString(
+            data.program_code
+        );
+
     const resourceId =
         LearningResourceContract.normalizeResourceId(
-            data.resource_id
+            rawResourceId
         );
 
     const programCode =
         LearningResourceContract.normalizeProgramCode(
-            data.program_code
+            rawProgramCode
         );
 
     const resourceType =
@@ -330,11 +880,8 @@ function normalizeRecord(
         );
 
     const version =
-        normalizePositiveInteger(
-            LearningResourceContract.normalizeVersion(
-                data.version
-            ),
-            1
+        normalizeStrictPositiveInteger(
+            data.version
         );
 
     const title =
@@ -342,13 +889,55 @@ function normalizeRecord(
             data.title
         );
 
+    const displayOrder =
+        normalizeNonNegativeInteger(
+            data.display_order,
+            -1
+        );
+
+    const identity = {
+
+        documentId,
+
+        resourceId,
+
+        programCode,
+
+        deliveryType,
+
+        status,
+
+        version
+
+    };
+
     const malformed =
         !LearningResourceContract.isValidDocumentId(
             documentId
         ) ||
-        !resourceId ||
-        !programCode ||
+        !hasValidResourceId(
+            rawResourceId
+        ) ||
+        resourceId !==
+            rawResourceId ||
+        !hasValidProgramCode(
+            rawProgramCode
+        ) ||
+        programCode !==
+            rawProgramCode ||
+        !version ||
+        !hasCanonicalDocumentIdentity(
+            documentId,
+            resourceId,
+            version
+        ) ||
         !title ||
+        title.length >
+            160 ||
+        normalizeString(
+            data.description
+        ).length >
+            2000 ||
         !LearningResourceContract.resourceTypes.includes(
             resourceType
         ) ||
@@ -360,6 +949,24 @@ function normalizeRecord(
         ) ||
         !LearningResourceContract.statuses.includes(
             status
+        ) ||
+        displayOrder <
+            0 ||
+        displayOrder >
+            LearningResourceContract.maxDisplayOrder ||
+        normalizeString(
+            data.source
+        ) !==
+            "admin_portal" ||
+        !hasValidCreationAudit(
+            data
+        ) ||
+        !hasValidLifecycle(
+            data
+        ) ||
+        !hasValidDeliveryData(
+            data,
+            identity
         );
 
     if (
@@ -380,6 +987,18 @@ function normalizeRecord(
 
                 programCode:
                     programCode ||
+                    null,
+
+                status:
+                    status ||
+                    null,
+
+                deliveryType:
+                    deliveryType ||
+                    null,
+
+                version:
+                    version ||
                     null
             }
         );
@@ -469,11 +1088,7 @@ function normalizeRecord(
 
         version,
 
-        displayOrder:
-            normalizeNonNegativeInteger(
-                data.display_order,
-                10000
-            ),
+        displayOrder,
 
         createdByUid:
             normalizeNullableString(
@@ -531,9 +1146,7 @@ function normalizeRecord(
             ),
 
         source:
-            normalizeString(
-                data.source
-            )
+            "admin_portal"
 
     };
 
@@ -576,7 +1189,8 @@ function compareResources(
         );
 
     if (
-        titleComparison !== 0
+        titleComparison !==
+        0
     ) {
 
         return titleComparison;
@@ -646,10 +1260,12 @@ function normalizeFilters(
             ),
 
         latestOnly:
-            filters.latestOnly === true,
+            filters.latestOnly ===
+            true,
 
         activeOnly:
-            filters.activeOnly === true
+            filters.activeOnly ===
+            true
 
     });
 
@@ -784,6 +1400,84 @@ function matchesFilters(
 
 
 /* ==========================================================
+   REGISTRY CONSISTENCY
+========================================================== */
+
+function inspectLatestVersionConsistency(
+    resources
+) {
+
+    const latestByResource =
+        new Map();
+
+    resources.forEach(
+        (
+            resource
+        ) => {
+
+            if (
+                resource.status !==
+                    "published" ||
+                resource.isLatest !==
+                    true
+            ) {
+
+                return;
+
+            }
+
+            const existing =
+                latestByResource.get(
+                    resource.resourceId
+                ) ||
+                [];
+
+            existing.push(
+                resource
+            );
+
+            latestByResource.set(
+                resource.resourceId,
+                existing
+            );
+
+        }
+    );
+
+    latestByResource.forEach(
+        (
+            latestVersions,
+            resourceId
+        ) => {
+
+            if (
+                latestVersions.length >
+                1
+            ) {
+
+                console.error(
+                    `[${MODULE_NAME}] Multiple latest published versions detected:`,
+                    {
+                        resourceId,
+
+                        documentIds:
+                            latestVersions.map(
+                                (
+                                    resource
+                                ) => resource.documentId
+                            )
+                    }
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ==========================================================
    AUTHORITATIVE REGISTRY READ
 ========================================================== */
 
@@ -801,6 +1495,9 @@ async function readRegistry() {
 
     const resources =
         [];
+
+    let malformedCount =
+        0;
 
     snapshot.forEach(
         (
@@ -821,12 +1518,39 @@ async function readRegistry() {
                 );
 
             }
+            else {
+
+                malformedCount +=
+                    1;
+
+            }
 
         }
     );
 
     resources.sort(
         compareResources
+    );
+
+    inspectLatestVersionConsistency(
+        resources
+    );
+
+    console.info(
+        `[${MODULE_NAME}] Registry read completed:`,
+        {
+            moduleVersion:
+                MODULE_VERSION,
+
+            totalDocuments:
+                snapshot.size,
+
+            acceptedRecords:
+                resources.length,
+
+            excludedRecords:
+                malformedCount
+        }
     );
 
     return freezeArray(
@@ -1029,11 +1753,14 @@ async function listVersions(
         );
 
     if (
-        !normalizedResourceId
+        !normalizedResourceId ||
+        !hasValidResourceId(
+            normalizedResourceId
+        )
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Resource ID is required.`
+            `[${MODULE_NAME}] A valid resource ID is required.`
         );
 
     }
@@ -1081,8 +1808,8 @@ async function getLatestPublishedVersion(
             resourceId
         );
 
-    return (
-        versions.find(
+    const latestVersions =
+        versions.filter(
             (
                 resource
             ) => (
@@ -1093,7 +1820,34 @@ async function getLatestPublishedVersion(
                 resource.isLatest ===
                     true
             )
-        ) ||
+        );
+
+    if (
+        latestVersions.length >
+        1
+    ) {
+
+        console.error(
+            `[${MODULE_NAME}] Latest-version invariant violated:`,
+            {
+                resourceId:
+                    LearningResourceContract.normalizeResourceId(
+                        resourceId
+                    ),
+
+                documentIds:
+                    latestVersions.map(
+                        (
+                            resource
+                        ) => resource.documentId
+                    )
+            }
+        );
+
+    }
+
+    return (
+        latestVersions[0] ||
         null
     );
 
@@ -1130,6 +1884,9 @@ function summarizeResources(
     let active =
         0;
 
+    let latestPublished =
+        0;
+
     let licensedMaterials =
         0;
 
@@ -1147,19 +1904,22 @@ function summarizeResources(
 
                 case "draft":
 
-                    drafts += 1;
+                    drafts +=
+                        1;
 
                     break;
 
                 case "published":
 
-                    published += 1;
+                    published +=
+                        1;
 
                     break;
 
                 case "withdrawn":
 
-                    withdrawn += 1;
+                    withdrawn +=
+                        1;
 
                     break;
 
@@ -1173,7 +1933,20 @@ function summarizeResources(
                 resource.isActive
             ) {
 
-                active += 1;
+                active +=
+                    1;
+
+            }
+
+            if (
+                resource.status ===
+                    "published" &&
+                resource.isLatest ===
+                    true
+            ) {
+
+                latestPublished +=
+                    1;
 
             }
 
@@ -1182,7 +1955,8 @@ function summarizeResources(
                 "licensed_course_material"
             ) {
 
-                licensedMaterials += 1;
+                licensedMaterials +=
+                    1;
 
             }
 
@@ -1191,7 +1965,8 @@ function summarizeResources(
                 "reference_material"
             ) {
 
-                referenceMaterials += 1;
+                referenceMaterials +=
+                    1;
 
             }
 
@@ -1227,6 +2002,8 @@ function summarizeResources(
         withdrawn,
 
         active,
+
+        latestPublished,
 
         licensedMaterials,
 

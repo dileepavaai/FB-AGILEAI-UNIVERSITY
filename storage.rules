@@ -8,7 +8,7 @@ service firebase.storage {
        AGILE AI UNIVERSITY
        CLOUD STORAGE SECURITY RULES
 
-       Version : 1.1.0
+       Version : 1.2.0
        Status  : ACTIVE
 
        Security Model
@@ -22,6 +22,8 @@ service firebase.storage {
        • Licensed learning resources remain admin-only in Storage
        • Learning-resource files are immutable after upload
        • Replacement requires a new version path
+       • Protected uploads must carry governed audit metadata
+       • Storage metadata identity must match the object path
        • Client-side deletion is prohibited
        • All unspecified Storage access is denied
 
@@ -47,6 +49,16 @@ service firebase.storage {
 
        Change History
        -----------------------------------------------------
+       v1.2.0
+       • Added Markdown learning-resource support
+       • Added compatibility support for image/jpg
+       • Added governed custom-metadata validation
+       • Required upload metadata identity to match path identity
+       • Required immutable-version and governance metadata
+       • Required private no-store cache-control metadata
+       • Preserved create-only immutable object enforcement
+       • Preserved credential-assets production behaviour
+
        v1.1.0
        • Added protected learning-resources domain
        • Added programme-code validation
@@ -97,7 +109,7 @@ service firebase.storage {
 
 
     /* =====================================================
-       LEARNING-RESOURCE HELPERS
+       LEARNING-RESOURCE PATH HELPERS
     ===================================================== */
 
     function hasValidLearningProgramCode(
@@ -190,6 +202,10 @@ service firebase.storage {
     }
 
 
+    /* =====================================================
+       LEARNING-RESOURCE FILE HELPERS
+    ===================================================== */
+
     function hasValidLearningResourceSize() {
 
       /*
@@ -216,6 +232,7 @@ service firebase.storage {
        *
        * • PDF
        * • Plain text
+       * • Markdown
        * • CSV
        * • Microsoft Word
        * • Microsoft PowerPoint
@@ -225,6 +242,9 @@ service firebase.storage {
        * • OpenDocument spreadsheet
        * • PNG
        * • JPEG
+       *
+       * image/jpg is accepted only for compatibility with
+       * clients that submit the nonstandard alias.
        *
        * Executables, HTML, JavaScript, archives and unknown
        * binary formats are deliberately excluded.
@@ -236,6 +256,7 @@ service firebase.storage {
         request.resource.contentType in [
           "application/pdf",
           "text/plain",
+          "text/markdown",
           "text/csv",
           "application/msword",
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -247,11 +268,153 @@ service firebase.storage {
           "application/vnd.oasis.opendocument.presentation",
           "application/vnd.oasis.opendocument.spreadsheet",
           "image/png",
-          "image/jpeg"
+          "image/jpeg",
+          "image/jpg"
         ];
 
     }
 
+
+    function hasValidLearningResourceCacheControl() {
+
+      /*
+       * Protected learning resources must not be stored with
+       * public or long-lived browser caching instructions.
+       *
+       * This value matches learning-resource-storage.js.
+       */
+
+      return
+        request.resource.cacheControl ==
+          "private,max-age=0,no-store";
+
+    }
+
+
+    /* =====================================================
+       LEARNING-RESOURCE METADATA HELPERS
+    ===================================================== */
+
+    function hasRequiredLearningResourceMetadata() {
+
+      return
+        request.resource.metadata != null &&
+
+        request.resource.metadata.program_code != null &&
+
+        request.resource.metadata.resource_id != null &&
+
+        request.resource.metadata.version != null &&
+
+        request.resource.metadata.source != null &&
+
+        request.resource.metadata.governance_domain != null &&
+
+        request.resource.metadata.immutable_version != null &&
+
+        request.resource.metadata.uploaded_by_uid != null &&
+
+        request.resource.metadata.uploaded_by_email != null;
+
+    }
+
+
+    function hasValidLearningResourceMetadataTypes() {
+
+      return
+        request.resource.metadata.program_code is string &&
+
+        request.resource.metadata.resource_id is string &&
+
+        request.resource.metadata.version is string &&
+
+        request.resource.metadata.source is string &&
+
+        request.resource.metadata.governance_domain is string &&
+
+        request.resource.metadata.immutable_version is string &&
+
+        request.resource.metadata.uploaded_by_uid is string &&
+
+        request.resource.metadata.uploaded_by_email is string;
+
+    }
+
+
+    function hasValidLearningResourceMetadataAuthority() {
+
+      return
+        request.resource.metadata.source ==
+          "admin_portal" &&
+
+        request.resource.metadata.governance_domain ==
+          "learning_resources" &&
+
+        request.resource.metadata.immutable_version ==
+          "true" &&
+
+        request.resource.metadata.uploaded_by_uid ==
+          request.auth.uid &&
+
+        request.resource.metadata.uploaded_by_email ==
+          request.auth.token.email;
+
+    }
+
+
+    function learningResourceMetadataMatchesPath(
+      programCode,
+      resourceId,
+      version
+    ) {
+
+      /*
+       * The version metadata stores the numeric component,
+       * while the path stores the governed v-prefixed form.
+       *
+       * Example:
+       * metadata.version = "1"
+       * path version      = "v1"
+       */
+
+      return
+        request.resource.metadata.program_code ==
+          programCode &&
+
+        request.resource.metadata.resource_id ==
+          resourceId &&
+
+        version ==
+          "v" + request.resource.metadata.version;
+
+    }
+
+
+    function hasValidLearningResourceMetadata(
+      programCode,
+      resourceId,
+      version
+    ) {
+
+      return
+        hasRequiredLearningResourceMetadata() &&
+
+        hasValidLearningResourceMetadataTypes() &&
+
+        hasValidLearningResourceMetadataAuthority() &&
+
+        learningResourceMetadataMatchesPath(
+          programCode,
+          resourceId,
+          version
+        );
+
+    }
+
+
+    /* =====================================================
+       COMPLETE LEARNING-RESOURCE UPLOAD CONTRACT
+    ===================================================== */
 
     function isValidLearningResourceUpload(
       programCode,
@@ -279,7 +442,15 @@ service firebase.storage {
 
         hasValidLearningResourceSize() &&
 
-        hasValidLearningResourceContentType();
+        hasValidLearningResourceContentType() &&
+
+        hasValidLearningResourceCacheControl() &&
+
+        hasValidLearningResourceMetadata(
+          programCode,
+          resourceId,
+          version
+        );
 
     }
 
@@ -366,7 +537,15 @@ service firebase.storage {
        * • the path follows the governed convention;
        * • the file is not empty;
        * • the file is within the size limit;
-       * • the MIME type is approved.
+       * • the MIME type is approved;
+       * • cache control keeps the object private;
+       * • governed upload metadata is present;
+       * • metadata identity matches path identity;
+       * • upload audit identity matches Firebase Auth.
+       *
+       * Firebase Storage evaluates a write to a nonexistent
+       * path as create. An attempted write to an existing path
+       * is evaluated as update and is denied below.
        */
 
       allow create: if

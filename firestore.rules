@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.5.0
+       Version : 2.5.1
        Status  : ACTIVE
 
        Security Model
@@ -29,11 +29,26 @@ service cloud.firestore {
          through the approved email list
        • Learning resources follow draft → published →
          withdrawn lifecycle
+       • Draft records are never latest published versions
+       • Published records are immutable except for governed
+         supersession and withdrawal transitions
        • Learning-resource deletion is prohibited
        • All unlisted access is denied
 
        Change History
        -----------------------------------------------------
+       v2.5.1
+       • Aligned draft is_latest state with Contract v1.1.0
+       • Added exact field allow-list validation
+       • Added created_at and updated_at type validation
+       • Added status-specific latest flag validation
+       • Required publication target to become latest
+       • Prevented historical versions being promoted again
+       • Required withdrawal to clear latest status
+       • Preserved published metadata and delivery authority
+       • Strengthened external-delivery configuration
+       • Preserved all existing production collection rules
+
        v2.5.0
        • Added learning_resources registry
        • Added learning-resource contract validation
@@ -167,59 +182,118 @@ service cloud.firestore {
 
 
     /* =====================================================
-       LEARNING-RESOURCE HELPERS
+       LEARNING-RESOURCE FIELD CONTRACT
     ===================================================== */
+
+    function hasOnlyLearningResourceFields(
+      data
+    ) {
+
+      return
+        data.keys().hasOnly([
+          "resource_id",
+          "program_code",
+          "title",
+          "description",
+          "resource_type",
+          "category",
+          "delivery_type",
+
+          "storage_path",
+          "external_url",
+
+          "file_name",
+          "file_extension",
+          "mime_type",
+          "file_size",
+
+          "preview_allowed",
+          "download_allowed",
+          "embed_allowed",
+
+          "status",
+          "is_active",
+          "is_latest",
+
+          "version",
+          "display_order",
+
+          "created_by_uid",
+          "created_by_email",
+          "created_at",
+
+          "published_by_uid",
+          "published_by_email",
+          "published_at",
+
+          "withdrawn_by_uid",
+          "withdrawn_by_email",
+          "withdrawn_at",
+          "withdrawal_reason",
+
+          "updated_at",
+          "source"
+        ]);
+
+    }
+
 
     function hasRequiredLearningResourceFields(
       data
     ) {
 
       return
-        "resource_id" in data &&
-        "program_code" in data &&
-        "title" in data &&
-        "description" in data &&
-        "resource_type" in data &&
-        "category" in data &&
-        "delivery_type" in data &&
+        data.keys().hasAll([
+          "resource_id",
+          "program_code",
+          "title",
+          "description",
+          "resource_type",
+          "category",
+          "delivery_type",
 
-        "storage_path" in data &&
-        "external_url" in data &&
+          "storage_path",
+          "external_url",
 
-        "file_name" in data &&
-        "file_extension" in data &&
-        "mime_type" in data &&
-        "file_size" in data &&
+          "file_name",
+          "file_extension",
+          "mime_type",
+          "file_size",
 
-        "preview_allowed" in data &&
-        "download_allowed" in data &&
-        "embed_allowed" in data &&
+          "preview_allowed",
+          "download_allowed",
+          "embed_allowed",
 
-        "status" in data &&
-        "is_active" in data &&
-        "is_latest" in data &&
+          "status",
+          "is_active",
+          "is_latest",
 
-        "version" in data &&
-        "display_order" in data &&
+          "version",
+          "display_order",
 
-        "created_by_uid" in data &&
-        "created_by_email" in data &&
-        "created_at" in data &&
+          "created_by_uid",
+          "created_by_email",
+          "created_at",
 
-        "published_by_uid" in data &&
-        "published_by_email" in data &&
-        "published_at" in data &&
+          "published_by_uid",
+          "published_by_email",
+          "published_at",
 
-        "withdrawn_by_uid" in data &&
-        "withdrawn_by_email" in data &&
-        "withdrawn_at" in data &&
-        "withdrawal_reason" in data &&
+          "withdrawn_by_uid",
+          "withdrawn_by_email",
+          "withdrawn_at",
+          "withdrawal_reason",
 
-        "updated_at" in data &&
-        "source" in data;
+          "updated_at",
+          "source"
+        ]);
 
     }
 
+
+    /* =====================================================
+       LEARNING-RESOURCE IDENTITY
+    ===================================================== */
 
     function hasValidLearningResourceDocumentId(
       documentId
@@ -231,7 +305,7 @@ service cloud.firestore {
        * {resource-id}_v{version}
        *
        * Example:
-       * aop-licensed-material_v1
+       * aop-licensed-course-material_v1
        */
 
       return
@@ -264,6 +338,10 @@ service cloud.firestore {
 
     }
 
+
+    /* =====================================================
+       LEARNING-RESOURCE CONTENT
+    ===================================================== */
 
     function hasValidLearningResourceText(
       data
@@ -328,6 +406,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       LEARNING-RESOURCE NULLABLE VALUES
+    ===================================================== */
+
     function hasValidNullableLearningResourceStrings(
       data
     ) {
@@ -361,6 +443,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       LEARNING-RESOURCE POLICIES AND PRESENTATION
+    ===================================================== */
+
     function hasValidLearningResourcePolicies(
       data
     ) {
@@ -389,6 +475,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       LEARNING-RESOURCE LIFECYCLE
+    ===================================================== */
+
     function hasValidLearningResourceStatus(
       data
     ) {
@@ -410,17 +500,24 @@ service cloud.firestore {
       return
         (
           data.status == "draft" &&
-          data.is_active == false
+
+          data.is_active == false &&
+
+          data.is_latest == false
         ) ||
 
         (
           data.status == "published" &&
+
           data.is_active == true
         ) ||
 
         (
           data.status == "withdrawn" &&
-          data.is_active == false
+
+          data.is_active == false &&
+
+          data.is_latest == false
         );
 
     }
@@ -432,6 +529,7 @@ service cloud.firestore {
 
       return
         data.is_active is bool &&
+
         data.is_latest is bool &&
 
         hasConsistentLearningResourceState(
@@ -440,6 +538,10 @@ service cloud.firestore {
 
     }
 
+
+    /* =====================================================
+       LEARNING-RESOURCE URL AND STORAGE VALIDATION
+    ===================================================== */
 
     function hasValidHttpsExternalUrl(
       value
@@ -450,6 +552,34 @@ service cloud.firestore {
 
         value.matches(
           '^https://[^ ]+$'
+        );
+
+    }
+
+
+    function hasApprovedExternalVideoUrl(
+      value
+    ) {
+
+      return
+        value is string &&
+
+        (
+          value.matches(
+            '^https://(www\\.)?youtube\\.com/[^ ]+$'
+          ) ||
+
+          value.matches(
+            '^https://youtu\\.be/[^ ]+$'
+          ) ||
+
+          value.matches(
+            '^https://(www\\.)?vimeo\\.com/[^ ]+$'
+          ) ||
+
+          value.matches(
+            '^https://player\\.vimeo\\.com/[^ ]+$'
+          )
         );
 
     }
@@ -503,7 +633,7 @@ service cloud.firestore {
           data.delivery_type ==
             "external_video" &&
 
-          hasValidHttpsExternalUrl(
+          hasApprovedExternalVideoUrl(
             data.external_url
           ) &&
 
@@ -511,6 +641,14 @@ service cloud.firestore {
             data.storage_path == null ||
             data.storage_path == ""
           ) &&
+
+          data.file_name == null &&
+
+          data.file_extension == null &&
+
+          data.mime_type == null &&
+
+          data.file_size == 0 &&
 
           data.download_allowed == false
         ) ||
@@ -526,7 +664,15 @@ service cloud.firestore {
           (
             data.storage_path == null ||
             data.storage_path == ""
-          )
+          ) &&
+
+          data.file_name == null &&
+
+          data.file_extension == null &&
+
+          data.mime_type == null &&
+
+          data.file_size == 0
         );
 
     }
@@ -537,11 +683,11 @@ service cloud.firestore {
     ) {
 
       /*
-       * Drafts may be saved before a file or external URL
-       * has been supplied.
+       * Drafts may be saved before a protected file or
+       * external URL has been supplied.
        *
        * Published and withdrawn records must retain a valid
-       * delivery configuration.
+       * governed delivery configuration.
        */
 
       return
@@ -560,6 +706,10 @@ service cloud.firestore {
 
     }
 
+
+    /* =====================================================
+       LEARNING-RESOURCE SOURCE AND AUDIT TYPES
+    ===================================================== */
 
     function hasValidLearningResourceSource(
       data
@@ -582,6 +732,10 @@ service cloud.firestore {
 
         data.created_by_email is string &&
         data.created_by_email.size() > 0 &&
+
+        data.created_at is timestamp &&
+
+        data.updated_at is timestamp &&
 
         (
           data.published_by_uid == null ||
@@ -616,11 +770,19 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       COMPLETE LEARNING-RESOURCE CONTRACT
+    ===================================================== */
+
     function hasValidLearningResourceContract(
       data
     ) {
 
       return
+        hasOnlyLearningResourceFields(
+          data
+        ) &&
+
         hasRequiredLearningResourceFields(
           data
         ) &&
@@ -680,6 +842,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       LEARNING-RESOURCE CREATE
+    ===================================================== */
+
     function isValidLearningResourceCreate(
       documentId
     ) {
@@ -700,7 +866,7 @@ service cloud.firestore {
           false &&
 
         request.resource.data.is_latest ==
-          true &&
+          false &&
 
         request.resource.data.created_by_uid ==
           request.auth.uid &&
@@ -738,6 +904,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       LEARNING-RESOURCE IMMUTABLE IDENTITY
+    ===================================================== */
+
     function preservesLearningResourceIdentity() {
 
       return
@@ -765,6 +935,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       LEARNING-RESOURCE TRANSITIONS
+    ===================================================== */
+
     function hasValidLearningResourceTransition() {
 
       return
@@ -791,13 +965,98 @@ service cloud.firestore {
     }
 
 
-    function preservesPublishedLearningAssetAuthority() {
+    function hasValidLatestTransition() {
+
+      return
+        (
+          resource.data.status ==
+            "draft" &&
+
+          request.resource.data.status ==
+            "draft" &&
+
+          request.resource.data.is_latest ==
+            false
+        ) ||
+
+        (
+          resource.data.status ==
+            "draft" &&
+
+          request.resource.data.status ==
+            "published" &&
+
+          request.resource.data.is_latest ==
+            true
+        ) ||
+
+        (
+          resource.data.status ==
+            "published" &&
+
+          request.resource.data.status ==
+            "published" &&
+
+          (
+            request.resource.data.is_latest ==
+              resource.data.is_latest ||
+
+            (
+              resource.data.is_latest ==
+                true &&
+
+              request.resource.data.is_latest ==
+                false
+            )
+          )
+        ) ||
+
+        (
+          resource.data.status ==
+            "published" &&
+
+          request.resource.data.status ==
+            "withdrawn" &&
+
+          request.resource.data.is_latest ==
+            false
+        );
+
+    }
+
+
+    /* =====================================================
+       PUBLISHED RESOURCE IMMUTABILITY
+    ===================================================== */
+
+    function preservesPublishedLearningResourceMetadata() {
 
       return
         resource.data.status ==
           "draft" ||
 
         (
+          request.resource.data.resource_id ==
+            resource.data.resource_id &&
+
+          request.resource.data.program_code ==
+            resource.data.program_code &&
+
+          request.resource.data.version ==
+            resource.data.version &&
+
+          request.resource.data.title ==
+            resource.data.title &&
+
+          request.resource.data.description ==
+            resource.data.description &&
+
+          request.resource.data.resource_type ==
+            resource.data.resource_type &&
+
+          request.resource.data.category ==
+            resource.data.category &&
+
           request.resource.data.delivery_type ==
             resource.data.delivery_type &&
 
@@ -817,11 +1076,30 @@ service cloud.firestore {
             resource.data.mime_type &&
 
           request.resource.data.file_size ==
-            resource.data.file_size
+            resource.data.file_size &&
+
+          request.resource.data.preview_allowed ==
+            resource.data.preview_allowed &&
+
+          request.resource.data.download_allowed ==
+            resource.data.download_allowed &&
+
+          request.resource.data.embed_allowed ==
+            resource.data.embed_allowed &&
+
+          request.resource.data.display_order ==
+            resource.data.display_order &&
+
+          request.resource.data.source ==
+            resource.data.source
         );
 
     }
 
+
+    /* =====================================================
+       PUBLICATION AUDIT
+    ===================================================== */
 
     function hasValidPublicationAudit() {
 
@@ -846,6 +1124,9 @@ service cloud.firestore {
 
           request.resource.data.status ==
             "published" &&
+
+          request.resource.data.is_latest ==
+            true &&
 
           request.resource.data.published_by_uid ==
             request.auth.uid &&
@@ -874,6 +1155,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       WITHDRAWAL AUDIT
+    ===================================================== */
+
     function hasValidWithdrawalAudit() {
 
       return
@@ -901,6 +1186,12 @@ service cloud.firestore {
           request.resource.data.status ==
             "withdrawn" &&
 
+          request.resource.data.is_active ==
+            false &&
+
+          request.resource.data.is_latest ==
+            false &&
+
           request.resource.data.withdrawn_by_uid ==
             request.auth.uid &&
 
@@ -913,11 +1204,18 @@ service cloud.firestore {
           request.resource.data.withdrawal_reason is string &&
 
           request.resource.data.withdrawal_reason.size() >
-            0
+            0 &&
+
+          request.resource.data.withdrawal_reason.size() <=
+            1000
         );
 
     }
 
+
+    /* =====================================================
+       LEARNING-RESOURCE UPDATE
+    ===================================================== */
 
     function isValidLearningResourceUpdate() {
 
@@ -933,7 +1231,9 @@ service cloud.firestore {
 
         hasValidLearningResourceTransition() &&
 
-        preservesPublishedLearningAssetAuthority() &&
+        hasValidLatestTransition() &&
+
+        preservesPublishedLearningResourceMetadata() &&
 
         hasValidPublicationAudit() &&
 
@@ -1121,7 +1421,7 @@ service cloud.firestore {
        *
        * draft     → draft
        * draft     → published
-       * published → published
+       * published → published (latest may become false)
        * published → withdrawn
        *
        * Withdrawn records are terminal.

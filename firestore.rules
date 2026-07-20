@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.5.1
+       Version : 2.6.0
        Status  : ACTIVE
 
        Security Model
@@ -37,6 +37,17 @@ service cloud.firestore {
 
        Change History
        -----------------------------------------------------
+       v2.6.0
+       • Added learner_resource_access relationship authority
+       • Added exact learner-access field contract
+       • Added opaque canonical LRA document-ID validation
+       • Added active and pending identity-state validation
+       • Added resource-reference integrity validation
+       • Added administrator creation and update audit rules
+       • Added learner read-only access to their own active records
+       • Prohibited learner writes and physical access deletion
+       • Preserved all existing production collection rules
+
        v2.5.1
        • Aligned draft is_latest state with Contract v1.1.0
        • Added exact field allow-list validation
@@ -1245,6 +1256,961 @@ service cloud.firestore {
     }
 
 
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS FIELD CONTRACT
+    ===================================================== */
+
+    function hasOnlyLearnerResourceAccessFields(
+      data
+    ) {
+
+      return
+        data.keys().hasOnly([
+          "access_id",
+
+          "resource_document_id",
+          "resource_id",
+          "program_code",
+          "resource_version",
+
+          "learner_uid",
+          "learner_email",
+          "learner_email_normalized",
+          "credential_id",
+
+          "identity_source",
+          "identity_status",
+
+          "access_status",
+          "access_type",
+
+          "release_status",
+          "release_policy",
+
+          "module_number",
+          "session_number",
+          "available_from",
+          "available_until",
+
+          "preview_allowed",
+          "download_allowed",
+
+          "granted_by_uid",
+          "granted_by_email",
+          "granted_at",
+
+          "activated_at",
+          "activated_by_uid",
+
+          "revoked_at",
+          "revoked_by_uid",
+          "revoked_by_email",
+          "revocation_reason",
+
+          "created_at",
+          "created_by_uid",
+          "created_by_email",
+
+          "updated_at",
+          "updated_by_uid",
+          "updated_by_email",
+
+          "source",
+          "last_mutation_source",
+          "schema_version"
+        ]);
+
+    }
+
+
+    function hasRequiredLearnerResourceAccessFields(
+      data
+    ) {
+
+      return
+        data.keys().hasAll([
+          "access_id",
+
+          "resource_document_id",
+          "resource_id",
+          "program_code",
+          "resource_version",
+
+          "learner_uid",
+          "learner_email",
+          "learner_email_normalized",
+          "credential_id",
+
+          "identity_source",
+          "identity_status",
+
+          "access_status",
+          "access_type",
+
+          "release_status",
+          "release_policy",
+
+          "module_number",
+          "session_number",
+          "available_from",
+          "available_until",
+
+          "preview_allowed",
+          "download_allowed",
+
+          "granted_by_uid",
+          "granted_by_email",
+          "granted_at",
+
+          "activated_at",
+          "activated_by_uid",
+
+          "revoked_at",
+          "revoked_by_uid",
+          "revoked_by_email",
+          "revocation_reason",
+
+          "created_at",
+          "created_by_uid",
+          "created_by_email",
+
+          "updated_at",
+          "updated_by_uid",
+          "updated_by_email",
+
+          "source",
+          "last_mutation_source",
+          "schema_version"
+        ]);
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS IDENTITY
+    ===================================================== */
+
+    function hasValidLearnerResourceAccessDocumentId(
+      documentId
+    ) {
+
+      return
+        documentId.matches(
+          '^LRA_[A-F0-9]{32}$'
+        );
+
+    }
+
+
+    function hasValidLearnerResourceAccessIdentity(
+      documentId,
+      data
+    ) {
+
+      return
+        data.access_id is string &&
+
+        data.access_id ==
+          documentId &&
+
+        hasValidLearnerResourceAccessDocumentId(
+          documentId
+        ) &&
+
+        data.resource_document_id is string &&
+        data.resource_document_id.size() > 0 &&
+
+        data.resource_id is string &&
+        data.resource_id.size() > 0 &&
+
+        data.program_code is string &&
+        data.program_code.matches(
+          '^[A-Z0-9][A-Z0-9_-]{1,19}$'
+        ) &&
+
+        data.resource_version is int &&
+        data.resource_version >= 1 &&
+
+        data.learner_email is string &&
+        data.learner_email.size() > 3 &&
+        data.learner_email.size() <= 254 &&
+
+        data.learner_email_normalized is string &&
+        data.learner_email_normalized ==
+          data.learner_email &&
+
+        data.learner_email_normalized.matches(
+          '^[^ @]+@[^ @]+\\.[^ @]+$'
+        ) &&
+
+        (
+          data.learner_uid == null ||
+          (
+            data.learner_uid is string &&
+            data.learner_uid.size() > 0
+          )
+        ) &&
+
+        (
+          data.credential_id == null ||
+          (
+            data.credential_id is string &&
+            data.credential_id.size() > 0
+          )
+        );
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS GOVERNED VALUES
+    ===================================================== */
+
+    function hasValidLearnerResourceIdentitySource(
+      data
+    ) {
+
+      return
+        data.identity_source in [
+          "historical_credential",
+          "registration",
+          "enrollment",
+          "authenticated_identity",
+          "admin_verified",
+          "migration"
+        ];
+
+    }
+
+
+    function hasValidLearnerResourceIdentityStatus(
+      data
+    ) {
+
+      return
+        data.identity_status in [
+          "pending_activation",
+          "activated",
+          "reconciliation_required",
+          "blocked"
+        ];
+
+    }
+
+
+    function hasValidLearnerResourceAccessStatus(
+      data
+    ) {
+
+      return
+        data.access_status in [
+          "pending_activation",
+          "active",
+          "suspended",
+          "revoked",
+          "expired"
+        ];
+
+    }
+
+
+    function hasValidLearnerResourceAccessType(
+      data
+    ) {
+
+      return
+        data.access_type in [
+          "individual_licensed",
+          "program_entitlement",
+          "alumni_entitlement",
+          "cohort_assignment",
+          "enterprise_assignment",
+          "manual_exception"
+        ];
+
+    }
+
+
+    function hasValidLearnerResourceReleaseStatus(
+      data
+    ) {
+
+      return
+        data.release_status in [
+          "scheduled",
+          "released",
+          "withheld",
+          "expired"
+        ];
+
+    }
+
+
+    function hasValidLearnerResourceReleasePolicy(
+      data
+    ) {
+
+      return
+        data.release_policy in [
+          "immediate",
+          "on_activation",
+          "on_enrollment",
+          "pre_module",
+          "post_module",
+          "post_session",
+          "scheduled",
+          "manual"
+        ];
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS NULLABLE VALUES
+    ===================================================== */
+
+    function hasValidNullableLearnerResourceAccessValues(
+      data
+    ) {
+
+      return
+        (
+          data.module_number == null ||
+          (
+            data.module_number is int &&
+            data.module_number >= 1
+          )
+        ) &&
+
+        (
+          data.session_number == null ||
+          (
+            data.session_number is int &&
+            data.session_number >= 1
+          )
+        ) &&
+
+        (
+          data.available_from == null ||
+          data.available_from is string
+        ) &&
+
+        (
+          data.available_until == null ||
+          data.available_until is string
+        ) &&
+
+        (
+          data.activated_at == null ||
+          data.activated_at is timestamp
+        ) &&
+
+        (
+          data.activated_by_uid == null ||
+          data.activated_by_uid is string
+        ) &&
+
+        (
+          data.revoked_at == null ||
+          data.revoked_at is timestamp
+        ) &&
+
+        (
+          data.revoked_by_uid == null ||
+          data.revoked_by_uid is string
+        ) &&
+
+        (
+          data.revoked_by_email == null ||
+          data.revoked_by_email is string
+        ) &&
+
+        (
+          data.revocation_reason == null ||
+          data.revocation_reason is string
+        );
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS RELEASE GOVERNANCE
+    ===================================================== */
+
+    function hasValidLearnerResourceReleaseGovernance(
+      data
+    ) {
+
+      return
+        (
+          !(
+            data.release_policy in [
+              "pre_module",
+              "post_module"
+            ]
+          ) ||
+
+          (
+            data.module_number is int &&
+            data.module_number >= 1
+          )
+        ) &&
+
+        (
+          data.release_policy !=
+            "post_session" ||
+
+          (
+            data.session_number is int &&
+            data.session_number >= 1
+          )
+        );
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS STATE CONSISTENCY
+    ===================================================== */
+
+    function hasConsistentLearnerResourceIdentityState(
+      data
+    ) {
+
+      return
+        (
+          data.identity_status ==
+            "pending_activation" &&
+
+          data.access_status ==
+            "pending_activation" &&
+
+          data.learner_uid ==
+            null &&
+
+          data.activated_at ==
+            null &&
+
+          data.activated_by_uid ==
+            null
+        ) ||
+
+        (
+          data.identity_status ==
+            "activated" &&
+
+          data.learner_uid is string &&
+          data.learner_uid.size() > 0 &&
+
+          data.access_status in [
+            "active",
+            "suspended",
+            "revoked",
+            "expired"
+          ] &&
+
+          data.activated_at is timestamp &&
+
+          data.activated_by_uid ==
+            data.learner_uid
+        ) ||
+
+        (
+          data.identity_status in [
+            "reconciliation_required",
+            "blocked"
+          ] &&
+
+          data.access_status !=
+            "active"
+        );
+
+    }
+
+
+    function hasConsistentLearnerResourceRevocation(
+      data
+    ) {
+
+      return
+        (
+          data.access_status !=
+            "revoked" &&
+
+          data.revoked_at ==
+            null &&
+
+          data.revoked_by_uid ==
+            null &&
+
+          data.revoked_by_email ==
+            null &&
+
+          data.revocation_reason ==
+            null
+        ) ||
+
+        (
+          data.access_status ==
+            "revoked" &&
+
+          data.revoked_at is timestamp &&
+
+          data.revoked_by_uid is string &&
+          data.revoked_by_uid.size() > 0 &&
+
+          data.revoked_by_email is string &&
+          data.revoked_by_email.size() > 0 &&
+
+          data.revocation_reason is string &&
+          data.revocation_reason.size() > 0 &&
+          data.revocation_reason.size() <= 1000
+        );
+
+    }
+
+
+    function hasValidHistoricalCredentialIdentity(
+      data
+    ) {
+
+      return
+        data.identity_source !=
+          "historical_credential" ||
+
+        (
+          data.credential_id is string &&
+          data.credential_id.size() > 0
+        );
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS RESOURCE AUTHORITY
+    ===================================================== */
+
+    function learnerResourceExists(
+      data
+    ) {
+
+      return
+        exists(
+          /databases/$(database)/documents/learning_resources/$(data.resource_document_id)
+        );
+
+    }
+
+
+    function matchesPublishedLearnerResource(
+      data
+    ) {
+
+      let learningResource =
+        get(
+          /databases/$(database)/documents/learning_resources/$(data.resource_document_id)
+        ).data;
+
+      return
+        learningResource.status ==
+          "published" &&
+
+        learningResource.is_active ==
+          true &&
+
+        learningResource.resource_id ==
+          data.resource_id &&
+
+        learningResource.program_code ==
+          data.program_code &&
+
+        learningResource.version ==
+          data.resource_version &&
+
+        data.preview_allowed ==
+          (
+            learningResource.preview_allowed ==
+              true &&
+            data.preview_allowed ==
+              true
+          ) &&
+
+        data.download_allowed ==
+          (
+            learningResource.download_allowed ==
+              true &&
+            data.download_allowed ==
+              true
+          );
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS AUDIT TYPES
+    ===================================================== */
+
+    function hasValidLearnerResourceAccessAuditTypes(
+      data
+    ) {
+
+      return
+        data.granted_by_uid is string &&
+        data.granted_by_uid.size() > 0 &&
+
+        data.granted_by_email is string &&
+        data.granted_by_email.size() > 0 &&
+
+        data.granted_at is timestamp &&
+
+        data.created_by_uid is string &&
+        data.created_by_uid.size() > 0 &&
+
+        data.created_by_email is string &&
+        data.created_by_email.size() > 0 &&
+
+        data.created_at is timestamp &&
+
+        data.updated_by_uid is string &&
+        data.updated_by_uid.size() > 0 &&
+
+        data.updated_by_email is string &&
+        data.updated_by_email.size() > 0 &&
+
+        data.updated_at is timestamp &&
+
+        data.preview_allowed is bool &&
+
+        data.download_allowed is bool &&
+
+        data.schema_version ==
+          1 &&
+
+        data.source ==
+          "admin_portal" &&
+
+        data.last_mutation_source in [
+          "admin_portal",
+          "first_login_activation",
+          "migration",
+          "backend_service",
+          "system_automation"
+        ];
+
+    }
+
+
+    /* =====================================================
+       COMPLETE LEARNER-RESOURCE ACCESS CONTRACT
+    ===================================================== */
+
+    function hasValidLearnerResourceAccessContract(
+      documentId,
+      data
+    ) {
+
+      return
+        hasOnlyLearnerResourceAccessFields(
+          data
+        ) &&
+
+        hasRequiredLearnerResourceAccessFields(
+          data
+        ) &&
+
+        hasValidLearnerResourceAccessIdentity(
+          documentId,
+          data
+        ) &&
+
+        hasValidLearnerResourceIdentitySource(
+          data
+        ) &&
+
+        hasValidLearnerResourceIdentityStatus(
+          data
+        ) &&
+
+        hasValidLearnerResourceAccessStatus(
+          data
+        ) &&
+
+        hasValidLearnerResourceAccessType(
+          data
+        ) &&
+
+        hasValidLearnerResourceReleaseStatus(
+          data
+        ) &&
+
+        hasValidLearnerResourceReleasePolicy(
+          data
+        ) &&
+
+        hasValidNullableLearnerResourceAccessValues(
+          data
+        ) &&
+
+        hasValidLearnerResourceReleaseGovernance(
+          data
+        ) &&
+
+        hasConsistentLearnerResourceIdentityState(
+          data
+        ) &&
+
+        hasConsistentLearnerResourceRevocation(
+          data
+        ) &&
+
+        hasValidHistoricalCredentialIdentity(
+          data
+        ) &&
+
+        learnerResourceExists(
+          data
+        ) &&
+
+        matchesPublishedLearnerResource(
+          data
+        ) &&
+
+        hasValidLearnerResourceAccessAuditTypes(
+          data
+        );
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS CREATE
+    ===================================================== */
+
+    function isValidLearnerResourceAccessCreate(
+      documentId
+    ) {
+
+      return
+        hasValidLearnerResourceAccessContract(
+          documentId,
+          request.resource.data
+        ) &&
+
+        request.resource.data.granted_by_uid ==
+          request.auth.uid &&
+
+        request.resource.data.granted_by_email ==
+          request.auth.token.email &&
+
+        request.resource.data.granted_at ==
+          request.time &&
+
+        request.resource.data.created_by_uid ==
+          request.auth.uid &&
+
+        request.resource.data.created_by_email ==
+          request.auth.token.email &&
+
+        request.resource.data.created_at ==
+          request.time &&
+
+        request.resource.data.updated_by_uid ==
+          request.auth.uid &&
+
+        request.resource.data.updated_by_email ==
+          request.auth.token.email &&
+
+        request.resource.data.updated_at ==
+          request.time &&
+
+        request.resource.data.source ==
+          "admin_portal" &&
+
+        request.resource.data.last_mutation_source ==
+          "admin_portal" &&
+
+        (
+          (
+            request.resource.data.access_status ==
+              "pending_activation" &&
+
+            request.resource.data.activated_at ==
+              null &&
+
+            request.resource.data.activated_by_uid ==
+              null
+          ) ||
+
+          (
+            request.resource.data.access_status ==
+              "active" &&
+
+            request.resource.data.activated_at ==
+              request.time &&
+
+            request.resource.data.activated_by_uid ==
+              request.resource.data.learner_uid
+          )
+        );
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS IMMUTABLE IDENTITY
+    ===================================================== */
+
+    function preservesLearnerResourceAccessIdentity() {
+
+      return
+        request.resource.data.access_id ==
+          resource.data.access_id &&
+
+        request.resource.data.resource_document_id ==
+          resource.data.resource_document_id &&
+
+        request.resource.data.resource_id ==
+          resource.data.resource_id &&
+
+        request.resource.data.program_code ==
+          resource.data.program_code &&
+
+        request.resource.data.resource_version ==
+          resource.data.resource_version &&
+
+        request.resource.data.learner_uid ==
+          resource.data.learner_uid &&
+
+        request.resource.data.learner_email ==
+          resource.data.learner_email &&
+
+        request.resource.data.learner_email_normalized ==
+          resource.data.learner_email_normalized &&
+
+        request.resource.data.credential_id ==
+          resource.data.credential_id &&
+
+        request.resource.data.identity_source ==
+          resource.data.identity_source &&
+
+        request.resource.data.granted_by_uid ==
+          resource.data.granted_by_uid &&
+
+        request.resource.data.granted_by_email ==
+          resource.data.granted_by_email &&
+
+        request.resource.data.granted_at ==
+          resource.data.granted_at &&
+
+        request.resource.data.created_by_uid ==
+          resource.data.created_by_uid &&
+
+        request.resource.data.created_by_email ==
+          resource.data.created_by_email &&
+
+        request.resource.data.created_at ==
+          resource.data.created_at &&
+
+        request.resource.data.source ==
+          resource.data.source &&
+
+        request.resource.data.schema_version ==
+          resource.data.schema_version;
+
+    }
+
+
+    function hasValidLearnerResourceAccessTransition() {
+
+      return
+        (
+          resource.data.access_status ==
+            "pending_activation" &&
+
+          request.resource.data.access_status in [
+            "pending_activation",
+            "revoked"
+          ]
+        ) ||
+
+        (
+          resource.data.access_status ==
+            "active" &&
+
+          request.resource.data.access_status in [
+            "active",
+            "suspended",
+            "revoked",
+            "expired"
+          ]
+        ) ||
+
+        (
+          resource.data.access_status ==
+            "suspended" &&
+
+          request.resource.data.access_status in [
+            "suspended",
+            "active",
+            "revoked",
+            "expired"
+          ]
+        );
+
+    }
+
+
+    function isValidLearnerResourceAccessUpdate(
+      documentId
+    ) {
+
+      return
+        hasValidLearnerResourceAccessContract(
+          documentId,
+          request.resource.data
+        ) &&
+
+        preservesLearnerResourceAccessIdentity() &&
+
+        hasValidLearnerResourceAccessTransition() &&
+
+        request.resource.data.updated_by_uid ==
+          request.auth.uid &&
+
+        request.resource.data.updated_by_email ==
+          request.auth.token.email &&
+
+        request.resource.data.updated_at ==
+          request.time &&
+
+        request.resource.data.last_mutation_source ==
+          "admin_portal";
+
+    }
+
+
+    function canLearnerReadOwnActiveResourceAccess() {
+
+      return
+        isSignedIn() &&
+
+        resource.data.learner_uid ==
+          request.auth.uid &&
+
+        resource.data.identity_status ==
+          "activated" &&
+
+        resource.data.access_status ==
+          "active" &&
+
+        resource.data.release_status ==
+          "released";
+
+    }
+
+
     /* =====================================================
        USERS — RBAC PROFILE AUTHORITY
     ===================================================== */
@@ -1435,6 +2401,62 @@ service cloud.firestore {
       /*
        * Physical metadata deletion is prohibited.
        * Withdrawal preserves audit and version history.
+       */
+
+      allow delete: if
+        false;
+
+    }
+
+
+
+
+    /* =====================================================
+       LEARNER RESOURCE ACCESS — RELATIONSHIP AUTHORITY
+    ===================================================== */
+
+    match /learner_resource_access/{documentId} {
+
+      /*
+       * Authorized administrators may read all access records.
+       *
+       * Learners may read only their own activated, active and
+       * released records. Pending pre-login records are never
+       * readable by learners.
+       */
+
+      allow get, list: if
+        isBootstrapAdmin() ||
+        canLearnerReadOwnActiveResourceAccess();
+
+      /*
+       * Access assignment is an Admin Portal authority.
+       */
+
+      allow create: if
+        isBootstrapAdmin() &&
+
+        isValidLearnerResourceAccessCreate(
+          documentId
+        );
+
+      /*
+       * Client-side Admin updates may manage lifecycle but may
+       * not bind or replace learner_uid. First-login identity
+       * binding must be performed by the trusted backend, whose
+       * Admin SDK bypasses Firestore client rules.
+       */
+
+      allow update: if
+        isBootstrapAdmin() &&
+
+        isValidLearnerResourceAccessUpdate(
+          documentId
+        );
+
+      /*
+       * Physical deletion is prohibited. Revocation preserves
+       * identity, grant and audit history.
        */
 
       allow delete: if

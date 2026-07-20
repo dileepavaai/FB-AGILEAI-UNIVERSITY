@@ -53,7 +53,7 @@
        AGILE AI UNIVERSITY
        LEARNING RESOURCE MANAGEMENT
 
-       Version : 1.0.1
+       Version : 1.1.0
        Status  : ADMIN AUTHORITY
 
        Governance
@@ -64,8 +64,29 @@
        • Protected files are immutable after upload
        • Replacements require a new version
        • Resources follow draft → published → withdrawn
+       • ADR-019 governs protected resource delivery
+       • ADR-020 governs resource release policies
+       • Admin records release-policy metadata
+       • Learning Resource Resolver evaluates learner access
+       • UI components never resolve learner visibility
        • Students cannot directly administer resources
        • Client-side deletion is prohibited
+
+       Change History
+       -----------------------------------------------------
+       v1.1.0
+       • Added governed release-policy metadata controls
+       • Added optional module and session targeting
+       • Added optional availability-window metadata
+       • Added ADR-020 release-governance notice
+       • Preserved existing form names and page integration
+       • Preserved existing application bootstrap
+
+       v1.0.1
+       • Established governed learning-resource management UI
+       • Added draft registration and publication surface
+       • Added protected-file selection
+       • Added registry summary and filtering
   ====================================================== -->
 </head>
 
@@ -119,8 +140,8 @@
               <h2>Learning Resource Management</h2>
 
               <p class="page-subtitle">
-                Register, upload, publish, version, and withdraw governed
-                learning resources and licensed course materials.
+                Register, upload, publish, version, release, and withdraw
+                governed learning resources and licensed course materials.
               </p>
 
             </div>
@@ -155,13 +176,16 @@
           class="learning-resource-status hidden"
           role="status"
           aria-live="polite"
+          aria-atomic="true"
         ></div>
 
         <!-- LOADING -->
         <div
           id="learning-resource-loading"
           class="section hidden"
+          role="status"
           aria-live="polite"
+          aria-hidden="true"
         >
           <div class="card">
             Loading learning resources…
@@ -249,18 +273,31 @@
                 </label>
 
                 <select id="learning-resource-filter-category">
-                  <option value="">All categories</option>
+
+                  <option value="">
+                    All categories
+                  </option>
+
                   <option value="reference_material">
                     Reference Material
                   </option>
+
                   <option value="licensed_course_material">
                     Licensed Course Material
                   </option>
+
                   <option value="supporting_document">
                     Supporting Document
                   </option>
-                  <option value="video">Video</option>
-                  <option value="download">Download</option>
+
+                  <option value="video">
+                    Video
+                  </option>
+
+                  <option value="download">
+                    Download
+                  </option>
+
                 </select>
 
               </div>
@@ -272,11 +309,27 @@
                 </label>
 
                 <select id="learning-resource-filter-type">
-                  <option value="">All resource types</option>
-                  <option value="document">Document</option>
-                  <option value="image">Image</option>
-                  <option value="external_video">External Video</option>
-                  <option value="external_link">External Link</option>
+
+                  <option value="">
+                    All resource types
+                  </option>
+
+                  <option value="document">
+                    Document
+                  </option>
+
+                  <option value="image">
+                    Image
+                  </option>
+
+                  <option value="external_video">
+                    External Video
+                  </option>
+
+                  <option value="external_link">
+                    External Link
+                  </option>
+
                 </select>
 
               </div>
@@ -298,13 +351,16 @@
           <div
             id="learning-resource-empty-state"
             class="card learning-resource-empty-state hidden"
+            aria-hidden="true"
           >
+
             <h3>No learning resources found</h3>
 
             <p>
               Create a governed learning-resource draft or adjust the
               current registry filters.
             </p>
+
           </div>
 
         </div>
@@ -314,6 +370,7 @@
           id="learning-resource-form-panel"
           class="section hidden"
           aria-labelledby="learning-resource-form-heading"
+          aria-hidden="true"
         >
 
           <div class="card">
@@ -348,9 +405,12 @@
 
             <form
               id="learning-resource-form"
+              data-mode="create"
+              data-document-id=""
               novalidate
             >
 
+              <!-- RESOURCE IDENTITY AND DELIVERY -->
               <div class="learning-resource-form-grid">
 
                 <div class="form-group">
@@ -451,13 +511,27 @@
                     name="resource_type"
                     required
                   >
-                    <option value="">Select resource type</option>
-                    <option value="document">Document</option>
-                    <option value="image">Image</option>
+
+                    <option value="">
+                      Select resource type
+                    </option>
+
+                    <option value="document">
+                      Document
+                    </option>
+
+                    <option value="image">
+                      Image
+                    </option>
+
                     <option value="external_video">
                       External Video
                     </option>
-                    <option value="external_link">External Link</option>
+
+                    <option value="external_link">
+                      External Link
+                    </option>
+
                   </select>
 
                 </div>
@@ -473,7 +547,10 @@
                     name="category"
                     required
                   >
-                    <option value="">Select category</option>
+
+                    <option value="">
+                      Select category
+                    </option>
 
                     <option value="reference_material">
                       Reference Material
@@ -494,6 +571,7 @@
                     <option value="download">
                       Download
                     </option>
+
                   </select>
 
                 </div>
@@ -509,16 +587,23 @@
                     name="delivery_type"
                     required
                   >
-                    <option value="">Select delivery type</option>
+
+                    <option value="">
+                      Select delivery type
+                    </option>
+
                     <option value="protected_storage">
                       Protected Storage
                     </option>
+
                     <option value="external_video">
                       External Video
                     </option>
+
                     <option value="external_link">
                       External Link
                     </option>
+
                   </select>
 
                 </div>
@@ -538,7 +623,8 @@
                   />
 
                   <small>
-                    Required only for External Video or External Link delivery.
+                    Required only for External Video or External Link
+                    delivery.
                   </small>
 
                 </div>
@@ -556,8 +642,8 @@
                   />
 
                   <small>
-                    Uploaded files are immutable. Replacing a protected file
-                    requires a new resource version.
+                    Uploaded files are immutable. Replacing a protected
+                    file requires a new resource version.
                   </small>
 
                 </div>
@@ -581,6 +667,171 @@
 
               </div>
 
+              <!-- RELEASE GOVERNANCE -->
+              <fieldset class="learning-resource-permissions">
+
+                <legend>Release Governance</legend>
+
+                <div class="learning-resource-form-grid">
+
+                  <div class="form-group">
+
+                    <label for="learning-resource-release-policy">
+                      Release Policy
+                    </label>
+
+                    <select
+                      id="learning-resource-release-policy"
+                      name="release_policy"
+                      required
+                    >
+
+                      <option value="">
+                        Select release policy
+                      </option>
+
+                      <option value="on_enrollment">
+                        On Enrolment
+                      </option>
+
+                      <option value="pre_module">
+                        Before Corresponding Module
+                      </option>
+
+                      <option value="post_module">
+                        After Module Completion
+                      </option>
+
+                      <option value="post_session">
+                        After Session Completion
+                      </option>
+
+                      <option value="post_assessment">
+                        After Assessment Completion
+                      </option>
+
+                      <option value="on_completion">
+                        On Programme Completion
+                      </option>
+
+                      <option value="alumni_only">
+                        Alumni Only
+                      </option>
+
+                      <option value="manual_release">
+                        Manual Release
+                      </option>
+
+                    </select>
+
+                    <small>
+                      Defines the governed condition that the Learning
+                      Resource Resolver will evaluate.
+                    </small>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learning-resource-module-number">
+                      Module Number
+                    </label>
+
+                    <input
+                      id="learning-resource-module-number"
+                      name="module_number"
+                      type="number"
+                      min="1"
+                      step="1"
+                      inputmode="numeric"
+                      placeholder="Optional"
+                    />
+
+                    <small>
+                      Required when the selected release policy targets a
+                      specific module.
+                    </small>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learning-resource-session-number">
+                      Session Number
+                    </label>
+
+                    <input
+                      id="learning-resource-session-number"
+                      name="session_number"
+                      type="number"
+                      min="1"
+                      step="1"
+                      inputmode="numeric"
+                      placeholder="Optional"
+                    />
+
+                    <small>
+                      Use when the resource is associated with a specific
+                      instructor-led session.
+                    </small>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learning-resource-available-from">
+                      Available From
+                    </label>
+
+                    <input
+                      id="learning-resource-available-from"
+                      name="available_from"
+                      type="datetime-local"
+                    />
+
+                    <small>
+                      Optional release boundary interpreted using the
+                      platform release-time policy.
+                    </small>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learning-resource-available-until">
+                      Available Until
+                    </label>
+
+                    <input
+                      id="learning-resource-available-until"
+                      name="available_until"
+                      type="datetime-local"
+                    />
+
+                    <small>
+                      Optional visibility boundary. Leave empty for no
+                      scheduled expiry.
+                    </small>
+
+                  </div>
+
+                  <div class="form-group learning-resource-form-wide">
+
+                    <p>
+                      The Admin Portal records authoritative release
+                      metadata. It does not decide learner visibility.
+                      Learner access is resolved by the Learning Resource
+                      Resolver after identity, authorization, and
+                      entitlement resolution.
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </fieldset>
+
+              <!-- CONSUMPTION CONTROLS -->
               <fieldset class="learning-resource-permissions">
 
                 <legend>Consumption Controls</legend>
@@ -663,14 +914,23 @@
             <p>
               Protected licensed materials remain in Firebase Storage and
               are not exposed using permanent client-side download URLs.
-              Student access will be provided through governed entitlement
-              and credential verification.
+              Student access is provided through governed identity,
+              authorization, entitlement, release-policy resolution, and
+              backend-brokered delivery.
             </p>
 
             <p>
               Published resource versions are immutable. Corrections and
               replacements require a new version, while withdrawn resources
               remain available for governance and audit history.
+            </p>
+
+            <p>
+              ADR-019 governs how protected resources are delivered.
+              ADR-020 governs when and to whom resources become available.
+              The Admin Portal records release metadata, while the Learning
+              Resource Resolver remains the authority for learner
+              visibility.
             </p>
 
           </div>

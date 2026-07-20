@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-renderer.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -15,11 +15,12 @@
    ----------------------------------------------------------
    • Render administrative summary metrics
    • Render governed learning-resource cards
-   • Render lifecycle and policy indicators
+   • Render lifecycle, release, and consumption indicators
    • Render administrative action controls
    • Render loading, success, information, and error messages
    • Render empty states
    • Populate the resource form for draft editing
+   • Populate governed release-policy metadata
    • Reset form presentation safely between modes
    • Control presentation visibility and accessibility state
 
@@ -31,6 +32,7 @@
    • Storage operations
    • Publication decisions
    • Entitlement resolution
+   • Learner release-policy evaluation
    • Business validation
 
    Governance
@@ -39,9 +41,29 @@
    • Renderer makes no authorization decisions
    • Renderer never queries Firebase
    • Renderer never publishes or withdraws resources
+   • Renderer records no business decisions
    • Dynamic values are inserted through textContent
    • Action buttons expose intent through data attributes
    • Service and Publisher remain lifecycle authorities
+   • Learning Resource Resolver remains learner-visibility authority
+   • ADR-020 release metadata is presented but never evaluated here
+
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Added release-policy form population
+   • Added module and session metadata population
+   • Added availability-window population
+   • Added release-governance metadata to resource cards
+   • Added safe datetime-local formatting
+   • Added release-policy field presentation support
+   • Preserved existing public renderer API
+
+   v1.1.0
+   • Added administrative summary metrics
+   • Added governed resource cards
+   • Added form editing and reset support
+   • Added accessible status and loading states
 ========================================================== */
 
 
@@ -53,7 +75,7 @@ const MODULE_NAME =
     "LearningResourceRenderer";
 
 const MODULE_VERSION =
-    "1.1.0";
+    "1.2.0";
 
 const ALLOWED_STATUS_TYPES =
     Object.freeze([
@@ -61,6 +83,17 @@ const ALLOWED_STATUS_TYPES =
         "success",
         "warning",
         "error"
+    ]);
+
+const MODULE_RELEASE_POLICIES =
+    Object.freeze([
+        "pre_module",
+        "post_module"
+    ]);
+
+const SESSION_RELEASE_POLICIES =
+    Object.freeze([
+        "post_session"
     ]);
 
 
@@ -188,6 +221,8 @@ function initialize() {
 
     }
 
+    bindReleasePolicyPresentation();
+
     initialized =
         true;
 
@@ -207,6 +242,17 @@ function normalizeText(
     return String(
         value ?? ""
     ).trim();
+
+}
+
+
+function normalizeLowercase(
+    value
+) {
+
+    return normalizeText(
+        value
+    ).toLowerCase();
 
 }
 
@@ -234,6 +280,44 @@ function normalizeCount(
     return Math.trunc(
         count
     );
+
+}
+
+
+function normalizeNullablePositiveInteger(
+    value
+) {
+
+    if (
+        value ===
+            null ||
+        value ===
+            undefined ||
+        value ===
+            ""
+    ) {
+
+        return null;
+
+    }
+
+    const normalizedValue =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isInteger(
+            normalizedValue
+        ) ||
+        normalizedValue < 1
+    ) {
+
+        return null;
+
+    }
+
+    return normalizedValue;
 
 }
 
@@ -322,6 +406,30 @@ function setFieldDisabled(
 
     field.disabled =
         disabled === true;
+
+}
+
+
+function setFieldRequired(
+    fieldName,
+    required
+) {
+
+    const field =
+        getFormField(
+            fieldName
+        );
+
+    if (
+        !field
+    ) {
+
+        return;
+
+    }
+
+    field.required =
+        required === true;
 
 }
 
@@ -422,6 +530,108 @@ function formatDate(
 }
 
 
+function formatDateTimeLocal(
+    value
+) {
+
+    if (
+        !value
+    ) {
+
+        return "";
+
+    }
+
+    try {
+
+        const date =
+            new Date(
+                value
+            );
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return "";
+
+        }
+
+        const formatter =
+            new Intl.DateTimeFormat(
+                "en-CA",
+                {
+                    timeZone:
+                        "Asia/Kolkata",
+
+                    year:
+                        "numeric",
+
+                    month:
+                        "2-digit",
+
+                    day:
+                        "2-digit",
+
+                    hour:
+                        "2-digit",
+
+                    minute:
+                        "2-digit",
+
+                    hourCycle:
+                        "h23"
+                }
+            );
+
+        const parts =
+            formatter.formatToParts(
+                date
+            );
+
+        const partMap =
+            Object.fromEntries(
+                parts.map(
+                    (
+                        part
+                    ) => [
+                        part.type,
+                        part.value
+                    ]
+                )
+            );
+
+        if (
+            !partMap.year ||
+            !partMap.month ||
+            !partMap.day ||
+            !partMap.hour ||
+            !partMap.minute
+        ) {
+
+            return "";
+
+        }
+
+        return (
+            `${partMap.year}-${partMap.month}-${partMap.day}` +
+            `T${partMap.hour}:${partMap.minute}`
+        );
+
+    }
+    catch (
+        error
+    ) {
+
+        return "";
+
+    }
+
+}
+
+
 function formatFileSize(
     value
 ) {
@@ -477,6 +687,125 @@ function formatFileSize(
                 : 1
         )} ${units[unitIndex]}`
     );
+
+}
+
+
+function formatReleaseTarget(
+    resource
+) {
+
+    const moduleNumber =
+        normalizeNullablePositiveInteger(
+            resource?.moduleNumber
+        );
+
+    const sessionNumber =
+        normalizeNullablePositiveInteger(
+            resource?.sessionNumber
+        );
+
+    if (
+        moduleNumber &&
+        sessionNumber
+    ) {
+
+        return (
+            `Module ${moduleNumber}, Session ${sessionNumber}`
+        );
+
+    }
+
+    if (
+        moduleNumber
+    ) {
+
+        return (
+            `Module ${moduleNumber}`
+        );
+
+    }
+
+    if (
+        sessionNumber
+    ) {
+
+        return (
+            `Session ${sessionNumber}`
+        );
+
+    }
+
+    return "Not specified";
+
+}
+
+
+/* ==========================================================
+   RELEASE POLICY PRESENTATION
+========================================================== */
+
+function updateReleasePolicyPresentation() {
+
+    initialize();
+
+    const releasePolicyField =
+        getFormField(
+            "release_policy"
+        );
+
+    const releasePolicy =
+        normalizeLowercase(
+            releasePolicyField?.value
+        );
+
+    const requiresModule =
+        MODULE_RELEASE_POLICIES.includes(
+            releasePolicy
+        );
+
+    const requiresSession =
+        SESSION_RELEASE_POLICIES.includes(
+            releasePolicy
+        );
+
+    setFieldRequired(
+        "module_number",
+        requiresModule
+    );
+
+    setFieldRequired(
+        "session_number",
+        requiresSession
+    );
+
+}
+
+
+function bindReleasePolicyPresentation() {
+
+    const releasePolicyField =
+        elements?.form?.elements?.namedItem(
+            "release_policy"
+        );
+
+    if (
+        !releasePolicyField ||
+        releasePolicyField.dataset.rendererBound ===
+            "true"
+    ) {
+
+        return;
+
+    }
+
+    releasePolicyField.addEventListener(
+        "change",
+        updateReleasePolicyPresentation
+    );
+
+    releasePolicyField.dataset.rendererBound =
+        "true";
 
 }
 
@@ -845,9 +1174,9 @@ function createStatusBadge(
 ) {
 
     const normalizedStatus =
-        normalizeText(
+        normalizeLowercase(
             resource.status
-        ).toLowerCase();
+        );
 
     const safeStatus =
         [
@@ -961,12 +1290,6 @@ function createResourceActions(
 
         }
 
-        /*
-         * Publication readiness remains enforced by the
-         * Contract and Publisher. The button remains available
-         * so the administrator receives the authoritative
-         * validation message when publication is attempted.
-         */
         actions.append(
             createActionButton({
                 label:
@@ -1131,6 +1454,34 @@ function createResourceCard(
         ),
 
         createMetadataItem(
+            "Release",
+            formatLabel(
+                resource.releasePolicy
+            )
+        ),
+
+        createMetadataItem(
+            "Release target",
+            formatReleaseTarget(
+                resource
+            )
+        ),
+
+        createMetadataItem(
+            "Available from",
+            formatDate(
+                resource.availableFrom
+            )
+        ),
+
+        createMetadataItem(
+            "Available until",
+            formatDate(
+                resource.availableUntil
+            )
+        ),
+
+        createMetadataItem(
             "File",
             resource.fileName ||
             (
@@ -1278,7 +1629,8 @@ function renderResources(
             : [];
 
     if (
-        safeResources.length === 0
+        safeResources.length ===
+            0
     ) {
 
         if (
@@ -1361,10 +1713,6 @@ function resetFormPresentation() {
     elements.form.dataset.documentId =
         "";
 
-    /*
-     * Identity fields are disabled only while editing.
-     * They must always be restored before another form mode opens.
-     */
     setFieldDisabled(
         "program_code",
         false
@@ -1378,6 +1726,41 @@ function resetFormPresentation() {
     setFieldDisabled(
         "version",
         false
+    );
+
+    setFieldRequired(
+        "module_number",
+        false
+    );
+
+    setFieldRequired(
+        "session_number",
+        false
+    );
+
+    setFieldValue(
+        "release_policy",
+        ""
+    );
+
+    setFieldValue(
+        "module_number",
+        ""
+    );
+
+    setFieldValue(
+        "session_number",
+        ""
+    );
+
+    setFieldValue(
+        "available_from",
+        ""
+    );
+
+    setFieldValue(
+        "available_until",
+        ""
     );
 
     const fileField =
@@ -1436,7 +1819,8 @@ function openForm({
     resetFormPresentation();
 
     const normalizedMode =
-        mode === "edit" &&
+        mode ===
+            "edit" &&
         resource
             ? "edit"
             : "create";
@@ -1457,7 +1841,8 @@ function openForm({
     ) {
 
         elements.formHeading.textContent =
-            normalizedMode === "edit"
+            normalizedMode ===
+                "edit"
                 ? "Edit Learning Resource Draft"
                 : "Create Learning Resource Draft";
 
@@ -1518,6 +1903,35 @@ function openForm({
             resource.displayOrder
         );
 
+        setFieldValue(
+            "release_policy",
+            resource.releasePolicy
+        );
+
+        setFieldValue(
+            "module_number",
+            resource.moduleNumber
+        );
+
+        setFieldValue(
+            "session_number",
+            resource.sessionNumber
+        );
+
+        setFieldValue(
+            "available_from",
+            formatDateTimeLocal(
+                resource.availableFrom
+            )
+        );
+
+        setFieldValue(
+            "available_until",
+            formatDateTimeLocal(
+                resource.availableUntil
+            )
+        );
+
         setFieldChecked(
             "preview_allowed",
             resource.previewAllowed
@@ -1549,6 +1963,8 @@ function openForm({
         );
 
     }
+
+    updateReleasePolicyPresentation();
 
     elements.formPanel.hidden =
         false;
@@ -1653,7 +2069,11 @@ const LearningResourceRenderer =
 
         formatDate,
 
-        formatFileSize
+        formatDateTimeLocal,
+
+        formatFileSize,
+
+        updateReleasePolicyPresentation
 
     });
 
@@ -1691,6 +2111,10 @@ export {
 
     formatDate,
 
-    formatFileSize
+    formatDateTimeLocal,
+
+    formatFileSize,
+
+    updateReleasePolicyPresentation
 
 };

@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File       : learning-resource-controller.js
-   Version    : 1.1.0
+   Version    : 1.2.0
    Status     : ACTIVE
    Authority  : Admin Portal
 
@@ -21,8 +21,20 @@
    • Coordinate protected-resource upload
    • Coordinate publication and withdrawal
    • Coordinate filtering and version-history display
+   • Read governed release metadata from the Admin form
+   • Normalize availability-window values
    • Delegate rendering to LearningResourceRenderer
    • Keep Firestore and Storage logic outside the controller
+
+   Non-Responsibilities
+   ----------------------------------------------------------
+   • Learner identity resolution
+   • Learner entitlement resolution
+   • Learner release-policy evaluation
+   • Firestore mutation implementation
+   • Storage mutation implementation
+   • Contract governance
+   • HTML rendering
 
    Governance
    ----------------------------------------------------------
@@ -33,6 +45,26 @@
    • External resources require an external URL
    • Withdrawn resources remain available for audit history
    • Client-side deletion is prohibited
+   • ADR-019 governs protected resource delivery
+   • ADR-020 governs release-policy metadata
+   • Admin records release metadata
+   • Learning Resource Resolver evaluates learner visibility
+   • Contract remains the validation authority
+
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Added release_policy form handling
+   • Added module_number and session_number form handling
+   • Added available_from and available_until handling
+   • Added safe datetime-local to ISO conversion
+   • Added availability-window consistency validation
+   • Added release-governance information to resource details
+   • Preserved all existing controller APIs and lifecycle flows
+
+   v1.1.0
+   • Established governed administrative lifecycle orchestration
+   • Added filtering, upload, publication, withdrawal and history
 ========================================================== */
 
 import {
@@ -62,15 +94,23 @@ import {
 } from "./ui/learning-resource-renderer.js";
 
 
+/* ==========================================================
+   MODULE METADATA
+========================================================== */
+
 const MODULE_NAME =
     "LearningResourceController";
 
 const MODULE_VERSION =
-    "1.1.0";
+    "1.2.0";
 
 const SEARCH_DEBOUNCE_MS =
     250;
 
+
+/* ==========================================================
+   STATE
+========================================================== */
 
 const state = {
 
@@ -154,7 +194,7 @@ function getFieldValue(
 
     return field
         ? String(
-            field.value || ""
+            field.value ?? ""
         ).trim()
         : "";
 
@@ -200,7 +240,7 @@ function normalizeText(
 ) {
 
     return String(
-        value || ""
+        value ?? ""
     ).trim();
 
 }
@@ -217,6 +257,81 @@ function normalizeLowercase(
 }
 
 
+function normalizeNullablePositiveInteger(
+    value
+) {
+
+    const normalizedText =
+        normalizeText(
+            value
+        );
+
+    if (
+        !normalizedText
+    ) {
+
+        return null;
+
+    }
+
+    const normalizedNumber =
+        Number(
+            normalizedText
+        );
+
+    if (
+        !Number.isInteger(
+            normalizedNumber
+        ) ||
+        normalizedNumber < 1
+    ) {
+
+        return null;
+
+    }
+
+    return normalizedNumber;
+
+}
+
+
+function normalizeNullableIsoDateTime(
+    value
+) {
+
+    const normalizedValue =
+        normalizeText(
+            value
+        );
+
+    if (
+        !normalizedValue
+    ) {
+
+        return null;
+
+    }
+
+    const date =
+        new Date(
+            normalizedValue
+        );
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return null;
+
+    }
+
+    return date.toISOString();
+
+}
+
+
 function getErrorMessage(
     error,
     fallback =
@@ -229,6 +344,93 @@ function getErrorMessage(
         ) ||
         fallback
     );
+
+}
+
+
+/* ==========================================================
+   RELEASE-GOVERNANCE HELPERS
+========================================================== */
+
+function validateAvailabilityWindow(
+    availableFrom,
+    availableUntil
+) {
+
+    if (
+        !availableFrom ||
+        !availableUntil
+    ) {
+
+        return Object.freeze({
+
+            valid:
+                true,
+
+            message:
+                ""
+
+        });
+
+    }
+
+    const fromDate =
+        new Date(
+            availableFrom
+        );
+
+    const untilDate =
+        new Date(
+            availableUntil
+        );
+
+    if (
+        Number.isNaN(
+            fromDate.getTime()
+        ) ||
+        Number.isNaN(
+            untilDate.getTime()
+        )
+    ) {
+
+        return Object.freeze({
+
+            valid:
+                false,
+
+            message:
+                "The learning-resource availability window is invalid."
+
+        });
+
+    }
+
+    if (
+        untilDate.getTime() <=
+        fromDate.getTime()
+    ) {
+
+        return Object.freeze({
+
+            valid:
+                false,
+
+            message:
+                "Available Until must be later than Available From."
+
+        });
+
+    }
+
+    return Object.freeze({
+
+        valid:
+            true,
+
+        message:
+            ""
+
+    });
 
 }
 
@@ -253,7 +455,9 @@ function setBusy(
             "learning-resource-management"
         );
 
-    if (!page) {
+    if (
+        !page
+    ) {
 
         return;
 
@@ -493,6 +697,22 @@ function readResourceForm(
     form
 ) {
 
+    const availableFrom =
+        normalizeNullableIsoDateTime(
+            getFieldValue(
+                form,
+                "available_from"
+            )
+        );
+
+    const availableUntil =
+        normalizeNullableIsoDateTime(
+            getFieldValue(
+                form,
+                "available_until"
+            )
+        );
+
     return {
 
         program_code:
@@ -564,6 +784,36 @@ function readResourceForm(
                 0
             ),
 
+        release_policy:
+            normalizeLowercase(
+                getFieldValue(
+                    form,
+                    "release_policy"
+                )
+            ),
+
+        module_number:
+            normalizeNullablePositiveInteger(
+                getFieldValue(
+                    form,
+                    "module_number"
+                )
+            ),
+
+        session_number:
+            normalizeNullablePositiveInteger(
+                getFieldValue(
+                    form,
+                    "session_number"
+                )
+            ),
+
+        available_from:
+            availableFrom,
+
+        available_until:
+            availableUntil,
+
         preview_allowed:
             getFieldChecked(
                 form,
@@ -618,12 +868,34 @@ async function handleFormSubmit(
             form.dataset.documentId
         );
 
+    const rawInput =
+        readResourceForm(
+            form
+        );
+
+    const availabilityValidation =
+        validateAvailabilityWindow(
+            rawInput.available_from,
+            rawInput.available_until
+        );
+
+    if (
+        !availabilityValidation.valid
+    ) {
+
+        LearningResourceRenderer.setStatus(
+            availabilityValidation.message,
+            "error"
+        );
+
+        return;
+
+    }
+
     const normalizedInput =
         LearningResourceContract
             .normalizeResourceInput(
-                readResourceForm(
-                    form
-                )
+                rawInput
             );
 
     const validation =
@@ -652,7 +924,8 @@ async function handleFormSubmit(
     );
 
     LearningResourceRenderer.setStatus(
-        mode === "edit"
+        mode ===
+            "edit"
             ? "Saving learning-resource draft…"
             : "Creating learning-resource draft…",
         "info"
@@ -664,7 +937,8 @@ async function handleFormSubmit(
             existingDocumentId;
 
         if (
-            mode === "edit"
+            mode ===
+            "edit"
         ) {
 
             if (
@@ -752,7 +1026,8 @@ async function handleFormSubmit(
         LearningResourceRenderer.closeForm();
 
         LearningResourceRenderer.setStatus(
-            mode === "edit"
+            mode ===
+                "edit"
                 ? "Learning-resource draft updated."
                 : "Learning-resource draft created.",
             "success"
@@ -852,7 +1127,8 @@ async function handleEditResource(
         }
 
         if (
-            resource.status !== "draft"
+            resource.status !==
+                "draft"
         ) {
 
             throw new Error(
@@ -967,27 +1243,32 @@ function validatePublicationReadiness(
         !resource
     ) {
 
-        return {
+        return Object.freeze({
+
             valid:
                 false,
 
             message:
                 "Learning resource was not found."
-        };
+
+        });
 
     }
 
     if (
-        resource.status !== "draft"
+        resource.status !==
+            "draft"
     ) {
 
-        return {
+        return Object.freeze({
+
             valid:
                 false,
 
             message:
                 "Only draft resources can be published."
-        };
+
+        });
 
     }
 
@@ -1005,13 +1286,15 @@ function validatePublicationReadiness(
         )
     ) {
 
-        return {
+        return Object.freeze({
+
             valid:
                 false,
 
             message:
                 "Upload the protected learning-resource file before publication."
-        };
+
+        });
 
     }
 
@@ -1027,23 +1310,43 @@ function validatePublicationReadiness(
         )
     ) {
 
-        return {
+        return Object.freeze({
+
             valid:
                 false,
 
             message:
                 "Add the external delivery URL before publication."
-        };
+
+        });
 
     }
 
-    return {
+    const availabilityValidation =
+        validateAvailabilityWindow(
+            resource.availableFrom ||
+                resource.available_from,
+            resource.availableUntil ||
+                resource.available_until
+        );
+
+    if (
+        !availabilityValidation.valid
+    ) {
+
+        return availabilityValidation;
+
+    }
+
+    return Object.freeze({
+
         valid:
             true,
 
         message:
             ""
-    };
+
+    });
 
 }
 
@@ -1103,8 +1406,8 @@ async function handlePublishResource(
         const confirmed =
             window.confirm(
                 "Publish this learning resource? " +
-                "The published version and its delivery asset " +
-                "will become immutable."
+                "The published version, delivery asset, and release " +
+                "metadata will become immutable."
             );
 
         if (
@@ -1187,7 +1490,8 @@ async function handleWithdrawResource(
         );
 
     if (
-        reason === null
+        reason ===
+            null
     ) {
 
         return;
@@ -1315,6 +1619,29 @@ async function handleViewResource(
 
         }
 
+        const releaseTargetParts =
+            [];
+
+        if (
+            resource.moduleNumber
+        ) {
+
+            releaseTargetParts.push(
+                `Module ${resource.moduleNumber}`
+            );
+
+        }
+
+        if (
+            resource.sessionNumber
+        ) {
+
+            releaseTargetParts.push(
+                `Session ${resource.sessionNumber}`
+            );
+
+        }
+
         LearningResourceRenderer.setStatus(
             [
 
@@ -1337,6 +1664,28 @@ async function handleViewResource(
                 `Delivery: ${
                     resource.deliveryType ||
                     "not configured"
+                }`,
+
+                `Release: ${
+                    resource.releasePolicy ||
+                    "not configured"
+                }`,
+
+                `Target: ${
+                    releaseTargetParts.join(
+                        ", "
+                    ) ||
+                    "not specified"
+                }`,
+
+                `Available from: ${
+                    resource.availableFrom ||
+                    "not scheduled"
+                }`,
+
+                `Available until: ${
+                    resource.availableUntil ||
+                    "no scheduled expiry"
                 }`,
 
                 `File: ${
@@ -1548,7 +1897,8 @@ async function handleResourceAction(
         ];
 
     if (
-        typeof handler !== "function"
+        typeof handler !==
+            "function"
     ) {
 
         console.warn(

@@ -53,7 +53,7 @@
        AGILE AI UNIVERSITY
        LEARNING RESOURCE MANAGEMENT
 
-       Version : 1.1.0
+       Version : 1.2.0
        Status  : ADMIN AUTHORITY
 
        Governance
@@ -74,6 +74,15 @@
 
        Change History
        -----------------------------------------------------
+       v1.2.0
+       • Added governed learner-resource access assignment panel
+       • Added existing-alumni pending-activation workflow fields
+       • Added activated-learner assignment workflow fields
+       • Added access, identity, release and permission controls
+       • Added assignment audit and identity-governance guidance
+       • Preserved all existing resource-management IDs and flows
+       • Preserved existing application bootstrap and imports
+
        v1.1.0
        • Added governed release-policy metadata controls
        • Added optional module and session targeting
@@ -895,6 +904,626 @@
           </div>
 
         </section>
+
+
+        <!-- LEARNER RESOURCE ACCESS ASSIGNMENT -->
+        <section
+          id="learner-resource-access-panel"
+          class="section hidden"
+          aria-labelledby="learner-resource-access-heading"
+          aria-hidden="true"
+        >
+
+          <div class="card">
+
+            <div class="learning-resource-form-header">
+
+              <div>
+
+                <div
+                  id="learner-resource-access-heading"
+                  class="card-title"
+                >
+                  Assign Learning Resource
+                </div>
+
+                <p>
+                  Grant a published learning resource to an existing
+                  alumnus, existing learner, or authenticated learner.
+                </p>
+
+              </div>
+
+              <button
+                id="learner-resource-access-cancel"
+                class="btn btn-secondary"
+                type="button"
+              >
+                Close
+              </button>
+
+            </div>
+
+            <div
+              id="learner-resource-access-resource-summary"
+              class="learning-resource-access-resource-summary"
+              aria-live="polite"
+            ></div>
+
+            <form
+              id="learner-resource-access-form"
+              data-resource-document-id=""
+              data-resource-id=""
+              data-program-code=""
+              data-resource-version=""
+              novalidate
+            >
+
+              <!-- RESOURCE AUTHORITY -->
+              <fieldset class="learning-resource-permissions">
+
+                <legend>Selected Resource</legend>
+
+                <div class="learning-resource-form-grid">
+
+                  <div class="form-group learning-resource-form-wide">
+
+                    <label for="learner-resource-access-resource-title">
+                      Resource
+                    </label>
+
+                    <input
+                      id="learner-resource-access-resource-title"
+                      name="resource_title"
+                      type="text"
+                      readonly
+                      aria-readonly="true"
+                    />
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-program-code">
+                      Programme Code
+                    </label>
+
+                    <input
+                      id="learner-resource-access-program-code"
+                      name="program_code"
+                      type="text"
+                      readonly
+                      aria-readonly="true"
+                    />
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-resource-id">
+                      Resource ID
+                    </label>
+
+                    <input
+                      id="learner-resource-access-resource-id"
+                      name="resource_id"
+                      type="text"
+                      readonly
+                      aria-readonly="true"
+                    />
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-resource-version">
+                      Version
+                    </label>
+
+                    <input
+                      id="learner-resource-access-resource-version"
+                      name="resource_version"
+                      type="number"
+                      min="1"
+                      step="1"
+                      readonly
+                      aria-readonly="true"
+                    />
+
+                  </div>
+
+                </div>
+
+              </fieldset>
+
+              <!-- LEARNER IDENTITY -->
+              <fieldset class="learning-resource-permissions">
+
+                <legend>Learner Identity</legend>
+
+                <div class="learning-resource-form-grid">
+
+                  <div class="form-group learning-resource-form-wide">
+
+                    <label for="learner-resource-access-email">
+                      Learner Email
+                    </label>
+
+                    <input
+                      id="learner-resource-access-email"
+                      name="learner_email"
+                      type="email"
+                      required
+                      maxlength="254"
+                      autocomplete="email"
+                      placeholder="learner@example.com"
+                    />
+
+                    <small>
+                      Enter the verified email associated with the learner's
+                      credential or authenticated portal account.
+                    </small>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-credential-id">
+                      Credential ID
+                    </label>
+
+                    <input
+                      id="learner-resource-access-credential-id"
+                      name="credential_id"
+                      type="text"
+                      maxlength="40"
+                      autocomplete="off"
+                      placeholder="AAU-XXXXXXXX"
+                    />
+
+                    <small>
+                      Required for existing alumni who have not logged in.
+                    </small>
+
+                  </div>
+
+                  <div class="form-group learning-resource-form-wide">
+
+                    <label for="learner-resource-access-learner-uid">
+                      Learner UID
+                    </label>
+
+                    <input
+                      id="learner-resource-access-learner-uid"
+                      name="learner_uid"
+                      type="text"
+                      maxlength="128"
+                      autocomplete="off"
+                      placeholder="Leave empty before first login"
+                    />
+
+                    <small>
+                      Leave empty for an alumnus who has not logged in.
+                      After first login, the trusted activation workflow
+                      binds the Firebase UID.
+                    </small>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-identity-source">
+                      Identity Source
+                    </label>
+
+                    <select
+                      id="learner-resource-access-identity-source"
+                      name="identity_source"
+                      required
+                    >
+
+                      <option value="">
+                        Select identity source
+                      </option>
+
+                      <option value="historical_credential">
+                        Historical Credential
+                      </option>
+
+                      <option value="authenticated_identity">
+                        Authenticated Identity
+                      </option>
+
+                      <option value="registration">
+                        Registration
+                      </option>
+
+                      <option value="enrollment">
+                        Enrolment
+                      </option>
+
+                      <option value="admin_verified">
+                        Admin Verified
+                      </option>
+
+                      <option value="migration">
+                        Migration
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-identity-status">
+                      Identity Status
+                    </label>
+
+                    <select
+                      id="learner-resource-access-identity-status"
+                      name="identity_status"
+                      required
+                    >
+
+                      <option value="">
+                        Select identity status
+                      </option>
+
+                      <option value="pending_activation">
+                        Pending Activation
+                      </option>
+
+                      <option value="activated">
+                        Activated
+                      </option>
+
+                      <option value="reconciliation_required">
+                        Reconciliation Required
+                      </option>
+
+                      <option value="blocked">
+                        Blocked
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                </div>
+
+              </fieldset>
+
+              <!-- ACCESS GOVERNANCE -->
+              <fieldset class="learning-resource-permissions">
+
+                <legend>Access Governance</legend>
+
+                <div class="learning-resource-form-grid">
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-status">
+                      Access Status
+                    </label>
+
+                    <select
+                      id="learner-resource-access-status"
+                      name="access_status"
+                      required
+                    >
+
+                      <option value="">
+                        Select access status
+                      </option>
+
+                      <option value="pending_activation">
+                        Pending Activation
+                      </option>
+
+                      <option value="active">
+                        Active
+                      </option>
+
+                      <option value="suspended">
+                        Suspended
+                      </option>
+
+                      <option value="revoked">
+                        Revoked
+                      </option>
+
+                      <option value="expired">
+                        Expired
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-type">
+                      Access Type
+                    </label>
+
+                    <select
+                      id="learner-resource-access-type"
+                      name="access_type"
+                      required
+                    >
+
+                      <option value="">
+                        Select access type
+                      </option>
+
+                      <option value="individual_licensed">
+                        Individual Licensed
+                      </option>
+
+                      <option value="program_entitlement">
+                        Programme Entitlement
+                      </option>
+
+                      <option value="alumni_entitlement">
+                        Alumni Entitlement
+                      </option>
+
+                      <option value="cohort_assignment">
+                        Cohort Assignment
+                      </option>
+
+                      <option value="enterprise_assignment">
+                        Enterprise Assignment
+                      </option>
+
+                      <option value="manual_exception">
+                        Manual Exception
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-release-status">
+                      Release Status
+                    </label>
+
+                    <select
+                      id="learner-resource-access-release-status"
+                      name="release_status"
+                      required
+                    >
+
+                      <option value="">
+                        Select release status
+                      </option>
+
+                      <option value="scheduled">
+                        Scheduled
+                      </option>
+
+                      <option value="released">
+                        Released
+                      </option>
+
+                      <option value="withheld">
+                        Withheld
+                      </option>
+
+                      <option value="expired">
+                        Expired
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-release-policy">
+                      Release Policy
+                    </label>
+
+                    <select
+                      id="learner-resource-access-release-policy"
+                      name="release_policy"
+                      required
+                    >
+
+                      <option value="">
+                        Select release policy
+                      </option>
+
+                      <option value="immediate">
+                        Immediate
+                      </option>
+
+                      <option value="on_activation">
+                        On Activation
+                      </option>
+
+                      <option value="on_enrollment">
+                        On Enrolment
+                      </option>
+
+                      <option value="pre_module">
+                        Before Module
+                      </option>
+
+                      <option value="post_module">
+                        After Module
+                      </option>
+
+                      <option value="post_session">
+                        After Session
+                      </option>
+
+                      <option value="scheduled">
+                        Scheduled
+                      </option>
+
+                      <option value="manual">
+                        Manual
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-module-number">
+                      Module Number
+                    </label>
+
+                    <input
+                      id="learner-resource-access-module-number"
+                      name="module_number"
+                      type="number"
+                      min="1"
+                      step="1"
+                      inputmode="numeric"
+                      placeholder="Optional"
+                    />
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-session-number">
+                      Session Number
+                    </label>
+
+                    <input
+                      id="learner-resource-access-session-number"
+                      name="session_number"
+                      type="number"
+                      min="1"
+                      step="1"
+                      inputmode="numeric"
+                      placeholder="Optional"
+                    />
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-available-from">
+                      Available From
+                    </label>
+
+                    <input
+                      id="learner-resource-access-available-from"
+                      name="available_from"
+                      type="datetime-local"
+                    />
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <label for="learner-resource-access-available-until">
+                      Available Until
+                    </label>
+
+                    <input
+                      id="learner-resource-access-available-until"
+                      name="available_until"
+                      type="datetime-local"
+                    />
+
+                  </div>
+
+                </div>
+
+              </fieldset>
+
+              <!-- DELIVERY PERMISSIONS -->
+              <fieldset class="learning-resource-permissions">
+
+                <legend>Delivery Permissions</legend>
+
+                <label class="learning-resource-checkbox">
+
+                  <input
+                    name="preview_allowed"
+                    type="checkbox"
+                  />
+
+                  <span>Preview allowed</span>
+
+                </label>
+
+                <label class="learning-resource-checkbox">
+
+                  <input
+                    name="download_allowed"
+                    type="checkbox"
+                  />
+
+                  <span>Download allowed</span>
+
+                </label>
+
+                <p>
+                  Assignment permissions cannot exceed the permissions of
+                  the published learning-resource record.
+                </p>
+
+              </fieldset>
+
+              <!-- IDENTITY GOVERNANCE NOTICE -->
+              <div class="learning-resource-access-governance">
+
+                <p>
+                  <strong>Existing alumnus before first login:</strong>
+                  provide the verified email and Credential ID, leave
+                  Learner UID empty, and use Pending Activation.
+                </p>
+
+                <p>
+                  <strong>Activated learner:</strong>
+                  provide the verified email and Firebase Learner UID, and
+                  use Activated identity with Active access.
+                </p>
+
+                <p>
+                  The Admin Portal does not bind a pending record to a
+                  learner UID. First-login identity binding is performed by
+                  the trusted activation and reconciliation workflow.
+                </p>
+
+              </div>
+
+              <div class="learning-resource-form-actions">
+
+                <button
+                  id="learner-resource-access-submit"
+                  type="submit"
+                  class="btn btn-primary"
+                >
+                  Grant Access
+                </button>
+
+                <button
+                  id="learner-resource-access-cancel-secondary"
+                  type="button"
+                  class="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+
+        </section>
+
 
         <!-- GOVERNANCE NOTICE -->
         <div class="section">

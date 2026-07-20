@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-renderer.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -22,6 +22,8 @@
    • Populate the resource form for draft editing
    • Populate governed release-policy metadata
    • Reset form presentation safely between modes
+   • Render learner-resource assignment controls
+   • Populate selected published-resource assignment metadata
    • Control presentation visibility and accessibility state
 
    Non-Responsibilities
@@ -50,6 +52,15 @@
 
    Change History
    ----------------------------------------------------------
+   v1.3.0
+   • Added published-resource learner-assignment action
+   • Added governed learner-resource access panel rendering
+   • Added existing-alumni pending-activation defaults
+   • Added activated-learner identity-state presentation
+   • Added assignment release-policy presentation controls
+   • Added safe assignment-form reset, open and close APIs
+   • Preserved existing resource renderer APIs and behaviour
+
    v1.2.0
    • Added release-policy form population
    • Added module and session metadata population
@@ -75,7 +86,7 @@ const MODULE_NAME =
     "LearningResourceRenderer";
 
 const MODULE_VERSION =
-    "1.2.0";
+    "1.3.0";
 
 const ALLOWED_STATUS_TYPES =
     Object.freeze([
@@ -167,6 +178,26 @@ function initialize() {
         formHeading:
             document.getElementById(
                 "learning-resource-form-heading"
+            ),
+
+        accessPanel:
+            document.getElementById(
+                "learner-resource-access-panel"
+            ),
+
+        accessForm:
+            document.getElementById(
+                "learner-resource-access-form"
+            ),
+
+        accessHeading:
+            document.getElementById(
+                "learner-resource-access-heading"
+            ),
+
+        accessResourceSummary:
+            document.getElementById(
+                "learner-resource-access-resource-summary"
             )
 
     };
@@ -221,7 +252,22 @@ function initialize() {
 
     }
 
+    if (
+        elements.accessPanel
+    ) {
+
+        elements.accessPanel.setAttribute(
+            "aria-hidden",
+            elements.accessPanel.hidden
+                ? "true"
+                : "false"
+        );
+
+    }
+
     bindReleasePolicyPresentation();
+
+    bindAccessPresentation();
 
     initialized =
         true;
@@ -434,6 +480,93 @@ function setFieldRequired(
 }
 
 
+function getAccessFormField(
+    fieldName
+) {
+
+    initialize();
+
+    return (
+        elements.accessForm?.elements?.namedItem(
+            fieldName
+        ) ||
+        null
+    );
+
+}
+
+
+function setAccessFieldValue(
+    fieldName,
+    value
+) {
+
+    const field =
+        getAccessFormField(
+            fieldName
+        );
+
+    if (
+        !field
+    ) {
+
+        return;
+
+    }
+
+    field.value =
+        value ?? "";
+
+}
+
+
+function setAccessFieldChecked(
+    fieldName,
+    checked
+) {
+
+    const field =
+        getAccessFormField(
+            fieldName
+        );
+
+    if (
+        !field
+    ) {
+
+        return;
+
+    }
+
+    field.checked =
+        checked === true;
+
+}
+
+
+function setAccessFieldRequired(
+    fieldName,
+    required
+) {
+
+    const field =
+        getAccessFormField(
+            fieldName
+        );
+
+    if (
+        !field
+    ) {
+
+        return;
+
+    }
+
+    field.required =
+        required === true;
+
+}
+
 /* ==========================================================
    FORMATTERS
 ========================================================== */
@@ -603,18 +736,6 @@ function formatDateTimeLocal(
                 )
             );
 
-        if (
-            !partMap.year ||
-            !partMap.month ||
-            !partMap.day ||
-            !partMap.hour ||
-            !partMap.minute
-        ) {
-
-            return "";
-
-        }
-
         return (
             `${partMap.year}-${partMap.month}-${partMap.day}` +
             `T${partMap.hour}:${partMap.minute}`
@@ -675,18 +796,11 @@ function formatFileSize(
         size /=
             1024;
 
-        unitIndex +=
-            1;
+        unitIndex++;
 
     }
 
-    return (
-        `${size.toFixed(
-            unitIndex === 0
-                ? 0
-                : 1
-        )} ${units[unitIndex]}`
-    );
+    return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
 
 }
 
@@ -710,9 +824,7 @@ function formatReleaseTarget(
         sessionNumber
     ) {
 
-        return (
-            `Module ${moduleNumber}, Session ${sessionNumber}`
-        );
+        return `Module ${moduleNumber}, Session ${sessionNumber}`;
 
     }
 
@@ -720,9 +832,7 @@ function formatReleaseTarget(
         moduleNumber
     ) {
 
-        return (
-            `Module ${moduleNumber}`
-        );
+        return `Module ${moduleNumber}`;
 
     }
 
@@ -730,9 +840,7 @@ function formatReleaseTarget(
         sessionNumber
     ) {
 
-        return (
-            `Session ${sessionNumber}`
-        );
+        return `Session ${sessionNumber}`;
 
     }
 
@@ -806,6 +914,154 @@ function bindReleasePolicyPresentation() {
 
     releasePolicyField.dataset.rendererBound =
         "true";
+
+}
+
+
+/* ==========================================================
+   ACCESS PRESENTATION
+========================================================== */
+
+function updateAccessPresentation() {
+
+    initialize();
+
+    const learnerUid =
+        normalizeText(
+            getAccessFormField(
+                "learner_uid"
+            )?.value
+        );
+
+    const identitySource =
+        getAccessFormField(
+            "identity_source"
+        );
+
+    const identityStatus =
+        getAccessFormField(
+            "identity_status"
+        );
+
+    const accessStatus =
+        getAccessFormField(
+            "access_status"
+        );
+
+    const releasePolicy =
+        getAccessFormField(
+            "release_policy"
+        );
+
+    const credentialId =
+        getAccessFormField(
+            "credential_id"
+        );
+
+    if (
+        learnerUid
+    ) {
+
+        identitySource.value =
+            "authenticated_identity";
+
+        identityStatus.value =
+            "activated";
+
+        accessStatus.value =
+            "active";
+
+        if (
+            !releasePolicy.value
+        ) {
+
+            releasePolicy.value =
+                "immediate";
+
+        }
+
+        credentialId.required =
+            false;
+
+    }
+    else {
+
+        identitySource.value =
+            "historical_credential";
+
+        identityStatus.value =
+            "pending_activation";
+
+        accessStatus.value =
+            "pending_activation";
+
+        if (
+            !releasePolicy.value ||
+            releasePolicy.value ===
+                "immediate"
+        ) {
+
+            releasePolicy.value =
+                "on_activation";
+
+        }
+
+        credentialId.required =
+            true;
+
+    }
+
+}
+
+function bindAccessPresentation() {
+
+    const learnerUidField =
+        elements?.accessForm?.elements?.namedItem(
+            "learner_uid"
+        );
+
+    const identitySourceField =
+        elements?.accessForm?.elements?.namedItem(
+            "identity_source"
+        );
+
+    const releasePolicyField =
+        elements?.accessForm?.elements?.namedItem(
+            "release_policy"
+        );
+
+    [
+        learnerUidField,
+        identitySourceField,
+        releasePolicyField
+    ].forEach(
+        (
+            field
+        ) => {
+
+            if (
+                !field ||
+                field.dataset.rendererBound ===
+                    "true"
+            ) {
+
+                return;
+
+            }
+
+            field.addEventListener(
+                field ===
+                    learnerUidField
+                    ? "input"
+                    : "change",
+                updateAccessPresentation
+            );
+
+            field.dataset.rendererBound =
+                "true";
+
+        }
+    );
 
 }
 
@@ -1250,7 +1506,7 @@ function createResourceActions(
 
     if (
         resource.status ===
-        "draft"
+            "draft"
     ) {
 
         actions.append(
@@ -1310,8 +1566,27 @@ function createResourceActions(
 
     if (
         resource.status ===
-        "published"
+            "published"
     ) {
+
+        actions.append(
+            createActionButton({
+                label:
+                    "Assign learner",
+
+                action:
+                    "assign-resource",
+
+                documentId:
+                    resource.documentId,
+
+                style:
+                    "primary",
+
+                title:
+                    "Grant this published resource to an alumnus or learner."
+            })
+        );
 
         actions.append(
             createActionButton({
@@ -1347,7 +1622,6 @@ function createResourceActions(
     return actions;
 
 }
-
 
 /* ==========================================================
    RESOURCE CARD
@@ -2010,7 +2284,6 @@ function openForm({
 
 }
 
-
 function closeForm() {
 
     initialize();
@@ -2032,6 +2305,383 @@ function closeForm() {
     );
 
     resetFormPresentation();
+
+}
+
+
+/* ==========================================================
+   ACCESS FORM RESET
+========================================================== */
+
+function resetAccessFormPresentation() {
+
+    initialize();
+
+    if (
+        !elements.accessForm
+    ) {
+
+        return;
+
+    }
+
+    elements.accessForm.reset();
+
+    elements.accessForm.dataset.resourceDocumentId =
+        "";
+
+    elements.accessForm.dataset.resourceId =
+        "";
+
+    elements.accessForm.dataset.programCode =
+        "";
+
+    elements.accessForm.dataset.resourceVersion =
+        "";
+
+    setAccessFieldValue(
+        "resource_title",
+        ""
+    );
+
+    setAccessFieldValue(
+        "program_code",
+        ""
+    );
+
+    setAccessFieldValue(
+        "resource_id",
+        ""
+    );
+
+    setAccessFieldValue(
+        "resource_version",
+        ""
+    );
+
+    setAccessFieldValue(
+        "learner_email",
+        ""
+    );
+
+    setAccessFieldValue(
+        "credential_id",
+        ""
+    );
+
+    setAccessFieldValue(
+        "learner_uid",
+        ""
+    );
+
+    setAccessFieldValue(
+        "identity_source",
+        "historical_credential"
+    );
+
+    setAccessFieldValue(
+        "identity_status",
+        "pending_activation"
+    );
+
+    setAccessFieldValue(
+        "access_status",
+        "pending_activation"
+    );
+
+    setAccessFieldValue(
+        "access_type",
+        "individual_licensed"
+    );
+
+    setAccessFieldValue(
+        "release_status",
+        "released"
+    );
+
+    setAccessFieldValue(
+        "release_policy",
+        "on_activation"
+    );
+
+    setAccessFieldValue(
+        "module_number",
+        ""
+    );
+
+    setAccessFieldValue(
+        "session_number",
+        ""
+    );
+
+    setAccessFieldValue(
+        "available_from",
+        ""
+    );
+
+    setAccessFieldValue(
+        "available_until",
+        ""
+    );
+
+    setAccessFieldChecked(
+        "preview_allowed",
+        false
+    );
+
+    setAccessFieldChecked(
+        "download_allowed",
+        false
+    );
+
+    if (
+        elements.accessResourceSummary
+    ) {
+
+        elements.accessResourceSummary.textContent =
+            "";
+
+    }
+
+    updateAccessPresentation();
+
+}
+
+
+/* ==========================================================
+   ACCESS FORM PRESENTATION
+========================================================== */
+
+function openAccessForm({
+    resource = null
+} = {}) {
+
+    initialize();
+
+    if (
+        !elements.accessPanel ||
+        !elements.accessForm ||
+        !resource
+    ) {
+
+        return;
+
+    }
+
+    resetAccessFormPresentation();
+
+    const documentId =
+        normalizeText(
+            resource.documentId
+        );
+
+    const resourceId =
+        normalizeText(
+            resource.resourceId
+        );
+
+    const programCode =
+        normalizeText(
+            resource.programCode
+        );
+
+    const version =
+        normalizeNullablePositiveInteger(
+            resource.version
+        ) ||
+        1;
+
+    elements.accessForm.dataset.resourceDocumentId =
+        documentId;
+
+    elements.accessForm.dataset.resourceId =
+        resourceId;
+
+    elements.accessForm.dataset.programCode =
+        programCode;
+
+    elements.accessForm.dataset.resourceVersion =
+        String(
+            version
+        );
+
+    setAccessFieldValue(
+        "resource_title",
+        resource.title ||
+        "Untitled resource"
+    );
+
+    setAccessFieldValue(
+        "program_code",
+        programCode
+    );
+
+    setAccessFieldValue(
+        "resource_id",
+        resourceId
+    );
+
+    setAccessFieldValue(
+        "resource_version",
+        version
+    );
+
+    setAccessFieldValue(
+        "release_policy",
+        resource.releasePolicy ===
+            "on_enrollment"
+            ? "on_enrollment"
+            : "on_activation"
+    );
+
+    setAccessFieldValue(
+        "module_number",
+        resource.moduleNumber
+    );
+
+        setAccessFieldValue(
+        "session_number",
+        resource.sessionNumber
+    );
+
+    setAccessFieldValue(
+        "available_from",
+        formatDateTimeLocal(
+            resource.availableFrom
+        )
+    );
+
+    setAccessFieldValue(
+        "available_until",
+        formatDateTimeLocal(
+            resource.availableUntil
+        )
+    );
+
+    setAccessFieldChecked(
+        "preview_allowed",
+        resource.previewAllowed ===
+            true
+    );
+
+    setAccessFieldChecked(
+        "download_allowed",
+        resource.downloadAllowed ===
+            true
+    );
+
+    if (
+        elements.accessHeading
+    ) {
+
+        elements.accessHeading.textContent =
+            "Assign Learning Resource to Learner";
+
+    }
+
+    if (
+        elements.accessResourceSummary
+    ) {
+
+        elements.accessResourceSummary.textContent =
+            `${
+                resource.title ||
+                "Untitled resource"
+            } · ${
+                programCode ||
+                "No programme"
+            } · ${
+                resourceId ||
+                "No resource ID"
+            } · v${version}`;
+
+    }
+
+    updateAccessPresentation();
+
+    elements.accessPanel.hidden =
+        false;
+
+    elements.accessPanel.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    elements.accessPanel.scrollIntoView({
+        behavior:
+            "smooth",
+
+        block:
+            "start"
+    });
+
+    window.requestAnimationFrame(
+        () => {
+
+            const preferredField =
+                getAccessFormField(
+                    "learner_email"
+                );
+
+            if (
+                preferredField &&
+                typeof preferredField.focus ===
+                    "function"
+            ) {
+
+                preferredField.focus();
+
+                return;
+
+            }
+
+            const firstEditableField =
+                Array
+                    .from(
+                        elements.accessForm.elements
+                    )
+                    .find(
+                        (
+                            field
+                        ) => (
+                            field &&
+                            !field.disabled &&
+                            field.type !==
+                                "hidden" &&
+                            typeof field.focus ===
+                                "function"
+                        )
+                    );
+
+            firstEditableField?.focus();
+
+        }
+    );
+
+}
+
+
+function closeAccessForm() {
+
+    initialize();
+
+    if (
+        !elements.accessPanel
+    ) {
+
+        return;
+
+    }
+
+    elements.accessPanel.hidden =
+        true;
+
+    elements.accessPanel.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    resetAccessFormPresentation();
 
 }
 
@@ -2064,6 +2714,16 @@ const LearningResourceRenderer =
         openForm,
 
         closeForm,
+
+        resetFormPresentation,
+
+        openAccessForm,
+
+        closeAccessForm,
+
+        resetAccessFormPresentation,
+
+        updateAccessPresentation,
 
         formatLabel,
 
@@ -2106,6 +2766,16 @@ export {
     openForm,
 
     closeForm,
+
+    resetFormPresentation,
+
+    openAccessForm,
+
+    closeAccessForm,
+
+    resetAccessFormPresentation,
+
+    updateAccessPresentation,
 
     formatLabel,
 

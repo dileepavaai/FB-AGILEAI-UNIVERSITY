@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File       : learning-resource-controller.js
-   Version    : 1.2.0
+   Version    : 1.3.0
    Status     : ACTIVE
    Authority  : Admin Portal
 
@@ -21,6 +21,7 @@
    • Coordinate protected-resource upload
    • Coordinate publication and withdrawal
    • Coordinate filtering and version-history display
+   • Coordinate published-resource learner assignment
    • Read governed release metadata from the Admin form
    • Normalize availability-window values
    • Delegate rendering to LearningResourceRenderer
@@ -28,7 +29,7 @@
 
    Non-Responsibilities
    ----------------------------------------------------------
-   • Learner identity resolution
+   • Learner identity creation
    • Learner entitlement resolution
    • Learner release-policy evaluation
    • Firestore mutation implementation
@@ -53,6 +54,14 @@
 
    Change History
    ----------------------------------------------------------
+   v1.3.0
+   • Added published-resource learner-assignment orchestration
+   • Added governed learner_resource_access form submission
+   • Added lazy access-service loading to preserve page startup
+   • Added duplicate-safe assignment error handling
+   • Added access-panel cancel and authorization cleanup
+   • Preserved all existing resource lifecycle behaviour
+
    v1.2.0
    • Added release_policy form handling
    • Added module_number and session_number form handling
@@ -102,7 +111,7 @@ const MODULE_NAME =
     "LearningResourceController";
 
 const MODULE_VERSION =
-    "1.2.0";
+    "1.3.0";
 
 const SEARCH_DEBOUNCE_MS =
     250;
@@ -146,6 +155,12 @@ const state = {
     },
 
     searchTimer:
+        null,
+
+    accessService:
+        null,
+
+    accessServicePromise:
         null
 
 };
@@ -257,6 +272,17 @@ function normalizeLowercase(
 }
 
 
+function normalizeEmail(
+    value
+) {
+
+    return normalizeLowercase(
+        value
+    );
+
+}
+
+
 function normalizeNullablePositiveInteger(
     value
 ) {
@@ -348,6 +374,31 @@ function getErrorMessage(
 }
 
 
+function isValidEmail(
+    value
+) {
+
+    const normalizedEmail =
+        normalizeEmail(
+            value
+        );
+
+    if (
+        !normalizedEmail ||
+        normalizedEmail.length >
+            320
+    ) {
+
+        return false;
+
+    }
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        normalizedEmail
+    );
+
+}
+
 /* ==========================================================
    RELEASE-GOVERNANCE HELPERS
 ========================================================== */
@@ -431,6 +482,133 @@ function validateAvailabilityWindow(
             ""
 
     });
+
+}
+
+
+/* ==========================================================
+   LEARNER-ACCESS SERVICE LOADING
+========================================================== */
+
+async function getLearnerResourceAccessService() {
+
+    if (
+        state.accessService
+    ) {
+
+        return state.accessService;
+
+    }
+
+    if (
+        state.accessServicePromise
+    ) {
+
+        return state.accessServicePromise;
+
+    }
+
+    state.accessServicePromise =
+        import(
+            "./service/learner-resource-access-service.js"
+        )
+            .then(
+                (
+                    module
+                ) => {
+
+                    const service =
+                        (
+                            module
+                                .LearnerResourceAccessService
+                        ) ||
+                        (
+                            module
+                                .default
+                        ) ||
+                        null;
+
+                    if (
+                        !service ||
+                        typeof service !==
+                            "object"
+                    ) {
+
+                        throw new Error(
+                            "Learner resource access service is unavailable."
+                        );
+
+                    }
+
+                    state.accessService =
+                        service;
+
+                    return service;
+
+                }
+            )
+            .catch(
+                (
+                    error
+                ) => {
+
+                    state.accessServicePromise =
+                        null;
+
+                    throw error;
+
+                }
+            );
+
+    return state.accessServicePromise;
+
+}
+
+
+function getCreateAccessMethod(
+    service
+) {
+
+    if (
+        typeof service?.createAccess ===
+            "function"
+    ) {
+
+        return service
+            .createAccess
+            .bind(
+                service
+            );
+
+    }
+
+    if (
+        typeof service?.createAssignment ===
+            "function"
+    ) {
+
+        return service
+            .createAssignment
+            .bind(
+                service
+            );
+
+    }
+
+    if (
+        typeof service?.grantAccess ===
+            "function"
+    ) {
+
+        return service
+            .grantAccess
+            .bind(
+                service
+            );
+
+    }
+
+    return null;
 
 }
 
@@ -688,7 +866,6 @@ async function loadResources({
 
 }
 
-
 /* ==========================================================
    FORM DATA
 ========================================================== */
@@ -838,6 +1015,360 @@ function readResourceForm(
 
 
 /* ==========================================================
+   LEARNER-ACCESS FORM DATA
+========================================================== */
+
+function readAccessForm(
+    form
+) {
+
+    const resourceDocumentId =
+        normalizeText(
+            form?.dataset
+                ?.resourceDocumentId
+        );
+
+    const resourceId =
+        normalizeText(
+            form?.dataset
+                ?.resourceId ||
+            getFieldValue(
+                form,
+                "resource_id"
+            )
+        );
+
+    const programCode =
+        normalizeText(
+            form?.dataset
+                ?.programCode ||
+            getFieldValue(
+                form,
+                "program_code"
+            )
+        ).toUpperCase();
+
+    const resourceVersion =
+        normalizeNullablePositiveInteger(
+            form?.dataset
+                ?.resourceVersion ||
+            getFieldValue(
+                form,
+                "resource_version"
+            )
+        ) ||
+        1;
+
+    const learnerEmail =
+        normalizeEmail(
+            getFieldValue(
+                form,
+                "learner_email"
+            )
+        );
+
+    const learnerUid =
+        normalizeText(
+            getFieldValue(
+                form,
+                "learner_uid"
+            )
+        ) ||
+        null;
+
+    const credentialId =
+        normalizeText(
+            getFieldValue(
+                form,
+                "credential_id"
+            )
+        ).toUpperCase() ||
+        null;
+
+    const availableFrom =
+        normalizeNullableIsoDateTime(
+            getFieldValue(
+                form,
+                "available_from"
+            )
+        );
+
+    const availableUntil =
+        normalizeNullableIsoDateTime(
+            getFieldValue(
+                form,
+                "available_until"
+            )
+        );
+
+    const identitySource =
+        normalizeLowercase(
+            getFieldValue(
+                form,
+                "identity_source"
+            )
+        ) ||
+        (
+            learnerUid
+                ? "authenticated_identity"
+                : credentialId
+                    ? "historical_credential"
+                    : "verified_email"
+        );
+
+    const identityStatus =
+        learnerUid
+            ? "activated"
+            : (
+                normalizeLowercase(
+                    getFieldValue(
+                        form,
+                        "identity_status"
+                    )
+                ) ||
+                "pending_activation"
+            );
+
+    const accessStatus =
+        learnerUid
+            ? "active"
+            : (
+                normalizeLowercase(
+                    getFieldValue(
+                        form,
+                        "access_status"
+                    )
+                ) ||
+                "pending_activation"
+            );
+
+    return {
+
+        resource_document_id:
+            resourceDocumentId,
+
+        resource_id:
+            resourceId,
+
+        program_code:
+            programCode,
+
+        resource_version:
+            resourceVersion,
+
+        learner_uid:
+            learnerUid,
+
+        learner_email:
+            learnerEmail,
+
+        learner_email_normalized:
+            learnerEmail,
+
+        credential_id:
+            credentialId,
+
+        identity_source:
+            identitySource,
+
+        identity_status:
+            identityStatus,
+
+        access_status:
+            accessStatus,
+
+        access_type:
+            normalizeLowercase(
+                getFieldValue(
+                    form,
+                    "access_type"
+                )
+            ) ||
+            "individual_licensed",
+
+        release_status:
+            normalizeLowercase(
+                getFieldValue(
+                    form,
+                    "release_status"
+                )
+            ) ||
+            "released",
+
+        release_policy:
+            normalizeLowercase(
+                getFieldValue(
+                    form,
+                    "release_policy"
+                )
+            ) ||
+            (
+                learnerUid
+                    ? "immediate"
+                    : "on_activation"
+            ),
+
+        module_number:
+            normalizeNullablePositiveInteger(
+                getFieldValue(
+                    form,
+                    "module_number"
+                )
+            ),
+
+        session_number:
+            normalizeNullablePositiveInteger(
+                getFieldValue(
+                    form,
+                    "session_number"
+                )
+            ),
+
+        available_from:
+            availableFrom,
+
+        available_until:
+            availableUntil,
+
+        preview_allowed:
+            getFieldChecked(
+                form,
+                "preview_allowed"
+            ),
+
+        download_allowed:
+            getFieldChecked(
+                form,
+                "download_allowed"
+            )
+
+    };
+
+}
+
+
+/* ==========================================================
+   LEARNER-ACCESS VALIDATION
+========================================================== */
+
+function validateAccessInput(
+    input
+) {
+
+    const errors =
+        [];
+
+    if (
+        !input.resource_document_id
+    ) {
+
+        errors.push(
+            "The learning-resource document identity is missing."
+        );
+
+    }
+
+    if (
+        !input.resource_id
+    ) {
+
+        errors.push(
+            "The learning-resource ID is missing."
+        );
+
+    }
+
+    if (
+        !input.program_code
+    ) {
+
+        errors.push(
+            "The programme code is missing."
+        );
+
+    }
+
+    if (
+        !isValidEmail(
+            input.learner_email
+        )
+    ) {
+
+        errors.push(
+            "Enter a valid learner email address."
+        );
+
+    }
+
+    if (
+        input.identity_status ===
+            "activated" &&
+        !input.learner_uid
+    ) {
+
+        errors.push(
+            "An activated learner assignment requires a learner UID."
+        );
+
+    }
+
+    if (
+        input.learner_uid &&
+        input.identity_status !==
+            "activated"
+    ) {
+
+        errors.push(
+            "A learner UID requires activated identity status."
+        );
+
+    }
+
+    if (
+        !input.learner_uid &&
+        input.access_status ===
+            "active"
+    ) {
+
+        errors.push(
+            "Pending first-login assignments cannot use active access status."
+        );
+
+    }
+
+    const availabilityValidation =
+        validateAvailabilityWindow(
+            input.available_from,
+            input.available_until
+        );
+
+    if (
+        !availabilityValidation.valid
+    ) {
+
+        errors.push(
+            availabilityValidation.message
+        );
+
+    }
+
+    return Object.freeze({
+
+        valid:
+            errors.length ===
+                0,
+
+        errors:
+            Object.freeze(
+                errors
+            )
+
+    });
+
+}
+
+
+/* ==========================================================
    DRAFT CREATION AND UPDATE
 ========================================================== */
 
@@ -931,7 +1462,7 @@ async function handleFormSubmit(
         "info"
     );
 
-    try {
+        try {
 
         let documentId =
             existingDocumentId;
@@ -1026,11 +1557,16 @@ async function handleFormSubmit(
         LearningResourceRenderer.closeForm();
 
         LearningResourceRenderer.setStatus(
+
             mode ===
                 "edit"
+
                 ? "Learning-resource draft updated."
+
                 : "Learning-resource draft created.",
+
             "success"
+
         );
 
     }
@@ -1055,12 +1591,138 @@ async function handleFormSubmit(
     }
 
     await loadResources({
+
         preserveStatus:
             true
+
     });
 
 }
 
+
+/* ==========================================================
+   LEARNER RESOURCE ACCESS
+========================================================== */
+
+async function handleAccessFormSubmit(
+    event
+) {
+
+    event.preventDefault();
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
+        return;
+
+    }
+
+    const form =
+        event.currentTarget;
+
+    const input =
+        readAccessForm(
+            form
+        );
+
+    const validation =
+        validateAccessInput(
+            input
+        );
+
+    if (
+        !validation.valid
+    ) {
+
+        LearningResourceRenderer.setStatus(
+
+            validation.errors.join(
+                " "
+            ),
+
+            "error"
+
+        );
+
+        return;
+
+    }
+
+    setBusy(
+        true
+    );
+
+    LearningResourceRenderer.setStatus(
+
+        "Assigning learning resource...",
+
+        "info"
+
+    );
+
+    try {
+
+        const service =
+            await getLearnerResourceAccessService();
+
+        const createAccess =
+            getCreateAccessMethod(
+                service
+            );
+
+        if (
+            !createAccess
+        ) {
+
+            throw new Error(
+                "The learner-resource-access service does not expose a supported create method."
+            );
+
+        }
+
+        await createAccess(
+            input
+        );
+
+        LearningResourceRenderer.closeAccessForm();
+
+        LearningResourceRenderer.setStatus(
+
+            input.identity_status ===
+                "activated"
+
+                ? "Learning resource assigned successfully."
+
+                : "Learning resource staged successfully for first-login activation.",
+
+            "success"
+
+        );
+
+    }
+    catch (
+        error
+    ) {
+
+        handleError(
+            "Learner assignment failed",
+            error
+        );
+
+        return;
+
+    }
+    finally {
+
+        setBusy(
+            false
+        );
+
+    }
+
+}
 
 /* ==========================================================
    CREATE FORM
@@ -1466,6 +2128,86 @@ async function handlePublishResource(
 
 }
 
+/* ==========================================================
+   ASSIGN LEARNER
+========================================================== */
+
+async function handleAssignResource(
+    documentId
+) {
+
+    if (
+        state.busy ||
+        !state.authorized
+    ) {
+
+        return;
+
+    }
+
+    setBusy(
+        true
+    );
+
+    try {
+
+        const resource =
+            await LearningResourceService.getResource(
+                documentId
+            );
+
+        if (
+            !resource
+        ) {
+
+            throw new Error(
+                "Learning resource was not found."
+            );
+
+        }
+
+        if (
+            normalizeLowercase(
+                resource.status
+            ) !==
+            "published"
+        ) {
+
+            throw new Error(
+                "Only published learning resources can be assigned."
+            );
+
+        }
+
+        LearningResourceRenderer.openAccessForm({
+
+            resource
+
+        });
+
+        LearningResourceRenderer.clearStatus();
+
+    }
+    catch (
+        error
+    ) {
+
+        handleError(
+            "Unable to open learner assignment",
+            error
+        );
+
+    }
+    finally {
+
+        setBusy(
+            false
+        );
+
+    }
+
+}
+
 
 /* ==========================================================
    WITHDRAW RESOURCE
@@ -1508,8 +2250,11 @@ async function handleWithdrawResource(
     ) {
 
         LearningResourceRenderer.setStatus(
+
             "A withdrawal reason is required.",
+
             "error"
+
         );
 
         return;
@@ -1518,9 +2263,11 @@ async function handleWithdrawResource(
 
     const confirmed =
         window.confirm(
+
             "Withdraw this learning resource? " +
-            "Learner delivery will be disabled, while the " +
-            "resource remains available for governance history."
+            "Learner delivery will be disabled while " +
+            "the resource remains available for audit history."
+
         );
 
     if (
@@ -1536,20 +2283,29 @@ async function handleWithdrawResource(
     );
 
     LearningResourceRenderer.setStatus(
-        "Withdrawing learning resource…",
+
+        "Withdrawing learning resource...",
+
         "info"
+
     );
 
     try {
 
         await LearningResourcePublisher.withdrawResource(
+
             documentId,
+
             normalizedReason
+
         );
 
         LearningResourceRenderer.setStatus(
+
             "Learning resource withdrawn.",
+
             "success"
+
         );
 
     }
@@ -1574,8 +2330,10 @@ async function handleWithdrawResource(
     }
 
     await loadResources({
+
         preserveStatus:
             true
+
     });
 
 }
@@ -1643,6 +2401,7 @@ async function handleViewResource(
         }
 
         LearningResourceRenderer.setStatus(
+
             [
 
                 resource.title ||
@@ -1672,9 +2431,7 @@ async function handleViewResource(
                 }`,
 
                 `Target: ${
-                    releaseTargetParts.join(
-                        ", "
-                    ) ||
+                    releaseTargetParts.join(", ") ||
                     "not specified"
                 }`,
 
@@ -1701,7 +2458,9 @@ async function handleViewResource(
             ].join(
                 " | "
             ),
+
             "info"
+
         );
 
     }
@@ -1724,7 +2483,6 @@ async function handleViewResource(
     }
 
 }
-
 
 /* ==========================================================
    VERSION HISTORY
@@ -1877,6 +2635,12 @@ async function handleResourceAction(
                     documentId
                 ),
 
+        "assign-resource":
+            () =>
+                handleAssignResource(
+                    documentId
+                ),
+
         "withdraw-resource":
             () =>
                 handleWithdrawResource(
@@ -2006,6 +2770,29 @@ function bindEvents() {
     );
 
     getElement(
+        "learner-resource-access-form-cancel"
+    )?.addEventListener(
+        "click",
+        () =>
+            LearningResourceRenderer.closeAccessForm()
+    );
+
+    getElement(
+        "learner-resource-access-form-cancel-secondary"
+    )?.addEventListener(
+        "click",
+        () =>
+            LearningResourceRenderer.closeAccessForm()
+    );
+
+    getElement(
+        "learner-resource-access-form"
+    )?.addEventListener(
+        "submit",
+        handleAccessFormSubmit
+    );
+
+    getElement(
         "learning-resource-list"
     )?.addEventListener(
         "click",
@@ -2057,18 +2844,49 @@ function bindEvents() {
 
 }
 
-
 /* ==========================================================
    AUTHORIZATION
 ========================================================== */
 
-function deactivateAuthorizedView() {
+async function handleAuthorized(
+    authorizationContext = {}
+) {
+
+    state.authorized =
+        true;
+
+    state.authorizationContext =
+        authorizationContext;
+
+    LearningResourceRenderer.setAuthorized(
+        true
+    );
+
+    LearningResourceRenderer.clearStatus();
+
+    await loadResources();
+
+}
+
+
+function handleUnauthorized(
+    reason = "You are not authorized to manage learning resources."
+) {
 
     state.authorized =
         false;
 
+    state.authorizationContext =
+        null;
+
     state.resources =
         [];
+
+    state.accessService =
+        null;
+
+    state.accessServicePromise =
+        null;
 
     window.clearTimeout(
         state.searchTimer
@@ -2077,68 +2895,167 @@ function deactivateAuthorizedView() {
     state.searchTimer =
         null;
 
-    setBusy(
+    LearningResourceRenderer.closeForm();
+
+    LearningResourceRenderer.closeAccessForm();
+
+    LearningResourceRenderer.renderResources(
+        []
+    );
+
+    LearningResourceRenderer.renderSummary(
+        {}
+    );
+
+    LearningResourceRenderer.setAuthorized(
         false
     );
 
-    if (
-        state.initialized
-    ) {
-
-        LearningResourceRenderer.closeForm();
-
-        LearningResourceRenderer.renderResources(
-            []
-        );
-
-        LearningResourceRenderer.setStatus(
-            "Administrator authentication is required.",
-            "error"
-        );
-
-    }
+    LearningResourceRenderer.setStatus(
+        reason,
+        "error"
+    );
 
 }
 
 
-async function activateAuthorizedView() {
+/* ==========================================================
+   AUTHORIZATION READINESS
+========================================================== */
 
-    if (
-        state.authorized ||
-        !auth.currentUser
-    ) {
+function waitForAuthorization() {
 
-        return;
+    return new Promise(
+        (
+            resolve
+        ) => {
 
-    }
+            let completed =
+                false;
 
-    try {
+            const complete =
+                (
+                    result
+                ) => {
 
-        await requireAuthorizedAdmin();
+                    if (
+                        completed
+                    ) {
 
-        state.authorized =
-            true;
+                        return;
 
-        await loadResources();
+                    }
 
-        console.info(
-            `[${MODULE_NAME}] Initialized v${MODULE_VERSION}`
-        );
+                    completed =
+                        true;
 
-    }
-    catch (
-        error
-    ) {
+                    resolve(
+                        result
+                    );
 
-        state.authorized =
-            false;
+                };
 
-        handleError(
-            "Authorization failed",
-            error
-        );
+            window.addEventListener(
+                "admin:authorized",
+                (
+                    event
+                ) => {
 
-    }
+                    complete({
+
+                        authorized:
+                            true,
+
+                        context:
+                            event.detail ||
+                            {}
+
+                    });
+
+                },
+                {
+                    once:
+                        true
+                }
+            );
+
+            window.addEventListener(
+                "admin:unauthorized",
+                (
+                    event
+                ) => {
+
+                    complete({
+
+                        authorized:
+                            false,
+
+                        reason:
+                            event.detail?.reason ||
+                            "You are not authorized to manage learning resources."
+
+                    });
+
+                },
+                {
+                    once:
+                        true
+                }
+            );
+
+            const existingAuthorization =
+                window.AdminAuthorization ||
+                window.adminAuthorization ||
+                null;
+
+            if (
+                existingAuthorization
+                    ?.ready ===
+                    true
+            ) {
+
+                complete({
+
+                    authorized:
+                        existingAuthorization
+                            .authorized ===
+                            true,
+
+                    context:
+                        existingAuthorization
+                            .context ||
+                            {},
+
+                    reason:
+                        existingAuthorization
+                            .reason ||
+                            "You are not authorized to manage learning resources."
+
+                });
+
+                return;
+
+            }
+
+            window.setTimeout(
+                () => {
+
+                    complete({
+
+                        authorized:
+                            false,
+
+                        reason:
+                            "Administrative authorization was not confirmed."
+
+                    });
+
+                },
+                AUTHORIZATION_TIMEOUT_MS
+            );
+
+        }
+    );
 
 }
 
@@ -2150,57 +3067,64 @@ async function activateAuthorizedView() {
 async function initialize() {
 
     if (
-        !state.initialized
+        state.initialized
     ) {
 
-        state.initialized =
-            true;
-
-        LearningResourceRenderer.initialize();
-
-        bindEvents();
+        return;
 
     }
 
-    await activateAuthorizedView();
+    state.initialized =
+        true;
 
-}
+    LearningResourceRenderer.initialize();
 
+    bindEvents();
 
-onAuthStateChanged(
-    auth,
-    async (
-        user
-    ) => {
+    LearningResourceRenderer.setAuthorized(
+        false
+    );
+
+    LearningResourceRenderer.setStatus(
+        "Confirming administrative authorization…",
+        "info"
+    );
+
+    try {
+
+        const authorization =
+            await waitForAuthorization();
 
         if (
-            !user
+            !authorization.authorized
         ) {
 
-            deactivateAuthorizedView();
+            handleUnauthorized(
+                authorization.reason
+            );
 
             return;
 
         }
 
-        try {
-
-            await initialize();
-
-        }
-        catch (
-            error
-        ) {
-
-            handleError(
-                "Controller initialization failed",
-                error
-            );
-
-        }
+        await handleAuthorized(
+            authorization.context
+        );
 
     }
-);
+    catch (
+        error
+    ) {
+
+        handleUnauthorized(
+            getErrorMessage(
+                error
+            )
+        );
+
+    }
+
+}
 
 
 /* ==========================================================
@@ -2210,29 +3134,135 @@ onAuthStateChanged(
 const LearningResourceController =
     Object.freeze({
 
-        moduleName:
-            MODULE_NAME,
-
-        version:
-            MODULE_VERSION,
-
         initialize,
 
-        loadResources
+        reload:
+            () =>
+                loadResources(),
+
+        openCreateForm:
+            handleCreateResource,
+
+        openEditForm:
+            (
+                documentId
+            ) =>
+                handleEditResource(
+                    documentId
+                ),
+
+        openLearnerAssignment:
+            (
+                documentId
+            ) =>
+                handleAssignResource(
+                    documentId
+                ),
+
+        publish:
+            (
+                documentId
+            ) =>
+                handlePublishResource(
+                    documentId
+                ),
+
+        withdraw:
+            (
+                documentId
+            ) =>
+                handleWithdrawResource(
+                    documentId
+                ),
+
+        getState:
+            () =>
+                Object.freeze({
+
+                    initialized:
+                        state.initialized,
+
+                    authorized:
+                        state.authorized,
+
+                    busy:
+                        state.busy,
+
+                    resourceCount:
+                        state.resources.length,
+
+                    filters:
+                        Object.freeze({
+                            ...state.filters
+                        })
+
+                })
 
     });
 
 
-window.LearningResourceController =
-    LearningResourceController;
+/* ==========================================================
+   BOOTSTRAP
+========================================================== */
 
+if (
+    document.readyState ===
+        "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            initialize()
+                .catch(
+                    (
+                        error
+                    ) => {
+
+                        handleError(
+                            "Controller initialization failed",
+                            error
+                        );
+
+                    }
+                );
+
+        },
+        {
+            once:
+                true
+        }
+    );
+
+}
+else {
+
+    initialize()
+        .catch(
+            (
+                error
+            ) => {
+
+                handleError(
+                    "Controller initialization failed",
+                    error
+                );
+
+            }
+        );
+
+}
+
+
+/* ==========================================================
+   EXPORTS
+========================================================== */
 
 export {
 
-    LearningResourceController,
-
-    initialize,
-
-    loadResources
+    LearningResourceController
 
 };
+
+export default LearningResourceController;

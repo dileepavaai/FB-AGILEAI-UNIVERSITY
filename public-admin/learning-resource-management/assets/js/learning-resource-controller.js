@@ -1752,7 +1752,7 @@ function handleCreateResource() {
 
 
 /* ==========================================================
-   EDIT AND UPLOAD
+   EDIT AND UPLOAD FORM
 ========================================================== */
 
 async function handleEditResource(
@@ -1769,15 +1769,40 @@ async function handleEditResource(
 
     }
 
+    const normalizedDocumentId =
+        normalizeText(
+            documentId
+        );
+
+    if (
+        !normalizedDocumentId
+    ) {
+
+        LearningResourceRenderer.setStatus(
+            "Learning-resource document identity is missing.",
+            "error"
+        );
+
+        return;
+
+    }
+
     setBusy(
         true
+    );
+
+    LearningResourceRenderer.setStatus(
+        focusFile
+            ? "Preparing protected resource upload…"
+            : "Loading learning-resource draft…",
+        "info"
     );
 
     try {
 
         const resource =
             await LearningResourceService.getResource(
-                documentId
+                normalizedDocumentId
             );
 
         if (
@@ -1785,28 +1810,34 @@ async function handleEditResource(
         ) {
 
             throw new Error(
-                "Learning-resource draft was not found."
+                "Learning resource was not found."
             );
 
         }
 
         if (
-            resource.status !==
-                "draft"
+            normalizeLowercase(
+                resource.status
+            ) !==
+            "draft"
         ) {
 
             throw new Error(
-                "Only draft resources can be edited."
+                "Only draft learning resources can be edited or uploaded."
             );
 
         }
 
         LearningResourceRenderer.openForm({
+
             mode:
                 "edit",
 
             resource
+
         });
+
+        LearningResourceRenderer.clearStatus();
 
         if (
             focusFile
@@ -1815,12 +1846,49 @@ async function handleEditResource(
             window.requestAnimationFrame(
                 () => {
 
-                    getFormField(
+                    const form =
                         getElement(
                             "learning-resource-form"
-                        ),
-                        "resource_file"
-                    )?.focus();
+                        );
+
+                    const fileInput =
+                        getFormField(
+                            form,
+                            "resource_file"
+                        );
+
+                    if (
+                        !form ||
+                        !fileInput
+                    ) {
+
+                        LearningResourceRenderer.setStatus(
+                            "The learning-resource file input is unavailable.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+                    form.scrollIntoView({
+
+                        behavior:
+                            "smooth",
+
+                        block:
+                            "start"
+
+                    });
+
+                    fileInput.focus();
+
+                    /*
+                     * The upload action originates from a user click.
+                     * Trigger the native file chooser after the edit
+                     * form has been rendered.
+                     */
+                    fileInput.click();
 
                 }
             );
@@ -1833,7 +1901,9 @@ async function handleEditResource(
     ) {
 
         handleError(
-            "Unable to open resource",
+            focusFile
+                ? "Unable to prepare resource upload"
+                : "Unable to open learning-resource draft",
             error
         );
 
@@ -1847,7 +1917,6 @@ async function handleEditResource(
     }
 
 }
-
 
 /* ==========================================================
    PUBLICATION PREFLIGHT

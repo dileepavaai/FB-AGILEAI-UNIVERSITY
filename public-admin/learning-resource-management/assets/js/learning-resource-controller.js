@@ -3261,7 +3261,8 @@ else {
 
 export {
 
-    LearningResourceController
+    LearningResourceController,
+    initialize
 
 };
 

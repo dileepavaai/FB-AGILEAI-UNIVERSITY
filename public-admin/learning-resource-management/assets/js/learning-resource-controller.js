@@ -116,6 +116,8 @@ const MODULE_VERSION =
 const SEARCH_DEBOUNCE_MS =
     250;
 
+const AUTHORIZATION_TIMEOUT_MS =
+    10000;
 
 /* ==========================================================
    STATE

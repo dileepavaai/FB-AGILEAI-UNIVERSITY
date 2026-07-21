@@ -116,9 +116,6 @@ const MODULE_VERSION =
 const SEARCH_DEBOUNCE_MS =
     250;
 
-const AUTHORIZATION_TIMEOUT_MS =
-    10000;
-
 /* ==========================================================
    STATE
 ========================================================== */
@@ -127,6 +124,9 @@ const state = {
 
     initialized:
         false,
+
+    authorizationContext:
+        null,
 
     authorized:
         false,
@@ -2850,29 +2850,8 @@ function bindEvents() {
    AUTHORIZATION
 ========================================================== */
 
-async function handleAuthorized(
-    authorizationContext = {}
-) {
-
-    state.authorized =
-        true;
-
-    state.authorizationContext =
-        authorizationContext;
-
-    LearningResourceRenderer.setAuthorized(
-        true
-    );
-
-    LearningResourceRenderer.clearStatus();
-
-    await loadResources();
-
-}
-
-
-function handleUnauthorized(
-    reason = "You are not authorized to manage learning resources."
+function deactivateAuthorizedView(
+    reason = "Administrator authentication is required."
 ) {
 
     state.authorized =
@@ -2897,6 +2876,14 @@ function handleUnauthorized(
     state.searchTimer =
         null;
 
+    setBusy(
+        false
+    );
+
+    LearningResourceRenderer.setAuthorized(
+        false
+    );
+
     LearningResourceRenderer.closeForm();
 
     LearningResourceRenderer.closeAccessForm();
@@ -2909,10 +2896,6 @@ function handleUnauthorized(
         {}
     );
 
-    LearningResourceRenderer.setAuthorized(
-        false
-    );
-
     LearningResourceRenderer.setStatus(
         reason,
         "error"
@@ -2921,143 +2904,74 @@ function handleUnauthorized(
 }
 
 
-/* ==========================================================
-   AUTHORIZATION READINESS
-========================================================== */
+async function activateAuthorizedView() {
 
-function waitForAuthorization() {
+    if (
+        state.authorized
+    ) {
 
-    return new Promise(
-        (
-            resolve
-        ) => {
+        return;
 
-            let completed =
-                false;
+    }
 
-            const complete =
-                (
-                    result
-                ) => {
+    if (
+        !auth.currentUser
+    ) {
 
-                    if (
-                        completed
-                    ) {
+        return;
 
-                        return;
+    }
 
-                    }
-
-                    completed =
-                        true;
-
-                    resolve(
-                        result
-                    );
-
-                };
-
-            window.addEventListener(
-                "admin:authorized",
-                (
-                    event
-                ) => {
-
-                    complete({
-
-                        authorized:
-                            true,
-
-                        context:
-                            event.detail ||
-                            {}
-
-                    });
-
-                },
-                {
-                    once:
-                        true
-                }
-            );
-
-            window.addEventListener(
-                "admin:unauthorized",
-                (
-                    event
-                ) => {
-
-                    complete({
-
-                        authorized:
-                            false,
-
-                        reason:
-                            event.detail?.reason ||
-                            "You are not authorized to manage learning resources."
-
-                    });
-
-                },
-                {
-                    once:
-                        true
-                }
-            );
-
-            const existingAuthorization =
-                window.AdminAuthorization ||
-                window.adminAuthorization ||
-                null;
-
-            if (
-                existingAuthorization
-                    ?.ready ===
-                    true
-            ) {
-
-                complete({
-
-                    authorized:
-                        existingAuthorization
-                            .authorized ===
-                            true,
-
-                    context:
-                        existingAuthorization
-                            .context ||
-                            {},
-
-                    reason:
-                        existingAuthorization
-                            .reason ||
-                            "You are not authorized to manage learning resources."
-
-                });
-
-                return;
-
-            }
-
-            window.setTimeout(
-                () => {
-
-                    complete({
-
-                        authorized:
-                            false,
-
-                        reason:
-                            "Administrative authorization was not confirmed."
-
-                    });
-
-                },
-                AUTHORIZATION_TIMEOUT_MS
-            );
-
-        }
+    LearningResourceRenderer.setStatus(
+        "Confirming administrative authorization…",
+        "info"
     );
+
+    try {
+
+        const authorizationContext =
+            await requireAuthorizedAdmin();
+
+        state.authorized =
+            true;
+
+        state.authorizationContext =
+            authorizationContext ||
+            {};
+
+        LearningResourceRenderer.setAuthorized(
+            true
+        );
+
+        LearningResourceRenderer.clearStatus();
+
+        await loadResources();
+
+        console.info(
+            `[${MODULE_NAME}] Initialized v${MODULE_VERSION}`
+        );
+
+    }
+    catch (
+        error
+    ) {
+
+        state.authorized =
+            false;
+
+        state.authorizationContext =
+            null;
+
+        LearningResourceRenderer.setAuthorized(
+            false
+        );
+
+        handleError(
+            "Authorization failed",
+            error
+        );
+
+    }
 
 }
 
@@ -3069,64 +2983,96 @@ function waitForAuthorization() {
 async function initialize() {
 
     if (
-        state.initialized
+        !state.initialized
     ) {
 
-        return;
+        state.initialized =
+            true;
+
+        LearningResourceRenderer.initialize();
+
+        bindEvents();
+
+        LearningResourceRenderer.setAuthorized(
+            false
+        );
+
+        LearningResourceRenderer.setStatus(
+            "Confirming administrative authorization…",
+            "info"
+        );
 
     }
 
-    state.initialized =
-        true;
+    if (
+        auth.currentUser
+    ) {
 
-    LearningResourceRenderer.initialize();
+        await activateAuthorizedView();
 
-    bindEvents();
+    }
 
-    LearningResourceRenderer.setAuthorized(
-        false
-    );
+}
 
-    LearningResourceRenderer.setStatus(
-        "Confirming administrative authorization…",
-        "info"
-    );
 
-    try {
-
-        const authorization =
-            await waitForAuthorization();
+onAuthStateChanged(
+    auth,
+    async (
+        user
+    ) => {
 
         if (
-            !authorization.authorized
+            !state.initialized
         ) {
 
-            handleUnauthorized(
-                authorization.reason
-            );
+            try {
+
+                await initialize();
+
+            }
+            catch (
+                error
+            ) {
+
+                handleError(
+                    "Controller initialization failed",
+                    error
+                );
+
+                return;
+
+            }
+
+        }
+
+        if (
+            !user
+        ) {
+
+            deactivateAuthorizedView();
 
             return;
 
         }
 
-        await handleAuthorized(
-            authorization.context
-        );
+        try {
 
-    }
-    catch (
-        error
-    ) {
+            await activateAuthorizedView();
 
-        handleUnauthorized(
-            getErrorMessage(
+        }
+        catch (
+            error
+        ) {
+
+            handleError(
+                "Controller initialization failed",
                 error
-            )
-        );
+            );
+
+        }
 
     }
-
-}
+);
 
 
 /* ==========================================================
@@ -3135,6 +3081,12 @@ async function initialize() {
 
 const LearningResourceController =
     Object.freeze({
+
+        moduleName:
+            MODULE_NAME,
+
+        version:
+            MODULE_VERSION,
 
         initialize,
 
@@ -3203,58 +3155,8 @@ const LearningResourceController =
     });
 
 
-/* ==========================================================
-   BOOTSTRAP
-========================================================== */
-
-if (
-    document.readyState ===
-        "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        () => {
-
-            initialize()
-                .catch(
-                    (
-                        error
-                    ) => {
-
-                        handleError(
-                            "Controller initialization failed",
-                            error
-                        );
-
-                    }
-                );
-
-        },
-        {
-            once:
-                true
-        }
-    );
-
-}
-else {
-
-    initialize()
-        .catch(
-            (
-                error
-            ) => {
-
-                handleError(
-                    "Controller initialization failed",
-                    error
-                );
-
-            }
-        );
-
-}
+window.LearningResourceController =
+    LearningResourceController;
 
 
 /* ==========================================================

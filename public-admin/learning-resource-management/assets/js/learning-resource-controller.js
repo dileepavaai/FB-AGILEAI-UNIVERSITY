@@ -1750,7 +1750,6 @@ function handleCreateResource() {
 
 }
 
-
 /* ==========================================================
    EDIT AND UPLOAD FORM
 ========================================================== */
@@ -1883,10 +1882,74 @@ async function handleEditResource(
 
                     fileInput.focus();
 
+                    fileInput.addEventListener(
+                        "change",
+                        () => {
+
+                            const selectedFile =
+                                fileInput.files?.[0] ||
+                                null;
+
+                            if (
+                                !selectedFile
+                            ) {
+
+                                LearningResourceRenderer.setStatus(
+                                    "No learning-resource file was selected.",
+                                    "info"
+                                );
+
+                                return;
+
+                            }
+
+                            LearningResourceRenderer.setStatus(
+                                `Selected file: ${selectedFile.name}. Uploading…`,
+                                "info"
+                            );
+
+                            if (
+                                typeof form.requestSubmit ===
+                                    "function"
+                            ) {
+
+                                form.requestSubmit();
+
+                                return;
+
+                            }
+
+                            form.dispatchEvent(
+                                new Event(
+                                    "submit",
+                                    {
+                                        bubbles:
+                                            true,
+
+                                        cancelable:
+                                            true
+                                    }
+                                )
+                            );
+
+                        },
+                        {
+                            once:
+                                true
+                        }
+                    );
+
                     /*
-                     * The upload action originates from a user click.
-                     * Trigger the native file chooser after the edit
-                     * form has been rendered.
+                     * Open the native file chooser.
+                     *
+                     * Once a file is selected, the change handler
+                     * submits the existing governed edit form.
+                     * The normal handleFormSubmit() flow then:
+                     *
+                     * 1. Updates the draft metadata
+                     * 2. Uploads the protected file
+                     * 3. Attaches Storage metadata to Firestore
+                     * 4. Reloads the resource registry
                      */
                     fileInput.click();
 

@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-publisher.js
-   Version   : 1.3.0
+   Version   : 1.4.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -50,6 +50,12 @@
 
    Change History
    ----------------------------------------------------------
+
+   v1.4.0
+   • Added governed uploaded lifecycle state
+   • Transitioned protected assets from draft to uploaded
+   • Allowed uploaded resources to enter publication
+   • Required protected Storage upload completion before publication
 
    v1.3.0
    • Added complete update audit metadata for all mutations
@@ -108,7 +114,7 @@ const MODULE_NAME =
     "LearningResourcePublisher";
 
 const MODULE_VERSION =
-    "1.3.0";
+    "1.4.0";
 
 const COLLECTION_NAME =
     "learning_resources";
@@ -593,6 +599,11 @@ function buildEditableDraftData(
 
     };
 
+    const currentStatus =
+        normalizeLowercase(
+            existingData.status
+        );
+
     return {
 
         resource_id:
@@ -653,8 +664,14 @@ function buildEditableDraftData(
             normalizedResource.embed_allowed ===
             true,
 
+        /*
+         * Preserve the governed lifecycle.
+         *
+         * draft     -> draft
+         * uploaded  -> uploaded
+         */
         status:
-            "draft",
+            currentStatus,
 
         is_active:
             false,
@@ -909,20 +926,60 @@ function validatePublicationData(
         data
     );
 
+    const status =
+        normalizeLowercase(
+            data?.status
+        );
+
+    const publishableStatuses =
+        [
+            "draft",
+            "uploaded"
+        ];
+
     if (
-        data.status !==
-        "draft"
+        !publishableStatuses.includes(
+            status
+        )
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Only draft resources can be published.`
+            `[${MODULE_NAME}] Only draft or uploaded resources can be published.`
         );
 
     }
 
+    if (
+        data.delivery_type ===
+            "protected_storage" &&
+        status !==
+            "uploaded"
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected Storage resources must be uploaded before publication.`
+        );
+
+    }
+
+    const validationPayload = {
+
+        ...data,
+
+        status:
+            "published",
+
+        is_active:
+            true,
+
+        is_latest:
+            true
+
+    };
+
     const validation =
         LearningResourceContract.validateForPublication(
-            data
+            validationPayload
         );
 
     if (
@@ -1068,7 +1125,6 @@ async function createDraft(
 
 }
 
-
 /* ==========================================================
    UPDATE DRAFT
 ========================================================== */
@@ -1104,7 +1160,7 @@ async function updateDraft(
             ) {
 
                 throw new Error(
-                    `[${MODULE_NAME}] Draft not found.`
+                    `[${MODULE_NAME}] Resource not found.`
                 );
 
             }
@@ -1122,16 +1178,33 @@ async function updateDraft(
                 existingData
             );
 
+            const existingStatus =
+                normalizeLowercase(
+                    existingData.status
+                );
+
+            const editableStatuses =
+                [
+                    "draft",
+                    "uploaded"
+                ];
+
             if (
-                existingData.status !==
-                "draft"
+                !editableStatuses.includes(
+                    existingStatus
+                )
             ) {
 
                 throw new Error(
-                    `[${MODULE_NAME}] Only draft resources can be edited.`
+                    `[${MODULE_NAME}] Only draft or uploaded resources can be edited.`
                 );
 
             }
+
+            const existingDeliveryType =
+                normalizeLowercase(
+                    existingData.delivery_type
+                );
 
             const normalizedResource =
                 LearningResourceContract.normalizeResourceInput({
@@ -1145,13 +1218,106 @@ async function updateDraft(
                         existingData.program_code,
 
                     version:
-                        existingData.version
+                        existingData.version,
+
+                    /*
+                     * Once a protected asset has been uploaded,
+                     * its governed delivery type is immutable.
+                     */
+                    delivery_type:
+                        existingStatus ===
+                        "uploaded"
+                            ? existingDeliveryType
+                            : input.delivery_type,
+
+                    status:
+                        existingStatus,
+
+                    is_active:
+                        false,
+
+                    is_latest:
+                        false
 
                 });
 
+            if (
+                existingStatus ===
+                    "uploaded" &&
+                normalizeLowercase(
+                    normalizedResource.delivery_type
+                ) !==
+                    existingDeliveryType
+            ) {
+
+                throw new Error(
+                    `[${MODULE_NAME}] Uploaded resource delivery type is immutable. Create a new version instead.`
+                );
+
+            }
+
+            if (
+                existingStatus ===
+                    "uploaded" &&
+                existingDeliveryType ===
+                    "protected_storage" &&
+                (
+                    !normalizeString(
+                        existingData.storage_path
+                    ) ||
+                    !normalizeString(
+                        existingData.file_name
+                    ) ||
+                    !normalizeString(
+                        existingData.file_extension
+                    ) ||
+                    !normalizeString(
+                        existingData.mime_type
+                    ) ||
+                    normalizeFileSize(
+                        existingData.file_size
+                    ) <=
+                        0 ||
+                    !normalizeString(
+                        existingData.uploaded_by_uid
+                    ) ||
+                    !normalizeString(
+                        existingData.uploaded_by_email
+                    ) ||
+                    !existingData.uploaded_at
+                )
+            ) {
+
+                throw new Error(
+                    `[${MODULE_NAME}] Uploaded protected resource metadata is incomplete and cannot be edited.`
+                );
+
+            }
+
+            /*
+             * Draft validation is used for pre-publication
+             * metadata editing. Uploaded resources are validated
+             * through a temporary draft-compatible structure so
+             * their persisted lifecycle remains uploaded.
+             */
+            const validationPayload = {
+
+                ...normalizedResource,
+
+                status:
+                    "draft",
+
+                is_active:
+                    false,
+
+                is_latest:
+                    false
+
+            };
+
             const validation =
                 LearningResourceContract.validateDraft(
-                    normalizedResource
+                    validationPayload
                 );
 
             if (
@@ -1159,7 +1325,7 @@ async function updateDraft(
             ) {
 
                 throw new Error(
-                    `[${MODULE_NAME}] Invalid draft: ` +
+                    `[${MODULE_NAME}] Invalid pre-publication resource: ` +
                     validation.errors.join(
                         " "
                     )
@@ -1175,9 +1341,25 @@ async function updateDraft(
                 );
 
             /*
+             * Preserve the governed pre-publication lifecycle:
+             *
+             * • draft remains draft
+             * • uploaded remains uploaded
+             */
+            updatedData.status =
+                existingStatus;
+
+            updatedData.is_active =
+                false;
+
+            updatedData.is_latest =
+                false;
+
+            /*
              * Controlled replacement is intentional.
              * The authoritative field set is reconstructed while
-             * immutable identity and audit fields are preserved.
+             * immutable identity, protected asset and audit
+             * metadata are preserved.
              */
             transaction.set(
                 reference,
@@ -1199,7 +1381,7 @@ async function updateDraft(
                     existingData.version,
 
                 status:
-                    "draft",
+                    existingStatus,
 
                 hasProtectedAsset:
                     Boolean(
@@ -1277,7 +1459,7 @@ async function attachProtectedAsset(
             ) {
 
                 throw new Error(
-                    `[${MODULE_NAME}] Assets can only be attached to drafts.`
+                    `[${MODULE_NAME}] Assets can only be attached to draft resources.`
                 );
 
             }
@@ -1308,7 +1490,7 @@ async function attachProtectedAsset(
             ) {
 
                 throw new Error(
-                    `[${MODULE_NAME}] This draft already has a protected asset. Create a new version instead of replacing it.`
+                    `[${MODULE_NAME}] This resource already has a protected asset. Create a new version instead of replacing it.`
                 );
 
             }
@@ -1341,7 +1523,7 @@ async function attachProtectedAsset(
                         protectedUpload.fileSize,
 
                     status:
-                        "draft",
+                        "uploaded",
 
                     is_active:
                         false,
@@ -1396,7 +1578,7 @@ async function attachProtectedAsset(
                     protectedUpload.fileSize,
 
                 status:
-                    "draft"
+                    "uploaded"
 
             });
 

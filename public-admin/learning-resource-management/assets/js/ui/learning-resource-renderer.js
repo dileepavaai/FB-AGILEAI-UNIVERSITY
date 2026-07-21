@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-renderer.js
-   Version   : 1.3.0
+   Version   : 1.4.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -19,7 +19,7 @@
    • Render administrative action controls
    • Render loading, success, information, and error messages
    • Render empty states
-   • Populate the resource form for draft editing
+   • Populate the resource form for draft and uploaded-metadata editing
    • Populate governed release-policy metadata
    • Reset form presentation safely between modes
    • Render learner-resource assignment controls
@@ -52,6 +52,17 @@
 
    Change History
    ----------------------------------------------------------
+
+   v1.4.0
+   • Added uploaded lifecycle status presentation
+   • Added uploaded-resource administrative summary metric
+   • Added uploaded-resource metadata editing action
+   • Added uploaded-resource publication action
+   • Added archived lifecycle badge support
+   • Added lifecycle-aware resource form headings
+   • Added safe form lifecycle-state reset
+   • Preserved publisher and service lifecycle authority
+
    v1.3.0
    • Added published-resource learner-assignment action
    • Added governed learner-resource access panel rendering
@@ -86,7 +97,7 @@ const MODULE_NAME =
     "LearningResourceRenderer";
 
 const MODULE_VERSION =
-    "1.3.0";
+    "1.4.0";
 
 const ALLOWED_STATUS_TYPES =
     Object.freeze([
@@ -430,7 +441,6 @@ function setFieldChecked(
         checked === true;
 
 }
-
 
 function setFieldDisabled(
     fieldName,
@@ -1396,6 +1406,12 @@ function renderSummary(
         ),
 
         createMetric(
+            "Uploaded",
+            summary.uploaded,
+            "learning-resource-metric--uploaded"
+        ),
+
+        createMetric(
             "Published",
             summary.published,
             "learning-resource-metric--published"
@@ -1431,31 +1447,38 @@ function createStatusBadge(
 
     const normalizedStatus =
         normalizeLowercase(
-            resource.status
+            resource?.status
         );
 
     const safeStatus =
         [
             "draft",
+            "uploaded",
             "published",
-            "withdrawn"
+            "withdrawn",
+            "archived"
         ].includes(
             normalizedStatus
         )
             ? normalizedStatus
             : "unknown";
 
+    const displayLabel =
+        normalizedStatus
+            ? formatLabel(
+                normalizedStatus
+            )
+            : "Unknown";
+
     const badge =
         createElement(
             "span",
             `learning-resource-badge learning-resource-badge--${safeStatus}`,
-            formatLabel(
-                normalizedStatus
-            )
+            displayLabel
         );
 
     if (
-        resource.isLatest === true &&
+        resource?.isLatest === true &&
         normalizedStatus ===
             "published"
     ) {
@@ -1465,9 +1488,15 @@ function createStatusBadge(
 
         badge.setAttribute(
             "aria-label",
-            `${formatLabel(
-                normalizedStatus
-            )}, latest published version`
+            `${displayLabel}, latest published version`
+        );
+
+    }
+    else {
+
+        badge.setAttribute(
+            "aria-label",
+            displayLabel
         );
 
     }
@@ -1475,7 +1504,6 @@ function createStatusBadge(
     return badge;
 
 }
-
 
 /* ==========================================================
    RESOURCE ACTIONS
@@ -1491,6 +1519,11 @@ function createResourceActions(
             "learning-resource-card__actions"
         );
 
+    const status =
+        normalizeLowercase(
+            resource?.status
+        );
+
     actions.append(
         createActionButton({
             label:
@@ -1504,9 +1537,17 @@ function createResourceActions(
         })
     );
 
+    /*
+     * ------------------------------------------------------
+     * Draft
+     * ------------------------------------------------------
+     * Drafts may be edited.
+     * Protected resources without an uploaded file may upload.
+     * Publication is available.
+     */
     if (
-        resource.status ===
-            "draft"
+        status ===
+        "draft"
     ) {
 
         actions.append(
@@ -1564,9 +1605,58 @@ function createResourceActions(
 
     }
 
+    /*
+     * ------------------------------------------------------
+     * Uploaded
+     * ------------------------------------------------------
+     * File already uploaded.
+     * Metadata may still be edited.
+     * Upload action is intentionally hidden.
+     */
     if (
-        resource.status ===
-            "published"
+        status ===
+        "uploaded"
+    ) {
+
+        actions.append(
+            createActionButton({
+                label:
+                    "Edit metadata",
+
+                action:
+                    "edit-resource",
+
+                documentId:
+                    resource.documentId
+            })
+        );
+
+        actions.append(
+            createActionButton({
+                label:
+                    "Publish",
+
+                action:
+                    "publish-resource",
+
+                documentId:
+                    resource.documentId,
+
+                style:
+                    "primary"
+            })
+        );
+
+    }
+
+    /*
+     * ------------------------------------------------------
+     * Published
+     * ------------------------------------------------------
+     */
+    if (
+        status ===
+        "published"
     ) {
 
         actions.append(
@@ -1962,7 +2052,6 @@ function renderResources(
 
 }
 
-
 /* ==========================================================
    FORM RESET
 ========================================================== */
@@ -1987,6 +2076,9 @@ function resetFormPresentation() {
     elements.form.dataset.documentId =
         "";
 
+    elements.form.dataset.resourceStatus =
+        "";
+
     setFieldDisabled(
         "program_code",
         false
@@ -1999,6 +2091,11 @@ function resetFormPresentation() {
 
     setFieldDisabled(
         "version",
+        false
+    );
+
+    setFieldDisabled(
+        "delivery_type",
         false
     );
 
@@ -2069,7 +2166,6 @@ function resetFormPresentation() {
 
 }
 
-
 /* ==========================================================
    FORM PRESENTATION
 ========================================================== */
@@ -2099,6 +2195,14 @@ function openForm({
             ? "edit"
             : "create";
 
+    const resourceStatus =
+        normalizedMode ===
+            "edit"
+            ? normalizeLowercase(
+                resource?.status
+            )
+            : "";
+
     elements.form.dataset.mode =
         normalizedMode;
 
@@ -2110,15 +2214,37 @@ function openForm({
             )
             : "";
 
+    elements.form.dataset.resourceStatus =
+        resourceStatus;
+
     if (
         elements.formHeading
     ) {
 
-        elements.formHeading.textContent =
+        if (
             normalizedMode ===
-                "edit"
-                ? "Edit Learning Resource Draft"
-                : "Create Learning Resource Draft";
+                "create"
+        ) {
+
+            elements.formHeading.textContent =
+                "Create Learning Resource Draft";
+
+        }
+        else if (
+            resourceStatus ===
+                "uploaded"
+        ) {
+
+            elements.formHeading.textContent =
+                "Edit Uploaded Learning Resource Metadata";
+
+        }
+        else {
+
+            elements.formHeading.textContent =
+                "Edit Learning Resource Draft";
+
+        }
 
     }
 
@@ -2539,7 +2665,7 @@ function openAccessForm({
         resource.moduleNumber
     );
 
-        setAccessFieldValue(
+    setAccessFieldValue(
         "session_number",
         resource.sessionNumber
     );

@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File       : learning-resource-controller.js
-   Version    : 1.3.0
+   Version    : 1.4.0
    Status     : ACTIVE
    Authority  : Admin Portal
 
@@ -17,7 +17,7 @@
    • Wait for authenticated administrative identity
    • Enforce administrative authorization
    • Coordinate resource registry loading
-   • Coordinate draft creation and updates
+   • Coordinate draft creation and editable-resource metadata updates
    • Coordinate protected-resource upload
    • Coordinate publication and withdrawal
    • Coordinate filtering and version-history display
@@ -40,7 +40,7 @@
    Governance
    ----------------------------------------------------------
    • Admin Portal is the resource-management authority
-   • Drafts may be edited
+   • Draft and uploaded resources may be edited
    • Published versions are immutable
    • Protected resources require an attached delivery asset
    • External resources require an external URL
@@ -52,8 +52,18 @@
    • Learning Resource Resolver evaluates learner visibility
    • Contract remains the validation authority
 
-   Change History
+      Change History
    ----------------------------------------------------------
+   v1.4.0
+   • Added governed uploaded-resource metadata editing
+   • Added draft and uploaded lifecycle eligibility for editing
+   • Added draft and uploaded lifecycle eligibility for publication
+   • Restricted protected-file upload to draft resources only
+   • Restricted file upload to protected-storage delivery only
+   • Updated controller messaging to align with governed lifecycle
+   • Preserved published-resource immutability
+   • Preserved separation of controller, publisher, storage, service and renderer responsibilities
+
    v1.3.0
    • Added published-resource learner-assignment orchestration
    • Added governed learner_resource_access form submission
@@ -74,6 +84,7 @@
    v1.1.0
    • Established governed administrative lifecycle orchestration
    • Added filtering, upload, publication, withdrawal and history
+
 ========================================================== */
 
 import {
@@ -111,7 +122,7 @@ const MODULE_NAME =
     "LearningResourceController";
 
 const MODULE_VERSION =
-    "1.3.0";
+    "1.4.0";
 
 const SEARCH_DEBOUNCE_MS =
     250;
@@ -1459,7 +1470,7 @@ async function handleFormSubmit(
     LearningResourceRenderer.setStatus(
         mode ===
             "edit"
-            ? "Saving learning-resource draft…"
+            ? "Saving learning-resource metadata…"
             : "Creating learning-resource draft…",
         "info"
     );
@@ -1560,16 +1571,16 @@ async function handleFormSubmit(
 
         LearningResourceRenderer.setStatus(
 
-            mode ===
-                "edit"
+        mode ===
+            "edit"
 
-                ? "Learning-resource draft updated."
+            ? "Creating learning-resource draft..."
 
-                : "Learning-resource draft created.",
+            : "Learning-resource draft updated.",
 
-            "success"
+        "success"
 
-        );
+    );
 
     }
     catch (
@@ -1577,7 +1588,7 @@ async function handleFormSubmit(
     ) {
 
         handleError(
-            "Draft save failed",
+            "Learning-resource save failed",
             error
         );
 
@@ -1793,7 +1804,7 @@ async function handleEditResource(
     LearningResourceRenderer.setStatus(
         focusFile
             ? "Preparing protected resource upload…"
-            : "Loading learning-resource draft…",
+            : "Loading learning-resource metadata…",
         "info"
     );
 
@@ -1814,15 +1825,52 @@ async function handleEditResource(
 
         }
 
-        if (
+        const status =
             normalizeLowercase(
                 resource.status
-            ) !==
-            "draft"
+            );
+
+        const editableStatuses =
+            Object.freeze([
+                "draft",
+                "uploaded"
+            ]);
+
+        if (
+            !editableStatuses.includes(
+                status
+            )
         ) {
 
             throw new Error(
-                "Only draft learning resources can be edited or uploaded."
+                "Only draft or uploaded learning resources can be edited."
+            );
+
+        }
+
+        if (
+            focusFile &&
+            status !==
+                "draft"
+        ) {
+
+            throw new Error(
+                "A protected file can only be uploaded while the learning resource is in draft status."
+            );
+
+        }
+
+        if (
+            focusFile &&
+            normalizeLowercase(
+                resource.deliveryType ||
+                resource.delivery_type
+            ) !==
+                "protected_storage"
+        ) {
+
+            throw new Error(
+                "Only protected-storage learning resources support file upload."
             );
 
         }
@@ -1949,7 +1997,8 @@ async function handleEditResource(
                      * 1. Updates the draft metadata
                      * 2. Uploads the protected file
                      * 3. Attaches Storage metadata to Firestore
-                     * 4. Reloads the resource registry
+                     * 4. Transitions the resource to uploaded status
+                     * 5. Reloads the resource registry
                      */
                     fileInput.click();
 
@@ -1966,7 +2015,7 @@ async function handleEditResource(
         handleError(
             focusFile
                 ? "Unable to prepare resource upload"
-                : "Unable to open learning-resource draft",
+                : "Unable to open learning-resource metadata",
             error
         );
 
@@ -2030,7 +2079,6 @@ function hasExternalDeliveryUrl(
 
 }
 
-
 function validatePublicationReadiness(
     resource
 ) {
@@ -2051,9 +2099,21 @@ function validatePublicationReadiness(
 
     }
 
+    const status =
+        normalizeLowercase(
+            resource.status
+        );
+
+    const publishableStatuses =
+        Object.freeze([
+            "draft",
+            "uploaded"
+        ]);
+
     if (
-        resource.status !==
-            "draft"
+        !publishableStatuses.includes(
+            status
+        )
     ) {
 
         return Object.freeze({
@@ -2062,7 +2122,7 @@ function validatePublicationReadiness(
                 false,
 
             message:
-                "Only draft resources can be published."
+                "Only draft or uploaded learning resources can be published."
 
         });
 
@@ -2145,7 +2205,6 @@ function validatePublicationReadiness(
     });
 
 }
-
 
 /* ==========================================================
    PUBLISH RESOURCE

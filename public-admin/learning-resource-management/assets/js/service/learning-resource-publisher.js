@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-publisher.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -50,6 +50,15 @@
 
    Change History
    ----------------------------------------------------------
+
+   v1.3.0
+   • Added complete update audit metadata for all mutations
+   • Added protected-file upload audit metadata
+   • Preserved upload audit metadata during draft editing
+   • Added consistent transaction timestamps for publication
+   • Corrected superseded-version update audit metadata
+   • Corrected withdrawal update audit metadata
+
    v1.2.0
    • Required complete administrator audit identity
    • Added canonical Firestore document identity validation
@@ -99,7 +108,7 @@ const MODULE_NAME =
     "LearningResourcePublisher";
 
 const MODULE_VERSION =
-    "1.2.0";
+    "1.3.0";
 
 const COLLECTION_NAME =
     "learning_resources";
@@ -480,6 +489,24 @@ function buildDraftData(
         created_at:
             timestamp,
 
+        updated_by_uid:
+            actor.uid,
+
+        updated_by_email:
+            actor.email,
+
+        updated_at:
+            timestamp,
+
+        uploaded_by_uid:
+            null,
+
+        uploaded_by_email:
+            null,
+
+        uploaded_at:
+            null,
+
         published_by_uid:
             null,
 
@@ -501,9 +528,6 @@ function buildDraftData(
         withdrawal_reason:
             "",
 
-        updated_at:
-            timestamp,
-
         source:
             "admin_portal"
 
@@ -518,7 +542,8 @@ function buildDraftData(
 
 function buildEditableDraftData(
     normalizedResource,
-    existingData
+    existingData,
+    actor
 ) {
 
     validateCreationAudit(
@@ -529,14 +554,6 @@ function buildEditableDraftData(
         normalizedResource.delivery_type ===
         "protected_storage";
 
-    /*
-     * Ordinary draft edits must preserve an already attached
-     * protected asset because the administrative form does not
-     * submit protected-file metadata.
-     *
-     * Switching to an external delivery type intentionally
-     * clears protected Storage metadata.
-     */
     const protectedAsset = {
 
         storagePath:
@@ -578,9 +595,6 @@ function buildEditableDraftData(
 
     return {
 
-        /*
-         * Immutable logical identity.
-         */
         resource_id:
             existingData.resource_id,
 
@@ -651,9 +665,6 @@ function buildEditableDraftData(
         display_order:
             normalizedResource.display_order,
 
-        /*
-         * Original creation audit identity is immutable.
-         */
         created_by_uid:
             existingData.created_by_uid,
 
@@ -662,6 +673,27 @@ function buildEditableDraftData(
 
         created_at:
             existingData.created_at,
+
+        updated_by_uid:
+            actor.uid,
+
+        updated_by_email:
+            actor.email,
+
+        updated_at:
+            serverTimestamp(),
+
+        uploaded_by_uid:
+            existingData.uploaded_by_uid ||
+            null,
+
+        uploaded_by_email:
+            existingData.uploaded_by_email ||
+            null,
+
+        uploaded_at:
+            existingData.uploaded_at ||
+            null,
 
         published_by_uid:
             null,
@@ -683,9 +715,6 @@ function buildEditableDraftData(
 
         withdrawal_reason:
             "",
-
-        updated_at:
-            serverTimestamp(),
 
         source:
             existingData.source ||
@@ -1049,9 +1078,10 @@ async function updateDraft(
     input = {}
 ) {
 
-    normalizeActor(
-        await requireAuthorizedAdmin()
-    );
+    const actor =
+        normalizeActor(
+            await requireAuthorizedAdmin()
+        );
 
     const reference =
         buildReference(
@@ -1140,7 +1170,8 @@ async function updateDraft(
             const updatedData =
                 buildEditableDraftData(
                     normalizedResource,
-                    existingData
+                    existingData,
+                    actor
                 );
 
             /*
@@ -1182,7 +1213,6 @@ async function updateDraft(
 
 }
 
-
 /* ==========================================================
    ATTACH PROTECTED STORAGE ASSET
 ========================================================== */
@@ -1192,9 +1222,10 @@ async function attachProtectedAsset(
     uploadResult
 ) {
 
-    normalizeActor(
-        await requireAuthorizedAdmin()
-    );
+    const actor =
+        normalizeActor(
+            await requireAuthorizedAdmin()
+        );
 
     const protectedUpload =
         normalizeProtectedUploadResult(
@@ -1282,6 +1313,9 @@ async function attachProtectedAsset(
 
             }
 
+            const timestamp =
+                serverTimestamp();
+
             transaction.update(
                 reference,
                 {
@@ -1306,14 +1340,32 @@ async function attachProtectedAsset(
                     file_size:
                         protectedUpload.fileSize,
 
+                    status:
+                        "draft",
+
                     is_active:
                         false,
 
                     is_latest:
                         false,
 
+                    uploaded_by_uid:
+                        actor.uid,
+
+                    uploaded_by_email:
+                        actor.email,
+
+                    uploaded_at:
+                        timestamp,
+
+                    updated_by_uid:
+                        actor.uid,
+
+                    updated_by_email:
+                        actor.email,
+
                     updated_at:
-                        serverTimestamp()
+                        timestamp
                 }
             );
 
@@ -1352,7 +1404,6 @@ async function attachProtectedAsset(
     );
 
 }
-
 
 /* ==========================================================
    PUBLISH RESOURCE
@@ -1500,6 +1551,9 @@ async function publishResource(
                         )
                     );
 
+                const timestamp =
+                    serverTimestamp();
+
                 otherSnapshots.forEach(
                     (
                         versionSnapshot
@@ -1539,8 +1593,14 @@ async function publishResource(
                                     is_latest:
                                         false,
 
+                                    updated_by_uid:
+                                        actor.uid,
+
+                                    updated_by_email:
+                                        actor.email,
+
                                     updated_at:
-                                        serverTimestamp()
+                                        timestamp
                                 }
                             );
 
@@ -1568,7 +1628,7 @@ async function publishResource(
                             actor.email,
 
                         published_at:
-                            serverTimestamp(),
+                            timestamp,
 
                         withdrawn_by_uid:
                             null,
@@ -1582,8 +1642,14 @@ async function publishResource(
                         withdrawal_reason:
                             "",
 
+                        updated_by_uid:
+                            actor.uid,
+
+                        updated_by_email:
+                            actor.email,
+
                         updated_at:
-                            serverTimestamp()
+                            timestamp
                     }
                 );
 
@@ -1638,7 +1704,6 @@ async function publishResource(
     return result;
 
 }
-
 
 /* ==========================================================
    WITHDRAW RESOURCE
@@ -1730,6 +1795,9 @@ async function withdrawResource(
 
             }
 
+            const timestamp =
+                serverTimestamp();
+
             transaction.update(
                 reference,
                 {
@@ -1749,13 +1817,19 @@ async function withdrawResource(
                         actor.email,
 
                     withdrawn_at:
-                        serverTimestamp(),
+                        timestamp,
 
                     withdrawal_reason:
                         normalizedReason,
 
+                    updated_by_uid:
+                        actor.uid,
+
+                    updated_by_email:
+                        actor.email,
+
                     updated_at:
-                        serverTimestamp()
+                        timestamp
                 }
             );
 
@@ -1785,7 +1859,6 @@ async function withdrawResource(
     );
 
 }
-
 
 /* ==========================================================
    PUBLIC API

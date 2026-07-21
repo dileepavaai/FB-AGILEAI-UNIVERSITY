@@ -2685,6 +2685,54 @@ function closeAccessForm() {
 
 }
 
+/* ==========================================================
+   AUTHORIZATION PRESENTATION
+========================================================== */
+
+function setAuthorized(
+    authorized
+) {
+
+    initialize();
+
+    const isAuthorized =
+        authorized ===
+        true;
+
+    const page =
+        document.getElementById(
+            "learning-resource-management"
+        );
+
+    if (
+        page
+    ) {
+
+        page.dataset.authorized =
+            isAuthorized
+                ? "true"
+                : "false";
+
+        page.setAttribute(
+            "aria-disabled",
+            isAuthorized
+                ? "false"
+                : "true"
+        );
+
+    }
+
+    if (
+        !isAuthorized
+    ) {
+
+        closeForm();
+
+        closeAccessForm();
+
+    }
+
+}
 
 /* ==========================================================
    PUBLIC API
@@ -2700,6 +2748,8 @@ const LearningResourceRenderer =
             MODULE_VERSION,
 
         initialize,
+
+        setAuthorized,
 
         setStatus,
 
@@ -2752,6 +2802,8 @@ export {
     LearningResourceRenderer,
 
     initialize,
+
+    setAuthorized,
 
     setStatus,
 

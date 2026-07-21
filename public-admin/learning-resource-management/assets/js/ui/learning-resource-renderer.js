@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-renderer.js
-   Version   : 1.4.0
+   Version   : 1.4.1
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -52,6 +52,13 @@
 
    Change History
    ----------------------------------------------------------
+   
+   v1.4.1
+   • Synchronized panel hidden attributes and hidden CSS classes
+   • Fixed resource form visibility for create and edit workflows
+   • Fixed learner-resource assignment panel visibility
+   • Preserved accessible aria-hidden state management
+   • Preserved all governed lifecycle and rendering behaviour
 
    v1.4.0
    • Added uploaded lifecycle status presentation
@@ -97,7 +104,7 @@ const MODULE_NAME =
     "LearningResourceRenderer";
 
 const MODULE_VERSION =
-    "1.4.0";
+    "1.4.1";
 
 const ALLOWED_STATUS_TYPES =
     Object.freeze([
@@ -2369,6 +2376,10 @@ function openForm({
     elements.formPanel.hidden =
         false;
 
+    elements.formPanel.classList.remove(
+        "hidden"
+    );
+
     elements.formPanel.setAttribute(
         "aria-hidden",
         "false"
@@ -2425,6 +2436,10 @@ function closeForm() {
     elements.formPanel.hidden =
         true;
 
+    elements.formPanel.classList.add(
+        "hidden"
+    );
+
     elements.formPanel.setAttribute(
         "aria-hidden",
         "true"
@@ -2433,7 +2448,6 @@ function closeForm() {
     resetFormPresentation();
 
 }
-
 
 /* ==========================================================
    ACCESS FORM RESET
@@ -2728,6 +2742,10 @@ function openAccessForm({
     elements.accessPanel.hidden =
         false;
 
+    elements.accessPanel.classList.remove(
+        "hidden"
+    );
+
     elements.accessPanel.setAttribute(
         "aria-hidden",
         "false"
@@ -2786,7 +2804,6 @@ function openAccessForm({
 
 }
 
-
 function closeAccessForm() {
 
     initialize();
@@ -2801,6 +2818,10 @@ function closeAccessForm() {
 
     elements.accessPanel.hidden =
         true;
+
+    elements.accessPanel.classList.add(
+        "hidden"
+    );
 
     elements.accessPanel.setAttribute(
         "aria-hidden",

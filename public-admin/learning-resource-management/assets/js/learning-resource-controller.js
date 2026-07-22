@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File       : learning-resource-controller.js
-   Version    : 1.4.0
+   Version    : 1.4.2
    Status     : ACTIVE
    Authority  : Admin Portal
 
@@ -52,8 +52,18 @@
    • Learning Resource Resolver evaluates learner visibility
    • Contract remains the validation authority
 
-      Change History
+   Change History
    ----------------------------------------------------------
+   v1.4.2
+   • Added governed Storage-domain handoff during upload
+   • Added master-learning-resources upload compatibility
+   • Updated protected Storage dependency cache version
+   • Preserved existing lifecycle orchestration
+
+   v1.4.1
+   • Added publisher support for legacy uploaded drafts
+   • Added version-history service compatibility
+
    v1.4.0
    • Added governed uploaded-resource metadata editing
    • Added draft and uploaded lifecycle eligibility for editing
@@ -84,7 +94,6 @@
    v1.1.0
    • Established governed administrative lifecycle orchestration
    • Added filtering, upload, publication, withdrawal and history
-
 ========================================================== */
 
 import {
@@ -99,15 +108,15 @@ import {
 import {
     LearningResourceStorage,
     requireAuthorizedAdmin
-} from "./service/learning-resource-storage.js";
+} from "./service/learning-resource-storage.js?v=1.2.0";
 
 import {
     LearningResourcePublisher
-} from "./service/learning-resource-publisher.js";
+} from "./service/learning-resource-publisher.js?v=1.4.1";
 
 import {
     LearningResourceService
-} from "./service/learning-resource-service.js";
+} from "./service/learning-resource-service.js?v=1.4.1";
 
 import {
     LearningResourceRenderer
@@ -122,10 +131,11 @@ const MODULE_NAME =
     "LearningResourceController";
 
 const MODULE_VERSION =
-    "1.4.0";
+    "1.4.2";
 
 const SEARCH_DEBOUNCE_MS =
     250;
+
 
 /* ==========================================================
    STATE
@@ -412,6 +422,7 @@ function isValidEmail(
 
 }
 
+
 /* ==========================================================
    RELEASE-GOVERNANCE HELPERS
 ========================================================== */
@@ -497,7 +508,6 @@ function validateAvailabilityWindow(
     });
 
 }
-
 
 /* ==========================================================
    LEARNER-ACCESS SERVICE LOADING
@@ -879,6 +889,7 @@ async function loadResources({
 
 }
 
+
 /* ==========================================================
    FORM DATA
 ========================================================== */
@@ -1025,7 +1036,6 @@ function readResourceForm(
     };
 
 }
-
 
 /* ==========================================================
    LEARNER-ACCESS FORM DATA
@@ -1475,14 +1485,14 @@ async function handleFormSubmit(
         "info"
     );
 
-        try {
+    try {
 
         let documentId =
             existingDocumentId;
 
         if (
             mode ===
-            "edit"
+                "edit"
         ) {
 
             if (
@@ -1554,6 +1564,9 @@ async function handleFormSubmit(
                         version:
                             normalizedInput.version,
 
+                        storageDomain:
+                            normalizedInput.storage_domain,
+
                         file:
                             selectedFile
 
@@ -1570,17 +1583,12 @@ async function handleFormSubmit(
         LearningResourceRenderer.closeForm();
 
         LearningResourceRenderer.setStatus(
-
-        mode ===
-            "edit"
-
-            ? "Creating learning-resource draft..."
-
-            : "Learning-resource draft updated.",
-
-        "success"
-
-    );
+            mode ===
+                "edit"
+                ? "Learning-resource metadata updated."
+                : "Learning-resource draft created.",
+            "success"
+        );
 
     }
     catch (
@@ -1611,7 +1619,6 @@ async function handleFormSubmit(
     });
 
 }
-
 
 /* ==========================================================
    LEARNER RESOURCE ACCESS
@@ -1650,13 +1657,10 @@ async function handleAccessFormSubmit(
     ) {
 
         LearningResourceRenderer.setStatus(
-
             validation.errors.join(
                 " "
             ),
-
             "error"
-
         );
 
         return;
@@ -1668,11 +1672,8 @@ async function handleAccessFormSubmit(
     );
 
     LearningResourceRenderer.setStatus(
-
-        "Assigning learning resource...",
-
+        "Assigning learning resource…",
         "info"
-
     );
 
     try {
@@ -1702,16 +1703,11 @@ async function handleAccessFormSubmit(
         LearningResourceRenderer.closeAccessForm();
 
         LearningResourceRenderer.setStatus(
-
             input.identity_status ===
                 "activated"
-
                 ? "Learning resource assigned successfully."
-
                 : "Learning resource staged successfully for first-login activation.",
-
             "success"
-
         );
 
     }
@@ -1737,6 +1733,7 @@ async function handleAccessFormSubmit(
 
 }
 
+
 /* ==========================================================
    CREATE FORM
 ========================================================== */
@@ -1760,6 +1757,7 @@ function handleCreateResource() {
     });
 
 }
+
 
 /* ==========================================================
    EDIT AND UPLOAD FORM
@@ -2030,6 +2028,7 @@ async function handleEditResource(
 
 }
 
+
 /* ==========================================================
    PUBLICATION PREFLIGHT
 ========================================================== */
@@ -2039,23 +2038,18 @@ function hasProtectedAsset(
 ) {
 
     return Boolean(
-
         normalizeText(
             resource?.storagePath
         ) ||
-
         normalizeText(
             resource?.fileName
         ) ||
-
         normalizeText(
             resource?.asset?.storagePath
         ) ||
-
         normalizeText(
             resource?.asset?.fileName
         )
-
     );
 
 }
@@ -2066,18 +2060,16 @@ function hasExternalDeliveryUrl(
 ) {
 
     return Boolean(
-
         normalizeText(
             resource?.externalUrl
         ) ||
-
         normalizeText(
             resource?.external_url
         )
-
     );
 
 }
+
 
 function validatePublicationReadiness(
     resource
@@ -2321,6 +2313,7 @@ async function handlePublishResource(
 
 }
 
+
 /* ==========================================================
    ASSIGN LEARNER
 ========================================================== */
@@ -2363,7 +2356,7 @@ async function handleAssignResource(
             normalizeLowercase(
                 resource.status
             ) !==
-            "published"
+                "published"
         ) {
 
             throw new Error(
@@ -2443,11 +2436,8 @@ async function handleWithdrawResource(
     ) {
 
         LearningResourceRenderer.setStatus(
-
             "A withdrawal reason is required.",
-
             "error"
-
         );
 
         return;
@@ -2456,11 +2446,9 @@ async function handleWithdrawResource(
 
     const confirmed =
         window.confirm(
-
             "Withdraw this learning resource? " +
             "Learner delivery will be disabled while " +
             "the resource remains available for audit history."
-
         );
 
     if (
@@ -2476,29 +2464,20 @@ async function handleWithdrawResource(
     );
 
     LearningResourceRenderer.setStatus(
-
-        "Withdrawing learning resource...",
-
+        "Withdrawing learning resource…",
         "info"
-
     );
 
     try {
 
         await LearningResourcePublisher.withdrawResource(
-
             documentId,
-
             normalizedReason
-
         );
 
         LearningResourceRenderer.setStatus(
-
             "Learning resource withdrawn.",
-
             "success"
-
         );
 
     }
@@ -2523,10 +2502,8 @@ async function handleWithdrawResource(
     }
 
     await loadResources({
-
         preserveStatus:
             true
-
     });
 
 }
@@ -2594,9 +2571,7 @@ async function handleViewResource(
         }
 
         LearningResourceRenderer.setStatus(
-
             [
-
                 resource.title ||
                     "Untitled resource",
 
@@ -2647,13 +2622,10 @@ async function handleViewResource(
                     resource.updatedAt ||
                     "Not available"
                 }`
-
             ].join(
                 " | "
             ),
-
             "info"
-
         );
 
     }
@@ -2676,6 +2648,7 @@ async function handleViewResource(
     }
 
 }
+
 
 /* ==========================================================
    VERSION HISTORY
@@ -2871,7 +2844,6 @@ async function handleResourceAction(
 
 }
 
-
 /* ==========================================================
    EVENT BINDING
 ========================================================== */
@@ -3036,6 +3008,7 @@ function bindEvents() {
     );
 
 }
+
 
 /* ==========================================================
    AUTHORIZATION
@@ -3346,8 +3319,15 @@ const LearningResourceController =
     });
 
 
-window.LearningResourceController =
-    LearningResourceController;
+if (
+    typeof window !==
+        "undefined"
+) {
+
+    window.LearningResourceController =
+        LearningResourceController;
+
+}
 
 
 /* ==========================================================

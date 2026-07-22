@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-service.js
-   Version   : 1.4.0
+   Version   : 1.4.1
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -127,7 +127,7 @@ const MODULE_NAME =
     "LearningResourceService";
 
 const MODULE_VERSION =
-    "1.4.0";
+    "1.4.1";
 
 const COLLECTION_NAME =
     "learning_resources";
@@ -5746,6 +5746,7 @@ const LearningResourceService =
          * These aliases preserve existing Admin Portal callers
          * while keeping one authoritative implementation.
          */
+
         list:
             listResources,
 
@@ -5768,6 +5769,13 @@ const LearningResourceService =
             listResourcesByResourceId,
 
         getVersions:
+            getVersionHistory,
+
+        /*
+         * Compatibility alias used by
+         * learning-resource-controller.js.
+         */
+        listVersions:
             getVersionHistory,
 
         getLatest:

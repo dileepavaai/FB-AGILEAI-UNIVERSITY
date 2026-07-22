@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-publisher.js
-   Version   : 1.4.0
+   Version   : 1.4.1
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -50,6 +50,12 @@
 
    Change History
    ----------------------------------------------------------
+
+   v1.4.1
+   • Added safe compatibility publication for protected assets
+     that contain complete persisted upload evidence
+   • Preserved rejection of incomplete protected resources
+   • Added no new services, scheduled work or fixed cost
 
    v1.4.0
    • Added governed uploaded lifecycle state
@@ -114,7 +120,7 @@ const MODULE_NAME =
     "LearningResourcePublisher";
 
 const MODULE_VERSION =
-    "1.4.0";
+    "1.4.1";
 
 const COLLECTION_NAME =
     "learning_resources";
@@ -541,7 +547,6 @@ function buildDraftData(
 
 }
 
-
 /* ==========================================================
    EDITABLE DRAFT DATA
 ========================================================== */
@@ -937,6 +942,28 @@ function validatePublicationData(
             "uploaded"
         ];
 
+    const hasProtectedUploadEvidence =
+        data.delivery_type ===
+            "protected_storage" &&
+        Boolean(
+            normalizeString(
+                data.storage_path
+            )
+        ) &&
+        Boolean(
+            normalizeString(
+                data.file_name
+            )
+        ) &&
+        Boolean(
+            normalizeString(
+                data.mime_type
+            )
+        ) &&
+        normalizeFileSize(
+            data.file_size
+        ) > 0;
+
     if (
         !publishableStatuses.includes(
             status
@@ -953,7 +980,8 @@ function validatePublicationData(
         data.delivery_type ===
             "protected_storage" &&
         status !==
-            "uploaded"
+            "uploaded" &&
+        !hasProtectedUploadEvidence
     ) {
 
         throw new Error(
@@ -996,7 +1024,6 @@ function validatePublicationData(
     }
 
 }
-
 
 /* ==========================================================
    CREATE DRAFT

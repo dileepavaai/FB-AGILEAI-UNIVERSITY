@@ -4,7 +4,7 @@
    Service Name : aau-credential-verify
    Component    : Credential Verification and Activation API
    File         : index.js
-   Version      : 1.1.0
+   Version      : 1.2.0
    Status       : ACTIVE
    Environment  : Google Cloud Run
    Project      : fb-agileai-university
@@ -17,6 +17,7 @@
    - Administrative credential registry lookup
    - Learner credential retrieval
    - Credential activation-token validation
+   - Learner learning-resource resolution and delivery
 
    Primary APIs
    ----------------------------------------------------------
@@ -24,6 +25,8 @@
    POST /admin/credential-registry
    POST /student/my-credentials
    POST /api/v1/credential-activations/validate
+   GET  /api/v1/learning-resources/me
+   POST /api/v1/learning-resources/:accessId/delivery
 
    Governance
    ----------------------------------------------------------
@@ -86,7 +89,7 @@ const db = admin.firestore();
 ========================================================== */
 
 const SERVICE_NAME = "aau-credential-verify";
-const SERVICE_VERSION = "1.1.0";
+const SERVICE_VERSION = "1.2.0";
 const EXPECTED_PROJECT_ID = "fb-agileai-university";
 
 /* ==========================================================
@@ -96,7 +99,9 @@ const EXPECTED_PROJECT_ID = "fb-agileai-university";
 const COLLECTIONS = Object.freeze({
     credentials: "credentials",
     activationTokens: "credential_activation_tokens",
-    reconciliationEvents: "identity_reconciliation_events"
+    reconciliationEvents: "identity_reconciliation_events",
+    learningResources: "learning_resources",
+    learnerResourceAccess: "learner_resource_access"
 });
 
 /* ==========================================================
@@ -693,7 +698,7 @@ app.post(
                     credentialId
                 )
                 .limit(1)
-                .get();
+                                .get();
 
             if (snapshot.empty) {
                 return res.json({
@@ -1316,6 +1321,57 @@ app.post(
                         }
 
                         /* ----------------------------------
+                           Pending Learning-Resource Access
+
+                           Pre-staged assignments are matched
+                           by verified email and Credential ID,
+                           then bound inside this transaction.
+                        ---------------------------------- */
+
+                        const pendingResourceAccessQuery = db
+                            .collection(
+                                COLLECTIONS.learnerResourceAccess
+                            )
+                            .where(
+                                "learner_email_normalized",
+                                "==",
+                                authenticatedEmail
+                            )
+                            .limit(100);
+
+                        const pendingResourceAccessSnapshot =
+                            await transaction.get(
+                                pendingResourceAccessQuery
+                            );
+
+                        const matchingResourceAccessDocuments =
+                            pendingResourceAccessSnapshot.docs
+                                .filter((document) => {
+                                    const access =
+                                        document.data() || {};
+
+                                    return (
+                                        normalizeUpper(
+                                            access.credential_id
+                                        ) ===
+                                            normalizeUpper(
+                                                credentialId
+                                            ) &&
+                                        normalizeLower(
+                                            access.identity_status
+                                        ) ===
+                                            "pending_activation" &&
+                                        normalizeLower(
+                                            access.access_status
+                                        ) ===
+                                            "pending_activation" &&
+                                        !normalizeString(
+                                            access.learner_uid
+                                        )
+                                    );
+                                });
+
+                        /* ----------------------------------
                            Atomic Writes
                         ---------------------------------- */
 
@@ -1333,6 +1389,34 @@ app.post(
                                 }
                             );
                         }
+
+                        matchingResourceAccessDocuments.forEach(
+                            (document) => {
+                                transaction.update(
+                                    document.ref,
+                                    {
+                                        learner_uid:
+                                            authenticatedUid,
+                                        identity_status:
+                                                                                    "activated",
+                                        access_status:
+                                            "active",
+                                        activated_at:
+                                            serverTimestamp,
+                                        activated_by_uid:
+                                            authenticatedUid,
+                                        updated_at:
+                                            serverTimestamp,
+                                        updated_by_uid:
+                                            authenticatedUid,
+                                        updated_by_email:
+                                            authenticatedEmail,
+                                        last_mutation_source:
+                                            "credential_activation_api"
+                                    }
+                                );
+                            }
+                        );
 
                         transaction.update(
                             activationDocument.ref,
@@ -1445,6 +1529,8 @@ app.post(
                             credentialClaimed: true,
                             credentialId,
                             programCode,
+                            learningResourcesActivated:
+                                matchingResourceAccessDocuments.length,
                             auditEventId: auditRef.id
                         };
                     }
@@ -1483,6 +1569,10 @@ app.post(
 
                     programCode:
                         finalProgramCode,
+
+                    learningResourcesActivated:
+                        transactionResult
+                            .learningResourcesActivated || 0,
 
                     redirectUrl:
                         "/index.html"
@@ -2008,7 +2098,7 @@ app.get(
    Status      : Read Only
 
    Important
-   ----------------------------------------------------------
+      ----------------------------------------------------------
    Existing behaviour is preserved in this release.
 
    Administrative authentication and authorization should
@@ -2093,6 +2183,278 @@ app.post(
                 api: "credential-registry",
                 message:
                     "Failed to load credential registry"
+            });
+        }
+    }
+);
+
+/* ==========================================================
+   Learner Learning Resources API
+
+   The API derives ownership from the verified Firebase token.
+   Firestore document IDs and Storage paths are never returned
+   to the learner-facing browser.
+========================================================== */
+
+function isResourceAvailableNow(access = {}) {
+    const now = Date.now();
+    const availableFrom = access.available_from
+        ? Date.parse(access.available_from)
+        : NaN;
+    const availableUntil = access.available_until
+        ? Date.parse(access.available_until)
+        : NaN;
+
+    return (
+        (!Number.isFinite(availableFrom) || availableFrom <= now) &&
+        (!Number.isFinite(availableUntil) || availableUntil >= now)
+    );
+}
+
+async function requireOwnedLearningResource(
+    accessId,
+    authenticatedLearner
+) {
+    const accessReference = db
+        .collection(COLLECTIONS.learnerResourceAccess)
+        .doc(accessId);
+    const accessSnapshot = await accessReference.get();
+
+    if (!accessSnapshot.exists) {
+        throw createServiceError({
+            code: "LEARNING_RESOURCE_NOT_FOUND",
+            message: "The learning resource is unavailable.",
+            httpStatus: 404
+        });
+    }
+
+    const access = accessSnapshot.data() || {};
+
+    if (
+        normalizeString(access.learner_uid) !==
+            authenticatedLearner.uid ||
+        normalizeLower(access.identity_status) !== "activated" ||
+        normalizeLower(access.access_status) !== "active" ||
+        normalizeLower(access.release_status) !== "released" ||
+        !isResourceAvailableNow(access)
+    ) {
+        throw createServiceError({
+            code: "LEARNING_RESOURCE_FORBIDDEN",
+            message: "The learning resource is not available for this account.",
+            httpStatus: 403
+        });
+    }
+
+    const resourceReference = db
+        .collection(COLLECTIONS.learningResources)
+        .doc(normalizeString(access.resource_document_id));
+    const resourceSnapshot = await resourceReference.get();
+    const resource = resourceSnapshot.exists
+        ? resourceSnapshot.data() || {}
+        : null;
+
+    if (
+        !resource ||
+        normalizeLower(resource.status) !== "published" ||
+        resource.is_active !== true
+    ) {
+        throw createServiceError({
+            code: "LEARNING_RESOURCE_NOT_FOUND",
+            message: "The learning resource is unavailable.",
+            httpStatus: 404
+        });
+    }
+
+    return { access, resource };
+}
+
+app.get(
+    "/api/v1/learning-resources/me",
+    async (req, res) => {
+        try {
+            const learner = await verifyAuthenticatedLearner(req);
+            const snapshot = await db
+                .collection(COLLECTIONS.learnerResourceAccess)
+                .where("learner_uid", "==", learner.uid)
+                .limit(100)
+                .get();
+
+            const eligibleAccess = snapshot.docs.filter((document) => {
+                const access = document.data() || {};
+                return (
+                    normalizeLower(access.identity_status) === "activated" &&
+                    normalizeLower(access.access_status) === "active" &&
+                    normalizeLower(access.release_status) === "released" &&
+                    isResourceAvailableNow(access)
+                );
+            });
+
+            const resources = await Promise.all(
+                eligibleAccess.map(async (accessDocument) => {
+                    const access = accessDocument.data() || {};
+                    const resourceSnapshot = await db
+                        .collection(COLLECTIONS.learningResources)
+                        .doc(normalizeString(access.resource_document_id))
+                        .get();
+                    const resource = resourceSnapshot.exists
+                        ? resourceSnapshot.data() || {}
+                        : null;
+
+                    if (
+                        !resource ||
+                        normalizeLower(resource.status) !== "published" ||
+                        resource.is_active !== true
+                    ) {
+                        return null;
+                    }
+
+                    return {
+                        accessId: accessDocument.id,
+                        resourceId: normalizeString(resource.resource_id),
+                        programCode: normalizeUpper(resource.program_code),
+                        title: normalizeString(resource.title),
+                        description: normalizeString(resource.description),
+                        resourceType: normalizeLower(resource.resource_type),
+                        category: normalizeLower(resource.category),
+                        version: Number(resource.version) || 1,
+                        fileName: normalizeString(resource.file_name),
+                        mimeType: normalizeString(resource.mime_type),
+                        previewAllowed:
+                            access.preview_allowed === true &&
+                            resource.preview_allowed === true,
+                        downloadAllowed:
+                            access.download_allowed === true &&
+                            resource.download_allowed === true,
+                        deliveryPath:
+                            `/api/v1/learning-resources/${encodeURIComponent(accessDocument.id)}/delivery`
+                    };
+                })
+            );
+
+            return res.status(200).json({
+                success: true,
+                data: {
+                    resources: resources.filter(Boolean)
+                }
+            });
+        } catch (error) {
+            return res.status(error.httpStatus || 500).json({
+                success: false,
+                error: {
+                    code: error.code || "LEARNING_RESOURCE_LOAD_FAILED",
+                    message:
+                        error.httpStatus && error.httpStatus < 500
+                            ? error.message
+                            : "Learning resources could not be loaded."
+                }
+            });
+        }
+    }
+);
+
+app.post(
+    "/api/v1/learning-resources/:accessId/delivery",
+    async (req, res) => {
+        try {
+            const learner = await verifyAuthenticatedLearner(req);
+            const { access, resource } =
+                await requireOwnedLearningResource(
+                    normalizeString(req.params.accessId),
+                    learner
+                );
+            const deliveryType = normalizeLower(resource.delivery_type);
+
+            if (deliveryType !== "protected_storage") {
+                const externalUrl = normalizeString(resource.external_url);
+                let parsedUrl;
+
+                try {
+                    parsedUrl = new URL(externalUrl);
+                } catch (error) {
+                    parsedUrl = null;
+                }
+
+                if (
+                    !parsedUrl ||
+                    !["https:", "http:"].includes(parsedUrl.protocol)
+                ) {
+                    throw createServiceError({
+                        code: "LEARNING_RESOURCE_DELIVERY_INVALID",
+                        message: "The learning resource delivery link is unavailable.",
+                        httpStatus: 409
+                    });
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    data: {
+                        deliveryUrl: parsedUrl.toString(),
+                        expiresAt: null
+                    }
+                });
+            }
+
+            if (
+                access.download_allowed !== true ||
+                resource.download_allowed !== true
+            ) {
+                throw createServiceError({
+                    code: "LEARNING_RESOURCE_DOWNLOAD_FORBIDDEN",
+                    message: "Download is not available for this learning resource.",
+                    httpStatus: 403
+                });
+            }
+
+            const storagePath = normalizeString(resource.storage_path);
+            const fileName =
+                normalizeString(resource.file_name) ||
+                "Agile-AI-University-Learning-Resource";
+
+            if (!storagePath) {
+                throw createServiceError({
+                    code: "LEARNING_RESOURCE_DELIVERY_INVALID",
+                    message: "The learning resource file is unavailable.",
+                    httpStatus: 409
+                });
+            }
+
+            const bucket = admin.storage().bucket(
+                process.env.LEARNING_RESOURCE_BUCKET ||
+                "fb-agileai-university.firebasestorage.app"
+            );
+            const file = bucket.file(storagePath);
+            const [exists] = await file.exists();
+
+            if (!exists) {
+                throw createServiceError({
+                    code: "LEARNING_RESOURCE_FILE_NOT_FOUND",
+                    message: "The learning resource file is unavailable.",
+                    httpStatus: 404
+                });
+            }
+
+            res.setHeader(
+                "Content-Type",
+                normalizeString(resource.mime_type) ||
+                    "application/octet-stream"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="${fileName.replace(/["\\\r\n]/g, "_")}"`
+            );
+            res.setHeader("Cache-Control", "private, no-store");
+
+            return file.createReadStream().pipe(res);
+        } catch (error) {
+            return res.status(error.httpStatus || 500).json({
+                success: false,
+                error: {
+                    code: error.code || "LEARNING_RESOURCE_DELIVERY_FAILED",
+                    message:
+                        error.httpStatus && error.httpStatus < 500
+                            ? error.message
+                            : "The learning resource could not be delivered."
+                }
             });
         }
     }

@@ -1926,10 +1926,7 @@ service cloud.firestore {
     }
 
 
-    function matchesPublishedLearnerResource(
-      data
-    ) {
-
+    function matchesPublishedLearnerResource(data) {
       let learningResource =
         get(
           /databases/$(database)/documents/learning_resources/$(data.resource_document_id)
@@ -1955,36 +1952,21 @@ service cloud.firestore {
         learningResource.version ==
           data.resource_version &&
 
-        /*
-        * Master resources are centrally governed assets.
-        *
-        * Their catalogue-level preview/download flags remain false.
-        * Delivery permission is granted per learner through the
-        * learner_resource_access relationship.
-        *
-        * Non-master resources may never exceed the permissions
-        * declared on the published resource.
-        */
         (
           isMasterResource ||
-
           data.preview_allowed ==
             false ||
-
           learningResource.preview_allowed ==
             true
         ) &&
 
         (
           isMasterResource ||
-
           data.download_allowed ==
             false ||
-
           learningResource.download_allowed ==
             true
         );
-
     }
 
     /* =====================================================

@@ -8,7 +8,7 @@ service firebase.storage {
        AGILE AI UNIVERSITY
        CLOUD STORAGE SECURITY RULES
 
-       Version : 1.2.0
+       Version : 1.3.0
        Status  : ACTIVE
 
        Security Model
@@ -36,9 +36,14 @@ service firebase.storage {
          Protected programme learning resources and licensed
          course materials.
 
+       master-learning-resources/
+         Protected master sources for learner-specific licensed
+         course materials.
+
        Protected Learning Delivery
        -----------------------------------------------------
-       Learners must not access learning-resources directly.
+       Learners must not access protected learning-resource
+       objects directly.
 
        A governed backend access broker must:
        • authenticate the learner;
@@ -49,6 +54,13 @@ service firebase.storage {
 
        Change History
        -----------------------------------------------------
+       v1.3.0
+       • Added protected master-learning-resources domain
+       • Added physical Storage-domain metadata validation
+       • Preserved admin-only read and create authority
+       • Preserved immutable create-only object enforcement
+       • Preserved default-deny learner access
+
        v1.2.0
        • Added Markdown learning-resource support
        • Added compatibility support for image/jpg
@@ -116,17 +128,6 @@ service firebase.storage {
       programCode
     ) {
 
-      /*
-       * Programme codes must use uppercase letters, numbers,
-       * underscores or hyphens.
-       *
-       * Examples:
-       * AOP
-       * AIPA
-       * AAIA
-       * AAIP
-       */
-
       return
         programCode is string &&
 
@@ -140,14 +141,6 @@ service firebase.storage {
     function hasValidLearningResourceId(
       resourceId
     ) {
-
-      /*
-       * Resource IDs are stable lowercase identifiers.
-       *
-       * Examples:
-       * aop-licensed-material
-       * aop-reference-guide
-       */
 
       return
         resourceId is string &&
@@ -163,13 +156,6 @@ service firebase.storage {
       version
     ) {
 
-      /*
-       * Storage versions use:
-       * v1
-       * v2
-       * v3
-       */
-
       return
         version is string &&
 
@@ -183,14 +169,6 @@ service firebase.storage {
     function hasValidLearningResourceFileName(
       fileName
     ) {
-
-      /*
-       * Filenames must:
-       * • begin with a letter or number;
-       * • contain only letters, numbers, dots,
-       *   underscores and hyphens;
-       * • remain within 150 characters.
-       */
 
       return
         fileName is string &&
@@ -208,14 +186,6 @@ service firebase.storage {
 
     function hasValidLearningResourceSize() {
 
-      /*
-       * Initial protected-resource limit:
-       * 50 MiB per uploaded object.
-       *
-       * Large videos should use a governed external provider
-       * or a separately designed video-delivery architecture.
-       */
-
       return
         request.resource.size > 0 &&
 
@@ -226,29 +196,6 @@ service firebase.storage {
 
 
     function hasValidLearningResourceContentType() {
-
-      /*
-       * Approved initial resource formats:
-       *
-       * • PDF
-       * • Plain text
-       * • Markdown
-       * • CSV
-       * • Microsoft Word
-       * • Microsoft PowerPoint
-       * • Microsoft Excel
-       * • OpenDocument text
-       * • OpenDocument presentation
-       * • OpenDocument spreadsheet
-       * • PNG
-       * • JPEG
-       *
-       * image/jpg is accepted only for compatibility with
-       * clients that submit the nonstandard alias.
-       *
-       * Executables, HTML, JavaScript, archives and unknown
-       * binary formats are deliberately excluded.
-       */
 
       return
         request.resource.contentType != null &&
@@ -277,13 +224,6 @@ service firebase.storage {
 
     function hasValidLearningResourceCacheControl() {
 
-      /*
-       * Protected learning resources must not be stored with
-       * public or long-lived browser caching instructions.
-       *
-       * This value matches learning-resource-storage.js.
-       */
-
       return
         request.resource.cacheControl ==
           "private,max-age=0,no-store";
@@ -310,6 +250,8 @@ service firebase.storage {
 
         request.resource.metadata.governance_domain != null &&
 
+        request.resource.metadata.storage_domain != null &&
+
         request.resource.metadata.immutable_version != null &&
 
         request.resource.metadata.uploaded_by_uid != null &&
@@ -332,6 +274,8 @@ service firebase.storage {
 
         request.resource.metadata.governance_domain is string &&
 
+        request.resource.metadata.storage_domain is string &&
+
         request.resource.metadata.immutable_version is string &&
 
         request.resource.metadata.uploaded_by_uid is string &&
@@ -341,7 +285,9 @@ service firebase.storage {
     }
 
 
-    function hasValidLearningResourceMetadataAuthority() {
+    function hasValidLearningResourceMetadataAuthority(
+      storageDomain
+    ) {
 
       return
         request.resource.metadata.source ==
@@ -349,6 +295,9 @@ service firebase.storage {
 
         request.resource.metadata.governance_domain ==
           "learning_resources" &&
+
+        request.resource.metadata.storage_domain ==
+          storageDomain &&
 
         request.resource.metadata.immutable_version ==
           "true" &&
@@ -368,15 +317,6 @@ service firebase.storage {
       version
     ) {
 
-      /*
-       * The version metadata stores the numeric component,
-       * while the path stores the governed v-prefixed form.
-       *
-       * Example:
-       * metadata.version = "1"
-       * path version      = "v1"
-       */
-
       return
         request.resource.metadata.program_code ==
           programCode &&
@@ -393,7 +333,8 @@ service firebase.storage {
     function hasValidLearningResourceMetadata(
       programCode,
       resourceId,
-      version
+      version,
+      storageDomain
     ) {
 
       return
@@ -401,7 +342,9 @@ service firebase.storage {
 
         hasValidLearningResourceMetadataTypes() &&
 
-        hasValidLearningResourceMetadataAuthority() &&
+        hasValidLearningResourceMetadataAuthority(
+          storageDomain
+        ) &&
 
         learningResourceMetadataMatchesPath(
           programCode,
@@ -420,7 +363,8 @@ service firebase.storage {
       programCode,
       resourceId,
       version,
-      fileName
+      fileName,
+      storageDomain
     ) {
 
       return
@@ -449,11 +393,11 @@ service firebase.storage {
         hasValidLearningResourceMetadata(
           programCode,
           resourceId,
-          version
+          version,
+          storageDomain
         );
 
     }
-
 
     /* =====================================================
        CREDENTIAL ASSETS
@@ -507,46 +451,62 @@ service firebase.storage {
            {resourceId}/
              {version}/
                {fileName}
-
-       Example
-       -----------------------------------------------------
-       learning-resources/
-         AOP/
-           aop-licensed-material/
-             v1/
-               aop-licensed-material.pdf
     ===================================================== */
 
     match /learning-resources/{programCode}/{resourceId}/{version}/{fileName} {
 
       /*
-       * Direct Storage reads are restricted to approved
-       * administrators.
-       *
-       * Learners must obtain access through the future
-       * authorized learning-resource access broker.
+       * Direct reads remain restricted to approved
+       * administrators. Learners use the authorized backend
+       * delivery broker.
        */
 
       allow read: if
         isBootstrapAdmin();
 
       /*
-       * Administrators may create a new immutable resource
-       * object only when:
-       *
-       * • the path follows the governed convention;
-       * • the file is not empty;
-       * • the file is within the size limit;
-       * • the MIME type is approved;
-       * • cache control keeps the object private;
-       * • governed upload metadata is present;
-       * • metadata identity matches path identity;
-       * • upload audit identity matches Firebase Auth.
-       *
-       * Firebase Storage evaluates a write to a nonexistent
-       * path as create. An attempted write to an existing path
-       * is evaluated as update and is denied below.
+       * Shared protected objects are create-only, validated,
+       * private and immutable.
        */
+      allow create: if
+        isBootstrapAdmin() &&
+
+        isValidLearningResourceUpload(
+          programCode,
+          resourceId,
+          version,
+          fileName,
+          "learning_resources"
+        );
+
+      allow update: if
+        false;
+
+      allow delete: if
+        false;
+
+    }
+
+
+    /* =====================================================
+       PROTECTED MASTER LEARNING RESOURCES
+
+       Canonical Path
+       -----------------------------------------------------
+       master-learning-resources/
+         {programCode}/
+           {resourceId}/
+             {version}/
+               {fileName}
+
+       Master resources remain admin-only and immutable.
+       Learners must never access master source files directly.
+    ===================================================== */
+
+    match /master-learning-resources/{programCode}/{resourceId}/{version}/{fileName} {
+
+      allow read: if
+        isBootstrapAdmin();
 
       allow create: if
         isBootstrapAdmin() &&
@@ -555,28 +515,12 @@ service firebase.storage {
           programCode,
           resourceId,
           version,
-          fileName
+          fileName,
+          "master_learning_resources"
         );
-
-      /*
-       * Existing protected learning-resource objects cannot
-       * be overwritten.
-       *
-       * Replacement requires a new version path, such as:
-       *
-       * v1 → v2
-       */
 
       allow update: if
         false;
-
-      /*
-       * Client-side deletion is prohibited.
-       *
-       * Resource withdrawal is performed through governed
-       * Firestore publication metadata. Physical retention
-       * preserves auditability and version history.
-       */
 
       allow delete: if
         false;

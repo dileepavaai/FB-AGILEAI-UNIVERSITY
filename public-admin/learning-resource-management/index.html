@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8" />
 
   <title>Learning Resource Management – Admin</title>
@@ -97,6 +99,7 @@
        • Added protected-file selection
        • Added registry summary and filtering
   ====================================================== -->
+
 </head>
 
 <body class="app-loading">
@@ -196,9 +199,11 @@
           aria-live="polite"
           aria-hidden="true"
         >
+
           <div class="card">
             Loading learning resources…
           </div>
+
         </div>
 
         <!-- SUMMARY -->
@@ -267,10 +272,23 @@
                 </label>
 
                 <select id="learning-resource-filter-status">
-                  <option value="">All statuses</option>
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="withdrawn">Withdrawn</option>
+
+                  <option value="">
+                    All statuses
+                  </option>
+
+                  <option value="draft">
+                    Draft
+                  </option>
+
+                  <option value="published">
+                    Published
+                  </option>
+
+                  <option value="withdrawn">
+                    Withdrawn
+                  </option>
+
                 </select>
 
               </div>
@@ -373,8 +391,7 @@
           </div>
 
         </div>
-
-        <!-- RESOURCE FORM -->
+                <!-- RESOURCE FORM -->
         <section
           id="learning-resource-form-panel"
           class="section hidden"
@@ -904,9 +921,7 @@
           </div>
 
         </section>
-
-
-        <!-- LEARNER RESOURCE ACCESS ASSIGNMENT -->
+                <!-- LEARNER RESOURCE ACCESS ASSIGNMENT -->
         <section
           id="learner-resource-access-panel"
           class="section hidden"
@@ -935,7 +950,7 @@
               </div>
 
               <button
-                id="learner-resource-access-cancel"
+                id="learner-resource-access-form-cancel"
                 class="btn btn-secondary"
                 type="button"
               >
@@ -1509,7 +1524,7 @@
                 </button>
 
                 <button
-                  id="learner-resource-access-cancel-secondary"
+                  id="learner-resource-access-form-cancel-secondary"
                   type="button"
                   class="btn btn-secondary"
                 >
@@ -1574,8 +1589,7 @@
 
   <!-- 🔷 FOOTER -->
   <div id="footerContainer"></div>
-
-  <!-- 🔥 ADMIN APPLICATION BOOTSTRAP -->
+    <!-- 🔥 ADMIN APPLICATION BOOTSTRAP -->
   <script type="module">
 
     import {
@@ -1588,7 +1602,7 @@
 
     import {
       initialize as initializeLearningResourceManagement
-    } from "./assets/js/learning-resource-controller.js";
+    } from "./assets/js/learning-resource-controller.js?v=1.4.2";
 
 
     loadAdminSidebar(
@@ -1617,14 +1631,16 @@
 
 
     if (
-      document.readyState === "loading"
+      document.readyState ===
+        "loading"
     ) {
 
       document.addEventListener(
         "DOMContentLoaded",
         initializePage,
         {
-          once: true
+          once:
+            true
         }
       );
 
@@ -1638,4 +1654,5 @@
   </script>
 
 </body>
+
 </html>

@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.6.0
+       Version : 2.7.0
        Status  : ACTIVE
 
        Security Model
@@ -37,6 +37,13 @@ service cloud.firestore {
 
        Change History
        -----------------------------------------------------
+       v2.7.0
+       • Added governed learning-resource Storage domains
+       • Added master-learning-resources path validation
+       • Added update and upload audit field validation
+       • Required administrator identity on resource updates
+       • Preserved all existing production collection rules
+
        v2.6.0
        • Added learner_resource_access relationship authority
        • Added exact learner-access field contract
@@ -210,6 +217,9 @@ service cloud.firestore {
           "category",
           "delivery_type",
 
+          "personalisation_type",
+          "storage_domain",
+
           "storage_path",
           "external_url",
 
@@ -233,6 +243,14 @@ service cloud.firestore {
           "created_by_email",
           "created_at",
 
+          "updated_by_uid",
+          "updated_by_email",
+          "updated_at",
+
+          "uploaded_by_uid",
+          "uploaded_by_email",
+          "uploaded_at",
+
           "published_by_uid",
           "published_by_email",
           "published_at",
@@ -242,7 +260,6 @@ service cloud.firestore {
           "withdrawn_at",
           "withdrawal_reason",
 
-          "updated_at",
           "source"
         ]);
 
@@ -263,6 +280,8 @@ service cloud.firestore {
           "category",
           "delivery_type",
 
+          "storage_domain",
+
           "storage_path",
           "external_url",
 
@@ -286,6 +305,14 @@ service cloud.firestore {
           "created_by_email",
           "created_at",
 
+          "updated_by_uid",
+          "updated_by_email",
+          "updated_at",
+
+          "uploaded_by_uid",
+          "uploaded_by_email",
+          "uploaded_at",
+
           "published_by_uid",
           "published_by_email",
           "published_at",
@@ -295,7 +322,6 @@ service cloud.firestore {
           "withdrawn_at",
           "withdrawal_reason",
 
-          "updated_at",
           "source"
         ]);
 
@@ -413,6 +439,30 @@ service cloud.firestore {
           "external_video",
           "external_link"
         ];
+
+    }
+
+
+    function hasValidLearningResourceStorageDomain(
+      data
+    ) {
+
+      return
+        data.storage_domain in [
+          "learning_resources",
+          "master_learning_resources",
+          "external"
+        ] &&
+
+        (
+          !("personalisation_type" in data) ||
+
+          data.personalisation_type in [
+            "shared",
+            "learner_specific",
+            "none"
+          ]
+        );
 
     }
 
@@ -601,10 +651,30 @@ service cloud.firestore {
     ) {
 
       return
+        data.storage_domain ==
+          "learning_resources" &&
+
         data.storage_path is string &&
 
         data.storage_path.matches(
           '^learning-resources/[A-Z0-9][A-Z0-9_-]{1,19}/[a-z0-9][a-z0-9-]{2,79}/v[1-9][0-9]*/[A-Za-z0-9][A-Za-z0-9._-]{0,149}$'
+        );
+
+    }
+
+
+    function hasValidMasterStoragePath(
+      data
+    ) {
+
+      return
+        data.storage_domain ==
+          "master_learning_resources" &&
+
+        data.storage_path is string &&
+
+        data.storage_path.matches(
+          '^master-learning-resources/[A-Z0-9][A-Z0-9_-]{1,19}/[a-z0-9][a-z0-9-]{2,79}/v[1-9][0-9]*/[A-Za-z0-9][A-Za-z0-9._-]{0,149}$'
         );
 
     }
@@ -619,8 +689,14 @@ service cloud.firestore {
           data.delivery_type ==
             "protected_storage" &&
 
-          hasValidProtectedStoragePath(
-            data
+          (
+            hasValidProtectedStoragePath(
+              data
+            ) ||
+
+            hasValidMasterStoragePath(
+              data
+            )
           ) &&
 
           (
@@ -643,6 +719,9 @@ service cloud.firestore {
         (
           data.delivery_type ==
             "external_video" &&
+
+          data.storage_domain ==
+            "external" &&
 
           hasApprovedExternalVideoUrl(
             data.external_url
@@ -667,6 +746,9 @@ service cloud.firestore {
         (
           data.delivery_type ==
             "external_link" &&
+
+          data.storage_domain ==
+            "external" &&
 
           hasValidHttpsExternalUrl(
             data.external_url
@@ -746,7 +828,28 @@ service cloud.firestore {
 
         data.created_at is timestamp &&
 
+        data.updated_by_uid is string &&
+        data.updated_by_uid.size() > 0 &&
+
+        data.updated_by_email is string &&
+        data.updated_by_email.size() > 0 &&
+
         data.updated_at is timestamp &&
+
+        (
+          data.uploaded_by_uid == null ||
+          data.uploaded_by_uid is string
+        ) &&
+
+        (
+          data.uploaded_by_email == null ||
+          data.uploaded_by_email is string
+        ) &&
+
+        (
+          data.uploaded_at == null ||
+          data.uploaded_at is timestamp
+        ) &&
 
         (
           data.published_by_uid == null ||
@@ -815,6 +918,10 @@ service cloud.firestore {
         ) &&
 
         hasValidLearningResourceDeliveryType(
+          data
+        ) &&
+
+        hasValidLearningResourceStorageDomain(
           data
         ) &&
 
@@ -887,6 +994,12 @@ service cloud.firestore {
 
         request.resource.data.created_at ==
           request.time &&
+
+        request.resource.data.updated_by_uid ==
+          request.auth.uid &&
+
+        request.resource.data.updated_by_email ==
+          request.auth.token.email &&
 
         request.resource.data.updated_at ==
           request.time &&
@@ -1071,6 +1184,9 @@ service cloud.firestore {
           request.resource.data.delivery_type ==
             resource.data.delivery_type &&
 
+          request.resource.data.storage_domain ==
+            resource.data.storage_domain &&
+
           request.resource.data.storage_path ==
             resource.data.storage_path &&
 
@@ -1249,6 +1365,12 @@ service cloud.firestore {
         hasValidPublicationAudit() &&
 
         hasValidWithdrawalAudit() &&
+
+        request.resource.data.updated_by_uid ==
+          request.auth.uid &&
+
+        request.resource.data.updated_by_email ==
+          request.auth.token.email &&
 
         request.resource.data.updated_at ==
           request.time;

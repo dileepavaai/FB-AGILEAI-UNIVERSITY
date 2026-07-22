@@ -3,7 +3,7 @@
    Learner Resource Access Service
 
    File       : learner-resource-access-service.js
-   Version    : 1.0.0
+   Version    : 1.1.0
    Status     : ACTIVE
    Authority  : Admin Portal
 
@@ -83,7 +83,7 @@ const MODULE_NAME =
     "LearnerResourceAccessService";
 
 const MODULE_VERSION =
-    "1.0.0";
+    "1.1.0";
 
 const SCHEMA_VERSION =
     1;
@@ -428,7 +428,6 @@ function normalizeGovernedValue(
 
 }
 
-
 /* ==========================================================
    EMAIL VALIDATION
 ========================================================== */
@@ -632,8 +631,12 @@ function normalizeAccessInput(
             input.resourceDocumentId
         );
 
+    /*
+     * Learning-resource IDs are canonical lowercase identifiers.
+     * Programme codes remain uppercase.
+     */
     const resourceId =
-        normalizeUppercase(
+        normalizeLowercase(
             input.resource_id ??
             input.resourceId
         );
@@ -763,7 +766,6 @@ function normalizeAccessInput(
     });
 
 }
-
 
 /* ==========================================================
    INPUT VALIDATION
@@ -1088,7 +1090,6 @@ function validateAccessInput(
 
 }
 
-
 /* ==========================================================
    RESOURCE VALIDATION
 ========================================================== */
@@ -1124,9 +1125,15 @@ async function requirePublishedResource(
         {};
 
     const resourceId =
-        normalizeUppercase(
+        normalizeLowercase(
             resourceData.resource_id ??
             resourceData.resourceId
+        );
+
+    const storageDomain =
+        normalizeLowercase(
+            resourceData.storage_domain ??
+            resourceData.storageDomain
         );
 
     const programCode =
@@ -1207,6 +1214,8 @@ async function requirePublishedResource(
         programCode,
 
         version,
+
+        storageDomain,
 
         previewAllowed:
             resourceData.preview_allowed ===
@@ -1322,7 +1331,7 @@ function normalizeAccessSnapshot(
             ),
 
         resourceId:
-            normalizeUppercase(
+            normalizeLowercase(
                 data.resource_id
             ),
 
@@ -1507,7 +1516,6 @@ function normalizeAccessSnapshot(
     });
 
 }
-
 
 /* ==========================================================
    QUERY HELPERS
@@ -1813,16 +1821,32 @@ async function createAccess(
             normalizedInput.availableUntil,
 
         /*
-         * For v1, delivery permissions are inherited from the
-         * published resource. The Admin input cannot expand them.
+         * Master learning resources are globally protected.
+         *
+         * Their learner-facing permissions are granted through the
+         * individual learner_resource_access record and enforced by
+         * the authenticated backend delivery broker.
+         *
+         * Other resource domains cannot exceed the permissions
+         * configured on the published resource.
          */
         preview_allowed:
-            resource.previewAllowed &&
-            normalizedInput.previewAllowed,
+            resource.storageDomain ===
+                "master_learning_resources"
+                ? normalizedInput.previewAllowed
+                : (
+                    resource.previewAllowed &&
+                    normalizedInput.previewAllowed
+                ),
 
         download_allowed:
-            resource.downloadAllowed &&
-            normalizedInput.downloadAllowed,
+            resource.storageDomain ===
+                "master_learning_resources"
+                ? normalizedInput.downloadAllowed
+                : (
+                    resource.downloadAllowed &&
+                    normalizedInput.downloadAllowed
+                ),
 
         granted_by_uid:
             adminContext.uid,
@@ -1914,7 +1938,6 @@ async function createAccess(
     return createdAccess;
 
 }
-
 
 /* ==========================================================
    DIRECT ACCESS READ

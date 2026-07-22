@@ -1935,6 +1935,10 @@ service cloud.firestore {
           /databases/$(database)/documents/learning_resources/$(data.resource_document_id)
         ).data;
 
+      let isMasterResource =
+        learningResource.storage_domain ==
+          "master_learning_resources";
+
       return
         learningResource.status ==
           "published" &&
@@ -1951,24 +1955,37 @@ service cloud.firestore {
         learningResource.version ==
           data.resource_version &&
 
-        data.preview_allowed ==
-          (
-            learningResource.preview_allowed ==
-              true &&
-            data.preview_allowed ==
-              true
-          ) &&
+        /*
+        * Master resources are centrally governed assets.
+        *
+        * Their catalogue-level preview/download flags remain false.
+        * Delivery permission is granted per learner through the
+        * learner_resource_access relationship.
+        *
+        * Non-master resources may never exceed the permissions
+        * declared on the published resource.
+        */
+        (
+          isMasterResource ||
 
-        data.download_allowed ==
-          (
-            learningResource.download_allowed ==
-              true &&
-            data.download_allowed ==
-              true
-          );
+          data.preview_allowed ==
+            false ||
+
+          learningResource.preview_allowed ==
+            true
+        ) &&
+
+        (
+          isMasterResource ||
+
+          data.download_allowed ==
+            false ||
+
+          learningResource.download_allowed ==
+            true
+        );
 
     }
-
 
     /* =====================================================
        LEARNER-RESOURCE ACCESS AUDIT TYPES

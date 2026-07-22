@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-storage.js
-   Version   : 1.1.0
+   Version   : 1.2.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -17,6 +17,7 @@
    • Require an authenticated administrator
    • Validate the administrator role
    • Validate file name, type, extension, and size
+   • Resolve shared and master protected Storage domains
    • Normalize protected Storage paths
    • Detect existing immutable Storage objects
    • Upload governed learning-resource versions
@@ -38,13 +39,26 @@
    Governance
    ----------------------------------------------------------
    • Admin Portal is the upload authority
-   • learning-resources is a protected Storage domain
+   • learning-resources is the shared protected domain
+   • master-learning-resources is the protected master domain
    • Existing protected objects must not be overwritten
    • Replacement requires a new version path
    • Storage Rules must independently deny object updates
    • Client-side deletion is prohibited
    • getDownloadURL() must not be used for protected files
    • Student access requires an authorized delivery broker
+
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Added governed master-learning-resources upload support
+   • Added Storage-domain-aware path generation
+   • Preserved shared learning-resources compatibility
+   • Preserved immutable object and authorization controls
+
+   v1.1.0
+   • Established governed protected-resource uploads
+   • Added persisted metadata verification
 ========================================================== */
 
 import {
@@ -73,10 +87,25 @@ const MODULE_NAME =
     "LearningResourceStorage";
 
 const MODULE_VERSION =
-    "1.1.0";
+    "1.2.0";
 
-const PROTECTED_ROOT =
+const SHARED_PROTECTED_ROOT =
     "learning-resources/";
+
+const MASTER_PROTECTED_ROOT =
+    "master-learning-resources/";
+
+/*
+ * Backward-compatible alias retained for existing callers.
+ */
+const PROTECTED_ROOT =
+    SHARED_PROTECTED_ROOT;
+
+const SUPPORTED_STORAGE_DOMAINS =
+    Object.freeze([
+        "learning_resources",
+        "master_learning_resources"
+    ]);
 
 const ALLOWED_ADMIN_ROLES =
     Object.freeze([
@@ -191,6 +220,24 @@ function normalizeStoragePath(
 }
 
 
+function normalizeStorageDomain(
+    value
+) {
+
+    const normalizedDomain =
+        normalizeString(
+            value
+        ).toLowerCase();
+
+    return SUPPORTED_STORAGE_DOMAINS.includes(
+        normalizedDomain
+    )
+        ? normalizedDomain
+        : "";
+
+}
+
+
 function validateProtectedStoragePath(
     storagePath
 ) {
@@ -202,27 +249,14 @@ function validateProtectedStoragePath(
 
     if (
         !normalizedPath ||
-        !normalizedPath.startsWith(
-            PROTECTED_ROOT
-        )
+        !LearningResourceContract
+            .isValidProtectedStoragePath(
+                normalizedPath
+            )
     ) {
 
         throw new Error(
             `[${MODULE_NAME}] Invalid protected Storage path.`
-        );
-
-    }
-
-    if (
-        normalizedPath ===
-        PROTECTED_ROOT.slice(
-            0,
-            -1
-        )
-    ) {
-
-        throw new Error(
-            `[${MODULE_NAME}] A protected Storage object path is required.`
         );
 
     }
@@ -397,7 +431,6 @@ async function requireAuthorizedAdmin() {
 
 }
 
-
 /* ==========================================================
    FILE VALIDATION
 ========================================================== */
@@ -526,6 +559,13 @@ function normalizeUploadInput(
                 input.resourceId
             ),
 
+        storageDomain:
+            normalizeStorageDomain(
+                input.storage_domain ||
+                input.storageDomain ||
+                "learning_resources"
+            ),
+
         version:
             normalizeVersion(
                 input.version
@@ -597,6 +637,16 @@ function validateUploadIdentity(
 
         throw new Error(
             `[${MODULE_NAME}] Version must be a positive integer.`
+        );
+
+    }
+
+    if (
+        !input.storageDomain
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected Storage domain is invalid.`
         );
 
     }
@@ -699,8 +749,18 @@ function buildUploadMetadata(
             source:
                 "admin_portal",
 
+            /*
+             * Umbrella governance authority retained for
+             * compatibility with current Storage Rules.
+             */
             governance_domain:
                 "learning_resources",
+
+            /*
+             * Physical governed Storage domain.
+             */
+            storage_domain:
+                normalizedInput.storageDomain,
 
             immutable_version:
                 "true",
@@ -825,7 +885,6 @@ function validatePersistedMetadata(
 
 }
 
-
 /* ==========================================================
    PROTECTED UPLOAD
 ========================================================== */
@@ -851,8 +910,33 @@ async function uploadProtectedResource(
             normalizedInput.file
         );
 
+    /*
+     * Shared resources are stored under learning-resources.
+     * Learner-specific master resources are stored under
+     * master-learning-resources.
+     */
+    const pathBuilder =
+        normalizedInput.storageDomain ===
+            "master_learning_resources"
+            ? LearningResourceContract
+                .buildMasterStoragePath
+            : LearningResourceContract
+                .buildSharedStoragePath;
+
+    if (
+        typeof pathBuilder !==
+            "function"
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Storage path builder is unavailable for ` +
+            `${normalizedInput.storageDomain}.`
+        );
+
+    }
+
     const generatedStoragePath =
-        LearningResourceContract.buildStoragePath({
+        pathBuilder({
 
             programCode:
                 normalizedInput.programCode,
@@ -944,12 +1028,16 @@ async function uploadProtectedResource(
                 uploadResult.metadata,
                 {
                     storagePath,
+
                     fileName:
                         fileMetadata.fileName,
+
                     fileExtension:
                         fileMetadata.fileExtension,
+
                     mimeType:
                         fileMetadata.mimeType,
+
                     fileSize:
                         fileMetadata.fileSize
                 }
@@ -1001,7 +1089,10 @@ async function uploadProtectedResource(
                     normalizedInput.resourceId,
 
                 version:
-                    normalizedInput.version
+                    normalizedInput.version,
+
+                storageDomain:
+                    normalizedInput.storageDomain
 
             });
 
@@ -1013,6 +1104,9 @@ async function uploadProtectedResource(
 
                 storagePath:
                     result.storagePath,
+
+                storageDomain:
+                    result.storageDomain,
 
                 bucket:
                     result.bucket,
@@ -1054,6 +1148,9 @@ async function uploadProtectedResource(
                     MODULE_VERSION,
 
                 storagePath,
+
+                storageDomain:
+                    normalizedInput.storageDomain,
 
                 programCode:
                     normalizedInput.programCode,
@@ -1101,7 +1198,6 @@ async function uploadProtectedResource(
     }
 
 }
-
 
 /* ==========================================================
    ADMIN METADATA LOOKUP
@@ -1260,8 +1356,25 @@ const LearningResourceStorage =
         version:
             MODULE_VERSION,
 
+        /*
+         * Backward-compatible shared root.
+         */
         protectedRoot:
             PROTECTED_ROOT,
+
+        protectedRoots:
+            Object.freeze({
+
+                learning_resources:
+                    SHARED_PROTECTED_ROOT,
+
+                master_learning_resources:
+                    MASTER_PROTECTED_ROOT
+
+            }),
+
+        supportedStorageDomains:
+            SUPPORTED_STORAGE_DOMAINS,
 
         maxFileSizeBytes:
             LearningResourceContract.maxFileSizeBytes,
@@ -1280,8 +1393,15 @@ const LearningResourceStorage =
     });
 
 
-window.LearningResourceStorage =
-    LearningResourceStorage;
+if (
+    typeof window !==
+        "undefined"
+) {
+
+    window.LearningResourceStorage =
+        LearningResourceStorage;
+
+}
 
 
 console.info(

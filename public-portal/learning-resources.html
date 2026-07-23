@@ -4,7 +4,7 @@
 
      File        : learning-resources.html
      Page        : Learning Resources
-     Version     : 1.0.0
+     Version     : 1.0.1
      Status      : ACTIVE
      Date        : July 2026
 
@@ -114,7 +114,7 @@
        sidebar, toolbar and footer.
 
      • Page-specific styling remains in the dedicated
-       learning-resource stylesheet.
+       Learning Resource stylesheet.
 
      • Page-specific JavaScript remains in the service and
        presentation component files.
@@ -149,6 +149,14 @@
 
      Change History
      ----------------------------------------------------------
+     v1.0.1
+
+     • Updated LearningResourceSection dependency to v1.0.2
+     • Added cache invalidation for the protected-preview fix
+     • Preserved component-owned automatic initialization
+     • Preserved fail-closed authentication visibility
+     • Preserved governed resource delivery architecture
+
      v1.0.0
 
      • Added authenticated Learning Resources page
@@ -564,10 +572,14 @@
 
          The component initializes itself after PortalAuth
          confirms the authenticated learner.
+
+         Version 1.0.2 reserves the preview window during the
+         direct user click before awaiting protected delivery,
+         preventing browser popup blocking.
     ================================================== -->
 
     <script
-        src="/assets/js/components/learning-resource/learning-resource-section.js?v=1.0.1">
+        src="/assets/js/components/learning-resource/learning-resource-section.js?v=1.0.2">
     </script>
 
 

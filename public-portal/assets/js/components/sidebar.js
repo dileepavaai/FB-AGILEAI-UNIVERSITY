@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.5.0
+   Version   : 1.6.0
    Status    : ACTIVE
    Phase     : Portal Identity Stabilization
 
@@ -99,6 +99,14 @@
 
    Change History
    ----------------------------------------------------------
+   v1.6.0
+   
+   • Added Learning Resources as a first-class portal destination
+   • Added canonical /learning-resources.html navigation
+   • Preserved same-tab navigation for authenticated portal pages
+   • Preserved active-page highlighting
+   • Preserved centralized navigation ownership
+
    v1.5.0
 
    • Removed placeholder and duplicate navigation entries
@@ -175,11 +183,11 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.5.0";
+        "1.6.0";
 
 
     /* ======================================================
-       NAVIGATION
+    NAVIGATION
     ====================================================== */
 
     const NAVIGATION = [
@@ -214,6 +222,20 @@
 
         {
             id:
+                "learning-resources",
+
+            title:
+                "Learning Resources",
+
+            icon:
+                "📚",
+
+            url:
+                "/learning-resources.html"
+        },
+
+        {
+            id:
                 "assessment",
 
             title:
@@ -230,7 +252,6 @@
         }
 
     ];
-
 
     /* ======================================================
        PLACEHOLDER VALUES

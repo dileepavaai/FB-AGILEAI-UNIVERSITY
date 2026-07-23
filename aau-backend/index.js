@@ -2615,3 +2615,878 @@ async function requireOwnedLearningResource(
             )
     };
 }
+
+app.get(
+    "/api/v1/learning-resources/me",
+    async (req, res) => {
+        try {
+            applyPrivateNoStoreHeaders(res);
+
+            const authenticatedLearner =
+                await verifyAuthenticatedLearner(req);
+
+            const learnerUid =
+                authenticatedLearner.uid;
+
+            const nowMilliseconds =
+                Date.now();
+
+            /* ------------------------------------------
+               Learner Access Resolution
+
+               Ownership is resolved only from the verified
+               Firebase UID. Browser-supplied identity values
+               are never trusted.
+            ------------------------------------------ */
+
+            const accessSnapshot = await db
+                .collection(
+                    COLLECTIONS.learnerResourceAccess
+                )
+                .where(
+                    "learner_uid",
+                    "==",
+                    learnerUid
+                )
+                .limit(
+                    MAX_LEARNER_RESOURCE_ACCESS
+                )
+                .get();
+
+            const eligibleAccessDocuments =
+                accessSnapshot.docs.filter(
+                    (document) => {
+                        const access =
+                            document.data() || {};
+
+                        return isEligibleLearnerAccess(
+                            access,
+                            learnerUid,
+                            nowMilliseconds
+                        );
+                    }
+                );
+
+            if (
+                eligibleAccessDocuments.length === 0
+            ) {
+                return res.status(200).json({
+                    success: true,
+
+                    data: {
+                        resources: []
+                    },
+
+                    meta: {
+                        apiVersion:
+                            LEARNING_RESOURCE_API_VERSION,
+
+                        total: 0
+                    }
+                });
+            }
+
+            /* ------------------------------------------
+               Resource Reference Deduplication
+
+               Multiple learner-access records may reference
+               the same resource document. Resource reads are
+               deduplicated before the Firestore getAll call.
+            ------------------------------------------ */
+
+            const resourceReferencesById =
+                new Map();
+
+            eligibleAccessDocuments.forEach(
+                (accessDocument) => {
+                    const access =
+                        accessDocument.data() || {};
+
+                    const resourceDocumentId =
+                        normalizeString(
+                            access.resource_document_id
+                        );
+
+                    if (
+                        resourceDocumentId &&
+                        !resourceReferencesById.has(
+                            resourceDocumentId
+                        )
+                    ) {
+                        resourceReferencesById.set(
+                            resourceDocumentId,
+
+                            db
+                                .collection(
+                                    COLLECTIONS.learningResources
+                                )
+                                .doc(
+                                    resourceDocumentId
+                                )
+                        );
+                    }
+                }
+            );
+
+            const resourceReferences =
+                Array.from(
+                    resourceReferencesById.values()
+                );
+
+            if (
+                resourceReferences.length === 0
+            ) {
+                return res.status(200).json({
+                    success: true,
+
+                    data: {
+                        resources: []
+                    },
+
+                    meta: {
+                        apiVersion:
+                            LEARNING_RESOURCE_API_VERSION,
+
+                        total: 0
+                    }
+                });
+            }
+
+            /* ------------------------------------------
+               Batched Resource Resolution
+
+               getAll avoids one Firestore network round trip
+               for every learner-access record.
+            ------------------------------------------ */
+
+            const resourceSnapshots =
+                await db.getAll(
+                    ...resourceReferences
+                );
+
+            const resourcesByDocumentId =
+                new Map();
+
+            resourceSnapshots.forEach(
+                (resourceSnapshot) => {
+                    if (!resourceSnapshot.exists) {
+                        return;
+                    }
+
+                    resourcesByDocumentId.set(
+                        resourceSnapshot.id,
+                        resourceSnapshot.data() || {}
+                    );
+                }
+            );
+
+            /* ------------------------------------------
+               Safe Learner Response Projection
+            ------------------------------------------ */
+
+            const resources =
+                eligibleAccessDocuments
+                    .map((accessDocument) => {
+                        const access =
+                            accessDocument.data() || {};
+
+                        const resourceDocumentId =
+                            normalizeString(
+                                access.resource_document_id
+                            );
+
+                        const resource =
+                            resourcesByDocumentId.get(
+                                resourceDocumentId
+                            );
+
+                        if (
+                            !resource ||
+                            !isPublishedActiveResource(
+                                resource
+                            ) ||
+                            !accessMatchesResource(
+                                access,
+                                resource
+                            )
+                        ) {
+                            return null;
+                        }
+
+                        const permissions =
+                            resolveLearnerPermissions(
+                                access,
+                                resource
+                            );
+
+                        const deliveryType =
+                            normalizeLower(
+                                resource.delivery_type
+                            );
+
+                        const externalUrl =
+                            deliveryType ===
+                            PROTECTED_STORAGE_DELIVERY_TYPE
+                                ? null
+                                : resolveSafeExternalUrl(
+                                    resource.external_url
+                                );
+
+                        /*
+                         * Invalid external delivery URLs are
+                         * omitted rather than exposed to the
+                         * learner.
+                         */
+                        if (
+                            deliveryType !==
+                                PROTECTED_STORAGE_DELIVERY_TYPE &&
+                            !externalUrl
+                        ) {
+                            return null;
+                        }
+
+                        return {
+                            accessId:
+                                accessDocument.id,
+
+                            resourceId:
+                                normalizeString(
+                                    resource.resource_id
+                                ),
+
+                            programCode:
+                                normalizeUpper(
+                                    resource.program_code
+                                ),
+
+                            title:
+                                normalizeString(
+                                    resource.title
+                                ),
+
+                            description:
+                                normalizeString(
+                                    resource.description
+                                ),
+
+                            resourceType:
+                                normalizeLower(
+                                    resource.resource_type
+                                ),
+
+                            category:
+                                normalizeLower(
+                                    resource.category
+                                ),
+
+                            version:
+                                Number(
+                                    resource.version
+                                ) || 1,
+
+                            fileName:
+                                normalizeString(
+                                    resource.file_name
+                                ),
+
+                            mimeType:
+                                normalizeString(
+                                    resource.mime_type
+                                ),
+
+                            deliveryType,
+
+                            previewAllowed:
+                                permissions.previewAllowed,
+
+                            downloadAllowed:
+                                permissions.downloadAllowed,
+
+                            availableFrom:
+                                resolveDate(
+                                    access.available_from
+                                ),
+
+                            availableUntil:
+                                resolveDate(
+                                    access.available_until
+                                ),
+
+                            deliveryPath:
+                                `/api/v1/learning-resources/${encodeURIComponent(
+                                    accessDocument.id
+                                )}/delivery`
+                        };
+                    })
+                    .filter(Boolean);
+
+            resources.sort(
+                (
+                    firstResource,
+                    secondResource
+                ) => {
+                    const firstProgram =
+                        normalizeUpper(
+                            firstResource.programCode
+                        );
+
+                    const secondProgram =
+                        normalizeUpper(
+                            secondResource.programCode
+                        );
+
+                    const programComparison =
+                        firstProgram.localeCompare(
+                            secondProgram
+                        );
+
+                    if (programComparison !== 0) {
+                        return programComparison;
+                    }
+
+                    return normalizeString(
+                        firstResource.title
+                    ).localeCompare(
+                        normalizeString(
+                            secondResource.title
+                        )
+                    );
+                }
+            );
+
+            return res.status(200).json({
+                success: true,
+
+                data: {
+                    resources
+                },
+
+                meta: {
+                    apiVersion:
+                        LEARNING_RESOURCE_API_VERSION,
+
+                    total:
+                        resources.length
+                }
+            });
+        } catch (error) {
+            const httpStatus =
+                Number.isInteger(
+                    error.httpStatus
+                )
+                    ? error.httpStatus
+                    : 500;
+
+            const code =
+                normalizeString(
+                    error.code
+                ) ||
+                "LEARNING_RESOURCE_LOAD_FAILED";
+
+            if (httpStatus >= 500) {
+                console.error(
+                    `[${SERVICE_NAME}] Learner learning ` +
+                    `resources could not be loaded:`,
+                    error
+                );
+            } else {
+                console.warn(
+                    `[${SERVICE_NAME}] Learner learning ` +
+                    `resource request rejected. Code: ` +
+                    `${code}`
+                );
+            }
+
+            return res.status(httpStatus).json({
+                success: false,
+
+                error: {
+                    code,
+
+                    message:
+                        httpStatus < 500
+                            ? error.message
+                            : "Learning resources could not be loaded."
+                }
+            });
+        }
+    }
+);
+
+app.post(
+    "/api/v1/learning-resources/:accessId/delivery",
+    async (req, res) => {
+        try {
+            applyPrivateNoStoreHeaders(res);
+
+            const authenticatedLearner =
+                await verifyAuthenticatedLearner(req);
+
+            const action =
+                resolveDeliveryAction(
+                    req.body?.action
+                );
+
+            const {
+                access,
+                resource,
+                permissions
+            } =
+                await requireOwnedLearningResource(
+                    req.params.accessId,
+                    authenticatedLearner
+                );
+
+            const deliveryType =
+                normalizeLower(
+                    resource.delivery_type
+                );
+
+            /* ------------------------------------------
+               Permission Enforcement
+
+               learner_resource_access is authoritative for
+               master learning resources.
+
+               For non-master resources, assignment rights
+               remain constrained by the catalogue-level
+               permissions through resolveLearnerPermissions().
+            ------------------------------------------ */
+
+            if (
+                action === "preview" &&
+                permissions.previewAllowed !== true
+            ) {
+                throw createServiceError({
+                    code:
+                        "LEARNING_RESOURCE_PREVIEW_FORBIDDEN",
+
+                    message:
+                        "Preview is not available for this learning resource.",
+
+                    httpStatus: 403
+                });
+            }
+
+            if (
+                action === "download" &&
+                permissions.downloadAllowed !== true
+            ) {
+                throw createServiceError({
+                    code:
+                        "LEARNING_RESOURCE_DOWNLOAD_FORBIDDEN",
+
+                    message:
+                        "Download is not available for this learning resource.",
+
+                    httpStatus: 403
+                });
+            }
+
+            /* ------------------------------------------
+               Governed External Delivery
+            ------------------------------------------ */
+
+            if (
+                deliveryType !==
+                PROTECTED_STORAGE_DELIVERY_TYPE
+            ) {
+                const externalUrl =
+                    resolveSafeExternalUrl(
+                        resource.external_url
+                    );
+
+                if (!externalUrl) {
+                    throw createServiceError({
+                        code:
+                            "LEARNING_RESOURCE_DELIVERY_INVALID",
+
+                        message:
+                            "The learning resource delivery link is unavailable.",
+
+                        httpStatus: 409
+                    });
+                }
+
+                return res.status(200).json({
+                    success: true,
+
+                    data: {
+                        deliveryType:
+                            deliveryType ||
+                            "external_url",
+
+                        action,
+
+                        deliveryUrl:
+                            externalUrl,
+
+                        expiresAt: null
+                    },
+
+                    meta: {
+                        apiVersion:
+                            LEARNING_RESOURCE_API_VERSION
+                    }
+                });
+            }
+
+            /* ------------------------------------------
+               Protected Storage Delivery
+            ------------------------------------------ */
+
+            const storagePath =
+                normalizeString(
+                    resource.storage_path
+                );
+
+            if (!storagePath) {
+                throw createServiceError({
+                    code:
+                        "LEARNING_RESOURCE_DELIVERY_INVALID",
+
+                    message:
+                        "The learning resource file is unavailable.",
+
+                    httpStatus: 409
+                });
+            }
+
+            const fileName =
+                sanitizeDeliveryFileName(
+                    resource.file_name ||
+                    resource.download_file_name ||
+                    resource.title
+                );
+
+            const mimeType =
+                normalizeString(
+                    resource.mime_type
+                ) ||
+                "application/octet-stream";
+
+            const bucketName =
+                normalizeString(
+                    process.env
+                        .LEARNING_RESOURCE_BUCKET
+                ) ||
+                "fb-agileai-university.firebasestorage.app";
+
+            const bucket =
+                admin
+                    .storage()
+                    .bucket(bucketName);
+
+            const file =
+                bucket.file(storagePath);
+
+            /*
+             * file.exists() is deliberately avoided.
+             *
+             * The Storage read stream itself remains the
+             * authoritative object-existence check, avoiding
+             * one additional Storage metadata request.
+             */
+            const readStream =
+                file.createReadStream();
+
+            let streamStarted = false;
+            let responseCompleted = false;
+
+            readStream.once(
+                "response",
+                () => {
+                    streamStarted = true;
+                }
+            );
+
+            readStream.once(
+                "error",
+                (streamError) => {
+                    if (
+                        responseCompleted ||
+                        res.writableEnded
+                    ) {
+                        return;
+                    }
+
+                    const storageErrorCode =
+                        Number(
+                            streamError?.code
+                        );
+
+                    if (!res.headersSent) {
+                        const notFound =
+                            storageErrorCode === 404;
+
+                        return res.status(
+                            notFound
+                                ? 404
+                                : 500
+                        ).json({
+                            success: false,
+
+                            error: {
+                                code:
+                                    notFound
+                                        ? "LEARNING_RESOURCE_FILE_NOT_FOUND"
+                                        : "LEARNING_RESOURCE_DELIVERY_FAILED",
+
+                                message:
+                                    notFound
+                                        ? "The learning resource file is unavailable."
+                                        : "The learning resource could not be delivered."
+                            }
+                        });
+                    }
+
+                    console.error(
+                        `[${SERVICE_NAME}] Protected learning ` +
+                        `resource stream failed after response ` +
+                        `headers were sent. Access ID: ` +
+                        `${normalizeString(
+                            req.params.accessId
+                        )}. Stream started: ` +
+                        `${streamStarted}.`,
+                        streamError
+                    );
+
+                    res.destroy(streamError);
+                }
+            );
+
+            readStream.once(
+                "end",
+                () => {
+                    responseCompleted = true;
+                }
+            );
+
+            res.setHeader(
+                "Content-Type",
+                mimeType
+            );
+
+            res.setHeader(
+                "X-Content-Type-Options",
+                "nosniff"
+            );
+
+            if (action === "preview") {
+                res.setHeader(
+                    "Content-Disposition",
+                    `inline; filename="${fileName}"`
+                );
+            } else {
+                res.setHeader(
+                    "Content-Disposition",
+                    `attachment; filename="${fileName}"`
+                );
+            }
+
+            return readStream.pipe(res);
+        } catch (error) {
+            const httpStatus =
+                Number.isInteger(
+                    error.httpStatus
+                )
+                    ? error.httpStatus
+                    : 500;
+
+            const code =
+                normalizeString(
+                    error.code
+                ) ||
+                "LEARNING_RESOURCE_DELIVERY_FAILED";
+
+            if (httpStatus >= 500) {
+                console.error(
+                    `[${SERVICE_NAME}] Learning-resource ` +
+                    `delivery failed:`,
+                    error
+                );
+            } else {
+                console.warn(
+                    `[${SERVICE_NAME}] Learning-resource ` +
+                    `delivery rejected. Code: ${code}`
+                );
+            }
+
+            if (res.headersSent) {
+                return res.end();
+            }
+
+            return res.status(httpStatus).json({
+                success: false,
+
+                error: {
+                    code,
+
+                    message:
+                        httpStatus < 500
+                            ? error.message
+                            : "The learning resource could not be delivered."
+                }
+            });
+        }
+    }
+);
+
+/* ==========================================================
+   Student Credentials API
+
+   API Version : 1.1.0
+   Status      : Legacy Read Only
+
+   Important Security Note
+   ----------------------------------------------------------
+   This endpoint currently accepts a browser-supplied email.
+
+   Existing behaviour is preserved temporarily to avoid
+   breaking the current portal.
+
+   It is not the target ownership model.
+
+   The governed replacement must:
+
+   1. Verify Firebase ID token server-side.
+   2. Derive auth.uid from the verified token.
+   3. Query credentials using learner_uid.
+   4. Never trust browser-supplied email for ownership.
+
+   This endpoint must be migrated and deprecated through a
+   separate focused change after activation claim is working.
+========================================================== */
+
+app.post(
+    "/student/my-credentials",
+    async (req, res) => {
+        try {
+            const email = normalizeEmail(
+                req.body?.email
+            );
+
+            if (!email) {
+                return res.status(400).json({
+                    status: "error",
+                    message: "email is required"
+                });
+            }
+
+            const snapshot = await db
+                .collection(
+                    COLLECTIONS.credentials
+                )
+                .where("email", "==", email)
+                .get();
+
+            const credentials =
+                snapshot.docs.map((document) => {
+                    const data =
+                        document.data() || {};
+
+                    return {
+                        credential_id:
+                            data.credential_id || "",
+
+                        full_name:
+                            data.full_name || "",
+
+                        email:
+                            data.email || "",
+
+                        program_code:
+                            data.program_code || "",
+
+                        program_name:
+                            data.program_name || "",
+
+                        credential_type:
+                            data.credential_type || "",
+
+                        issued_status:
+                            data.issued_status || "",
+
+                        issued_by:
+                            data.issued_by ||
+                            "Agile AI University",
+
+                        approval_status:
+                            data.approval_status || "",
+
+                        training_start_date:
+                            data.training_start_date || "",
+
+                        training_end_date:
+                            data.training_end_date || "",
+
+                        issued_at:
+                            data.issued_on ||
+                            data.imported_at ||
+                            data.created_at ||
+                            null,
+
+                        imported_at:
+                            data.imported_at || null,
+
+                        validity:
+                            data.validity || "Lifetime"
+                    };
+                });
+
+            return res.json({
+                status: "success",
+                version: "1.1.0",
+                api: "student-my-credentials",
+                email,
+
+                total_records:
+                    credentials.length,
+
+                credentials
+            });
+        } catch (error) {
+            console.error(
+                `[${SERVICE_NAME}] ` +
+                `Student Credentials Error:`,
+                error
+            );
+
+            return res.status(500).json({
+                status: "error",
+                version: "1.1.0",
+                api: "student-my-credentials",
+                message:
+                    "Failed to load learner credentials"
+            });
+        }
+    }
+);
+
+/* ==========================================================
+   Unknown Route
+========================================================== */
+
+app.use((req, res) => {
+    return res.status(404).json({
+        status: "error",
+        message: "Endpoint not found",
+        service: SERVICE_NAME,
+        version: SERVICE_VERSION
+    });
+});
+
+/* ==========================================================
+   Server Start
+========================================================== */
+
+const PORT = Number(
+    process.env.PORT || 8080
+);
+
+app.listen(PORT, () => {
+    console.log(
+        `${SERVICE_NAME} v${SERVICE_VERSION} ` +
+        `running on port ${PORT}`
+    );
+});

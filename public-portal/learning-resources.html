@@ -1,0 +1,606 @@
+<!-- ==========================================================
+     Agile AI University
+     Student & Executive Portal
+
+     File        : learning-resources.html
+     Page        : Learning Resources
+     Version     : 1.0.0
+     Status      : ACTIVE
+     Date        : July 2026
+
+     Governance  : Portal Governance v3.0
+     Architecture: Governed Learning Resource Delivery
+
+     Purpose
+     ----------------------------------------------------------
+     Provides authenticated learners with governed access to
+     published and learner-assigned Agile AI University
+     learning resources.
+
+     Responsibilities
+     ----------------------------------------------------------
+     ✓ Provide the authenticated page structure
+     ✓ Provide the shared portal shell
+     ✓ Mount the shared sidebar
+     ✓ Mount the shared toolbar
+     ✓ Mount the institutional portal footer
+     ✓ Host the Learning Resource presentation component
+     ✓ Load authentication dependencies
+     ✓ Load entitlement dependencies
+     ✓ Load authorization dependencies
+     ✓ Load the learner resource service
+     ✓ Load the learner resource presentation component
+     ✓ Keep protected content hidden until authentication
+       has been resolved
+
+     Non Responsibilities
+     ----------------------------------------------------------
+     ✗ Firebase application initialization logic
+     ✗ Authentication decisions
+     ✗ Sign-out orchestration
+     ✗ Authorization decisions
+     ✗ Entitlement decisions
+     ✗ Resource visibility decisions
+     ✗ Release-governance decisions
+     ✗ Firestore access
+     ✗ Cloud Storage access
+     ✗ Backend API logic
+     ✗ Resource rendering logic
+     ✗ Preview or download delivery logic
+     ✗ Sidebar rendering logic
+     ✗ Toolbar rendering logic
+     ✗ Footer rendering logic
+
+     Architectural Position
+     ----------------------------------------------------------
+     Firebase Authentication
+          ↓
+     PortalAuth
+          ↓
+     Authorization
+          ↓
+     Entitlement Resolution
+          ↓
+     LearningResourceService
+          ↓
+     Governed Cloud Run API
+          ↓
+     learner_resource_access
+          ↓
+     learning_resources
+          ↓
+     LearningResourceSection
+          ↓
+     Learner Presentation
+
+     Governance
+     ----------------------------------------------------------
+     • Firebase Authentication remains the identity authority.
+
+     • PortalAuth remains the public portal authentication
+       facade.
+
+     • PortalSessionService remains the explicit sign-out
+       authority.
+
+     • The browser must not supply UID or email as ownership
+       claims.
+
+     • The Firebase ID token remains the browser-provided
+       proof of authenticated identity.
+
+     • LearningResourceService remains the learner-facing API
+       service authority.
+
+     • LearningResourceSection remains the presentation
+       authority.
+
+     • The page must not query Firestore directly.
+
+     • The page must not query Cloud Storage directly.
+
+     • The page must not implement resource release rules.
+
+     • The page must not implement preview or download
+       permission rules.
+
+     • The backend remains authoritative for resource
+       visibility, availability and delivery.
+
+     • Internal Firestore document paths and Cloud Storage
+       paths must never be displayed to learners.
+
+     • Shared portal components remain authoritative for the
+       sidebar, toolbar and footer.
+
+     • Page-specific styling remains in the dedicated
+       learning-resource stylesheet.
+
+     • Page-specific JavaScript remains in the service and
+       presentation component files.
+
+     • No inline page initialization is required.
+
+     Dependency Order
+     ----------------------------------------------------------
+     Firebase SDK
+          ↓
+     firebase-init.js
+          ↓
+     portal-auth.js
+          ↓
+     portal-session-service.js
+          ↓
+     entitlement.js
+          ↓
+     resolvePortalEntitlements.js
+          ↓
+     portal-authorization.js
+          ↓
+     sidebar.js
+          ↓
+     toolbar.js
+          ↓
+     footer.js
+          ↓
+     learning-resource-service.js
+          ↓
+     learning-resource-section.js
+
+     Change History
+     ----------------------------------------------------------
+     v1.0.0
+
+     • Added authenticated Learning Resources page
+     • Added shared portal shell integration
+     • Added shared sidebar and toolbar mounts
+     • Added institutional portal footer mount
+     • Added dedicated Learning Resource stylesheet
+     • Added authenticated learner resource service
+     • Added learner resource presentation component
+     • Added loading-state fallback markup
+     • Added accessible page status region
+     • Added fail-closed authentication visibility
+     • Removed duplicate inline initialization
+     • Removed unverified and unnecessary page dependencies
+
+========================================================== -->
+
+<!doctype html>
+
+<html
+    lang="en"
+    data-portal-auth-state="pending">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <meta
+        name="description"
+        content="Access your assigned Agile AI University learning resources, licensed materials and programme documents.">
+
+    <meta
+        name="robots"
+        content="noindex, nofollow, noarchive">
+
+    <title>
+        Learning Resources | Agile AI University
+    </title>
+
+
+    <!-- ==================================================
+         CORE PORTAL STYLES
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/site.css">
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/portal.css">
+
+
+    <!-- ==================================================
+         SHARED PORTAL TOOLBAR
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/components/toolbar.css?v=1.2.0">
+
+
+    <!-- ==================================================
+         AUTHENTICATED PORTAL FOOTER
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/components/footer.css?v=2.0.0">
+
+
+    <!-- ==================================================
+         LEARNING RESOURCE PRESENTATION
+    ================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/components/learning-resource/learning-resource-section.css?v=1.0.0">
+
+</head>
+
+
+<body data-page="learning-resources">
+
+    <div class="portal-shell">
+
+
+        <!-- ==================================================
+             PORTAL SIDEBAR
+        ================================================== -->
+
+        <aside
+            id="portal-sidebar"
+            class="portal-sidebar">
+        </aside>
+
+
+        <!-- ==================================================
+             PORTAL CONTENT
+        ================================================== -->
+
+        <section class="portal-content-shell">
+
+
+            <!-- ==============================================
+                 PORTAL TOOLBAR
+            =============================================== -->
+
+            <header
+                id="portal-toolbar"
+                class="portal-toolbar">
+            </header>
+
+
+            <!-- ==============================================
+                 LEARNING RESOURCES PAGE
+            =============================================== -->
+
+            <main
+                id="main-content"
+                class="portal-home learning-resources-page">
+
+                <div class="portal-page">
+
+
+                    <!-- ======================================
+                         PAGE HEADER
+                    ======================================= -->
+
+                    <section
+                        class="learning-resources-page-header"
+                        aria-labelledby="learningResourcesPageTitle">
+
+                        <p class="learning-resources-page-eyebrow">
+
+                            Student &amp; Executive Portal
+
+                        </p>
+
+                        <h1
+                            id="learningResourcesPageTitle"
+                            class="learning-resources-page-title">
+
+                            Learning Resources
+
+                        </h1>
+
+                        <p class="learning-resources-page-description">
+
+                            Access the programme materials,
+                            licensed documents and learning
+                            resources assigned to your
+                            authenticated learner account.
+
+                        </p>
+
+                    </section>
+
+
+                    <!-- ======================================
+                         SECURE ACCESS INFORMATION
+                    ======================================= -->
+
+                    <section
+                        class="learning-resources-information"
+                        aria-labelledby="learningResourcesInfoTitle">
+
+                        <div
+                            class="learning-resources-information-icon"
+                            aria-hidden="true">
+
+                            🔐
+
+                        </div>
+
+                        <div class="learning-resources-information-copy">
+
+                            <h2
+                                id="learningResourcesInfoTitle"
+                                class="learning-resources-information-title">
+
+                                Secure learner access
+
+                            </h2>
+
+                            <p class="learning-resources-information-text">
+
+                                Resources shown on this page
+                                are securely resolved for your
+                                authenticated learner identity.
+                                Availability, preview and
+                                download permissions are
+                                governed by Agile AI University.
+
+                            </p>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ======================================
+                         ACCESSIBLE PAGE STATUS
+                    ======================================= -->
+
+                    <div
+                        id="learningResourcePageStatus"
+                        class="learning-resource-page-status"
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true">
+                    </div>
+
+
+                    <!-- ======================================
+                         AUTHENTICATED EXPERIENCE
+                    ======================================= -->
+
+                    <section
+                        id="signedInUI"
+                        hidden
+                        aria-hidden="true">
+
+                        <section
+                            id="learningResourceSection"
+                            class="learning-resource-section"
+                            aria-labelledby="learningResourcesPageTitle">
+
+                            <!-- ==================================
+                                 INITIAL LOADING FALLBACK
+
+                                 LearningResourceSection replaces
+                                 this content after initialization.
+                            =================================== -->
+
+                            <div
+                                class="learning-resource-state learning-resource-state--loading"
+                                role="status"
+                                aria-live="polite">
+
+                                <div
+                                    class="learning-resource-loading-indicator"
+                                    aria-hidden="true">
+                                </div>
+
+                                <h2 class="learning-resource-state-title">
+
+                                    Loading your learning resources
+
+                                </h2>
+
+                                <p class="learning-resource-state-message">
+
+                                    Please wait while your
+                                    assigned materials are
+                                    securely resolved.
+
+                                </p>
+
+                            </div>
+
+                        </section>
+
+                    </section>
+
+
+                    <!-- ======================================
+                         SIGNED-OUT FALLBACK
+
+                         PortalAuth redirects unauthenticated
+                         users to /login.html.
+                    ======================================= -->
+
+                    <section
+                        id="signedOutUI"
+                        hidden
+                        aria-hidden="true">
+                    </section>
+
+                </div>
+
+            </main>
+
+
+            <!-- ==============================================
+                 INSTITUTIONAL PORTAL FOOTER
+            =============================================== -->
+
+            <div id="site-footer"></div>
+
+        </section>
+
+    </div>
+
+
+    <!-- ==================================================
+         PORTAL CONTEXT
+    ================================================== -->
+
+    <script>
+
+        window.__AAIU_CONTEXT =
+            "portal";
+
+        window.__AAIU_PAGE =
+            "learning-resources";
+
+        window.__AAIU_EXPERIENCE =
+            "learner-resource-library";
+
+        window.__AAIU_PORTAL_LOGIN_URL__ =
+            "/login.html";
+
+    </script>
+
+
+    <!-- ==================================================
+         FIREBASE SDK
+    ================================================== -->
+
+    <script
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+
+    <script
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
+
+    <script
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+
+    <!-- ==================================================
+         AUTHENTICATION FOUNDATION
+
+         firebase-init.js
+              ↓
+         portal-auth.js
+              ↓
+         portal-session-service.js
+    ================================================== -->
+
+    <script
+        src="/assets/js/auth/firebase-init.js?v=1.4.0">
+    </script>
+
+    <script
+        src="/assets/js/auth/portal-auth.js?v=2.0.1">
+    </script>
+
+    <script
+        src="/assets/js/auth/portal-session-service.js?v=1.2.1">
+    </script>
+
+
+    <!-- ==================================================
+         ENTITLEMENT FOUNDATION
+    ================================================== -->
+
+    <script
+        src="/assets/js/entitlement.js">
+    </script>
+
+    <script
+        src="/assets/js/services/entitlements/resolvePortalEntitlements.js">
+    </script>
+
+
+    <!-- ==================================================
+         AUTHORIZATION FOUNDATION
+    ================================================== -->
+
+    <script
+        src="/assets/js/services/authorization/portal-authorization.js">
+    </script>
+
+
+    <!-- ==================================================
+         SHARED PORTAL COMPONENTS
+    ================================================== -->
+
+    <script
+        src="/assets/js/components/sidebar.js?v=1.5.0">
+    </script>
+
+    <script
+        src="/assets/js/components/toolbar.js?v=1.4.0">
+    </script>
+
+    <script
+        src="/assets/js/footer.js?v=2.0.0">
+    </script>
+
+
+    <!-- ==================================================
+         LEARNING RESOURCE SERVICE
+
+         Must load before the presentation component.
+    ================================================== -->
+
+    <script
+        src="/assets/js/services/learning/learning-resource-service.js?v=1.0.0">
+    </script>
+
+
+    <!-- ==================================================
+         LEARNING RESOURCE PRESENTATION
+
+         The component initializes itself after PortalAuth
+         confirms the authenticated learner.
+    ================================================== -->
+
+    <script
+        src="/assets/js/components/learning-resource/learning-resource-section.js?v=1.0.0">
+    </script>
+
+
+    <!-- ==================================================
+         NOSCRIPT FALLBACK
+    ================================================== -->
+
+    <noscript>
+
+        <section class="learning-resource-noscript">
+
+            <h1>
+                JavaScript is required
+            </h1>
+
+            <p>
+
+                JavaScript must be enabled to access your
+                Agile AI University learning resources.
+
+            </p>
+
+            <p>
+
+                Enable JavaScript in your browser and reload
+                this page.
+
+            </p>
+
+        </section>
+
+    </noscript>
+
+</body>
+
+</html>

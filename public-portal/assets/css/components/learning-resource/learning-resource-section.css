@@ -1,0 +1,1152 @@
+/* ==========================================================
+   Agile AI University
+   Student & Executive Portal
+
+   File      : learning-resource-section.css
+   Version   : 1.0.0
+   Status    : ACTIVE
+   Phase     : Learner Learning Resource Delivery
+
+   Purpose
+   ----------------------------------------------------------
+   Provides the scoped presentation authority for the
+   authenticated Learning Resources page and its resource
+   cards, states, metadata and actions.
+
+   Responsibilities
+   ----------------------------------------------------------
+   ✓ Learning Resources page layout
+   ✓ Page header presentation
+   ✓ Learner information panel
+   ✓ Resource collection grid
+   ✓ Resource card presentation
+   ✓ Resource metadata presentation
+   ✓ Preview and download buttons
+   ✓ Loading presentation
+   ✓ Empty-state presentation
+   ✓ Error-state presentation
+   ✓ Responsive behaviour
+   ✓ Accessible focus presentation
+   ✓ Reduced-motion support
+   ✓ Protected-page visibility during authentication
+
+   Non Responsibilities
+   ----------------------------------------------------------
+   ✗ HTML structure
+   ✗ Authentication decisions
+   ✗ Authorization decisions
+   ✗ Entitlement decisions
+   ✗ Resource visibility decisions
+   ✗ Resource delivery
+   ✗ Firestore access
+   ✗ Cloud Storage access
+   ✗ JavaScript behaviour
+   ✗ Shared sidebar presentation
+   ✗ Shared toolbar presentation
+   ✗ Shared footer presentation
+
+   Governance
+   ----------------------------------------------------------
+   • Styles are scoped to the Learning Resources page and
+     learning-resource component classes.
+
+   • Shared portal component styles remain authoritative for
+     the sidebar, toolbar, shell and footer.
+
+   • Business state must not be inferred through CSS.
+
+   • Hidden authenticated content must remain unavailable
+     until PortalAuth confirms the learner session.
+
+   • Focus indicators must remain visible.
+
+   • Responsive behaviour must preserve action usability.
+
+   Change History
+   ----------------------------------------------------------
+   v1.0.0
+
+   • Added Learning Resources page presentation
+   • Added resource cards and metadata
+   • Added preview and download action styles
+   • Added loading, empty and error states
+   • Added responsive presentation
+   • Added reduced-motion support
+   • Added authentication-pending visibility protection
+
+========================================================== */
+
+
+/* ==========================================================
+   AUTHENTICATION CONTENT PROTECTION
+
+   PortalAuth updates data-portal-auth-state on the root
+   document element.
+========================================================== */
+
+html[data-portal-auth-state="pending"]
+.portal-shell,
+html[data-portal-auth-state="unauthenticated"]
+.portal-shell {
+
+    visibility: hidden;
+
+}
+
+
+/* ==========================================================
+   PAGE FOUNDATION
+========================================================== */
+
+.learning-resources-page {
+
+    width: 100%;
+
+}
+
+
+.learning-resources-page-header {
+
+    margin-bottom: 24px;
+
+}
+
+
+.learning-resources-page-eyebrow {
+
+    margin: 0 0 8px;
+
+    color: #475569;
+
+    font-size: 0.8rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+
+    line-height: 1.4;
+
+    text-transform: uppercase;
+
+}
+
+
+.learning-resources-page-title {
+
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: clamp(
+        1.75rem,
+        3vw,
+        2.35rem
+    );
+
+    font-weight: 750;
+
+    letter-spacing: -0.025em;
+
+    line-height: 1.15;
+
+}
+
+
+.learning-resources-page-description {
+
+    max-width: 780px;
+
+    margin: 12px 0 0;
+
+    color: #475569;
+
+    font-size: 1rem;
+
+    line-height: 1.7;
+
+}
+
+
+/* ==========================================================
+   INFORMATION PANEL
+========================================================== */
+
+.learning-resources-information {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+    margin-bottom: 24px;
+
+    padding: 18px 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+}
+
+
+.learning-resources-information-icon {
+
+    display: inline-flex;
+
+    flex: 0 0 auto;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 40px;
+
+    height: 40px;
+
+    background: #e0f2fe;
+
+    border-radius: 10px;
+
+    font-size: 1.25rem;
+
+    line-height: 1;
+
+}
+
+
+.learning-resources-information-copy {
+
+    min-width: 0;
+
+}
+
+
+.learning-resources-information-title {
+
+    margin: 0 0 4px;
+
+    color: #0f172a;
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+
+}
+
+
+.learning-resources-information-text {
+
+    margin: 0;
+
+    color: #475569;
+
+    font-size: 0.94rem;
+
+    line-height: 1.6;
+
+}
+
+
+/* ==========================================================
+   ACCESSIBLE LIVE STATUS
+========================================================== */
+
+.learning-resource-page-status {
+
+    position: absolute;
+
+    width: 1px;
+
+    height: 1px;
+
+    padding: 0;
+
+    margin: -1px;
+
+    overflow: hidden;
+
+    clip: rect(
+        0,
+        0,
+        0,
+        0
+    );
+
+    clip-path: inset(50%);
+
+    white-space: nowrap;
+
+    border: 0;
+
+}
+
+
+/* ==========================================================
+   SECTION FOUNDATION
+========================================================== */
+
+.learning-resource-section {
+
+    width: 100%;
+
+    min-height: 280px;
+
+}
+
+
+.learning-resource-content {
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   RESOURCE COLLECTION SUMMARY
+========================================================== */
+
+.learning-resource-summary {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 18px;
+
+}
+
+
+.learning-resource-summary-title {
+
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 1.25rem;
+
+    font-weight: 720;
+
+    line-height: 1.35;
+
+}
+
+
+.learning-resource-summary-text {
+
+    margin: 4px 0 0;
+
+    color: #64748b;
+
+    font-size: 0.92rem;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   RESOURCE GRID
+========================================================== */
+
+.learning-resource-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                min(
+                    100%,
+                    320px
+                ),
+                1fr
+            )
+        );
+
+    gap: 20px;
+
+    width: 100%;
+
+}
+
+
+/* ==========================================================
+   RESOURCE CARD
+========================================================== */
+
+.learning-resource-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+    min-height: 100%;
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 22px
+        rgba(
+            15,
+            23,
+            42,
+            0.055
+        );
+
+}
+
+
+.learning-resource-card-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+}
+
+
+.learning-resource-card-icon {
+
+    display: inline-flex;
+
+    flex: 0 0 auto;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 46px;
+
+    height: 46px;
+
+    background: #eff6ff;
+
+    border: 1px solid #dbeafe;
+
+    border-radius: 12px;
+
+    font-size: 1.35rem;
+
+    line-height: 1;
+
+}
+
+
+.learning-resource-card-heading {
+
+    min-width: 0;
+
+}
+
+
+.learning-resource-card-title {
+
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 1.05rem;
+
+    font-weight: 720;
+
+    line-height: 1.45;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.learning-resource-card-type {
+
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 0.82rem;
+
+    font-weight: 650;
+
+    line-height: 1.4;
+
+}
+
+
+.learning-resource-card-description {
+
+    margin: 16px 0 0;
+
+    color: #475569;
+
+    font-size: 0.93rem;
+
+    line-height: 1.65;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* ==========================================================
+   RESOURCE METADATA
+========================================================== */
+
+.learning-resource-card-meta {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap: 12px;
+
+    margin-top: 18px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid #e2e8f0;
+
+}
+
+
+.learning-resource-meta-item {
+
+    min-width: 0;
+
+}
+
+
+.learning-resource-meta-label {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #64748b;
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.04em;
+
+    line-height: 1.35;
+
+    text-transform: uppercase;
+
+}
+
+
+.learning-resource-meta-value {
+
+    display: block;
+
+    color: #1e293b;
+
+    font-size: 0.88rem;
+
+    font-weight: 620;
+
+    line-height: 1.45;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* ==========================================================
+   RESOURCE ACTIONS
+========================================================== */
+
+.learning-resource-card-actions {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: auto;
+
+    padding-top: 22px;
+
+}
+
+
+.learning-resource-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 42px;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    font: inherit;
+
+    font-size: 0.9rem;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        transform 120ms ease,
+        box-shadow 120ms ease,
+        background-color 120ms ease,
+        border-color 120ms ease,
+        opacity 120ms ease;
+
+}
+
+
+.learning-resource-button:hover:not(:disabled) {
+
+    transform: translateY(-1px);
+
+}
+
+
+.learning-resource-button:focus-visible {
+
+    outline: 3px solid
+        rgba(
+            37,
+            99,
+            235,
+            0.3
+        );
+
+    outline-offset: 2px;
+
+}
+
+
+.learning-resource-button:disabled {
+
+    cursor: wait;
+
+    opacity: 0.68;
+
+}
+
+
+.learning-resource-button--primary {
+
+    color: #ffffff;
+
+    background: #1d4ed8;
+
+    border: 1px solid #1d4ed8;
+
+    box-shadow:
+        0 5px 12px
+        rgba(
+            29,
+            78,
+            216,
+            0.18
+        );
+
+}
+
+
+.learning-resource-button--primary:hover:not(:disabled) {
+
+    background: #1e40af;
+
+    border-color: #1e40af;
+
+}
+
+
+.learning-resource-button--secondary {
+
+    color: #1d4ed8;
+
+    background: #ffffff;
+
+    border: 1px solid #bfdbfe;
+
+}
+
+
+.learning-resource-button--secondary:hover:not(:disabled) {
+
+    background: #eff6ff;
+
+    border-color: #93c5fd;
+
+}
+
+
+.learning-resource-action-unavailable {
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 0.88rem;
+
+    font-style: italic;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   SHARED RESOURCE STATES
+========================================================== */
+
+.learning-resource-state {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 100%;
+
+    min-height: 280px;
+
+    padding: 36px 24px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+}
+
+
+.learning-resource-state-icon {
+
+    margin-bottom: 14px;
+
+    font-size: 2rem;
+
+    line-height: 1;
+
+}
+
+
+.learning-resource-state-title {
+
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 1.2rem;
+
+    font-weight: 720;
+
+    line-height: 1.4;
+
+}
+
+
+.learning-resource-state-message {
+
+    max-width: 600px;
+
+    margin: 10px 0 0;
+
+    color: #64748b;
+
+    font-size: 0.94rem;
+
+    line-height: 1.65;
+
+}
+
+
+.learning-resource-state-support {
+
+    margin: 10px 0 0;
+
+    color: #64748b;
+
+    font-size: 0.9rem;
+
+    line-height: 1.6;
+
+}
+
+
+.learning-resource-support-link {
+
+    color: #1d4ed8;
+
+    font-weight: 650;
+
+    text-decoration: none;
+
+}
+
+
+.learning-resource-support-link:hover {
+
+    text-decoration: underline;
+
+}
+
+
+.learning-resource-support-link:focus-visible {
+
+    outline: 3px solid
+        rgba(
+            37,
+            99,
+            235,
+            0.3
+        );
+
+    outline-offset: 2px;
+
+    border-radius: 3px;
+
+}
+
+
+/* ==========================================================
+   LOADING STATE
+========================================================== */
+
+.learning-resource-state--loading {
+
+    background: #ffffff;
+
+}
+
+
+.learning-resource-loading-indicator {
+
+    width: 38px;
+
+    height: 38px;
+
+    margin-bottom: 18px;
+
+    border: 4px solid #dbeafe;
+
+    border-top-color: #2563eb;
+
+    border-radius: 50%;
+
+    animation:
+        learning-resource-spin
+        800ms
+        linear
+        infinite;
+
+}
+
+
+@keyframes learning-resource-spin {
+
+    to {
+
+        transform: rotate(
+            360deg
+        );
+
+    }
+
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.learning-resource-state--empty {
+
+    background: #ffffff;
+
+}
+
+
+/* ==========================================================
+   ERROR STATE
+========================================================== */
+
+.learning-resource-state--error {
+
+    background: #fffafa;
+
+    border-color: #fecaca;
+
+}
+
+
+.learning-resource-state--error
+.learning-resource-state-icon {
+
+    color: #b91c1c;
+
+}
+
+
+.learning-resource-state--error
+.learning-resource-button {
+
+    margin-top: 20px;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE PRESENTATION
+========================================================== */
+
+@media (
+    max-width: 900px
+) {
+
+    .learning-resource-grid {
+
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(
+                    min(
+                        100%,
+                        280px
+                    ),
+                    1fr
+                )
+            );
+
+    }
+
+}
+
+
+@media (
+    max-width: 720px
+) {
+
+    .learning-resources-page-header {
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .learning-resources-information {
+
+        padding: 16px;
+
+    }
+
+
+    .learning-resource-summary {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 4px;
+
+    }
+
+
+    .learning-resource-card {
+
+        padding: 18px;
+
+    }
+
+
+    .learning-resource-card-meta {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .learning-resource-card-actions {
+
+        align-items: stretch;
+
+        flex-direction: column;
+
+    }
+
+
+    .learning-resource-button {
+
+        width: 100%;
+
+    }
+
+}
+
+
+@media (
+    max-width: 480px
+) {
+
+    .learning-resources-information {
+
+        gap: 12px;
+
+        padding: 14px;
+
+    }
+
+
+    .learning-resources-information-icon {
+
+        width: 36px;
+
+        height: 36px;
+
+        border-radius: 9px;
+
+        font-size: 1.1rem;
+
+    }
+
+
+    .learning-resource-card-header {
+
+        gap: 12px;
+
+    }
+
+
+    .learning-resource-card-icon {
+
+        width: 42px;
+
+        height: 42px;
+
+        font-size: 1.2rem;
+
+    }
+
+
+    .learning-resource-state {
+
+        min-height: 240px;
+
+        padding: 30px 18px;
+
+    }
+
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media (
+    prefers-reduced-motion:
+    reduce
+) {
+
+    .learning-resource-loading-indicator {
+
+        animation-duration: 1600ms;
+
+    }
+
+
+    .learning-resource-button {
+
+        transition: none;
+
+    }
+
+
+    .learning-resource-button:hover:not(:disabled) {
+
+        transform: none;
+
+    }
+
+}
+
+
+/* ==========================================================
+   HIGH-CONTRAST SUPPORT
+========================================================== */
+
+@media (
+    forced-colors:
+    active
+) {
+
+    .learning-resource-card,
+    .learning-resource-state,
+    .learning-resources-information {
+
+        border: 1px solid CanvasText;
+
+    }
+
+
+    .learning-resource-button {
+
+        border: 1px solid ButtonText;
+
+    }
+
+
+    .learning-resource-loading-indicator {
+
+        border-color: CanvasText;
+
+        border-top-color: Highlight;
+
+    }
+
+}

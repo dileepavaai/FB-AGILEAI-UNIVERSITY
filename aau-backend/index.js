@@ -4,7 +4,7 @@
    Service Name : aau-credential-verify
    Component    : Credential Verification and Activation API
    File         : index.js
-   Version      : 1.2.0
+   Version      : 1.3.0
    Status       : ACTIVE
    Environment  : Google Cloud Run
    Project      : fb-agileai-university
@@ -89,7 +89,7 @@ const db = admin.firestore();
 ========================================================== */
 
 const SERVICE_NAME = "aau-credential-verify";
-const SERVICE_VERSION = "1.2.0";
+const SERVICE_VERSION = "1.3.0";
 const EXPECTED_PROJECT_ID = "fb-agileai-university";
 
 /* ==========================================================
@@ -698,7 +698,7 @@ app.post(
                     credentialId
                 )
                 .limit(1)
-                                .get();
+                .get();
 
             if (snapshot.empty) {
                 return res.json({
@@ -786,7 +786,6 @@ app.post(
    ----------------------------------------------------------
    POST /api/v1/credential-activations/validate
 
-   /* ==========================================================
    Credential Activation Claim API
 
    Endpoint
@@ -1086,8 +1085,7 @@ app.post(
                         /* ----------------------------------
                            Same-User Idempotency
                         ---------------------------------- */
-
-                        if (
+                                                if (
                             currentLearnerUid &&
                             currentLearnerUid ===
                                 authenticatedUid
@@ -1397,20 +1395,28 @@ app.post(
                                     {
                                         learner_uid:
                                             authenticatedUid,
+
                                         identity_status:
-                                                                                    "activated",
+                                            "activated",
+
                                         access_status:
                                             "active",
+
                                         activated_at:
                                             serverTimestamp,
+
                                         activated_by_uid:
                                             authenticatedUid,
+
                                         updated_at:
                                             serverTimestamp,
+
                                         updated_by_uid:
                                             authenticatedUid,
+
                                         updated_by_email:
                                             authenticatedEmail,
+
                                         last_mutation_source:
                                             "credential_activation_api"
                                     }
@@ -1529,9 +1535,12 @@ app.post(
                             credentialClaimed: true,
                             credentialId,
                             programCode,
+
                             learningResourcesActivated:
                                 matchingResourceAccessDocuments.length,
-                            auditEventId: auditRef.id
+
+                            auditEventId:
+                                auditRef.id
                         };
                     }
                 );
@@ -1652,8 +1661,8 @@ app.post(
                 String(rateLimit.remaining)
             );
 
-            if (!rateLimit.allowed) {
-                return sendActivationError(res, {
+            if (!rateLimit.allowed) { 
+                                return sendActivationError(res, {
                     httpStatus: 429,
                     code: "ACTIVATION_RATE_LIMITED",
                     message:
@@ -2098,7 +2107,7 @@ app.get(
    Status      : Read Only
 
    Important
-      ----------------------------------------------------------
+   ----------------------------------------------------------
    Existing behaviour is preserved in this release.
 
    Administrative authentication and authorization should
@@ -2166,8 +2175,10 @@ app.post(
                 status: "success",
                 version: "1.1.0",
                 api: "credential-registry",
+
                 total_records:
                     credentials.length,
+
                 credentials
             });
         } catch (error) {
@@ -2191,428 +2202,416 @@ app.post(
 /* ==========================================================
    Learner Learning Resources API
 
-   The API derives ownership from the verified Firebase token.
-   Firestore document IDs and Storage paths are never returned
-   to the learner-facing browser.
+   API Version : 1.3.0
+   Status      : ACTIVE
+
+   Governance
+   ----------------------------------------------------------
+   - Firebase Authentication is the identity authority.
+   - Ownership is derived only from the verified ID token.
+   - learner_resource_access is the learner-specific authority.
+   - learning_resources is the published-resource authority.
+   - Master resources may remain catalogue-locked while a
+     learner assignment grants preview/download rights.
+   - Non-master assignments may never exceed the permissions
+     declared on the published resource.
+
+   Cost Controls
+   ----------------------------------------------------------
+   - Reuses the existing Cloud Run service and Storage bucket.
+   - No new service, database, cache, scheduler or audit writes.
+   - Learner-access reads are bounded with limit(100).
+   - Resource document IDs are deduplicated per list request.
+   - Resource documents are fetched with one getAll round trip.
+   - Storage objects are never listed.
+   - file.exists() is intentionally avoided.
+   - Protected files are streamed directly without buffering.
+   - Private responses are never cached.
 ========================================================== */
 
-function isResourceAvailableNow(access = {}) {
-    const now = Date.now();
-    const availableFrom = access.available_from
-        ? Date.parse(access.available_from)
-        : NaN;
-    const availableUntil = access.available_until
-        ? Date.parse(access.available_until)
-        : NaN;
+const LEARNING_RESOURCE_API_VERSION = "1.3.0";
+const MAX_LEARNER_RESOURCE_ACCESS = 100;
+const MASTER_RESOURCE_STORAGE_DOMAIN =
+    "master_learning_resources";
+const PROTECTED_STORAGE_DELIVERY_TYPE =
+    "protected_storage";
+
+function resolveEpochMilliseconds(value) {
+    if (
+        value === null ||
+        typeof value === "undefined" ||
+        value === ""
+    ) {
+        return null;
+    }
+
+    if (typeof value?.toMillis === "function") {
+        const milliseconds = value.toMillis();
+
+        return Number.isFinite(milliseconds)
+            ? milliseconds
+            : null;
+    }
+
+    if (typeof value?.toDate === "function") {
+        const milliseconds =
+            value.toDate().getTime();
+
+        return Number.isFinite(milliseconds)
+            ? milliseconds
+            : null;
+    }
+
+    if (value instanceof Date) {
+        const milliseconds = value.getTime();
+
+        return Number.isFinite(milliseconds)
+            ? milliseconds
+            : null;
+    }
+
+    if (typeof value === "number") {
+        return Number.isFinite(value)
+            ? value
+            : null;
+    }
+
+    if (typeof value === "string") {
+        const milliseconds = Date.parse(value);
+
+        return Number.isFinite(milliseconds)
+            ? milliseconds
+            : null;
+    }
+
+    return null;
+}
+
+function isResourceAvailableNow(
+    access = {},
+    nowMilliseconds = Date.now()
+) {
+    const availableFrom =
+        resolveEpochMilliseconds(
+            access.available_from
+        );
+
+    const availableUntil =
+        resolveEpochMilliseconds(
+            access.available_until
+        );
 
     return (
-        (!Number.isFinite(availableFrom) || availableFrom <= now) &&
-        (!Number.isFinite(availableUntil) || availableUntil >= now)
+        (
+            availableFrom === null ||
+            availableFrom <= nowMilliseconds
+        ) &&
+        (
+            availableUntil === null ||
+            availableUntil >= nowMilliseconds
+        )
     );
+}
+
+function isEligibleLearnerAccess(
+    access,
+    learnerUid,
+    nowMilliseconds = Date.now()
+) {
+    return (
+        normalizeString(
+            access.learner_uid
+        ) === learnerUid &&
+
+        normalizeLower(
+            access.identity_status
+        ) === "activated" &&
+
+        normalizeLower(
+            access.access_status
+        ) === "active" &&
+
+        normalizeLower(
+            access.release_status
+        ) === "released" &&
+
+        isResourceAvailableNow(
+            access,
+            nowMilliseconds
+        )
+    );
+}
+
+function isPublishedActiveResource(resource) {
+    return (
+        normalizeLower(resource.status) ===
+            "published" &&
+        resource.is_active === true
+    );
+}
+
+function isMasterLearningResource(resource) {
+    return (
+        normalizeLower(
+            resource.storage_domain
+        ) ===
+        MASTER_RESOURCE_STORAGE_DOMAIN
+    );
+}
+
+function accessMatchesResource(
+    access,
+    resource
+) {
+    return (
+        normalizeString(
+            access.resource_id
+        ) ===
+            normalizeString(
+                resource.resource_id
+            ) &&
+
+        normalizeUpper(
+            access.program_code
+        ) ===
+            normalizeUpper(
+                resource.program_code
+            ) &&
+
+        Number(
+            access.resource_version
+        ) ===
+            Number(
+                resource.version
+            )
+    );
+}
+
+function resolveLearnerPermissions(
+    access,
+    resource
+) {
+    const masterResource =
+        isMasterLearningResource(resource);
+
+    return {
+        previewAllowed:
+            access.preview_allowed === true &&
+            (
+                masterResource ||
+                resource.preview_allowed === true
+            ),
+
+        downloadAllowed:
+            access.download_allowed === true &&
+            (
+                masterResource ||
+                resource.download_allowed === true
+            )
+    };
+}
+
+function resolveDeliveryAction(value) {
+    const action =
+        normalizeLower(value) || "download";
+
+    if (
+        ![
+            "preview",
+            "download"
+        ].includes(action)
+    ) {
+        throw createServiceError({
+            code:
+                "LEARNING_RESOURCE_ACTION_INVALID",
+
+            message:
+                "The requested learning-resource action is invalid.",
+
+            httpStatus: 400
+        });
+    }
+
+    return action;
+}
+
+function applyPrivateNoStoreHeaders(res) {
+    res.setHeader(
+        "Cache-Control",
+        "private, no-store, max-age=0"
+    );
+
+    res.setHeader(
+        "Pragma",
+        "no-cache"
+    );
+
+    res.setHeader(
+        "Expires",
+        "0"
+    );
+}
+
+function sanitizeDeliveryFileName(value) {
+    return (
+        normalizeString(value) ||
+        "Agile-AI-University-Learning-Resource"
+    )
+        .replace(
+            /["\\/\r\n]/g,
+            "_"
+        )
+        .slice(
+            0,
+            180
+        );
+}
+
+function resolveSafeExternalUrl(value) {
+    const externalUrl =
+        normalizeString(value);
+
+    if (!externalUrl) {
+        return null;
+    }
+
+    try {
+        const parsedUrl =
+            new URL(externalUrl);
+
+        return parsedUrl.protocol === "https:"
+            ? parsedUrl.toString()
+            : null;
+    } catch (error) {
+        return null;
+    }
 }
 
 async function requireOwnedLearningResource(
     accessId,
     authenticatedLearner
 ) {
-    const accessReference = db
-        .collection(COLLECTIONS.learnerResourceAccess)
-        .doc(accessId);
-    const accessSnapshot = await accessReference.get();
+    const normalizedAccessId =
+        normalizeString(accessId);
 
-    if (!accessSnapshot.exists) {
+    if (!normalizedAccessId) {
         throw createServiceError({
-            code: "LEARNING_RESOURCE_NOT_FOUND",
-            message: "The learning resource is unavailable.",
+            code:
+                "LEARNING_RESOURCE_NOT_FOUND",
+
+            message:
+                "The learning resource is unavailable.",
+
             httpStatus: 404
         });
     }
 
-    const access = accessSnapshot.data() || {};
+    const accessSnapshot = await db
+        .collection(
+            COLLECTIONS.learnerResourceAccess
+        )
+        .doc(normalizedAccessId)
+        .get();
+
+    if (!accessSnapshot.exists) {
+        throw createServiceError({
+            code:
+                "LEARNING_RESOURCE_NOT_FOUND",
+
+            message:
+                "The learning resource is unavailable.",
+
+            httpStatus: 404
+        });
+    }
+
+    const access =
+        accessSnapshot.data() || {};
 
     if (
-        normalizeString(access.learner_uid) !==
-            authenticatedLearner.uid ||
-        normalizeLower(access.identity_status) !== "activated" ||
-        normalizeLower(access.access_status) !== "active" ||
-        normalizeLower(access.release_status) !== "released" ||
-        !isResourceAvailableNow(access)
+        !isEligibleLearnerAccess(
+            access,
+            authenticatedLearner.uid
+        )
     ) {
         throw createServiceError({
-            code: "LEARNING_RESOURCE_FORBIDDEN",
-            message: "The learning resource is not available for this account.",
+            code:
+                "LEARNING_RESOURCE_FORBIDDEN",
+
+            message:
+                "The learning resource is not available for this account.",
+
             httpStatus: 403
         });
     }
 
-    const resourceReference = db
-        .collection(COLLECTIONS.learningResources)
-        .doc(normalizeString(access.resource_document_id));
-    const resourceSnapshot = await resourceReference.get();
-    const resource = resourceSnapshot.exists
-        ? resourceSnapshot.data() || {}
-        : null;
+    const resourceDocumentId =
+        normalizeString(
+            access.resource_document_id
+        );
 
-    if (
-        !resource ||
-        normalizeLower(resource.status) !== "published" ||
-        resource.is_active !== true
-    ) {
+    if (!resourceDocumentId) {
         throw createServiceError({
-            code: "LEARNING_RESOURCE_NOT_FOUND",
-            message: "The learning resource is unavailable.",
+            code:
+                "LEARNING_RESOURCE_NOT_FOUND",
+
+            message:
+                "The learning resource is unavailable.",
+
             httpStatus: 404
         });
     }
 
-    return { access, resource };
+    const resourceSnapshot = await db
+        .collection(
+            COLLECTIONS.learningResources
+        )
+        .doc(resourceDocumentId)
+        .get();
+
+    if (!resourceSnapshot.exists) {
+        throw createServiceError({
+            code:
+                "LEARNING_RESOURCE_NOT_FOUND",
+
+            message:
+                "The learning resource is unavailable.",
+
+            httpStatus: 404
+        });
+    }
+
+    const resource =
+        resourceSnapshot.data() || {};
+
+    if (
+        !isPublishedActiveResource(
+            resource
+        ) ||
+        !accessMatchesResource(
+            access,
+            resource
+        )
+    ) {
+        throw createServiceError({
+            code:
+                "LEARNING_RESOURCE_NOT_FOUND",
+
+            message:
+                "The learning resource is unavailable.",
+
+            httpStatus: 404
+        });
+    }
+
+    return {
+        access,
+        resource,
+
+        permissions:
+            resolveLearnerPermissions(
+                access,
+                resource
+            )
+    };
 }
-
-app.get(
-    "/api/v1/learning-resources/me",
-    async (req, res) => {
-        try {
-            const learner = await verifyAuthenticatedLearner(req);
-            const snapshot = await db
-                .collection(COLLECTIONS.learnerResourceAccess)
-                .where("learner_uid", "==", learner.uid)
-                .limit(100)
-                .get();
-
-            const eligibleAccess = snapshot.docs.filter((document) => {
-                const access = document.data() || {};
-                return (
-                    normalizeLower(access.identity_status) === "activated" &&
-                    normalizeLower(access.access_status) === "active" &&
-                    normalizeLower(access.release_status) === "released" &&
-                    isResourceAvailableNow(access)
-                );
-            });
-
-            const resources = await Promise.all(
-                eligibleAccess.map(async (accessDocument) => {
-                    const access = accessDocument.data() || {};
-                    const resourceSnapshot = await db
-                        .collection(COLLECTIONS.learningResources)
-                        .doc(normalizeString(access.resource_document_id))
-                        .get();
-                    const resource = resourceSnapshot.exists
-                        ? resourceSnapshot.data() || {}
-                        : null;
-
-                    if (
-                        !resource ||
-                        normalizeLower(resource.status) !== "published" ||
-                        resource.is_active !== true
-                    ) {
-                        return null;
-                    }
-
-                    return {
-                        accessId: accessDocument.id,
-                        resourceId: normalizeString(resource.resource_id),
-                        programCode: normalizeUpper(resource.program_code),
-                        title: normalizeString(resource.title),
-                        description: normalizeString(resource.description),
-                        resourceType: normalizeLower(resource.resource_type),
-                        category: normalizeLower(resource.category),
-                        version: Number(resource.version) || 1,
-                        fileName: normalizeString(resource.file_name),
-                        mimeType: normalizeString(resource.mime_type),
-                        previewAllowed:
-                            access.preview_allowed === true &&
-                            resource.preview_allowed === true,
-                        downloadAllowed:
-                            access.download_allowed === true &&
-                            resource.download_allowed === true,
-                        deliveryPath:
-                            `/api/v1/learning-resources/${encodeURIComponent(accessDocument.id)}/delivery`
-                    };
-                })
-            );
-
-            return res.status(200).json({
-                success: true,
-                data: {
-                    resources: resources.filter(Boolean)
-                }
-            });
-        } catch (error) {
-            return res.status(error.httpStatus || 500).json({
-                success: false,
-                error: {
-                    code: error.code || "LEARNING_RESOURCE_LOAD_FAILED",
-                    message:
-                        error.httpStatus && error.httpStatus < 500
-                            ? error.message
-                            : "Learning resources could not be loaded."
-                }
-            });
-        }
-    }
-);
-
-app.post(
-    "/api/v1/learning-resources/:accessId/delivery",
-    async (req, res) => {
-        try {
-            const learner = await verifyAuthenticatedLearner(req);
-            const { access, resource } =
-                await requireOwnedLearningResource(
-                    normalizeString(req.params.accessId),
-                    learner
-                );
-            const deliveryType = normalizeLower(resource.delivery_type);
-
-            if (deliveryType !== "protected_storage") {
-                const externalUrl = normalizeString(resource.external_url);
-                let parsedUrl;
-
-                try {
-                    parsedUrl = new URL(externalUrl);
-                } catch (error) {
-                    parsedUrl = null;
-                }
-
-                if (
-                    !parsedUrl ||
-                    !["https:", "http:"].includes(parsedUrl.protocol)
-                ) {
-                    throw createServiceError({
-                        code: "LEARNING_RESOURCE_DELIVERY_INVALID",
-                        message: "The learning resource delivery link is unavailable.",
-                        httpStatus: 409
-                    });
-                }
-
-                return res.status(200).json({
-                    success: true,
-                    data: {
-                        deliveryUrl: parsedUrl.toString(),
-                        expiresAt: null
-                    }
-                });
-            }
-
-            if (
-                access.download_allowed !== true ||
-                resource.download_allowed !== true
-            ) {
-                throw createServiceError({
-                    code: "LEARNING_RESOURCE_DOWNLOAD_FORBIDDEN",
-                    message: "Download is not available for this learning resource.",
-                    httpStatus: 403
-                });
-            }
-
-            const storagePath = normalizeString(resource.storage_path);
-            const fileName =
-                normalizeString(resource.file_name) ||
-                "Agile-AI-University-Learning-Resource";
-
-            if (!storagePath) {
-                throw createServiceError({
-                    code: "LEARNING_RESOURCE_DELIVERY_INVALID",
-                    message: "The learning resource file is unavailable.",
-                    httpStatus: 409
-                });
-            }
-
-            const bucket = admin.storage().bucket(
-                process.env.LEARNING_RESOURCE_BUCKET ||
-                "fb-agileai-university.firebasestorage.app"
-            );
-            const file = bucket.file(storagePath);
-            const [exists] = await file.exists();
-
-            if (!exists) {
-                throw createServiceError({
-                    code: "LEARNING_RESOURCE_FILE_NOT_FOUND",
-                    message: "The learning resource file is unavailable.",
-                    httpStatus: 404
-                });
-            }
-
-            res.setHeader(
-                "Content-Type",
-                normalizeString(resource.mime_type) ||
-                    "application/octet-stream"
-            );
-            res.setHeader(
-                "Content-Disposition",
-                `attachment; filename="${fileName.replace(/["\\\r\n]/g, "_")}"`
-            );
-            res.setHeader("Cache-Control", "private, no-store");
-
-            return file.createReadStream().pipe(res);
-        } catch (error) {
-            return res.status(error.httpStatus || 500).json({
-                success: false,
-                error: {
-                    code: error.code || "LEARNING_RESOURCE_DELIVERY_FAILED",
-                    message:
-                        error.httpStatus && error.httpStatus < 500
-                            ? error.message
-                            : "The learning resource could not be delivered."
-                }
-            });
-        }
-    }
-);
-
-/* ==========================================================
-   Student Credentials API
-
-   API Version : 1.1.0
-   Status      : Legacy Read Only
-
-   Important Security Note
-   ----------------------------------------------------------
-   This endpoint currently accepts a browser-supplied email.
-
-   Existing behaviour is preserved temporarily to avoid
-   breaking the current portal.
-
-   It is not the target ownership model.
-
-   The governed replacement must:
-
-   1. Verify Firebase ID token server-side.
-   2. Derive auth.uid from the verified token.
-   3. Query credentials using learner_uid.
-   4. Never trust browser-supplied email for ownership.
-
-   This endpoint must be migrated and deprecated through a
-   separate focused change after activation claim is working.
-========================================================== */
-
-app.post(
-    "/student/my-credentials",
-    async (req, res) => {
-        try {
-            const email = normalizeEmail(
-                req.body?.email
-            );
-
-            if (!email) {
-                return res.status(400).json({
-                    status: "error",
-                    message: "email is required"
-                });
-            }
-
-            const snapshot = await db
-                .collection(
-                    COLLECTIONS.credentials
-                )
-                .where("email", "==", email)
-                .get();
-
-            const credentials =
-                snapshot.docs.map((document) => {
-                    const data =
-                        document.data() || {};
-
-                    return {
-                        credential_id:
-                            data.credential_id || "",
-
-                        full_name:
-                            data.full_name || "",
-
-                        email:
-                            data.email || "",
-
-                        program_code:
-                            data.program_code || "",
-
-                        program_name:
-                            data.program_name || "",
-
-                        credential_type:
-                            data.credential_type || "",
-
-                        issued_status:
-                            data.issued_status || "",
-
-                        issued_by:
-                            data.issued_by ||
-                            "Agile AI University",
-
-                        approval_status:
-                            data.approval_status || "",
-
-                        training_start_date:
-                            data.training_start_date || "",
-
-                        training_end_date:
-                            data.training_end_date || "",
-
-                        issued_at:
-                            data.issued_on ||
-                            data.imported_at ||
-                            data.created_at ||
-                            null,
-
-                        imported_at:
-                            data.imported_at || null,
-
-                        validity:
-                            data.validity || "Lifetime"
-                    };
-                });
-
-            return res.json({
-                status: "success",
-                version: "1.1.0",
-                api: "student-my-credentials",
-                email,
-                total_records:
-                    credentials.length,
-                credentials
-            });
-        } catch (error) {
-            console.error(
-                `[${SERVICE_NAME}] ` +
-                `Student Credentials Error:`,
-                error
-            );
-
-            return res.status(500).json({
-                status: "error",
-                version: "1.1.0",
-                api: "student-my-credentials",
-                message:
-                    "Failed to load learner credentials"
-            });
-        }
-    }
-);
-
-/* ==========================================================
-   Unknown Route
-========================================================== */
-
-app.use((req, res) => {
-    return res.status(404).json({
-        status: "error",
-        message: "Endpoint not found",
-        service: SERVICE_NAME,
-        version: SERVICE_VERSION
-    });
-});
-
-/* ==========================================================
-   Server Start
-========================================================== */
-
-const PORT = Number(
-    process.env.PORT || 8080
-);
-
-app.listen(PORT, () => {
-    console.log(
-        `${SERVICE_NAME} v${SERVICE_VERSION} ` +
-        `running on port ${PORT}`
-    );
-});

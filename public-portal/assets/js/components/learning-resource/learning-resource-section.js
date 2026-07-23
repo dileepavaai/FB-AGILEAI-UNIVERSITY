@@ -2140,12 +2140,9 @@
     }
 
 
-    /* ======================================================
-       DELIVERY PRESENTATION
-    ====================================================== */
-
     function openExternalDelivery(
-        url
+        url,
+        reservedWindow = null
     ) {
 
         const normalizedUrl =
@@ -2183,6 +2180,25 @@
         }
 
 
+        if (
+            reservedWindow &&
+            !reservedWindow.closed
+        ) {
+
+            reservedWindow.opener =
+                null;
+
+
+            reservedWindow.location.replace(
+                parsedUrl.toString()
+            );
+
+
+            return;
+
+        }
+
+
         const openedWindow =
             window.open(
                 parsedUrl.toString(),
@@ -2198,13 +2214,21 @@
             openedWindow.opener =
                 null;
 
+
+            return;
+
         }
+
+
+        throw new Error(
+            "The preview window was blocked. Please allow pop-ups and try again."
+        );
 
     }
 
-
     function previewBlobDelivery(
-        delivery
+        delivery,
+        reservedWindow = null
     ) {
 
         const objectUrl =
@@ -2229,22 +2253,27 @@
         );
 
 
-        const previewWindow =
-            window.open(
-                objectUrl,
-                "_blank",
-                "noopener,noreferrer"
-            );
+        let previewWindow =
+            reservedWindow;
 
 
         if (
-            previewWindow
+            !previewWindow ||
+            previewWindow.closed
         ) {
 
-            previewWindow.opener =
-                null;
+            previewWindow =
+                window.open(
+                    "",
+                    "_blank"
+                );
 
-        } else {
+        }
+
+
+        if (
+            !previewWindow
+        ) {
 
             revokeObjectUrl(
                 objectUrl
@@ -2258,6 +2287,50 @@
         }
 
 
+        try {
+
+            previewWindow.opener =
+                null;
+
+
+            previewWindow.location.replace(
+                objectUrl
+            );
+
+        } catch (
+            error
+        ) {
+
+            try {
+
+                previewWindow.close();
+
+            } catch (
+                closeError
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] Preview window cleanup failed.`,
+                    closeError
+                );
+
+            }
+
+
+            revokeObjectUrl(
+                objectUrl
+            );
+
+
+            throw error;
+
+        }
+
+
+        /*
+        * Keep the object URL alive long enough for the browser's
+        * PDF viewer to finish reading it.
+        */
         window.setTimeout(
             function () {
 
@@ -2266,7 +2339,7 @@
                 );
 
             },
-            60000
+            120000
         );
 
     }
@@ -2361,7 +2434,8 @@
     function presentDelivery(
         delivery,
         resource,
-        action
+        action,
+        reservedWindow = null
     ) {
 
         if (
@@ -2383,7 +2457,8 @@
         ) {
 
             openExternalDelivery(
-                delivery.url
+                delivery.url,
+                reservedWindow
             );
 
 
@@ -2403,7 +2478,8 @@
             ) {
 
                 previewBlobDelivery(
-                    delivery
+                    delivery,
+                    reservedWindow
                 );
 
 
@@ -2563,6 +2639,60 @@
         }
 
 
+        /*
+        * Chrome requires a preview window to be created directly
+        * inside the learner's click event. We therefore reserve
+        * the tab before awaiting the governed delivery request.
+        */
+        let reservedPreviewWindow =
+            null;
+
+
+        if (
+            normalizedAction ===
+            "preview"
+        ) {
+
+            reservedPreviewWindow =
+                window.open(
+                    "",
+                    "_blank"
+                );
+
+
+            if (
+                reservedPreviewWindow
+            ) {
+
+                reservedPreviewWindow.opener =
+                    null;
+
+
+                try {
+
+                    reservedPreviewWindow.document.title =
+                        "Preparing learning-resource preview";
+
+
+                    reservedPreviewWindow.document.body.textContent =
+                        "Preparing your secure learning-resource preview…";
+
+                } catch (
+                    error
+                ) {
+
+                    /*
+                    * Some browser environments prevent access to
+                    * the temporary page. The reserved window is
+                    * still valid and can be navigated later.
+                    */
+                }
+
+            }
+
+        }
+
+
         activeActions.add(
             actionKey
         );
@@ -2620,8 +2750,13 @@
             presentDelivery(
                 delivery,
                 resource,
-                normalizedAction
+                normalizedAction,
+                reservedPreviewWindow
             );
+
+
+            reservedPreviewWindow =
+                null;
 
 
             announceStatus(
@@ -2656,6 +2791,29 @@
             error
         ) {
 
+            if (
+                reservedPreviewWindow &&
+                !reservedPreviewWindow.closed
+            ) {
+
+                try {
+
+                    reservedPreviewWindow.close();
+
+                } catch (
+                    closeError
+                ) {
+
+                    console.warn(
+                        `[${MODULE_NAME}] Reserved preview window cleanup failed.`,
+                        closeError
+                    );
+
+                }
+
+            }
+
+
             console.error(
                 `[${MODULE_NAME}] Resource action failed.`,
                 {
@@ -2667,7 +2825,12 @@
 
                     code:
                         error?.code ||
-                        "LEARNING_RESOURCE_ACTION_FAILED"
+                        "LEARNING_RESOURCE_ACTION_FAILED",
+
+                    message:
+                        normalizeString(
+                            error?.message
+                        )
                 }
             );
 

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : learning-resource-section.js
-   Version   : 1.0.0
+   Version   : 1.0.1
    Status    : ACTIVE
    Phase     : Learner Learning Resource Delivery
 
@@ -94,8 +94,13 @@
 
    Change History
    ----------------------------------------------------------
-   v1.0.0
+   v1.0.1
 
+   • Fixed issue with resource title normalization
+   • Improved error handling for governed resource loading
+   • Enhanced accessibility of resource cards
+   
+   v1.0.0
    • Added governed resource-list rendering
    • Added protected preview support
    • Added governed download support
@@ -124,7 +129,7 @@
         "LearningResourceSection";
 
     const MODULE_VERSION =
-        "1.0.0";
+        "1.0.1";
 
 
     /* ======================================================

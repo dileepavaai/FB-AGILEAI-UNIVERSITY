@@ -3,9 +3,9 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.6.2
+   Version   : 1.7.0
    Status    : ACTIVE
-   Phase     : Portal Identity Stabilization
+   Phase     : Portal Navigation and Identity Stabilization
 
    Purpose
    ----------------------------------------------------------
@@ -24,6 +24,8 @@
    ✓ Support identity update events
    ✓ Reject generic identity placeholders when better
      learner identity data is available
+   ✓ Provide access to the official Credential Verification
+     Platform
 
    Non Responsibilities
    ----------------------------------------------------------
@@ -77,6 +79,12 @@
    • Credential Portfolio summary navigation must use the
      canonical My Credentials route.
 
+   • Credential verification must use the official
+     Verification Platform.
+
+   • External portal destinations must open securely with
+     noopener and noreferrer protection.
+
    Identity Resolution Order
    ----------------------------------------------------------
    1. Explicit non-placeholder identity
@@ -102,6 +110,23 @@
 
    Change History
    ----------------------------------------------------------
+   v1.7.0
+
+   • Added Verify Credential as a first-class portal
+     navigation destination.
+
+   • Connected the authenticated portal to the official
+     Agile AI University Verification Platform.
+
+   • Configured credential verification to open securely
+     in a new browser tab.
+
+   • Preserved the Credential Portfolio positioning above
+     the learner profile.
+
+   • Preserved all existing navigation, identity-resolution,
+     credential-count and event behaviour.
+
    v1.6.2
 
    • Corrected sidebar rendering order.
@@ -299,6 +324,23 @@
 
         {
             id:
+                "verification",
+
+            title:
+                "Verify Credential",
+
+            icon:
+                "🔍",
+
+            url:
+                "https://verify.agileai.university/",
+
+            openMode:
+                "new-tab"
+        },
+
+        {
+            id:
                 "learning-resources",
 
             title:
@@ -417,8 +459,7 @@
             );
 
     }
-
-    function firstValue(
+        function firstValue(
         values
     ) {
 
@@ -494,10 +535,13 @@
                 );
 
             if (
+
                 normalized &&
+
                 !isGenericIdentityValue(
                     normalized
                 )
+
             ) {
 
                 return normalized;
@@ -516,12 +560,14 @@
     ) {
 
         return String(
+
             value === null ||
             value === undefined
 
                 ? ""
 
                 : value
+
         )
             .replace(
                 /&/g,
@@ -573,13 +619,17 @@
                 .toLowerCase();
 
         if (
+
             !normalizedEmail ||
+
             !normalizedEmail.includes("@")
+
         ) {
 
             return "";
 
         }
+
 
         const localPart =
             normalizedEmail
@@ -587,12 +637,15 @@
 
 
         return localPart
+
             .split(
                 /[._+\-]+/
             )
+
             .filter(
                 Boolean
             )
+
             .map(
 
                 part =>
@@ -603,6 +656,7 @@
                     part.slice(1)
 
             )
+
             .join(
                 " "
             );
@@ -634,6 +688,7 @@
 
         }
 
+
         const words =
             normalizedName
                 .split(" ")
@@ -660,6 +715,7 @@
         return (
 
             words[0].charAt(0) +
+
             words[1].charAt(0)
 
         )
@@ -714,6 +770,7 @@
                 emailName
 
             ]) ||
+
             firstValue([
 
                 identity.displayName,
@@ -783,8 +840,7 @@
         };
 
     }
-
-    /* ======================================================
+        /* ======================================================
        CURRENT PATH
     ====================================================== */
 
@@ -834,7 +890,9 @@
             return (
 
                 currentPath === "/" ||
+
                 currentPath === "/index.html" ||
+
                 currentPath.endsWith(
                     "/index.html"
                 )
@@ -960,14 +1018,20 @@
     ) {
 
         return (
+
             value &&
+
             typeof value ===
                 "object" &&
+
             !Array.isArray(
                 value
             )
+
         )
+
             ? value
+
             : {};
 
     }
@@ -980,11 +1044,12 @@
         return Array.isArray(
             value
         )
+
             ? value
+
             : [];
 
     }
-
         /* ======================================================
        PORTAL STATE
     ====================================================== */
@@ -1058,8 +1123,7 @@
 
 
         if (
-            directCredentials.length >
-            0
+            directCredentials.length > 0
         ) {
 
             return directCredentials;
@@ -1069,14 +1133,16 @@
 
         const resolvedCredentials =
             asArray(
+
                 portalState.resolvedCredentials ||
+
                 portalState.resolved_credentials
+
             );
 
 
         if (
-            resolvedCredentials.length >
-            0
+            resolvedCredentials.length > 0
         ) {
 
             return resolvedCredentials;
@@ -1088,14 +1154,14 @@
             asArray(
 
                 portalState.visibleCredentials ||
+
                 portalState.visible_credentials
 
             );
 
 
         if (
-            visibleCredentials.length >
-            0
+            visibleCredentials.length > 0
         ) {
 
             return visibleCredentials;
@@ -1107,6 +1173,7 @@
             asObject(
 
                 portalState.userEntitlements ||
+
                 portalState.user_entitlements
 
             );
@@ -1119,8 +1186,7 @@
 
 
         if (
-            entitlementCredentials.length >
-            0
+            entitlementCredentials.length > 0
         ) {
 
             return entitlementCredentials;
@@ -1141,8 +1207,7 @@
 
 
         if (
-            nestedCredentials.length >
-            0
+            nestedCredentials.length > 0
         ) {
 
             return nestedCredentials;
@@ -1165,8 +1230,7 @@
         if (
             Object.keys(
                 singleCredential
-            ).length >
-            0
+            ).length > 0
         ) {
 
             return [
@@ -1180,7 +1244,8 @@
 
     }
 
-        /* ======================================================
+
+    /* ======================================================
        TOOLBAR IDENTITY
 
        Generic toolbar placeholders are accepted only when
@@ -1193,10 +1258,12 @@
         try {
 
             if (
+
                 window.PortalToolbar &&
-                typeof window.PortalToolbar
-                    .getIdentity ===
+
+                typeof window.PortalToolbar.getIdentity ===
                     "function"
+
             ) {
 
                 return asObject(
@@ -1213,11 +1280,15 @@
         ) {
 
             console.warn(
+
                 `[${MODULE_NAME}] Unable to read PortalToolbar identity.`,
+
                 error
+
             );
 
         }
+
 
         return {};
 
@@ -1233,9 +1304,12 @@
         try {
 
             if (
+
                 window.firebase &&
+
                 typeof window.firebase.auth ===
                     "function"
+
             ) {
 
                 return window.firebase
@@ -1249,18 +1323,20 @@
         ) {
 
             console.warn(
+
                 `[${MODULE_NAME}] Unable to read Firebase user.`,
+
                 error
+
             );
 
         }
 
+
         return null;
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        SHARED IDENTITY RESOLUTION
     ====================================================== */
 
@@ -1443,7 +1519,9 @@
         });
 
     }
-        /* ======================================================
+
+
+    /* ======================================================
        IDENTITY QUALITY
     ====================================================== */
 
@@ -1458,10 +1536,13 @@
 
 
         if (
+
             !normalized.displayName ||
+
             isGenericIdentityValue(
                 normalized.displayName
             )
+
         ) {
 
             return 0;
@@ -1470,13 +1551,17 @@
 
 
         if (
+
             normalized.email &&
+
             normalized.displayName
                 .toLowerCase() ===
+
             buildNameFromEmail(
                 normalized.email
             )
                 .toLowerCase()
+
         ) {
 
             return 1;
@@ -1510,13 +1595,17 @@
 
 
         if (
+
             !force &&
+
             identityQuality(
                 normalizedIdentity
             ) <
+
             identityQuality(
                 activeIdentity
             )
+
         ) {
 
             return;
@@ -1609,9 +1698,7 @@
         }
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        IDENTITY RECONCILIATION
     ====================================================== */
 
@@ -1658,18 +1745,26 @@
 
 
         window.setTimeout(
+
             reconcileIdentity,
+
             1000
+
         );
 
 
         window.setTimeout(
+
             reconcileIdentity,
+
             2500
+
         );
 
     }
-        /* ======================================================
+
+
+    /* ======================================================
        SIDEBAR RENDERING
     ====================================================== */
 
@@ -1831,7 +1926,9 @@
         );
 
     }
-        /* ======================================================
+
+
+    /* ======================================================
        UNAVAILABLE NAVIGATION
     ====================================================== */
 
@@ -1868,9 +1965,7 @@
         );
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        PUBLIC IDENTITY UPDATE
     ====================================================== */
 
@@ -1883,8 +1978,11 @@
         );
 
         console.info(
+
             `[${MODULE_NAME}] Learner identity updated.`,
+
             activeIdentity
+
         );
 
     }
@@ -1917,9 +2015,11 @@
 
 
         countElement.textContent =
+
             Number.isFinite(
                 normalizedCount
             ) &&
+
             normalizedCount >= 0
 
                 ? String(
@@ -1929,7 +2029,9 @@
                 : "—";
 
     }
-        /* ======================================================
+
+
+    /* ======================================================
        FIREBASE AUTH REFRESH
     ====================================================== */
 
@@ -1938,13 +2040,18 @@
         try {
 
             if (
+
                 window.firebase &&
+
                 typeof window.firebase.auth ===
                     "function"
+
             ) {
 
                 window.firebase
+
                     .auth()
+
                     .onAuthStateChanged(
 
                         function () {
@@ -1962,8 +2069,11 @@
         ) {
 
             console.warn(
+
                 `[${MODULE_NAME}] Firebase auth refresh binding failed.`,
+
                 error
+
             );
 
         }
@@ -2029,9 +2139,7 @@
             scheduleIdentityReconciliation
 
         );
-
-
-        document.addEventListener(
+                document.addEventListener(
 
             "credentials:resolved",
 
@@ -2116,7 +2224,9 @@
             }
 
         );
-                document.addEventListener(
+
+
+        document.addEventListener(
 
             "portal:ready",
 
@@ -2141,7 +2251,9 @@
             function () {
 
                 applyIdentity(
+
                     {
+
                         displayName:
                             "Learner",
 
@@ -2153,11 +2265,16 @@
 
                         membershipLabel:
                             "University Member"
+
                     },
+
                     {
+
                         force:
                             true
+
                     }
+
                 );
 
             }
@@ -2182,20 +2299,28 @@
         initialized =
             true;
 
+
         bindIdentityEvents();
 
         bindFirebaseAuthRefresh();
 
+
         activeIdentity =
             resolveSharedIdentity();
 
+
         renderSidebar();
+
 
         scheduleIdentityReconciliation();
 
+
         console.info(
+
             `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`,
+
             activeIdentity
+
         );
 
     }
@@ -2221,24 +2346,38 @@
             getIdentity() {
 
                 return Object.freeze({
+
                     ...activeIdentity
+
                 });
 
             }
 
         });
-            if (
+            /* ======================================================
+       AUTO INITIALIZATION
+    ====================================================== */
+
+    if (
+
         document.readyState ===
             "loading"
+
     ) {
 
         document.addEventListener(
+
             "DOMContentLoaded",
+
             initialize,
+
             {
+
                 once:
                     true
+
             }
+
         );
 
     } else {
@@ -2246,6 +2385,5 @@
         initialize();
 
     }
-
-
-})(window, document);
+    })(window, document);
+    

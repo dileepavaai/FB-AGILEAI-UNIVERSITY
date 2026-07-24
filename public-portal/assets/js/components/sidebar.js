@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.7.1
+   Version   : 1.7.2
    Status    : ACTIVE
    Phase     : Portal Navigation and Identity Stabilization
 
@@ -110,6 +110,17 @@
 
    Change History
    ----------------------------------------------------------
+   v1.7.2
+
+   • Added shared credential-count synchronization during
+     sidebar initialization.
+
+   • Added credential-count synchronization when entitlement,
+     portal and dashboard readiness events are received.
+
+   • Preserved event-driven credential rendering and shared
+     portal-state fallback compatibility.
+
    v1.7.1
 
    • Corrected Credential Portfolio count synchronization
@@ -301,7 +312,7 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.7.1";
+        "1.7.2";
 
 
     /* ======================================================
@@ -2094,6 +2105,36 @@
 
     }
 
+        /* ======================================================
+       SHARED CREDENTIAL COUNT SYNCHRONIZATION
+    ====================================================== */
+
+    function synchronizeCredentialCount() {
+
+        const credentials =
+            resolveCredentials(
+                resolvePortalState()
+            );
+
+
+        if (
+            credentials.length > 0
+        ) {
+
+            updateCredentialCount(
+                credentials.length
+            );
+
+            return;
+
+        }
+
+
+        updateCredentialCount(
+            null
+        );
+
+    }
 
     /* ======================================================
        FIREBASE AUTH REFRESH
@@ -2120,6 +2161,8 @@
 
                         function () {
 
+                            synchronizeCredentialCount();
+
                             scheduleIdentityReconciliation();
 
                         }
@@ -2144,7 +2187,7 @@
 
     }
 
-        /* ======================================================
+    /* ======================================================
        IDENTITY EVENTS
     ====================================================== */
 
@@ -2186,11 +2229,17 @@
         );
 
 
-        document.addEventListener(
+                document.addEventListener(
 
             "entitlements:ready",
 
-            scheduleIdentityReconciliation
+            function () {
+
+                synchronizeCredentialCount();
+
+                scheduleIdentityReconciliation();
+
+            }
 
         );
 
@@ -2367,23 +2416,33 @@
         );
 
 
-        document.addEventListener(
+                document.addEventListener(
 
             "portal:ready",
 
-            scheduleIdentityReconciliation
+            function () {
+
+                synchronizeCredentialCount();
+
+                scheduleIdentityReconciliation();
+
+            }
 
         );
 
-
-        document.addEventListener(
+                document.addEventListener(
 
             "dashboard:ready",
 
-            scheduleIdentityReconciliation
+            function () {
+
+                synchronizeCredentialCount();
+
+                scheduleIdentityReconciliation();
+
+            }
 
         );
-
 
         document.addEventListener(
 
@@ -2452,6 +2511,7 @@
 
         renderSidebar();
 
+        synchronizeCredentialCount();
 
         bindIdentityEvents();
 

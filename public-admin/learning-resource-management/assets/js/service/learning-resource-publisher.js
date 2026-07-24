@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-publisher.js
-   Version   : 1.4.1
+   Version   : 1.5.0
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -16,6 +16,8 @@
    ----------------------------------------------------------
    • Create governed learning-resource drafts
    • Update existing drafts
+   • Persist governed release-policy metadata
+   • Persist governed Storage-domain metadata
    • Preserve protected assets during metadata edits
    • Attach validated protected Storage metadata
    • Publish contract-valid resources
@@ -32,6 +34,7 @@
    • Delete Firestore records
    • Authenticate learners
    • Resolve learner entitlement
+   • Evaluate learner release eligibility
    • Render UI
    • Deliver resources to the Student Portal
 
@@ -40,25 +43,41 @@
    • Admin Portal is the publication authority
    • New resources always begin as drafts
    • Drafts are inactive and never latest
+   • Protected files may be attached while status remains draft
    • Published resource assets are immutable
+   • Published release metadata is immutable
    • Replacement requires a new resource version
    • Only one published version should remain latest
    • Withdrawal is terminal
    • Physical deletion is prohibited
-   • Learner identity must not be stored
+   • Learner identity must not be stored in this registry
    • Audit identity must match the authenticated administrator
+   • ADR-019 governs protected resource delivery
+   • ADR-020 governs release-policy metadata
+   • Firestore Rules v2.8.0 are the persistence authority
 
    Change History
    ----------------------------------------------------------
+   v1.5.0
+   • Added release_policy persistence
+   • Added module_number persistence
+   • Added session_number persistence
+   • Added available_from persistence
+   • Added available_until persistence
+   • Added storage_domain persistence
+   • Added personalisation_type persistence
+   • Removed unsupported uploaded lifecycle writes
+   • Protected-file attachment now preserves draft status
+   • Aligned publisher output with Firestore Rules v2.8.0
+   • Preserved publication, supersession and withdrawal flows
 
    v1.4.1
-   • Added safe compatibility publication for protected assets
-     that contain complete persisted upload evidence
+   • Added compatibility publication for protected assets
+     containing complete persisted upload evidence
    • Preserved rejection of incomplete protected resources
-   • Added no new services, scheduled work or fixed cost
 
    v1.4.0
-   • Added governed uploaded lifecycle state
+   • Added uploaded lifecycle state
    • Transitioned protected assets from draft to uploaded
    • Allowed uploaded resources to enter publication
    • Required protected Storage upload completion before publication
@@ -79,7 +98,6 @@
    • Required approved MIME type and valid file size
    • Preserved immutable creation audit fields strictly
    • Strengthened publication and withdrawal validation
-   • Aligned with Contract v1.2.0 and Firestore Rules v2.5.1
 
    v1.1.0
    • Corrected draft is_latest lifecycle state
@@ -120,10 +138,41 @@ const MODULE_NAME =
     "LearningResourcePublisher";
 
 const MODULE_VERSION =
-    "1.4.1";
+    "1.5.0";
 
 const COLLECTION_NAME =
     "learning_resources";
+
+
+/* ==========================================================
+   GOVERNED VALUES
+========================================================== */
+
+const VALID_RELEASE_POLICIES =
+    Object.freeze([
+        "on_enrollment",
+        "pre_module",
+        "post_module",
+        "post_session",
+        "post_assessment",
+        "post_programme",
+        "alumni_only",
+        "manual"
+    ]);
+
+const VALID_STORAGE_DOMAINS =
+    Object.freeze([
+        "learning_resources",
+        "master_learning_resources",
+        "external"
+    ]);
+
+const VALID_PERSONALISATION_TYPES =
+    Object.freeze([
+        "shared",
+        "learner_specific",
+        "none"
+    ]);
 
 
 /* ==========================================================
@@ -216,6 +265,258 @@ function normalizeVersion(
     }
 
     return version;
+
+}
+
+
+function normalizeDisplayOrder(
+    value
+) {
+
+    const displayOrder =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isInteger(
+            displayOrder
+        ) ||
+        displayOrder < 0
+    ) {
+
+        return 0;
+
+    }
+
+    return displayOrder;
+
+}
+
+
+function normalizeNullablePositiveInteger(
+    value
+) {
+
+    if (
+        value ===
+            null ||
+        value ===
+            undefined ||
+        value ===
+            ""
+    ) {
+
+        return null;
+
+    }
+
+    const normalizedValue =
+        Number(
+            value
+        );
+
+    if (
+        !Number.isInteger(
+            normalizedValue
+        ) ||
+        normalizedValue < 1
+    ) {
+
+        return null;
+
+    }
+
+    return normalizedValue;
+
+}
+
+
+function normalizeNullableIsoDateTime(
+    value
+) {
+
+    const normalizedValue =
+        normalizeNullableString(
+            value
+        );
+
+    if (
+        !normalizedValue
+    ) {
+
+        return null;
+
+    }
+
+    const date =
+        new Date(
+            normalizedValue
+        );
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Invalid availability date-time value.`
+        );
+
+    }
+
+    return date.toISOString();
+
+}
+
+
+function normalizeReleasePolicy(
+    value
+) {
+
+    const releasePolicy =
+        normalizeLowercase(
+            value
+        );
+
+    if (
+        !VALID_RELEASE_POLICIES.includes(
+            releasePolicy
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Invalid learning-resource release policy.`
+        );
+
+    }
+
+    return releasePolicy;
+
+}
+
+
+function normalizeStorageDomain(
+    value,
+    deliveryType
+) {
+
+    const normalizedDeliveryType =
+        normalizeLowercase(
+            deliveryType
+        );
+
+    const fallbackDomain =
+        normalizedDeliveryType ===
+            "protected_storage"
+            ? "learning_resources"
+            : "external";
+
+    const storageDomain =
+        normalizeLowercase(
+            value
+        ) ||
+        fallbackDomain;
+
+    if (
+        !VALID_STORAGE_DOMAINS.includes(
+            storageDomain
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Invalid learning-resource Storage domain.`
+        );
+
+    }
+
+    if (
+        normalizedDeliveryType ===
+            "protected_storage" &&
+        ![
+            "learning_resources",
+            "master_learning_resources"
+        ].includes(
+            storageDomain
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected resources require a governed Storage domain.`
+        );
+
+    }
+
+    if (
+        normalizedDeliveryType !==
+            "protected_storage" &&
+        storageDomain !==
+            "external"
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] External resources require the external Storage domain.`
+        );
+
+    }
+
+    return storageDomain;
+
+}
+
+
+function normalizePersonalisationType(
+    value,
+    storageDomain
+) {
+
+    const normalizedStorageDomain =
+        normalizeLowercase(
+            storageDomain
+        );
+
+    const fallbackType =
+        normalizedStorageDomain ===
+            "master_learning_resources"
+            ? "learner_specific"
+            : normalizedStorageDomain ===
+                "learning_resources"
+                ? "shared"
+                : "none";
+
+    const personalisationType =
+        normalizeLowercase(
+            value
+        ) ||
+        fallbackType;
+
+    if (
+        !VALID_PERSONALISATION_TYPES.includes(
+            personalisationType
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Invalid learning-resource personalisation type.`
+        );
+
+    }
+
+    if (
+        normalizedStorageDomain ===
+            "external" &&
+        personalisationType !==
+            "none"
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] External resources cannot use protected-resource personalisation.`
+        );
+
+    }
+
+    return personalisationType;
 
 }
 
@@ -382,6 +683,291 @@ function validateCreationAudit(
 }
 
 
+function validateUploadAudit(
+    data
+) {
+
+    const hasStoragePath =
+        Boolean(
+            normalizeString(
+                data?.storage_path
+            )
+        );
+
+    if (
+        !hasStoragePath
+    ) {
+
+        return;
+
+    }
+
+    if (
+        !normalizeString(
+            data?.uploaded_by_uid
+        ) ||
+        !normalizeString(
+            data?.uploaded_by_email
+        ) ||
+        !data?.uploaded_at
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected upload audit metadata is incomplete.`
+        );
+
+    }
+
+}
+
+/* ==========================================================
+   RELEASE-GOVERNANCE NORMALIZATION
+========================================================== */
+
+function buildReleaseGovernance(
+    resource
+) {
+
+    const releasePolicy =
+        normalizeReleasePolicy(
+            resource?.release_policy
+        );
+
+    const moduleNumber =
+        normalizeNullablePositiveInteger(
+            resource?.module_number
+        );
+
+    const sessionNumber =
+        normalizeNullablePositiveInteger(
+            resource?.session_number
+        );
+
+    const availableFrom =
+        normalizeNullableIsoDateTime(
+            resource?.available_from
+        );
+
+    const availableUntil =
+        normalizeNullableIsoDateTime(
+            resource?.available_until
+        );
+
+    if (
+        [
+            "pre_module",
+            "post_module"
+        ].includes(
+            releasePolicy
+        ) &&
+        moduleNumber ===
+            null
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Module-based release policies require a module number.`
+        );
+
+    }
+
+    if (
+        ![
+            "pre_module",
+            "post_module"
+        ].includes(
+            releasePolicy
+        ) &&
+        moduleNumber !==
+            null
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Module number is not permitted for the selected release policy.`
+        );
+
+    }
+
+    if (
+        releasePolicy ===
+            "post_session" &&
+        sessionNumber ===
+            null
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Post-session release requires a session number.`
+        );
+
+    }
+
+    if (
+        releasePolicy !==
+            "post_session" &&
+        sessionNumber !==
+            null
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Session number is not permitted for the selected release policy.`
+        );
+
+    }
+
+    if (
+        availableFrom &&
+        availableUntil
+    ) {
+
+        const availableFromTime =
+            new Date(
+                availableFrom
+            ).getTime();
+
+        const availableUntilTime =
+            new Date(
+                availableUntil
+            ).getTime();
+
+        if (
+            availableUntilTime <=
+            availableFromTime
+        ) {
+
+            throw new Error(
+                `[${MODULE_NAME}] Available Until must be later than Available From.`
+            );
+
+        }
+
+    }
+
+    return Object.freeze({
+
+        releasePolicy,
+
+        moduleNumber,
+
+        sessionNumber,
+
+        availableFrom,
+
+        availableUntil
+
+    });
+
+}
+
+
+/* ==========================================================
+   DELIVERY-GOVERNANCE NORMALIZATION
+========================================================== */
+
+function buildDeliveryGovernance(
+    resource
+) {
+
+    const deliveryType =
+        normalizeLowercase(
+            resource?.delivery_type
+        );
+
+    const storageDomain =
+        normalizeStorageDomain(
+            resource?.storage_domain,
+            deliveryType
+        );
+
+    const personalisationType =
+        normalizePersonalisationType(
+            resource?.personalisation_type,
+            storageDomain
+        );
+
+    const protectedDelivery =
+        deliveryType ===
+            "protected_storage";
+
+    return Object.freeze({
+
+        deliveryType,
+
+        storageDomain,
+
+        personalisationType,
+
+        protectedDelivery
+
+    });
+
+}
+
+
+/* ==========================================================
+   PROTECTED-ASSET STATE
+========================================================== */
+
+function buildProtectedAssetState(
+    resource,
+    protectedDelivery
+) {
+
+    if (
+        !protectedDelivery
+    ) {
+
+        return Object.freeze({
+
+            storagePath:
+                null,
+
+            fileName:
+                null,
+
+            fileExtension:
+                null,
+
+            mimeType:
+                null,
+
+            fileSize:
+                0
+
+        });
+
+    }
+
+    return Object.freeze({
+
+        storagePath:
+            normalizeNullableString(
+                resource?.storage_path
+            ),
+
+        fileName:
+            normalizeNullableString(
+                resource?.file_name
+            ),
+
+        fileExtension:
+            normalizeNullableString(
+                resource?.file_extension
+            ),
+
+        mimeType:
+            normalizeNullableString(
+                resource?.mime_type
+            ),
+
+        fileSize:
+            normalizeFileSize(
+                resource?.file_size
+            )
+
+    });
+
+}
+
+
 /* ==========================================================
    DRAFT DATA
 ========================================================== */
@@ -394,9 +980,21 @@ function buildDraftData(
     const timestamp =
         serverTimestamp();
 
-    const protectedDelivery =
-        normalizedResource.delivery_type ===
-        "protected_storage";
+    const deliveryGovernance =
+        buildDeliveryGovernance(
+            normalizedResource
+        );
+
+    const releaseGovernance =
+        buildReleaseGovernance(
+            normalizedResource
+        );
+
+    const protectedAsset =
+        buildProtectedAssetState(
+            normalizedResource,
+            deliveryGovernance.protectedDelivery
+        );
 
     return {
 
@@ -419,49 +1017,35 @@ function buildDraftData(
             normalizedResource.category,
 
         delivery_type:
-            normalizedResource.delivery_type,
+            deliveryGovernance.deliveryType,
+
+        personalisation_type:
+            deliveryGovernance.personalisationType,
+
+        storage_domain:
+            deliveryGovernance.storageDomain,
 
         storage_path:
-            protectedDelivery
-                ? normalizeNullableString(
-                    normalizedResource.storage_path
-                )
-                : null,
+            protectedAsset.storagePath,
 
         external_url:
-            protectedDelivery
+            deliveryGovernance.protectedDelivery
                 ? null
                 : normalizeNullableString(
                     normalizedResource.external_url
                 ),
 
         file_name:
-            protectedDelivery
-                ? normalizeNullableString(
-                    normalizedResource.file_name
-                )
-                : null,
+            protectedAsset.fileName,
 
         file_extension:
-            protectedDelivery
-                ? normalizeNullableString(
-                    normalizedResource.file_extension
-                )
-                : null,
+            protectedAsset.fileExtension,
 
         mime_type:
-            protectedDelivery
-                ? normalizeNullableString(
-                    normalizedResource.mime_type
-                )
-                : null,
+            protectedAsset.mimeType,
 
         file_size:
-            protectedDelivery
-                ? normalizeFileSize(
-                    normalizedResource.file_size
-                )
-                : 0,
+            protectedAsset.fileSize,
 
         preview_allowed:
             normalizedResource.preview_allowed ===
@@ -474,6 +1058,21 @@ function buildDraftData(
         embed_allowed:
             normalizedResource.embed_allowed ===
             true,
+
+        release_policy:
+            releaseGovernance.releasePolicy,
+
+        module_number:
+            releaseGovernance.moduleNumber,
+
+        session_number:
+            releaseGovernance.sessionNumber,
+
+        available_from:
+            releaseGovernance.availableFrom,
+
+        available_until:
+            releaseGovernance.availableUntil,
 
         status:
             "draft",
@@ -490,7 +1089,9 @@ function buildDraftData(
             ),
 
         display_order:
-            normalizedResource.display_order,
+            normalizeDisplayOrder(
+                normalizedResource.display_order
+            ),
 
         created_by_uid:
             actor.uid,
@@ -547,6 +1148,7 @@ function buildDraftData(
 
 }
 
+
 /* ==========================================================
    EDITABLE DRAFT DATA
 ========================================================== */
@@ -561,53 +1163,36 @@ function buildEditableDraftData(
         existingData
     );
 
-    const protectedDelivery =
-        normalizedResource.delivery_type ===
-        "protected_storage";
-
-    const protectedAsset = {
-
-        storagePath:
-            protectedDelivery
-                ? normalizeNullableString(
-                    existingData.storage_path
-                )
-                : null,
-
-        fileName:
-            protectedDelivery
-                ? normalizeNullableString(
-                    existingData.file_name
-                )
-                : null,
-
-        fileExtension:
-            protectedDelivery
-                ? normalizeNullableString(
-                    existingData.file_extension
-                )
-                : null,
-
-        mimeType:
-            protectedDelivery
-                ? normalizeNullableString(
-                    existingData.mime_type
-                )
-                : null,
-
-        fileSize:
-            protectedDelivery
-                ? normalizeFileSize(
-                    existingData.file_size
-                )
-                : 0
-
-    };
-
-    const currentStatus =
-        normalizeLowercase(
-            existingData.status
+    const deliveryGovernance =
+        buildDeliveryGovernance(
+            normalizedResource
         );
+
+    const releaseGovernance =
+        buildReleaseGovernance(
+            normalizedResource
+        );
+
+    const existingProtectedAsset =
+        buildProtectedAssetState(
+            existingData,
+            deliveryGovernance.protectedDelivery
+        );
+
+    const hasExistingProtectedAsset =
+        Boolean(
+            existingProtectedAsset.storagePath
+        );
+
+    if (
+        hasExistingProtectedAsset
+    ) {
+
+        validateUploadAudit(
+            existingData
+        );
+
+    }
 
     return {
 
@@ -633,29 +1218,35 @@ function buildEditableDraftData(
             normalizedResource.category,
 
         delivery_type:
-            normalizedResource.delivery_type,
+            deliveryGovernance.deliveryType,
+
+        personalisation_type:
+            deliveryGovernance.personalisationType,
+
+        storage_domain:
+            deliveryGovernance.storageDomain,
 
         storage_path:
-            protectedAsset.storagePath,
+            existingProtectedAsset.storagePath,
 
         external_url:
-            protectedDelivery
+            deliveryGovernance.protectedDelivery
                 ? null
                 : normalizeNullableString(
                     normalizedResource.external_url
                 ),
 
         file_name:
-            protectedAsset.fileName,
+            existingProtectedAsset.fileName,
 
         file_extension:
-            protectedAsset.fileExtension,
+            existingProtectedAsset.fileExtension,
 
         mime_type:
-            protectedAsset.mimeType,
+            existingProtectedAsset.mimeType,
 
         file_size:
-            protectedAsset.fileSize,
+            existingProtectedAsset.fileSize,
 
         preview_allowed:
             normalizedResource.preview_allowed ===
@@ -669,14 +1260,34 @@ function buildEditableDraftData(
             normalizedResource.embed_allowed ===
             true,
 
+        release_policy:
+            releaseGovernance.releasePolicy,
+
+        module_number:
+            releaseGovernance.moduleNumber,
+
+        session_number:
+            releaseGovernance.sessionNumber,
+
+        available_from:
+            releaseGovernance.availableFrom,
+
+        available_until:
+            releaseGovernance.availableUntil,
+
         /*
-         * Preserve the governed lifecycle.
+         * Firestore Rules v2.8.0 recognizes only:
          *
-         * draft     -> draft
-         * uploaded  -> uploaded
+         * • draft
+         * • published
+         * • withdrawn
+         *
+         * A protected file attached to an unpublished resource
+         * therefore remains represented as a draft containing
+         * complete protected-asset and upload-audit metadata.
          */
         status:
-            currentStatus,
+            "draft",
 
         is_active:
             false,
@@ -685,7 +1296,9 @@ function buildEditableDraftData(
             false,
 
         display_order:
-            normalizedResource.display_order,
+            normalizeDisplayOrder(
+                normalizedResource.display_order
+            ),
 
         created_by_uid:
             existingData.created_by_uid,
@@ -746,9 +1359,8 @@ function buildEditableDraftData(
 
 }
 
-
 /* ==========================================================
-   PROTECTED ASSET VALIDATION
+   PROTECTED UPLOAD NORMALIZATION
 ========================================================== */
 
 function normalizeProtectedUploadResult(
@@ -835,10 +1447,15 @@ function normalizeProtectedUploadResult(
 
     }
 
+    const detectedFileExtension =
+        normalizeLowercase(
+            LearningResourceContract.getFileExtension(
+                fileName
+            )
+        );
+
     if (
-        LearningResourceContract.getFileExtension(
-            fileName
-        ) !==
+        detectedFileExtension !==
         fileExtension
     ) {
 
@@ -914,6 +1531,222 @@ function normalizeProtectedUploadResult(
 
 
 /* ==========================================================
+   PROTECTED ASSET VALIDATION
+========================================================== */
+
+function validateProtectedAssetData(
+    documentId,
+    data
+) {
+
+    validateDocumentIdentity(
+        documentId,
+        data
+    );
+
+    validateCreationAudit(
+        data
+    );
+
+    const deliveryType =
+        normalizeLowercase(
+            data?.delivery_type
+        );
+
+    if (
+        deliveryType !==
+        "protected_storage"
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected asset validation requires protected_storage delivery.`
+        );
+
+    }
+
+    const storageDomain =
+        normalizeStorageDomain(
+            data?.storage_domain,
+            deliveryType
+        );
+
+    const personalisationType =
+        normalizePersonalisationType(
+            data?.personalisation_type,
+            storageDomain
+        );
+
+    const storagePath =
+        LearningResourceContract.normalizeStoragePath(
+            data?.storage_path
+        );
+
+    const resourceId =
+        LearningResourceContract.normalizeResourceId(
+            data?.resource_id
+        );
+
+    const programCode =
+        LearningResourceContract.normalizeProgramCode(
+            data?.program_code
+        );
+
+    const version =
+        normalizeVersion(
+            data?.version
+        );
+
+    const fileName =
+        LearningResourceContract.normalizeFileName(
+            data?.file_name
+        );
+
+    const fileExtension =
+        normalizeLowercase(
+            data?.file_extension
+        );
+
+    const mimeType =
+        normalizeLowercase(
+            data?.mime_type
+        );
+
+    const fileSize =
+        normalizeFileSize(
+            data?.file_size
+        );
+
+    if (
+        !storagePath ||
+        !resourceId ||
+        !programCode ||
+        !fileName ||
+        !fileExtension ||
+        !mimeType ||
+        fileSize <= 0
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected resource metadata is incomplete.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.isValidProtectedStoragePath(
+            storagePath
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected resource Storage path is invalid.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.isValidFileName(
+            fileName
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected resource filename is invalid.`
+        );
+
+    }
+
+    const detectedFileExtension =
+        normalizeLowercase(
+            LearningResourceContract.getFileExtension(
+                fileName
+            )
+        );
+
+    if (
+        detectedFileExtension !==
+        fileExtension
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected resource extension does not match its filename.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.isApprovedMimeType(
+            mimeType
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected resource MIME type is not approved.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.isValidFileSize(
+            fileSize
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected resource file size is invalid.`
+        );
+
+    }
+
+    if (
+        !LearningResourceContract.storagePathMatchesResource(
+            storagePath,
+            {
+                programCode,
+                resourceId,
+                version,
+                fileName
+            }
+        )
+    ) {
+
+        throw new Error(
+            `[${MODULE_NAME}] Protected resource path does not match its resource identity.`
+        );
+
+    }
+
+    validateUploadAudit(
+        data
+    );
+
+    return Object.freeze({
+
+        storagePath,
+
+        resourceId,
+
+        programCode,
+
+        version,
+
+        fileName,
+
+        fileExtension,
+
+        mimeType,
+
+        fileSize,
+
+        storageDomain,
+
+        personalisationType
+
+    });
+
+}
+
+/* ==========================================================
    PUBLICATION VALIDATION
 ========================================================== */
 
@@ -936,57 +1769,94 @@ function validatePublicationData(
             data?.status
         );
 
-    const publishableStatuses =
-        [
-            "draft",
-            "uploaded"
-        ];
-
-    const hasProtectedUploadEvidence =
-        data.delivery_type ===
-            "protected_storage" &&
-        Boolean(
-            normalizeString(
-                data.storage_path
-            )
-        ) &&
-        Boolean(
-            normalizeString(
-                data.file_name
-            )
-        ) &&
-        Boolean(
-            normalizeString(
-                data.mime_type
-            )
-        ) &&
-        normalizeFileSize(
-            data.file_size
-        ) > 0;
-
     if (
-        !publishableStatuses.includes(
-            status
-        )
+        status !==
+        "draft"
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Only draft or uploaded resources can be published.`
+            `[${MODULE_NAME}] Only draft resources can be published.`
         );
 
     }
 
     if (
-        data.delivery_type ===
-            "protected_storage" &&
-        status !==
-            "uploaded" &&
-        !hasProtectedUploadEvidence
+        data?.is_active ===
+            true ||
+        data?.is_latest ===
+            true
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Protected Storage resources must be uploaded before publication.`
+            `[${MODULE_NAME}] A draft must be inactive and must not be marked latest before publication.`
         );
+
+    }
+
+    /*
+     * Rebuild and validate the governed release metadata.
+     * This confirms that module/session and availability values
+     * remain compatible with the selected release policy.
+     */
+    buildReleaseGovernance(
+        data
+    );
+
+    const deliveryGovernance =
+        buildDeliveryGovernance(
+            data
+        );
+
+    if (
+        deliveryGovernance.protectedDelivery
+    ) {
+
+        validateProtectedAssetData(
+            documentId,
+            data
+        );
+
+    } else {
+
+        const externalUrl =
+            normalizeNullableString(
+                data?.external_url
+            );
+
+        if (
+            !externalUrl
+        ) {
+
+            throw new Error(
+                `[${MODULE_NAME}] External resources require an external URL before publication.`
+            );
+
+        }
+
+        if (
+            normalizeString(
+                data?.storage_path
+            )
+        ) {
+
+            throw new Error(
+                `[${MODULE_NAME}] External resources cannot contain a protected Storage path.`
+            );
+
+        }
+
+        if (
+            deliveryGovernance.storageDomain !==
+                "external" ||
+            deliveryGovernance.personalisationType !==
+                "none"
+        ) {
+
+            throw new Error(
+                `[${MODULE_NAME}] External resource delivery governance is invalid.`
+            );
+
+        }
 
     }
 
@@ -1043,9 +1913,20 @@ async function createDraft(
             input
         );
 
+    /*
+     * Build the governed persistence payload before validation
+     * so release, Storage-domain and personalisation defaults
+     * are represented exactly as they will be stored.
+     */
+    const draftData =
+        buildDraftData(
+            normalizedResource,
+            actor
+        );
+
     const validation =
         LearningResourceContract.validateDraft(
-            normalizedResource
+            draftData
         );
 
     if (
@@ -1063,8 +1944,8 @@ async function createDraft(
 
     const documentId =
         buildCanonicalDocumentId(
-            normalizedResource.resource_id,
-            normalizedResource.version
+            draftData.resource_id,
+            draftData.version
         );
 
     const reference =
@@ -1072,11 +1953,10 @@ async function createDraft(
             documentId
         );
 
-    const data =
-        buildDraftData(
-            normalizedResource,
-            actor
-        );
+    validateDocumentIdentity(
+        documentId,
+        draftData
+    );
 
     await runTransaction(
         db,
@@ -1101,7 +1981,7 @@ async function createDraft(
 
             transaction.set(
                 reference,
-                data
+                draftData
             );
 
         }
@@ -1116,13 +1996,22 @@ async function createDraft(
             documentId,
 
             resourceId:
-                normalizedResource.resource_id,
+                draftData.resource_id,
 
             programCode:
-                normalizedResource.program_code,
+                draftData.program_code,
 
             version:
-                normalizedResource.version,
+                draftData.version,
+
+            releasePolicy:
+                draftData.release_policy,
+
+            storageDomain:
+                draftData.storage_domain,
+
+            personalisationType:
+                draftData.personalisation_type,
 
             createdByUid:
                 actor.uid
@@ -1134,19 +2023,28 @@ async function createDraft(
         documentId,
 
         resourceId:
-            normalizedResource.resource_id,
+            draftData.resource_id,
 
         programCode:
-            normalizedResource.program_code,
+            draftData.program_code,
 
         version:
-            normalizedResource.version,
+            draftData.version,
 
         status:
             "draft",
 
         isLatest:
-            false
+            false,
+
+        releasePolicy:
+            draftData.release_policy,
+
+        storageDomain:
+            draftData.storage_domain,
+
+        personalisationType:
+            draftData.personalisation_type
 
     });
 
@@ -1171,70 +2069,82 @@ async function updateDraft(
             documentId
         );
 
-    return runTransaction(
-        db,
-        async (
-            transaction
-        ) => {
+    const result =
+        await runTransaction(
+            db,
+            async (
+                transaction
+            ) => {
 
-            const snapshot =
-                await transaction.get(
-                    reference
+                const snapshot =
+                    await transaction.get(
+                        reference
+                    );
+
+                if (
+                    !snapshot.exists()
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Resource not found.`
+                    );
+
+                }
+
+                const existingData =
+                    snapshot.data() ||
+                    {};
+
+                validateDocumentIdentity(
+                    snapshot.id,
+                    existingData
                 );
 
-            if (
-                !snapshot.exists()
-            ) {
-
-                throw new Error(
-                    `[${MODULE_NAME}] Resource not found.`
+                validateCreationAudit(
+                    existingData
                 );
 
-            }
+                const existingStatus =
+                    normalizeLowercase(
+                        existingData.status
+                    );
 
-            const existingData =
-                snapshot.data() ||
-                {};
+                if (
+                    existingStatus !==
+                    "draft"
+                ) {
 
-            validateDocumentIdentity(
-                snapshot.id,
-                existingData
-            );
+                    throw new Error(
+                        `[${MODULE_NAME}] Only draft resources can be edited.`
+                    );
 
-            validateCreationAudit(
-                existingData
-            );
+                }
 
-            const existingStatus =
-                normalizeLowercase(
-                    existingData.status
-                );
+                const existingDeliveryType =
+                    normalizeLowercase(
+                        existingData.delivery_type
+                    );
 
-            const editableStatuses =
-                [
-                    "draft",
-                    "uploaded"
-                ];
+                const existingStoragePath =
+                    normalizeNullableString(
+                        existingData.storage_path
+                    );
 
-            if (
-                !editableStatuses.includes(
-                    existingStatus
-                )
-            ) {
+                const hasProtectedAsset =
+                    existingDeliveryType ===
+                        "protected_storage" &&
+                    Boolean(
+                        existingStoragePath
+                    );
 
-                throw new Error(
-                    `[${MODULE_NAME}] Only draft or uploaded resources can be edited.`
-                );
-
-            }
-
-            const existingDeliveryType =
-                normalizeLowercase(
-                    existingData.delivery_type
-                );
-
-            const normalizedResource =
-                LearningResourceContract.normalizeResourceInput({
+                /*
+                 * Once a protected file has been attached, its
+                 * delivery type, Storage domain and
+                 * personalisation type become governed asset
+                 * characteristics and cannot be changed through
+                 * metadata editing.
+                 */
+                const controlledInput = {
 
                     ...input,
 
@@ -1247,18 +2157,23 @@ async function updateDraft(
                     version:
                         existingData.version,
 
-                    /*
-                     * Once a protected asset has been uploaded,
-                     * its governed delivery type is immutable.
-                     */
                     delivery_type:
-                        existingStatus ===
-                        "uploaded"
+                        hasProtectedAsset
                             ? existingDeliveryType
                             : input.delivery_type,
 
+                    storage_domain:
+                        hasProtectedAsset
+                            ? existingData.storage_domain
+                            : input.storage_domain,
+
+                    personalisation_type:
+                        hasProtectedAsset
+                            ? existingData.personalisation_type
+                            : input.personalisation_type,
+
                     status:
-                        existingStatus,
+                        "draft",
 
                     is_active:
                         false,
@@ -1266,159 +2181,194 @@ async function updateDraft(
                     is_latest:
                         false
 
+                };
+
+                const normalizedResource =
+                    LearningResourceContract.normalizeResourceInput(
+                        controlledInput
+                    );
+
+                if (
+                    hasProtectedAsset &&
+                    normalizeLowercase(
+                        normalizedResource.delivery_type
+                    ) !==
+                        existingDeliveryType
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Protected resource delivery type is immutable after file attachment. Create a new version instead.`
+                    );
+
+                }
+
+                if (
+                    hasProtectedAsset &&
+                    normalizeLowercase(
+                        normalizedResource.storage_domain
+                    ) !==
+                        normalizeLowercase(
+                            existingData.storage_domain
+                        )
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Protected resource Storage domain is immutable after file attachment. Create a new version instead.`
+                    );
+
+                }
+
+                if (
+                    hasProtectedAsset &&
+                    normalizeLowercase(
+                        normalizedResource.personalisation_type
+                    ) !==
+                        normalizeLowercase(
+                            existingData.personalisation_type
+                        )
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Protected resource personalisation type is immutable after file attachment. Create a new version instead.`
+                    );
+
+                }
+
+                if (
+                    hasProtectedAsset
+                ) {
+
+                    validateUploadAudit(
+                        existingData
+                    );
+
+                    validateProtectedAssetData(
+                        snapshot.id,
+                        existingData
+                    );
+
+                }
+
+                const updatedData =
+                    buildEditableDraftData(
+                        normalizedResource,
+                        existingData,
+                        actor
+                    );
+
+                validateDocumentIdentity(
+                    snapshot.id,
+                    updatedData
+                );
+
+                /*
+                 * The contract validates the complete persistence
+                 * payload, including the release-governance fields
+                 * introduced in v1.5.0.
+                 */
+                const validation =
+                    LearningResourceContract.validateDraft(
+                        updatedData
+                    );
+
+                if (
+                    !validation.valid
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Invalid draft update: ` +
+                        validation.errors.join(
+                            " "
+                        )
+                    );
+
+                }
+
+                /*
+                 * Controlled replacement is intentional.
+                 *
+                 * The complete authoritative field set is rebuilt
+                 * while preserving:
+                 *
+                 * • immutable resource identity
+                 * • immutable creation audit
+                 * • previously attached protected asset
+                 * • upload audit evidence
+                 */
+                transaction.set(
+                    reference,
+                    updatedData
+                );
+
+                return Object.freeze({
+
+                    documentId:
+                        snapshot.id,
+
+                    resourceId:
+                        updatedData.resource_id,
+
+                    programCode:
+                        updatedData.program_code,
+
+                    version:
+                        updatedData.version,
+
+                    status:
+                        "draft",
+
+                    isLatest:
+                        false,
+
+                    hasProtectedAsset:
+                        Boolean(
+                            updatedData.storage_path
+                        ),
+
+                    releasePolicy:
+                        updatedData.release_policy,
+
+                    storageDomain:
+                        updatedData.storage_domain,
+
+                    personalisationType:
+                        updatedData.personalisation_type
+
                 });
 
-            if (
-                existingStatus ===
-                    "uploaded" &&
-                normalizeLowercase(
-                    normalizedResource.delivery_type
-                ) !==
-                    existingDeliveryType
-            ) {
-
-                throw new Error(
-                    `[${MODULE_NAME}] Uploaded resource delivery type is immutable. Create a new version instead.`
-                );
-
             }
+        );
 
-            if (
-                existingStatus ===
-                    "uploaded" &&
-                existingDeliveryType ===
-                    "protected_storage" &&
-                (
-                    !normalizeString(
-                        existingData.storage_path
-                    ) ||
-                    !normalizeString(
-                        existingData.file_name
-                    ) ||
-                    !normalizeString(
-                        existingData.file_extension
-                    ) ||
-                    !normalizeString(
-                        existingData.mime_type
-                    ) ||
-                    normalizeFileSize(
-                        existingData.file_size
-                    ) <=
-                        0 ||
-                    !normalizeString(
-                        existingData.uploaded_by_uid
-                    ) ||
-                    !normalizeString(
-                        existingData.uploaded_by_email
-                    ) ||
-                    !existingData.uploaded_at
-                )
-            ) {
+    console.info(
+        `[${MODULE_NAME}] Draft updated:`,
+        {
+            moduleVersion:
+                MODULE_VERSION,
 
-                throw new Error(
-                    `[${MODULE_NAME}] Uploaded protected resource metadata is incomplete and cannot be edited.`
-                );
+            documentId:
+                result.documentId,
 
-            }
+            resourceId:
+                result.resourceId,
 
-            /*
-             * Draft validation is used for pre-publication
-             * metadata editing. Uploaded resources are validated
-             * through a temporary draft-compatible structure so
-             * their persisted lifecycle remains uploaded.
-             */
-            const validationPayload = {
+            programCode:
+                result.programCode,
 
-                ...normalizedResource,
+            version:
+                result.version,
 
-                status:
-                    "draft",
+            hasProtectedAsset:
+                result.hasProtectedAsset,
 
-                is_active:
-                    false,
+            releasePolicy:
+                result.releasePolicy,
 
-                is_latest:
-                    false
-
-            };
-
-            const validation =
-                LearningResourceContract.validateDraft(
-                    validationPayload
-                );
-
-            if (
-                !validation.valid
-            ) {
-
-                throw new Error(
-                    `[${MODULE_NAME}] Invalid pre-publication resource: ` +
-                    validation.errors.join(
-                        " "
-                    )
-                );
-
-            }
-
-            const updatedData =
-                buildEditableDraftData(
-                    normalizedResource,
-                    existingData,
-                    actor
-                );
-
-            /*
-             * Preserve the governed pre-publication lifecycle:
-             *
-             * • draft remains draft
-             * • uploaded remains uploaded
-             */
-            updatedData.status =
-                existingStatus;
-
-            updatedData.is_active =
-                false;
-
-            updatedData.is_latest =
-                false;
-
-            /*
-             * Controlled replacement is intentional.
-             * The authoritative field set is reconstructed while
-             * immutable identity, protected asset and audit
-             * metadata are preserved.
-             */
-            transaction.set(
-                reference,
-                updatedData
-            );
-
-            return Object.freeze({
-
-                documentId:
-                    snapshot.id,
-
-                resourceId:
-                    existingData.resource_id,
-
-                programCode:
-                    existingData.program_code,
-
-                version:
-                    existingData.version,
-
-                status:
-                    existingStatus,
-
-                hasProtectedAsset:
-                    Boolean(
-                        updatedData.storage_path
-                    )
-
-            });
-
+            updatedByUid:
+                actor.uid
         }
     );
+
+    return result;
 
 }
 
@@ -1446,90 +2396,141 @@ async function attachProtectedAsset(
             documentId
         );
 
-    return runTransaction(
-        db,
-        async (
-            transaction
-        ) => {
+    const result =
+        await runTransaction(
+            db,
+            async (
+                transaction
+            ) => {
 
-            const snapshot =
-                await transaction.get(
-                    reference
+                const snapshot =
+                    await transaction.get(
+                        reference
+                    );
+
+                if (
+                    !snapshot.exists()
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Draft not found.`
+                    );
+
+                }
+
+                const existingData =
+                    snapshot.data() ||
+                    {};
+
+                validateDocumentIdentity(
+                    snapshot.id,
+                    existingData
                 );
 
-            if (
-                !snapshot.exists()
-            ) {
-
-                throw new Error(
-                    `[${MODULE_NAME}] Draft not found.`
+                validateCreationAudit(
+                    existingData
                 );
 
-            }
+                const existingStatus =
+                    normalizeLowercase(
+                        existingData.status
+                    );
 
-            const existingData =
-                snapshot.data() ||
-                {};
+                if (
+                    existingStatus !==
+                    "draft"
+                ) {
 
-            validateDocumentIdentity(
-                snapshot.id,
-                existingData
-            );
+                    throw new Error(
+                        `[${MODULE_NAME}] Protected assets can only be attached to draft resources.`
+                    );
 
-            validateCreationAudit(
-                existingData
-            );
+                }
 
-            if (
-                existingData.status !==
-                "draft"
-            ) {
-
-                throw new Error(
-                    `[${MODULE_NAME}] Assets can only be attached to draft resources.`
-                );
-
-            }
-
-            if (
-                protectedUpload.resourceId !==
+                const existingResourceId =
                     LearningResourceContract.normalizeResourceId(
                         existingData.resource_id
-                    ) ||
-                protectedUpload.programCode !==
+                    );
+
+                const existingProgramCode =
                     LearningResourceContract.normalizeProgramCode(
                         existingData.program_code
-                    ) ||
-                protectedUpload.version !==
+                    );
+
+                const existingVersion =
                     normalizeVersion(
                         existingData.version
+                    );
+
+                if (
+                    protectedUpload.resourceId !==
+                        existingResourceId ||
+                    protectedUpload.programCode !==
+                        existingProgramCode ||
+                    protectedUpload.version !==
+                        existingVersion
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Upload identity does not match the draft resource.`
+                    );
+
+                }
+
+                if (
+                    normalizeString(
+                        existingData.storage_path
                     )
-            ) {
+                ) {
 
-                throw new Error(
-                    `[${MODULE_NAME}] Upload identity does not match the draft.`
-                );
+                    throw new Error(
+                        `[${MODULE_NAME}] This resource already has a protected asset. Create a new resource version instead of replacing it.`
+                    );
 
-            }
+                }
 
-            if (
-                existingData.storage_path
-            ) {
+                const existingDeliveryType =
+                    normalizeLowercase(
+                        existingData.delivery_type
+                    );
 
-                throw new Error(
-                    `[${MODULE_NAME}] This resource already has a protected asset. Create a new version instead of replacing it.`
-                );
+                if (
+                    existingDeliveryType &&
+                    existingDeliveryType !==
+                        "protected_storage"
+                ) {
 
-            }
+                    throw new Error(
+                        `[${MODULE_NAME}] External-delivery resources cannot receive a protected asset. Change the draft delivery type before upload.`
+                    );
 
-            const timestamp =
-                serverTimestamp();
+                }
 
-            transaction.update(
-                reference,
-                {
+                const storageDomain =
+                    normalizeStorageDomain(
+                        existingData.storage_domain,
+                        "protected_storage"
+                    );
+
+                const personalisationType =
+                    normalizePersonalisationType(
+                        existingData.personalisation_type,
+                        storageDomain
+                    );
+
+                const timestamp =
+                    serverTimestamp();
+
+                const attachmentData = {
+
                     delivery_type:
                         "protected_storage",
+
+                    storage_domain:
+                        storageDomain,
+
+                    personalisation_type:
+                        personalisationType,
 
                     storage_path:
                         protectedUpload.storagePath,
@@ -1549,8 +2550,15 @@ async function attachProtectedAsset(
                     file_size:
                         protectedUpload.fileSize,
 
+                    /*
+                     * File attachment is upload readiness,
+                     * not a separate Firestore lifecycle state.
+                     *
+                     * The resource remains draft until the
+                     * governed publication transaction succeeds.
+                     */
                     status:
-                        "uploaded",
+                        "draft",
 
                     is_active:
                         false,
@@ -1575,44 +2583,126 @@ async function attachProtectedAsset(
 
                     updated_at:
                         timestamp
-                }
-            );
+                };
 
-            return Object.freeze({
+                const validationCandidate = {
 
-                documentId:
+                    ...existingData,
+
+                    ...attachmentData
+
+                };
+
+                validateDocumentIdentity(
                     snapshot.id,
+                    validationCandidate
+                );
 
-                resourceId:
-                    protectedUpload.resourceId,
+                validateProtectedAssetData(
+                    snapshot.id,
+                    validationCandidate
+                );
 
-                programCode:
-                    protectedUpload.programCode,
+                const validation =
+                    LearningResourceContract.validateDraft(
+                        validationCandidate
+                    );
 
-                version:
-                    protectedUpload.version,
+                if (
+                    !validation.valid
+                ) {
 
-                storagePath:
-                    protectedUpload.storagePath,
+                    throw new Error(
+                        `[${MODULE_NAME}] Protected asset attachment rejected: ` +
+                        validation.errors.join(
+                            " "
+                        )
+                    );
 
-                fileName:
-                    protectedUpload.fileName,
+                }
 
-                mimeType:
-                    protectedUpload.mimeType,
+                transaction.update(
+                    reference,
+                    attachmentData
+                );
 
-                fileSize:
-                    protectedUpload.fileSize,
+                return Object.freeze({
 
-                status:
-                    "uploaded"
+                    documentId:
+                        snapshot.id,
 
-            });
+                    resourceId:
+                        protectedUpload.resourceId,
 
+                    programCode:
+                        protectedUpload.programCode,
+
+                    version:
+                        protectedUpload.version,
+
+                    storagePath:
+                        protectedUpload.storagePath,
+
+                    storageDomain,
+
+                    personalisationType,
+
+                    fileName:
+                        protectedUpload.fileName,
+
+                    mimeType:
+                        protectedUpload.mimeType,
+
+                    fileSize:
+                        protectedUpload.fileSize,
+
+                    status:
+                        "draft",
+
+                    isLatest:
+                        false,
+
+                    hasProtectedAsset:
+                        true
+
+                });
+
+            }
+        );
+
+    console.info(
+        `[${MODULE_NAME}] Protected asset attached:`,
+        {
+            moduleVersion:
+                MODULE_VERSION,
+
+            documentId:
+                result.documentId,
+
+            resourceId:
+                result.resourceId,
+
+            programCode:
+                result.programCode,
+
+            version:
+                result.version,
+
+            storageDomain:
+                result.storageDomain,
+
+            personalisationType:
+                result.personalisationType,
+
+            uploadedByUid:
+                actor.uid
         }
     );
 
+    return result;
+
 }
+
 
 /* ==========================================================
    PUBLISH RESOURCE
@@ -1633,8 +2723,9 @@ async function publishResource(
         );
 
     /*
-     * The preliminary read resolves the immutable logical
-     * resource identity used to locate existing versions.
+     * Preliminary read resolves the immutable resource identity
+     * needed to find all existing versions.
+     *
      * Publication eligibility is checked again inside the
      * transaction before any mutation is committed.
      */
@@ -1697,7 +2788,7 @@ async function publishResource(
             ) => {
 
                 /*
-                 * Transaction reads must complete before writes.
+                 * Complete all transaction reads before writes.
                  */
                 const targetSnapshot =
                     await transaction.get(
@@ -1763,6 +2854,13 @@ async function publishResource(
                 const timestamp =
                     serverTimestamp();
 
+                /*
+                 * Supersede only the existing latest published
+                 * version of the same logical resource.
+                 *
+                 * Historical versions remain published and
+                 * immutable, but are no longer marked latest.
+                 */
                 otherSnapshots.forEach(
                     (
                         versionSnapshot
@@ -1785,12 +2883,20 @@ async function publishResource(
                             previousData
                         );
 
-                        if (
+                        const previousResourceId =
                             LearningResourceContract.normalizeResourceId(
                                 previousData.resource_id
-                            ) ===
+                            );
+
+                        const previousStatus =
+                            normalizeLowercase(
+                                previousData.status
+                            );
+
+                        if (
+                            previousResourceId ===
                                 resourceId &&
-                            previousData.status ===
+                            previousStatus ===
                                 "published" &&
                             previousData.is_latest ===
                                 true
@@ -1879,8 +2985,27 @@ async function publishResource(
                     status:
                         "published",
 
+                    isActive:
+                        true,
+
                     isLatest:
-                        true
+                        true,
+
+                    releasePolicy:
+                        targetData.release_policy,
+
+                    storageDomain:
+                        targetData.storage_domain,
+
+                    personalisationType:
+                        targetData.personalisation_type,
+
+                    hasProtectedAsset:
+                        Boolean(
+                            normalizeString(
+                                targetData.storage_path
+                            )
+                        )
 
                 });
 
@@ -1904,6 +3029,15 @@ async function publishResource(
 
             version:
                 result.version,
+
+            releasePolicy:
+                result.releasePolicy,
+
+            storageDomain:
+                result.storageDomain,
+
+            personalisationType:
+                result.personalisationType,
 
             publishedByUid:
                 actor.uid
@@ -1959,115 +3093,165 @@ async function withdrawResource(
             documentId
         );
 
-    return runTransaction(
-        db,
-        async (
-            transaction
-        ) => {
+    const result =
+        await runTransaction(
+            db,
+            async (
+                transaction
+            ) => {
 
-            const snapshot =
-                await transaction.get(
-                    reference
+                const snapshot =
+                    await transaction.get(
+                        reference
+                    );
+
+                if (
+                    !snapshot.exists()
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Published resource not found.`
+                    );
+
+                }
+
+                const existingData =
+                    snapshot.data() ||
+                    {};
+
+                validateDocumentIdentity(
+                    snapshot.id,
+                    existingData
                 );
 
-            if (
-                !snapshot.exists()
-            ) {
-
-                throw new Error(
-                    `[${MODULE_NAME}] Published resource not found.`
+                validateCreationAudit(
+                    existingData
                 );
 
-            }
+                const existingStatus =
+                    normalizeLowercase(
+                        existingData.status
+                    );
 
-            const existingData =
-                snapshot.data() ||
-                {};
+                if (
+                    existingStatus !==
+                    "published"
+                ) {
 
-            validateDocumentIdentity(
-                snapshot.id,
-                existingData
-            );
+                    throw new Error(
+                        `[${MODULE_NAME}] Only published resources can be withdrawn.`
+                    );
 
-            validateCreationAudit(
-                existingData
-            );
+                }
 
-            if (
-                existingData.status !==
-                "published"
-            ) {
+                const timestamp =
+                    serverTimestamp();
 
-                throw new Error(
-                    `[${MODULE_NAME}] Only published resources can be withdrawn.`
+                transaction.update(
+                    reference,
+                    {
+                        status:
+                            "withdrawn",
+
+                        is_active:
+                            false,
+
+                        is_latest:
+                            false,
+
+                        withdrawn_by_uid:
+                            actor.uid,
+
+                        withdrawn_by_email:
+                            actor.email,
+
+                        withdrawn_at:
+                            timestamp,
+
+                        withdrawal_reason:
+                            normalizedReason,
+
+                        updated_by_uid:
+                            actor.uid,
+
+                        updated_by_email:
+                            actor.email,
+
+                        updated_at:
+                            timestamp
+                    }
                 );
 
-            }
+                return Object.freeze({
 
-            const timestamp =
-                serverTimestamp();
+                    documentId:
+                        snapshot.id,
 
-            transaction.update(
-                reference,
-                {
+                    resourceId:
+                        existingData.resource_id,
+
+                    programCode:
+                        existingData.program_code,
+
+                    version:
+                        existingData.version,
+
                     status:
                         "withdrawn",
 
-                    is_active:
+                    isActive:
                         false,
 
-                    is_latest:
+                    isLatest:
                         false,
 
-                    withdrawn_by_uid:
-                        actor.uid,
+                    releasePolicy:
+                        existingData.release_policy,
 
-                    withdrawn_by_email:
-                        actor.email,
+                    storageDomain:
+                        existingData.storage_domain,
 
-                    withdrawn_at:
-                        timestamp,
+                    personalisationType:
+                        existingData.personalisation_type,
 
-                    withdrawal_reason:
-                        normalizedReason,
+                    withdrawalReason:
+                        normalizedReason
 
-                    updated_by_uid:
-                        actor.uid,
+                });
 
-                    updated_by_email:
-                        actor.email,
+            }
+        );
 
-                    updated_at:
-                        timestamp
-                }
-            );
+    console.info(
+        `[${MODULE_NAME}] Resource withdrawn:`,
+        {
+            moduleVersion:
+                MODULE_VERSION,
 
-            return Object.freeze({
+            documentId:
+                result.documentId,
 
-                documentId:
-                    snapshot.id,
+            resourceId:
+                result.resourceId,
 
-                resourceId:
-                    existingData.resource_id,
+            programCode:
+                result.programCode,
 
-                programCode:
-                    existingData.program_code,
+            version:
+                result.version,
 
-                version:
-                    existingData.version,
+            withdrawalReason:
+                result.withdrawalReason,
 
-                status:
-                    "withdrawn",
-
-                isLatest:
-                    false
-
-            });
-
+            withdrawnByUid:
+                actor.uid
         }
     );
 
+    return result;
+
 }
+
 
 /* ==========================================================
    PUBLIC API
@@ -2098,14 +3282,56 @@ const LearningResourcePublisher =
     });
 
 
-window.LearningResourcePublisher =
-    LearningResourcePublisher;
+/* ==========================================================
+   WINDOW BINDING
+========================================================== */
 
+if (
+    typeof window !==
+    "undefined"
+) {
+
+    window.LearningResourcePublisher =
+        LearningResourcePublisher;
+
+}
+
+
+/* ==========================================================
+   MODULE INITIALIZATION
+========================================================== */
 
 console.info(
-    `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
+    `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`,
+    {
+        collectionName:
+            COLLECTION_NAME,
+
+        lifecycleStates:
+            [
+                "draft",
+                "published",
+                "withdrawn"
+            ],
+
+        uploadedLifecycleRemoved:
+            true,
+
+        releaseGovernanceEnabled:
+            true,
+
+        storageGovernanceEnabled:
+            true,
+
+        personalisationGovernanceEnabled:
+            true
+    }
 );
 
+
+/* ==========================================================
+   EXPORTS
+========================================================== */
 
 export {
 

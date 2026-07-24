@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File      : learning-resource-publisher.js
-   Version   : 1.5.0
+   Version   : 1.5.1
    Status    : ACTIVE
    Authority : Admin Portal
 
@@ -58,6 +58,10 @@
 
    Change History
    ----------------------------------------------------------
+   v1.5.1
+   • Preserved the governed Storage domain returned by protected uploads
+   • Corrected master-learning-resources path identity validation
+   • Added upload-to-draft Storage-domain consistency validation
    v1.5.0
    • Added release_policy persistence
    • Added module_number persistence
@@ -138,7 +142,7 @@ const MODULE_NAME =
     "LearningResourcePublisher";
 
 const MODULE_VERSION =
-    "1.5.0";
+    "1.5.1";
 
 const COLLECTION_NAME =
     "learning_resources";
@@ -1407,6 +1411,23 @@ function normalizeProtectedUploadResult(
             uploadResult?.fileSize
         );
 
+    /*
+     * The Storage upload service returns the governed domain.
+     * It must be preserved so the contract can select the
+     * correct expected Storage root:
+     *
+     * • learning_resources
+     *   → learning-resources/
+     *
+     * • master_learning_resources
+     *   → master-learning-resources/
+     */
+    const storageDomain =
+        normalizeStorageDomain(
+            uploadResult?.storageDomain,
+            "protected_storage"
+        );
+
     if (
         !storagePath ||
         !resourceId ||
@@ -1496,13 +1517,14 @@ function normalizeProtectedUploadResult(
                 programCode,
                 resourceId,
                 version,
-                fileName
+                fileName,
+                storageDomain
             }
         )
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Protected upload path does not match its resource identity.`
+            `[${MODULE_NAME}] Protected upload path does not match its resource identity and Storage domain.`
         );
 
     }
@@ -1510,6 +1532,8 @@ function normalizeProtectedUploadResult(
     return Object.freeze({
 
         storagePath,
+
+        storageDomain,
 
         resourceId,
 
@@ -1528,7 +1552,6 @@ function normalizeProtectedUploadResult(
     });
 
 }
-
 
 /* ==========================================================
    PROTECTED ASSET VALIDATION
@@ -1705,13 +1728,14 @@ function validateProtectedAssetData(
                 programCode,
                 resourceId,
                 version,
-                fileName
+                fileName,
+                storageDomain
             }
         )
     ) {
 
         throw new Error(
-            `[${MODULE_NAME}] Protected resource path does not match its resource identity.`
+            `[${MODULE_NAME}] Protected resource path does not match its resource identity and Storage domain.`
         );
 
     }
@@ -2508,9 +2532,21 @@ async function attachProtectedAsset(
 
                 const storageDomain =
                     normalizeStorageDomain(
-                        existingData.storage_domain,
+                        existingData.storage_domain ||
+                        protectedUpload.storageDomain,
                         "protected_storage"
                     );
+
+                if (
+                    storageDomain !==
+                    protectedUpload.storageDomain
+                ) {
+
+                    throw new Error(
+                        `[${MODULE_NAME}] Uploaded asset Storage domain does not match the draft resource Storage domain.`
+                    );
+
+                }
 
                 const personalisationType =
                     normalizePersonalisationType(

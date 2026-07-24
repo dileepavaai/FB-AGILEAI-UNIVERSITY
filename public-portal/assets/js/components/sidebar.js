@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.7.0
+   Version   : 1.7.1
    Status    : ACTIVE
    Phase     : Portal Navigation and Identity Stabilization
 
@@ -110,6 +110,23 @@
 
    Change History
    ----------------------------------------------------------
+   v1.7.1
+
+   • Corrected Credential Portfolio count synchronization
+     across authenticated portal pages.
+
+   • Added credential-count handling for the
+     credentials:rendered event.
+
+   • Added shared resolved-state fallback when the rendered
+     event does not provide credentials or a valid count.
+
+   • Hardened credential-count validation to reject null,
+     empty, non-finite and negative values.
+
+   • Preserved existing identity reconciliation, sign-out,
+     readiness events and public API compatibility.
+
    v1.7.0
 
    • Added Verify Credential as a first-class portal
@@ -200,8 +217,7 @@
    • Added portal and dashboard readiness reconciliation.
 
    • Added safe idempotent initialization.
-
-   v1.3.0
+      v1.3.0
 
    • Fixed Student placeholder overriding learner name.
 
@@ -285,7 +301,7 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.7.0";
+        "1.7.1";
 
 
     /* ======================================================
@@ -399,9 +415,7 @@
             "unknown"
 
         ]);
-
-
-    /* ======================================================
+            /* ======================================================
        STATE
     ====================================================== */
 
@@ -449,6 +463,7 @@
 
         }
 
+
         return String(
             value
         )
@@ -459,15 +474,22 @@
             );
 
     }
-        function firstValue(
+
+
+    function firstValue(
         values
     ) {
 
-        if (!Array.isArray(values)) {
+        if (
+            !Array.isArray(
+                values
+            )
+        ) {
 
             return "";
 
         }
+
 
         for (
             const value of values
@@ -478,13 +500,17 @@
                     value
                 );
 
-            if (normalized) {
+
+            if (
+                normalized
+            ) {
 
                 return normalized;
 
             }
 
         }
+
 
         return "";
 
@@ -501,16 +527,19 @@
             )
                 .toLowerCase();
 
-        if (!normalized) {
+
+        if (
+            !normalized
+        ) {
 
             return true;
 
         }
 
-        return GENERIC_IDENTITY_VALUES
-            .has(
-                normalized
-            );
+
+        return GENERIC_IDENTITY_VALUES.has(
+            normalized
+        );
 
     }
 
@@ -519,11 +548,16 @@
         values
     ) {
 
-        if (!Array.isArray(values)) {
+        if (
+            !Array.isArray(
+                values
+            )
+        ) {
 
             return "";
 
         }
+
 
         for (
             const value of values
@@ -533,6 +567,7 @@
                 normalizeValue(
                     value
                 );
+
 
             if (
 
@@ -549,6 +584,7 @@
             }
 
         }
+
 
         return "";
 
@@ -618,6 +654,7 @@
             )
                 .toLowerCase();
 
+
         if (
 
             !normalizedEmail ||
@@ -682,7 +719,10 @@
                 displayName
             );
 
-        if (!normalizedName) {
+
+        if (
+            !normalizedName
+        ) {
 
             return "LE";
 
@@ -698,8 +738,7 @@
 
 
         if (
-            words.length ===
-            1
+            words.length === 1
         ) {
 
             return words[0]
@@ -722,9 +761,7 @@
             .toUpperCase();
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        IDENTITY NORMALIZATION
     ====================================================== */
 
@@ -840,7 +877,9 @@
         };
 
     }
-        /* ======================================================
+
+
+    /* ======================================================
        CURRENT PATH
     ====================================================== */
 
@@ -872,8 +911,10 @@
 
         }
 
+
         const currentPath =
             getCurrentPath();
+
 
         const itemPath =
             String(
@@ -937,6 +978,7 @@
                         isActive(
                             item
                         );
+
 
                     const unavailable =
                         item.url === "#";
@@ -1007,9 +1049,7 @@
             );
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        OBJECT HELPERS
     ====================================================== */
 
@@ -1050,7 +1090,9 @@
             : [];
 
     }
-        /* ======================================================
+
+
+    /* ======================================================
        PORTAL STATE
     ====================================================== */
 
@@ -1977,6 +2019,7 @@
             identity
         );
 
+
         console.info(
 
             `[${MODULE_NAME}] Learner identity updated.`,
@@ -2001,7 +2044,28 @@
                 "sidebarCredentialCount"
             );
 
-        if (!countElement) {
+
+        if (
+            !countElement
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+
+            count === null ||
+
+            count === undefined ||
+
+            count === ""
+
+        ) {
+
+            countElement.textContent =
+                "—";
 
             return;
 
@@ -2080,8 +2144,7 @@
 
     }
 
-
-    /* ======================================================
+        /* ======================================================
        IDENTITY EVENTS
     ====================================================== */
 
@@ -2136,10 +2199,88 @@
 
             "credentials:rendered",
 
-            scheduleIdentityReconciliation
+            function (
+                event
+            ) {
+
+                const credentials =
+                    event?.detail?.credentials;
+
+                const count =
+                    event?.detail?.count;
+
+
+                if (
+                    Array.isArray(
+                        credentials
+                    )
+                ) {
+
+                    updateCredentialCount(
+                        credentials.length
+                    );
+
+                } else if (
+
+                    count !== null &&
+
+                    count !== undefined &&
+
+                    count !== "" &&
+
+                    Number.isFinite(
+                        Number(
+                            count
+                        )
+                    ) &&
+
+                    Number(
+                        count
+                    ) >= 0
+
+                ) {
+
+                    updateCredentialCount(
+                        Number(
+                            count
+                        )
+                    );
+
+                } else {
+
+                    const portalCredentials =
+                        resolveCredentials(
+                            resolvePortalState()
+                        );
+
+
+                    if (
+                        portalCredentials.length > 0
+                    ) {
+
+                        updateCredentialCount(
+                            portalCredentials.length
+                        );
+
+                    } else {
+
+                        updateCredentialCount(
+                            null
+                        );
+
+                    }
+
+                }
+
+
+                scheduleIdentityReconciliation();
+
+            }
 
         );
-                document.addEventListener(
+
+
+        document.addEventListener(
 
             "credentials:resolved",
 
@@ -2252,7 +2393,7 @@
 
                 applyIdentity(
 
-                    {
+                    normalizeIdentity({
 
                         displayName:
                             "Learner",
@@ -2266,15 +2407,17 @@
                         membershipLabel:
                             "University Member"
 
-                    },
+                    }),
 
                     {
-
-                        force:
-                            true
-
+                        force: true
                     }
 
+                );
+
+
+                updateCredentialCount(
+                    null
                 );
 
             }
@@ -2282,7 +2425,8 @@
         );
 
     }
-        /* ======================================================
+
+    /* ======================================================
        INITIALIZATION
     ====================================================== */
 
@@ -2296,20 +2440,23 @@
 
         }
 
+
         initialized =
             true;
 
 
-        bindIdentityEvents();
-
-        bindFirebaseAuthRefresh();
-
-
-        activeIdentity =
-            resolveSharedIdentity();
+        reconcileIdentity({
+            force: true
+        });
 
 
         renderSidebar();
+
+
+        bindIdentityEvents();
+
+
+        bindFirebaseAuthRefresh();
 
 
         scheduleIdentityReconciliation();
@@ -2317,9 +2464,7 @@
 
         console.info(
 
-            `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`,
-
-            activeIdentity
+            `[${MODULE_NAME}] v${MODULE_VERSION} initialized.`
 
         );
 
@@ -2327,41 +2472,42 @@
 
 
     /* ======================================================
-       PUBLIC REGISTRATION
+       PUBLIC API
     ====================================================== */
 
-    window.PortalSidebar =
-        Object.freeze({
+    window.PortalSidebar = {
 
-            render:
-                renderSidebar,
+        initialize,
 
-            updateIdentity,
+        render:
+            renderSidebar,
 
-            updateCredentialCount,
+        updateIdentity,
 
-            refreshIdentity:
-                scheduleIdentityReconciliation,
+        updateCredentialCount,
 
-            getIdentity() {
+        refreshIdentity:
+            reconcileIdentity,
 
-                return Object.freeze({
+        getIdentity() {
 
-                    ...activeIdentity
+            return {
 
-                });
+                ...activeIdentity
 
-            }
+            };
 
-        });
-            /* ======================================================
+        }
+
+    };
+        /* ======================================================
        AUTO INITIALIZATION
     ====================================================== */
 
     if (
 
         document.readyState ===
-            "loading"
+        "loading"
 
     ) {
 
@@ -2373,8 +2519,7 @@
 
             {
 
-                once:
-                    true
+                once: true
 
             }
 
@@ -2385,5 +2530,4 @@
         initialize();
 
     }
-    })(window, document);
-    
+    })();

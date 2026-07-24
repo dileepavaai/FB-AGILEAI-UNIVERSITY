@@ -2486,6 +2486,55 @@ async function attachProtectedAsset(
                         existingData.version
                     );
 
+                /*
+                 * Diagnostic identity comparison.
+                 *
+                 * This is intentionally logged before validation
+                 * so any mismatch between the Firestore draft and
+                 * the completed Storage upload can be identified
+                 * without weakening the governed identity check.
+                 */
+                console.info(
+                    `[${MODULE_NAME}] Protected upload identity comparison:`,
+                    {
+                        documentId:
+                            snapshot.id,
+
+                        draft: {
+                            resourceId:
+                                existingResourceId,
+
+                            programCode:
+                                existingProgramCode,
+
+                            version:
+                                existingVersion
+                        },
+
+                        upload: {
+                            resourceId:
+                                protectedUpload.resourceId,
+
+                            programCode:
+                                protectedUpload.programCode,
+
+                            version:
+                                protectedUpload.version
+                        },
+
+                        storage: {
+                            storagePath:
+                                protectedUpload.storagePath,
+
+                            storageDomain:
+                                protectedUpload.storageDomain,
+
+                            fileName:
+                                protectedUpload.fileName
+                        }
+                    }
+                );
+
                 if (
                     protectedUpload.resourceId !==
                         existingResourceId ||
@@ -2494,6 +2543,50 @@ async function attachProtectedAsset(
                     protectedUpload.version !==
                         existingVersion
                 ) {
+
+                    console.error(
+                        `[${MODULE_NAME}] Protected upload identity mismatch:`,
+                        {
+                            documentId:
+                                snapshot.id,
+
+                            mismatches: {
+                                resourceId:
+                                    protectedUpload.resourceId !==
+                                    existingResourceId,
+
+                                programCode:
+                                    protectedUpload.programCode !==
+                                    existingProgramCode,
+
+                                version:
+                                    protectedUpload.version !==
+                                    existingVersion
+                            },
+
+                            draft: {
+                                resourceId:
+                                    existingResourceId,
+
+                                programCode:
+                                    existingProgramCode,
+
+                                version:
+                                    existingVersion
+                            },
+
+                            upload: {
+                                resourceId:
+                                    protectedUpload.resourceId,
+
+                                programCode:
+                                    protectedUpload.programCode,
+
+                                version:
+                                    protectedUpload.version
+                            }
+                        }
+                    );
 
                     throw new Error(
                         `[${MODULE_NAME}] Upload identity does not match the draft resource.`
@@ -2738,7 +2831,6 @@ async function attachProtectedAsset(
     return result;
 
 }
-
 
 /* ==========================================================
    PUBLISH RESOURCE

@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.css
-   Version   : 1.1.0
+   Version   : 1.1.1
    Status    : ACTIVE
    Phase     : Portal Identity Experience
 
@@ -20,6 +20,7 @@
    ✓ Learner Name Presentation
    ✓ Membership Presentation
    ✓ Portfolio Summary
+   ✓ Portfolio Summary Navigation
    ✓ Long Name Protection
    ✓ Light and Dark Theme Compatibility
    ✓ Responsive Behaviour
@@ -75,28 +76,66 @@
    • Sidebar presentation must remain compatible with
      both light and dark portal themes.
 
+   • Credential Portfolio summary must remain accessible
+     as a full-width keyboard-operable navigation link.
+
+   • Profile card bottom alignment remains governed by
+     margin-top: auto.
+
    Change History
    ----------------------------------------------------------
+   v1.1.1
+
+   • Added block-level link presentation for the clickable
+     Credential Portfolio summary.
+
+   • Added full-width and box-sizing protection.
+
+   • Removed default link decoration.
+
+   • Added governed hover and keyboard-focus states.
+
+   • Added reduced-motion compatibility for the summary
+     link.
+
+   • Preserved profile-card bottom alignment.
+
+   • Preserved existing sidebar layout and responsive
+     behaviour.
+
    v1.1.0
 
-   • Added governed learner identity presentation
-   • Added initials-only avatar presentation
-   • Added long learner-name truncation
-   • Added profile-copy container support
-   • Added membership truncation protection
-   • Improved profile-card spacing and alignment
-   • Added dark-theme compatibility
-   • Added reduced-motion support
-   • Preserved existing sidebar and navigation architecture
+   • Added governed learner identity presentation.
+
+   • Added initials-only avatar presentation.
+
+   • Added long learner-name truncation.
+
+   • Added profile-copy container support.
+
+   • Added membership truncation protection.
+
+   • Improved profile-card spacing and alignment.
+
+   • Added dark-theme compatibility.
+
+   • Added reduced-motion support.
+
+   • Preserved existing sidebar and navigation architecture.
 
    v1.0.0
 
-   • Initial governed sidebar styling
-   • Added sidebar layout
-   • Added navigation
-   • Added profile card
-   • Added portfolio summary
-   • Added responsive behaviour
+   • Initial governed sidebar styling.
+
+   • Added sidebar layout.
+
+   • Added navigation.
+
+   • Added profile card.
+
+   • Added portfolio summary.
+
+   • Added responsive behaviour.
 
 ========================================================== */
 
@@ -686,6 +725,18 @@
 
 .portal-sidebar-summary {
 
+    display:
+        block;
+
+    width:
+        100%;
+
+    min-width:
+        0;
+
+    box-sizing:
+        border-box;
+
     margin-top:
         18px;
 
@@ -714,6 +765,49 @@
         var(
             --text-inverse
         );
+
+    text-decoration:
+        none;
+
+    transition:
+        transform
+        var(
+            --transition-fast
+        ),
+        box-shadow
+        var(
+            --transition-fast
+        );
+
+}
+
+.portal-sidebar-summary:hover {
+
+    color:
+        var(
+            --text-inverse
+        );
+
+    text-decoration:
+        none;
+
+    transform:
+        translateY(
+            -1px
+        );
+
+}
+
+.portal-sidebar-summary:focus-visible {
+
+    outline:
+        2px solid
+        var(
+            --border-focus
+        );
+
+    outline-offset:
+        3px;
 
 }
 
@@ -1030,7 +1124,8 @@ body[data-theme="dark"]
 
 @media (prefers-reduced-motion: reduce) {
 
-    .portal-nav-item {
+    .portal-nav-item,
+    .portal-sidebar-summary {
 
         transition:
             none;

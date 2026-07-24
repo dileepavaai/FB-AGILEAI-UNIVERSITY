@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.6.0
+   Version   : 1.6.1
    Status    : ACTIVE
    Phase     : Portal Identity Stabilization
 
@@ -19,7 +19,7 @@
    ✓ Render resolved learner identity
    ✓ Generate learner avatar initials
    ✓ Render learner membership
-   ✓ Render credential summary placeholder
+   ✓ Render credential summary navigation
    ✓ Consume shared portal identity state
    ✓ Support identity update events
    ✓ Reject generic identity placeholders when better
@@ -74,6 +74,9 @@
    • Toolbar and sidebar should consume the same
      authoritative identity wherever available.
 
+   • Credential Portfolio summary navigation must use the
+     canonical My Credentials route.
+
    Identity Resolution Order
    ----------------------------------------------------------
    1. Explicit non-placeholder identity
@@ -99,71 +102,129 @@
 
    Change History
    ----------------------------------------------------------
+   v1.6.1
+
+   • Converted the Credential Portfolio summary into an
+     accessible navigation link.
+
+   • Added the canonical My Credentials destination:
+     /credentials/my-credentials.html
+
+   • Preserved the credential-count presentation region.
+
+   • Preserved all shared identity-resolution behaviour.
+
+   • Preserved all existing portal navigation destinations.
+
+   • Preserved same-tab navigation for authenticated portal
+     destinations.
+
    v1.6.0
-   
-   • Added Learning Resources as a first-class portal destination
-   • Added canonical /learning-resources.html navigation
-   • Preserved same-tab navigation for authenticated portal pages
-   • Preserved active-page highlighting
-   • Preserved centralized navigation ownership
+
+   • Added Learning Resources as a first-class portal
+     destination.
+
+   • Added canonical /learning-resources.html navigation.
+
+   • Preserved same-tab navigation for authenticated portal
+     pages.
+
+   • Preserved active-page highlighting.
+
+   • Preserved centralized navigation ownership.
 
    v1.5.0
 
-   • Removed placeholder and duplicate navigation entries
-   • Retained only confirmed working learner destinations
-   • Corrected Assessment Platform canonical URL
-   • Added secure external-link navigation support
-   • Preserved identity and credential summary behaviour
+   • Removed placeholder and duplicate navigation entries.
+
+   • Retained only confirmed working learner destinations.
+
+   • Corrected Assessment Platform canonical URL.
+
+   • Added secure external-link navigation support.
+
+   • Preserved identity and credential summary behaviour.
 
    v1.4.0
 
-   • Aligned sidebar identity with toolbar identity contract
-   • Added visibleCredentials collection compatibility
-   • Added credential-holder name field compatibility
-   • Prioritized resolved toolbar identity before Firebase fallback
-   • Added portal and dashboard readiness reconciliation
-   • Added safe idempotent initialization
+   • Aligned sidebar identity with toolbar identity contract.
+
+   • Added visibleCredentials collection compatibility.
+
+   • Added credential-holder name field compatibility.
+
+   • Prioritized resolved toolbar identity before Firebase
+     fallback.
+
+   • Added portal and dashboard readiness reconciliation.
+
+   • Added safe idempotent initialization.
 
    v1.3.0
 
-   • Fixed Student placeholder overriding learner name
-   • Prioritized resolved profile and credential identity
-   • Added placeholder-name rejection
-   • Added broader shared-state compatibility
-   • Added nested credential-state compatibility
-   • Changed initials to first-two-word standard
-   • Added Firebase auth-state refresh
-   • Added credential-render completion refresh
-   • Added delayed identity reconciliation
-   • Preserved navigation and summary architecture
+   • Fixed Student placeholder overriding learner name.
+
+   • Prioritized resolved profile and credential identity.
+
+   • Added placeholder-name rejection.
+
+   • Added broader shared-state compatibility.
+
+   • Added nested credential-state compatibility.
+
+   • Changed initials to first-two-word standard.
+
+   • Added Firebase auth-state refresh.
+
+   • Added credential-render completion refresh.
+
+   • Added delayed identity reconciliation.
+
+   • Preserved navigation and summary architecture.
 
    v1.2.0
 
-   • Replaced hardcoded Student avatar
-   • Replaced hardcoded Student profile name
-   • Added learner full-name presentation
-   • Added generated learner initials
-   • Added shared toolbar identity compatibility
-   • Added identity fallback resolution
-   • Added public updateIdentity API
-   • Added portal identity event support
-   • Added safe dynamic HTML rendering
-   • Preserved existing navigation architecture
-   • Preserved credential summary integration
+   • Replaced hardcoded Student avatar.
+
+   • Replaced hardcoded Student profile name.
+
+   • Added learner full-name presentation.
+
+   • Added generated learner initials.
+
+   • Added shared toolbar identity compatibility.
+
+   • Added identity fallback resolution.
+
+   • Added public updateIdentity API.
+
+   • Added portal identity event support.
+
+   • Added safe dynamic HTML rendering.
+
+   • Preserved existing navigation architecture.
+
+   • Preserved credential summary integration.
 
    v1.1.0
 
-   • Updated university branding
-   • Corrected emblem asset
-   • Added lazy image loading
-   • Prepared sidebar for executive dashboard
+   • Updated university branding.
+
+   • Corrected emblem asset.
+
+   • Added lazy image loading.
+
+   • Prepared sidebar for executive dashboard.
 
    v1.0.0
 
-   • Initial shared sidebar
-   • Added navigation
-   • Added active-page highlighting
-   • Added profile and credential summary placeholders
+   • Initial shared sidebar.
+
+   • Added navigation.
+
+   • Added active-page highlighting.
+
+   • Added profile and credential summary placeholders.
 
 ========================================================== */
 
@@ -183,11 +244,11 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.6.0";
+        "1.6.1";
 
 
     /* ======================================================
-    NAVIGATION
+       NAVIGATION
     ====================================================== */
 
     const NAVIGATION = [
@@ -252,6 +313,7 @@
         }
 
     ];
+
 
     /* ======================================================
        PLACEHOLDER VALUES
@@ -1717,8 +1779,10 @@
 
                 </div>
 
-                <div
-                    class="portal-sidebar-summary">
+                <a
+                    href="/credentials/my-credentials.html"
+                    class="portal-sidebar-summary"
+                    aria-label="Open My Credentials">
 
                     <div
                         class="summary-title">
@@ -1742,7 +1806,7 @@
 
                     </div>
 
-                </div>
+                </a>
 
             </div>
 
@@ -2077,13 +2141,21 @@
 
                 applyIdentity(
                     {
-                        displayName: "Learner",
-                        email: "",
-                        roleLabel: "Student",
-                        membershipLabel: "University Member"
+                        displayName:
+                            "Learner",
+
+                        email:
+                            "",
+
+                        roleLabel:
+                            "Student",
+
+                        membershipLabel:
+                            "University Member"
                     },
                     {
-                        force: true
+                        force:
+                            true
                     }
                 );
 
@@ -2167,7 +2239,8 @@
             "DOMContentLoaded",
             initialize,
             {
-                once: true
+                once:
+                    true
             }
         );
 

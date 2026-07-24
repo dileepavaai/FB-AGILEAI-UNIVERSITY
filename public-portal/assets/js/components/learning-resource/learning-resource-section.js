@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : learning-resource-section.js
-   Version   : 1.0.1
+   Version   : 1.0.2
    Status    : ACTIVE
    Phase     : Learner Learning Resource Delivery
 

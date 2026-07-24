@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.6.1
+   Version   : 1.6.2
    Status    : ACTIVE
    Phase     : Portal Identity Stabilization
 
@@ -102,6 +102,22 @@
 
    Change History
    ----------------------------------------------------------
+   v1.6.2
+
+   • Corrected sidebar rendering order.
+
+   • Moved Credential Portfolio summary above the learner
+     profile card.
+
+   • Preserved profile bottom alignment governed by
+     margin-top: auto.
+
+   • Prevented the Credential Portfolio summary from being
+     pushed below the visible sidebar area.
+
+   • Preserved all navigation, identity-resolution,
+     credential-count and event behaviour.
+
    v1.6.1
 
    • Converted the Credential Portfolio summary into an
@@ -244,7 +260,7 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.6.1";
+        "1.6.2";
 
 
     /* ======================================================
@@ -401,7 +417,6 @@
             );
 
     }
-
 
     function firstValue(
         values
@@ -769,7 +784,6 @@
 
     }
 
-
     /* ======================================================
        CURRENT PATH
     ====================================================== */
@@ -971,8 +985,7 @@
 
     }
 
-
-    /* ======================================================
+        /* ======================================================
        PORTAL STATE
     ====================================================== */
 
@@ -1167,8 +1180,7 @@
 
     }
 
-
-    /* ======================================================
+        /* ======================================================
        TOOLBAR IDENTITY
 
        Generic toolbar placeholders are accepted only when
@@ -1431,9 +1443,7 @@
         });
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        IDENTITY QUALITY
     ====================================================== */
 
@@ -1659,9 +1669,7 @@
         );
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        SIDEBAR RENDERING
     ====================================================== */
 
@@ -1728,6 +1736,35 @@
 
                 </nav>
 
+                <a
+                    href="/credentials/my-credentials.html"
+                    class="portal-sidebar-summary"
+                    aria-label="Open My Credentials">
+
+                    <div
+                        class="summary-title">
+
+                        Credential Portfolio
+
+                    </div>
+
+                    <div
+                        id="sidebarCredentialCount"
+                        class="summary-count">
+
+                        —
+
+                    </div>
+
+                    <div
+                        class="summary-subtitle">
+
+                        Lifetime Credentials
+
+                    </div>
+
+                </a>
+
                 <div
                     class="portal-sidebar-profile"
                     aria-label="${escapeAttribute(
@@ -1779,43 +1816,13 @@
 
                 </div>
 
-                <a
-                    href="/credentials/my-credentials.html"
-                    class="portal-sidebar-summary"
-                    aria-label="Open My Credentials">
-
-                    <div
-                        class="summary-title">
-
-                        Credential Portfolio
-
-                    </div>
-
-                    <div
-                        id="sidebarCredentialCount"
-                        class="summary-count">
-
-                        —
-
-                    </div>
-
-                    <div
-                        class="summary-subtitle">
-
-                        Lifetime Credentials
-
-                    </div>
-
-                </a>
-
             </div>
 
         `;
 
 
         reconcileIdentity({
-            force:
-                true
+            force: true
         });
 
 
@@ -1824,9 +1831,7 @@
         );
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        UNAVAILABLE NAVIGATION
     ====================================================== */
 
@@ -1924,9 +1929,7 @@
                 : "—";
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        FIREBASE AUTH REFRESH
     ====================================================== */
 
@@ -2113,9 +2116,7 @@
             }
 
         );
-
-
-        document.addEventListener(
+                document.addEventListener(
 
             "portal:ready",
 
@@ -2164,9 +2165,7 @@
         );
 
     }
-
-
-    /* ======================================================
+        /* ======================================================
        INITIALIZATION
     ====================================================== */
 
@@ -2228,9 +2227,7 @@
             }
 
         });
-
-
-    if (
+            if (
         document.readyState ===
             "loading"
     ) {

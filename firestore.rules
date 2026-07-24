@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.7.0
+       Version : 2.8.0
        Status  : ACTIVE
 
        Security Model
@@ -29,6 +29,8 @@ service cloud.firestore {
          through the approved email list
        • Learning resources follow draft → published →
          withdrawn lifecycle
+       • Learning-resource release governance is resolved
+         through canonical platform policies
        • Draft records are never latest published versions
        • Published records are immutable except for governed
          supersession and withdrawal transitions
@@ -37,6 +39,17 @@ service cloud.firestore {
 
        Change History
        -----------------------------------------------------
+       v2.8.0
+       • Added learning-resource release-governance contract
+       • Added release_policy to learning_resources
+       • Added module_number and session_number
+       • Added available_from and available_until
+       • Added governed release-policy value validation
+       • Added module and session policy consistency rules
+       • Added optional release-window validation
+       • Preserved strict field allow-list enforcement
+       • Preserved all existing production collection rules
+
        v2.7.0
        • Added governed learning-resource Storage domains
        • Added master-learning-resources path validation
@@ -232,6 +245,12 @@ service cloud.firestore {
           "download_allowed",
           "embed_allowed",
 
+          "release_policy",
+          "module_number",
+          "session_number",
+          "available_from",
+          "available_until",
+
           "status",
           "is_active",
           "is_latest",
@@ -293,6 +312,12 @@ service cloud.firestore {
           "preview_allowed",
           "download_allowed",
           "embed_allowed",
+
+          "release_policy",
+          "module_number",
+          "session_number",
+          "available_from",
+          "available_until",
 
           "status",
           "is_active",
@@ -499,6 +524,16 @@ service cloud.firestore {
         (
           data.mime_type == null ||
           data.mime_type is string
+        ) &&
+
+        (
+          data.available_from == null ||
+          data.available_from is string
+        ) &&
+
+        (
+          data.available_until == null ||
+          data.available_until is string
         );
 
     }
@@ -537,6 +572,131 @@ service cloud.firestore {
 
 
     /* =====================================================
+       LEARNING-RESOURCE RELEASE GOVERNANCE
+    ===================================================== */
+
+    function hasValidLearningResourceReleasePolicy(
+      data
+    ) {
+
+      return
+        data.release_policy in [
+          "on_enrollment",
+          "pre_module",
+          "post_module",
+          "post_session",
+          "post_assessment",
+          "post_programme",
+          "alumni_only",
+          "manual"
+        ];
+
+    }
+
+
+    function hasValidLearningResourceReleaseNumbers(
+      data
+    ) {
+
+      return
+        (
+          data.module_number == null ||
+
+          (
+            data.module_number is int &&
+            data.module_number >= 1
+          )
+        ) &&
+
+        (
+          data.session_number == null ||
+
+          (
+            data.session_number is int &&
+            data.session_number >= 1
+          )
+        );
+
+    }
+
+
+    function hasValidLearningResourceReleaseWindow(
+      data
+    ) {
+
+      return
+        (
+          data.available_from == null ||
+          data.available_from is string
+        ) &&
+
+        (
+          data.available_until == null ||
+          data.available_until is string
+        );
+
+    }
+
+
+    function hasValidLearningResourceReleaseGovernance(
+      data
+    ) {
+
+      return
+        hasValidLearningResourceReleasePolicy(
+          data
+        ) &&
+
+        hasValidLearningResourceReleaseNumbers(
+          data
+        ) &&
+
+        hasValidLearningResourceReleaseWindow(
+          data
+        ) &&
+
+        (
+          !(
+            data.release_policy in [
+              "pre_module",
+              "post_module"
+            ]
+          ) ||
+
+          (
+            data.module_number is int &&
+            data.module_number >= 1
+          )
+        ) &&
+
+        (
+          data.release_policy !=
+            "post_session" ||
+
+          (
+            data.session_number is int &&
+            data.session_number >= 1
+          )
+        ) &&
+
+        (
+          data.release_policy in [
+            "pre_module",
+            "post_module"
+          ] ||
+
+          data.module_number == null
+        ) &&
+
+        (
+          data.release_policy ==
+            "post_session" ||
+
+          data.session_number == null
+        );
+
+    }
+        /* =====================================================
        LEARNING-RESOURCE LIFECYCLE
     ===================================================== */
 
@@ -560,25 +720,33 @@ service cloud.firestore {
 
       return
         (
-          data.status == "draft" &&
+          data.status ==
+            "draft" &&
 
-          data.is_active == false &&
+          data.is_active ==
+            false &&
 
-          data.is_latest == false
+          data.is_latest ==
+            false
         ) ||
 
         (
-          data.status == "published" &&
+          data.status ==
+            "published" &&
 
-          data.is_active == true
+          data.is_active ==
+            true
         ) ||
 
         (
-          data.status == "withdrawn" &&
+          data.status ==
+            "withdrawn" &&
 
-          data.is_active == false &&
+          data.is_active ==
+            false &&
 
-          data.is_latest == false
+          data.is_latest ==
+            false
         );
 
     }
@@ -700,8 +868,11 @@ service cloud.firestore {
           ) &&
 
           (
-            data.external_url == null ||
-            data.external_url == ""
+            data.external_url ==
+              null ||
+
+            data.external_url ==
+              ""
           ) &&
 
           data.file_name is string &&
@@ -713,7 +884,8 @@ service cloud.firestore {
           data.mime_type is string &&
           data.mime_type.size() > 0 &&
 
-          data.file_size > 0
+          data.file_size >
+            0
         ) ||
 
         (
@@ -728,19 +900,27 @@ service cloud.firestore {
           ) &&
 
           (
-            data.storage_path == null ||
-            data.storage_path == ""
+            data.storage_path ==
+              null ||
+
+            data.storage_path ==
+              ""
           ) &&
 
-          data.file_name == null &&
+          data.file_name ==
+            null &&
 
-          data.file_extension == null &&
+          data.file_extension ==
+            null &&
 
-          data.mime_type == null &&
+          data.mime_type ==
+            null &&
 
-          data.file_size == 0 &&
+          data.file_size ==
+            0 &&
 
-          data.download_allowed == false
+          data.download_allowed ==
+            false
         ) ||
 
         (
@@ -755,17 +935,24 @@ service cloud.firestore {
           ) &&
 
           (
-            data.storage_path == null ||
-            data.storage_path == ""
+            data.storage_path ==
+              null ||
+
+            data.storage_path ==
+              ""
           ) &&
 
-          data.file_name == null &&
+          data.file_name ==
+            null &&
 
-          data.file_extension == null &&
+          data.file_extension ==
+            null &&
 
-          data.mime_type == null &&
+          data.mime_type ==
+            null &&
 
-          data.file_size == 0
+          data.file_size ==
+            0
         );
 
     }
@@ -784,7 +971,8 @@ service cloud.firestore {
        */
 
       return
-        data.status == "draft" ||
+        data.status ==
+          "draft" ||
 
         (
           data.status in [
@@ -837,48 +1025,143 @@ service cloud.firestore {
         data.updated_at is timestamp &&
 
         (
-          data.uploaded_by_uid == null ||
+          data.uploaded_by_uid ==
+            null ||
+
           data.uploaded_by_uid is string
         ) &&
 
         (
-          data.uploaded_by_email == null ||
+          data.uploaded_by_email ==
+            null ||
+
           data.uploaded_by_email is string
         ) &&
 
         (
-          data.uploaded_at == null ||
+          data.uploaded_at ==
+            null ||
+
           data.uploaded_at is timestamp
         ) &&
 
         (
-          data.published_by_uid == null ||
+          data.published_by_uid ==
+            null ||
+
           data.published_by_uid is string
         ) &&
 
         (
-          data.published_by_email == null ||
+          data.published_by_email ==
+            null ||
+
           data.published_by_email is string
         ) &&
 
         (
-          data.published_at == null ||
+          data.published_at ==
+            null ||
+
           data.published_at is timestamp
         ) &&
 
         (
-          data.withdrawn_by_uid == null ||
+          data.withdrawn_by_uid ==
+            null ||
+
           data.withdrawn_by_uid is string
         ) &&
 
         (
-          data.withdrawn_by_email == null ||
+          data.withdrawn_by_email ==
+            null ||
+
           data.withdrawn_by_email is string
         ) &&
 
         (
-          data.withdrawn_at == null ||
+          data.withdrawn_at ==
+            null ||
+
           data.withdrawn_at is timestamp
+        );
+
+    }
+
+
+    /* =====================================================
+       LEARNING-RESOURCE RELEASE CONSISTENCY
+    ===================================================== */
+
+    function hasConsistentLearningResourceReleaseWindow(
+      data
+    ) {
+
+      return
+        (
+          data.available_from ==
+            null ||
+
+          data.available_until ==
+            null
+        ) ||
+
+        (
+          data.available_from is string &&
+
+          data.available_until is string &&
+
+          data.available_from <=
+            data.available_until
+        );
+
+    }
+
+
+    function hasConsistentLearningResourceReleasePolicy(
+      data
+    ) {
+
+      return
+        (
+          data.release_policy in [
+            "on_enrollment",
+            "post_assessment",
+            "post_programme",
+            "alumni_only",
+            "manual"
+          ] &&
+
+          data.module_number ==
+            null &&
+
+          data.session_number ==
+            null
+        ) ||
+
+        (
+          data.release_policy in [
+            "pre_module",
+            "post_module"
+          ] &&
+
+          data.module_number is int &&
+          data.module_number >= 1 &&
+
+          data.session_number ==
+            null
+        ) ||
+
+        (
+          data.release_policy ==
+            "post_session" &&
+
+          data.session_number is int &&
+          data.session_number >= 1 &&
+
+          data.module_number ==
+            null
         );
 
     }
@@ -937,6 +1220,18 @@ service cloud.firestore {
           data
         ) &&
 
+        hasValidLearningResourceReleaseGovernance(
+          data
+        ) &&
+
+        hasConsistentLearningResourceReleaseWindow(
+          data
+        ) &&
+
+        hasConsistentLearningResourceReleasePolicy(
+          data
+        ) &&
+
         hasValidLearningResourceStatus(
           data
         ) &&
@@ -958,9 +1253,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNING-RESOURCE CREATE
     ===================================================== */
 
@@ -1184,6 +1477,9 @@ service cloud.firestore {
           request.resource.data.delivery_type ==
             resource.data.delivery_type &&
 
+          request.resource.data.personalisation_type ==
+            resource.data.personalisation_type &&
+
           request.resource.data.storage_domain ==
             resource.data.storage_domain &&
 
@@ -1213,6 +1509,21 @@ service cloud.firestore {
 
           request.resource.data.embed_allowed ==
             resource.data.embed_allowed &&
+
+          request.resource.data.release_policy ==
+            resource.data.release_policy &&
+
+          request.resource.data.module_number ==
+            resource.data.module_number &&
+
+          request.resource.data.session_number ==
+            resource.data.session_number &&
+
+          request.resource.data.available_from ==
+            resource.data.available_from &&
+
+          request.resource.data.available_until ==
+            resource.data.available_until &&
 
           request.resource.data.display_order ==
             resource.data.display_order &&
@@ -1376,11 +1687,7 @@ service cloud.firestore {
           request.time;
 
     }
-
-
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNER-RESOURCE ACCESS FIELD CONTRACT
     ===================================================== */
 
@@ -1560,6 +1867,7 @@ service cloud.firestore {
         data.learner_email.size() <= 254 &&
 
         data.learner_email_normalized is string &&
+
         data.learner_email_normalized ==
           data.learner_email &&
 
@@ -1568,7 +1876,9 @@ service cloud.firestore {
         ) &&
 
         (
-          data.learner_uid == null ||
+          data.learner_uid ==
+            null ||
+
           (
             data.learner_uid is string &&
             data.learner_uid.size() > 0
@@ -1576,7 +1886,9 @@ service cloud.firestore {
         ) &&
 
         (
-          data.credential_id == null ||
+          data.credential_id ==
+            null ||
+
           (
             data.credential_id is string &&
             data.credential_id.size() > 0
@@ -1682,6 +1994,9 @@ service cloud.firestore {
           "pre_module",
           "post_module",
           "post_session",
+          "post_assessment",
+          "post_programme",
+          "alumni_only",
           "scheduled",
           "manual"
         ];
@@ -1699,7 +2014,9 @@ service cloud.firestore {
 
       return
         (
-          data.module_number == null ||
+          data.module_number ==
+            null ||
+
           (
             data.module_number is int &&
             data.module_number >= 1
@@ -1707,7 +2024,9 @@ service cloud.firestore {
         ) &&
 
         (
-          data.session_number == null ||
+          data.session_number ==
+            null ||
+
           (
             data.session_number is int &&
             data.session_number >= 1
@@ -1715,42 +2034,58 @@ service cloud.firestore {
         ) &&
 
         (
-          data.available_from == null ||
+          data.available_from ==
+            null ||
+
           data.available_from is string
         ) &&
 
         (
-          data.available_until == null ||
+          data.available_until ==
+            null ||
+
           data.available_until is string
         ) &&
 
         (
-          data.activated_at == null ||
+          data.activated_at ==
+            null ||
+
           data.activated_at is timestamp
         ) &&
 
         (
-          data.activated_by_uid == null ||
+          data.activated_by_uid ==
+            null ||
+
           data.activated_by_uid is string
         ) &&
 
         (
-          data.revoked_at == null ||
+          data.revoked_at ==
+            null ||
+
           data.revoked_at is timestamp
         ) &&
 
         (
-          data.revoked_by_uid == null ||
+          data.revoked_by_uid ==
+            null ||
+
           data.revoked_by_uid is string
         ) &&
 
         (
-          data.revoked_by_email == null ||
+          data.revoked_by_email ==
+            null ||
+
           data.revoked_by_email is string
         ) &&
 
         (
-          data.revocation_reason == null ||
+          data.revocation_reason ==
+            null ||
+
           data.revocation_reason is string
         );
 
@@ -1788,6 +2123,24 @@ service cloud.firestore {
             data.session_number is int &&
             data.session_number >= 1
           )
+        ) &&
+
+        (
+          data.release_policy in [
+            "pre_module",
+            "post_module"
+          ] ||
+
+          data.module_number ==
+            null
+        ) &&
+
+        (
+          data.release_policy ==
+            "post_session" ||
+
+          data.session_number ==
+            null
         );
 
     }
@@ -1888,7 +2241,9 @@ service cloud.firestore {
 
           data.revocation_reason is string &&
           data.revocation_reason.size() > 0 &&
-          data.revocation_reason.size() <= 1000
+
+          data.revocation_reason.size() <=
+            1000
         );
 
     }
@@ -1926,7 +2281,10 @@ service cloud.firestore {
     }
 
 
-    function matchesPublishedLearnerResource(data) {
+    function matchesPublishedLearnerResource(
+      data
+    ) {
+
       let learningResource =
         get(
           /databases/$(database)/documents/learning_resources/$(data.resource_document_id)
@@ -1954,20 +2312,26 @@ service cloud.firestore {
 
         (
           isMasterResource ||
+
           data.preview_allowed ==
             false ||
+
           learningResource.preview_allowed ==
             true
         ) &&
 
         (
           isMasterResource ||
+
           data.download_allowed ==
             false ||
+
           learningResource.download_allowed ==
             true
         );
+
     }
+
 
     /* =====================================================
        LEARNER-RESOURCE ACCESS AUDIT TYPES
@@ -2103,9 +2467,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNER-RESOURCE ACCESS CREATE
     ===================================================== */
 
@@ -2157,6 +2519,12 @@ service cloud.firestore {
             request.resource.data.access_status ==
               "pending_activation" &&
 
+            request.resource.data.identity_status ==
+              "pending_activation" &&
+
+            request.resource.data.learner_uid ==
+              null &&
+
             request.resource.data.activated_at ==
               null &&
 
@@ -2167,6 +2535,14 @@ service cloud.firestore {
           (
             request.resource.data.access_status ==
               "active" &&
+
+            request.resource.data.identity_status ==
+              "activated" &&
+
+            request.resource.data.learner_uid is string &&
+
+            request.resource.data.learner_uid.size() >
+              0 &&
 
             request.resource.data.activated_at ==
               request.time &&
@@ -2243,6 +2619,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS TRANSITIONS
+    ===================================================== */
+
     function hasValidLearnerResourceAccessTransition() {
 
       return
@@ -2283,11 +2663,61 @@ service cloud.firestore {
     }
 
 
+    function hasValidLearnerResourceReleaseTransition() {
+
+      return
+        (
+          resource.data.release_status ==
+            "scheduled" &&
+
+          request.resource.data.release_status in [
+            "scheduled",
+            "released",
+            "withheld",
+            "expired"
+          ]
+        ) ||
+
+        (
+          resource.data.release_status ==
+            "withheld" &&
+
+          request.resource.data.release_status in [
+            "withheld",
+            "released",
+            "expired"
+          ]
+        ) ||
+
+        (
+          resource.data.release_status ==
+            "released" &&
+
+          request.resource.data.release_status in [
+            "released",
+            "withheld",
+            "expired"
+          ]
+        );
+
+    }
+
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS UPDATE
+    ===================================================== */
+
     function isValidLearnerResourceAccessUpdate(
       documentId
     ) {
 
       return
+        resource.data.access_status !=
+          "revoked" &&
+
+        resource.data.access_status !=
+          "expired" &&
+
         hasValidLearnerResourceAccessContract(
           documentId,
           request.resource.data
@@ -2296,6 +2726,8 @@ service cloud.firestore {
         preservesLearnerResourceAccessIdentity() &&
 
         hasValidLearnerResourceAccessTransition() &&
+
+        hasValidLearnerResourceReleaseTransition() &&
 
         request.resource.data.updated_by_uid ==
           request.auth.uid &&
@@ -2311,6 +2743,10 @@ service cloud.firestore {
 
     }
 
+
+    /* =====================================================
+       LEARNER-RESOURCE ACCESS READ AUTHORITY
+    ===================================================== */
 
     function canLearnerReadOwnActiveResourceAccess() {
 
@@ -2330,100 +2766,92 @@ service cloud.firestore {
           "released";
 
     }
-
-
-    /* =====================================================
-       USERS — RBAC PROFILE AUTHORITY
+        /* =====================================================
+       USERS
     ===================================================== */
 
     match /users/{uid} {
 
-      allow get: if
-        isOwner(
+      allow read:
+        if isOwner(
           uid
         ) ||
         isBootstrapAdmin();
 
-      allow list: if
+      /*
+       * Learners may update only their own profile.
+       *
+       * Administrative and identity-sensitive mutations
+       * should continue through trusted backend services.
+       */
+
+      allow create:
+        if isOwner(
+          uid
+        ) ||
         isBootstrapAdmin();
 
-      allow create, update, delete: if
-        false;
+      allow update:
+        if isOwner(
+          uid
+        ) ||
+        isBootstrapAdmin();
+
+      allow delete:
+        if false;
 
     }
 
 
     /* =====================================================
-       PUBLIC FAQ CONTENT
+       CREDENTIAL REGISTRY
     ===================================================== */
 
-    match /faqs/{docId} {
+    match /credentials/{credentialDocumentId} {
 
-      allow read: if
-        true;
+      /*
+       * Public verification is limited to approved and
+       * finalized credential records.
+       *
+       * Collection-wide listing remains prohibited.
+       */
 
-      allow create, update, delete: if
-        isBootstrapAdmin();
+      allow get:
+        if isBootstrapAdmin() ||
 
-    }
-
-
-    /* =====================================================
-       CREDENTIALS — PUBLIC VERIFICATION
-    ===================================================== */
-
-    match /credentials/{docId} {
-
-      allow get: if
         (
           resource.data.issued_status ==
             "finalized" &&
 
-          (
-            !(
-              "approval_status" in resource.data
-            ) ||
+          resource.data.approval_status ==
+            "approved"
+        );
 
-            resource.data.approval_status ==
-              "approved"
-          )
-        ) ||
+      allow list:
+        if isBootstrapAdmin();
 
-        (
-          isSignedIn() &&
+      allow create,
+            update:
+        if isBootstrapAdmin();
 
-          "learner_uid" in resource.data &&
-
-          resource.data.learner_uid ==
-            request.auth.uid
-        ) ||
-
-        isBootstrapAdmin();
-
-      allow list: if
-        isSignedIn() ||
-        isBootstrapAdmin();
-
-      allow create, update, delete: if
-        false;
+      allow delete:
+        if false;
 
     }
 
 
     /* =====================================================
-       CREDENTIAL ASSETS — CREDENTIAL FIRST
+       CREDENTIAL ASSETS
     ===================================================== */
 
-    match /credential_assets/{docId} {
+    match /credential_assets/{assetDocumentId} {
 
-      allow get, list: if
+      allow get,
+            list:
+        if isBootstrapAdmin() ||
+
         (
           isSignedIn() &&
-
-          "learner_uid" in resource.data &&
-
-          resource.data.learner_uid !=
-            null &&
 
           resource.data.learner_uid ==
             request.auth.uid &&
@@ -2433,12 +2861,10 @@ service cloud.firestore {
 
           resource.data.is_latest ==
             true
-        ) ||
+        );
 
-        isBootstrapAdmin();
-
-      allow create: if
-        isBootstrapAdmin() &&
+      allow create:
+        if isBootstrapAdmin() &&
 
         hasRequiredCredentialAssetFields(
           request.resource.data
@@ -2452,10 +2878,8 @@ service cloud.firestore {
           request.resource.data
         );
 
-      allow update: if
-        isBootstrapAdmin() &&
-
-        preservesCredentialAssetIdentity() &&
+      allow update:
+        if isBootstrapAdmin() &&
 
         hasRequiredCredentialAssetFields(
           request.resource.data
@@ -2467,253 +2891,234 @@ service cloud.firestore {
 
         hasValidAssetType(
           request.resource.data
-        );
+        ) &&
 
-      allow delete: if
-        isBootstrapAdmin();
+        preservesCredentialAssetIdentity();
+
+      allow delete:
+        if false;
 
     }
 
 
     /* =====================================================
-       LEARNING RESOURCES — ADMIN PUBLICATION AUTHORITY
+       LEARNING-RESOURCE REGISTRY
     ===================================================== */
 
-    match /learning_resources/{documentId} {
+    match /learning_resources/{resourceDocumentId} {
 
       /*
-       * Direct client access is restricted to bootstrap
-       * administrators.
+       * Learners must not directly read the catalogue.
        *
-       * Learner delivery must flow through the future
-       * authorized learning-resource access broker.
+       * Learner delivery is resolved through governed
+       * learner_resource_access and backend delivery APIs.
        */
 
-      allow get, list: if
-        isBootstrapAdmin();
+      allow get,
+            list:
+        if isBootstrapAdmin();
 
-      /*
-       * New records must begin as governed drafts.
-       */
-
-      allow create: if
-        isBootstrapAdmin() &&
+      allow create:
+        if isBootstrapAdmin() &&
 
         isValidLearningResourceCreate(
-          documentId
+          resourceDocumentId
         );
 
-      /*
-       * Permitted lifecycle:
-       *
-       * draft     → draft
-       * draft     → published
-       * published → published (latest may become false)
-       * published → withdrawn
-       *
-       * Withdrawn records are terminal.
-       */
-
-      allow update: if
-        isBootstrapAdmin() &&
+      allow update:
+        if isBootstrapAdmin() &&
 
         isValidLearningResourceUpdate();
 
-      /*
-       * Physical metadata deletion is prohibited.
-       * Withdrawal preserves audit and version history.
-       */
-
-      allow delete: if
-        false;
+      allow delete:
+        if false;
 
     }
 
 
-
-
     /* =====================================================
-       LEARNER RESOURCE ACCESS — RELATIONSHIP AUTHORITY
+       LEARNER-RESOURCE ACCESS AUTHORITY
     ===================================================== */
 
-    match /learner_resource_access/{documentId} {
+    match /learner_resource_access/{accessDocumentId} {
 
-      /*
-       * Authorized administrators may read all access records.
-       *
-       * Learners may read only their own activated, active and
-       * released records. Pending pre-login records are never
-       * readable by learners.
-       */
+      allow get,
+            list:
+        if isBootstrapAdmin() ||
 
-      allow get, list: if
-        isBootstrapAdmin() ||
         canLearnerReadOwnActiveResourceAccess();
 
-      /*
-       * Access assignment is an Admin Portal authority.
-       */
-
-      allow create: if
-        isBootstrapAdmin() &&
+      allow create:
+        if isBootstrapAdmin() &&
 
         isValidLearnerResourceAccessCreate(
-          documentId
+          accessDocumentId
         );
 
-      /*
-       * Client-side Admin updates may manage lifecycle but may
-       * not bind or replace learner_uid. First-login identity
-       * binding must be performed by the trusted backend, whose
-       * Admin SDK bypasses Firestore client rules.
-       */
-
-      allow update: if
-        isBootstrapAdmin() &&
+      allow update:
+        if isBootstrapAdmin() &&
 
         isValidLearnerResourceAccessUpdate(
-          documentId
+          accessDocumentId
+        );
+
+      allow delete:
+        if false;
+
+    }
+
+
+    /* =====================================================
+       CREDENTIAL ACTIVATION TOKENS
+    ===================================================== */
+
+    match /credential_activation_tokens/{tokenDocumentId} {
+
+      /*
+       * Token claiming, validation, expiry, revocation and
+       * learner identity binding are backend responsibilities.
+       *
+       * Firebase Admin SDK operations bypass these client
+       * security rules.
+       */
+
+      allow read,
+            create,
+            update:
+        if isBootstrapAdmin();
+
+      allow delete:
+        if false;
+
+    }
+
+
+    /* =====================================================
+       IDENTITY RECONCILIATION EVENTS
+    ===================================================== */
+
+    match /identity_reconciliation_events/{eventDocumentId} {
+
+      allow read:
+        if isBootstrapAdmin();
+
+      allow create:
+        if isBootstrapAdmin();
+
+      allow update,
+            delete:
+        if false;
+
+    }
+
+
+    /* =====================================================
+       ENTITLEMENTS
+    ===================================================== */
+
+    match /entitlements/{entitlementDocumentId} {
+
+      allow get,
+            list:
+        if isBootstrapAdmin() ||
+
+        (
+          isSignedIn() &&
+
+          resource.data.learner_uid ==
+            request.auth.uid
+        );
+
+      allow create,
+            update:
+        if isBootstrapAdmin();
+
+      allow delete:
+        if false;
+
+    }
+
+
+    /* =====================================================
+       REGISTRATIONS
+    ===================================================== */
+
+    match /registrations/{registrationDocumentId} {
+
+      allow get,
+            list:
+        if isBootstrapAdmin() ||
+
+        (
+          isSignedIn() &&
+
+          resource.data.learner_uid ==
+            request.auth.uid
+        );
+
+      allow create,
+            update:
+        if isBootstrapAdmin();
+
+      allow delete:
+        if false;
+
+    }
+
+
+    /* =====================================================
+       ENROLLMENTS
+    ===================================================== */
+
+    match /enrollments/{enrollmentDocumentId} {
+
+      allow get,
+            list:
+        if isBootstrapAdmin() ||
+
+        (
+          isSignedIn() &&
+
+          resource.data.learner_uid ==
+            request.auth.uid
+        );
+
+      allow create,
+            update:
+        if isBootstrapAdmin();
+
+      allow delete:
+        if false;
+
+    }
+
+
+    /* =====================================================
+       PAYMENTS
+    ===================================================== */
+
+    match /payments/{paymentDocumentId} {
+
+      allow get,
+            list:
+        if isBootstrapAdmin() ||
+
+        (
+          isSignedIn() &&
+
+          resource.data.learner_uid ==
+            request.auth.uid
         );
 
       /*
-       * Physical deletion is prohibited. Revocation preserves
-       * identity, grant and audit history.
+       * Payment creation, verification, taxation, receipts
+       * and lifecycle mutations must remain backend-owned.
        */
 
-      allow delete: if
-        false;
-
-    }
-
-
-    /* =====================================================
-       VERIFICATION REQUESTS — PUBLIC INTAKE
-    ===================================================== */
-
-    match /verification_requests/{docId} {
-
-      allow create: if
-        true;
-
-      allow read, update, delete: if
-        isBootstrapAdmin();
-
-    }
-
-
-    /* =====================================================
-       EXECUTIVE ENTITLEMENTS
-    ===================================================== */
-
-    match /executiveEntitlements/{email} {
-
-      allow get: if
-        isSignedIn() &&
-        request.auth.token.email ==
-          email;
-
-      allow list: if
-        false;
-
-      allow create, update, delete: if
-        false;
-
-    }
-
-
-    /* =====================================================
-       USER ENTITLEMENTS
-    ===================================================== */
-
-    match /user_entitlements/{uid} {
-
-      allow get: if
-        isOwner(
-          uid
-        ) ||
-        isBootstrapAdmin();
-
-      allow list: if
-        isBootstrapAdmin();
-
-      allow create, update, delete: if
-        false;
-
-    }
-
-
-    /* =====================================================
-       LEADS — ADMIN ONLY
-    ===================================================== */
-
-    match /leads/{docId} {
-
-      allow read, write: if
-        isBootstrapAdmin();
-
-    }
-
-
-    /* =====================================================
-       LEAD COMMUNICATIONS — ADMIN ONLY
-    ===================================================== */
-
-    match /lead_communications/{docId} {
-
-      allow read, write: if
-        isBootstrapAdmin();
-
-    }
-
-
-    /* =====================================================
-       BATCHES — ADMIN ONLY
-    ===================================================== */
-
-    match /batches/{docId} {
-
-      allow read, write: if
-        isBootstrapAdmin();
-
-    }
-
-
-    /* =====================================================
-       TRAINER REGISTRY — ADMIN ONLY
-    ===================================================== */
-
-    match /trainerRegistry/{docId} {
-
-      allow read, write: if
-        isBootstrapAdmin();
-
-    }
-
-
-    /* =====================================================
-       TRAINING ORGANIZATIONS — ADMIN ONLY
-    ===================================================== */
-
-    match /trainingOrganizations/{docId} {
-
-      allow read, write: if
-        isBootstrapAdmin();
-
-    }
-
-
-    /* =====================================================
-       PROGRAMS — AUTHENTICATED READ
-    ===================================================== */
-
-    match /programs/{docId} {
-
-      allow read: if
-        isSignedIn() ||
-        isBootstrapAdmin();
-
-      allow create, update, delete: if
-        isBootstrapAdmin();
+      allow create,
+            update,
+            delete:
+        if isBootstrapAdmin();
 
     }
 
@@ -2724,8 +3129,9 @@ service cloud.firestore {
 
     match /{document=**} {
 
-      allow read, write: if
-        false;
+      allow read,
+            write:
+        if false;
 
     }
 

@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.8.0
+       Version : 2.8.1
        Status  : ACTIVE
 
        Security Model
@@ -39,6 +39,18 @@ service cloud.firestore {
 
        Change History
        -----------------------------------------------------
+       v2.8.1
+       • Aligned protected Storage path validation with
+         governed human-readable filenames
+       • Preserved strict programme, resource and version
+         path-segment validation
+       • Preserved single-file-segment Storage governance
+       • Preserved the 50 MiB protected-file limit
+       • Preserved publication, supersession and withdrawal
+         lifecycle governance
+       • Preserved strict field allow-list enforcement
+       • Preserved all existing production collection rules
+
        v2.8.0
        • Added learning-resource release-governance contract
        • Added release_policy to learning_resources
@@ -64,8 +76,10 @@ service cloud.firestore {
        • Added active and pending identity-state validation
        • Added resource-reference integrity validation
        • Added administrator creation and update audit rules
-       • Added learner read-only access to their own active records
-       • Prohibited learner writes and physical access deletion
+       • Added learner read-only access to their own active
+         records
+       • Prohibited learner writes and physical access
+         deletion
        • Preserved all existing production collection rules
 
        v2.5.1
@@ -118,7 +132,9 @@ service cloud.firestore {
 
       return
         isSignedIn() &&
-        request.auth.uid == uid;
+
+        request.auth.uid ==
+          uid;
 
     }
 
@@ -128,7 +144,8 @@ service cloud.firestore {
       return
         isSignedIn() &&
 
-        request.auth.token.email != null &&
+        request.auth.token.email !=
+          null &&
 
         request.auth.token.email in [
           "dileep@agileai.university",
@@ -149,26 +166,42 @@ service cloud.firestore {
 
       return
         "credential_id" in data &&
+
         data.credential_id is string &&
-        data.credential_id.size() > 0 &&
+
+        data.credential_id.size() >
+          0 &&
 
         "asset_type" in data &&
+
         data.asset_type is string &&
-        data.asset_type.size() > 0 &&
+
+        data.asset_type.size() >
+          0 &&
 
         "status" in data &&
-        data.status == "published" &&
+
+        data.status ==
+          "published" &&
 
         "is_latest" in data &&
-        data.is_latest == true &&
+
+        data.is_latest ==
+          true &&
 
         "storage_path" in data &&
+
         data.storage_path is string &&
-        data.storage_path.size() > 0 &&
+
+        data.storage_path.size() >
+          0 &&
 
         "download_url" in data &&
+
         data.download_url is string &&
-        data.download_url.size() > 0;
+
+        data.download_url.size() >
+          0;
 
     }
 
@@ -178,8 +211,13 @@ service cloud.firestore {
     ) {
 
       return
-        !("learner_uid" in data) ||
-        data.learner_uid == null ||
+        !(
+          "learner_uid" in data
+        ) ||
+
+        data.learner_uid ==
+          null ||
+
         data.learner_uid is string;
 
     }
@@ -351,9 +389,7 @@ service cloud.firestore {
         ]);
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNING-RESOURCE IDENTITY
     ===================================================== */
 
@@ -396,7 +432,9 @@ service cloud.firestore {
         ) &&
 
         data.version is int &&
-        data.version >= 1;
+
+        data.version >=
+          1;
 
     }
 
@@ -411,14 +449,22 @@ service cloud.firestore {
 
       return
         data.title is string &&
-        data.title.size() > 0 &&
-        data.title.size() <= 160 &&
+
+        data.title.size() >
+          0 &&
+
+        data.title.size() <=
+          160 &&
 
         data.description is string &&
-        data.description.size() <= 2000 &&
+
+        data.description.size() <=
+          2000 &&
 
         data.withdrawal_reason is string &&
-        data.withdrawal_reason.size() <= 1000;
+
+        data.withdrawal_reason.size() <=
+          1000;
 
     }
 
@@ -480,7 +526,9 @@ service cloud.firestore {
         ] &&
 
         (
-          !("personalisation_type" in data) ||
+          !(
+            "personalisation_type" in data
+          ) ||
 
           data.personalisation_type in [
             "shared",
@@ -490,9 +538,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNING-RESOURCE NULLABLE VALUES
     ===================================================== */
 
@@ -503,36 +549,43 @@ service cloud.firestore {
       return
         (
           data.storage_path == null ||
+
           data.storage_path is string
         ) &&
 
         (
           data.external_url == null ||
+
           data.external_url is string
         ) &&
 
         (
           data.file_name == null ||
+
           data.file_name is string
         ) &&
 
         (
           data.file_extension == null ||
+
           data.file_extension is string
         ) &&
 
         (
           data.mime_type == null ||
+
           data.mime_type is string
         ) &&
 
         (
           data.available_from == null ||
+
           data.available_from is string
         ) &&
 
         (
           data.available_until == null ||
+
           data.available_until is string
         );
 
@@ -549,7 +602,9 @@ service cloud.firestore {
 
       return
         data.preview_allowed is bool &&
+
         data.download_allowed is bool &&
+
         data.embed_allowed is bool;
 
     }
@@ -561,17 +616,19 @@ service cloud.firestore {
 
       return
         data.display_order is int &&
+
         data.display_order >= 0 &&
+
         data.display_order <= 10000 &&
 
         data.file_size is int &&
+
         data.file_size >= 0 &&
+
         data.file_size <= 52428800;
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNING-RESOURCE RELEASE GOVERNANCE
     ===================================================== */
 
@@ -600,20 +657,26 @@ service cloud.firestore {
 
       return
         (
-          data.module_number == null ||
+          data.module_number ==
+            null ||
 
           (
             data.module_number is int &&
-            data.module_number >= 1
+
+            data.module_number >=
+              1
           )
         ) &&
 
         (
-          data.session_number == null ||
+          data.session_number ==
+            null ||
 
           (
             data.session_number is int &&
-            data.session_number >= 1
+
+            data.session_number >=
+              1
           )
         );
 
@@ -626,12 +689,16 @@ service cloud.firestore {
 
       return
         (
-          data.available_from == null ||
+          data.available_from ==
+            null ||
+
           data.available_from is string
         ) &&
 
         (
-          data.available_until == null ||
+          data.available_until ==
+            null ||
+
           data.available_until is string
         );
 
@@ -665,7 +732,9 @@ service cloud.firestore {
 
           (
             data.module_number is int &&
-            data.module_number >= 1
+
+            data.module_number >=
+              1
           )
         ) &&
 
@@ -675,7 +744,9 @@ service cloud.firestore {
 
           (
             data.session_number is int &&
-            data.session_number >= 1
+
+            data.session_number >=
+              1
           )
         ) &&
 
@@ -685,14 +756,16 @@ service cloud.firestore {
             "post_module"
           ] ||
 
-          data.module_number == null
+          data.module_number ==
+            null
         ) &&
 
         (
           data.release_policy ==
             "post_session" ||
 
-          data.session_number == null
+          data.session_number ==
+            null
         );
 
     }
@@ -766,9 +839,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNING-RESOURCE URL AND STORAGE VALIDATION
     ===================================================== */
 
@@ -846,9 +917,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    function hasValidPublishedDeliveryConfiguration(
+        function hasValidPublishedDeliveryConfiguration(
       data
     ) {
 
@@ -986,9 +1055,8 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        
+        /* =====================================================
        LEARNING-RESOURCE SOURCE AND AUDIT TYPES
     ===================================================== */
 
@@ -1088,9 +1156,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNING-RESOURCE RELEASE CONSISTENCY
     ===================================================== */
 
@@ -1350,9 +1416,7 @@ service cloud.firestore {
           resource.data.created_at;
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNING-RESOURCE TRANSITIONS
     ===================================================== */
 
@@ -1533,9 +1597,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        PUBLICATION AUDIT
     ===================================================== */
 
@@ -1649,9 +1711,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNING-RESOURCE UPDATE
     ===================================================== */
 
@@ -1896,9 +1956,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNER-RESOURCE ACCESS GOVERNED VALUES
     ===================================================== */
 
@@ -2144,9 +2202,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNER-RESOURCE ACCESS STATE CONSISTENCY
     ===================================================== */
 
@@ -2331,9 +2387,7 @@ service cloud.firestore {
         );
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNER-RESOURCE ACCESS AUDIT TYPES
     ===================================================== */
 
@@ -2617,9 +2671,7 @@ service cloud.firestore {
           resource.data.schema_version;
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        LEARNER-RESOURCE ACCESS TRANSITIONS
     ===================================================== */
 
@@ -2838,13 +2890,19 @@ service cloud.firestore {
         if false;
 
     }
-
-
-    /* =====================================================
+            /* =====================================================
        CREDENTIAL ASSETS
     ===================================================== */
 
     match /credential_assets/{assetDocumentId} {
+
+      /*
+       * Student Portal:
+       * Owner may read published/latest assets.
+       *
+       * Admin Portal:
+       * Bootstrap administrators retain full authority.
+       */
 
       allow get,
             list:
@@ -2900,47 +2958,63 @@ service cloud.firestore {
 
     }
 
-
     /* =====================================================
-       LEARNING-RESOURCE REGISTRY
+       LEARNING RESOURCES
     ===================================================== */
 
     match /learning_resources/{resourceDocumentId} {
 
       /*
-       * Learners must not directly read the catalogue.
+       * Students never consume learning_resources
+       * directly.
        *
-       * Learner delivery is resolved through governed
-       * learner_resource_access and backend delivery APIs.
+       * Access is mediated through
+       * learner_resource_access.
        */
 
-      allow get,
-            list:
-        if isBootstrapAdmin();
+      allow get:
+        if
+          isBootstrapAdmin();
+
+      allow list:
+        if
+          isBootstrapAdmin();
 
       allow create:
-        if isBootstrapAdmin() &&
+        if
+          isBootstrapAdmin() &&
 
-        isValidLearningResourceCreate(
-          resourceDocumentId
-        );
+          isValidLearningResourceCreate(
+            resourceDocumentId
+          );
 
       allow update:
-        if isBootstrapAdmin() &&
+        if
+          isBootstrapAdmin() &&
 
-        isValidLearningResourceUpdate();
+          isValidLearningResourceUpdate();
 
       allow delete:
         if false;
 
     }
-
-
-    /* =====================================================
-       LEARNER-RESOURCE ACCESS AUTHORITY
+        /* =====================================================
+       LEARNER RESOURCE ACCESS
     ===================================================== */
 
     match /learner_resource_access/{accessDocumentId} {
+
+      /*
+       * Student Portal
+       * ----------------
+       * Learners may read only their own active,
+       * released entitlements.
+       *
+       * Admin Portal
+       * ----------------
+       * Bootstrap administrators retain full
+       * lifecycle authority.
+       */
 
       allow get,
             list:
@@ -2949,26 +3023,26 @@ service cloud.firestore {
         canLearnerReadOwnActiveResourceAccess();
 
       allow create:
-        if isBootstrapAdmin() &&
+        if
+          isBootstrapAdmin() &&
 
-        isValidLearnerResourceAccessCreate(
-          accessDocumentId
-        );
+          isValidLearnerResourceAccessCreate(
+            accessDocumentId
+          );
 
       allow update:
-        if isBootstrapAdmin() &&
+        if
+          isBootstrapAdmin() &&
 
-        isValidLearnerResourceAccessUpdate(
-          accessDocumentId
-        );
+          isValidLearnerResourceAccessUpdate(
+            accessDocumentId
+          );
 
       allow delete:
         if false;
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        CREDENTIAL ACTIVATION TOKENS
     ===================================================== */
 
@@ -2991,9 +3065,7 @@ service cloud.firestore {
         if false;
 
     }
-
-
-    /* =====================================================
+        /* =====================================================
        IDENTITY RECONCILIATION EVENTS
     ===================================================== */
 
@@ -3111,8 +3183,9 @@ service cloud.firestore {
         );
 
       /*
-       * Payment creation, verification, taxation, receipts
-       * and lifecycle mutations must remain backend-owned.
+       * Payment creation, verification, taxation,
+       * receipts and lifecycle mutations remain
+       * backend-owned.
        */
 
       allow create,

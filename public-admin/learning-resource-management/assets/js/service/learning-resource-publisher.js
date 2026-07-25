@@ -3052,6 +3052,84 @@ async function publishResource(
                     }
                 );
 
+                /*
+                 * Build the complete resulting publication
+                 * candidate exactly as Firestore Rules will
+                 * evaluate request.resource.data.
+                 *
+                 * This is diagnostic-only. The authoritative
+                 * Firestore mutation remains the controlled
+                 * partial transaction.update() below.
+                 */
+                const publicationData = {
+
+                    ...targetData,
+
+                    status:
+                        "published",
+
+                    is_active:
+                        true,
+
+                    is_latest:
+                        true,
+
+                    published_by_uid:
+                        actor.uid,
+
+                    published_by_email:
+                        actor.email,
+
+                    published_at:
+                        timestamp,
+
+                    withdrawn_by_uid:
+                        null,
+
+                    withdrawn_by_email:
+                        null,
+
+                    withdrawn_at:
+                        null,
+
+                    withdrawal_reason:
+                        "",
+
+                    updated_by_uid:
+                        actor.uid,
+
+                    updated_by_email:
+                        actor.email,
+
+                    updated_at:
+                        timestamp
+
+                };
+
+                console.info(
+                    `[${MODULE_NAME}] Firestore publication candidate:`,
+                    {
+                        moduleVersion:
+                            MODULE_VERSION,
+
+                        documentId:
+                            targetSnapshot.id,
+
+                        fieldCount:
+                            Object.keys(
+                                publicationData
+                            ).length,
+
+                        fieldNames:
+                            Object.keys(
+                                publicationData
+                            ).sort(),
+
+                        data:
+                            publicationData
+                    }
+                );
+
                 transaction.update(
                     reference,
                     {

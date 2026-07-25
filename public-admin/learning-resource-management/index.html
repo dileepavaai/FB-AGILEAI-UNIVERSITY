@@ -55,7 +55,7 @@
        AGILE AI UNIVERSITY
        LEARNING RESOURCE MANAGEMENT
 
-       Version : 1.2.0
+       Version : 1.3.0
        Status  : ADMIN AUTHORITY
 
        Governance
@@ -64,10 +64,16 @@
        • Firestore stores governed resource metadata
        • Firebase Storage stores protected resource files
        • Protected files are immutable after upload
-       • Replacements require a new version
+       • Replacements require a new resource version
+       • Licensed Course Material belongs permanently to the
+         programme version attended by the learner
+       • Learner assignments are immutable after creation
+       • Assignment corrections require revocation and a new record
        • Resources follow draft → published → withdrawn
        • ADR-019 governs protected resource delivery
        • ADR-020 governs resource release policies
+       • ADR-021 governs licensed material entitlement
+       • ADR-022 governs immutable learner assignment
        • Admin records release-policy metadata
        • Learning Resource Resolver evaluates learner access
        • UI components never resolve learner visibility
@@ -76,6 +82,14 @@
 
        Change History
        -----------------------------------------------------
+       v1.3.0
+       • Aligned the page with ADR-021 and ADR-022
+       • Reframed learner access as permanent licensed assignment
+       • Added permanent-ownership and immutability notices
+       • Removed latest-version and replacement terminology
+       • Preserved all existing IDs, form names and JS contracts
+       • Preserved pending-activation and learner_uid binding flows
+
        v1.2.0
        • Added governed learner-resource access assignment panel
        • Added existing-alumni pending-activation workflow fields
@@ -152,8 +166,8 @@
               <h2>Learning Resource Management</h2>
 
               <p class="page-subtitle">
-                Register, upload, publish, version, release, and withdraw
-                governed learning resources and licensed course materials.
+                Register, upload, publish, assign, and govern licensed
+                course materials and reference resources.
               </p>
 
             </div>
@@ -939,12 +953,12 @@
                   id="learner-resource-access-heading"
                   class="card-title"
                 >
-                  Assign Learning Resource
+                  Assign Licensed Course Material
                 </div>
 
                 <p>
-                  Grant a published learning resource to an existing
-                  alumnus, existing learner, or authenticated learner.
+                  Create a permanent, version-specific licensed-material
+                  assignment for an alumnus or learner.
                 </p>
 
               </div>
@@ -965,12 +979,38 @@
               aria-live="polite"
             ></div>
 
+            <div
+              class="learning-resource-access-governance"
+              role="note"
+              aria-label="Permanent assignment notice"
+            >
+
+              <p>
+                <strong>Permanent licensed-material assignment:</strong>
+                one programme attendance grants ownership of one specific
+                licensed course-material version.
+              </p>
+
+              <p>
+                This assignment will not be automatically replaced,
+                upgraded, or migrated when a newer programme version is
+                published.
+              </p>
+
+              <p>
+                Corrections must preserve history by revoking the incorrect
+                assignment and creating a new assignment.
+              </p>
+
+            </div>
+
             <form
               id="learner-resource-access-form"
               data-resource-document-id=""
               data-resource-id=""
               data-program-code=""
               data-resource-version=""
+              data-assignment-mode="immutable"
               novalidate
             >
 
@@ -1212,14 +1252,21 @@
               <!-- ACCESS GOVERNANCE -->
               <fieldset class="learning-resource-permissions">
 
-                <legend>Access Governance</legend>
+                <legend>Assignment Governance</legend>
+
+                <p>
+                  The assignment record establishes permanent ownership.
+                  Release metadata is retained for backward compatibility
+                  with the current resolver contract and must not be used
+                  to replace or upgrade an assigned resource version.
+                </p>
 
                 <div class="learning-resource-form-grid">
 
                   <div class="form-group">
 
                     <label for="learner-resource-access-status">
-                      Access Status
+                      Assignment Status
                     </label>
 
                     <select
@@ -1229,7 +1276,7 @@
                     >
 
                       <option value="">
-                        Select access status
+                        Select assignment status
                       </option>
 
                       <option value="pending_activation">
@@ -1259,7 +1306,7 @@
                   <div class="form-group">
 
                     <label for="learner-resource-access-type">
-                      Access Type
+                      Assignment Type
                     </label>
 
                     <select
@@ -1269,11 +1316,11 @@
                     >
 
                       <option value="">
-                        Select access type
+                        Select assignment type
                       </option>
 
                       <option value="individual_licensed">
-                        Individual Licensed
+                        Individual Licensed Material
                       </option>
 
                       <option value="program_entitlement">
@@ -1485,12 +1532,13 @@
 
                 <p>
                   Assignment permissions cannot exceed the permissions of
-                  the published learning-resource record.
+                  the published learning-resource record. These permissions
+                  do not alter permanent ownership of the assigned version.
                 </p>
 
               </fieldset>
 
-              <!-- IDENTITY GOVERNANCE NOTICE -->
+              <!-- IDENTITY AND ASSIGNMENT GOVERNANCE NOTICE -->
               <div class="learning-resource-access-governance">
 
                 <p>
@@ -1502,7 +1550,7 @@
                 <p>
                   <strong>Activated learner:</strong>
                   provide the verified email and Firebase Learner UID, and
-                  use Activated identity with Active access.
+                  use Activated identity with Active assignment status.
                 </p>
 
                 <p>
@@ -1511,7 +1559,30 @@
                   the trusted activation and reconciliation workflow.
                 </p>
 
+                <p>
+                  <strong>Immutable assignment:</strong>
+                  after creation, the learner, programme, resource, and
+                  version relationship must not be edited. An incorrect
+                  assignment must be revoked and recreated.
+                </p>
+
               </div>
+
+              <label class="learning-resource-checkbox">
+
+                <input
+                  id="learner-resource-access-permanent-confirmation"
+                  name="permanent_assignment_acknowledged"
+                  type="checkbox"
+                  required
+                />
+
+                <span>
+                  I confirm that this is a permanent, version-specific
+                  licensed-material assignment.
+                </span>
+
+              </label>
 
               <div class="learning-resource-form-actions">
 
@@ -1520,7 +1591,7 @@
                   type="submit"
                   class="btn btn-primary"
                 >
-                  Grant Access
+                  Assign Licensed Material
                 </button>
 
                 <button
@@ -1565,16 +1636,22 @@
 
             <p>
               Published resource versions are immutable. Corrections and
-              replacements require a new version, while withdrawn resources
-              remain available for governance and audit history.
+              replacements require a new resource version, while withdrawn
+              resources remain available for governance and audit history.
             </p>
 
             <p>
-              ADR-019 governs how protected resources are delivered.
-              ADR-020 governs when and to whom resources become available.
-              The Admin Portal records release metadata, while the Learning
-              Resource Resolver remains the authority for learner
-              visibility.
+              ADR-019 governs protected delivery. ADR-020 governs release
+              policy. ADR-021 establishes permanent ownership of the
+              programme version attended. ADR-022 requires learner
+              assignments to remain immutable after creation.
+            </p>
+
+            <p>
+              An assignment must never be silently edited to point to a
+              newer version. Administrative corrections require revocation
+              of the incorrect assignment and creation of a new assignment,
+              preserving the complete audit history.
             </p>
 
           </div>
@@ -1602,7 +1679,7 @@
 
     import {
       initialize as initializeLearningResourceManagement
-    } from "./assets/js/learning-resource-controller.js?v=1.4.2";
+    } from "./assets/js/learning-resource-controller.js?v=1.4.3";
 
 
     loadAdminSidebar(

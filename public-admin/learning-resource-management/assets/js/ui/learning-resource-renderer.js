@@ -3,13 +3,15 @@
    Admin Learning Resource Management
 
    File      : learning-resource-renderer.js
-   Version   : 1.4.1
+   Version   : 1.5.0
    Status    : ACTIVE
    Authority : Admin Portal
 
    Purpose
    ----------------------------------------------------------
-   Renders governed learning-resource administration ViewModels.
+   Renders governed learning-resource administration ViewModels
+   and the permanent, version-specific Licensed Course Material
+   assignment experience.
 
    Responsibilities
    ----------------------------------------------------------
@@ -19,11 +21,13 @@
    • Render administrative action controls
    • Render loading, success, information, and error messages
    • Render empty states
-   • Populate the resource form for draft and uploaded-metadata editing
+   • Populate the resource form for draft and uploaded-metadata
+     editing
    • Populate governed release-policy metadata
    • Reset form presentation safely between modes
-   • Render learner-resource assignment controls
+   • Render Licensed Course Material assignment controls
    • Populate selected published-resource assignment metadata
+   • Present permanent ownership and fixed-version governance
    • Control presentation visibility and accessibility state
 
    Non-Responsibilities
@@ -33,8 +37,10 @@
    • Firestore operations
    • Storage operations
    • Publication decisions
+   • Assignment persistence
    • Entitlement resolution
    • Learner release-policy evaluation
+   • Automatic version upgrades
    • Business validation
 
    Governance
@@ -43,16 +49,43 @@
    • Renderer makes no authorization decisions
    • Renderer never queries Firebase
    • Renderer never publishes or withdraws resources
+   • Renderer never creates assignment records directly
    • Renderer records no business decisions
    • Dynamic values are inserted through textContent
    • Action buttons expose intent through data attributes
    • Service and Publisher remain lifecycle authorities
-   • Learning Resource Resolver remains learner-visibility authority
-   • ADR-020 release metadata is presented but never evaluated here
+   • Learner Resource Assignment Service remains assignment
+     authority
+   • Learning Resource Resolver remains learner-visibility
+     authority
+   • ADR-020 release metadata is presented but never evaluated
+     here
+   • ADR-021 permanent ownership is presented but never resolved
+     here
+   • ADR-022 immutable assignment rules are presented but never
+     enforced here
+   • Existing DOM IDs, form field names, dataset properties,
+     event actions, and public APIs remain backward compatible
+
+   Related ADRs
+   ----------------------------------------------------------
+   • ADR-019 Protected Learning Resource Delivery
+   • ADR-020 Governed Learning Resource Release
+   • ADR-021 Licensed Course Material Entitlement Model
+   • ADR-022 Immutable Learner Assignment
 
    Change History
    ----------------------------------------------------------
-   
+   v1.5.0
+   • Adopted Licensed Course Material assignment terminology
+   • Added permanent ownership presentation governance
+   • Added fixed-version assignment presentation governance
+   • Added ADR-021 and ADR-022 alignment
+   • Hardened assignment-form field presentation
+   • Preserved existing DOM contracts
+   • Preserved existing controller event contracts
+   • Preserved renderer APIs for backward compatibility
+
    v1.4.1
    • Synchronized panel hidden attributes and hidden CSS classes
    • Fixed resource form visibility for create and edit workflows
@@ -104,7 +137,7 @@ const MODULE_NAME =
     "LearningResourceRenderer";
 
 const MODULE_VERSION =
-    "1.4.1";
+    "1.5.0";
 
 const ALLOWED_STATUS_TYPES =
     Object.freeze([
@@ -198,6 +231,12 @@ function initialize() {
                 "learning-resource-form-heading"
             ),
 
+        /*
+         * Existing access-based DOM IDs are preserved for
+         * compatibility. The business concept presented by
+         * these elements is a Licensed Course Material
+         * Assignment.
+         */
         accessPanel:
             document.getElementById(
                 "learner-resource-access-panel"
@@ -449,6 +488,7 @@ function setFieldChecked(
 
 }
 
+
 function setFieldDisabled(
     fieldName,
     disabled
@@ -497,6 +537,10 @@ function setFieldRequired(
 }
 
 
+/*
+ * These helper names retain "Access" to preserve the existing
+ * HTML and controller contracts.
+ */
 function getAccessFormField(
     fieldName
 ) {
@@ -583,6 +627,7 @@ function setAccessFieldRequired(
         required === true;
 
 }
+
 
 /* ==========================================================
    FORMATTERS
@@ -936,99 +981,183 @@ function bindReleasePolicyPresentation() {
 
 
 /* ==========================================================
-   ACCESS PRESENTATION
+   LICENSED COURSE MATERIAL ASSIGNMENT PRESENTATION
 ========================================================== */
 
+/*
+ * Existing function names and form-field names retain the
+ * word "Access" for backward compatibility with the current
+ * HTML and controller contracts.
+ *
+ * The administrator-facing business terminology is
+ * Licensed Course Material Assignment.
+ */
 function updateAccessPresentation() {
 
     initialize();
 
-    const learnerUid =
-        normalizeText(
-            getAccessFormField(
-                "learner_uid"
-            )?.value
+    if (
+        !elements.accessForm
+    ) {
+
+        return;
+
+    }
+
+    const learnerUidField =
+        getAccessFormField(
+            "learner_uid"
         );
 
-    const identitySource =
+    const identitySourceField =
         getAccessFormField(
             "identity_source"
         );
 
-    const identityStatus =
+    const identityStatusField =
         getAccessFormField(
             "identity_status"
         );
 
-    const accessStatus =
+    const accessStatusField =
         getAccessFormField(
             "access_status"
         );
 
-    const releasePolicy =
+    const releasePolicyField =
         getAccessFormField(
             "release_policy"
         );
 
-    const credentialId =
+    const credentialIdField =
         getAccessFormField(
             "credential_id"
         );
 
+    const learnerUid =
+        normalizeText(
+            learnerUidField?.value
+        );
+
+    /*
+     * Authenticated learner
+     * ------------------------------------------------------
+     * learner_uid is already available and is the canonical
+     * identity anchor for the assignment.
+     */
     if (
         learnerUid
     ) {
 
-        identitySource.value =
-            "authenticated_identity";
-
-        identityStatus.value =
-            "activated";
-
-        accessStatus.value =
-            "active";
-
         if (
-            !releasePolicy.value
+            identitySourceField
         ) {
 
-            releasePolicy.value =
+            identitySourceField.value =
+                "authenticated_identity";
+
+        }
+
+        if (
+            identityStatusField
+        ) {
+
+            identityStatusField.value =
+                "activated";
+
+        }
+
+        if (
+            accessStatusField
+        ) {
+
+            accessStatusField.value =
+                "active";
+
+        }
+
+        if (
+            releasePolicyField &&
+            !releasePolicyField.value
+        ) {
+
+            releasePolicyField.value =
                 "immediate";
 
         }
 
-        credentialId.required =
-            false;
-
-    }
-    else {
-
-        identitySource.value =
-            "historical_credential";
-
-        identityStatus.value =
-            "pending_activation";
-
-        accessStatus.value =
-            "pending_activation";
-
         if (
-            !releasePolicy.value ||
-            releasePolicy.value ===
-                "immediate"
+            credentialIdField
         ) {
 
-            releasePolicy.value =
-                "on_activation";
+            credentialIdField.required =
+                false;
 
         }
 
-        credentialId.required =
+        return;
+
+    }
+
+    /*
+     * Pre-authentication learner
+     * ------------------------------------------------------
+     * The assignment is pre-staged using verified email and
+     * Credential ID. learner_uid binding remains the authority
+     * of the backend first-login identity activation workflow.
+     */
+    if (
+        identitySourceField
+    ) {
+
+        identitySourceField.value =
+            "historical_credential";
+
+    }
+
+    if (
+        identityStatusField
+    ) {
+
+        identityStatusField.value =
+            "pending_activation";
+
+    }
+
+    if (
+        accessStatusField
+    ) {
+
+        accessStatusField.value =
+            "pending_activation";
+
+    }
+
+    if (
+        releasePolicyField &&
+        (
+            !releasePolicyField.value ||
+            releasePolicyField.value ===
+                "immediate"
+        )
+    ) {
+
+        releasePolicyField.value =
+            "on_activation";
+
+    }
+
+    if (
+        credentialIdField
+    ) {
+
+        credentialIdField.required =
             true;
 
     }
 
 }
+
 
 function bindAccessPresentation() {
 
@@ -1081,7 +1210,6 @@ function bindAccessPresentation() {
     );
 
 }
-
 
 /* ==========================================================
    ELEMENT FACTORIES
@@ -1512,6 +1640,7 @@ function createStatusBadge(
 
 }
 
+
 /* ==========================================================
    RESOURCE ACTIONS
 ========================================================== */
@@ -1550,11 +1679,11 @@ function createResourceActions(
      * ------------------------------------------------------
      * Drafts may be edited.
      * Protected resources without an uploaded file may upload.
-     * Publication is available.
+     * Publication remains governed by the Publisher.
      */
     if (
         status ===
-        "draft"
+            "draft"
     ) {
 
         actions.append(
@@ -1616,13 +1745,12 @@ function createResourceActions(
      * ------------------------------------------------------
      * Uploaded
      * ------------------------------------------------------
-     * File already uploaded.
-     * Metadata may still be edited.
-     * Upload action is intentionally hidden.
+     * The protected file is already uploaded.
+     * Metadata may still be edited before publication.
      */
     if (
         status ===
-        "uploaded"
+            "uploaded"
     ) {
 
         actions.append(
@@ -1660,16 +1788,22 @@ function createResourceActions(
      * ------------------------------------------------------
      * Published
      * ------------------------------------------------------
+     * The existing action name "assign-resource" is retained
+     * for controller compatibility.
+     *
+     * For Licensed Course Material, the resulting assignment
+     * is permanent and bound to the selected resource version.
+     * The renderer presents this intent but does not enforce it.
      */
     if (
         status ===
-        "published"
+            "published"
     ) {
 
         actions.append(
             createActionButton({
                 label:
-                    "Assign learner",
+                    "Assign Licensed Material",
 
                 action:
                     "assign-resource",
@@ -1681,7 +1815,7 @@ function createResourceActions(
                     "primary",
 
                 title:
-                    "Grant this published resource to an alumnus or learner."
+                    "Create a permanent, version-specific Licensed Course Material assignment for an alumnus or learner."
             })
         );
 
@@ -1719,6 +1853,7 @@ function createResourceActions(
     return actions;
 
 }
+
 
 /* ==========================================================
    RESOURCE CARD
@@ -1915,7 +2050,8 @@ function createResourceCard(
         ]) => {
 
             const policyEnabled =
-                enabled === true;
+                enabled ===
+                    true;
 
             const policy =
                 createElement(
@@ -2162,8 +2298,8 @@ function resetFormPresentation() {
         ) {
 
             /*
-             * Browser security may prevent programmatic file-value
-             * changes in some environments. form.reset() remains the
+             * Browser security may prevent programmatic changes
+             * to file-input values. form.reset() remains the
              * authoritative fallback.
              */
 
@@ -2172,6 +2308,7 @@ function resetFormPresentation() {
     }
 
 }
+
 
 /* ==========================================================
    FORM PRESENTATION
@@ -2354,6 +2491,10 @@ function openForm({
             resource.embedAllowed
         );
 
+        /*
+         * Resource identity and version remain immutable while
+         * editing an existing draft or uploaded resource.
+         */
         setFieldDisabled(
             "program_code",
             true
@@ -2421,6 +2562,7 @@ function openForm({
 
 }
 
+
 function closeForm() {
 
     initialize();
@@ -2449,10 +2591,15 @@ function closeForm() {
 
 }
 
+
 /* ==========================================================
-   ACCESS FORM RESET
+   LICENSED COURSE MATERIAL ASSIGNMENT FORM RESET
 ========================================================== */
 
+/*
+ * Existing function and field names retain "Access" for
+ * compatibility with the existing HTML and controller.
+ */
 function resetAccessFormPresentation() {
 
     initialize();
@@ -2529,6 +2676,11 @@ function resetAccessFormPresentation() {
         "pending_activation"
     );
 
+    /*
+     * Compatibility value retained.
+     * The assignment service translates and governs the
+     * permanent Licensed Course Material ownership model.
+     */
     setAccessFieldValue(
         "access_type",
         "individual_licensed"
@@ -2574,6 +2726,20 @@ function resetAccessFormPresentation() {
         false
     );
 
+    setAccessFieldRequired(
+        "credential_id",
+        true
+    );
+
+    if (
+        elements.accessHeading
+    ) {
+
+        elements.accessHeading.textContent =
+            "Assign Licensed Course Material to Learner";
+
+    }
+
     if (
         elements.accessResourceSummary
     ) {
@@ -2589,7 +2755,7 @@ function resetAccessFormPresentation() {
 
 
 /* ==========================================================
-   ACCESS FORM PRESENTATION
+   LICENSED COURSE MATERIAL ASSIGNMENT FORM PRESENTATION
 ========================================================== */
 
 function openAccessForm({
@@ -2631,6 +2797,10 @@ function openAccessForm({
         ) ||
         1;
 
+    /*
+     * These dataset properties are consumed by the controller
+     * and assignment service. Their names remain unchanged.
+     */
     elements.accessForm.dataset.resourceDocumentId =
         documentId;
 
@@ -2648,7 +2818,7 @@ function openAccessForm({
     setAccessFieldValue(
         "resource_title",
         resource.title ||
-        "Untitled resource"
+        "Untitled Licensed Course Material"
     );
 
     setAccessFieldValue(
@@ -2666,6 +2836,11 @@ function openAccessForm({
         version
     );
 
+    /*
+     * A learner assignment is bound to this exact resource
+     * document and version. Future resource versions do not
+     * automatically replace the learner's assigned version.
+     */
     setAccessFieldValue(
         "release_policy",
         resource.releasePolicy ===
@@ -2715,7 +2890,7 @@ function openAccessForm({
     ) {
 
         elements.accessHeading.textContent =
-            "Assign Learning Resource to Learner";
+            "Assign Licensed Course Material to Learner";
 
     }
 
@@ -2726,14 +2901,14 @@ function openAccessForm({
         elements.accessResourceSummary.textContent =
             `${
                 resource.title ||
-                "Untitled resource"
+                "Untitled Licensed Course Material"
             } · ${
                 programCode ||
                 "No programme"
             } · ${
                 resourceId ||
                 "No resource ID"
-            } · v${version}`;
+            } · Fixed Version ${version} · Permanent Ownership`;
 
     }
 
@@ -2804,6 +2979,7 @@ function openAccessForm({
 
 }
 
+
 function closeAccessForm() {
 
     initialize();
@@ -2843,8 +3019,7 @@ function setAuthorized(
     initialize();
 
     const isAuthorized =
-        authorized ===
-        true;
+        authorized === true;
 
     const page =
         document.getElementById(
@@ -2869,6 +3044,11 @@ function setAuthorized(
 
     }
 
+    /*
+     * If authorization is lost, immediately close every
+     * administrative editing surface. Business enforcement
+     * remains outside the renderer.
+     */
     if (
         !isAuthorized
     ) {
@@ -2881,9 +3061,19 @@ function setAuthorized(
 
 }
 
+
 /* ==========================================================
    PUBLIC API
 ========================================================== */
+
+/*
+ * Public API intentionally preserves existing method names to
+ * maintain backward compatibility with the Admin controller.
+ *
+ * Although administrator terminology has moved to
+ * "Licensed Course Material Assignment", controller contracts
+ * continue using the established Access APIs.
+ */
 
 const LearningResourceRenderer =
     Object.freeze({
@@ -2914,6 +3104,9 @@ const LearningResourceRenderer =
 
         resetFormPresentation,
 
+        /*
+         * Backward-compatible assignment APIs
+         */
         openAccessForm,
 
         closeAccessForm,
@@ -2922,6 +3115,9 @@ const LearningResourceRenderer =
 
         updateAccessPresentation,
 
+        /*
+         * Formatting helpers
+         */
         formatLabel,
 
         formatDate,
@@ -2930,19 +3126,34 @@ const LearningResourceRenderer =
 
         formatFileSize,
 
+        /*
+         * Release presentation
+         */
         updateReleasePolicyPresentation
 
     });
 
 
+/* ==========================================================
+   GLOBAL REGISTRATION
+========================================================== */
+
 window.LearningResourceRenderer =
     LearningResourceRenderer;
 
+
+/* ==========================================================
+   MODULE LOAD
+========================================================== */
 
 console.info(
     `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
 );
 
+
+/* ==========================================================
+   ES MODULE EXPORTS
+========================================================== */
 
 export {
 
@@ -2968,6 +3179,9 @@ export {
 
     resetFormPresentation,
 
+    /*
+     * Backward-compatible assignment exports
+     */
     openAccessForm,
 
     closeAccessForm,
@@ -2976,6 +3190,9 @@ export {
 
     updateAccessPresentation,
 
+    /*
+     * Formatting helpers
+     */
     formatLabel,
 
     formatDate,
@@ -2984,6 +3201,9 @@ export {
 
     formatFileSize,
 
+    /*
+     * Release presentation
+     */
     updateReleasePolicyPresentation
 
 };

@@ -1,58 +1,89 @@
 /* ==========================================================
    Agile AI University
-   Learner Resource Access Service
+   Learner Resource Assignment Service
 
    File       : learner-resource-access-service.js
-   Version    : 1.1.0
+   Version    : 1.2.0
    Status     : ACTIVE
    Authority  : Admin Portal
 
    Purpose
    ----------------------------------------------------------
-   Manages the governed relationship between a learner and a
-   published learning resource.
+   Manages the governed, permanent and version-specific
+   assignment of published licensed course materials to
+   learners.
 
    Responsibilities
    ----------------------------------------------------------
    • Require an authorized administrator
-   • Create pending learner-resource access assignments
-   • Create active learner-resource access assignments
-   • Validate learner and resource identity
-   • Prevent duplicate learner-resource assignments
-   • Generate opaque and stable access document identities
-   • Read access records by canonical access ID
-   • List access records by learner UID
-   • List pending access records by normalized learner email
-   • List access records by credential ID
+   • Create pending licensed-material assignments
+   • Create active licensed-material assignments
+   • Validate learner identity and resource identity
+   • Prevent duplicate learner assignments
+   • Generate opaque and stable assignment identities
+   • Read assignment records by canonical assignment ID
+   • List assignments by learner UID
+   • List pending assignments by normalized learner email
+   • List assignments by credential ID
    • Preserve immutable assignment identity
-   • Write complete creation and grant audit metadata
+   • Record permanent ownership metadata
+   • Record immutable assignment metadata
+   • Record complete governance audit metadata
 
    Non-Responsibilities
    ----------------------------------------------------------
-   • Upload protected files
+   • Upload protected learning resources
    • Publish learning resources
-   • Resolve learner-facing download URLs
+   • Resolve learner download URLs
    • Render HTML
    • Evaluate learner release eligibility
    • Bind learner_uid during first-login activation
    • Allow Student Portal mutations
-   • Delete access records
+   • Delete assignment records
 
    Governance
    ----------------------------------------------------------
-   • learner_resource_access is the relationship authority
-   • learning_resources remains the resource-catalog authority
-   • learner_uid is canonical after first authentication
-   • Before first login, verified email + credential ID may be
-     used for existing alumni
-   • Credential ID is a supporting business identifier
+   • learner_resource_access is the assignment authority
+   • learning_resources remains the resource authority
+   • learner_uid becomes the canonical learner identity
+     after first authentication
+   • Before first authentication, verified email and
+     Credential ID remain valid business identifiers
    • Pending assignments must not contain learner_uid
    • Active assignments must contain learner_uid
-   • Access document IDs are opaque and stable
-   • Access records are never renamed after UID activation
+   • Assignment document IDs are opaque and immutable
+   • Assignment records are never renamed
+   • Licensed Course Material ownership is permanent
+   • Each assignment is version-specific
+   • Assigned versions are never automatically upgraded
+   • Assignment identity fields are immutable
+   • Corrections that change learner or resource identity
+     require revocation followed by a new assignment
+   • Same-identity administrative correction workflows are
+     handled outside this creation service
    • Client-side deletion is prohibited
-   • First-login UID binding belongs to the backend activation
-     and identity-reconciliation workflow
+   • First-login learner_uid binding belongs to the
+     backend identity activation workflow
+
+   Related ADRs
+   ----------------------------------------------------------
+   • ADR-019 Protected Learning Resource Delivery
+   • ADR-020 Governed Learning Resource Release
+   • ADR-021 Licensed Course Material Entitlement Model
+   • ADR-022 Immutable Learner Assignment
+
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Adopted permanent licensed-material assignment model
+   • Added immutable assignment governance
+   • Added permanent ownership governance
+   • Added ADR-021 and ADR-022 alignment
+   • Preserved existing Firestore contracts
+   • Preserved existing APIs for backward compatibility
+
+   v1.1.0
+   • Initial governed learner-resource access service
 ========================================================== */
 
 import {
@@ -83,7 +114,7 @@ const MODULE_NAME =
     "LearnerResourceAccessService";
 
 const MODULE_VERSION =
-    "1.1.0";
+    "1.2.0";
 
 const SCHEMA_VERSION =
     1;
@@ -459,7 +490,7 @@ function isValidEmail(
 
 
 /* ==========================================================
-   HASH AND ACCESS-ID GENERATION
+   HASH AND ASSIGNMENT-ID GENERATION
 ========================================================== */
 
 function bytesToHex(
@@ -526,19 +557,32 @@ async function sha256(
 
 
 /*
- * The access ID is deterministic for the learner identity state
- * used during assignment and the exact resource version.
+ * Assignment IDs are deterministic for the learner identity
+ * state used during assignment together with the exact
+ * licensed material version.
  *
- * No email address, credential ID or UID is exposed in the
- * Firestore document ID.
+ * Firestore document IDs never expose learner email,
+ * Credential ID or learner UID.
  *
- * Pending records retain this ID after first-login activation.
+ * Pending assignments retain the same document ID after
+ * first-login learner_uid binding.
+ *
+ * ADR-021
+ * Permanent licensed material entitlement.
+ *
+ * ADR-022
+ * Immutable learner assignment.
  */
 async function buildAccessId({
+
     learnerUid,
+
     learnerEmailNormalized,
+
     credentialId,
+
     resourceDocumentId
+
 }) {
 
     const normalizedLearnerUid =
@@ -564,28 +608,43 @@ async function buildAccessId({
     const identityMaterial =
         normalizedLearnerUid
             ? [
+
                 "UID",
+
                 normalizedLearnerUid,
+
                 normalizedResourceDocumentId
+
             ]
             : [
+
                 "PRELOGIN",
+
                 normalizedEmail,
+
                 normalizedCredentialId,
+
                 normalizedResourceDocumentId
+
             ];
 
     const hash =
         await sha256(
+
             identityMaterial.join(
                 "::"
             )
+
         );
 
-    return `${ACCESS_ID_PREFIX}${hash.slice(
-        0,
-        32
-    )}`;
+    return `${ACCESS_ID_PREFIX}${
+
+        hash.slice(
+            0,
+            32
+        )
+
+    }`;
 
 }
 
@@ -619,10 +678,14 @@ function normalizeAccessInput(
 
     const credentialId =
         normalizeNullableString(
+
             normalizeUppercase(
+
                 input.credential_id ??
                 input.credentialId
+
             )
+
         );
 
     const resourceDocumentId =
@@ -632,9 +695,10 @@ function normalizeAccessInput(
         );
 
     /*
-     * Learning-resource IDs are canonical lowercase identifiers.
+     * Resource IDs remain lowercase canonical identifiers.
      * Programme codes remain uppercase.
      */
+
     const resourceId =
         normalizeLowercase(
             input.resource_id ??
@@ -1090,6 +1154,7 @@ function validateAccessInput(
 
 }
 
+
 /* ==========================================================
    RESOURCE VALIDATION
 ========================================================== */
@@ -1115,7 +1180,7 @@ async function requirePublishedResource(
     ) {
 
         throw new Error(
-            "The selected learning resource does not exist."
+            "The selected licensed course material does not exist."
         );
 
     }
@@ -1166,7 +1231,7 @@ async function requirePublishedResource(
     ) {
 
         throw new Error(
-            "Learner access can only be assigned to an active published resource."
+            "Licensed course material can only be assigned from an active published resource."
         );
 
     }
@@ -1177,7 +1242,7 @@ async function requirePublishedResource(
     ) {
 
         throw new Error(
-            "The supplied resource ID does not match the learning-resource record."
+            "The supplied resource ID does not match the published resource."
         );
 
     }
@@ -1188,7 +1253,7 @@ async function requirePublishedResource(
     ) {
 
         throw new Error(
-            "The supplied programme code does not match the learning-resource record."
+            "The supplied programme code does not match the published resource."
         );
 
     }
@@ -1199,7 +1264,7 @@ async function requirePublishedResource(
     ) {
 
         throw new Error(
-            "The supplied resource version does not match the learning-resource record."
+            "The supplied resource version does not match the published resource."
         );
 
     }
@@ -1232,7 +1297,6 @@ async function requirePublishedResource(
     });
 
 }
-
 
 /* ==========================================================
    DOCUMENT NORMALIZATION
@@ -1385,6 +1449,36 @@ function normalizeAccessSnapshot(
                 data.access_type
             ),
 
+        /*
+         * ADR-021 / ADR-022 governance metadata.
+         *
+         * Older records may not contain these fields.
+         * Normalization therefore remains backward compatible.
+         */
+        assignmentType:
+            normalizeLowercase(
+                data.assignment_type
+            ),
+
+        assignmentModel:
+            normalizeLowercase(
+                data.assignment_model
+            ),
+
+        ownershipModel:
+            normalizeLowercase(
+                data.ownership_model
+            ),
+
+        versionBinding:
+            normalizeLowercase(
+                data.version_binding
+            ),
+
+        automaticUpgradeAllowed:
+            data.automatic_upgrade_allowed ===
+                true,
+
         releaseStatus:
             normalizeLowercase(
                 data.release_status
@@ -1517,6 +1611,7 @@ function normalizeAccessSnapshot(
 
 }
 
+
 /* ==========================================================
    QUERY HELPERS
 ========================================================== */
@@ -1543,6 +1638,10 @@ async function readQuery(
 }
 
 
+/* ==========================================================
+   DUPLICATE ASSIGNMENT PROTECTION
+========================================================== */
+
 async function findDuplicates(
     input
 ) {
@@ -1556,6 +1655,12 @@ async function findDuplicates(
     const duplicateQueries =
         [];
 
+    /*
+     * Email + exact resource-version identity.
+     *
+     * This catches pending assignments created before the learner
+     * has authenticated and received a canonical learner_uid.
+     */
     duplicateQueries.push(
         query(
             accessCollection,
@@ -1572,6 +1677,11 @@ async function findDuplicates(
         )
     );
 
+    /*
+     * Canonical learner UID + exact resource-version identity.
+     *
+     * This catches assignments created after authentication.
+     */
     if (
         input.learnerUid
     ) {
@@ -1594,6 +1704,12 @@ async function findDuplicates(
 
     }
 
+    /*
+     * Credential ID + exact resource-version identity.
+     *
+     * This provides supporting business-identity protection
+     * for alumni and historical credential holders.
+     */
     if (
         input.credentialId
     ) {
@@ -1653,9 +1769,8 @@ async function findDuplicates(
 
 }
 
-
 /* ==========================================================
-   CREATE ACCESS
+   CREATE PERMANENT ASSIGNMENT
 ========================================================== */
 
 async function createAccess(
@@ -1716,7 +1831,7 @@ async function createAccess(
     ) {
 
         throw new Error(
-            `Learner access already exists for this resource under access ID ${
+            `A permanent Licensed Course Material assignment already exists for this learner and resource version under assignment ID ${
                 conflictingRecord.accessId ||
                 conflictingRecord.documentId
             }.`
@@ -1726,6 +1841,7 @@ async function createAccess(
 
     const accessId =
         await buildAccessId({
+
             learnerUid:
                 normalizedInput.learnerUid,
 
@@ -1737,6 +1853,7 @@ async function createAccess(
 
             resourceDocumentId:
                 normalizedInput.resourceDocumentId
+
         });
 
     const accessReference =
@@ -1756,7 +1873,7 @@ async function createAccess(
     ) {
 
         throw new Error(
-            "A learner-resource access record with the same canonical identity already exists."
+            "A Licensed Course Material assignment with the same canonical identity already exists."
         );
 
     }
@@ -1802,6 +1919,32 @@ async function createAccess(
         access_type:
             normalizedInput.accessType,
 
+        /*
+         * ADR-021
+         * Licensed Course Material Entitlement Model
+         *
+         * ADR-022
+         * Immutable Learner Assignment
+         *
+         * These additive governance fields do not replace the
+         * existing access fields. They explicitly define the
+         * commercial ownership and version-binding model.
+         */
+        assignment_type:
+            "licensed_course_material",
+
+        assignment_model:
+            "immutable",
+
+        ownership_model:
+            "permanent",
+
+        version_binding:
+            "fixed",
+
+        automatic_upgrade_allowed:
+            false,
+
         release_status:
             normalizedInput.releaseStatus,
 
@@ -1823,9 +1966,9 @@ async function createAccess(
         /*
          * Master learning resources are globally protected.
          *
-         * Their learner-facing permissions are granted through the
-         * individual learner_resource_access record and enforced by
-         * the authenticated backend delivery broker.
+         * Their learner-facing permissions are assigned through
+         * the individual learner_resource_access record and are
+         * enforced by the authenticated backend delivery broker.
          *
          * Other resource domains cannot exceed the permissions
          * configured on the published resource.
@@ -1930,7 +2073,7 @@ async function createAccess(
     ) {
 
         throw new Error(
-            "Learner-resource access was created but could not be read back."
+            "Licensed Course Material assignment was created but could not be read back."
         );
 
     }
@@ -1939,8 +2082,25 @@ async function createAccess(
 
 }
 
+
+/*
+ * Preferred ADR-021 / ADR-022 terminology.
+ *
+ * createAccess() remains available because the controller and
+ * any existing integrations may still depend on that API.
+ */
+async function createAssignment(
+    input = {}
+) {
+
+    return createAccess(
+        input
+    );
+
+}
+
 /* ==========================================================
-   DIRECT ACCESS READ
+   DIRECT ASSIGNMENT READ
 ========================================================== */
 
 async function getAccess(
@@ -1963,7 +2123,7 @@ async function getAccess(
     ) {
 
         throw new Error(
-            "A valid learner-resource access ID is required."
+            "A valid Licensed Course Material Assignment ID is required."
         );
 
     }
@@ -1988,7 +2148,7 @@ async function getAccess(
 
 
 /* ==========================================================
-   LIST BY LEARNER UID
+   LIST ASSIGNMENTS BY LEARNER UID
 ========================================================== */
 
 async function listByLearnerUid(
@@ -2017,14 +2177,15 @@ async function listByLearnerUid(
 
     }
 
-    const constraints =
-        [
-            where(
-                "learner_uid",
-                "==",
-                normalizedLearnerUid
-            )
-        ];
+    const constraints = [
+
+        where(
+            "learner_uid",
+            "==",
+            normalizedLearnerUid
+        )
+
+    ];
 
     const normalizedAccessStatus =
         normalizeLowercase(
@@ -2042,22 +2203,25 @@ async function listByLearnerUid(
         ) {
 
             throw new Error(
-                "Access-status filter is unsupported."
+                "Unsupported assignment status."
             );
 
         }
 
         constraints.push(
+
             where(
                 "access_status",
                 "==",
                 normalizedAccessStatus
             )
+
         );
 
     }
 
     return readQuery(
+
         query(
             collection(
                 db,
@@ -2065,13 +2229,14 @@ async function listByLearnerUid(
             ),
             ...constraints
         )
+
     );
 
 }
 
 
 /* ==========================================================
-   LIST PENDING BY EMAIL
+   LIST PENDING ASSIGNMENTS BY EMAIL
 ========================================================== */
 
 async function listPendingByEmail(
@@ -2100,29 +2265,34 @@ async function listPendingByEmail(
     }
 
     return readQuery(
+
         query(
             collection(
                 db,
                 COLLECTION_NAME
             ),
+
             where(
                 "learner_email_normalized",
                 "==",
                 normalizedEmail
             ),
+
             where(
                 "access_status",
                 "==",
                 "pending_activation"
             )
+
         )
+
     );
 
 }
 
 
 /* ==========================================================
-   LIST BY CREDENTIAL ID
+   LIST ASSIGNMENTS BY CREDENTIAL ID
 ========================================================== */
 
 async function listByCredentialId(
@@ -2149,24 +2319,28 @@ async function listByCredentialId(
     }
 
     return readQuery(
+
         query(
             collection(
                 db,
                 COLLECTION_NAME
             ),
+
             where(
                 "credential_id",
                 "==",
                 normalizedCredentialId
             )
+
         )
+
     );
 
 }
 
 
 /* ==========================================================
-   LIST BY RESOURCE
+   LIST ASSIGNMENTS BY RESOURCE
 ========================================================== */
 
 async function listByResourceDocumentId(
@@ -2193,24 +2367,28 @@ async function listByResourceDocumentId(
     }
 
     return readQuery(
+
         query(
             collection(
                 db,
                 COLLECTION_NAME
             ),
+
             where(
                 "resource_document_id",
                 "==",
                 normalizedResourceDocumentId
             )
+
         )
+
     );
 
 }
 
 
 /* ==========================================================
-   PUBLIC API
+   BACKWARD-COMPATIBLE API
 ========================================================== */
 
 const LearnerResourceAccessService =
@@ -2228,7 +2406,17 @@ const LearnerResourceAccessService =
         collectionName:
             COLLECTION_NAME,
 
+        /*
+         * Existing API
+         */
+
         createAccess,
+
+        /*
+         * Preferred API
+         */
+
+        createAssignment,
 
         getAccess,
 
@@ -2252,6 +2440,8 @@ export {
     LearnerResourceAccessService,
 
     createAccess,
+
+    createAssignment,
 
     getAccess,
 

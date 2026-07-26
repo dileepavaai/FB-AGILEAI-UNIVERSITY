@@ -3,7 +3,7 @@
    Learner Resource Assignment Service
 
    File       : learner-resource-access-service.js
-   Version    : 1.2.0
+   Version    : 1.2.1
    Status     : ACTIVE
    Authority  : Admin Portal
 
@@ -74,6 +74,15 @@
 
    Change History
    ----------------------------------------------------------
+   v1.2.1
+   • Added module-load version confirmation
+   • Added step-level learner-assignment diagnostics
+   • Added published-resource read diagnostics
+   • Added duplicate-query diagnostics
+   • Added canonical assignment-ID diagnostics
+   • Added Firestore write and read-back diagnostics
+   • Preserved all assignment and governance behaviour
+
    v1.2.0
    • Adopted permanent licensed-material assignment model
    • Added immutable assignment governance
@@ -114,7 +123,11 @@ const MODULE_NAME =
     "LearnerResourceAccessService";
 
 const MODULE_VERSION =
-    "1.2.0";
+    "1.2.1";
+
+console.info(
+    `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`
+);
 
 const SCHEMA_VERSION =
     1;
@@ -1777,20 +1790,43 @@ async function createAccess(
     input = {}
 ) {
 
+    console.info(
+        "[LearnerResourceAccessService] createAccess entered"
+    );
+
     assertDatabaseAvailable();
+
+    console.info(
+        "[LearnerResourceAccessService] Database available"
+    );
 
     const adminContext =
         await requireAdminAccess();
+
+    console.info(
+        "[LearnerResourceAccessService] Admin authorized:",
+        adminContext
+    );
 
     const normalizedInput =
         normalizeAccessInput(
             input
         );
 
+    console.info(
+        "[LearnerResourceAccessService] Input normalized:",
+        normalizedInput
+    );
+
     const validation =
         validateAccessInput(
             normalizedInput
         );
+
+    console.info(
+        "[LearnerResourceAccessService] Validation completed:",
+        validation
+    );
 
     if (
         !validation.valid
@@ -1804,20 +1840,34 @@ async function createAccess(
 
     }
 
+    console.info(
+        "[LearnerResourceAccessService] Reading published resource:",
+        normalizedInput.resourceDocumentId
+    );
+
     const resource =
         await requirePublishedResource(
             normalizedInput
         );
 
-    console.log(
+    console.info(
         "[LearnerResourceAccessService] Published resource authority:",
         resource
+    );
+
+    console.info(
+        "[LearnerResourceAccessService] Checking duplicate assignments"
     );
 
     const duplicateRecords =
         await findDuplicates(
             normalizedInput
         );
+
+    console.info(
+        "[LearnerResourceAccessService] Duplicate check completed:",
+        duplicateRecords
+    );
 
     const conflictingRecord =
         duplicateRecords.find(
@@ -1844,6 +1894,10 @@ async function createAccess(
 
     }
 
+    console.info(
+        "[LearnerResourceAccessService] Building canonical assignment ID"
+    );
+
     const accessId =
         await buildAccessId({
 
@@ -1861,6 +1915,11 @@ async function createAccess(
 
         });
 
+    console.info(
+        "[LearnerResourceAccessService] Canonical assignment ID:",
+        accessId
+    );
+
     const accessReference =
         doc(
             db,
@@ -1868,10 +1927,23 @@ async function createAccess(
             accessId
         );
 
+    console.info(
+        "[LearnerResourceAccessService] Checking canonical assignment document:",
+        `${COLLECTION_NAME}/${accessId}`
+    );
+
     const existingSnapshot =
         await getDoc(
             accessReference
         );
+
+    console.info(
+        "[LearnerResourceAccessService] Canonical assignment check completed:",
+        {
+            exists:
+                existingSnapshot.exists()
+        }
+    );
 
     if (
         existingSnapshot.exists()
@@ -2097,15 +2169,31 @@ async function createAccess(
 
     console.groupEnd();
 
+    console.info(
+        "[LearnerResourceAccessService] Writing assignment document"
+    );
+
     await setDoc(
         accessReference,
         accessRecord
+    );
+
+    console.info(
+        "[LearnerResourceAccessService] Assignment write completed"
     );
 
     const createdSnapshot =
         await getDoc(
             accessReference
         );
+
+    console.info(
+        "[LearnerResourceAccessService] Assignment read-back completed:",
+        {
+            exists:
+                createdSnapshot.exists()
+        }
+    );
 
     const createdAccess =
         normalizeAccessSnapshot(
@@ -2133,6 +2221,7 @@ async function createAccess(
  * createAccess() remains available because the controller and
  * any existing integrations may still depend on that API.
  */
+
 async function createAssignment(
     input = {}
 ) {

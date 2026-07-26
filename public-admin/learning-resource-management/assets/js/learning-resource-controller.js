@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File       : learning-resource-controller.js
-   Version    : 1.4.2
+   Version    : 1.4.3
    Status     : ACTIVE
    Authority  : Admin Portal
 
@@ -54,6 +54,11 @@
 
    Change History
    ----------------------------------------------------------
+   v1.4.3
+   • Added cache-versioned loading for learner-resource assignment service
+   • Ensured assignment diagnostics load from service v1.2.1
+   • Preserved all learning-resource lifecycle orchestration
+
    v1.4.2
    • Added governed Storage-domain handoff during upload
    • Added master-learning-resources upload compatibility
@@ -131,7 +136,7 @@ const MODULE_NAME =
     "LearningResourceController";
 
 const MODULE_VERSION =
-    "1.4.2";
+    "1.4.3";
 
 const SEARCH_DEBOUNCE_MS =
     250;
@@ -533,7 +538,7 @@ async function getLearnerResourceAccessService() {
 
     state.accessServicePromise =
         import(
-            "./service/learner-resource-access-service.js"
+            "./service/learner-resource-access-service.js?v=1.2.1"
         )
             .then(
                 (

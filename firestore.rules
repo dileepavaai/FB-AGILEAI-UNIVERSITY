@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.8.1
+       Version : 2.9.0
        Status  : ACTIVE
 
        Security Model
@@ -39,6 +39,18 @@ service cloud.firestore {
 
        Change History
        -----------------------------------------------------
+       v2.9.0
+       • Added permanent Licensed Course Material assignment fields
+       • Added immutable learner-assignment governance validation
+       • Added fixed-version ownership validation
+       • Prohibited automatic licensed-material version upgrades
+       • Aligned learner_resource_access with ADR-021 and ADR-022
+       • Restored governed learning_resources update validation
+       • Removed the temporary diagnostic update bypass
+       • Restored publication lifecycle and immutability enforcement
+       • Preserved identity, release, audit and default-deny governance
+       • Preserved all existing production collection rules
+
        v2.8.1
        • Aligned protected Storage path validation with
          governed human-readable filenames
@@ -1775,6 +1787,17 @@ service cloud.firestore {
           "access_status",
           "access_type",
 
+          /*
+          * ADR-021 / ADR-022
+          * Permanent, immutable and version-specific
+          * Licensed Course Material assignment governance.
+          */
+          "assignment_type",
+          "assignment_model",
+          "ownership_model",
+          "version_binding",
+          "automatic_upgrade_allowed",
+
           "release_status",
           "release_policy",
 
@@ -1812,7 +1835,6 @@ service cloud.firestore {
         ]);
 
     }
-
 
     function hasRequiredLearnerResourceAccessFields(
       data
@@ -1838,6 +1860,17 @@ service cloud.firestore {
           "access_status",
           "access_type",
 
+          /*
+          * ADR-021 / ADR-022
+          * These fields are required for every governed
+          * Licensed Course Material assignment.
+          */
+          "assignment_type",
+          "assignment_model",
+          "ownership_model",
+          "version_binding",
+          "automatic_upgrade_allowed",
+
           "release_status",
           "release_policy",
 
@@ -1875,7 +1908,6 @@ service cloud.firestore {
         ]);
 
     }
-
 
     /* =====================================================
        LEARNER-RESOURCE ACCESS IDENTITY
@@ -2007,7 +2039,6 @@ service cloud.firestore {
 
     }
 
-
     function hasValidLearnerResourceAccessType(
       data
     ) {
@@ -2024,6 +2055,33 @@ service cloud.firestore {
 
     }
 
+    /* =====================================================
+      LICENSED-MATERIAL ASSIGNMENT GOVERNANCE
+    ===================================================== */
+
+    function hasValidLicensedMaterialAssignmentGovernance(
+      data
+    ) {
+
+      return
+        data.assignment_type ==
+          "licensed_course_material" &&
+
+        data.assignment_model ==
+          "immutable" &&
+
+        data.ownership_model ==
+          "permanent" &&
+
+        data.version_binding ==
+          "fixed" &&
+
+        data.automatic_upgrade_allowed is bool &&
+
+        data.automatic_upgrade_allowed ==
+          false;
+
+    }
 
     function hasValidLearnerResourceReleaseStatus(
       data
@@ -2480,6 +2538,10 @@ service cloud.firestore {
           data
         ) &&
 
+        hasValidLicensedMaterialAssignmentGovernance(
+          data
+        ) &&
+
         hasValidLearnerResourceReleaseStatus(
           data
         ) &&
@@ -2521,7 +2583,8 @@ service cloud.firestore {
         );
 
     }
-        /* =====================================================
+
+    /* =====================================================
        LEARNER-RESOURCE ACCESS CREATE
     ===================================================== */
 
@@ -2959,18 +3022,18 @@ service cloud.firestore {
     }
 
     /* =====================================================
-       LEARNING RESOURCES
+      LEARNING RESOURCES
     ===================================================== */
 
     match /learning_resources/{resourceDocumentId} {
 
       /*
-       * Students never consume learning_resources
-       * directly.
-       *
-       * Access is mediated through
-       * learner_resource_access.
-       */
+      * Students never consume learning_resources
+      * directly.
+      *
+      * Access is mediated through
+      * learner_resource_access.
+      */
 
       allow get:
         if
@@ -2988,24 +3051,18 @@ service cloud.firestore {
             resourceDocumentId
           );
 
-      /*
-        * TEMPORARY DIAGNOSTIC RULE
-        * Bootstrap administrators only.
-        *
-        * Purpose:
-        * Confirms whether the denial originates inside
-        * isValidLearningResourceUpdate().
-        *
-        * Remove immediately after one controlled test.
-        */
-        allow update:
-          if isBootstrapAdmin();
+      allow update:
+        if
+          isBootstrapAdmin() &&
+
+          isValidLearningResourceUpdate();
 
       allow delete:
         if false;
 
     }
-        /* =====================================================
+
+    /* =====================================================
        LEARNER RESOURCE ACCESS
     ===================================================== */
 

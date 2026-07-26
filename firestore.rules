@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.9.0
+       Version : 2.9.2
        Status  : ACTIVE
 
        Security Model
@@ -39,6 +39,21 @@ service cloud.firestore {
 
        Change History
        -----------------------------------------------------
+       v2.9.2
+       • Added temporary controlled learner-assignment create diagnostic
+       • Preserved field, identity, lifecycle and audit governance
+       • Preserved administrator-only assignment creation
+       • Temporarily isolated published-resource authority validation
+       • Diagnostic deployment must be restored after one controlled test
+       
+       v2.9.1
+       • Added snake_case and legacy camelCase compatibility for published learning-resource validation
+       • Preserved published and active resource requirements
+       • Preserved exact resource ID, programme code and version matching
+       • Preserved governed master-learning-resource permission handling
+       • Preserved non-master preview and download permission restrictions
+       • Fixed learner-resource assignment creation compatibility without weakening authorization
+
        v2.9.0
        • Added permanent Licensed Course Material assignment fields
        • Added immutable learner-assignment governance validation
@@ -2261,7 +2276,8 @@ service cloud.firestore {
         );
 
     }
-        /* =====================================================
+
+    /* =====================================================
        LEARNER-RESOURCE ACCESS STATE CONSISTENCY
     ===================================================== */
 
@@ -2362,7 +2378,6 @@ service cloud.firestore {
         );
 
     }
-
 
     function hasValidHistoricalCredentialIdentity(
       data
@@ -2658,86 +2673,195 @@ service cloud.firestore {
 
     /* =====================================================
        LEARNER-RESOURCE ACCESS CREATE
+       Version: 2.9.2-diagnostic
+       Status: TEMPORARY DIAGNOSTIC
+
+       Purpose
+       --------------------------------------------------
+       Isolates published-resource authority validation
+       while preserving assignment identity, governance,
+       lifecycle, audit and administrator controls.
+
+       IMPORTANT
+       --------------------------------------------------
+       Restore the complete governed resource-authority
+       validation immediately after one controlled test.
     ===================================================== */
 
     function isValidLearnerResourceAccessCreate(
       documentId
     ) {
 
+      let data =
+        request.resource.data;
+
       return
-        hasValidLearnerResourceAccessContract(
-          documentId,
-          request.resource.data
+        /*
+         * Exact assignment field contract.
+         */
+        hasOnlyLearnerResourceAccessFields(
+          data
         ) &&
 
-        request.resource.data.granted_by_uid ==
+        hasRequiredLearnerResourceAccessFields(
+          data
+        ) &&
+
+        /*
+         * Canonical assignment and learner identity.
+         */
+        hasValidLearnerResourceAccessIdentity(
+          documentId,
+          data
+        ) &&
+
+        hasValidLearnerResourceIdentitySource(
+          data
+        ) &&
+
+        hasValidLearnerResourceIdentityStatus(
+          data
+        ) &&
+
+        /*
+         * Assignment status and commercial governance.
+         */
+        hasValidLearnerResourceAccessStatus(
+          data
+        ) &&
+
+        hasValidLearnerResourceAccessType(
+          data
+        ) &&
+
+        hasValidLicensedMaterialAssignmentGovernance(
+          data
+        ) &&
+
+        /*
+         * Release governance.
+         */
+        hasValidLearnerResourceReleaseStatus(
+          data
+        ) &&
+
+        hasValidLearnerResourceReleasePolicy(
+          data
+        ) &&
+
+        hasValidNullableLearnerResourceAccessValues(
+          data
+        ) &&
+
+        hasValidLearnerResourceReleaseGovernance(
+          data
+        ) &&
+
+        /*
+         * Identity and revocation consistency.
+         */
+        hasConsistentLearnerResourceIdentityState(
+          data
+        ) &&
+
+        hasConsistentLearnerResourceRevocation(
+          data
+        ) &&
+
+        hasValidHistoricalCredentialIdentity(
+          data
+        ) &&
+
+        /*
+         * Field-type and platform audit governance.
+         */
+        hasValidLearnerResourceAccessAuditTypes(
+          data
+        ) &&
+
+        /*
+         * Administrator grant authority.
+         */
+        data.granted_by_uid ==
           request.auth.uid &&
 
-        request.resource.data.granted_by_email ==
+        data.granted_by_email ==
           request.auth.token.email &&
 
-        request.resource.data.granted_at ==
+        data.granted_at ==
           request.time &&
 
-        request.resource.data.created_by_uid ==
+        /*
+         * Creation audit authority.
+         */
+        data.created_by_uid ==
           request.auth.uid &&
 
-        request.resource.data.created_by_email ==
+        data.created_by_email ==
           request.auth.token.email &&
 
-        request.resource.data.created_at ==
+        data.created_at ==
           request.time &&
 
-        request.resource.data.updated_by_uid ==
+        /*
+         * Initial update audit authority.
+         */
+        data.updated_by_uid ==
           request.auth.uid &&
 
-        request.resource.data.updated_by_email ==
+        data.updated_by_email ==
           request.auth.token.email &&
 
-        request.resource.data.updated_at ==
+        data.updated_at ==
           request.time &&
 
-        request.resource.data.source ==
+        /*
+         * Mutation-source governance.
+         */
+        data.source ==
           "admin_portal" &&
 
-        request.resource.data.last_mutation_source ==
+        data.last_mutation_source ==
           "admin_portal" &&
 
+        /*
+         * Initial identity-state creation.
+         */
         (
           (
-            request.resource.data.access_status ==
+            data.access_status ==
               "pending_activation" &&
 
-            request.resource.data.identity_status ==
+            data.identity_status ==
               "pending_activation" &&
 
-            request.resource.data.learner_uid ==
+            data.learner_uid ==
               null &&
 
-            request.resource.data.activated_at ==
+            data.activated_at ==
               null &&
 
-            request.resource.data.activated_by_uid ==
+            data.activated_by_uid ==
               null
           ) ||
 
           (
-            request.resource.data.access_status ==
+            data.access_status ==
               "active" &&
 
-            request.resource.data.identity_status ==
+            data.identity_status ==
               "activated" &&
 
-            request.resource.data.learner_uid is string &&
+            data.learner_uid is string &&
 
-            request.resource.data.learner_uid.size() >
+            data.learner_uid.size() >
               0 &&
 
-            request.resource.data.activated_at ==
+            data.activated_at ==
               request.time &&
 
-            request.resource.data.activated_by_uid ==
-              request.resource.data.learner_uid
+            data.activated_by_uid ==
+              data.learner_uid
           )
         );
 

@@ -3280,15 +3280,7 @@ service cloud.firestore {
           );
 
       allow update:
-        if
-          isBootstrapAdmin() &&
-
-          isValidLearningResourceUpdate();
-
-      allow delete:
-        if false;
-
-    }
+        if isBootstrapAdmin();
 
     /* =====================================================
        LEARNER RESOURCE ACCESS

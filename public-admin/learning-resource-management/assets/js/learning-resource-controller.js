@@ -3,7 +3,7 @@
    Admin Learning Resource Management
 
    File       : learning-resource-controller.js
-   Version    : 1.4.3
+   Version    : 1.4.4
    Status     : ACTIVE
    Authority  : Admin Portal
 
@@ -54,6 +54,14 @@
 
    Change History
    ----------------------------------------------------------
+   v1.4.4
+   • Added controller-level diagnostics for learner assignment orchestration
+   • Added service-loading diagnostics for LearnerResourceAccessService
+   • Added create-method resolution diagnostics
+   • Added governed assignment-request diagnostics before service invocation
+   • Added detailed error-object logging for learner assignment failures
+   • Preserved existing learner-assignment workflow and governance behaviour
+
    v1.4.3
    • Added cache-versioned loading for learner-resource assignment service
    • Ensured assignment diagnostics load from service v1.2.1
@@ -136,7 +144,7 @@ const MODULE_NAME =
     "LearningResourceController";
 
 const MODULE_VERSION =
-    "1.4.3";
+    "1.4.4";
 
 const SEARCH_DEBOUNCE_MS =
     250;
@@ -1683,13 +1691,31 @@ async function handleAccessFormSubmit(
 
     try {
 
+        console.info(
+            "[LearningResourceController] About to load LearnerResourceAccessService"
+        );
+
         const service =
             await getLearnerResourceAccessService();
+
+        console.info(
+            "[LearningResourceController] LearnerResourceAccessService loaded:",
+            service
+        );
 
         const createAccess =
             getCreateAccessMethod(
                 service
             );
+
+        console.info(
+            "[LearningResourceController] Assignment create method resolved:",
+            {
+                available:
+                    typeof createAccess ===
+                        "function"
+            }
+        );
 
         if (
             !createAccess
@@ -1701,8 +1727,54 @@ async function handleAccessFormSubmit(
 
         }
 
-        await createAccess(
-            input
+        console.info(
+            "[LearningResourceController] Invoking learner assignment service",
+            {
+                resourceDocumentId:
+                    input.resource_document_id,
+
+                resourceId:
+                    input.resource_id,
+
+                programCode:
+                    input.program_code,
+
+                resourceVersion:
+                    input.resource_version,
+
+                learnerUidPresent:
+                    Boolean(
+                        input.learner_uid
+                    ),
+
+                learnerEmail:
+                    input.learner_email,
+
+                credentialId:
+                    input.credential_id,
+
+                identityStatus:
+                    input.identity_status,
+
+                accessStatus:
+                    input.access_status,
+
+                releaseStatus:
+                    input.release_status,
+
+                releasePolicy:
+                    input.release_policy
+            }
+        );
+
+        const createdAccess =
+            await createAccess(
+                input
+            );
+
+        console.info(
+            "[LearningResourceController] Learner assignment completed:",
+            createdAccess
         );
 
         LearningResourceRenderer.closeAccessForm();
@@ -1719,6 +1791,29 @@ async function handleAccessFormSubmit(
     catch (
         error
     ) {
+
+        console.error(
+            "[LearningResourceController] Learner assignment diagnostic failure:",
+            {
+                name:
+                    error?.name ||
+                    "",
+
+                code:
+                    error?.code ||
+                    "",
+
+                message:
+                    error?.message ||
+                    "",
+
+                stack:
+                    error?.stack ||
+                    "",
+
+                error
+            }
+        );
 
         handleError(
             "Learner assignment failed",
@@ -1737,7 +1832,6 @@ async function handleAccessFormSubmit(
     }
 
 }
-
 
 /* ==========================================================
    CREATE FORM

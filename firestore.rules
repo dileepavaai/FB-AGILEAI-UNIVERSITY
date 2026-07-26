@@ -2988,11 +2988,18 @@ service cloud.firestore {
             resourceDocumentId
           );
 
-      allow update:
-        if
-          isBootstrapAdmin() &&
-
-          isValidLearningResourceUpdate();
+      /*
+        * TEMPORARY DIAGNOSTIC RULE
+        * Bootstrap administrators only.
+        *
+        * Purpose:
+        * Confirms whether the denial originates inside
+        * isValidLearningResourceUpdate().
+        *
+        * Remove immediately after one controlled test.
+        */
+        allow update:
+          if isBootstrapAdmin();
 
       allow delete:
         if false;

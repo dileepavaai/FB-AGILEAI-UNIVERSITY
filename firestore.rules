@@ -1759,7 +1759,8 @@ service cloud.firestore {
           request.time;
 
     }
-        /* =====================================================
+
+    /* =====================================================
        LEARNER-RESOURCE ACCESS FIELD CONTRACT
     ===================================================== */
 
@@ -2395,6 +2396,10 @@ service cloud.firestore {
     }
 
 
+    /* =====================================================
+       PUBLISHED LEARNER-RESOURCE MATCH
+    ===================================================== */
+
     function matchesPublishedLearnerResource(
       data
     ) {
@@ -2404,24 +2409,90 @@ service cloud.firestore {
           /databases/$(database)/documents/learning_resources/$(data.resource_document_id)
         ).data;
 
+      let resourceStatus =
+        learningResource.get(
+          "status",
+          ""
+        );
+
+      let resourceIsActive =
+        learningResource.get(
+          "is_active",
+          learningResource.get(
+            "isActive",
+            false
+          )
+        );
+
+      let resourceId =
+        learningResource.get(
+          "resource_id",
+          learningResource.get(
+            "resourceId",
+            ""
+          )
+        );
+
+      let programCode =
+        learningResource.get(
+          "program_code",
+          learningResource.get(
+            "programCode",
+            ""
+          )
+        );
+
+      let resourceVersion =
+        learningResource.get(
+          "version",
+          0
+        );
+
+      let storageDomain =
+        learningResource.get(
+          "storage_domain",
+          learningResource.get(
+            "storageDomain",
+            ""
+          )
+        );
+
+      let resourcePreviewAllowed =
+        learningResource.get(
+          "preview_allowed",
+          learningResource.get(
+            "previewAllowed",
+            false
+          )
+        );
+
+      let resourceDownloadAllowed =
+        learningResource.get(
+          "download_allowed",
+          learningResource.get(
+            "downloadAllowed",
+            false
+          )
+        );
+
       let isMasterResource =
-        learningResource.storage_domain ==
+        storageDomain ==
           "master_learning_resources";
 
       return
-        learningResource.status ==
+        resourceStatus ==
           "published" &&
 
-        learningResource.is_active ==
+        resourceIsActive ==
           true &&
 
-        learningResource.resource_id ==
+        resourceId ==
           data.resource_id &&
 
-        learningResource.program_code ==
+        programCode ==
           data.program_code &&
 
-        learningResource.version ==
+        resourceVersion ==
           data.resource_version &&
 
         (
@@ -2430,7 +2501,7 @@ service cloud.firestore {
           data.preview_allowed ==
             false ||
 
-          learningResource.preview_allowed ==
+          resourcePreviewAllowed ==
             true
         ) &&
 
@@ -2440,12 +2511,13 @@ service cloud.firestore {
           data.download_allowed ==
             false ||
 
-          learningResource.download_allowed ==
+          resourceDownloadAllowed ==
             true
         );
 
     }
-        /* =====================================================
+
+    /* =====================================================
        LEARNER-RESOURCE ACCESS AUDIT TYPES
     ===================================================== */
 

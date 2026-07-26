@@ -1809,6 +1809,11 @@ async function createAccess(
             normalizedInput
         );
 
+    console.log(
+        "[LearnerResourceAccessService] Published resource authority:",
+        resource
+    );
+
     const duplicateRecords =
         await findDuplicates(
             normalizedInput
@@ -2052,6 +2057,45 @@ async function createAccess(
             SCHEMA_VERSION
 
     };
+
+    console.group(
+        "[LearnerResourceAccessService] CREATE DIAGNOSTIC"
+    );
+
+    console.log(
+        "Document ID:",
+        accessId
+    );
+
+    console.log(
+        "Document path:",
+        `${COLLECTION_NAME}/${accessId}`
+    );
+
+    console.log(
+        "Assignment payload:",
+        accessRecord
+    );
+
+    console.log(
+        "Payload keys:",
+        Object.keys(
+            accessRecord
+        ).sort()
+    );
+
+    console.log(
+        "Admin context:",
+        {
+            uid:
+                adminContext.uid,
+
+            email:
+                adminContext.email
+        }
+    );
+
+    console.groupEnd();
 
     await setDoc(
         accessReference,

@@ -3249,27 +3249,26 @@ service cloud.firestore {
 
     }
 
-    /* =====================================================
-      LEARNING RESOURCES
+        /* =====================================================
+       LEARNING RESOURCES
+       TEMPORARY CONTROLLED DIAGNOSTIC
     ===================================================== */
 
     match /learning_resources/{resourceDocumentId} {
 
       /*
-      * Students never consume learning_resources
-      * directly.
-      *
-      * Access is mediated through
-      * learner_resource_access.
-      */
+       * Students never consume learning_resources
+       * directly.
+       *
+       * Access is mediated through
+       * learner_resource_access.
+       */
 
       allow get:
-        if
-          isBootstrapAdmin();
+        if isBootstrapAdmin();
 
       allow list:
-        if
-          isBootstrapAdmin();
+        if isBootstrapAdmin();
 
       allow create:
         if
@@ -3279,8 +3278,23 @@ service cloud.firestore {
             resourceDocumentId
           );
 
+      /*
+       * TEMPORARY DIAGNOSTIC:
+       * Allows a bootstrap administrator to perform
+       * one controlled publication test without the
+       * governed update predicate.
+       *
+       * Restore isValidLearningResourceUpdate()
+       * immediately after the test.
+       */
+
       allow update:
         if isBootstrapAdmin();
+
+      allow delete:
+        if false;
+
+    }
 
     /* =====================================================
        LEARNER RESOURCE ACCESS

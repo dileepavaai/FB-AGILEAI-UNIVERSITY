@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.css
-   Version   : 1.1.1
+   Version   : 1.2.0
    Status    : ACTIVE
    Phase     : Portal Identity Experience
 
@@ -25,6 +25,7 @@
    ✓ Light and Dark Theme Compatibility
    ✓ Responsive Behaviour
    ✓ Accessible Focus States
+   ✓ Governed Navigation Section Presentation
 
    Non Responsibilities
    ----------------------------------------------------------
@@ -84,6 +85,22 @@
 
    Change History
    ----------------------------------------------------------
+   v1.2.0
+
+   • Implemented ADR-025 navigation-section styling.
+
+   • Added governed visual hierarchy for ACADEMICS,
+     PROGRAMMES and UNIVERSITY SERVICES.
+
+   • Added navigation-section spacing.
+
+   • Added section-title typography.
+
+   • Added grouped navigation-item layout.
+
+   • Preserved existing navigation, profile, portfolio,
+     responsive and dark-theme behaviour.
+
    v1.1.1
 
    • Added block-level link presentation for the clickable
@@ -163,6 +180,9 @@
 
     overflow-x:
         hidden;
+
+    overflow-y:
+        auto;
 
     background:
         var(
@@ -472,6 +492,72 @@
 
 }
 
+/* ==========================================================
+   NAVIGATION SECTIONS
+========================================================== */
+
+.portal-navigation-section {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        6px;
+
+}
+
+.portal-navigation-section + .portal-navigation-section {
+
+    margin-top:
+        18px;
+
+}
+
+.portal-navigation-section-title {
+
+    padding:
+        4px 14px 8px;
+
+    color:
+        var(
+            --text-secondary
+        );
+
+    font-size:
+        11px;
+
+    font-weight:
+        var(
+            --font-bold,
+            700
+        );
+
+    letter-spacing:
+        0.08em;
+
+    text-transform:
+        uppercase;
+
+    user-select:
+        none;
+
+}
+
+.portal-navigation-section-items {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        6px;
+
+}
 
 /* ==========================================================
    PROFILE CARD

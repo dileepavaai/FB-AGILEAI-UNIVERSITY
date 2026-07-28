@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.7.2
+   Version   : 1.8.0
    Status    : ACTIVE
    Phase     : Portal Navigation and Identity Stabilization
 
@@ -13,6 +13,9 @@
 
    Responsibilities
    ----------------------------------------------------------
+   ✓ Render governed navigation sections
+   ✓ Provide access to the official Agile AI Learning
+     Specification Platform
    ✓ Render navigation
    ✓ Highlight active page
    ✓ Render university branding
@@ -53,35 +56,22 @@
    Governance
    ----------------------------------------------------------
    • Shared Navigation Component
-
    • Single Responsibility
-
    • UI Only
-
    • Enterprise Portal Standard
-
    • Sidebar consumes resolved identity state only.
-
    • Sidebar must not determine portal access.
-
    • Learner name is the primary profile label.
-
    • Membership is secondary supporting information.
-
    • Avatar must contain learner initials only.
-
    • Generic placeholders must not override a resolved
      learner name.
-
    • Toolbar and sidebar should consume the same
      authoritative identity wherever available.
-
    • Credential Portfolio summary navigation must use the
      canonical My Credentials route.
-
    • Credential verification must use the official
      Verification Platform.
-
    • External portal destinations must open securely with
      noopener and noreferrer protection.
 
@@ -110,14 +100,32 @@
 
    Change History
    ----------------------------------------------------------
+   v1.8.0
+
+   • Implemented ADR-025 Student Portal Navigation
+     Architecture.
+   • Replaced the flat navigation model with governed
+     navigation sections.
+   • Added the ACADEMICS navigation section.
+   • Added Agile AI Learning Specification as an official
+     academic platform destination.
+   • Added the PROGRAMMES navigation section.
+   • Added Bridge Programme Registration.
+   • Added My Enrolments.
+   • Added Learning History.
+   • Added the UNIVERSITY SERVICES navigation section.
+   • Moved Verify Credential into University Services.
+   • Preserved secure external-link handling.
+   • Preserved active-page highlighting.
+   • Preserved all identity, credential-count, Firebase,
+  event and Credential Portfolio behaviour.
+
    v1.7.2
 
    • Added shared credential-count synchronization during
      sidebar initialization.
-
    • Added credential-count synchronization when entitlement,
      portal and dashboard readiness events are received.
-
    • Preserved event-driven credential rendering and shared
      portal-state fallback compatibility.
 
@@ -125,16 +133,12 @@
 
    • Corrected Credential Portfolio count synchronization
      across authenticated portal pages.
-
    • Added credential-count handling for the
      credentials:rendered event.
-
    • Added shared resolved-state fallback when the rendered
      event does not provide credentials or a valid count.
-
    • Hardened credential-count validation to reject null,
      empty, non-finite and negative values.
-
    • Preserved existing identity reconciliation, sign-out,
      readiness events and public API compatibility.
 
@@ -142,32 +146,24 @@
 
    • Added Verify Credential as a first-class portal
      navigation destination.
-
    • Connected the authenticated portal to the official
      Agile AI University Verification Platform.
-
    • Configured credential verification to open securely
      in a new browser tab.
-
    • Preserved the Credential Portfolio positioning above
      the learner profile.
-
    • Preserved all existing navigation, identity-resolution,
      credential-count and event behaviour.
 
    v1.6.2
 
    • Corrected sidebar rendering order.
-
    • Moved Credential Portfolio summary above the learner
      profile card.
-
    • Preserved profile bottom alignment governed by
      margin-top: auto.
-
    • Prevented the Credential Portfolio summary from being
      pushed below the visible sidebar area.
-
    • Preserved all navigation, identity-resolution,
      credential-count and event behaviour.
 
@@ -175,16 +171,11 @@
 
    • Converted the Credential Portfolio summary into an
      accessible navigation link.
-
    • Added the canonical My Credentials destination:
      /credentials/my-credentials.html
-
    • Preserved the credential-count presentation region.
-
    • Preserved all shared identity-resolution behaviour.
-
    • Preserved all existing portal navigation destinations.
-
    • Preserved same-tab navigation for authenticated portal
      destinations.
 
@@ -192,106 +183,69 @@
 
    • Added Learning Resources as a first-class portal
      destination.
-
    • Added canonical /learning-resources.html navigation.
-
    • Preserved same-tab navigation for authenticated portal
      pages.
-
    • Preserved active-page highlighting.
-
    • Preserved centralized navigation ownership.
 
    v1.5.0
 
    • Removed placeholder and duplicate navigation entries.
-
    • Retained only confirmed working learner destinations.
-
    • Corrected Assessment Platform canonical URL.
-
    • Added secure external-link navigation support.
-
    • Preserved identity and credential summary behaviour.
 
    v1.4.0
 
    • Aligned sidebar identity with toolbar identity contract.
-
    • Added visibleCredentials collection compatibility.
-
    • Added credential-holder name field compatibility.
-
    • Prioritized resolved toolbar identity before Firebase
      fallback.
-
    • Added portal and dashboard readiness reconciliation.
-
    • Added safe idempotent initialization.
-      v1.3.0
+
+   v1.3.0
 
    • Fixed Student placeholder overriding learner name.
-
    • Prioritized resolved profile and credential identity.
-
    • Added placeholder-name rejection.
-
    • Added broader shared-state compatibility.
-
    • Added nested credential-state compatibility.
-
    • Changed initials to first-two-word standard.
-
    • Added Firebase auth-state refresh.
-
    • Added credential-render completion refresh.
-
    • Added delayed identity reconciliation.
-
    • Preserved navigation and summary architecture.
 
    v1.2.0
 
    • Replaced hardcoded Student avatar.
-
    • Replaced hardcoded Student profile name.
-
    • Added learner full-name presentation.
-
    • Added generated learner initials.
-
    • Added shared toolbar identity compatibility.
-
    • Added identity fallback resolution.
-
    • Added public updateIdentity API.
-
    • Added portal identity event support.
-
    • Added safe dynamic HTML rendering.
-
    • Preserved existing navigation architecture.
-
    • Preserved credential summary integration.
 
    v1.1.0
 
    • Updated university branding.
-
    • Corrected emblem asset.
-
    • Added lazy image loading.
-
    • Prepared sidebar for executive dashboard.
 
    v1.0.0
 
    • Initial shared sidebar.
-
    • Added navigation.
-
    • Added active-page highlighting.
-
    • Added profile and credential summary placeholders.
 
 ========================================================== */
@@ -312,89 +266,208 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.7.2";
+        "1.8.0";
 
 
     /* ======================================================
-       NAVIGATION
-    ====================================================== */
+        NAVIGATION ARCHITECTURE
 
-    const NAVIGATION = [
+        Governance
+        ------------------------------------------------------
+   ADR-025 establishes the authoritative Student &
+   Executive Portal navigation architecture.
+
+   Each navigation item must belong to exactly one
+   governed section.
+
+   Sections
+   ------------------------------------------------------
+   • ACADEMICS
+   • PROGRAMMES
+   • UNIVERSITY SERVICES
+   • ACCOUNT
+
+   Rules
+   ------------------------------------------------------
+   • Navigation uses learner-facing terminology.
+   • Duplicate destinations are prohibited.
+   • Internal implementation names are never displayed.
+   • External platforms open securely in a new tab.
+   • Authenticated portal destinations use same-tab
+     navigation.
+====================================================== */
+
+    const NAVIGATION_SECTIONS = [
 
         {
             id:
-                "dashboard",
+                "academics",
 
             title:
-                "Dashboard",
+                "ACADEMICS",
 
-            icon:
-                "🏠",
+            items: [
 
-            url:
-                "/index.html"
+                {
+                    id:
+                        "dashboard",
+
+                    title:
+                        "Dashboard",
+
+                    icon:
+                        "🏠",
+
+                    url:
+                        "/index.html"
+                },
+
+                {
+                    id:
+                        "credentials",
+
+                    title:
+                        "My Credentials",
+
+                    icon:
+                        "🎓",
+
+                    url:
+                        "/credentials/my-credentials.html"
+                },
+
+                {
+                    id:
+                        "learning-resources",
+
+                    title:
+                        "Learning Resources",
+
+                    icon:
+                        "📚",
+
+                    url:
+                        "/learning-resources.html"
+                },
+
+                {
+                    id:
+                        "learning-specification",
+
+                    title:
+                        "Agile AI Learning Specification",
+
+                    icon:
+                        "📖",
+
+                    url:
+                        "https://spec.agileai.university/",
+
+                    openMode:
+                        "new-tab"
+                },
+
+                {
+                    id:
+                        "assessment",
+
+                    title:
+                        "Assessment Platform",
+
+                    icon:
+                        "📝",
+
+                    url:
+                        "https://assessment.agileai.university/assessment.html",
+
+                    openMode:
+                        "new-tab"
+                }
+
+            ]
         },
 
         {
             id:
-                "credentials",
+                "programmes",
 
             title:
-                "My Credentials",
+                "PROGRAMMES",
 
-            icon:
-                "🎓",
+            items: [
 
-            url:
-                "/credentials/my-credentials.html"
+                {
+                    id:
+                        "bridge-programme-registration",
+
+                    title:
+                        "Bridge Programme Registration",
+
+                    icon:
+                        "🌉",
+
+                    url:
+                        "/programmes/bridge-programme-registration.html"
+                },
+
+                {
+                    id:
+                        "my-enrolments",
+
+                    title:
+                        "My Enrolments",
+
+                    icon:
+                        "📋",
+
+                    url:
+                        "/programmes/my-enrolments.html"
+                },
+
+                {
+                    id:
+                        "learning-history",
+
+                    title:
+                        "Learning History",
+
+                    icon:
+                        "🕘",
+
+                    url:
+                        "/programmes/learning-history.html"
+                }
+
+            ]
         },
 
         {
             id:
-                "verification",
+                "university-services",
 
             title:
-                "Verify Credential",
+                "UNIVERSITY SERVICES",
 
-            icon:
-                "🔍",
+            items: [
 
-            url:
-                "https://verify.agileai.university/",
+                {
+                    id:
+                        "verification",
 
-            openMode:
-                "new-tab"
-        },
+                    title:
+                        "Verify Credential",
 
-        {
-            id:
-                "learning-resources",
+                    icon:
+                        "🔍",
 
-            title:
-                "Learning Resources",
+                    url:
+                        "https://verify.agileai.university/",
 
-            icon:
-                "📚",
+                    openMode:
+                        "new-tab"
+                }
 
-            url:
-                "/learning-resources.html"
-        },
-
-        {
-            id:
-                "assessment",
-
-            title:
-                "Assessment Platform",
-
-            icon:
-                "📝",
-
-            url:
-                "https://assessment.agileai.university/assessment.html",
-
-            openMode:
-                "new-tab"
+            ]
         }
 
     ];
@@ -975,92 +1048,195 @@
 
 
     /* ======================================================
-       NAVIGATION RENDERING
+    NAVIGATION RENDERING
+
+    Renders the governed ADR-025 navigation sections while
+    preserving:
+
+    • active-page highlighting
+    • same-tab internal navigation
+    • secure new-tab external navigation
+    • unavailable-destination protection
+    • accessible section and item labels
     ====================================================== */
+
+    function buildNavigationItem(
+        item
+    ) {
+
+        if (
+            !item ||
+            typeof item !== "object"
+        ) {
+
+            return "";
+
+        }
+
+
+        const active =
+            isActive(
+                item
+            );
+
+
+        const unavailable =
+            item.url === "#";
+
+
+        const openInNewTab =
+            item.openMode ===
+                "new-tab";
+
+
+        return `
+
+            <a
+                href="${escapeAttribute(
+                    item.url
+                )}"
+                class="portal-nav-item${active
+                    ? " active"
+                    : ""
+                }${unavailable
+                    ? " portal-nav-item--unavailable"
+                    : ""
+                }"
+                data-navigation-id="${escapeAttribute(
+                    item.id
+                )}"
+                ${active
+                    ? 'aria-current="page"'
+                    : ""
+                }
+                ${unavailable
+                    ? 'aria-disabled="true" tabindex="-1"'
+                    : ""
+                }
+                ${openInNewTab
+                    ? 'target="_blank" rel="noopener noreferrer"'
+                    : ""
+                }>
+
+                <span
+                    class="portal-nav-icon"
+                    aria-hidden="true">
+
+                    ${escapeHtml(
+                        item.icon
+                    )}
+
+                </span>
+
+                <span
+                    class="portal-nav-title">
+
+                    ${escapeHtml(
+                        item.title
+                    )}
+
+                </span>
+
+            </a>
+
+        `;
+
+    }
+
+
+    function buildNavigationSection(
+        section
+    ) {
+
+        if (
+            !section ||
+            typeof section !== "object" ||
+            !Array.isArray(
+                section.items
+            ) ||
+            section.items.length === 0
+        ) {
+
+            return "";
+
+        }
+
+
+        const sectionItems =
+            section.items
+                .map(
+                    buildNavigationItem
+                )
+                .join(
+                    ""
+                );
+
+
+        if (
+            !sectionItems
+        ) {
+
+            return "";
+
+        }
+
+
+        const sectionId =
+            `portal-navigation-section-${normalizeValue(
+                section.id
+            )}`;
+
+
+        return `
+
+            <section
+                class="portal-navigation-section"
+                data-navigation-section="${escapeAttribute(
+                    section.id
+                )}"
+                aria-labelledby="${escapeAttribute(
+                    sectionId
+                )}">
+
+                <div
+                    id="${escapeAttribute(
+                        sectionId
+                    )}"
+                    class="portal-navigation-section-title">
+
+                    ${escapeHtml(
+                        section.title
+                    )}
+
+                </div>
+
+                <div
+                    class="portal-navigation-section-items">
+
+                    ${sectionItems}
+
+                </div>
+
+            </section>
+
+        `;
+
+    }
+
 
     function buildNavigation() {
 
-        return NAVIGATION
+        return NAVIGATION_SECTIONS
             .map(
-
-                item => {
-
-                    const active =
-                        isActive(
-                            item
-                        );
-
-
-                    const unavailable =
-                        item.url === "#";
-
-
-                    const openInNewTab =
-                        item.openMode ===
-                            "new-tab";
-
-
-                    return `
-
-                        <a
-                            href="${escapeAttribute(
-                                item.url
-                            )}"
-                            class="portal-nav-item${active
-                                ? " active"
-                                : ""
-                            }${unavailable
-                                ? " portal-nav-item--unavailable"
-                                : ""
-                            }"
-                            data-navigation-id="${escapeAttribute(
-                                item.id
-                            )}"
-                            ${active
-                                ? 'aria-current="page"'
-                                : ""
-                            }
-                            ${unavailable
-                                ? 'aria-disabled="true"'
-                                : ""
-                            }
-                            ${openInNewTab
-                                ? 'target="_blank" rel="noopener noreferrer"'
-                                : ""
-                            }>
-
-                            <span
-                                class="portal-nav-icon"
-                                aria-hidden="true">
-
-                                ${escapeHtml(
-                                    item.icon
-                                )}
-
-                            </span>
-
-                            <span
-                                class="portal-nav-title">
-
-                                ${escapeHtml(
-                                    item.title
-                                )}
-
-                            </span>
-
-                        </a>
-
-                    `;
-
-                }
-
+                buildNavigationSection
             )
             .join(
                 ""
             );
 
     }
-        /* ======================================================
+
+    /* ======================================================
        OBJECT HELPERS
     ====================================================== */
 

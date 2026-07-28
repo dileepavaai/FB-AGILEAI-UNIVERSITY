@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.8.0
+   Version   : 1.8.1
    Status    : ACTIVE
    Phase     : Portal Navigation and Identity Stabilization
 
@@ -100,6 +100,19 @@
 
    Change History
    ----------------------------------------------------------
+   v1.8.1
+
+   • Established PortalToolbar as the authoritative learner
+     identity-presentation source for the sidebar.
+   • Prevented asynchronous profile, credential and Firebase
+     events from replacing a resolved toolbar identity with
+     a different learner name.
+   • Retained defensive sidebar identity resolution when the
+     toolbar is unavailable or contains only a generic or
+     email-derived fallback.
+   • Preserved navigation, credential-count, Firebase,
+     entitlement and sign-out behaviour.
+
    v1.8.0
 
    • Implemented ADR-025 Student Portal Navigation
@@ -118,7 +131,7 @@
    • Preserved secure external-link handling.
    • Preserved active-page highlighting.
    • Preserved all identity, credential-count, Firebase,
-  event and Credential Portfolio behaviour.
+     event and Credential Portfolio behaviour.
 
    v1.7.2
 
@@ -266,7 +279,7 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.8.0";
+        "1.8.1";
 
 
     /* ======================================================
@@ -1565,11 +1578,49 @@
         return null;
 
     }
-        /* ======================================================
-       SHARED IDENTITY RESOLUTION
+
+    /* ======================================================
+        SHARED IDENTITY RESOLUTION
+
+    Presentation Authority
+   ------------------------------------------------------
+   PortalToolbar is the authoritative identity-presentation
+   source whenever it has a genuine resolved learner name.
+
+   The sidebar performs defensive resolution only when the
+   toolbar is unavailable, not initialized, or still holds
+   a generic or email-derived fallback.
+
+   This prevents the toolbar and sidebar from displaying
+   different learner names.
     ====================================================== */
 
     function resolveSharedIdentity() {
+
+        const toolbarIdentity =
+            resolveToolbarIdentity();
+
+
+        /*
+        * Toolbar identity quality:
+        *
+        * 0 = generic placeholder
+        * 1 = email-derived fallback
+        * 2 = genuine resolved learner identity
+        */
+
+        if (
+            identityQuality(
+                toolbarIdentity
+            ) >= 2
+        ) {
+
+            return normalizeIdentity(
+                toolbarIdentity
+            );
+
+        }
+
 
         const portalState =
             resolvePortalState();
@@ -1591,10 +1642,6 @@
             asObject(
                 credentials[0]
             );
-
-
-        const toolbarIdentity =
-            resolveToolbarIdentity();
 
 
         const firebaseUser =
@@ -1668,6 +1715,8 @@
 
                 portalState.displayName,
 
+                firebaseUser?.displayName,
+
                 toolbarIdentity.full_name,
 
                 toolbarIdentity.fullName,
@@ -1675,8 +1724,6 @@
                 toolbarIdentity.display_name,
 
                 toolbarIdentity.displayName,
-
-                firebaseUser?.displayName,
 
                 buildNameFromEmail(
                     email
@@ -2194,7 +2241,8 @@
         );
 
     }
-        /* ======================================================
+
+    /* ======================================================
        PUBLIC IDENTITY UPDATE
     ====================================================== */
 
@@ -2202,8 +2250,29 @@
         identity
     ) {
 
+        const toolbarIdentity =
+            resolveToolbarIdentity();
+
+
+        /*
+        * Once the toolbar has a genuine resolved learner
+        * identity, sidebar presentation must use that same
+        * authoritative identity.
+        */
+
+        const authoritativeIdentity =
+
+            identityQuality(
+                toolbarIdentity
+            ) >= 2
+
+                ? toolbarIdentity
+
+                : identity;
+
+
         applyIdentity(
-            identity
+            authoritativeIdentity
         );
 
 
@@ -2216,7 +2285,6 @@
         );
 
     }
-
 
     /* ======================================================
        CREDENTIAL COUNT UPDATE

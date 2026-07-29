@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : eligibility-service.js
-   Version   : 1.4.0
+   Version   : 1.5.0
    Status    : ACTIVE
    Phase     : Revenue Sprint
 
@@ -40,6 +40,18 @@
 
    Change History
 
+   v1.5.0
+
+   • Extended the governed AOP and AAIA to AIPA Bridge
+     Programme offer through 5 August 2026
+   • Preserved India business-time-zone expiry enforcement
+   • Retained the limited-time Bridge Programme fee of
+     INR 7,500 plus applicable GST
+   • Updated the canonical Bridge Programme Registration
+     route to the ADR-025 programme page
+   • Preserved payment gateway authority over the final
+     payable amount
+
    v1.4.0
 
    • Added governed GST rate of 18 percent
@@ -74,7 +86,7 @@
     "use strict";
 
     console.log(
-        "[EligibilityService] Loaded v1.4.0"
+        "[EligibilityService] Loaded v1.5.0"
     );
 
     const PROGRAM_HIERARCHY = Object.freeze({
@@ -109,7 +121,7 @@
     ================================================== */
 
     const BRIDGE_OFFER_END_DATE =
-        "2026-07-22";
+        "2026-08-05";
 
     const COMMERCIAL_TIME_ZONE =
         "Asia/Kolkata";
@@ -388,7 +400,7 @@
 
         },
 
-                /* ==================================================
+        /* ==================================================
            VISIBLE CREDENTIALS
         ================================================== */
 
@@ -554,7 +566,7 @@
         },
 
         /* ==================================================
-        ELIGIBILITY
+           ELIGIBILITY
         ================================================== */
 
         evaluateEligibility(program) {
@@ -575,20 +587,20 @@
             }
 
             /*
-            * Revenue Sprint v1
-            * ---------------------------------------------
-            * Current commercial offering:
-            *
-            * • AOP  → AIPA
-            * • AAIA → AIPA
-            *
-            * Future versions will evaluate:
-            *
-            * • Membership
-            * • Campaign rules
-            * • Learning prerequisites
-            * • Regional availability
-            */
+             * Revenue Sprint v1
+             * ---------------------------------------------
+             * Current commercial offering:
+             *
+             * • AOP  → AIPA
+             * • AAIA → AIPA
+             *
+             * Future versions will evaluate:
+             *
+             * • Membership
+             * • Campaign rules
+             * • Learning prerequisites
+             * • Regional availability
+             */
 
             switch (program.code) {
 
@@ -679,7 +691,7 @@
 
         },
 
-                /* ==================================================
+        /* ==================================================
            PRICING
         ================================================== */
 
@@ -730,45 +742,45 @@
             }
 
             /*
-            * Revenue Sprint v1
-            * ------------------------------------------------
-            * Commercial Pricing Rules
-            *
-            * Current Campaign
-            *
-            * • Existing AOP Holders
-            * • Existing AAIA Holders
-            *
-            * Bridge Programme
-            *
-            * • AIPA Capability Upgrade
-            *
-            * Pricing
-            *
-            * • Limited-Time Bridge Fee
-            *      INR 7,500
-            *
-            * • Standard Bridge Fee
-            *      INR 15,000
-            *
-            * • Full Programme Fee
-            *      INR 30,000
-            *
-            * GST
-            *
-            * • EligibilityService calculates the displayed
-            *   GST estimate and total payable.
-            * • The payment gateway remains authoritative
-            *   for the final tax and payable amount.
-            *
-            * Future
-            *
-            * • Campaign Pricing
-            * • Coupons
-            * • Membership Discounts
-            * • Corporate Pricing
-            * • Regional Pricing
-            */
+             * Revenue Sprint v1
+             * ------------------------------------------------
+             * Commercial Pricing Rules
+             *
+             * Current Campaign
+             *
+             * • Existing AOP Holders
+             * • Existing AAIA Holders
+             *
+             * Bridge Programme
+             *
+             * • AIPA Capability Upgrade
+             *
+             * Pricing
+             *
+             * • Limited-Time Bridge Fee
+             *      INR 7,500
+             *
+             * • Standard Bridge Fee
+             *      INR 15,000
+             *
+             * • Full Programme Fee
+             *      INR 30,000
+             *
+             * GST
+             *
+             * • EligibilityService calculates the displayed
+             *   GST estimate and total payable.
+             * • The payment gateway remains authoritative
+             *   for the final tax and payable amount.
+             *
+             * Future
+             *
+             * • Campaign Pricing
+             * • Coupons
+             * • Membership Discounts
+             * • Corporate Pricing
+             * • Regional Pricing
+             */
 
             if (
                 currentProgram &&
@@ -822,7 +834,8 @@
                     taxDisclaimer:
                         commercialTotals.taxDisclaimer,
 
-                    offerEndsOn: BRIDGE_OFFER_END_DATE,
+                    offerEndsOn:
+                        BRIDGE_OFFER_END_DATE,
 
                     ctaText:
                         "Register for AIPA Bridge"
@@ -832,8 +845,8 @@
             }
 
             /*
-            * Default Pricing
-            */
+             * Default Pricing
+             */
 
             return {
 
@@ -871,7 +884,7 @@
 
         },
 
-                /* ==================================================
+        /* ==================================================
            UPGRADE VIEW MODEL
         ================================================== */
 
@@ -935,7 +948,12 @@
                         : "View Learning Journey",
 
                 url:
-                    "/upgrade/upgrade.html",
+                    (
+                        eligibility.eligible &&
+                        pricing.bridgeProgram
+                    )
+                        ? "/programmes/bridge-programme-registration.html"
+                        : "/upgrade/upgrade.html",
 
                 /* ------------------------------------------
                    Commercial Information

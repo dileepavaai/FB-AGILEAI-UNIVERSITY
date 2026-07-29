@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- =====================================================
+         DOCUMENT METADATA
+    ====================================================== -->
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Review eligibility and register for an approved Agile AI University Bridge Programme."
+    >
+
+    <meta
+        name="robots"
+        content="noindex, nofollow"
+    >
+
+    <title>
+        Bridge Programme Registration | Agile AI University
+    </title>
+
+    <!-- =====================================================
+         SHARED PORTAL STYLES
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/site.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/portal.css"
+    >
+
+    <!-- =====================================================
+         PAGE STYLES
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="/assets/css/programmes/bridge-programme-registration.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         ACCESSIBILITY
+    ====================================================== -->
+
+    <a
+        class="skip-link"
+        href="#mainContent"
+    >
+        Skip to main content
+    </a>
+
+    <!-- =====================================================
+         PORTAL APPLICATION
+    ====================================================== -->
+
+    <div
+        id="portalApp"
+        class="portal-app"
+        data-page="bridge-programme-registration"
+    >
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside
+            id="portalSidebarContainer"
+            class="portal-sidebar-container"
+            aria-label="Student Portal navigation"
+        >
+            <div
+                id="sidebarContainer"
+                data-portal-region="sidebar"
+            ></div>
+        </aside>
+
+        <!-- =================================================
+             MAIN PORTAL AREA
+        ================================================== -->
+
+        <div class="portal-main">
+
+            <!-- =============================================
+                 TOOLBAR
+            ============================================== -->
+
+            <header
+                id="portalToolbarContainer"
+                class="portal-toolbar-container"
+            >
+                <div
+                    id="toolbarContainer"
+                    data-portal-region="toolbar"
+                ></div>
+            </header>
+
+            <!-- =============================================
+                 PAGE CONTENT
+            ============================================== -->
+
+            <main
+                id="mainContent"
+                class="portal-content bridge-programme-page"
+                tabindex="-1"
+            >
+
+                <!-- =========================================
+                     PAGE HEADER
+                ========================================== -->
+
+                <section
+                    class="page-header"
+                    aria-labelledby="pageTitle"
+                >
+
+                    <div class="page-header__content">
+
+                        <p class="page-header__eyebrow">
+                            Programmes
+                        </p>
+
+                        <h1
+                            id="pageTitle"
+                            class="page-header__title"
+                        >
+                            Bridge Programme Registration
+                        </h1>
+
+                        <p
+                            id="pageIntroduction"
+                            class="page-header__description"
+                        >
+                            Review your eligibility, programme pathway and
+                            approved registration offer.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================================
+                     PAGE STATUS ANNOUNCER
+                ========================================== -->
+
+                <div
+                    id="bridgeStatusAnnouncer"
+                    class="sr-only"
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                ></div>
+
+                <!-- =========================================
+                     LOADING STATE
+                ========================================== -->
+
+                <section
+                    id="bridgeLoadingState"
+                    class="bridge-state bridge-state--loading"
+                    aria-labelledby="bridgeLoadingTitle"
+                >
+
+                    <div
+                        class="bridge-loading-indicator"
+                        aria-hidden="true"
+                    ></div>
+
+                    <div class="bridge-state__content">
+
+                        <h2
+                            id="bridgeLoadingTitle"
+                            class="bridge-state__title"
+                        >
+                            Checking your eligibility
+                        </h2>
+
+                        <p class="bridge-state__message">
+                            Please wait while we review your credential and
+                            available Bridge Programme pathway.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================================
+                     SERVICE ERROR STATE
+                ========================================== -->
+
+                <section
+                    id="bridgeErrorState"
+                    class="bridge-state bridge-state--error"
+                    aria-labelledby="bridgeErrorTitle"
+                    hidden
+                >
+
+                    <div class="bridge-state__content">
+
+                        <h2
+                            id="bridgeErrorTitle"
+                            class="bridge-state__title"
+                        >
+                            We could not load your registration details
+                        </h2>
+
+                        <p
+                            id="bridgeErrorMessage"
+                            class="bridge-state__message"
+                        >
+                            Please refresh the page or try again later.
+                        </p>
+
+                        <button
+                            id="bridgeRetryButton"
+                            class="button button--secondary"
+                            type="button"
+                        >
+                            Try Again
+                        </button>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================================
+                     NOT ELIGIBLE STATE
+                ========================================== -->
+
+                <section
+                    id="bridgeNotEligibleState"
+                    class="bridge-state bridge-state--neutral"
+                    aria-labelledby="bridgeNotEligibleTitle"
+                    hidden
+                >
+
+                    <div class="bridge-state__content">
+
+                        <p class="bridge-state__label">
+                            Eligibility status
+                        </p>
+
+                        <h2
+                            id="bridgeNotEligibleTitle"
+                            class="bridge-state__title"
+                        >
+                            No Bridge Programme is currently available
+                        </h2>
+
+                        <p
+                            id="bridgeNotEligibleReason"
+                            class="bridge-state__message"
+                        >
+                            We could not identify an eligible Bridge Programme
+                            pathway for your current credential.
+                        </p>
+
+                        <a
+                            id="bridgeLearningJourneyLink"
+                            class="button button--secondary"
+                            href="/programmes/learning-history.html"
+                        >
+                            View Learning History
+                        </a>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================================
+                     ALREADY REGISTERED STATE
+                ========================================== -->
+
+                <section
+                    id="bridgeRegisteredState"
+                    class="bridge-state bridge-state--success"
+                    aria-labelledby="bridgeRegisteredTitle"
+                    hidden
+                >
+
+                    <div class="bridge-state__content">
+
+                        <p class="bridge-state__label">
+                            Registration status
+                        </p>
+
+                        <h2
+                            id="bridgeRegisteredTitle"
+                            class="bridge-state__title"
+                        >
+                            You are already registered
+                        </h2>
+
+                        <p
+                            id="bridgeRegisteredMessage"
+                            class="bridge-state__message"
+                        >
+                            Your Bridge Programme registration is already
+                            available in your enrolment workspace.
+                        </p>
+
+                        <a
+                            class="button button--primary"
+                            href="/programmes/my-enrolments.html"
+                        >
+                            View My Enrolments
+                        </a>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================================
+                     ALREADY ENROLLED STATE
+                ========================================== -->
+
+                <section
+                    id="bridgeEnrolledState"
+                    class="bridge-state bridge-state--success"
+                    aria-labelledby="bridgeEnrolledTitle"
+                    hidden
+                >
+
+                    <div class="bridge-state__content">
+
+                        <p class="bridge-state__label">
+                            Enrolment status
+                        </p>
+
+                        <h2
+                            id="bridgeEnrolledTitle"
+                            class="bridge-state__title"
+                        >
+                            You are already enrolled
+                        </h2>
+
+                        <p
+                            id="bridgeEnrolledMessage"
+                            class="bridge-state__message"
+                        >
+                            Your Bridge Programme enrolment has already been
+                            confirmed.
+                        </p>
+
+                        <a
+                            class="button button--primary"
+                            href="/programmes/my-enrolments.html"
+                        >
+                            Open My Enrolments
+                        </a>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================================
+                     ELIGIBLE REGISTRATION WORKSPACE
+                ========================================== -->
+
+                <section
+                    id="bridgeEligibleState"
+                    class="bridge-registration-workspace"
+                    aria-labelledby="bridgeOfferTitle"
+                    hidden
+                >
+
+                    <!-- =====================================
+                         ELIGIBILITY SUMMARY
+                    ====================================== -->
+
+                    <article class="bridge-card bridge-card--eligibility">
+
+                        <div class="bridge-card__header">
+
+                            <div>
+
+                                <p class="bridge-card__eyebrow">
+                                    Eligibility confirmed
+                                </p>
+
+                                <h2
+                                    id="bridgeOfferTitle"
+                                    class="bridge-card__title"
+                                >
+                                    AIPA Capability Upgrade
+                                </h2>
+
+                            </div>
+
+                            <span
+                                id="bridgeEligibilityBadge"
+                                class="bridge-status-badge bridge-status-badge--eligible"
+                            >
+                                Eligible
+                            </span>
+
+                        </div>
+
+                        <p
+                            id="bridgeOfferDescription"
+                            class="bridge-card__description"
+                        >
+                            Upgrade through the approved Agile AI University
+                            Bridge Programme.
+                        </p>
+
+                    </article>
+
+                    <!-- =====================================
+                         PROGRAMME PATHWAY
+                    ====================================== -->
+
+                    <article class="bridge-card">
+
+                        <div class="bridge-card__header">
+
+                            <div>
+
+                                <p class="bridge-card__eyebrow">
+                                    Programme pathway
+                                </p>
+
+                                <h2 class="bridge-card__title">
+                                    Your capability progression
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="bridge-pathway"
+                            aria-label="Bridge Programme pathway"
+                        >
+
+                            <div class="bridge-pathway__programme">
+
+                                <span class="bridge-pathway__label">
+                                    Current programme
+                                </span>
+
+                                <strong
+                                    id="bridgeCurrentProgramName"
+                                    class="bridge-pathway__name"
+                                >
+                                    —
+                                </strong>
+
+                                <span
+                                    id="bridgeCurrentProgramCode"
+                                    class="bridge-pathway__code"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div
+                                class="bridge-pathway__connector"
+                                aria-hidden="true"
+                            >
+                                <span>→</span>
+                            </div>
+
+                            <div class="bridge-pathway__programme">
+
+                                <span class="bridge-pathway__label">
+                                    Bridge destination
+                                </span>
+
+                                <strong
+                                    id="bridgeTargetProgramName"
+                                    class="bridge-pathway__name"
+                                >
+                                    Artificial Intelligence Professional Agilist
+                                </strong>
+
+                                <span
+                                    id="bridgeTargetProgramCode"
+                                    class="bridge-pathway__code"
+                                >
+                                    AIPA
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                    <!-- =====================================
+                         COMMERCIAL OFFER
+                    ====================================== -->
+
+                    <article class="bridge-card bridge-card--commercial">
+
+                        <div class="bridge-card__header">
+
+                            <div>
+
+                                <p class="bridge-card__eyebrow">
+                                    Approved offer
+                                </p>
+
+                                <h2 class="bridge-card__title">
+                                    Bridge Programme fee
+                                </h2>
+
+                            </div>
+
+                            <span
+                                id="bridgeOfferExpiryBadge"
+                                class="bridge-offer-badge"
+                            >
+                                Limited-time offer
+                            </span>
+
+                        </div>
+
+                        <div class="bridge-pricing">
+
+                            <dl class="bridge-pricing__list">
+
+                                <div class="bridge-pricing__row">
+
+                                    <dt>
+                                        Bridge Programme fee
+                                    </dt>
+
+                                    <dd id="bridgeBaseFee">
+                                        ₹7,500
+                                    </dd>
+
+                                </div>
+
+                                <div class="bridge-pricing__row">
+
+                                    <dt>
+                                        GST
+                                        <span id="bridgeGstRate">
+                                            (18%)
+                                        </span>
+                                    </dt>
+
+                                    <dd id="bridgeGstAmount">
+                                        ₹1,350
+                                    </dd>
+
+                                </div>
+
+                                <div
+                                    class="bridge-pricing__row
+                                           bridge-pricing__row--total"
+                                >
+
+                                    <dt>
+                                        Estimated total payable
+                                    </dt>
+
+                                    <dd id="bridgeTotalPayable">
+                                        ₹8,850
+                                    </dd>
+
+                                </div>
+
+                            </dl>
+
+                            <div class="bridge-pricing__reference">
+
+                                <p>
+                                    Standard Bridge Programme fee:
+                                    <strong id="bridgeStandardFee">
+                                        ₹15,000
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Full programme fee:
+                                    <strong id="bridgeFullProgrammeFee">
+                                        ₹30,000
+                                    </strong>
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <p
+                            id="bridgeOfferExpiry"
+                            class="bridge-offer-expiry"
+                        >
+                            Offer available through 5 August 2026.
+                        </p>
+
+                        <p
+                            id="bridgeTaxDisclaimer"
+                            class="bridge-tax-disclaimer"
+                        >
+                            Final tax and payable amount will be confirmed
+                            during secure checkout.
+                        </p>
+
+                    </article>
+
+                    <!-- =====================================
+                         REGISTRATION ACKNOWLEDGEMENT
+                    ====================================== -->
+
+                    <article class="bridge-card">
+
+                        <div class="bridge-card__header">
+
+                            <div>
+
+                                <p class="bridge-card__eyebrow">
+                                    Registration confirmation
+                                </p>
+
+                                <h2 class="bridge-card__title">
+                                    Review before continuing
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                        <div class="bridge-confirmation">
+
+                            <label
+                                class="bridge-confirmation__label"
+                                for="bridgeTermsConfirmation"
+                            >
+
+                                <input
+                                    id="bridgeTermsConfirmation"
+                                    class="bridge-confirmation__checkbox"
+                                    type="checkbox"
+                                    disabled
+                                >
+
+                                <span>
+                                    I confirm that I have reviewed the Bridge
+                                    Programme pathway, fee and applicable tax
+                                    information.
+                                </span>
+
+                            </label>
+
+                            <p
+                                id="bridgeRegistrationNotice"
+                                class="bridge-confirmation__notice"
+                            >
+                                Registration activation will be enabled after
+                                the registration service and secure payment
+                                workflow are connected.
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                    <!-- =====================================
+                         PRIMARY ACTION
+                    ====================================== -->
+
+                    <div class="bridge-registration-actions">
+
+                        <a
+                            class="button button--secondary"
+                            href="/dashboard.html"
+                        >
+                            Return to Dashboard
+                        </a>
+
+                        <button
+                            id="bridgeRegisterButton"
+                            class="button button--primary"
+                            type="button"
+                            disabled
+                            aria-describedby="bridgeRegistrationNotice"
+                        >
+                            Registration Coming Soon
+                        </button>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================================
+                     PAGE FOOTNOTE
+                ========================================== -->
+
+                <section
+                    class="bridge-page-note"
+                    aria-label="Bridge Programme information"
+                >
+
+                    <p>
+                        Bridge Programme eligibility is determined from your
+                        verified Agile AI University credential record.
+                    </p>
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         SHARED PORTAL SERVICES
+    ====================================================== -->
+
+    <script
+        src="/assets/js/services/learning/eligibility-service.js"
+        defer
+    ></script>
+
+    <script
+        src="/assets/js/services/learning/bridge-program-service.js"
+        defer
+    ></script>
+
+    <!-- =====================================================
+         SHARED PORTAL COMPONENTS
+    ====================================================== -->
+
+    <script
+        src="/assets/js/components/sidebar.js"
+        defer
+    ></script>
+
+    <script
+        src="/assets/js/components/toolbar.js"
+        defer
+    ></script>
+
+    <!-- =====================================================
+         PAGE CONTROLLER
+    ====================================================== -->
+
+    <script
+        src="/assets/js/programmes/bridge-programme-registration.js"
+        defer
+    ></script>
+
+</body>
+
+</html>

@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.9.4
+       Version : 2.10.0
        Status  : ACTIVE
 
        Security Model
@@ -39,6 +39,17 @@ service cloud.firestore {
 
        Change History
        -----------------------------------------------------
+       v2.10.0
+       • Added dedicated bridge_programme_registrations authority
+       • Enabled authenticated learners to read only their own
+         deterministic Bridge Programme registration document
+       • Enabled governed learner creation of the initial
+         PAYMENT_PENDING registration record
+       • Preserved backend/admin authority for payment,
+         enrolment and lifecycle mutations
+       • Prohibited learner collection listing, updates and deletion
+       • Preserved all existing production collection rules
+
        v2.9.4
        • Restored the governed three-state learning-resource lifecycle
        • Aligned Firestore persistence with LearningResourcePublisher v1.5.1
@@ -3408,6 +3419,246 @@ service cloud.firestore {
 
     }
 
+    /* =====================================================
+       BRIDGE PROGRAMME REGISTRATIONS
+    ===================================================== */
+
+    match /bridge_programme_registrations/{registrationDocumentId} {
+
+      /*
+       * The learner may read only the deterministic
+       * registration document owned by their Firebase UID.
+       *
+       * Canonical document ID:
+       *
+       * {learner_uid}_{source_program_code}_{target_program_code}
+       *
+       * Example:
+       *
+       * abc123_AOP_AIPA
+       */
+
+      allow get:
+        if isBootstrapAdmin() ||
+
+        (
+          isSignedIn() &&
+
+          resource.data.learner_uid ==
+            request.auth.uid
+        );
+
+      /*
+       * The current BridgeRegistrationService performs
+       * direct document reads. Learners do not require
+       * collection-list access.
+       */
+
+      allow list:
+        if isBootstrapAdmin();
+
+      /*
+       * Learners may create only their own initial
+       * PAYMENT_PENDING registration.
+       *
+       * Trusted payment confirmation, enrolment activation
+       * and later lifecycle changes are not permitted from
+       * the learner client.
+       */
+
+      allow create:
+        if isBootstrapAdmin() ||
+
+        (
+          isSignedIn() &&
+
+          request.resource.data.keys().hasOnly([
+            "registration_id",
+            "learner_uid",
+            "learner_email",
+            "credential_id",
+
+            "source_program_code",
+            "target_program_code",
+
+            "relationship_code",
+            "relationship_type",
+
+            "offer_code",
+
+            "currency",
+            "base_amount",
+            "gst_rate",
+            "gst_amount",
+            "total_amount",
+
+            "offer_expires_at",
+            "acknowledgement_accepted",
+
+            "registration_status",
+            "payment_status",
+            "enrolment_status",
+
+            "source",
+
+            "created_at",
+            "updated_at",
+
+            "created_by",
+            "updated_by",
+
+            "schema_version",
+            "module_version"
+          ]) &&
+
+          request.resource.data.keys().hasAll([
+            "registration_id",
+            "learner_uid",
+
+            "source_program_code",
+            "target_program_code",
+
+            "relationship_code",
+            "offer_code",
+
+            "currency",
+            "base_amount",
+            "gst_rate",
+            "gst_amount",
+            "total_amount",
+
+            "acknowledgement_accepted",
+
+            "registration_status",
+            "payment_status",
+            "enrolment_status",
+
+            "source",
+
+            "created_at",
+            "updated_at",
+
+            "created_by",
+            "updated_by",
+
+            "schema_version",
+            "module_version"
+          ]) &&
+
+          request.resource.data.registration_id is string &&
+
+          request.resource.data.registration_id ==
+            registrationDocumentId &&
+
+          request.resource.data.learner_uid is string &&
+
+          request.resource.data.learner_uid ==
+            request.auth.uid &&
+
+          request.resource.data.created_by ==
+            request.auth.uid &&
+
+          request.resource.data.updated_by ==
+            request.auth.uid &&
+
+          registrationDocumentId ==
+            request.auth.uid +
+            "_" +
+            request.resource.data.source_program_code +
+            "_" +
+            request.resource.data.target_program_code &&
+
+          request.resource.data.source_program_code is string &&
+
+          request.resource.data.source_program_code.matches(
+            '^[A-Z0-9][A-Z0-9_-]{1,19}$'
+          ) &&
+
+          request.resource.data.target_program_code is string &&
+
+          request.resource.data.target_program_code.matches(
+            '^[A-Z0-9][A-Z0-9_-]{1,19}$'
+          ) &&
+
+          request.resource.data.source_program_code !=
+            request.resource.data.target_program_code &&
+
+          request.resource.data.relationship_code is string &&
+
+          request.resource.data.relationship_code.size() >
+            0 &&
+
+          request.resource.data.offer_code is string &&
+
+          request.resource.data.offer_code.size() >
+            0 &&
+
+          request.resource.data.currency ==
+            "INR" &&
+
+          request.resource.data.base_amount is number &&
+
+          request.resource.data.base_amount >
+            0 &&
+
+          request.resource.data.gst_rate is number &&
+
+          request.resource.data.gst_rate >=
+            0 &&
+
+          request.resource.data.gst_amount is number &&
+
+          request.resource.data.gst_amount >=
+            0 &&
+
+          request.resource.data.total_amount is number &&
+
+          request.resource.data.total_amount ==
+            request.resource.data.base_amount +
+            request.resource.data.gst_amount &&
+
+          request.resource.data.acknowledgement_accepted ==
+            true &&
+
+          request.resource.data.registration_status ==
+            "PAYMENT_PENDING" &&
+
+          request.resource.data.payment_status ==
+            "NOT_INITIATED" &&
+
+          request.resource.data.enrolment_status ==
+            "NOT_CREATED" &&
+
+          request.resource.data.source ==
+            "STUDENT_PORTAL" &&
+
+          request.resource.data.created_at is string &&
+
+          request.resource.data.updated_at is string &&
+
+          request.resource.data.schema_version ==
+            "1.0.0" &&
+
+          request.resource.data.module_version ==
+            "1.0.0"
+        );
+
+      /*
+       * Registration lifecycle and payment states must not
+       * be changed directly by a learner.
+       */
+
+      allow update:
+        if isBootstrapAdmin();
+
+      /*
+       * Registration evidence is permanent.
+       */
+
+      allow delete:
+        if false;
+
+    }
 
     /* =====================================================
        REGISTRATIONS

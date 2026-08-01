@@ -1,194 +1,461 @@
 /**
  * ========================================================================
  * Agile AI University
- * Bridge Programme Registration Controller
+ * Bridge Programme Registration Page Controller
  * ------------------------------------------------------------------------
  * File:
  * public-portal/assets/js/programmes/bridge-programme-registration.js
  *
- * Version        : 1.0.0
+ * Version        : 2.0.0
  * Status         : ACTIVE
  * Phase          : Revenue Sprint
  * Owner          : Agile AI University
  *
  * Description
  * ------------------------------------------------------------------------
- * Page controller for the Bridge Programme Registration workspace.
+ * Thin page controller for the Bridge Programme Registration workspace.
+ *
+ * This page controller consumes the governed journey produced by:
+ *
+ * window.BridgeRegistrationController
  *
  * Responsibilities
  * ------------------------------------------------------------------------
- * • Wait for portal credential availability
- * • Resolve the governed upgrade model
- * • Validate the academic Bridge Programme relationship
- * • Render eligibility, pathway and commercial information
- * • Control loading, eligible, ineligible and error states
- * • Keep registration and payment actions disabled until the
- *   governed write workflow is implemented
+ * • Cache and manage Bridge Programme page elements
+ * • Read the page-level source and target programme context
+ * • Invoke the governed BridgeRegistrationController
+ * • Render eligibility, offer, registration and enrolment states
+ * • Manage learner acknowledgement and registration interaction
+ * • Present loading, error and accessibility announcements
+ * • Expose page-level diagnostics
  *
- * This controller does NOT:
+ * Non-Responsibilities
+ * ------------------------------------------------------------------------
+ * This page controller does not:
  *
- * • Create registrations
- * • Create enrolments
- * • Initiate payments
- * • Write to Firestore
- * • Resolve authentication
- * • Resolve authorization
+ * • Resolve Firebase Authentication directly
+ * • Read or write Firestore directly
+ * • Resolve credentials independently
+ * • Call EligibilityService directly
+ * • Call BridgeProgramService directly
+ * • Call BridgeRegistrationService directly
+ * • Determine academic eligibility rules
  * • Determine commercial pricing rules
- * • Determine academic Bridge Programme rules
+ * • Verify payment independently
+ * • Create enrolments independently
+ * • Create a registration during normal page initialisation
+ *
+ * Architecture Chain
+ * ------------------------------------------------------------------------
+ * Authentication
+ *      ↓
+ * Eligibility and Entitlement Authorities
+ *      ↓
+ * BridgeRegistrationController
+ *      ↓
+ * BridgeProgrammeRegistration Page Controller
+ *      ↓
+ * Governed DOM Rendering
  *
  * Governance
  * ------------------------------------------------------------------------
- * • EligibilityService is authoritative for commercial eligibility,
- *   pricing, GST and offer expiry.
- * • BridgeProgramService is authoritative for academic bridge
- *   relationship validation.
- * • CredentialService is the primary credential source.
- * • The page controller renders service-produced models only.
- * • Registration actions remain disabled until a governed
- *   RegistrationService is connected.
+ * • BridgeRegistrationController is the sole journey orchestrator.
+ * • The page controller renders controller-produced models only.
+ * • Page loading must never create a registration.
+ * • Registration requires explicit learner acknowledgement.
+ * • Registration creation requires an explicit learner action.
+ * • The registration button must remain disabled while busy.
+ * • Payment actions must remain unavailable until controller readiness
+ *   confirms that the governed payment service is available.
+ * • All dynamic page content must use textContent.
+ *
+ * Reconstruction Blocks
+ * ------------------------------------------------------------------------
+ * Block 1 - Foundation, configuration, DOM cache and page state
+ * Block 2 - DOM lifecycle and visual page states
+ * Block 3 - Controller integration and page initialisation
+ * Block 4 - Journey and commercial rendering
+ * Block 5 - Registration interaction and controller events
+ * Block 6 - Diagnostics, public API and bootstrap
  *
  * Change History
  * ------------------------------------------------------------------------
+ * v2.0.0
+ *
+ * • Reconstructed as a thin UI controller
+ * • Removed direct EligibilityService orchestration
+ * • Removed direct BridgeProgramService orchestration
+ * • Removed credential polling and bridge relationship duplication
+ * • Integrated BridgeRegistrationController as journey authority
+ * • Added governed registration acknowledgement state
+ * • Added controller-driven registration and enrolment rendering
+ *
  * v1.0.0
  *
- * • Added governed Bridge Programme page orchestration.
- * • Added resilient credential readiness handling.
- * • Added eligibility and academic relationship validation.
- * • Added INR commercial formatting using the en-IN locale.
- * • Added accessible page-state announcements.
- * • Added retry handling.
- * • Preserved registration and payment safety boundaries.
+ * • Added initial Bridge Programme page orchestration
+ * • Added eligibility and academic relationship rendering
+ * • Added INR commercial formatting
+ * • Added accessible page-state announcements
  *
  * ========================================================================
  */
 
-(function (window, document) {
+(function initialiseBridgeProgrammeRegistrationPage(
+    window,
+    document
+) {
 
     "use strict";
 
-    console.log(
-        "[BridgeProgrammeRegistration] Loaded v1.0.0"
-    );
+    /* ====================================================================
+       PAGE CONTROLLER IDENTITY
+    ==================================================================== */
+
+    const PAGE_CONTROLLER_NAME =
+        "BridgeProgrammeRegistrationController";
+
+    const PAGE_CONTROLLER_VERSION =
+        "2.0.0";
+
+    /* ====================================================================
+       PAGE STATUS
+    ==================================================================== */
+
+    const PAGE_STATUS =
+        Object.freeze({
+
+            IDLE:
+                "IDLE",
+
+            INITIALISING:
+                "INITIALISING",
+
+            LOADING:
+                "LOADING",
+
+            READY:
+                "READY",
+
+            NOT_ELIGIBLE:
+                "NOT_ELIGIBLE",
+
+            REGISTRATION_AVAILABLE:
+                "REGISTRATION_AVAILABLE",
+
+            REGISTERING:
+                "REGISTERING",
+
+            REGISTERED:
+                "REGISTERED",
+
+            PAYMENT_REQUIRED:
+                "PAYMENT_REQUIRED",
+
+            PAYMENT_IN_PROGRESS:
+                "PAYMENT_IN_PROGRESS",
+
+            PAYMENT_CONFIRMED:
+                "PAYMENT_CONFIRMED",
+
+            ENROLMENT_PENDING:
+                "ENROLMENT_PENDING",
+
+            ENROLLED:
+                "ENROLLED",
+
+            BLOCKED:
+                "BLOCKED",
+
+            ERROR:
+                "ERROR"
+
+        });
+
+    /* ====================================================================
+       PAGE EVENTS
+    ==================================================================== */
+
+    const PAGE_EVENT =
+        Object.freeze({
+
+            READY:
+                "bridge-programme-registration:ready",
+
+            STATE_CHANGED:
+                "bridge-programme-registration:state-changed",
+
+            JOURNEY_RENDERED:
+                "bridge-programme-registration:journey-rendered",
+
+            REGISTRATION_STARTED:
+                "bridge-programme-registration:registration-started",
+
+            REGISTRATION_COMPLETED:
+                "bridge-programme-registration:registration-completed",
+
+            ERROR:
+                "bridge-programme-registration:error"
+
+        });
 
     /* ====================================================================
        CONFIGURATION
     ==================================================================== */
 
-    const CONTROLLER_VERSION =
-        "1.0.0";
+    const DEFAULT_SOURCE_PROGRAMME_CODE =
+        "AOP";
 
-    const CREDENTIAL_WAIT_TIMEOUT_MS =
-        12000;
-
-    const CREDENTIAL_WAIT_INTERVAL_MS =
-        250;
+    const DEFAULT_TARGET_PROGRAMME_CODE =
+        "AIPA";
 
     const DEFAULT_REGISTRATION_LABEL =
-        "Registration Coming Soon";
+        "Register for Bridge Programme";
+
+    const REGISTERING_LABEL =
+        "Creating Registration...";
+
+    const PAYMENT_REQUIRED_LABEL =
+        "Continue to Payment";
 
     const DEFAULT_REGISTRATION_NOTICE =
-        "Registration activation will be enabled after the registration service and secure payment workflow are connected.";
+        "Review the programme pathway, fee and applicable tax information, then confirm to continue.";
 
-    const PROGRAM_NAMES = Object.freeze({
+    const ACKNOWLEDGEMENT_REQUIRED_NOTICE =
+        "Select the confirmation above to enable registration.";
 
-        AOP:
-            "Agile Outcome Practitioner",
+    const REGISTRATION_IN_PROGRESS_NOTICE =
+        "Please wait while your Bridge Programme registration is created.";
 
-        AAIA:
-            "Agile AI Associate",
+    const REGISTRATION_COMPLETED_NOTICE =
+        "Your Bridge Programme registration has been created successfully.";
 
-        AIPA:
-            "Artificial Intelligence Professional Agilist",
+    const PAYMENT_SERVICE_UNAVAILABLE_NOTICE =
+        "Registration is complete. Secure payment will be enabled when the governed payment service is available.";
 
-        AAIP:
-            "Agentic AI Professional",
+    const PROGRAMME_NAMES =
+        Object.freeze({
 
-        AIAL:
-            "Agile AI Leadership"
+            AOP:
+                "Agile Outcome Practitioner",
 
-    });
+            AAIA:
+                "Agile AI Associate",
 
-    const BRIDGE_RELATIONSHIPS = Object.freeze({
+            AIPA:
+                "Artificial Intelligence Professional Agilist",
 
-        bridgePrograms: Object.freeze([
+            AAIP:
+                "Agentic AI Professional",
 
-            Object.freeze({
+            AIAL:
+                "Agile AI Leadership",
 
-                id:
-                    "AOP_TO_AIPA",
+            AISD:
+                "AI System Design",
 
-                source:
-                    "AOP",
+            AAIM:
+                "Agile AI Management",
 
-                target:
-                    "AIPA",
+            AAICC:
+                "Agile AI Coaching and Consulting",
 
-                relationship:
-                    "CAPABILITY_UPGRADE",
+            AISL:
+                "AI Strategy and Leadership",
 
-                title:
-                    "AIPA Capability Upgrade",
+            AIOL:
+                "AI Operations Leadership",
 
-                description:
-                    "Progress from the Agile Outcome Practitioner credential to the Artificial Intelligence Professional Agilist programme through the approved Bridge Programme.",
+            AIPL:
+                "AI Product Leadership"
 
-                cta:
-                    "Register for AIPA Bridge",
+        });
 
-                registrationUrl:
-                    "/programmes/bridge-programme-registration.html",
+    /* ====================================================================
+       INTERNAL UTILITIES
+    ==================================================================== */
 
-                status:
-                    "ACTIVE",
+    function isObject(
+        value
+    ) {
 
-                active:
-                    true
+        return Boolean(
 
-            }),
+            value &&
+            typeof value ===
+                "object" &&
+            !Array.isArray(
+                value
+            )
 
-            Object.freeze({
+        );
 
-                id:
-                    "AAIA_TO_AIPA",
+    }
 
-                source:
-                    "AAIA",
+    function isNonEmptyString(
+        value
+    ) {
 
-                target:
-                    "AIPA",
+        return (
 
-                relationship:
-                    "CAPABILITY_UPGRADE",
+            typeof value ===
+                "string" &&
+            value.trim().length >
+                0
 
-                title:
-                    "AIPA Capability Upgrade",
+        );
 
-                description:
-                    "Progress from the Agile AI Associate credential to the Artificial Intelligence Professional Agilist programme through the approved Bridge Programme.",
+    }
 
-                cta:
-                    "Register for AIPA Bridge",
+    function normaliseString(
+        value
+    ) {
 
-                registrationUrl:
-                    "/programmes/bridge-programme-registration.html",
+        return isNonEmptyString(
+            value
+        )
+            ? value.trim()
+            : "";
 
-                status:
-                    "ACTIVE",
+    }
 
-                active:
-                    true
+    function normaliseProgrammeCode(
+        value
+    ) {
 
-            })
+        return normaliseString(
+            value
+        ).toUpperCase();
 
-        ])
+    }
 
-    });
+    function normaliseStatus(
+        value
+    ) {
+
+        return normaliseString(
+            value
+        ).toUpperCase();
+
+    }
+
+    function normaliseNumber(
+        value,
+        fallbackValue
+    ) {
+
+        const numericValue =
+            Number(
+                value
+            );
+
+        if (
+            Number.isFinite(
+                numericValue
+            )
+        ) {
+
+            return numericValue;
+
+        }
+
+        const numericFallback =
+            Number(
+                fallbackValue
+            );
+
+        return Number.isFinite(
+            numericFallback
+        )
+            ? numericFallback
+            : 0;
+
+    }
+
+    function freezeObject(
+        value
+    ) {
+
+        if (
+            !isObject(
+                value
+            )
+        ) {
+
+            return value;
+
+        }
+
+        return Object.freeze({
+
+            ...value
+
+        });
+
+    }
+
+    function freezeArray(
+        value
+    ) {
+
+        if (
+            !Array.isArray(
+                value
+            )
+        ) {
+
+            return Object.freeze(
+                []
+            );
+
+        }
+
+        return Object.freeze([
+
+            ...value
+
+        ]);
+
+    }
+
+    function nowIsoString() {
+
+        return new Date()
+            .toISOString();
+
+    }
+
+    function resolveProgrammeName(
+        programmeCode
+    ) {
+
+        const governedProgrammeCode =
+            normaliseProgrammeCode(
+                programmeCode
+            );
+
+        return (
+
+            PROGRAMME_NAMES[
+                governedProgrammeCode
+            ] ||
+            governedProgrammeCode ||
+            "Programme"
+
+        );
+
+    }
 
     /* ====================================================================
        ELEMENT CACHE
     ==================================================================== */
 
     const elements = {
+
+        portalApp:
+            null,
+
+        mainContent:
+            null,
 
         loadingState:
             null,
@@ -211,7 +478,13 @@
         registeredState:
             null,
 
+        registeredMessage:
+            null,
+
         enrolledState:
+            null,
+
+        enrolledMessage:
             null,
 
         eligibleState:
@@ -280,33 +553,529 @@
     };
 
     /* ====================================================================
-       INTERNAL STATE
+       PAGE CONTEXT
     ==================================================================== */
 
-    const state = {
+    function resolvePageContext() {
 
-        initialized:
-            false,
+        const portalApp =
+            elements.portalApp ||
+            document.getElementById(
+                "portalApp"
+            );
 
-        loading:
-            false,
+        const sourceProgrammeCode =
+            normaliseProgrammeCode(
 
-        currentUpgradeModel:
-            null,
+                portalApp &&
+                portalApp.dataset
+                    ? portalApp.dataset
+                        .sourceProgrammeCode
+                    : ""
 
-        currentBridgeModel:
-            null,
+            ) ||
+            DEFAULT_SOURCE_PROGRAMME_CODE;
 
-        credentials:
-            []
+        const targetProgrammeCode =
+            normaliseProgrammeCode(
 
-    };
+                portalApp &&
+                portalApp.dataset
+                    ? portalApp.dataset
+                        .targetProgrammeCode
+                    : ""
+
+            ) ||
+            DEFAULT_TARGET_PROGRAMME_CODE;
+
+        return freezeObject({
+
+            sourceProgrammeCode,
+
+            targetProgrammeCode
+
+        });
+
+    }
 
     /* ====================================================================
-       INITIALIZATION
+       INTERNAL PAGE STATE
+    ==================================================================== */
+
+    function createInitialPageState() {
+
+        return freezeObject({
+
+            status:
+                PAGE_STATUS.IDLE,
+
+            initialised:
+                false,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            acknowledgementAccepted:
+                false,
+
+            registrationActionAvailable:
+                false,
+
+            paymentActionAvailable:
+                false,
+
+            sourceProgrammeCode:
+                "",
+
+            targetProgrammeCode:
+                "",
+
+            journey:
+                null,
+
+            eligibility:
+                null,
+
+            offer:
+                null,
+
+            registration:
+                null,
+
+            payment:
+                null,
+
+            enrolment:
+                null,
+
+            error:
+                null,
+
+            initialisedAt:
+                null,
+
+            updatedAt:
+                nowIsoString()
+
+        });
+
+    }
+
+    let pageState =
+        createInitialPageState();
+
+    let pageInitialisationPromise =
+        null;
+
+    let registrationActionPromise =
+        null;
+
+    let eventsBound =
+        false;
+
+    /* ====================================================================
+   PAGE STATE ACCESS
+==================================================================== */
+
+function buildPageState(
+    patch
+) {
+
+    const safePatch =
+        isObject(
+            patch
+        )
+            ? patch
+            : {};
+
+    const hasPatchProperty =
+        function hasPatchProperty(
+            propertyName
+        ) {
+
+            return Object.prototype
+                .hasOwnProperty
+                .call(
+                    safePatch,
+                    propertyName
+                );
+
+        };
+
+    return freezeObject({
+
+        ...pageState,
+
+        ...safePatch,
+
+        status:
+            hasPatchProperty(
+                "status"
+            )
+                ? (
+                    normaliseStatus(
+                        safePatch.status
+                    ) ||
+                    PAGE_STATUS.IDLE
+                )
+                : pageState.status,
+
+        initialised:
+            hasPatchProperty(
+                "initialised"
+            )
+                ? safePatch.initialised ===
+                    true
+                : pageState.initialised,
+
+        loading:
+            hasPatchProperty(
+                "loading"
+            )
+                ? safePatch.loading ===
+                    true
+                : pageState.loading,
+
+        busy:
+            hasPatchProperty(
+                "busy"
+            )
+                ? safePatch.busy ===
+                    true
+                : pageState.busy,
+
+        acknowledgementAccepted:
+            hasPatchProperty(
+                "acknowledgementAccepted"
+            )
+                ? safePatch
+                    .acknowledgementAccepted ===
+                    true
+                : pageState
+                    .acknowledgementAccepted,
+
+        registrationActionAvailable:
+            hasPatchProperty(
+                "registrationActionAvailable"
+            )
+                ? safePatch
+                    .registrationActionAvailable ===
+                    true
+                : pageState
+                    .registrationActionAvailable,
+
+        paymentActionAvailable:
+            hasPatchProperty(
+                "paymentActionAvailable"
+            )
+                ? safePatch
+                    .paymentActionAvailable ===
+                    true
+                : pageState
+                    .paymentActionAvailable,
+
+        sourceProgrammeCode:
+            hasPatchProperty(
+                "sourceProgrammeCode"
+            )
+                ? normaliseProgrammeCode(
+                    safePatch
+                        .sourceProgrammeCode
+                )
+                : pageState
+                    .sourceProgrammeCode,
+
+        targetProgrammeCode:
+            hasPatchProperty(
+                "targetProgrammeCode"
+            )
+                ? normaliseProgrammeCode(
+                    safePatch
+                        .targetProgrammeCode
+                )
+                : pageState
+                    .targetProgrammeCode,
+
+        journey:
+            hasPatchProperty(
+                "journey"
+            )
+                ? (
+                    isObject(
+                        safePatch.journey
+                    )
+                        ? safePatch.journey
+                        : null
+                )
+                : pageState.journey,
+
+        eligibility:
+            hasPatchProperty(
+                "eligibility"
+            )
+                ? (
+                    isObject(
+                        safePatch.eligibility
+                    )
+                        ? safePatch.eligibility
+                        : null
+                )
+                : pageState.eligibility,
+
+        offer:
+            hasPatchProperty(
+                "offer"
+            )
+                ? (
+                    isObject(
+                        safePatch.offer
+                    )
+                        ? safePatch.offer
+                        : null
+                )
+                : pageState.offer,
+
+        registration:
+            hasPatchProperty(
+                "registration"
+            )
+                ? (
+                    isObject(
+                        safePatch.registration
+                    )
+                        ? safePatch.registration
+                        : null
+                )
+                : pageState.registration,
+
+        payment:
+            hasPatchProperty(
+                "payment"
+            )
+                ? (
+                    isObject(
+                        safePatch.payment
+                    )
+                        ? safePatch.payment
+                        : null
+                )
+                : pageState.payment,
+
+        enrolment:
+            hasPatchProperty(
+                "enrolment"
+            )
+                ? (
+                    isObject(
+                        safePatch.enrolment
+                    )
+                        ? safePatch.enrolment
+                        : null
+                )
+                : pageState.enrolment,
+
+        error:
+            hasPatchProperty(
+                "error"
+            )
+                ? (
+                    safePatch.error ||
+                    null
+                )
+                : pageState.error,
+
+        initialisedAt:
+            hasPatchProperty(
+                "initialisedAt"
+            )
+                ? (
+                    safePatch.initialisedAt ||
+                    null
+                )
+                : pageState.initialisedAt,
+
+        updatedAt:
+            nowIsoString()
+
+    });
+
+}
+
+    function setPageState(
+        patch
+    ) {
+
+        pageState =
+            buildPageState(
+                patch
+            );
+
+        dispatchPageEvent(
+
+            PAGE_EVENT
+                .STATE_CHANGED,
+
+            {
+
+                state:
+                    pageState
+
+            }
+
+        );
+
+        return pageState;
+
+    }
+
+    function getPageState() {
+
+        return pageState;
+
+    }
+
+    function resetPageState() {
+
+        pageInitialisationPromise =
+            null;
+
+        registrationActionPromise =
+            null;
+
+        pageState =
+            createInitialPageState();
+
+        dispatchPageEvent(
+
+            PAGE_EVENT
+                .STATE_CHANGED,
+
+            {
+
+                state:
+                    pageState,
+
+                reset:
+                    true
+
+            }
+
+        );
+
+        return pageState;
+
+    }
+
+    /* ====================================================================
+       PAGE EVENT DISPATCH
+    ==================================================================== */
+
+    function dispatchPageEvent(
+        eventName,
+        detail
+    ) {
+
+        if (
+            !isNonEmptyString(
+                eventName
+            ) ||
+            typeof window.dispatchEvent !==
+                "function" ||
+            typeof window.CustomEvent !==
+                "function"
+        ) {
+
+            return false;
+
+        }
+
+        try {
+
+            window.dispatchEvent(
+
+                new window.CustomEvent(
+
+                    eventName,
+
+                    {
+
+                        detail:
+                            freezeObject({
+
+                                pageControllerName:
+                                    PAGE_CONTROLLER_NAME,
+
+                                pageControllerVersion:
+                                    PAGE_CONTROLLER_VERSION,
+
+                                timestamp:
+                                    nowIsoString(),
+
+                                ...(
+                                    isObject(
+                                        detail
+                                    )
+                                        ? detail
+                                        : {}
+                                )
+
+                            })
+
+                    }
+
+                )
+
+            );
+
+            return true;
+
+        }
+        catch (error) {
+
+            console.warn(
+
+                `[${PAGE_CONTROLLER_NAME}] Unable to dispatch event "${eventName}".`,
+
+                error
+
+            );
+
+            return false;
+
+        }
+
+    }
+
+    /* ====================================================================
+       END OF BLOCK 1 OF 6
+
+       Do not close the IIFE here.
+       Block 2 must continue immediately below this section.
+    ==================================================================== */
+
+        /* ====================================================================
+       BLOCK 2 OF 6
+       DOM LIFECYCLE, EVENT BINDING AND VISUAL PAGE STATES
+    ==================================================================== */
+
+    /* ====================================================================
+       ELEMENT CACHING
     ==================================================================== */
 
     function cacheElements() {
+
+        elements.portalApp =
+            document.getElementById(
+                "portalApp"
+            );
+
+        elements.mainContent =
+            document.getElementById(
+                "mainContent"
+            );
 
         elements.loadingState =
             document.getElementById(
@@ -343,9 +1112,19 @@
                 "bridgeRegisteredState"
             );
 
+        elements.registeredMessage =
+            document.getElementById(
+                "bridgeRegisteredMessage"
+            );
+
         elements.enrolledState =
             document.getElementById(
                 "bridgeEnrolledState"
+            );
+
+        elements.enrolledMessage =
+            document.getElementById(
+                "bridgeEnrolledMessage"
             );
 
         elements.eligibleState =
@@ -453,91 +1232,513 @@
                 "bridgeRegisterButton"
             );
 
+        return elements;
+
     }
+
+    /* ====================================================================
+       REQUIRED PAGE ELEMENT VALIDATION
+    ==================================================================== */
+
+    function validateRequiredPageElements() {
+
+        const requiredElements =
+            [
+
+                [
+                    "portalApp",
+                    elements.portalApp
+                ],
+
+                [
+                    "bridgeLoadingState",
+                    elements.loadingState
+                ],
+
+                [
+                    "bridgeErrorState",
+                    elements.errorState
+                ],
+
+                [
+                    "bridgeNotEligibleState",
+                    elements.notEligibleState
+                ],
+
+                [
+                    "bridgeRegisteredState",
+                    elements.registeredState
+                ],
+
+                [
+                    "bridgeEnrolledState",
+                    elements.enrolledState
+                ],
+
+                [
+                    "bridgeEligibleState",
+                    elements.eligibleState
+                ],
+
+                [
+                    "bridgeTermsConfirmation",
+                    elements.termsConfirmation
+                ],
+
+                [
+                    "bridgeRegisterButton",
+                    elements.registerButton
+                ]
+
+            ];
+
+        const missingElements =
+            requiredElements
+                .filter(
+                    function findMissingElement(
+                        entry
+                    ) {
+
+                        return !entry[1];
+
+                    }
+                )
+                .map(
+                    function resolveMissingElementName(
+                        entry
+                    ) {
+
+                        return entry[0];
+
+                    }
+                );
+
+        if (
+            missingElements.length >
+            0
+        ) {
+
+            const error =
+                new Error(
+                    "Required Bridge Programme page elements are unavailable."
+                );
+
+            error.name =
+                "BridgeProgrammeRegistrationPageError";
+
+            error.code =
+                "BRIDGE_PROGRAMME_PAGE_ELEMENTS_UNAVAILABLE";
+
+            error.details =
+                freezeObject({
+
+                    missingElements:
+                        freezeArray(
+                            missingElements
+                        )
+
+                });
+
+            throw error;
+
+        }
+
+        return true;
+
+    }
+
+    /* ====================================================================
+       EVENT BINDING
+    ==================================================================== */
 
     function bindEvents() {
 
-        if (elements.retryButton) {
+    if (
+        eventsBound ===
+        true
+    ) {
 
-            elements.retryButton.addEventListener(
-                "click",
-                function () {
-
-                    loadBridgeProgramme();
-
-                }
-            );
-
-        }
-
-        if (elements.termsConfirmation) {
-
-            elements.termsConfirmation.addEventListener(
-                "change",
-                handleTermsConfirmationChange
-            );
-
-        }
-
-        if (elements.registerButton) {
-
-            elements.registerButton.addEventListener(
-                "click",
-                handleRegistrationAction
-            );
-
-        }
-
-        window.addEventListener(
-            "portal:identity-ready",
-            handlePortalReadinessEvent
-        );
-
-        window.addEventListener(
-            "profile:ready",
-            handlePortalReadinessEvent
-        );
-
-        window.addEventListener(
-            "entitlements:ready",
-            handlePortalReadinessEvent
-        );
-
-        window.addEventListener(
-            "credentials:rendered",
-            handlePortalReadinessEvent
-        );
-
-        window.addEventListener(
-            "credentials:ready",
-            handlePortalReadinessEvent
-        );
+        return false;
 
     }
 
-    async function initialize() {
+    if (
+        elements.retryButton
+    ) {
 
-        if (state.initialized) {
+        elements.retryButton
+            .addEventListener(
+
+                "click",
+
+                function handleRetryButtonClick(
+                    event
+                ) {
+
+                    Promise.resolve(
+                        handleRetryAction(
+                            event
+                        )
+                    ).catch(
+
+                        function handleRetryActionError(
+                            error
+                        ) {
+
+                            /*
+                             * handleRetryAction() and the journey loader
+                             * already render the governed error state.
+                             * This catch prevents an unhandled rejection.
+                             */
+
+                            console.warn(
+
+                                `[${PAGE_CONTROLLER_NAME}] Retry action completed with an error.`,
+
+                                error
+
+                            );
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+    }
+
+    if (
+        elements
+            .termsConfirmation
+    ) {
+
+        elements
+            .termsConfirmation
+            .addEventListener(
+
+                "change",
+
+                handleTermsConfirmationChange
+
+            );
+
+    }
+
+    if (
+        elements.registerButton
+    ) {
+
+        elements.registerButton
+            .addEventListener(
+
+                "click",
+
+                function handleRegisterButtonClick(
+                    event
+                ) {
+
+                    Promise.resolve(
+                        handleRegistrationAction(
+                            event
+                        )
+                    ).catch(
+
+                        function handleRegistrationActionError(
+                            error
+                        ) {
+
+                            /*
+                             * handleRegistrationAction() already restores
+                             * or renders the appropriate governed page
+                             * state. This catch only prevents an unhandled
+                             * promise rejection from the DOM listener.
+                             */
+
+                            console.warn(
+
+                                `[${PAGE_CONTROLLER_NAME}] Registration action completed with an error.`,
+
+                                error
+
+                            );
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+    }
+
+    /*
+     * Portal readiness events may occur after the page script
+     * has loaded. They are handled defensively and do not
+     * independently execute business logic.
+     */
+
+    window.addEventListener(
+
+        "portal:identity-ready",
+
+        handlePortalReadinessEvent
+
+    );
+
+    window.addEventListener(
+
+        "profile:ready",
+
+        handlePortalReadinessEvent
+
+    );
+
+    window.addEventListener(
+
+        "entitlements:ready",
+
+        handlePortalReadinessEvent
+
+    );
+
+    window.addEventListener(
+
+        "credentials:rendered",
+
+        handlePortalReadinessEvent
+
+    );
+
+    window.addEventListener(
+
+        "credentials:ready",
+
+        handlePortalReadinessEvent
+
+    );
+
+    /*
+     * Governed journey-controller lifecycle events.
+     */
+
+    window.addEventListener(
+
+        "bridge-registration-controller:state-changed",
+
+        handleJourneyControllerStateChanged
+
+    );
+
+    window.addEventListener(
+
+        "bridge-registration-controller:registration-created",
+
+        handleJourneyControllerRegistrationCreated
+
+    );
+
+    window.addEventListener(
+
+        "bridge-registration-controller:registration-resolved",
+
+        handleJourneyControllerRegistrationResolved
+
+    );
+
+    window.addEventListener(
+
+        "bridge-registration-controller:payment-required",
+
+        handleJourneyControllerPaymentRequired
+
+    );
+
+    window.addEventListener(
+
+        "bridge-registration-controller:payment-confirmed",
+
+        handleJourneyControllerPaymentConfirmed
+
+    );
+
+    window.addEventListener(
+
+        "bridge-registration-controller:enrolment-resolved",
+
+        handleJourneyControllerEnrolmentResolved
+
+    );
+
+    window.addEventListener(
+
+        "bridge-registration-controller:error",
+
+        handleJourneyControllerError
+
+    );
+
+    eventsBound =
+        true;
+
+    return true;
+
+}
+
+    /* ====================================================================
+       DOM HELPERS
+    ==================================================================== */
+
+    function setHidden(
+        element,
+        hidden
+    ) {
+
+        if (
+            !element
+        ) {
 
             return;
 
         }
 
-        state.initialized =
+        element.hidden =
+            Boolean(
+                hidden
+            );
+
+    }
+
+    function setText(
+        element,
+        value
+    ) {
+
+        if (
+            !element
+        ) {
+
+            return;
+
+        }
+
+        element.textContent =
+            value ===
+                null ||
+            value ===
+                undefined
+                ? ""
+                : String(
+                    value
+                );
+
+    }
+
+    function setDisabled(
+        element,
+        disabled
+    ) {
+
+        if (
+            !element
+        ) {
+
+            return;
+
+        }
+
+        const governedDisabled =
+            disabled ===
             true;
 
-        cacheElements();
+        element.disabled =
+            governedDisabled;
 
-        bindEvents();
+        element.setAttribute(
 
-        enforceRegistrationSafety();
+            "aria-disabled",
 
-        await loadBridgeProgramme();
+            governedDisabled
+                ? "true"
+                : "false"
+
+        );
+
+    }
+
+    function focusMainContent() {
+
+        if (
+            !elements.mainContent ||
+            typeof elements
+                .mainContent
+                .focus !==
+                "function"
+        ) {
+
+            return;
+
+        }
+
+        try {
+
+            elements.mainContent
+                .focus({
+
+                    preventScroll:
+                        true
+
+                });
+
+        }
+        catch (error) {
+
+            elements.mainContent
+                .focus();
+
+        }
+
+    }
+
+    function announce(
+        message
+    ) {
+
+        if (
+            !elements.statusAnnouncer
+        ) {
+
+            return;
+
+        }
+
+        elements.statusAnnouncer
+            .textContent =
+            "";
+
+        window.setTimeout(
+
+            function updateAnnouncement() {
+
+                elements
+                    .statusAnnouncer
+                    .textContent =
+                    normaliseString(
+                        message
+                    );
+
+            },
+
+            20
+
+        );
 
     }
 
     /* ====================================================================
-       PAGE STATE CONTROL
+       VISUAL PAGE STATE RESET
     ==================================================================== */
 
     function hideAllStates() {
@@ -574,29 +1775,131 @@
 
     }
 
-    function showLoadingState() {
+    function resetAcknowledgementControl() {
+
+        if (
+            elements
+                .termsConfirmation
+        ) {
+
+            elements
+                .termsConfirmation
+                .checked =
+                false;
+
+            elements
+                .termsConfirmation
+                .disabled =
+                true;
+
+        }
+
+        setPageState({
+
+            acknowledgementAccepted:
+                false,
+
+            registrationActionAvailable:
+                false
+
+        });
+
+    }
+
+    function resetRegistrationAction() {
+
+        setDisabled(
+            elements.registerButton,
+            true
+        );
+
+        setText(
+            elements.registerButton,
+            DEFAULT_REGISTRATION_LABEL
+        );
+
+        setText(
+            elements.registrationNotice,
+            DEFAULT_REGISTRATION_NOTICE
+        );
+
+    }
+
+    function resetInteractiveControls() {
+
+        resetAcknowledgementControl();
+
+        resetRegistrationAction();
+
+    }
+
+    /* ====================================================================
+       LOADING STATE
+    ==================================================================== */
+
+    function showLoadingState(
+        message
+    ) {
 
         hideAllStates();
+
+        resetInteractiveControls();
 
         setHidden(
             elements.loadingState,
             false
         );
 
+        const announcement =
+            normaliseString(
+                message
+            ) ||
+            "Checking your Bridge Programme eligibility.";
+
+        setPageState({
+
+            status:
+                PAGE_STATUS.LOADING,
+
+            loading:
+                true,
+
+            busy:
+                true,
+
+            error:
+                null
+
+        });
+
         announce(
-            "Checking your Bridge Programme eligibility."
+            announcement
         );
 
     }
 
-    function showErrorState(message) {
+    /* ====================================================================
+       ERROR STATE
+    ==================================================================== */
+
+    function showErrorState(
+        message,
+        error
+    ) {
 
         hideAllStates();
 
+        resetInteractiveControls();
+
+        const governedMessage =
+            normaliseString(
+                message
+            ) ||
+            "We could not load your Bridge Programme registration details. Please refresh the page or try again later.";
+
         setText(
             elements.errorMessage,
-            message ||
-            "Please refresh the page or try again later."
+            governedMessage
         );
 
         setHidden(
@@ -604,20 +1907,75 @@
             false
         );
 
+        setPageState({
+
+            status:
+                PAGE_STATUS.ERROR,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            error:
+                error ||
+                freezeObject({
+
+                    message:
+                        governedMessage
+
+                })
+
+        });
+
         announce(
             "Bridge Programme registration details could not be loaded."
         );
 
+        dispatchPageEvent(
+
+            PAGE_EVENT.ERROR,
+
+            {
+
+                message:
+                    governedMessage,
+
+                error:
+                    error ||
+                    null,
+
+                state:
+                    pageState
+
+            }
+
+        );
+
     }
 
-    function showNotEligibleState(reason) {
+    /* ====================================================================
+       NOT ELIGIBLE STATE
+    ==================================================================== */
+
+    function showNotEligibleState(
+        reason
+    ) {
 
         hideAllStates();
 
+        resetInteractiveControls();
+
+        const governedReason =
+            normaliseString(
+                reason
+            ) ||
+            "No eligible Bridge Programme pathway is currently available for your credential.";
+
         setText(
             elements.notEligibleReason,
-            reason ||
-            "No eligible Bridge Programme pathway is currently available for your credential."
+            governedReason
         );
 
         setHidden(
@@ -625,12 +1983,37 @@
             false
         );
 
+        setPageState({
+
+            status:
+                PAGE_STATUS.NOT_ELIGIBLE,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            registrationActionAvailable:
+                false,
+
+            paymentActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
+
         announce(
-            reason ||
-            "No Bridge Programme is currently available."
+            governedReason
         );
 
     }
+
+    /* ====================================================================
+       ELIGIBLE REGISTRATION STATE
+    ==================================================================== */
 
     function showEligibleState() {
 
@@ -641,34 +2024,75 @@
             false
         );
 
+        setPageState({
+
+            status:
+                PAGE_STATUS
+                    .REGISTRATION_AVAILABLE,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            error:
+                null
+
+        });
+
         announce(
             "Your Bridge Programme eligibility has been confirmed."
         );
 
     }
 
-    function showRegisteredState(message) {
+    /* ====================================================================
+       REGISTERED STATE
+    ==================================================================== */
+
+    function showRegisteredState(
+        message
+    ) {
 
         hideAllStates();
 
-        const registeredMessage =
-            document.getElementById(
-                "bridgeRegisteredMessage"
-            );
+        resetInteractiveControls();
 
-        if (message) {
-
-            setText(
-                registeredMessage,
+        const governedMessage =
+            normaliseString(
                 message
-            );
+            ) ||
+            "Your Bridge Programme registration is already available in your enrolment workspace.";
 
-        }
+        setText(
+            elements.registeredMessage,
+            governedMessage
+        );
 
         setHidden(
             elements.registeredState,
             false
         );
+
+        setPageState({
+
+            status:
+                PAGE_STATUS.REGISTERED,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            registrationActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
 
         announce(
             "You are already registered for this Bridge Programme."
@@ -676,28 +2100,405 @@
 
     }
 
-    function showEnrolledState(message) {
+    /* ====================================================================
+       PAYMENT REQUIRED STATE
+    ==================================================================== */
+
+    function showPaymentRequiredState(
+        message
+    ) {
+
+        /*
+         * The current HTML does not have a separate payment card.
+         * Until that surface is added, the eligible workspace remains
+         * visible and presents the confirmed registration status.
+         */
 
         hideAllStates();
 
-        const enrolledMessage =
-            document.getElementById(
-                "bridgeEnrolledMessage"
-            );
+        setHidden(
+            elements.eligibleState,
+            false
+        );
 
-        if (message) {
+        if (
+            elements
+                .termsConfirmation
+        ) {
 
-            setText(
-                enrolledMessage,
-                message
-            );
+            elements
+                .termsConfirmation
+                .checked =
+                true;
+
+            elements
+                .termsConfirmation
+                .disabled =
+                true;
 
         }
+
+        setDisabled(
+            elements.registerButton,
+            true
+        );
+
+        setText(
+            elements.registerButton,
+            PAYMENT_REQUIRED_LABEL
+        );
+
+        setText(
+
+            elements
+                .registrationNotice,
+
+            normaliseString(
+                message
+            ) ||
+            PAYMENT_SERVICE_UNAVAILABLE_NOTICE
+
+        );
+
+        setPageState({
+
+            status:
+                PAGE_STATUS
+                    .PAYMENT_REQUIRED,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            acknowledgementAccepted:
+                true,
+
+            registrationActionAvailable:
+                false,
+
+            paymentActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
+
+        announce(
+            "Your registration is confirmed and payment is required."
+        );
+
+    }
+
+    /* ====================================================================
+       PAYMENT IN PROGRESS STATE
+    ==================================================================== */
+
+    function showPaymentInProgressState(
+        message
+    ) {
+
+        hideAllStates();
+
+        setHidden(
+            elements.eligibleState,
+            false
+        );
+
+        if (
+            elements
+                .termsConfirmation
+        ) {
+
+            elements
+                .termsConfirmation
+                .checked =
+                true;
+
+            elements
+                .termsConfirmation
+                .disabled =
+                true;
+
+        }
+
+        setDisabled(
+            elements.registerButton,
+            true
+        );
+
+        setText(
+            elements.registerButton,
+            "Payment in Progress"
+        );
+
+        setText(
+
+            elements
+                .registrationNotice,
+
+            normaliseString(
+                message
+            ) ||
+            "Your payment is currently being processed."
+
+        );
+
+        setPageState({
+
+            status:
+                PAGE_STATUS
+                    .PAYMENT_IN_PROGRESS,
+
+            loading:
+                false,
+
+            busy:
+                true,
+
+            acknowledgementAccepted:
+                true,
+
+            registrationActionAvailable:
+                false,
+
+            paymentActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
+
+        announce(
+            "Your Bridge Programme payment is being processed."
+        );
+
+    }
+
+    /* ====================================================================
+       PAYMENT CONFIRMED STATE
+    ==================================================================== */
+
+    function showPaymentConfirmedState(
+        message
+    ) {
+
+        hideAllStates();
+
+        setHidden(
+            elements.eligibleState,
+            false
+        );
+
+        if (
+            elements
+                .termsConfirmation
+        ) {
+
+            elements
+                .termsConfirmation
+                .checked =
+                true;
+
+            elements
+                .termsConfirmation
+                .disabled =
+                true;
+
+        }
+
+        setDisabled(
+            elements.registerButton,
+            true
+        );
+
+        setText(
+            elements.registerButton,
+            "Payment Confirmed"
+        );
+
+        setText(
+
+            elements
+                .registrationNotice,
+
+            normaliseString(
+                message
+            ) ||
+            "Your payment has been confirmed. Enrolment is being prepared."
+
+        );
+
+        setPageState({
+
+            status:
+                PAGE_STATUS
+                    .PAYMENT_CONFIRMED,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            acknowledgementAccepted:
+                true,
+
+            registrationActionAvailable:
+                false,
+
+            paymentActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
+
+        announce(
+            "Your Bridge Programme payment has been confirmed."
+        );
+
+    }
+
+    /* ====================================================================
+       ENROLMENT PENDING STATE
+    ==================================================================== */
+
+    function showEnrolmentPendingState(
+        message
+    ) {
+
+        hideAllStates();
+
+        setHidden(
+            elements.eligibleState,
+            false
+        );
+
+        if (
+            elements
+                .termsConfirmation
+        ) {
+
+            elements
+                .termsConfirmation
+                .checked =
+                true;
+
+            elements
+                .termsConfirmation
+                .disabled =
+                true;
+
+        }
+
+        setDisabled(
+            elements.registerButton,
+            true
+        );
+
+        setText(
+            elements.registerButton,
+            "Enrolment Pending"
+        );
+
+        setText(
+
+            elements
+                .registrationNotice,
+
+            normaliseString(
+                message
+            ) ||
+            "Your registration and payment are confirmed. Enrolment is being completed."
+
+        );
+
+        setPageState({
+
+            status:
+                PAGE_STATUS
+                    .ENROLMENT_PENDING,
+
+            loading:
+                false,
+
+            busy:
+                true,
+
+            acknowledgementAccepted:
+                true,
+
+            registrationActionAvailable:
+                false,
+
+            paymentActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
+
+        announce(
+            "Your Bridge Programme enrolment is being completed."
+        );
+
+    }
+
+    /* ====================================================================
+       ENROLLED STATE
+    ==================================================================== */
+
+    function showEnrolledState(
+        message
+    ) {
+
+        hideAllStates();
+
+        resetInteractiveControls();
+
+        const governedMessage =
+            normaliseString(
+                message
+            ) ||
+            "Your Bridge Programme enrolment has already been confirmed.";
+
+        setText(
+            elements.enrolledMessage,
+            governedMessage
+        );
 
         setHidden(
             elements.enrolledState,
             false
         );
+
+        setPageState({
+
+            status:
+                PAGE_STATUS.ENROLLED,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            registrationActionAvailable:
+                false,
+
+            paymentActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
 
         announce(
             "You are already enrolled in this Bridge Programme."
@@ -706,454 +2507,1996 @@
     }
 
     /* ====================================================================
-       MAIN ORCHESTRATION
+       BLOCKED STATE
     ==================================================================== */
 
-    async function loadBridgeProgramme() {
+    function showBlockedState(
+        message
+    ) {
 
-        if (state.loading) {
+        hideAllStates();
 
-            return;
+        resetInteractiveControls();
 
-        }
+        const governedMessage =
+            normaliseString(
+                message
+            ) ||
+            "This Bridge Programme registration cannot currently continue.";
 
-        state.loading =
-            true;
+        setText(
+            elements.errorMessage,
+            governedMessage
+        );
 
-        showLoadingState();
+        setHidden(
+            elements.errorState,
+            false
+        );
 
-        try {
+        setPageState({
 
-            validateRequiredServices();
+            status:
+                PAGE_STATUS.BLOCKED,
 
-            const credentials =
-                await waitForCredentials();
+            loading:
+                false,
 
-            state.credentials =
-                credentials;
+            busy:
+                false,
 
-            const upgradeModel =
-                await window.EligibilityService
-                    .getUpgradeModel();
+            registrationActionAvailable:
+                false,
 
-            state.currentUpgradeModel =
-                upgradeModel;
+            paymentActionAvailable:
+                false,
 
-            if (
-                !upgradeModel ||
-                upgradeModel.eligible !== true
-            ) {
+            error:
+                freezeObject({
 
-                showNotEligibleState(
-                    resolveIneligibilityReason(
-                        upgradeModel
-                    )
-                );
+                    message:
+                        governedMessage,
 
-                return;
+                    blocked:
+                        true
 
-            }
+                })
 
-            const academicBridgeModel =
-                resolveAcademicBridgeModel(
-                    credentials,
-                    upgradeModel
-                );
+        });
 
-            state.currentBridgeModel =
-                academicBridgeModel;
+        announce(
+            governedMessage
+        );
 
-            if (!academicBridgeModel) {
+    }
 
-                showNotEligibleState(
-                    "Your credential does not currently satisfy the academic requirements for this Bridge Programme."
-                );
+    /* ====================================================================
+       REGISTRATION BUSY STATE
+    ==================================================================== */
 
-                return;
+    function showRegistrationInProgressState() {
 
-            }
+        hideAllStates();
 
-            const participationState =
-                resolveParticipationState(
-                    upgradeModel,
-                    academicBridgeModel
-                );
+        setHidden(
+            elements.eligibleState,
+            false
+        );
 
-            if (
-                participationState.status ===
-                "REGISTERED"
-            ) {
+        if (
+            elements
+                .termsConfirmation
+        ) {
 
-                showRegisteredState(
-                    participationState.message
-                );
-
-                return;
-
-            }
-
-            if (
-                participationState.status ===
-                "ENROLLED"
-            ) {
-
-                showEnrolledState(
-                    participationState.message
-                );
-
-                return;
-
-            }
-
-            renderEligibleModel(
-                upgradeModel,
-                academicBridgeModel
-            );
-
-            showEligibleState();
+            elements
+                .termsConfirmation
+                .disabled =
+                true;
 
         }
-        catch (error) {
 
-            console.error(
-                "[BridgeProgrammeRegistration] Load failed.",
-                error
-            );
+        setDisabled(
+            elements.registerButton,
+            true
+        );
 
-            showErrorState(
-                resolveErrorMessage(error)
-            );
+        setText(
+            elements.registerButton,
+            REGISTERING_LABEL
+        );
 
-        }
-        finally {
+        setText(
+            elements.registrationNotice,
+            REGISTRATION_IN_PROGRESS_NOTICE
+        );
 
-            state.loading =
+        setPageState({
+
+            status:
+                PAGE_STATUS.REGISTERING,
+
+            loading:
+                false,
+
+            busy:
+                true,
+
+            registrationActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
+
+        announce(
+            "Creating your Bridge Programme registration."
+        );
+
+    }
+
+    /* ====================================================================
+       REGISTRATION INTERACTION READINESS
+    ==================================================================== */
+
+    function enableRegistrationInteraction() {
+
+        if (
+            elements
+                .termsConfirmation
+        ) {
+
+            elements
+                .termsConfirmation
+                .disabled =
+                false;
+
+            elements
+                .termsConfirmation
+                .checked =
                 false;
 
         }
 
-    }
+        setDisabled(
+            elements.registerButton,
+            true
+        );
 
-    /* ====================================================================
-       SERVICE VALIDATION
-    ==================================================================== */
+        setText(
+            elements.registerButton,
+            DEFAULT_REGISTRATION_LABEL
+        );
 
-    function validateRequiredServices() {
+        setText(
+            elements.registrationNotice,
+            ACKNOWLEDGEMENT_REQUIRED_NOTICE
+        );
 
-        if (
-            !window.EligibilityService ||
-            typeof window.EligibilityService
-                .getUpgradeModel !== "function"
-        ) {
+        setPageState({
 
-            throw new Error(
-                "EligibilityService is unavailable."
-            );
+            status:
+                PAGE_STATUS
+                    .REGISTRATION_AVAILABLE,
 
-        }
+            busy:
+                false,
 
-        if (
-            !window.BridgeProgramService ||
-            typeof window.BridgeProgramService
-                .resolveBridgePrograms !== "function"
-        ) {
+            acknowledgementAccepted:
+                false,
 
-            throw new Error(
-                "BridgeProgramService is unavailable."
-            );
+            registrationActionAvailable:
+                false,
 
-        }
+            paymentActionAvailable:
+                false,
 
-    }
+            error:
+                null
 
-    /* ====================================================================
-       CREDENTIAL READINESS
-    ==================================================================== */
-
-    async function waitForCredentials() {
-
-        const immediateCredentials =
-            getVisibleCredentials();
-
-        if (immediateCredentials.length > 0) {
-
-            return immediateCredentials;
-
-        }
-
-        const startedAt =
-            Date.now();
-
-        while (
-            Date.now() - startedAt <
-            CREDENTIAL_WAIT_TIMEOUT_MS
-        ) {
-
-            await delay(
-                CREDENTIAL_WAIT_INTERVAL_MS
-            );
-
-            const credentials =
-                getVisibleCredentials();
-
-            if (credentials.length > 0) {
-
-                return credentials;
-
-            }
-
-        }
-
-        /*
-         * Do not throw here. EligibilityService may still
-         * return a governed ineligible model.
-         */
-
-        return [];
-
-    }
-
-    function getVisibleCredentials() {
-
-        if (
-            window.CredentialService &&
-            typeof window.CredentialService
-                .getCredentials === "function"
-        ) {
-
-            const credentials =
-                window.CredentialService
-                    .getCredentials();
-
-            if (Array.isArray(credentials)) {
-
-                return credentials;
-
-            }
-
-        }
-
-        if (
-            Array.isArray(
-                window.portalCredentials
-            )
-        ) {
-
-            return window.portalCredentials;
-
-        }
-
-        const entitlements =
-            window.__AAIU_ENTITLEMENTS__;
-
-        if (
-            entitlements &&
-            Array.isArray(
-                entitlements.visibleCredentials
-            )
-        ) {
-
-            return entitlements.visibleCredentials;
-
-        }
-
-        return [];
+        });
 
     }
 
     /* ====================================================================
-       ACADEMIC BRIDGE RESOLUTION
+       END OF BLOCK 2 OF 6
+
+       Do not close the IIFE here.
+       Block 3 must continue immediately below this section.
     ==================================================================== */
 
-    function resolveAcademicBridgeModel(
-        credentials,
-        upgradeModel
-    ) {
+        /* ====================================================================
+       BLOCK 3 OF 6
+       CONTROLLER INTEGRATION AND PAGE INITIALISATION
+    ==================================================================== */
 
-        const opportunities =
-            window.BridgeProgramService
-                .resolveBridgePrograms(
-                    credentials,
-                    BRIDGE_RELATIONSHIPS
-                );
+    /* ====================================================================
+       JOURNEY CONTROLLER ACCESS
+    ==================================================================== */
+
+    function getJourneyController() {
+
+        const controller =
+            window
+                .BridgeRegistrationController;
 
         if (
-            !Array.isArray(opportunities) ||
-            opportunities.length === 0
+            !controller ||
+            typeof controller !==
+                "object"
         ) {
 
             return null;
 
         }
 
-        const currentProgramCode =
-            normalizeProgramCode(
-                upgradeModel?.currentProgram?.code
+        return controller;
+
+    }
+
+    function getRequiredJourneyController() {
+
+        const controller =
+            getJourneyController();
+
+        if (
+            !controller
+        ) {
+
+            const error =
+                new Error(
+                    "BridgeRegistrationController is unavailable."
+                );
+
+            error.name =
+                "BridgeProgrammeRegistrationPageError";
+
+            error.code =
+                "BRIDGE_REGISTRATION_CONTROLLER_UNAVAILABLE";
+
+            throw error;
+
+        }
+
+        const requiredMethods =
+            [
+
+                "initialiseRegistrationJourney",
+
+                "resolveRegistrationJourney",
+
+                "getState",
+
+                "getReadiness",
+
+                "getControllerReadiness"
+
+            ];
+
+        const missingMethods =
+            requiredMethods.filter(
+
+                function findMissingControllerMethod(
+                    methodName
+                ) {
+
+                    return typeof controller[
+                        methodName
+                    ] !==
+                    "function";
+
+                }
+
             );
 
-        const targetProgramCode =
-            normalizeProgramCode(
-                upgradeModel?.nextProgram ||
-                upgradeModel?.programCode
+        if (
+            missingMethods.length >
+            0
+        ) {
+
+            const error =
+                new Error(
+                    "BridgeRegistrationController does not expose the required page-integration contract."
+                );
+
+            error.name =
+                "BridgeProgrammeRegistrationPageError";
+
+            error.code =
+                "BRIDGE_REGISTRATION_CONTROLLER_CONTRACT_INVALID";
+
+            error.details =
+                freezeObject({
+
+                    missingMethods:
+                        freezeArray(
+                            missingMethods
+                        )
+
+                });
+
+            throw error;
+
+        }
+
+        return controller;
+
+    }
+
+    /* ====================================================================
+       JOURNEY CONTROLLER READINESS
+    ==================================================================== */
+
+    function resolveJourneyControllerReadiness() {
+
+        const controller =
+            getJourneyController();
+
+        if (
+            !controller
+        ) {
+
+            return freezeObject({
+
+                available:
+                    false,
+
+                foundationReady:
+                    false,
+
+                programmeResolutionReady:
+                    false,
+
+                paymentResolutionReady:
+                    false,
+
+                enrolmentResolutionReady:
+                    false,
+
+                authenticated:
+                    false,
+
+                controllerVersion:
+                    null
+
+            });
+
+        }
+
+        try {
+
+            const readiness =
+                typeof controller
+                    .getReadiness ===
+                    "function"
+                    ? controller
+                        .getReadiness()
+                    : null;
+
+            const safeReadiness =
+                isObject(
+                    readiness
+                )
+                    ? readiness
+                    : {};
+
+            return freezeObject({
+
+                available:
+                    true,
+
+                foundationReady:
+                    safeReadiness
+                        .foundationReady ===
+                    true,
+
+                programmeResolutionReady:
+                    safeReadiness
+                        .programmeResolutionReady ===
+                    true,
+
+                paymentResolutionReady:
+                    safeReadiness
+                        .paymentResolutionReady ===
+                    true,
+
+                enrolmentResolutionReady:
+                    safeReadiness
+                        .enrolmentResolutionReady ===
+                    true,
+
+                authenticated:
+                    safeReadiness
+                        .authenticated ===
+                    true,
+
+                controllerVersion:
+                    normaliseString(
+                        safeReadiness
+                            .controllerVersion
+                    ) ||
+                    null,
+
+                raw:
+                    freezeObject(
+                        safeReadiness
+                    )
+
+            });
+
+        }
+        catch (error) {
+
+            console.warn(
+
+                `[${PAGE_CONTROLLER_NAME}] Journey controller readiness could not be resolved.`,
+
+                error
+
             );
 
-        const exactOpportunity =
-            opportunities.find(
-                function (opportunity) {
+            return freezeObject({
 
-                    return (
+                available:
+                    true,
 
-                        normalizeProgramCode(
-                            opportunity.sourceProgram
-                        ) === currentProgramCode &&
+                foundationReady:
+                    false,
 
-                        normalizeProgramCode(
-                            opportunity.targetProgram
-                        ) === targetProgramCode
+                programmeResolutionReady:
+                    false,
+
+                paymentResolutionReady:
+                    false,
+
+                enrolmentResolutionReady:
+                    false,
+
+                authenticated:
+                    false,
+
+                controllerVersion:
+                    null,
+
+                error
+
+            });
+
+        }
+
+    }
+
+    /* ====================================================================
+       PAGE INITIALISATION INPUT
+    ==================================================================== */
+
+    function buildPageInitialisationInput(
+        options
+    ) {
+
+        const safeOptions =
+            isObject(
+                options
+            )
+                ? options
+                : {};
+
+        const pageContext =
+            resolvePageContext();
+
+        return freezeObject({
+
+            sourceProgrammeCode:
+                normaliseProgrammeCode(
+
+                    safeOptions
+                        .sourceProgrammeCode ||
+                    pageContext
+                        .sourceProgrammeCode
+
+                ),
+
+            targetProgrammeCode:
+                normaliseProgrammeCode(
+
+                    safeOptions
+                        .targetProgrammeCode ||
+                    pageContext
+                        .targetProgrammeCode
+
+                ),
+
+            waitForAuth:
+                safeOptions
+                    .waitForAuth !==
+                false,
+
+            timeoutMs:
+                normaliseNumber(
+                    safeOptions
+                        .timeoutMs,
+                    10000
+                ),
+
+            forceIdentity:
+                safeOptions
+                    .forceIdentity ===
+                true,
+
+            forceEligibility:
+                safeOptions
+                    .forceEligibility ===
+                true,
+
+            forceOffer:
+                safeOptions
+                    .forceOffer ===
+                true,
+
+            forceRegistrationResolution:
+                safeOptions
+                    .forceRegistrationResolution ===
+                true,
+
+            resolvePaymentStatus:
+                safeOptions
+                    .resolvePaymentStatus ===
+                true,
+
+            resolveEnrolmentAfterPayment:
+                safeOptions
+                    .resolveEnrolmentAfterPayment ===
+                true,
+
+            /*
+             * The controller enforces this rule independently,
+             * but the page also states it explicitly.
+             */
+
+            createIfMissing:
+                false,
+
+            source:
+                normaliseString(
+                    safeOptions.source
+                ) ||
+                "STUDENT_PORTAL"
+
+        });
+
+    }
+
+    /* ====================================================================
+       JOURNEY RESULT NORMALISATION
+    ==================================================================== */
+
+    function normaliseJourneyResult(
+        result,
+        input
+    ) {
+
+        const safeResult =
+            isObject(
+                result
+            )
+                ? result
+                : {};
+
+        const safeInput =
+            isObject(
+                input
+            )
+                ? input
+                : {};
+
+        const controllerState =
+            isObject(
+                safeResult.state
+            )
+                ? safeResult.state
+                : {};
+
+        const eligibility =
+            isObject(
+                safeResult.eligibility
+            )
+                ? safeResult.eligibility
+                : (
+                    isObject(
+                        controllerState
+                            .eligibility
+                    )
+                        ? controllerState
+                            .eligibility
+                        : null
+                );
+
+        const offer =
+            isObject(
+                safeResult.offer
+            )
+                ? safeResult.offer
+                : (
+                    isObject(
+                        controllerState.offer
+                    )
+                        ? controllerState.offer
+                        : null
+                );
+
+        const registration =
+            isObject(
+                safeResult.registration
+            )
+                ? safeResult.registration
+                : (
+                    isObject(
+                        controllerState
+                            .registration
+                    )
+                        ? controllerState
+                            .registration
+                        : null
+                );
+
+        const payment =
+            isObject(
+                safeResult.payment
+            )
+                ? safeResult.payment
+                : (
+                    isObject(
+                        controllerState.payment
+                    )
+                        ? controllerState.payment
+                        : null
+                );
+
+        const enrolment =
+            isObject(
+                safeResult.enrolment
+            )
+                ? safeResult.enrolment
+                : (
+                    isObject(
+                        controllerState.enrolment
+                    )
+                        ? controllerState.enrolment
+                        : null
+                );
+
+        const eligible =
+            safeResult.eligible ===
+                true ||
+            Boolean(
+                eligibility &&
+                eligibility.eligible ===
+                    true
+            );
+
+        const offerAvailable =
+            safeResult.offerAvailable ===
+                true ||
+            Boolean(
+                offer &&
+                offer.offerAvailable ===
+                    true
+            );
+
+        const registrationExists =
+            safeResult.registrationExists ===
+                true ||
+            Boolean(
+                registration &&
+                registration
+                    .registrationExists ===
+                    true &&
+                isNonEmptyString(
+                    registration
+                        .registrationId
+                )
+            );
+
+        const status =
+            normaliseStatus(
+
+                safeResult.status ||
+                controllerState.status
+
+            ) ||
+            "READY";
+
+        return freezeObject({
+
+            eligible,
+
+            offerAvailable,
+
+            registrationExists,
+
+            created:
+                safeResult.created ===
+                true,
+
+            restored:
+                safeResult.restored ===
+                true,
+
+            existing:
+                safeResult.existing ===
+                true,
+
+            idempotent:
+                safeResult.idempotent ===
+                true,
+
+            creationRequired:
+                safeResult.creationRequired ===
+                true,
+
+            acknowledgementRequired:
+                safeResult
+                    .acknowledgementRequired ===
+                true,
+
+            sourceProgrammeCode:
+                normaliseProgrammeCode(
+
+                    controllerState
+                        .sourceProgrammeCode ||
+                    safeInput
+                        .sourceProgrammeCode
+
+                ),
+
+            targetProgrammeCode:
+                normaliseProgrammeCode(
+
+                    controllerState
+                        .targetProgrammeCode ||
+                    safeInput
+                        .targetProgrammeCode
+
+                ),
+
+            eligibility,
+
+            offer,
+
+            registration,
+
+            payment,
+
+            enrolment,
+
+            status,
+
+            pageContext:
+                isObject(
+                    safeResult.pageContext
+                )
+                    ? safeResult.pageContext
+                    : null,
+
+            controllerState:
+                freezeObject(
+                    controllerState
+                ),
+
+            raw:
+                freezeObject(
+                    safeResult
+                )
+
+        });
+
+    }
+
+    /* ====================================================================
+       PAGE INITIALISATION
+    ==================================================================== */
+
+    async function initialisePage(
+        options
+    ) {
+
+        const safeOptions =
+            isObject(
+                options
+            )
+                ? options
+                : {};
+
+        if (
+            pageState.initialised &&
+            safeOptions.force !==
+                true
+        ) {
+
+            return pageState;
+
+        }
+
+        if (
+            pageInitialisationPromise
+        ) {
+
+            return pageInitialisationPromise;
+
+        }
+
+        pageInitialisationPromise =
+            (
+                async function performPageInitialisation() {
+
+                    setPageState({
+
+                        status:
+                            PAGE_STATUS
+                                .INITIALISING,
+
+                        loading:
+                            true,
+
+                        busy:
+                            true,
+
+                        error:
+                            null
+
+                    });
+
+                    try {
+
+                        cacheElements();
+
+                        validateRequiredPageElements();
+
+                        bindEvents();
+
+                        const pageContext =
+                            resolvePageContext();
+
+                        setPageState({
+
+                            sourceProgrammeCode:
+                                pageContext
+                                    .sourceProgrammeCode,
+
+                            targetProgrammeCode:
+                                pageContext
+                                    .targetProgrammeCode
+
+                        });
+
+                        resetInteractiveControls();
+
+                        const journey =
+                            await loadRegistrationJourney({
+
+                                ...safeOptions,
+
+                                force:
+                                    safeOptions.force ===
+                                    true
+
+                            });
+
+                        const timestamp =
+                            nowIsoString();
+
+                        const nextState =
+                            setPageState({
+
+                                initialised:
+                                    true,
+
+                                loading:
+                                    false,
+
+                                busy:
+                                    false,
+
+                                initialisedAt:
+                                    pageState
+                                        .initialisedAt ||
+                                    timestamp,
+
+                                error:
+                                    null
+
+                            });
+
+                        dispatchPageEvent(
+
+                            PAGE_EVENT.READY,
+
+                            {
+
+                                journey,
+
+                                state:
+                                    nextState
+
+                            }
+
+                        );
+
+                        console.info(
+
+                            `[${PAGE_CONTROLLER_NAME}] v${PAGE_CONTROLLER_VERSION} initialised successfully.`
+
+                        );
+
+                        return nextState;
+
+                    }
+                    catch (error) {
+
+                        console.error(
+
+                            `[${PAGE_CONTROLLER_NAME}] Initialisation failed.`,
+
+                            error
+
+                        );
+
+                        showErrorState(
+
+                            resolvePageErrorMessage(
+                                error
+                            ),
+
+                            error
+
+                        );
+
+                        throw error;
+
+                    }
+
+                }
+            )();
+
+        try {
+
+            return await pageInitialisationPromise;
+
+        }
+        finally {
+
+            pageInitialisationPromise =
+                null;
+
+        }
+
+    }
+
+    /* ====================================================================
+       JOURNEY LOADING
+    ==================================================================== */
+
+    async function loadRegistrationJourney(
+        options
+    ) {
+
+        const safeOptions =
+            isObject(
+                options
+            )
+                ? options
+                : {};
+
+        showLoadingState(
+            "Checking your Bridge Programme eligibility."
+        );
+
+        try {
+
+            const controller =
+                getRequiredJourneyController();
+
+            const input =
+                buildPageInitialisationInput(
+                    safeOptions
+                );
+
+            setPageState({
+
+                sourceProgrammeCode:
+                    input.sourceProgrammeCode,
+
+                targetProgrammeCode:
+                    input.targetProgrammeCode,
+
+                loading:
+                    true,
+
+                busy:
+                    true,
+
+                error:
+                    null
+
+            });
+
+            const result =
+                await controller
+                    .initialiseRegistrationJourney(
+                        input
+                    );
+
+            const journey =
+                normaliseJourneyResult(
+                    result,
+                    input
+                );
+
+            setPageState({
+
+                journey,
+
+                eligibility:
+                    journey.eligibility,
+
+                offer:
+                    journey.offer,
+
+                registration:
+                    journey.registration,
+
+                payment:
+                    journey.payment,
+
+                enrolment:
+                    journey.enrolment,
+
+                sourceProgrammeCode:
+                    journey
+                        .sourceProgrammeCode,
+
+                targetProgrammeCode:
+                    journey
+                        .targetProgrammeCode,
+
+                loading:
+                    false,
+
+                busy:
+                    false,
+
+                error:
+                    null
+
+            });
+
+            renderRegistrationJourney(
+                journey
+            );
+
+            dispatchPageEvent(
+
+                PAGE_EVENT
+                    .JOURNEY_RENDERED,
+
+                {
+
+                    journey,
+
+                    state:
+                        pageState
+
+                }
+
+            );
+
+            return journey;
+
+        }
+        catch (error) {
+
+            console.error(
+
+                `[${PAGE_CONTROLLER_NAME}] Journey loading failed.`,
+
+                error
+
+            );
+
+            showErrorState(
+
+                resolvePageErrorMessage(
+                    error
+                ),
+
+                error
+
+            );
+
+            throw error;
+
+        }
+
+    }
+
+    /* ====================================================================
+       JOURNEY REFRESH
+    ==================================================================== */
+
+    async function refreshRegistrationJourney(
+        options
+    ) {
+
+        const safeOptions =
+            isObject(
+                options
+            )
+                ? options
+                : {};
+
+        return loadRegistrationJourney({
+
+            ...safeOptions,
+
+            force:
+                true,
+
+            forceIdentity:
+                safeOptions
+                    .forceIdentity ===
+                true,
+
+            forceEligibility:
+                safeOptions
+                    .forceEligibility !==
+                false,
+
+            forceOffer:
+                safeOptions
+                    .forceOffer !==
+                false,
+
+            forceRegistrationResolution:
+                true
+
+        });
+
+    }
+
+    /* ====================================================================
+       RETRY ACTION
+    ==================================================================== */
+
+    async function handleRetryAction(
+        event
+    ) {
+
+        if (
+            event &&
+            typeof event.preventDefault ===
+                "function"
+        ) {
+
+            event.preventDefault();
+
+        }
+
+        if (
+            pageState.busy
+        ) {
+
+            return;
+
+        }
+
+        try {
+
+            await refreshRegistrationJourney({
+
+                forceIdentity:
+                    false,
+
+                forceEligibility:
+                    true,
+
+                forceOffer:
+                    true
+
+            });
+
+        }
+        catch (error) {
+
+            /*
+             * loadRegistrationJourney() already renders the error.
+             */
+
+        }
+
+    }
+
+    /* ====================================================================
+       PORTAL READINESS EVENTS
+    ==================================================================== */
+
+    function handlePortalReadinessEvent() {
+
+        if (
+            pageState.busy ||
+            pageState.loading
+        ) {
+
+            return;
+
+        }
+
+        /*
+         * Portal events should only trigger another journey load
+         * when the page has not yet obtained a usable model.
+         */
+
+        if (
+            !pageState.journey ||
+            pageState.status ===
+                PAGE_STATUS.ERROR
+        ) {
+
+            refreshRegistrationJourney({
+
+                forceIdentity:
+                    false,
+
+                forceEligibility:
+                    true,
+
+                forceOffer:
+                    true
+
+            }).catch(
+
+                function handleReadinessRefreshError(
+                    error
+                ) {
+
+                    console.warn(
+
+                        `[${PAGE_CONTROLLER_NAME}] Portal-readiness refresh failed.`,
+
+                        error
 
                     );
 
                 }
+
             );
-
-        return (
-            exactOpportunity ||
-            opportunities[0] ||
-            null
-        );
-
-    }
-
-    /* ====================================================================
-       PARTICIPATION STATE
-    ==================================================================== */
-
-    function resolveParticipationState(
-        upgradeModel,
-        bridgeModel
-    ) {
-
-        /*
-         * Registration and enrolment services are not yet
-         * connected. This method provides the governed
-         * extension point without inventing persisted state.
-         */
-
-        if (
-            window.BridgeRegistrationService &&
-            typeof window.BridgeRegistrationService
-                .getParticipationState === "function"
-        ) {
-
-            try {
-
-                const resolvedState =
-                    window.BridgeRegistrationService
-                        .getParticipationState(
-                            {
-                                upgradeModel:
-                                    upgradeModel,
-
-                                bridgeModel:
-                                    bridgeModel
-                            }
-                        );
-
-                if (
-                    resolvedState &&
-                    typeof resolvedState === "object"
-                ) {
-
-                    return {
-
-                        status:
-                            normalizeStatus(
-                                resolvedState.status
-                            ) || "AVAILABLE",
-
-                        message:
-                            resolvedState.message ||
-                            null
-
-                    };
-
-                }
-
-            }
-            catch (error) {
-
-                console.warn(
-                    "[BridgeProgrammeRegistration] Participation state resolution failed.",
-                    error
-                );
-
-            }
 
         }
 
-        return {
+    }
 
-            status:
-                "AVAILABLE",
+    /* ====================================================================
+       PAGE ERROR MESSAGE RESOLUTION
+    ==================================================================== */
 
-            message:
-                null
+    function resolvePageErrorMessage(
+        error
+    ) {
 
-        };
+        const errorCode =
+            normaliseStatus(
+                error &&
+                error.code
+            );
+
+        const errorMessage =
+            normaliseString(
+                error &&
+                error.message
+            );
+
+        if (
+            errorCode ===
+                "BRIDGE_REGISTRATION_CONTROLLER_UNAVAILABLE" ||
+            errorCode ===
+                "BRIDGE_REGISTRATION_CONTROLLER_CONTRACT_INVALID" ||
+            errorMessage.includes(
+                "BridgeRegistrationController"
+            )
+        ) {
+
+            return "The Bridge Programme registration controller could not be loaded. Please refresh the page.";
+
+        }
+
+        if (
+            errorCode.includes(
+                "AUTH_REQUIRED"
+            ) ||
+            errorMessage
+                .toLowerCase()
+                .includes(
+                    "authenticated learner"
+                )
+        ) {
+
+            return "Your authenticated learner identity could not be resolved. Please sign in again and retry.";
+
+        }
+
+        if (
+            errorCode.includes(
+                "DEPENDENCY_UNAVAILABLE"
+            )
+        ) {
+
+            return "A required Bridge Programme service could not be loaded. Please refresh the page.";
+
+        }
+
+        if (
+            errorCode.includes(
+                "REGISTRATION_RESOLUTION_FAILED"
+            )
+        ) {
+
+            return "Your existing Bridge Programme registration could not be checked. Please retry.";
+
+        }
+
+        if (
+            errorCode.includes(
+                "ELIGIBILITY_RESOLUTION_FAILED"
+            ) ||
+            errorCode.includes(
+                "OFFER_RESOLUTION_FAILED"
+            )
+        ) {
+
+            return "Your Bridge Programme eligibility or approved offer could not be resolved. Please retry.";
+
+        }
+
+        return "We could not load your Bridge Programme registration details. Please refresh the page or try again later.";
 
     }
 
     /* ====================================================================
-       ELIGIBLE MODEL RENDERING
+       END OF BLOCK 3 OF 6
+
+       Do not close the IIFE here.
+       Block 4 must continue immediately below this section.
     ==================================================================== */
 
-    function renderEligibleModel(
-        upgradeModel,
-        bridgeModel
+        /* ====================================================================
+       BLOCK 4 OF 6
+       JOURNEY AND COMMERCIAL RENDERING
+    ==================================================================== */
+
+    /* ====================================================================
+       JOURNEY STATUS RESOLUTION
+    ==================================================================== */
+
+    function resolveJourneyStatus(
+        journey
     ) {
 
-        const currentProgramCode =
-            normalizeProgramCode(
+        const safeJourney =
+            isObject(
+                journey
+            )
+                ? journey
+                : {};
 
-                bridgeModel.sourceProgram ||
-                upgradeModel?.currentProgram?.code
+        const registration =
+            isObject(
+                safeJourney.registration
+            )
+                ? safeJourney.registration
+                : {};
+
+        const payment =
+            isObject(
+                safeJourney.payment
+            )
+                ? safeJourney.payment
+                : {};
+
+        const enrolment =
+            isObject(
+                safeJourney.enrolment
+            )
+                ? safeJourney.enrolment
+                : {};
+
+        const controllerStatus =
+            normaliseStatus(
+                safeJourney.status
+            );
+
+        const registrationStatus =
+            normaliseStatus(
+                registration.status ||
+                registration
+                    .registrationStatus
+            );
+
+        const paymentStatus =
+            normaliseStatus(
+                payment.status ||
+                registration
+                    .paymentStatus
+            );
+
+        const enrolmentStatus =
+            normaliseStatus(
+                enrolment.status ||
+                registration
+                    .enrolmentStatus ||
+                registration
+                    .enrollmentStatus
+            );
+
+        if (
+            controllerStatus ===
+                "ENROLLED" ||
+            registrationStatus ===
+                "ENROLLED" ||
+            enrolmentStatus ===
+                "ENROLLED"
+        ) {
+
+            return PAGE_STATUS
+                .ENROLLED;
+
+        }
+
+        if (
+            controllerStatus ===
+                "ENROLMENT_PENDING" ||
+            registrationStatus ===
+                "ENROLMENT_PENDING" ||
+            enrolmentStatus ===
+                "PENDING"
+        ) {
+
+            return PAGE_STATUS
+                .ENROLMENT_PENDING;
+
+        }
+
+        if (
+            controllerStatus ===
+                "PAYMENT_CONFIRMED" ||
+            registrationStatus ===
+                "PAYMENT_CONFIRMED" ||
+            paymentStatus ===
+                "CONFIRMED"
+        ) {
+
+            return PAGE_STATUS
+                .PAYMENT_CONFIRMED;
+
+        }
+
+        if (
+            controllerStatus ===
+                "PAYMENT_IN_PROGRESS" ||
+            registrationStatus ===
+                "PAYMENT_PROCESSING" ||
+            paymentStatus ===
+                "PROCESSING"
+        ) {
+
+            return PAGE_STATUS
+                .PAYMENT_IN_PROGRESS;
+
+        }
+
+        if (
+            controllerStatus ===
+                "PAYMENT_REQUIRED" ||
+            registrationStatus ===
+                "PENDING_PAYMENT" ||
+            paymentStatus ===
+                "PENDING"
+        ) {
+
+            return PAGE_STATUS
+                .PAYMENT_REQUIRED;
+
+        }
+
+        if (
+            controllerStatus ===
+                "BLOCKED" ||
+            registrationStatus ===
+                "BLOCKED" ||
+            registrationStatus ===
+                "FAILED" ||
+            registrationStatus ===
+                "CANCELLED" ||
+            registrationStatus ===
+                "EXPIRED" ||
+            paymentStatus ===
+                "FAILED" ||
+            paymentStatus ===
+                "CANCELLED" ||
+            paymentStatus ===
+                "EXPIRED" ||
+            enrolmentStatus ===
+                "FAILED" ||
+            enrolmentStatus ===
+                "BLOCKED" ||
+            enrolmentStatus ===
+                "CANCELLED"
+        ) {
+
+            return PAGE_STATUS
+                .BLOCKED;
+
+        }
+
+        if (
+            safeJourney.registrationExists ===
+                true
+        ) {
+
+            return PAGE_STATUS
+                .REGISTERED;
+
+        }
+
+        if (
+            safeJourney.eligible ===
+                true &&
+            safeJourney.offerAvailable ===
+                true
+        ) {
+
+            return PAGE_STATUS
+                .REGISTRATION_AVAILABLE;
+
+        }
+
+        if (
+            safeJourney.eligible !==
+                true
+        ) {
+
+            return PAGE_STATUS
+                .NOT_ELIGIBLE;
+
+        }
+
+        return PAGE_STATUS
+            .READY;
+
+    }
+
+    /* ====================================================================
+       COMPLETE JOURNEY RENDERING
+    ==================================================================== */
+
+    function renderRegistrationJourney(
+        journey
+    ) {
+
+        const safeJourney =
+            isObject(
+                journey
+            )
+                ? journey
+                : {};
+
+        const journeyStatus =
+            resolveJourneyStatus(
+                safeJourney
+            );
+
+        setPageState({
+
+            journey:
+                safeJourney,
+
+            eligibility:
+                safeJourney
+                    .eligibility ||
+                null,
+
+            offer:
+                safeJourney.offer ||
+                null,
+
+            registration:
+                safeJourney
+                    .registration ||
+                null,
+
+            payment:
+                safeJourney.payment ||
+                null,
+
+            enrolment:
+                safeJourney
+                    .enrolment ||
+                null,
+
+            loading:
+                false,
+
+            busy:
+                false,
+
+            error:
+                null
+
+        });
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS
+                    .NOT_ELIGIBLE
+        ) {
+
+            showNotEligibleState(
+                resolveJourneyIneligibilityReason(
+                    safeJourney
+                )
+            );
+
+            return;
+
+        }
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS.BLOCKED
+        ) {
+
+            renderEligibleJourneyModel(
+                safeJourney
+            );
+
+            showBlockedState(
+                resolveBlockedMessage(
+                    safeJourney
+                )
+            );
+
+            return;
+
+        }
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS.ENROLLED
+        ) {
+
+            showEnrolledState(
+                resolveEnrolledMessage(
+                    safeJourney
+                )
+            );
+
+            return;
+
+        }
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS
+                    .ENROLMENT_PENDING
+        ) {
+
+            renderEligibleJourneyModel(
+                safeJourney
+            );
+
+            showEnrolmentPendingState(
+                resolveEnrolmentPendingMessage(
+                    safeJourney
+                )
+            );
+
+            return;
+
+        }
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS
+                    .PAYMENT_CONFIRMED
+        ) {
+
+            renderEligibleJourneyModel(
+                safeJourney
+            );
+
+            showPaymentConfirmedState(
+                resolvePaymentConfirmedMessage(
+                    safeJourney
+                )
+            );
+
+            return;
+
+        }
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS
+                    .PAYMENT_IN_PROGRESS
+        ) {
+
+            renderEligibleJourneyModel(
+                safeJourney
+            );
+
+            showPaymentInProgressState(
+                resolvePaymentInProgressMessage(
+                    safeJourney
+                )
+            );
+
+            return;
+
+        }
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS
+                    .PAYMENT_REQUIRED
+        ) {
+
+            renderEligibleJourneyModel(
+                safeJourney
+            );
+
+            showPaymentRequiredState(
+                resolvePaymentRequiredMessage(
+                    safeJourney
+                )
+            );
+
+            return;
+
+        }
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS.REGISTERED
+        ) {
+
+            showRegisteredState(
+                resolveRegisteredMessage(
+                    safeJourney
+                )
+            );
+
+            return;
+
+        }
+
+        if (
+            journeyStatus ===
+                PAGE_STATUS
+                    .REGISTRATION_AVAILABLE
+        ) {
+
+            renderEligibleJourneyModel(
+                safeJourney
+            );
+
+            showEligibleState();
+
+            enableRegistrationInteraction();
+
+            return;
+
+        }
+
+        showErrorState(
+
+            "The Bridge Programme journey returned an unsupported state.",
+
+            freezeObject({
+
+                code:
+                    "BRIDGE_PROGRAMME_PAGE_UNSUPPORTED_JOURNEY_STATE",
+
+                journeyStatus,
+
+                journey:
+                    safeJourney
+
+            })
+
+        );
+
+    }
+
+    /* ====================================================================
+       ELIGIBLE JOURNEY MODEL
+    ==================================================================== */
+
+    function renderEligibleJourneyModel(
+        journey
+    ) {
+
+        const safeJourney =
+            isObject(
+                journey
+            )
+                ? journey
+                : {};
+
+        const eligibility =
+            isObject(
+                safeJourney.eligibility
+            )
+                ? safeJourney
+                    .eligibility
+                : {};
+
+        const offer =
+            isObject(
+                safeJourney.offer
+            )
+                ? safeJourney.offer
+                : {};
+
+        const academicEligibility =
+            isObject(
+                eligibility
+                    .academicEligibility
+            )
+                ? eligibility
+                    .academicEligibility
+                : {};
+
+        const commercialEligibility =
+            isObject(
+                eligibility
+                    .commercialEligibility
+            )
+                ? eligibility
+                    .commercialEligibility
+                : {};
+
+        const sourceProgrammeCode =
+            normaliseProgrammeCode(
+
+                safeJourney
+                    .sourceProgrammeCode ||
+                eligibility
+                    .sourceProgrammeCode ||
+                academicEligibility
+                    .sourceProgrammeCode ||
+                academicEligibility
+                    .sourceProgram ||
+                commercialEligibility
+                    .sourceProgrammeCode ||
+                pageState
+                    .sourceProgrammeCode
 
             );
 
-        const targetProgramCode =
-            normalizeProgramCode(
+        const targetProgrammeCode =
+            normaliseProgrammeCode(
 
-                bridgeModel.targetProgram ||
-                upgradeModel.nextProgram ||
-                upgradeModel.programCode
+                safeJourney
+                    .targetProgrammeCode ||
+                eligibility
+                    .targetProgrammeCode ||
+                academicEligibility
+                    .targetProgrammeCode ||
+                academicEligibility
+                    .targetProgram ||
+                commercialEligibility
+                    .targetProgrammeCode ||
+                pageState
+                    .targetProgrammeCode
 
             );
 
-        const currentProgramName =
-            upgradeModel?.currentProgram?.name ||
-            PROGRAM_NAMES[currentProgramCode] ||
-            currentProgramCode ||
-            "Current programme";
+        const sourceProgrammeName =
+            resolveJourneyProgrammeName(
 
-        const targetProgramName =
-            upgradeModel.programName ||
-            PROGRAM_NAMES[targetProgramCode] ||
-            targetProgramCode ||
-            "Bridge destination";
+                sourceProgrammeCode,
+
+                [
+
+                    academicEligibility
+                        .sourceProgrammeName,
+
+                    academicEligibility
+                        .sourceProgramName,
+
+                    commercialEligibility
+                        .currentProgram &&
+                    commercialEligibility
+                        .currentProgram
+                        .name,
+
+                    commercialEligibility
+                        .sourceProgrammeName
+
+                ]
+
+            );
+
+        const targetProgrammeName =
+            resolveJourneyProgrammeName(
+
+                targetProgrammeCode,
+
+                [
+
+                    academicEligibility
+                        .targetProgrammeName,
+
+                    academicEligibility
+                        .targetProgramName,
+
+                    commercialEligibility
+                        .programName,
+
+                    commercialEligibility
+                        .programmeName,
+
+                    commercialEligibility
+                        .nextProgram &&
+                    commercialEligibility
+                        .nextProgram
+                        .name,
+
+                    commercialEligibility
+                        .targetProgrammeName
+
+                ]
+
+            );
 
         setText(
+
             elements.offerTitle,
-            upgradeModel.bridgeProgram ||
-            bridgeModel.title ||
-            upgradeModel.title ||
-            "Bridge Programme"
+
+            resolveFirstString([
+
+                offer.title,
+
+                commercialEligibility
+                    .bridgeProgram,
+
+                commercialEligibility
+                    .bridgeProgramme,
+
+                academicEligibility.title,
+
+                "Bridge Programme"
+
+            ])
+
         );
 
         setText(
+
             elements.offerDescription,
-            upgradeModel.description ||
-            bridgeModel.description ||
-            "Upgrade through the approved Agile AI University Bridge Programme."
+
+            resolveFirstString([
+
+                offer.description,
+
+                commercialEligibility
+                    .description,
+
+                academicEligibility
+                    .description,
+
+                "Upgrade through the approved Agile AI University Bridge Programme."
+
+            ])
+
         );
 
         setText(
@@ -1163,257 +4506,772 @@
 
         setText(
             elements.currentProgramName,
-            currentProgramName
+            sourceProgrammeName
         );
 
         setText(
+
             elements.currentProgramCode,
-            currentProgramCode || "—"
+
+            sourceProgrammeCode ||
+            "—"
+
         );
 
         setText(
             elements.targetProgramName,
-            targetProgramName
+            targetProgrammeName
         );
 
         setText(
+
             elements.targetProgramCode,
-            targetProgramCode || "—"
+
+            targetProgrammeCode ||
+            "—"
+
         );
 
         renderCommercialInformation(
-            upgradeModel
+            offer,
+            commercialEligibility
         );
 
-        enforceRegistrationSafety();
+        setPageState({
+
+            sourceProgrammeCode,
+
+            targetProgrammeCode,
+
+            eligibility,
+
+            offer
+
+        });
 
     }
 
+    /* ====================================================================
+       COMMERCIAL INFORMATION RENDERING
+    ==================================================================== */
+
     function renderCommercialInformation(
-        upgradeModel
+        offer,
+        commercialEligibility
     ) {
 
+        const governedOffer =
+            isObject(
+                offer
+            )
+                ? offer
+                : {};
+
+        const governedCommercialEligibility =
+            isObject(
+                commercialEligibility
+            )
+                ? commercialEligibility
+                : {};
+
+        const currency =
+            normaliseString(
+
+                governedOffer.currency ||
+                governedCommercialEligibility
+                    .currency ||
+                "INR"
+
+            ).toUpperCase();
+
+        const baseAmount =
+            resolveFirstFiniteNumber([
+
+                governedOffer
+                    .baseAmount,
+
+                governedCommercialEligibility
+                    .baseAmount,
+
+                governedCommercialEligibility
+                    .baseFee
+
+            ]);
+
+        const gstRate =
+            resolveFirstFiniteNumber([
+
+                governedOffer.taxRate,
+
+                governedOffer.gstRate,
+
+                governedCommercialEligibility
+                    .gstRate,
+
+                governedCommercialEligibility
+                    .taxRate
+
+            ]);
+
+        const gstAmount =
+            resolveFirstFiniteNumber([
+
+                governedOffer
+                    .taxAmount,
+
+                governedOffer
+                    .gstAmount,
+
+                governedCommercialEligibility
+                    .gstAmount,
+
+                governedCommercialEligibility
+                    .taxAmount
+
+            ]);
+
+        const totalAmount =
+            resolveFirstFiniteNumber([
+
+                governedOffer
+                    .totalAmount,
+
+                governedCommercialEligibility
+                    .totalPayable,
+
+                governedCommercialEligibility
+                    .totalAmount,
+
+                governedCommercialEligibility
+                    .payableAmount
+
+            ]);
+
+        const standardFee =
+            resolveFirstFiniteNumber([
+
+                governedOffer
+                    .standardFee,
+
+                governedCommercialEligibility
+                    .standardFee
+
+            ]);
+
+        const fullProgrammeFee =
+            resolveFirstFiniteNumber([
+
+                governedOffer
+                    .fullProgrammeFee,
+
+                governedCommercialEligibility
+                    .fullProgrammeFee
+
+            ]);
+
         setText(
+
             elements.baseFee,
+
             formatCurrency(
-                upgradeModel.baseFee,
-                upgradeModel.currency
+                baseAmount,
+                currency
             )
+
         );
 
         setText(
+
             elements.gstRate,
+
             formatGstRate(
-                upgradeModel.gstRate
+                gstRate
             )
+
         );
 
         setText(
+
             elements.gstAmount,
+
             formatCurrency(
-                upgradeModel.gstAmount,
-                upgradeModel.currency
+                gstAmount,
+                currency
             )
+
         );
 
         setText(
+
             elements.totalPayable,
+
             formatCurrency(
-                upgradeModel.totalPayable,
-                upgradeModel.currency
+                totalAmount,
+                currency
             )
+
         );
 
         setText(
+
             elements.standardFee,
+
             formatCurrency(
-                upgradeModel.standardFee,
-                upgradeModel.currency
+                standardFee,
+                currency
             )
+
         );
 
         setText(
+
             elements.fullProgrammeFee,
+
             formatCurrency(
-                upgradeModel.fullProgrammeFee,
-                upgradeModel.currency
+                fullProgrammeFee,
+                currency
             )
+
         );
+
+        const offerExpiryValue =
+            resolveFirstString([
+
+                governedOffer
+                    .validUntil,
+
+                governedCommercialEligibility
+                    .offerEndsOn,
+
+                governedCommercialEligibility
+                    .validUntil,
+
+                governedCommercialEligibility
+                    .expiresAt
+
+            ]);
+
+        renderOfferExpiry(
+            offerExpiryValue
+        );
+
+        setText(
+
+            elements.taxDisclaimer,
+
+            resolveFirstString([
+
+                governedOffer
+                    .taxDisclaimer,
+
+                governedCommercialEligibility
+                    .taxDisclaimer,
+
+                "Final tax and payable amount will be confirmed during secure checkout."
+
+            ])
+
+        );
+
+    }
+
+    /* ====================================================================
+       OFFER EXPIRY RENDERING
+    ==================================================================== */
+
+    function renderOfferExpiry(
+        offerExpiryValue
+    ) {
 
         const formattedOfferDate =
             formatOfferDate(
-                upgradeModel.offerEndsOn
+                offerExpiryValue
             );
 
-        if (formattedOfferDate) {
+        if (
+            formattedOfferDate
+        ) {
 
             setText(
+
                 elements.offerExpiry,
+
                 "Offer available through " +
                 formattedOfferDate +
                 "."
+
             );
 
             setText(
+
                 elements.offerExpiryBadge,
+
                 "Available through " +
                 formattedOfferDate
+
             );
 
-        }
-        else {
-
-            setText(
-                elements.offerExpiry,
-                "Offer availability is subject to the current approved campaign."
-            );
-
-            setText(
-                elements.offerExpiryBadge,
-                "Limited-time offer"
-            );
+            return;
 
         }
 
         setText(
-            elements.taxDisclaimer,
-            upgradeModel.taxDisclaimer ||
-            "Final tax and payable amount will be confirmed during secure checkout."
+
+            elements.offerExpiry,
+
+            "Offer availability is subject to the current approved campaign."
+
+        );
+
+        setText(
+
+            elements.offerExpiryBadge,
+
+            "Limited-time offer"
+
         );
 
     }
 
     /* ====================================================================
-       REGISTRATION SAFETY
+       JOURNEY MESSAGE RESOLUTION
     ==================================================================== */
 
-    function enforceRegistrationSafety() {
+    function resolveJourneyIneligibilityReason(
+        journey
+    ) {
 
-        if (elements.termsConfirmation) {
+        const eligibility =
+            isObject(
+                journey &&
+                journey.eligibility
+            )
+                ? journey.eligibility
+                : {};
 
-            elements.termsConfirmation.checked =
-                false;
+        return resolveFirstString([
 
-            elements.termsConfirmation.disabled =
-                true;
+            eligibility.reason,
 
-        }
+            eligibility.message,
 
-        if (elements.registerButton) {
+            journey &&
+            journey.reason,
 
-            elements.registerButton.disabled =
-                true;
+            "No eligible Bridge Programme pathway is currently available for your credential."
 
-            elements.registerButton.textContent =
-                DEFAULT_REGISTRATION_LABEL;
-
-            elements.registerButton.setAttribute(
-                "aria-disabled",
-                "true"
-            );
-
-        }
-
-        setText(
-            elements.registrationNotice,
-            DEFAULT_REGISTRATION_NOTICE
-        );
+        ]);
 
     }
 
-    function handleTermsConfirmationChange() {
+    function resolveRegisteredMessage(
+        journey
+    ) {
 
-        /*
-         * Reserved for the governed registration-service
-         * implementation. The control remains disabled in
-         * the current Revenue Sprint foundation.
-         */
+        const registration =
+            isObject(
+                journey &&
+                journey.registration
+            )
+                ? journey.registration
+                : {};
 
-        enforceRegistrationSafety();
+        return resolveFirstString([
+
+            registration.message,
+
+            registration
+                .statusMessage,
+
+            "Your Bridge Programme registration is already available in your enrolment workspace."
+
+        ]);
 
     }
 
-    function handleRegistrationAction(event) {
+    function resolvePaymentRequiredMessage(
+        journey
+    ) {
 
-        if (event) {
+        const registration =
+            isObject(
+                journey &&
+                journey.registration
+            )
+                ? journey.registration
+                : {};
 
-            event.preventDefault();
+        return resolveFirstString([
 
-        }
+            registration
+                .paymentMessage,
 
-        announce(
-            "Bridge Programme registration is not yet enabled."
-        );
+            registration.message,
 
-        console.warn(
-            "[BridgeProgrammeRegistration] Registration action blocked because no governed registration workflow is connected."
-        );
+            PAYMENT_SERVICE_UNAVAILABLE_NOTICE
+
+        ]);
+
+    }
+
+    function resolvePaymentInProgressMessage(
+        journey
+    ) {
+
+        const payment =
+            isObject(
+                journey &&
+                journey.payment
+            )
+                ? journey.payment
+                : {};
+
+        return resolveFirstString([
+
+            payment.message,
+
+            payment.failureReason,
+
+            "Your payment is currently being processed."
+
+        ]);
+
+    }
+
+    function resolvePaymentConfirmedMessage(
+        journey
+    ) {
+
+        const payment =
+            isObject(
+                journey &&
+                journey.payment
+            )
+                ? journey.payment
+                : {};
+
+        return resolveFirstString([
+
+            payment.message,
+
+            "Your payment has been confirmed. Enrolment is being prepared."
+
+        ]);
+
+    }
+
+    function resolveEnrolmentPendingMessage(
+        journey
+    ) {
+
+        const enrolment =
+            isObject(
+                journey &&
+                journey.enrolment
+            )
+                ? journey.enrolment
+                : {};
+
+        return resolveFirstString([
+
+            enrolment.message,
+
+            "Your registration and payment are confirmed. Enrolment is being completed."
+
+        ]);
+
+    }
+
+    function resolveEnrolledMessage(
+        journey
+    ) {
+
+        const enrolment =
+            isObject(
+                journey &&
+                journey.enrolment
+            )
+                ? journey.enrolment
+                : {};
+
+        return resolveFirstString([
+
+            enrolment.message,
+
+            "Your Bridge Programme enrolment has already been confirmed."
+
+        ]);
+
+    }
+
+    function resolveBlockedMessage(
+        journey
+    ) {
+
+        const registration =
+            isObject(
+                journey &&
+                journey.registration
+            )
+                ? journey.registration
+                : {};
+
+        const payment =
+            isObject(
+                journey &&
+                journey.payment
+            )
+                ? journey.payment
+                : {};
+
+        const enrolment =
+            isObject(
+                journey &&
+                journey.enrolment
+            )
+                ? journey.enrolment
+                : {};
+
+        return resolveFirstString([
+
+            registration.message,
+
+            payment.failureReason,
+
+            payment.message,
+
+            enrolment.message,
+
+            "This Bridge Programme registration cannot currently continue."
+
+        ]);
 
     }
 
     /* ====================================================================
-       PORTAL EVENTS
+       VALUE RESOLUTION HELPERS
     ==================================================================== */
 
-    function handlePortalReadinessEvent() {
+    function resolveFirstString(
+        values
+    ) {
 
         if (
-            !state.loading &&
-            !state.currentUpgradeModel
+            !Array.isArray(
+                values
+            )
         ) {
 
-            loadBridgeProgramme();
+            return "";
 
         }
+
+        for (
+            let index = 0;
+            index <
+                values.length;
+            index += 1
+        ) {
+
+            const value =
+                normaliseString(
+                    values[index]
+                );
+
+            if (
+                isNonEmptyString(
+                    value
+                )
+            ) {
+
+                return value;
+
+            }
+
+        }
+
+        return "";
+
+    }
+
+    function resolveFirstFiniteNumber(
+        values
+    ) {
+
+        if (
+            !Array.isArray(
+                values
+            )
+        ) {
+
+            return null;
+
+        }
+
+        for (
+            let index = 0;
+            index <
+                values.length;
+            index += 1
+        ) {
+
+            const value =
+                values[index];
+
+            if (
+                value ===
+                    null ||
+                value ===
+                    undefined ||
+                value ===
+                    ""
+            ) {
+
+                continue;
+
+            }
+
+            const numericValue =
+                Number(
+                    value
+                );
+
+            if (
+                Number.isFinite(
+                    numericValue
+                )
+            ) {
+
+                return numericValue;
+
+            }
+
+        }
+
+        return null;
+
+    }
+
+    function resolveJourneyProgrammeName(
+        programmeCode,
+        candidateNames
+    ) {
+
+        const resolvedName =
+            resolveFirstString(
+                candidateNames
+            );
+
+        if (
+            isNonEmptyString(
+                resolvedName
+            )
+        ) {
+
+            return resolvedName;
+
+        }
+
+        return resolveProgrammeName(
+            programmeCode
+        );
 
     }
 
     /* ====================================================================
-       FORMATTING
+       CURRENCY FORMATTING
     ==================================================================== */
 
     function formatCurrency(
         value,
-        currency = "INR"
+        currency
     ) {
 
-        const amount =
-            Number(value);
-
-        if (!Number.isFinite(amount)) {
+        if (
+            value ===
+                null ||
+            value ===
+                undefined ||
+            value ===
+                ""
+        ) {
 
             return "—";
 
         }
 
+        const amount =
+            Number(
+                value
+            );
+
+        if (
+            !Number.isFinite(
+                amount
+            )
+        ) {
+
+            return "—";
+
+        }
+
+        const governedCurrency =
+            normaliseString(
+                currency
+            ).toUpperCase() ||
+            "INR";
+
         try {
 
             return new Intl.NumberFormat(
+
                 "en-IN",
+
                 {
+
                     style:
                         "currency",
 
                     currency:
-                        currency || "INR",
+                        governedCurrency,
 
                     minimumFractionDigits:
                         0,
 
                     maximumFractionDigits:
                         2
+
                 }
-            ).format(amount);
+
+            ).format(
+                amount
+            );
 
         }
         catch (error) {
 
             console.warn(
-                "[BridgeProgrammeRegistration] Currency formatting failed.",
+
+                `[${PAGE_CONTROLLER_NAME}] Currency formatting failed.`,
+
                 error
+
             );
 
-            return "₹" +
+            if (
+                governedCurrency ===
+                    "INR"
+            ) {
+
+                return "₹" +
+                    amount.toLocaleString(
+                        "en-IN"
+                    );
+
+            }
+
+            return governedCurrency +
+                " " +
                 amount.toLocaleString(
                     "en-IN"
                 );
@@ -1422,27 +5280,60 @@
 
     }
 
-    function formatGstRate(value) {
+    function formatGstRate(
+        value
+    ) {
 
-        const rate =
-            Number(value);
+        if (
+            value ===
+                null ||
+            value ===
+                undefined ||
+            value ===
+                ""
+        ) {
 
-        if (!Number.isFinite(rate)) {
-
-            return "";
+            return "—";
 
         }
 
-        return "(" + rate + "%)";
+        const rate =
+            Number(
+                value
+            );
+
+        if (
+            !Number.isFinite(
+                rate
+            )
+        ) {
+
+            return "—";
+
+        }
+
+        return "(" +
+            rate +
+            "%)";
 
     }
 
-    function formatOfferDate(dateKey) {
+    /* ====================================================================
+       OFFER DATE FORMATTING
+    ==================================================================== */
+
+    function formatOfferDate(
+        value
+    ) {
+
+        const governedValue =
+            normaliseString(
+                value
+            );
 
         if (
-            typeof dateKey !== "string" ||
-            !/^\d{4}-\d{2}-\d{2}$/.test(
-                dateKey
+            !isNonEmptyString(
+                governedValue
             )
         ) {
 
@@ -1450,28 +5341,67 @@
 
         }
 
-        const parts =
-            dateKey.split("-");
-
-        const year =
-            Number(parts[0]);
-
-        const month =
-            Number(parts[1]);
-
-        const day =
-            Number(parts[2]);
-
-        const date =
-            new Date(
-                Date.UTC(
-                    year,
-                    month - 1,
-                    day
-                )
-            );
+        let date =
+            null;
 
         if (
+            /^\d{4}-\d{2}-\d{2}$/.test(
+                governedValue
+            )
+        ) {
+
+            const parts =
+                governedValue.split(
+                    "-"
+                );
+
+            date =
+                new Date(
+
+                    Date.UTC(
+
+                        Number(
+                            parts[0]
+                        ),
+
+                        Number(
+                            parts[1]
+                        ) -
+                        1,
+
+                        Number(
+                            parts[2]
+                        )
+
+                    )
+
+                );
+
+        }
+        else {
+
+            const parsedTimestamp =
+                Date.parse(
+                    governedValue
+                );
+
+            if (
+                Number.isFinite(
+                    parsedTimestamp
+                )
+            ) {
+
+                date =
+                    new Date(
+                        parsedTimestamp
+                    );
+
+            }
+
+        }
+
+        if (
+            !date ||
             Number.isNaN(
                 date.getTime()
             )
@@ -1484,8 +5414,11 @@
         try {
 
             return new Intl.DateTimeFormat(
+
                 "en-IN",
+
                 {
+
                     day:
                         "numeric",
 
@@ -1497,315 +5430,2165 @@
 
                     timeZone:
                         "UTC"
+
                 }
-            ).format(date);
+
+            ).format(
+                date
+            );
 
         }
         catch (error) {
 
-            return (
-                day +
-                " " +
-                resolveMonthName(month) +
-                " " +
-                year
-            );
-
-        }
-
-    }
-
-    function resolveMonthName(month) {
-
-        const names = [
-
-            "",
-
-            "January",
-
-            "February",
-
-            "March",
-
-            "April",
-
-            "May",
-
-            "June",
-
-            "July",
-
-            "August",
-
-            "September",
-
-            "October",
-
-            "November",
-
-            "December"
-
-        ];
-
-        return names[month] || "";
-
-    }
-
-    /* ====================================================================
-       NORMALIZATION
-    ==================================================================== */
-
-    function normalizeProgramCode(value) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
             return null;
 
         }
 
-        const normalized =
-            String(value)
-                .trim()
-                .toUpperCase();
+    }
 
-        return normalized || null;
+    /* ====================================================================
+       END OF BLOCK 4 OF 6
+
+       Do not close the IIFE here.
+       Block 5 must continue immediately below this section.
+    ==================================================================== */
+
+        /* ====================================================================
+       BLOCK 5 OF 6
+       REGISTRATION INTERACTION AND JOURNEY CONTROLLER EVENTS
+    ==================================================================== */
+
+    /* ====================================================================
+       REGISTRATION ACTION READINESS
+    ==================================================================== */
+
+    function canCreateRegistration() {
+
+        return Boolean(
+
+            pageState.initialised ===
+                true &&
+
+            pageState.busy !==
+                true &&
+
+            pageState.loading !==
+                true &&
+
+            pageState.status ===
+                PAGE_STATUS
+                    .REGISTRATION_AVAILABLE &&
+
+            pageState.acknowledgementAccepted ===
+                true &&
+
+            pageState.registrationActionAvailable ===
+                true &&
+
+            pageState.journey &&
+
+            pageState.journey.eligible ===
+                true &&
+
+            pageState.journey.offerAvailable ===
+                true &&
+
+            pageState.journey.registrationExists !==
+                true
+
+        );
 
     }
 
-    function normalizeStatus(value) {
+    function updateRegistrationActionReadiness() {
+
+        const acknowledgementAccepted =
+            Boolean(
+
+                elements
+                    .termsConfirmation &&
+                elements
+                    .termsConfirmation
+                    .checked ===
+                    true
+
+            );
+
+        const journey =
+            isObject(
+                pageState.journey
+            )
+                ? pageState.journey
+                : {};
+
+        const registrationAvailable =
+            Boolean(
+
+                pageState.status ===
+                    PAGE_STATUS
+                        .REGISTRATION_AVAILABLE &&
+
+                journey.eligible ===
+                    true &&
+
+                journey.offerAvailable ===
+                    true &&
+
+                journey.registrationExists !==
+                    true &&
+
+                pageState.busy !==
+                    true
+
+            );
+
+        const registrationActionAvailable =
+            Boolean(
+
+                registrationAvailable &&
+                acknowledgementAccepted
+
+            );
+
+        setPageState({
+
+            acknowledgementAccepted,
+
+            registrationActionAvailable
+
+        });
+
+        setDisabled(
+
+            elements.registerButton,
+
+            !registrationActionAvailable
+
+        );
+
+        setText(
+
+            elements.registerButton,
+
+            DEFAULT_REGISTRATION_LABEL
+
+        );
 
         if (
-            value === null ||
-            value === undefined
+            registrationActionAvailable
         ) {
 
-            return null;
+            setText(
+
+                elements.registrationNotice,
+
+                "Your confirmation is recorded. Select Register for Bridge Programme to continue."
+
+            );
+
+            return;
 
         }
 
-        const normalized =
-            String(value)
-                .trim()
-                .toUpperCase();
+        if (
+            registrationAvailable
+        ) {
 
-        return normalized || null;
+            setText(
+
+                elements.registrationNotice,
+
+                ACKNOWLEDGEMENT_REQUIRED_NOTICE
+
+            );
+
+            return;
+
+        }
+
+        setText(
+
+            elements.registrationNotice,
+
+            DEFAULT_REGISTRATION_NOTICE
+
+        );
 
     }
 
     /* ====================================================================
-       ERROR HANDLING
+       ACKNOWLEDGEMENT CHANGE
     ==================================================================== */
 
-    function resolveIneligibilityReason(
-        upgradeModel
-    ) {
+    function handleTermsConfirmationChange() {
 
         if (
-            upgradeModel &&
-            typeof upgradeModel.reason ===
-                "string" &&
-            upgradeModel.reason.trim()
-        ) {
-
-            return upgradeModel.reason.trim();
-
-        }
-
-        if (
-            upgradeModel &&
-            Array.isArray(
-                upgradeModel.reasons
-            ) &&
-            upgradeModel.reasons.length > 0
-        ) {
-
-            return String(
-                upgradeModel.reasons[0]
-            );
-
-        }
-
-        return "No eligible Bridge Programme pathway is currently available for your credential.";
-
-    }
-
-    function resolveErrorMessage(error) {
-
-        if (
-            error &&
-            typeof error.message ===
-                "string" &&
-            error.message.trim()
+            pageState.busy ||
+            pageState.loading
         ) {
 
             if (
-                error.message.includes(
-                    "EligibilityService"
-                ) ||
-                error.message.includes(
-                    "BridgeProgramService"
-                )
+                elements
+                    .termsConfirmation
             ) {
 
-                return "A required Bridge Programme service could not be loaded. Please refresh the page.";
+                elements
+                    .termsConfirmation
+                    .checked =
+                    pageState
+                        .acknowledgementAccepted ===
+                    true;
 
             }
 
+            return;
+
         }
 
-        return "We could not load your Bridge Programme registration details. Please refresh the page or try again later.";
+        updateRegistrationActionReadiness();
+
+        if (
+            pageState
+                .acknowledgementAccepted ===
+            true
+        ) {
+
+            announce(
+                "Registration confirmation accepted. The registration button is now available."
+            );
+
+        }
+        else {
+
+            announce(
+                "Registration confirmation removed. Confirm the information to continue."
+            );
+
+        }
 
     }
 
     /* ====================================================================
-       DOM HELPERS
+       REGISTRATION CREATION INPUT
     ==================================================================== */
 
-    function setHidden(
-        element,
-        hidden
-    ) {
+    function buildRegistrationActionInput() {
 
-        if (!element) {
+        const pageContext =
+            resolvePageContext();
 
-            return;
+        const journey =
+            isObject(
+                pageState.journey
+            )
+                ? pageState.journey
+                : {};
 
-        }
+        const eligibility =
+            isObject(
+                pageState.eligibility
+            )
+                ? pageState.eligibility
+                : (
+                    isObject(
+                        journey.eligibility
+                    )
+                        ? journey.eligibility
+                        : null
+                );
 
-        element.hidden =
-            Boolean(hidden);
+        const offer =
+            isObject(
+                pageState.offer
+            )
+                ? pageState.offer
+                : (
+                    isObject(
+                        journey.offer
+                    )
+                        ? journey.offer
+                        : null
+                );
+
+        return freezeObject({
+
+            sourceProgrammeCode:
+                normaliseProgrammeCode(
+
+                    pageState
+                        .sourceProgrammeCode ||
+                    journey
+                        .sourceProgrammeCode ||
+                    pageContext
+                        .sourceProgrammeCode
+
+                ),
+
+            targetProgrammeCode:
+                normaliseProgrammeCode(
+
+                    pageState
+                        .targetProgrammeCode ||
+                    journey
+                        .targetProgrammeCode ||
+                    pageContext
+                        .targetProgrammeCode
+
+                ),
+
+            createIfMissing:
+                true,
+
+            acknowledgementAccepted:
+                true,
+
+            acknowledgementAcceptedAt:
+                nowIsoString(),
+
+            eligibility,
+
+            offer,
+
+            forceEligibility:
+                false,
+
+            forceOffer:
+                false,
+
+            forceRegistrationResolution:
+                true,
+
+            initiatePayment:
+                false,
+
+            resolvePaymentStatus:
+                false,
+
+            resolveEnrolmentAfterPayment:
+                false,
+
+            source:
+                "STUDENT_PORTAL"
+
+        });
 
     }
 
-    function setText(
-        element,
-        value
+    /* ====================================================================
+       REGISTRATION ACTION
+    ==================================================================== */
+
+    async function handleRegistrationAction(
+        event
     ) {
 
-        if (!element) {
+        if (
+            event &&
+            typeof event.preventDefault ===
+                "function"
+        ) {
 
-            return;
+            event.preventDefault();
 
         }
 
-        element.textContent =
-            value === null ||
-            value === undefined
-                ? ""
-                : String(value);
+        if (
+            registrationActionPromise
+        ) {
+
+            return registrationActionPromise;
+
+        }
+
+        if (
+            !canCreateRegistration()
+        ) {
+
+            updateRegistrationActionReadiness();
+
+            announce(
+                "Please review and confirm the Bridge Programme information before registering."
+            );
+
+            return null;
+
+        }
+
+        registrationActionPromise =
+            (
+                async function performRegistrationAction() {
+
+                    showRegistrationInProgressState();
+
+                    dispatchPageEvent(
+
+                        PAGE_EVENT
+                            .REGISTRATION_STARTED,
+
+                        {
+
+                            state:
+                                pageState
+
+                        }
+
+                    );
+
+                    try {
+
+                        const controller =
+                            getRequiredJourneyController();
+
+                        const input =
+                            buildRegistrationActionInput();
+
+                        const result =
+                            await controller
+                                .resolveRegistrationJourney(
+                                    input
+                                );
+
+                        const journey =
+                            normaliseJourneyResult(
+                                result,
+                                input
+                            );
+
+                        setPageState({
+
+                            journey,
+
+                            eligibility:
+                                journey.eligibility,
+
+                            offer:
+                                journey.offer,
+
+                            registration:
+                                journey.registration,
+
+                            payment:
+                                journey.payment,
+
+                            enrolment:
+                                journey.enrolment,
+
+                            acknowledgementAccepted:
+                                true,
+
+                            registrationActionAvailable:
+                                false,
+
+                            busy:
+                                false,
+
+                            loading:
+                                false,
+
+                            error:
+                                null
+
+                        });
+
+                        renderRegistrationJourney(
+                            journey
+                        );
+
+                        dispatchPageEvent(
+
+                            PAGE_EVENT
+                                .REGISTRATION_COMPLETED,
+
+                            {
+
+                                journey,
+
+                                registration:
+                                    journey.registration,
+
+                                created:
+                                    journey.created ===
+                                    true,
+
+                                restored:
+                                    journey.restored ===
+                                    true,
+
+                                existing:
+                                    journey.existing ===
+                                    true,
+
+                                idempotent:
+                                    journey.idempotent ===
+                                    true,
+
+                                state:
+                                    pageState
+
+                            }
+
+                        );
+
+                        announce(
+
+                            journey.created ===
+                                true
+                                ? "Your Bridge Programme registration has been created successfully."
+                                : "Your existing Bridge Programme registration has been restored."
+
+                        );
+
+                        return journey;
+
+                    }
+                    catch (error) {
+
+                        console.error(
+
+                            `[${PAGE_CONTROLLER_NAME}] Registration action failed.`,
+
+                            error
+
+                        );
+
+                        /*
+                         * Restore the eligible workspace whenever the
+                         * controller still reports a valid offer.
+                         */
+
+                        const controller =
+                            getJourneyController();
+
+                        const controllerState =
+                            controller &&
+                            typeof controller
+                                .getState ===
+                                "function"
+                                ? controller
+                                    .getState()
+                                : null;
+
+                        const fallbackJourney =
+                            normaliseJourneyResult(
+
+                                {
+
+                                    eligible:
+                                        Boolean(
+                                            controllerState &&
+                                            controllerState
+                                                .eligibility &&
+                                            controllerState
+                                                .eligibility
+                                                .eligible ===
+                                                true
+                                        ),
+
+                                    offerAvailable:
+                                        Boolean(
+                                            controllerState &&
+                                            controllerState.offer &&
+                                            controllerState
+                                                .offer
+                                                .offerAvailable ===
+                                                true
+                                        ),
+
+                                    registrationExists:
+                                        Boolean(
+                                            controllerState &&
+                                            controllerState
+                                                .registration &&
+                                            controllerState
+                                                .registration
+                                                .registrationExists ===
+                                                true
+                                        ),
+
+                                    eligibility:
+                                        controllerState
+                                            ? controllerState
+                                                .eligibility
+                                            : pageState
+                                                .eligibility,
+
+                                    offer:
+                                        controllerState
+                                            ? controllerState
+                                                .offer
+                                            : pageState.offer,
+
+                                    registration:
+                                        controllerState
+                                            ? controllerState
+                                                .registration
+                                            : pageState
+                                                .registration,
+
+                                    payment:
+                                        controllerState
+                                            ? controllerState
+                                                .payment
+                                            : pageState.payment,
+
+                                    enrolment:
+                                        controllerState
+                                            ? controllerState
+                                                .enrolment
+                                            : pageState
+                                                .enrolment,
+
+                                    status:
+                                        controllerState
+                                            ? controllerState.status
+                                            : "ERROR",
+
+                                    state:
+                                        controllerState ||
+                                        {}
+
+                                },
+
+                                buildRegistrationActionInput()
+
+                            );
+
+                        if (
+                            fallbackJourney.eligible ===
+                                true &&
+                            fallbackJourney.offerAvailable ===
+                                true &&
+                            fallbackJourney.registrationExists !==
+                                true
+                        ) {
+
+                            setPageState({
+
+                                journey:
+                                    fallbackJourney,
+
+                                eligibility:
+                                    fallbackJourney
+                                        .eligibility,
+
+                                offer:
+                                    fallbackJourney.offer,
+
+                                registration:
+                                    null,
+
+                                payment:
+                                    fallbackJourney.payment,
+
+                                enrolment:
+                                    fallbackJourney.enrolment,
+
+                                status:
+                                    PAGE_STATUS
+                                        .REGISTRATION_AVAILABLE,
+
+                                busy:
+                                    false,
+
+                                loading:
+                                    false,
+
+                                acknowledgementAccepted:
+                                    false,
+
+                                registrationActionAvailable:
+                                    false,
+
+                                error
+
+                            });
+
+                            renderEligibleJourneyModel(
+                                fallbackJourney
+                            );
+
+                            showEligibleState();
+
+                            enableRegistrationInteraction();
+
+                            setText(
+
+                                elements
+                                    .registrationNotice,
+
+                                resolveRegistrationErrorMessage(
+                                    error
+                                )
+
+                            );
+
+                            announce(
+                                "Your registration could not be completed. Please review the message and try again."
+                            );
+
+                        }
+                        else {
+
+                            showErrorState(
+
+                                resolveRegistrationErrorMessage(
+                                    error
+                                ),
+
+                                error
+
+                            );
+
+                        }
+
+                        throw error;
+
+                    }
+
+                }
+            )();
+
+        try {
+
+            return await registrationActionPromise;
+
+        }
+        finally {
+
+            registrationActionPromise =
+                null;
+
+        }
 
     }
 
-    function announce(message) {
+    /* ====================================================================
+       REGISTRATION ERROR MESSAGE RESOLUTION
+    ==================================================================== */
 
-        if (!elements.statusAnnouncer) {
+    function resolveRegistrationErrorMessage(
+        error
+    ) {
 
-            return;
+        const errorCode =
+            normaliseStatus(
+                error &&
+                error.code
+            );
+
+        const errorMessage =
+            normaliseString(
+                error &&
+                error.message
+            );
+
+        if (
+            errorMessage
+                .toLowerCase()
+                .includes(
+                    "acknowledgement"
+                )
+        ) {
+
+            return "Please confirm that you reviewed the Bridge Programme pathway, fee and tax information before continuing.";
 
         }
 
-        elements.statusAnnouncer.textContent =
-            "";
+        if (
+            errorCode.includes(
+                "REGISTRATION_CREATION_FAILED"
+            )
+        ) {
 
-        window.setTimeout(
-            function () {
+            if (
+                errorMessage
+            ) {
 
-                elements.statusAnnouncer.textContent =
-                    message || "";
+                return errorMessage;
+
+            }
+
+            return "Your Bridge Programme registration could not be created. Please try again.";
+
+        }
+
+        if (
+            errorCode.includes(
+                "REGISTRATION_RESOLUTION_FAILED"
+            )
+        ) {
+
+            return "We could not confirm whether an existing registration is available. Please retry.";
+
+        }
+
+        if (
+            errorCode.includes(
+                "DEPENDENCY_UNAVAILABLE"
+            )
+        ) {
+
+            return "The registration service is temporarily unavailable. Please refresh the page and retry.";
+
+        }
+
+        if (
+            errorCode.includes(
+                "AUTH_REQUIRED"
+            )
+        ) {
+
+            return "Your authenticated learner session is unavailable. Please sign in again before registering.";
+
+        }
+
+        return "Your Bridge Programme registration could not be completed. Please retry.";
+
+    }
+
+    /* ====================================================================
+       JOURNEY CONTROLLER EVENT DETAIL
+    ==================================================================== */
+
+    function resolveControllerEventState(
+        event
+    ) {
+
+        const detail =
+            event &&
+            isObject(
+                event.detail
+            )
+                ? event.detail
+                : {};
+
+        return isObject(
+            detail.state
+        )
+            ? detail.state
+            : null;
+
+    }
+
+    function buildJourneyFromControllerState(
+        controllerState
+    ) {
+
+        const safeControllerState =
+            isObject(
+                controllerState
+            )
+                ? controllerState
+                : {};
+
+        const registration =
+            isObject(
+                safeControllerState
+                    .registration
+            )
+                ? safeControllerState
+                    .registration
+                : null;
+
+        return normaliseJourneyResult(
+
+            {
+
+                eligible:
+                    Boolean(
+                        safeControllerState
+                            .eligibility &&
+                        safeControllerState
+                            .eligibility
+                            .eligible ===
+                            true
+                    ),
+
+                offerAvailable:
+                    Boolean(
+                        safeControllerState.offer &&
+                        safeControllerState
+                            .offer
+                            .offerAvailable ===
+                            true
+                    ),
+
+                registrationExists:
+                    Boolean(
+                        registration &&
+                        registration
+                            .registrationExists ===
+                            true
+                    ),
+
+                eligibility:
+                    safeControllerState
+                        .eligibility,
+
+                offer:
+                    safeControllerState.offer,
+
+                registration,
+
+                payment:
+                    safeControllerState.payment,
+
+                enrolment:
+                    safeControllerState
+                        .enrolment,
+
+                status:
+                    safeControllerState.status,
+
+                state:
+                    safeControllerState
 
             },
-            20
+
+            {
+
+                sourceProgrammeCode:
+                    safeControllerState
+                        .sourceProgrammeCode ||
+                    pageState
+                        .sourceProgrammeCode,
+
+                targetProgrammeCode:
+                    safeControllerState
+                        .targetProgrammeCode ||
+                    pageState
+                        .targetProgrammeCode
+
+            }
+
         );
 
     }
 
-    function delay(milliseconds) {
+    /* ====================================================================
+       CONTROLLER STATE-CHANGED EVENT
+    ==================================================================== */
 
-        return new Promise(
-            function (resolve) {
+    function handleJourneyControllerStateChanged(
+        event
+    ) {
 
-                window.setTimeout(
-                    resolve,
-                    milliseconds
+        const controllerState =
+            resolveControllerEventState(
+                event
+            );
+
+        if (
+            !controllerState
+        ) {
+
+            return;
+
+        }
+
+        const controllerStatus =
+            normaliseStatus(
+                controllerState.status
+            );
+
+        if (
+            controllerStatus ===
+                "RESOLVING_IDENTITY" ||
+            controllerStatus ===
+                "RESOLVING_ELIGIBILITY" ||
+            controllerStatus ===
+                "RESOLVING_OFFER" ||
+            controllerStatus ===
+                "RESOLVING_REGISTRATION"
+        ) {
+
+            if (
+                !pageState.busy
+            ) {
+
+                showLoadingState(
+                    "Checking your Bridge Programme registration details."
                 );
 
             }
+
+            return;
+
+        }
+
+        if (
+            controllerStatus ===
+                "CREATING_REGISTRATION"
+        ) {
+
+            showRegistrationInProgressState();
+
+            return;
+
+        }
+
+        if (
+            controllerStatus ===
+                "PAYMENT_IN_PROGRESS"
+        ) {
+
+            const journey =
+                buildJourneyFromControllerState(
+                    controllerState
+                );
+
+            renderEligibleJourneyModel(
+                journey
+            );
+
+            showPaymentInProgressState();
+
+            return;
+
+        }
+
+        if (
+            controllerStatus ===
+                "ENROLMENT_PENDING"
+        ) {
+
+            const journey =
+                buildJourneyFromControllerState(
+                    controllerState
+                );
+
+            renderEligibleJourneyModel(
+                journey
+            );
+
+            showEnrolmentPendingState();
+
+        }
+
+    }
+
+    /* ====================================================================
+       REGISTRATION CREATED EVENT
+    ==================================================================== */
+
+    function handleJourneyControllerRegistrationCreated(
+        event
+    ) {
+
+        const detail =
+            event &&
+            isObject(
+                event.detail
+            )
+                ? event.detail
+                : {};
+
+        const controllerState =
+            isObject(
+                detail.state
+            )
+                ? detail.state
+                : null;
+
+        if (
+            !controllerState
+        ) {
+
+            return;
+
+        }
+
+        const journey =
+            buildJourneyFromControllerState(
+                controllerState
+            );
+
+        setPageState({
+
+            journey,
+
+            eligibility:
+                journey.eligibility,
+
+            offer:
+                journey.offer,
+
+            registration:
+                journey.registration,
+
+            payment:
+                journey.payment,
+
+            enrolment:
+                journey.enrolment,
+
+            acknowledgementAccepted:
+                true,
+
+            registrationActionAvailable:
+                false,
+
+            busy:
+                false,
+
+            error:
+                null
+
+        });
+
+        renderRegistrationJourney(
+            journey
         );
 
     }
 
     /* ====================================================================
-       PUBLIC DIAGNOSTIC API
+       REGISTRATION RESOLVED EVENT
+    ==================================================================== */
+
+    function handleJourneyControllerRegistrationResolved(
+        event
+    ) {
+
+        const detail =
+            event &&
+            isObject(
+                event.detail
+            )
+                ? event.detail
+                : {};
+
+        const controllerState =
+            isObject(
+                detail.state
+            )
+                ? detail.state
+                : null;
+
+        if (
+            !controllerState ||
+            pageState.busy
+        ) {
+
+            return;
+
+        }
+
+        const journey =
+            buildJourneyFromControllerState(
+                controllerState
+            );
+
+        setPageState({
+
+            journey,
+
+            eligibility:
+                journey.eligibility,
+
+            offer:
+                journey.offer,
+
+            registration:
+                journey.registration,
+
+            payment:
+                journey.payment,
+
+            enrolment:
+                journey.enrolment,
+
+            busy:
+                false,
+
+            error:
+                null
+
+        });
+
+        renderRegistrationJourney(
+            journey
+        );
+
+    }
+
+    /* ====================================================================
+       PAYMENT REQUIRED EVENT
+    ==================================================================== */
+
+    function handleJourneyControllerPaymentRequired(
+        event
+    ) {
+
+        const controllerState =
+            resolveControllerEventState(
+                event
+            );
+
+        if (
+            !controllerState
+        ) {
+
+            return;
+
+        }
+
+        const journey =
+            buildJourneyFromControllerState(
+                controllerState
+            );
+
+        renderEligibleJourneyModel(
+            journey
+        );
+
+        setPageState({
+
+            journey,
+
+            registration:
+                journey.registration,
+
+            payment:
+                journey.payment,
+
+            status:
+                PAGE_STATUS
+                    .PAYMENT_REQUIRED,
+
+            busy:
+                false,
+
+            paymentActionAvailable:
+                false,
+
+            error:
+                null
+
+        });
+
+        showPaymentRequiredState();
+
+    }
+
+    /* ====================================================================
+       PAYMENT CONFIRMED EVENT
+    ==================================================================== */
+
+    function handleJourneyControllerPaymentConfirmed(
+        event
+    ) {
+
+        const controllerState =
+            resolveControllerEventState(
+                event
+            );
+
+        if (
+            !controllerState
+        ) {
+
+            return;
+
+        }
+
+        const journey =
+            buildJourneyFromControllerState(
+                controllerState
+            );
+
+        renderEligibleJourneyModel(
+            journey
+        );
+
+        setPageState({
+
+            journey,
+
+            registration:
+                journey.registration,
+
+            payment:
+                journey.payment,
+
+            status:
+                PAGE_STATUS
+                    .PAYMENT_CONFIRMED,
+
+            busy:
+                false,
+
+            error:
+                null
+
+        });
+
+        showPaymentConfirmedState();
+
+    }
+
+    /* ====================================================================
+       ENROLMENT RESOLVED EVENT
+    ==================================================================== */
+
+    function handleJourneyControllerEnrolmentResolved(
+        event
+    ) {
+
+        const controllerState =
+            resolveControllerEventState(
+                event
+            );
+
+        if (
+            !controllerState
+        ) {
+
+            return;
+
+        }
+
+        const journey =
+            buildJourneyFromControllerState(
+                controllerState
+            );
+
+        setPageState({
+
+            journey,
+
+            registration:
+                journey.registration,
+
+            payment:
+                journey.payment,
+
+            enrolment:
+                journey.enrolment,
+
+            busy:
+                false,
+
+            error:
+                null
+
+        });
+
+        renderRegistrationJourney(
+            journey
+        );
+
+    }
+
+    /* ====================================================================
+       JOURNEY CONTROLLER ERROR EVENT
+    ==================================================================== */
+
+    function handleJourneyControllerError(
+        event
+    ) {
+
+        const detail =
+            event &&
+            isObject(
+                event.detail
+            )
+                ? event.detail
+                : {};
+
+        const error =
+            detail.error ||
+            null;
+
+        if (
+            registrationActionPromise
+        ) {
+
+            /*
+             * The registration-action catch block owns the visual
+             * recovery while that action is active.
+             */
+
+            return;
+
+        }
+
+        showErrorState(
+
+            resolvePageErrorMessage(
+                error
+            ),
+
+            error
+
+        );
+
+    }
+
+    /* ====================================================================
+       END OF BLOCK 5 OF 6
+
+       Do not close the IIFE here.
+       Block 6 must continue immediately below this section.
+    ==================================================================== */
+
+        /* ====================================================================
+       BLOCK 6 OF 6
+       DIAGNOSTICS, PUBLIC API AND BOOTSTRAP
+    ==================================================================== */
+
+    /* ====================================================================
+       PAGE CONTROLLER READINESS
+    ==================================================================== */
+
+    function getPageControllerReadiness() {
+
+        const journeyControllerReadiness =
+            resolveJourneyControllerReadiness();
+
+        const pageContext =
+            resolvePageContext();
+
+        const requiredElementsAvailable =
+            Boolean(
+
+                elements.portalApp &&
+                elements.loadingState &&
+                elements.errorState &&
+                elements.notEligibleState &&
+                elements.registeredState &&
+                elements.enrolledState &&
+                elements.eligibleState &&
+                elements.termsConfirmation &&
+                elements.registerButton
+
+            );
+
+        const programmeContextAvailable =
+            Boolean(
+
+                isNonEmptyString(
+                    pageContext
+                        .sourceProgrammeCode
+                ) &&
+
+                isNonEmptyString(
+                    pageContext
+                        .targetProgrammeCode
+                ) &&
+
+                pageContext
+                    .sourceProgrammeCode !==
+                pageContext
+                    .targetProgrammeCode
+
+            );
+
+        return freezeObject({
+
+            ready:
+                requiredElementsAvailable &&
+                programmeContextAvailable &&
+                journeyControllerReadiness
+                    .available &&
+                journeyControllerReadiness
+                    .foundationReady,
+
+            pageElementsReady:
+                requiredElementsAvailable,
+
+            programmeContextReady:
+                programmeContextAvailable,
+
+            journeyControllerAvailable:
+                journeyControllerReadiness
+                    .available,
+
+            journeyControllerFoundationReady:
+                journeyControllerReadiness
+                    .foundationReady,
+
+            programmeResolutionReady:
+                journeyControllerReadiness
+                    .programmeResolutionReady,
+
+            paymentResolutionReady:
+                journeyControllerReadiness
+                    .paymentResolutionReady,
+
+            enrolmentResolutionReady:
+                journeyControllerReadiness
+                    .enrolmentResolutionReady,
+
+            authenticated:
+                journeyControllerReadiness
+                    .authenticated,
+
+            sourceProgrammeCode:
+                pageContext
+                    .sourceProgrammeCode,
+
+            targetProgrammeCode:
+                pageContext
+                    .targetProgrammeCode,
+
+            initialised:
+                pageState.initialised ===
+                true,
+
+            loading:
+                pageState.loading ===
+                true,
+
+            busy:
+                pageState.busy ===
+                true,
+
+            status:
+                pageState.status,
+
+            pageControllerName:
+                PAGE_CONTROLLER_NAME,
+
+            pageControllerVersion:
+                PAGE_CONTROLLER_VERSION,
+
+            journeyControllerVersion:
+                journeyControllerReadiness
+                    .controllerVersion
+
+        });
+
+    }
+
+    /* ====================================================================
+       REGISTRATION ACTION READINESS
+    ==================================================================== */
+
+    function getRegistrationActionReadiness() {
+
+        const journey =
+            isObject(
+                pageState.journey
+            )
+                ? pageState.journey
+                : {};
+
+        return freezeObject({
+
+            eligible:
+                journey.eligible ===
+                true,
+
+            offerAvailable:
+                journey.offerAvailable ===
+                true,
+
+            registrationExists:
+                journey.registrationExists ===
+                true,
+
+            acknowledgementAccepted:
+                pageState
+                    .acknowledgementAccepted ===
+                true,
+
+            pageBusy:
+                pageState.busy ===
+                true,
+
+            pageLoading:
+                pageState.loading ===
+                true,
+
+            registrationActionAvailable:
+                pageState
+                    .registrationActionAvailable ===
+                true,
+
+            canCreateRegistration:
+                canCreateRegistration(),
+
+            registrationInProgress:
+                Boolean(
+                    registrationActionPromise
+                )
+
+        });
+
+    }
+
+    /* ====================================================================
+       PAYMENT AND ENROLMENT READINESS
+    ==================================================================== */
+
+    function getPaymentAndEnrolmentReadiness() {
+
+        const controller =
+            getJourneyController();
+
+        if (
+            !controller ||
+            typeof controller
+                .getPaymentAndEnrolmentReadiness !==
+                "function"
+        ) {
+
+            return freezeObject({
+
+                available:
+                    false,
+
+                paymentServiceAvailable:
+                    false,
+
+                enrolmentServiceAvailable:
+                    false,
+
+                readyForPayment:
+                    false,
+
+                readyForPaymentStatusResolution:
+                    false,
+
+                readyForEnrolmentResolution:
+                    false
+
+            });
+
+        }
+
+        try {
+
+            const readiness =
+                controller
+                    .getPaymentAndEnrolmentReadiness();
+
+            return freezeObject({
+
+                available:
+                    true,
+
+                ...(
+                    isObject(
+                        readiness
+                    )
+                        ? readiness
+                        : {}
+                )
+
+            });
+
+        }
+        catch (error) {
+
+            return freezeObject({
+
+                available:
+                    true,
+
+                paymentServiceAvailable:
+                    false,
+
+                enrolmentServiceAvailable:
+                    false,
+
+                readyForPayment:
+                    false,
+
+                readyForPaymentStatusResolution:
+                    false,
+
+                readyForEnrolmentResolution:
+                    false,
+
+                error
+
+            });
+
+        }
+
+    }
+
+    /* ====================================================================
+       PAGE DIAGNOSTICS
+    ==================================================================== */
+
+    function getDiagnostics() {
+
+        const controller =
+            getJourneyController();
+
+        let journeyControllerDiagnostics =
+            null;
+
+        if (
+            controller &&
+            typeof controller
+                .getDiagnostics ===
+                "function"
+        ) {
+
+            try {
+
+                journeyControllerDiagnostics =
+                    controller
+                        .getDiagnostics();
+
+            }
+            catch (error) {
+
+                journeyControllerDiagnostics =
+                    freezeObject({
+
+                        error
+
+                    });
+
+            }
+
+        }
+
+        return freezeObject({
+
+            pageControllerName:
+                PAGE_CONTROLLER_NAME,
+
+            pageControllerVersion:
+                PAGE_CONTROLLER_VERSION,
+
+            timestamp:
+                nowIsoString(),
+
+            readiness:
+                getPageControllerReadiness(),
+
+            registrationAction:
+                getRegistrationActionReadiness(),
+
+            paymentAndEnrolment:
+                getPaymentAndEnrolmentReadiness(),
+
+            operations:
+                freezeObject({
+
+                    pageInitialisationInProgress:
+                        Boolean(
+                            pageInitialisationPromise
+                        ),
+
+                    registrationActionInProgress:
+                        Boolean(
+                            registrationActionPromise
+                        )
+
+                }),
+
+            elements:
+                freezeObject({
+
+                    portalApp:
+                        Boolean(
+                            elements.portalApp
+                        ),
+
+                    mainContent:
+                        Boolean(
+                            elements.mainContent
+                        ),
+
+                    loadingState:
+                        Boolean(
+                            elements.loadingState
+                        ),
+
+                    errorState:
+                        Boolean(
+                            elements.errorState
+                        ),
+
+                    notEligibleState:
+                        Boolean(
+                            elements.notEligibleState
+                        ),
+
+                    registeredState:
+                        Boolean(
+                            elements.registeredState
+                        ),
+
+                    enrolledState:
+                        Boolean(
+                            elements.enrolledState
+                        ),
+
+                    eligibleState:
+                        Boolean(
+                            elements.eligibleState
+                        ),
+
+                    termsConfirmation:
+                        Boolean(
+                            elements
+                                .termsConfirmation
+                        ),
+
+                    registerButton:
+                        Boolean(
+                            elements
+                                .registerButton
+                        )
+
+                }),
+
+            pageState,
+
+            journeyController:
+                journeyControllerDiagnostics
+
+        });
+
+    }
+
+    /* ====================================================================
+       SAFE PAGE RELOAD
+    ==================================================================== */
+
+    async function reloadPageJourney(
+        options
+    ) {
+
+        const safeOptions =
+            isObject(
+                options
+            )
+                ? options
+                : {};
+
+        if (
+            pageState.busy ||
+            pageState.loading
+        ) {
+
+            return pageState.journey;
+
+        }
+
+        return refreshRegistrationJourney({
+
+            ...safeOptions,
+
+            forceIdentity:
+                safeOptions
+                    .forceIdentity ===
+                true,
+
+            forceEligibility:
+                safeOptions
+                    .forceEligibility !==
+                false,
+
+            forceOffer:
+                safeOptions
+                    .forceOffer !==
+                false
+
+        });
+
+    }
+
+    /* ====================================================================
+       SAFE PAGE RESET
+    ==================================================================== */
+
+    function resetPageController() {
+
+        resetPageState();
+
+        hideAllStates();
+
+        resetInteractiveControls();
+
+        setHidden(
+            elements.loadingState,
+            false
+        );
+
+        announce(
+            "Bridge Programme registration page has been reset."
+        );
+
+        return pageState;
+
+    }
+
+    /* ====================================================================
+       PUBLIC PAGE API
     ==================================================================== */
 
     const BridgeProgrammeRegistrationController =
-        Object.freeze({
+        freezeObject({
 
-            version:
-                CONTROLLER_VERSION,
+            PAGE_CONTROLLER_NAME,
+
+            PAGE_CONTROLLER_VERSION,
+
+            PAGE_STATUS,
+
+            PAGE_EVENT,
+
+            initialise:
+                initialisePage,
 
             reload:
-                loadBridgeProgramme,
+                reloadPageJourney,
+
+            refresh:
+                refreshRegistrationJourney,
+
+            register:
+                function registerFromPublicApi(
+                    options
+                ) {
+
+                    const safeOptions =
+                        isObject(
+                            options
+                        )
+                            ? options
+                            : {};
+
+                    if (
+                        safeOptions
+                            .acknowledgementAccepted ===
+                        true &&
+                        elements
+                            .termsConfirmation
+                    ) {
+
+                        elements
+                            .termsConfirmation
+                            .checked =
+                            true;
+
+                        updateRegistrationActionReadiness();
+
+                    }
+
+                    return handleRegistrationAction(
+                        null
+                    );
+
+                },
 
             getState:
-                function () {
+                getPageState,
 
-                    return Object.freeze({
+            getReadiness:
+                getPageControllerReadiness,
 
-                        initialized:
-                            state.initialized,
+            getRegistrationActionReadiness,
+
+            getPaymentAndEnrolmentReadiness,
+
+            getDiagnostics,
+
+            reset:
+                resetPageController,
+
+            resolvePageContext,
+
+            renderJourney:
+                function renderJourneyFromPublicApi(
+                    journey
+                ) {
+
+                    const input =
+                        buildPageInitialisationInput(
+                            {}
+                        );
+
+                    const normalisedJourney =
+                        normaliseJourneyResult(
+                            journey,
+                            input
+                        );
+
+                    setPageState({
+
+                        journey:
+                            normalisedJourney,
+
+                        eligibility:
+                            normalisedJourney
+                                .eligibility,
+
+                        offer:
+                            normalisedJourney
+                                .offer,
+
+                        registration:
+                            normalisedJourney
+                                .registration,
+
+                        payment:
+                            normalisedJourney
+                                .payment,
+
+                        enrolment:
+                            normalisedJourney
+                                .enrolment,
+
+                        sourceProgrammeCode:
+                            normalisedJourney
+                                .sourceProgrammeCode,
+
+                        targetProgrammeCode:
+                            normalisedJourney
+                                .targetProgrammeCode,
 
                         loading:
-                            state.loading,
+                            false,
 
-                        credentials:
-                            Array.isArray(
-                                state.credentials
-                            )
-                                ? state.credentials.slice()
-                                : [],
+                        busy:
+                            false,
 
-                        upgradeModel:
-                            state.currentUpgradeModel,
-
-                        bridgeModel:
-                            state.currentBridgeModel
+                        error:
+                            null
 
                     });
+
+                    renderRegistrationJourney(
+                        normalisedJourney
+                    );
+
+                    return normalisedJourney;
 
                 }
 
         });
 
-    window.BridgeProgrammeRegistrationController =
+    /* ====================================================================
+       GLOBAL REGISTRATION
+    ==================================================================== */
+
+    if (
+        window
+            .BridgeProgrammeRegistrationController &&
+        window
+            .BridgeProgrammeRegistrationController !==
+            BridgeProgrammeRegistrationController
+    ) {
+
+        console.warn(
+
+            `[${PAGE_CONTROLLER_NAME}] An existing global page-controller registration was replaced.`
+
+        );
+
+    }
+
+    window
+        .BridgeProgrammeRegistrationController =
         BridgeProgrammeRegistrationController;
 
     /* ====================================================================
        BOOTSTRAP
     ==================================================================== */
 
+    async function bootstrapPageController() {
+
+        try {
+
+            await initialisePage({
+
+                waitForAuth:
+                    true,
+
+                force:
+                    false,
+
+                forceIdentity:
+                    false,
+
+                forceEligibility:
+                    false,
+
+                forceOffer:
+                    false,
+
+                forceRegistrationResolution:
+                    false,
+
+                resolvePaymentStatus:
+                    false,
+
+                resolveEnrolmentAfterPayment:
+                    false,
+
+                source:
+                    "STUDENT_PORTAL"
+
+            });
+
+        }
+        catch (error) {
+
+            /*
+             * initialisePage() already renders the governed error state.
+             * The bootstrap catch prevents an unhandled promise rejection.
+             */
+
+            console.error(
+
+                `[${PAGE_CONTROLLER_NAME}] Bootstrap failed.`,
+
+                error
+
+            );
+
+        }
+
+    }
+
     if (
         document.readyState ===
-        "loading"
+            "loading"
     ) {
 
         document.addEventListener(
+
             "DOMContentLoaded",
-            initialize,
+
+            bootstrapPageController,
+
             {
+
                 once:
                     true
+
             }
+
         );
 
     }
     else {
 
-        initialize();
+        bootstrapPageController();
 
     }
 
-})(window, document);
+    console.info(
+
+        `[${PAGE_CONTROLLER_NAME}] v${PAGE_CONTROLLER_VERSION} loaded successfully.`
+
+    );
+
+    /* ====================================================================
+       END OF BLOCK 6 OF 6
+    ==================================================================== */
+
+})(
+    window,
+    document
+);

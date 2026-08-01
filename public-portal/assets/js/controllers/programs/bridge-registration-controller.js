@@ -6,7 +6,7 @@
    public-portal/assets/js/controllers/programs/
    bridge-registration-controller.js
 
-   Version: 1.0.0
+   Version: 1.1.0
    Status: ACTIVE
    Domain: Programme Registration
    Runtime: Browser Global
@@ -19,12 +19,14 @@
    Responsibilities
    ------------------------------------------------------------
    - Validate controller dependencies
-   - Resolve the authenticated learner
-   - Resolve academic and commercial eligibility
-   - Resolve the applicable bridge offer
+   - Resolve the authenticated learner identity
+   - Resolve programme context
+   - Resolve academic eligibility
+   - Resolve commercial eligibility and offer
    - Restore an existing registration
-   - Create a registration when required
+   - Create a registration after explicit acknowledgement
    - Coordinate registration and payment states
+   - Coordinate enrolment resolution
    - Expose immutable controller state
    - Dispatch governed lifecycle events
 
@@ -33,13 +35,14 @@
    This controller does not:
 
    - Write directly to Firestore
-   - Determine trusted payment status
+   - Determine trusted payment status independently
    - Verify payment signatures
    - Create learner enrolments directly
    - Activate learning-resource access directly
    - Contain programme pricing rules
    - Contain academic eligibility rules
    - Render unrestricted HTML
+   - Create a registration merely because a page was opened
 
    Architecture Chain
    ------------------------------------------------------------
@@ -61,17 +64,42 @@
       ↓
    Learning Access
 
-   Implementation Blocks
+   Reconstruction Blocks
    ------------------------------------------------------------
-   Block 1 - Controller foundation
-   Block 2 - Identity and programme context
-   Block 3 - Eligibility and commercial offer
-   Block 4 - Registration orchestration
-   Block 5 - Payment and enrolment orchestration
-   Block 6 - Diagnostics and public registration
+   Block 1  - Header, constants and utilities
+   Block 2  - Dependencies, state and readiness
+   Block 3  - Authentication and learner identity
+   Block 4  - Programme context and page context
+   Block 5  - Eligibility and credential resolution
+   Block 6  - Commercial offer resolution
+   Block 7  - Registration input and normalisation
+   Block 8  - Registration resolution and creation
+   Block 9  - Payment and enrolment orchestration
+   Block 10 - Complete journey, diagnostics and public API
+
+   Governance Rules
+   ------------------------------------------------------------
+   - Registration creation requires explicit learner action.
+   - Registration creation requires acknowledgementAccepted=true.
+   - Page initialisation may restore an existing registration.
+   - Page initialisation must never create a new registration.
+   - Payment confirmation must come from a trusted service.
+   - The learner UID is the canonical authenticated identity.
+   - Programme pricing and eligibility remain service-owned.
+   - All controller state exposed publicly must be immutable.
 
    Change History
    ------------------------------------------------------------
+   1.1.0
+   - Reconstructed controller into ten meaningful blocks
+   - Separated academic and commercial eligibility authorities
+   - Made ProgramService optional for the registration journey
+   - Added governed credential-source resolution
+   - Added explicit acknowledgement enforcement
+   - Prevented registration creation during page initialisation
+   - Preserved idempotent registration creation
+   - Hardened concurrent operation handling
+
    1.0.0
    - Added governed controller foundation
    - Added dependency resolution
@@ -83,7 +111,9 @@
    - Added controller initialisation
 ============================================================ */
 
-(function initialiseBridgeRegistrationController(global) {
+(function initialiseBridgeRegistrationController(
+  global
+) {
   "use strict";
 
   /* ==========================================================
@@ -94,185 +124,208 @@
     "BridgeRegistrationController";
 
   const CONTROLLER_VERSION =
-    "1.0.0";
+    "1.1.0";
 
   /* ==========================================================
      CONTROLLER STATUS
   ========================================================== */
 
-  const CONTROLLER_STATUS = Object.freeze({
-    IDLE:
-      "IDLE",
+  const CONTROLLER_STATUS =
+    Object.freeze({
+      IDLE:
+        "IDLE",
 
-    INITIALISING:
-      "INITIALISING",
+      INITIALISING:
+        "INITIALISING",
 
-    READY:
-      "READY",
+      READY:
+        "READY",
 
-    RESOLVING_IDENTITY:
-      "RESOLVING_IDENTITY",
+      RESOLVING_IDENTITY:
+        "RESOLVING_IDENTITY",
 
-    RESOLVING_ELIGIBILITY:
-      "RESOLVING_ELIGIBILITY",
+      RESOLVING_ELIGIBILITY:
+        "RESOLVING_ELIGIBILITY",
 
-    RESOLVING_OFFER:
-      "RESOLVING_OFFER",
+      RESOLVING_OFFER:
+        "RESOLVING_OFFER",
 
-    RESOLVING_REGISTRATION:
-      "RESOLVING_REGISTRATION",
+      RESOLVING_REGISTRATION:
+        "RESOLVING_REGISTRATION",
 
-    CREATING_REGISTRATION:
-      "CREATING_REGISTRATION",
+      CREATING_REGISTRATION:
+        "CREATING_REGISTRATION",
 
-    PAYMENT_REQUIRED:
-      "PAYMENT_REQUIRED",
+      PAYMENT_REQUIRED:
+        "PAYMENT_REQUIRED",
 
-    PAYMENT_IN_PROGRESS:
-      "PAYMENT_IN_PROGRESS",
+      PAYMENT_IN_PROGRESS:
+        "PAYMENT_IN_PROGRESS",
 
-    PAYMENT_CONFIRMED:
-      "PAYMENT_CONFIRMED",
+      PAYMENT_CONFIRMED:
+        "PAYMENT_CONFIRMED",
 
-    ENROLMENT_PENDING:
-      "ENROLMENT_PENDING",
+      ENROLMENT_PENDING:
+        "ENROLMENT_PENDING",
 
-    ENROLLED:
-      "ENROLLED",
+      ENROLLED:
+        "ENROLLED",
 
-    NOT_ELIGIBLE:
-      "NOT_ELIGIBLE",
+      NOT_ELIGIBLE:
+        "NOT_ELIGIBLE",
 
-    BLOCKED:
-      "BLOCKED",
+      BLOCKED:
+        "BLOCKED",
 
-    ERROR:
-      "ERROR"
-  });
+      ERROR:
+        "ERROR"
+    });
 
   /* ==========================================================
      CONTROLLER EVENTS
   ========================================================== */
 
-  const CONTROLLER_EVENT = Object.freeze({
-    READY:
-      "bridge-registration-controller:ready",
+  const CONTROLLER_EVENT =
+    Object.freeze({
+      READY:
+        "bridge-registration-controller:ready",
 
-    STATE_CHANGED:
-      "bridge-registration-controller:state-changed",
+      STATE_CHANGED:
+        "bridge-registration-controller:state-changed",
 
-    IDENTITY_RESOLVED:
-      "bridge-registration-controller:identity-resolved",
+      IDENTITY_RESOLVED:
+        "bridge-registration-controller:identity-resolved",
 
-    ELIGIBILITY_RESOLVED:
-      "bridge-registration-controller:eligibility-resolved",
+      ELIGIBILITY_RESOLVED:
+        "bridge-registration-controller:eligibility-resolved",
 
-    OFFER_RESOLVED:
-      "bridge-registration-controller:offer-resolved",
+      OFFER_RESOLVED:
+        "bridge-registration-controller:offer-resolved",
 
-    REGISTRATION_RESOLVED:
-      "bridge-registration-controller:registration-resolved",
+      REGISTRATION_RESOLVED:
+        "bridge-registration-controller:registration-resolved",
 
-    REGISTRATION_CREATED:
-      "bridge-registration-controller:registration-created",
+      REGISTRATION_CREATED:
+        "bridge-registration-controller:registration-created",
 
-    PAYMENT_REQUIRED:
-      "bridge-registration-controller:payment-required",
+      PAYMENT_REQUIRED:
+        "bridge-registration-controller:payment-required",
 
-    PAYMENT_STARTED:
-      "bridge-registration-controller:payment-started",
+      PAYMENT_STARTED:
+        "bridge-registration-controller:payment-started",
 
-    PAYMENT_CONFIRMED:
-      "bridge-registration-controller:payment-confirmed",
+      PAYMENT_CONFIRMED:
+        "bridge-registration-controller:payment-confirmed",
 
-    ENROLMENT_RESOLVED:
-      "bridge-registration-controller:enrolment-resolved",
+      ENROLMENT_RESOLVED:
+        "bridge-registration-controller:enrolment-resolved",
 
-    ERROR:
-      "bridge-registration-controller:error"
-  });
+      ERROR:
+        "bridge-registration-controller:error"
+    });
 
   /* ==========================================================
      ERROR CODES
   ========================================================== */
 
-  const ERROR_CODE = Object.freeze({
-    INVALID_INPUT:
-      "BRIDGE_REGISTRATION_CONTROLLER_INVALID_INPUT",
+  const ERROR_CODE =
+    Object.freeze({
+      INVALID_INPUT:
+        "BRIDGE_REGISTRATION_CONTROLLER_INVALID_INPUT",
 
-    DEPENDENCY_UNAVAILABLE:
-      "BRIDGE_REGISTRATION_CONTROLLER_DEPENDENCY_UNAVAILABLE",
+      DEPENDENCY_UNAVAILABLE:
+        "BRIDGE_REGISTRATION_CONTROLLER_DEPENDENCY_UNAVAILABLE",
 
-    AUTH_REQUIRED:
-      "BRIDGE_REGISTRATION_CONTROLLER_AUTH_REQUIRED",
+      AUTH_REQUIRED:
+        "BRIDGE_REGISTRATION_CONTROLLER_AUTH_REQUIRED",
 
-    INITIALISATION_FAILED:
-      "BRIDGE_REGISTRATION_CONTROLLER_INITIALISATION_FAILED",
+      INITIALISATION_FAILED:
+        "BRIDGE_REGISTRATION_CONTROLLER_INITIALISATION_FAILED",
 
-    IDENTITY_RESOLUTION_FAILED:
-      "BRIDGE_REGISTRATION_CONTROLLER_IDENTITY_RESOLUTION_FAILED",
+      IDENTITY_RESOLUTION_FAILED:
+        "BRIDGE_REGISTRATION_CONTROLLER_IDENTITY_RESOLUTION_FAILED",
 
-    ELIGIBILITY_RESOLUTION_FAILED:
-      "BRIDGE_REGISTRATION_CONTROLLER_ELIGIBILITY_RESOLUTION_FAILED",
+      ELIGIBILITY_RESOLUTION_FAILED:
+        "BRIDGE_REGISTRATION_CONTROLLER_ELIGIBILITY_RESOLUTION_FAILED",
 
-    OFFER_RESOLUTION_FAILED:
-      "BRIDGE_REGISTRATION_CONTROLLER_OFFER_RESOLUTION_FAILED",
+      OFFER_RESOLUTION_FAILED:
+        "BRIDGE_REGISTRATION_CONTROLLER_OFFER_RESOLUTION_FAILED",
 
-    REGISTRATION_RESOLUTION_FAILED:
-      "BRIDGE_REGISTRATION_CONTROLLER_REGISTRATION_RESOLUTION_FAILED",
+      REGISTRATION_RESOLUTION_FAILED:
+        "BRIDGE_REGISTRATION_CONTROLLER_REGISTRATION_RESOLUTION_FAILED",
 
-    REGISTRATION_CREATION_FAILED:
-      "BRIDGE_REGISTRATION_CONTROLLER_REGISTRATION_CREATION_FAILED",
+      REGISTRATION_CREATION_FAILED:
+        "BRIDGE_REGISTRATION_CONTROLLER_REGISTRATION_CREATION_FAILED",
 
-    PAYMENT_FAILED:
-      "BRIDGE_REGISTRATION_CONTROLLER_PAYMENT_FAILED",
+      PAYMENT_FAILED:
+        "BRIDGE_REGISTRATION_CONTROLLER_PAYMENT_FAILED",
 
-    ENROLMENT_RESOLUTION_FAILED:
-      "BRIDGE_REGISTRATION_CONTROLLER_ENROLMENT_RESOLUTION_FAILED",
+      ENROLMENT_RESOLUTION_FAILED:
+        "BRIDGE_REGISTRATION_CONTROLLER_ENROLMENT_RESOLUTION_FAILED",
 
-    INTERNAL_ERROR:
-      "BRIDGE_REGISTRATION_CONTROLLER_INTERNAL_ERROR"
-  });
+      INTERNAL_ERROR:
+        "BRIDGE_REGISTRATION_CONTROLLER_INTERNAL_ERROR"
+    });
 
   /* ==========================================================
      INTERNAL UTILITIES
   ========================================================== */
 
-  function isObject(value) {
+  function isObject(
+    value
+  ) {
     return Boolean(
       value &&
-      typeof value === "object" &&
-      !Array.isArray(value)
+      typeof value ===
+        "object" &&
+      !Array.isArray(
+        value
+      )
     );
   }
 
-  function isNonEmptyString(value) {
+  function isNonEmptyString(
+    value
+  ) {
     return (
-      typeof value === "string" &&
-      value.trim().length > 0
+      typeof value ===
+        "string" &&
+      value.trim().length >
+        0
     );
   }
 
-  function normaliseString(value) {
-    return isNonEmptyString(value)
+  function normaliseString(
+    value
+  ) {
+    return isNonEmptyString(
+      value
+    )
       ? value.trim()
       : "";
   }
 
-  function normaliseEmail(value) {
+  function normaliseEmail(
+    value
+  ) {
     return normaliseString(
       value
     ).toLowerCase();
   }
 
-  function normaliseProgrammeCode(value) {
+  function normaliseProgrammeCode(
+    value
+  ) {
     return normaliseString(
       value
     ).toUpperCase();
   }
 
-  function normaliseBoolean(value) {
-    return value === true;
+  function normaliseBoolean(
+    value
+  ) {
+    return value ===
+      true;
   }
 
   function normaliseNumber(
@@ -280,7 +333,9 @@
     fallbackValue
   ) {
     const numericValue =
-      Number(value);
+      Number(
+        value
+      );
 
     if (
       Number.isFinite(
@@ -290,10 +345,15 @@
       return numericValue;
     }
 
+    const numericFallback =
+      Number(
+        fallbackValue
+      );
+
     return Number.isFinite(
-      Number(fallbackValue)
+      numericFallback
     )
-      ? Number(fallbackValue)
+      ? numericFallback
       : 0;
   }
 
@@ -302,11 +362,17 @@
       .toISOString();
   }
 
-  function freezeArray(value) {
+  function freezeArray(
+    value
+  ) {
     if (
-      !Array.isArray(value)
+      !Array.isArray(
+        value
+      )
     ) {
-      return Object.freeze([]);
+      return Object.freeze(
+        []
+      );
     }
 
     return Object.freeze([
@@ -314,9 +380,13 @@
     ]);
   }
 
-  function freezeObject(value) {
+  function freezeObject(
+    value
+  ) {
     if (
-      !isObject(value)
+      !isObject(
+        value
+      )
     ) {
       return value;
     }
@@ -331,22 +401,34 @@
     message,
     details
   ) {
+    const governedMessage =
+      normaliseString(
+        message
+      ) ||
+      "A Bridge Registration Controller error occurred.";
+
     const error =
       new Error(
-        normaliseString(message) ||
-        "A Bridge Registration Controller error occurred."
+        governedMessage
       );
 
     error.name =
       "BridgeRegistrationControllerError";
 
     error.code =
-      normaliseString(code) ||
-      ERROR_CODE.INTERNAL_ERROR;
+      normaliseString(
+        code
+      ) ||
+      ERROR_CODE
+        .INTERNAL_ERROR;
 
     error.details =
-      isObject(details)
-        ? freezeObject(details)
+      isObject(
+        details
+      )
+        ? freezeObject(
+            details
+          )
         : null;
 
     error.controller =
@@ -358,7 +440,9 @@
     return error;
   }
 
-  function serialiseError(error) {
+  function serialiseError(
+    error
+  ) {
     if (!error) {
       return null;
     }
@@ -374,7 +458,8 @@
         normaliseString(
           error.code
         ) ||
-        ERROR_CODE.INTERNAL_ERROR,
+        ERROR_CODE
+          .INTERNAL_ERROR,
 
       message:
         normaliseString(
@@ -404,6 +489,252 @@
         CONTROLLER_VERSION
     });
   }
+
+  function normaliseStatus(
+    value
+  ) {
+    return normaliseString(
+      value
+    ).toUpperCase();
+  }
+
+  function hasOwnProperty(
+    objectValue,
+    propertyName
+  ) {
+    return Boolean(
+      objectValue &&
+      Object.prototype
+        .hasOwnProperty
+        .call(
+          objectValue,
+          propertyName
+        )
+    );
+  }
+
+  function getFirstNonEmptyString(
+    values
+  ) {
+    if (
+      !Array.isArray(
+        values
+      )
+    ) {
+      return "";
+    }
+
+    for (
+      let index = 0;
+      index <
+        values.length;
+      index += 1
+    ) {
+      const value =
+        normaliseString(
+          values[index]
+        );
+
+      if (
+        isNonEmptyString(
+          value
+        )
+      ) {
+        return value;
+      }
+    }
+
+    return "";
+  }
+
+  function getFirstObject(
+    values
+  ) {
+    if (
+      !Array.isArray(
+        values
+      )
+    ) {
+      return null;
+    }
+
+    for (
+      let index = 0;
+      index <
+        values.length;
+      index += 1
+    ) {
+      if (
+        isObject(
+          values[index]
+        )
+      ) {
+        return values[index];
+      }
+    }
+
+    return null;
+  }
+
+  function getFirstArray(
+    values
+  ) {
+    if (
+      !Array.isArray(
+        values
+      )
+    ) {
+      return [];
+    }
+
+    for (
+      let index = 0;
+      index <
+        values.length;
+      index += 1
+    ) {
+      if (
+        Array.isArray(
+          values[index]
+        )
+      ) {
+        return values[index];
+      }
+    }
+
+    return [];
+  }
+
+  function valuesApproximatelyEqual(
+    firstValue,
+    secondValue,
+    precision
+  ) {
+    const governedPrecision =
+      Number.isInteger(
+        precision
+      ) &&
+      precision >=
+        0
+        ? precision
+        : 2;
+
+    const firstNumber =
+      normaliseNumber(
+        firstValue,
+        0
+      );
+
+    const secondNumber =
+      normaliseNumber(
+        secondValue,
+        0
+      );
+
+    return (
+      Number(
+        firstNumber.toFixed(
+          governedPrecision
+        )
+      ) ===
+      Number(
+        secondNumber.toFixed(
+          governedPrecision
+        )
+      )
+    );
+  }
+
+  function ensurePositiveNumber(
+    value,
+    fieldName,
+    errorCode,
+    errorMessage
+  ) {
+    const numericValue =
+      normaliseNumber(
+        value,
+        0
+      );
+
+    if (
+      numericValue <=
+      0
+    ) {
+      throw createControllerError(
+        errorCode ||
+          ERROR_CODE
+            .INVALID_INPUT,
+
+        errorMessage ||
+          `${normaliseString(
+            fieldName
+          ) || "Value"} must be greater than zero.`,
+
+        {
+          field:
+            normaliseString(
+              fieldName
+            ),
+
+          value:
+            numericValue
+        }
+      );
+    }
+
+    return numericValue;
+  }
+
+  function ensureRequiredString(
+    value,
+    fieldName,
+    errorCode,
+    errorMessage
+  ) {
+    const governedValue =
+      normaliseString(
+        value
+      );
+
+    if (
+      !isNonEmptyString(
+        governedValue
+      )
+    ) {
+      throw createControllerError(
+        errorCode ||
+          ERROR_CODE
+            .INVALID_INPUT,
+
+        errorMessage ||
+          `${normaliseString(
+            fieldName
+          ) || "Value"} is required.`,
+
+        {
+          field:
+            normaliseString(
+              fieldName
+            )
+        }
+      );
+    }
+
+    return governedValue;
+  }
+
+  /* ==========================================================
+     END OF BLOCK 1 OF 10
+
+     Do not close the IIFE here.
+     Block 2 must continue immediately below this section.
+  ========================================================== */
+
+    /* ==========================================================
+     BLOCK 2 OF 10
+     DEPENDENCIES, STATE AND READINESS
+  ========================================================== */
 
   /* ==========================================================
      DEPENDENCY RESOLUTION
@@ -436,7 +767,8 @@
 
     if (
       !service ||
-      typeof service !== "object"
+      typeof service !==
+        "object"
     ) {
       return null;
     }
@@ -450,7 +782,38 @@
 
     if (
       !service ||
-      typeof service !== "object"
+      typeof service !==
+        "object"
+    ) {
+      return null;
+    }
+
+    return service;
+  }
+
+  function getEligibilityService() {
+    const service =
+      global.EligibilityService;
+
+    if (
+      !service ||
+      typeof service !==
+        "object"
+    ) {
+      return null;
+    }
+
+    return service;
+  }
+
+  function getBridgeProgramService() {
+    const service =
+      global.BridgeProgramService;
+
+    if (
+      !service ||
+      typeof service !==
+        "object"
     ) {
       return null;
     }
@@ -465,7 +828,8 @@
 
     if (
       !service ||
-      typeof service !== "object"
+      typeof service !==
+        "object"
     ) {
       return null;
     }
@@ -480,7 +844,8 @@
 
     if (
       !service ||
-      typeof service !== "object"
+      typeof service !==
+        "object"
     ) {
       return null;
     }
@@ -498,6 +863,12 @@
     const programService =
       getProgramService();
 
+    const eligibilityService =
+      getEligibilityService();
+
+    const bridgeProgramService =
+      getBridgeProgramService();
+
     const paymentService =
       getPaymentService();
 
@@ -510,6 +881,10 @@
       registrationService,
 
       programService,
+
+      eligibilityService,
+
+      bridgeProgramService,
 
       paymentService,
 
@@ -535,6 +910,16 @@
           programService
         ),
 
+      eligibilityServiceAvailable:
+        Boolean(
+          eligibilityService
+        ),
+
+      bridgeProgramServiceAvailable:
+        Boolean(
+          bridgeProgramService
+        ),
+
       paymentServiceAvailable:
         Boolean(
           paymentService
@@ -551,13 +936,25 @@
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
     const requireProgramService =
       safeOptions
         .requireProgramService ===
+      true;
+
+    const requireEligibilityService =
+      safeOptions
+        .requireEligibilityService ===
+      true;
+
+    const requireBridgeProgramService =
+      safeOptions
+        .requireBridgeProgramService ===
       true;
 
     const requirePaymentService =
@@ -600,6 +997,26 @@
     ) {
       missingDependencies.push(
         "ProgramService"
+      );
+    }
+
+    if (
+      requireEligibilityService &&
+      !dependencies
+        .eligibilityServiceAvailable
+    ) {
+      missingDependencies.push(
+        "EligibilityService"
+      );
+    }
+
+    if (
+      requireBridgeProgramService &&
+      !dependencies
+        .bridgeProgramServiceAvailable
+    ) {
+      missingDependencies.push(
+        "BridgeProgramService"
       );
     }
 
@@ -698,6 +1115,12 @@
   let controllerState =
     createInitialState();
 
+  /*
+   * Shared operation promises prevent duplicate concurrent
+   * executions caused by repeated rendering, double-clicks,
+   * retries, or overlapping lifecycle events.
+   */
+
   let identityResolutionPromise =
     null;
 
@@ -725,9 +1148,13 @@
   let registrationJourneyInitialisationPromise =
     null;
 
-  function buildState(nextState) {
+  function buildState(
+    nextState
+  ) {
     const safeState =
-      isObject(nextState)
+      isObject(
+        nextState
+      )
         ? nextState
         : {};
 
@@ -797,6 +1224,10 @@
     });
   }
 
+  /* ==========================================================
+     CONTROLLER EVENT DISPATCH
+  ========================================================== */
+
   function dispatchControllerEvent(
     eventName,
     detail
@@ -829,9 +1260,13 @@
                 timestamp:
                   nowIsoString(),
 
-                ...(isObject(detail)
-                  ? detail
-                  : {})
+                ...(
+                  isObject(
+                    detail
+                  )
+                    ? detail
+                    : {}
+                )
               })
           }
         )
@@ -848,9 +1283,17 @@
     }
   }
 
-  function setState(patch) {
+  /* ==========================================================
+     STATE ACCESS AND MUTATION
+  ========================================================== */
+
+  function setState(
+    patch
+  ) {
     const safePatch =
-      isObject(patch)
+      isObject(
+        patch
+      )
         ? patch
         : {};
 
@@ -863,6 +1306,7 @@
     dispatchControllerEvent(
       CONTROLLER_EVENT
         .STATE_CHANGED,
+
       {
         state:
           controllerState
@@ -877,50 +1321,51 @@
   }
 
   function resetState() {
-  identityResolutionPromise =
-    null;
+    identityResolutionPromise =
+      null;
 
-  eligibilityResolutionPromise =
-    null;
+    eligibilityResolutionPromise =
+      null;
 
-  offerResolutionPromise =
-    null;
+    offerResolutionPromise =
+      null;
 
-  registrationResolutionPromise =
-    null;
+    registrationResolutionPromise =
+      null;
 
-  registrationCreationPromise =
-    null;
+    registrationCreationPromise =
+      null;
 
-  paymentInitiationPromise =
-    null;
+    paymentInitiationPromise =
+      null;
 
-  paymentStatusResolutionPromise =
-    null;
+    paymentStatusResolutionPromise =
+      null;
 
-  enrolmentResolutionPromise =
-    null;
+    enrolmentResolutionPromise =
+      null;
 
-  registrationJourneyInitialisationPromise =
-    null;
+    registrationJourneyInitialisationPromise =
+      null;
 
-  controllerState =
-    createInitialState();
+    controllerState =
+      createInitialState();
 
-  dispatchControllerEvent(
-    CONTROLLER_EVENT
-      .STATE_CHANGED,
-    {
-      state:
-        controllerState,
+    dispatchControllerEvent(
+      CONTROLLER_EVENT
+        .STATE_CHANGED,
 
-      reset:
-        true
-    }
-  );
+      {
+        state:
+          controllerState,
 
-  return controllerState;
-}
+        reset:
+          true
+      }
+    );
+
+    return controllerState;
+  }
 
   /* ==========================================================
      ERROR STATE HANDLING
@@ -938,14 +1383,16 @@
         ? error
         : createControllerError(
             fallbackCode ||
-              ERROR_CODE.INTERNAL_ERROR,
+              ERROR_CODE
+                .INTERNAL_ERROR,
 
             fallbackMessage ||
               "An unexpected Bridge Registration Controller error occurred.",
 
             {
               originalError:
-                error || null
+                error ||
+                null
             }
           );
 
@@ -967,6 +1414,7 @@
 
     dispatchControllerEvent(
       CONTROLLER_EVENT.ERROR,
+
       {
         error:
           serialisedError,
@@ -1002,7 +1450,8 @@
 
     const authenticatedUser =
       dependencies.firebaseAuth
-        ? dependencies.firebaseAuth
+        ? dependencies
+            .firebaseAuth
             .currentUser
         : null;
 
@@ -1011,10 +1460,27 @@
       dependencies
         .registrationServiceAvailable;
 
-    const programmeResolutionReady =
-      foundationReady &&
+    /*
+     * ProgramService is optional for the core registration
+     * journey and remains a metadata/diagnostic authority.
+     */
+
+    const programmeMetadataReady =
       dependencies
         .programServiceAvailable;
+
+    const academicEligibilityReady =
+      dependencies
+        .bridgeProgramServiceAvailable;
+
+    const commercialEligibilityReady =
+      dependencies
+        .eligibilityServiceAvailable;
+
+    const programmeResolutionReady =
+      foundationReady &&
+      academicEligibilityReady &&
+      commercialEligibilityReady;
 
     const paymentResolutionReady =
       programmeResolutionReady &&
@@ -1031,6 +1497,12 @@
         foundationReady,
 
       foundationReady,
+
+      programmeMetadataReady,
+
+      academicEligibilityReady,
+
+      commercialEligibilityReady,
 
       programmeResolutionReady,
 
@@ -1053,6 +1525,14 @@
       programServiceAvailable:
         dependencies
           .programServiceAvailable,
+
+      eligibilityServiceAvailable:
+        dependencies
+          .eligibilityServiceAvailable,
+
+      bridgeProgramServiceAvailable:
+        dependencies
+          .bridgeProgramServiceAvailable,
 
       paymentServiceAvailable:
         dependencies
@@ -1106,12 +1586,16 @@
   }
 
   /* ==========================================================
-     CONTROLLER INITIALISATION
+     CONTROLLER FOUNDATION INITIALISATION
   ========================================================== */
 
-  async function initialise(options) {
+  async function initialise(
+    options
+  ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
@@ -1123,7 +1607,8 @@
 
     if (
       controllerState.initialised &&
-      safeOptions.force !== true
+      safeOptions.force !==
+        true
     ) {
       return controllerState;
     }
@@ -1180,6 +1665,7 @@
 
       dispatchControllerEvent(
         CONTROLLER_EVENT.READY,
+
         {
           state:
             nextState,
@@ -1207,14 +1693,15 @@
   }
 
   /* ==========================================================
-     END OF BLOCK 1 OF 6
+     END OF BLOCK 2 OF 10
 
      Do not close the IIFE here.
-     Block 2 must continue immediately below this section.
+     Block 3 must continue immediately below this section.
   ========================================================== */
-    /* ==========================================================
-     BLOCK 2 OF 6
-     AUTHENTICATED LEARNER AND PROGRAMME CONTEXT
+
+   /* ==========================================================
+     BLOCK 3 OF 10
+     AUTHENTICATION AND LEARNER IDENTITY
   ========================================================== */
 
   /* ==========================================================
@@ -1243,14 +1730,18 @@
               function mapProvider(
                 provider
               ) {
-                return provider &&
-                  isNonEmptyString(
+                if (
+                  !provider ||
+                  !isNonEmptyString(
                     provider.providerId
                   )
-                  ? normaliseString(
-                      provider.providerId
-                    )
-                  : "";
+                ) {
+                  return "";
+                }
+
+                return normaliseString(
+                  provider.providerId
+                );
               }
             )
             .filter(
@@ -1276,7 +1767,8 @@
 
       emailVerified:
         authenticatedUser
-          .emailVerified === true,
+          .emailVerified ===
+        true,
 
       phoneNumber:
         normaliseString(
@@ -1290,7 +1782,8 @@
 
       isAnonymous:
         authenticatedUser
-          .isAnonymous === true,
+          .isAnonymous ===
+        true,
 
       providerIds:
         freezeArray(
@@ -1303,7 +1796,9 @@
     learner
   ) {
     if (
-      !isObject(learner)
+      !isObject(
+        learner
+      )
     ) {
       throw createControllerError(
         ERROR_CODE
@@ -1332,10 +1827,12 @@
     }
 
     if (
-      learner.isAnonymous === true
+      learner.isAnonymous ===
+      true
     ) {
       throw createControllerError(
-        ERROR_CODE.AUTH_REQUIRED,
+        ERROR_CODE
+          .AUTH_REQUIRED,
 
         "Anonymous authentication cannot be used for Bridge Programme registration.",
 
@@ -1358,7 +1855,8 @@
       assertRequiredDependencies();
 
     const authenticatedUser =
-      dependencies.firebaseAuth
+      dependencies
+        .firebaseAuth
         .currentUser;
 
     if (
@@ -1368,7 +1866,8 @@
       )
     ) {
       throw createControllerError(
-        ERROR_CODE.AUTH_REQUIRED,
+        ERROR_CODE
+          .AUTH_REQUIRED,
 
         "An authenticated learner is required to access the Bridge Programme registration journey."
       );
@@ -1385,19 +1884,22 @@
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
-    const timeoutMs =
+    const requestedTimeoutMs =
       normaliseNumber(
         safeOptions.timeoutMs,
         10000
       );
 
     const governedTimeoutMs =
-      timeoutMs > 0
-        ? timeoutMs
+      requestedTimeoutMs >
+      0
+        ? requestedTimeoutMs
         : 10000;
 
     const dependencies =
@@ -1409,10 +1911,13 @@
     if (
       firebaseAuth.currentUser &&
       isNonEmptyString(
-        firebaseAuth.currentUser.uid
+        firebaseAuth
+          .currentUser
+          .uid
       )
     ) {
-      return firebaseAuth.currentUser;
+      return firebaseAuth
+        .currentUser;
     }
 
     if (
@@ -1421,7 +1926,8 @@
       "function"
     ) {
       throw createControllerError(
-        ERROR_CODE.AUTH_REQUIRED,
+        ERROR_CODE
+          .AUTH_REQUIRED,
 
         "Firebase Authentication state monitoring is unavailable."
       );
@@ -1438,234 +1944,331 @@
         let unsubscribe =
           null;
 
+        const complete =
+          function completeAuthenticationWait(
+            callback
+          ) {
+            if (settled) {
+              return;
+            }
+
+            settled =
+              true;
+
+            global.clearTimeout(
+              timeoutHandle
+            );
+
+            if (
+              typeof unsubscribe ===
+              "function"
+            ) {
+              try {
+                unsubscribe();
+              } catch (
+                unsubscribeError
+              ) {
+                console.warn(
+                  `[${CONTROLLER_NAME}] Unable to unsubscribe from Firebase Authentication state monitoring.`,
+                  unsubscribeError
+                );
+              }
+            }
+
+            callback();
+          };
+
         const timeoutHandle =
           global.setTimeout(
             function handleTimeout() {
-              if (settled) {
-                return;
-              }
+              complete(
+                function rejectTimeout() {
+                  reject(
+                    createControllerError(
+                      ERROR_CODE
+                        .AUTH_REQUIRED,
 
-              settled =
-                true;
+                      "Timed out while waiting for an authenticated learner.",
 
-              if (
-                typeof unsubscribe ===
-                "function"
-              ) {
-                unsubscribe();
-              }
-
-              reject(
-                createControllerError(
-                  ERROR_CODE.AUTH_REQUIRED,
-
-                  "Timed out while waiting for an authenticated learner.",
-
-                  {
-                    timeoutMs:
-                      governedTimeoutMs
-                  }
-                )
+                      {
+                        timeoutMs:
+                          governedTimeoutMs
+                      }
+                    )
+                  );
+                }
               );
             },
 
             governedTimeoutMs
           );
 
-        unsubscribe =
-          firebaseAuth.onAuthStateChanged(
-            function handleUser(
-              authenticatedUser
-            ) {
-              if (
-                settled ||
-                !authenticatedUser ||
-                !isNonEmptyString(
-                  authenticatedUser.uid
-                )
-              ) {
-                return;
-              }
+        try {
+          unsubscribe =
+            firebaseAuth
+              .onAuthStateChanged(
+                function handleUser(
+                  authenticatedUser
+                ) {
+                  if (
+                    !authenticatedUser ||
+                    !isNonEmptyString(
+                      authenticatedUser.uid
+                    )
+                  ) {
+                    return;
+                  }
 
-              settled =
-                true;
+                  complete(
+                    function resolveUser() {
+                      resolve(
+                        authenticatedUser
+                      );
+                    }
+                  );
+                },
 
-              global.clearTimeout(
-                timeoutHandle
+                function handleAuthError(
+                  error
+                ) {
+                  complete(
+                    function rejectAuthError() {
+                      reject(
+                        createControllerError(
+                          ERROR_CODE
+                            .AUTH_REQUIRED,
+
+                          "Unable to resolve the authenticated learner.",
+
+                          {
+                            originalError:
+                              error ||
+                              null
+                          }
+                        )
+                      );
+                    }
+                  );
+                }
               );
-
-              if (
-                typeof unsubscribe ===
-                "function"
-              ) {
-                unsubscribe();
-              }
-
-              resolve(
-                authenticatedUser
-              );
-            },
-
-            function handleAuthError(
-              error
-            ) {
-              if (settled) {
-                return;
-              }
-
-              settled =
-                true;
-
-              global.clearTimeout(
-                timeoutHandle
-              );
-
-              if (
-                typeof unsubscribe ===
-                "function"
-              ) {
-                unsubscribe();
-              }
-
+        } catch (error) {
+          complete(
+            function rejectSubscriptionError() {
               reject(
                 createControllerError(
-                  ERROR_CODE.AUTH_REQUIRED,
+                  ERROR_CODE
+                    .AUTH_REQUIRED,
 
-                  "Unable to resolve the authenticated learner.",
+                  "Unable to subscribe to Firebase Authentication state changes.",
 
                   {
                     originalError:
-                      error || null
+                      error ||
+                      null
                   }
                 )
               );
             }
           );
+        }
       }
     );
   }
 
-    /* ==========================================================
-        AUTHENTICATED LEARNER RESOLUTION
-    ========================================================== */
+  /* ==========================================================
+     AUTHENTICATED LEARNER RESOLUTION
+  ========================================================== */
 
-    async function resolveAuthenticatedLearner(
+  async function resolveAuthenticatedLearner(
     options
-    ) {
+  ) {
     const safeOptions =
-        isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
     if (
-        hasResolvedLearner() &&
-        safeOptions.force !== true
+      hasResolvedLearner() &&
+      safeOptions.force !==
+        true
     ) {
-        return controllerState.learner;
+      return controllerState
+        .learner;
     }
 
-    if (identityResolutionPromise) {
-        return identityResolutionPromise;
+    if (
+      identityResolutionPromise
+    ) {
+      return identityResolutionPromise;
     }
 
     identityResolutionPromise =
-        (async function performIdentityResolution() {
-        setState({
+      (
+        async function performIdentityResolution() {
+          setState({
             status:
-            CONTROLLER_STATUS
+              CONTROLLER_STATUS
                 .RESOLVING_IDENTITY,
 
             busy:
-            true,
+              true,
 
             error:
-            null
-        });
+              null
+          });
 
-        try {
+          try {
             assertRequiredDependencies();
 
             const authenticatedUser =
-            safeOptions.waitForAuth ===
-            false
+              safeOptions.waitForAuth ===
+              false
                 ? getCurrentAuthenticatedUser()
                 : await waitForAuthenticatedUser({
                     timeoutMs:
-                    safeOptions.timeoutMs
-                });
+                      safeOptions
+                        .timeoutMs
+                  });
 
             const learner =
-            validateLearnerIdentity(
+              validateLearnerIdentity(
                 buildLearnerViewModel(
-                authenticatedUser
+                  authenticatedUser
                 )
-            );
+              );
 
             const nextStatus =
-            controllerState.initialised
-                ? CONTROLLER_STATUS.READY
-                : CONTROLLER_STATUS.IDLE;
+              controllerState
+                .initialised ===
+              true
+                ? CONTROLLER_STATUS
+                    .READY
+                : CONTROLLER_STATUS
+                    .IDLE;
 
             const nextState =
-            setState({
+              setState({
                 status:
-                nextStatus,
+                  nextStatus,
 
                 busy:
-                false,
+                  false,
 
                 learner,
 
                 error:
-                null
-            });
+                  null
+              });
 
             dispatchControllerEvent(
-            CONTROLLER_EVENT
+              CONTROLLER_EVENT
                 .IDENTITY_RESOLVED,
 
-            {
+              {
                 learner,
 
                 state:
-                nextState
-            }
+                  nextState
+              }
             );
 
             return learner;
-        } catch (error) {
+          } catch (error) {
             throw handleControllerError(
-            error,
+              error,
 
-            ERROR_CODE
+              ERROR_CODE
                 .IDENTITY_RESOLUTION_FAILED,
 
-            "Unable to resolve the authenticated learner identity."
+              "Unable to resolve the authenticated learner identity."
             );
+          }
         }
-        })();
+      )();
 
     try {
-        return await identityResolutionPromise;
+      return await identityResolutionPromise;
     } finally {
-        identityResolutionPromise =
+      identityResolutionPromise =
         null;
     }
   }
+
+  /* ==========================================================
+     LEARNER IDENTITY STATE
+  ========================================================== */
 
   function hasResolvedLearner() {
     return Boolean(
       controllerState.learner &&
       isNonEmptyString(
-        controllerState.learner
+        controllerState
+          .learner
           .learnerUid
       )
     );
   }
 
   function getResolvedLearner() {
-    return controllerState.learner;
+    return controllerState
+      .learner;
   }
+
+  function getLearnerIdentityReadiness() {
+    const learner =
+      controllerState.learner;
+
+    return freezeObject({
+      authenticated:
+        Boolean(
+          getReadiness()
+            .authenticated
+        ),
+
+      learnerResolved:
+        hasResolvedLearner(),
+
+      learnerUid:
+        hasResolvedLearner()
+          ? learner.learnerUid
+          : null,
+
+      learnerEmail:
+        hasResolvedLearner()
+          ? learner.email ||
+            null
+          : null,
+
+      emailVerified:
+        hasResolvedLearner() &&
+        learner.emailVerified ===
+          true,
+
+      anonymous:
+        hasResolvedLearner() &&
+        learner.isAnonymous ===
+          true,
+
+      ready:
+        hasResolvedLearner() &&
+        learner.isAnonymous !==
+          true
+    });
+  }
+
+  /* ==========================================================
+     END OF BLOCK 3 OF 10
+
+     Do not close the IIFE here.
+     Block 4 must continue immediately below this section.
+  ========================================================== */
+  
+  /* ==========================================================
+     BLOCK 4 OF 10
+     PROGRAMME CONTEXT AND PAGE CONTEXT
+  ========================================================== */
 
   /* ==========================================================
      PROGRAMME CONTEXT VALIDATION
@@ -1675,20 +2278,24 @@
     input
   ) {
     const safeInput =
-      isObject(input)
+      isObject(
+        input
+      )
         ? input
         : {};
 
     const sourceProgrammeCode =
       normaliseProgrammeCode(
-        safeInput.sourceProgrammeCode ||
+        safeInput
+          .sourceProgrammeCode ||
         controllerState
           .sourceProgrammeCode
       );
 
     const targetProgrammeCode =
       normaliseProgrammeCode(
-        safeInput.targetProgrammeCode ||
+        safeInput
+          .targetProgrammeCode ||
         controllerState
           .targetProgrammeCode
       );
@@ -1699,7 +2306,8 @@
       )
     ) {
       throw createControllerError(
-        ERROR_CODE.INVALID_INPUT,
+        ERROR_CODE
+          .INVALID_INPUT,
 
         "sourceProgrammeCode is required.",
 
@@ -1716,7 +2324,8 @@
       )
     ) {
       throw createControllerError(
-        ERROR_CODE.INVALID_INPUT,
+        ERROR_CODE
+          .INVALID_INPUT,
 
         "targetProgrammeCode is required.",
 
@@ -1732,7 +2341,8 @@
       targetProgrammeCode
     ) {
       throw createControllerError(
-        ERROR_CODE.INVALID_INPUT,
+        ERROR_CODE
+          .INVALID_INPUT,
 
         "Source and target programme codes must be different.",
 
@@ -1751,6 +2361,89 @@
     });
   }
 
+  /* ==========================================================
+     PROGRAMME CONTEXT STATE
+  ========================================================== */
+
+  function hasProgrammeContext() {
+    return Boolean(
+      isNonEmptyString(
+        controllerState
+          .sourceProgrammeCode
+      ) &&
+      isNonEmptyString(
+        controllerState
+          .targetProgrammeCode
+      ) &&
+      controllerState
+        .sourceProgrammeCode !==
+      controllerState
+        .targetProgrammeCode
+    );
+  }
+
+  function getProgrammeContext() {
+    return freezeObject({
+      sourceProgrammeCode:
+        controllerState
+          .sourceProgrammeCode,
+
+      targetProgrammeCode:
+        controllerState
+          .targetProgrammeCode
+    });
+  }
+
+  function programmeContextMatches(
+    programmeContext
+  ) {
+    if (
+      !isObject(
+        programmeContext
+      )
+    ) {
+      return false;
+    }
+
+    return Boolean(
+      hasProgrammeContext() &&
+      controllerState
+        .sourceProgrammeCode ===
+        programmeContext
+          .sourceProgrammeCode &&
+      controllerState
+        .targetProgrammeCode ===
+        programmeContext
+          .targetProgrammeCode
+    );
+  }
+
+  function clearJourneyResolutionPromises() {
+    eligibilityResolutionPromise =
+      null;
+
+    offerResolutionPromise =
+      null;
+
+    registrationResolutionPromise =
+      null;
+
+    registrationCreationPromise =
+      null;
+
+    paymentInitiationPromise =
+      null;
+
+    paymentStatusResolutionPromise =
+      null;
+
+    enrolmentResolutionPromise =
+      null;
+
+    registrationJourneyInitialisationPromise =
+      null;
+  }
+
   function setProgrammeContext(
     input
   ) {
@@ -1758,6 +2451,21 @@
       validateProgrammeContext(
         input
       );
+
+    if (
+      programmeContextMatches(
+        programmeContext
+      )
+    ) {
+      return programmeContext;
+    }
+
+    /*
+     * Changing the source or target programme invalidates all
+     * previously resolved downstream journey information.
+     */
+
+    clearJourneyResolutionPromises();
 
     setState({
       sourceProgrammeCode:
@@ -1790,35 +2498,6 @@
     return programmeContext;
   }
 
-  function getProgrammeContext() {
-    return freezeObject({
-      sourceProgrammeCode:
-        controllerState
-          .sourceProgrammeCode,
-
-      targetProgrammeCode:
-        controllerState
-          .targetProgrammeCode
-    });
-  }
-
-  function hasProgrammeContext() {
-    return Boolean(
-      isNonEmptyString(
-        controllerState
-          .sourceProgrammeCode
-      ) &&
-      isNonEmptyString(
-        controllerState
-          .targetProgrammeCode
-      ) &&
-      controllerState
-        .sourceProgrammeCode !==
-        controllerState
-          .targetProgrammeCode
-    );
-  }
-
   /* ==========================================================
      PAGE CONTEXT INITIALISATION
   ========================================================== */
@@ -1827,26 +2506,15 @@
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
     try {
-      await initialise({
-        force:
-          safeOptions.force === true,
-
-        sourceProgrammeCode:
-          safeOptions
-            .sourceProgrammeCode,
-
-        targetProgrammeCode:
-          safeOptions
-            .targetProgrammeCode
-      });
-
-      const programmeContext =
-        setProgrammeContext({
+      const requestedProgrammeContext =
+        validateProgrammeContext({
           sourceProgrammeCode:
             safeOptions
               .sourceProgrammeCode,
@@ -1856,24 +2524,47 @@
               .targetProgrammeCode
         });
 
+      await initialise({
+        force:
+          safeOptions.force ===
+          true,
+
+        sourceProgrammeCode:
+          requestedProgrammeContext
+            .sourceProgrammeCode,
+
+        targetProgrammeCode:
+          requestedProgrammeContext
+            .targetProgrammeCode
+      });
+
+      const programmeContext =
+        setProgrammeContext(
+          requestedProgrammeContext
+        );
+
       const learner =
         await resolveAuthenticatedLearner({
           force:
             safeOptions
-              .forceIdentity === true,
+              .forceIdentity ===
+            true,
 
           waitForAuth:
-            safeOptions.waitForAuth !==
+            safeOptions
+              .waitForAuth !==
             false,
 
           timeoutMs:
-            safeOptions.timeoutMs
+            safeOptions
+              .timeoutMs
         });
 
       const state =
         setState({
           status:
-            CONTROLLER_STATUS.READY,
+            CONTROLLER_STATUS
+              .READY,
 
           initialised:
             true,
@@ -1923,32 +2614,46 @@
   }
 
   /* ==========================================================
-     BLOCK 2 READINESS
+     PAGE CONTEXT READINESS
   ========================================================== */
 
   function getPageContextReadiness() {
+    const controllerInitialised =
+      controllerState
+        .initialised ===
+      true;
+
+    const learnerResolved =
+      hasResolvedLearner();
+
+    const programmeContextResolved =
+      hasProgrammeContext();
+
     return freezeObject({
-      controllerInitialised:
-        controllerState
-          .initialised === true,
+      controllerInitialised,
 
-      learnerResolved:
-        hasResolvedLearner(),
+      learnerResolved,
 
-      programmeContextResolved:
-        hasProgrammeContext(),
+      programmeContextResolved,
 
       ready:
-        controllerState
-          .initialised === true &&
-        hasResolvedLearner() &&
-        hasProgrammeContext(),
+        controllerInitialised &&
+        learnerResolved &&
+        programmeContextResolved,
 
       learnerUid:
-        hasResolvedLearner()
+        learnerResolved
           ? controllerState
               .learner
               .learnerUid
+          : null,
+
+      learnerEmail:
+        learnerResolved
+          ? controllerState
+              .learner
+              .email ||
+            null
           : null,
 
       sourceProgrammeCode:
@@ -1957,26 +2662,99 @@
 
       targetProgrammeCode:
         controllerState
-          .targetProgrammeCode
+          .targetProgrammeCode,
+
+      status:
+        controllerState.status,
+
+      busy:
+        controllerState.busy ===
+        true,
+
+      error:
+        controllerState.error
     });
   }
 
   /* ==========================================================
-     END OF BLOCK 2 OF 6
-
-     Do not add diagnostics, the public API, global registration,
-     or the closing IIFE yet.
-
-     Block 3 must continue immediately below this section.
+     PAGE CONTEXT ASSERTION
   ========================================================== */
 
+  function assertPageContextReady() {
+    const readiness =
+      getPageContextReadiness();
+
+    if (
+      readiness.ready ===
+      true
+    ) {
+      return readiness;
+    }
+
+    const missingContext =
+      [];
+
+    if (
+      readiness
+        .controllerInitialised !==
+      true
+    ) {
+      missingContext.push(
+        "Controller initialisation"
+      );
+    }
+
+    if (
+      readiness
+        .learnerResolved !==
+      true
+    ) {
+      missingContext.push(
+        "Authenticated learner identity"
+      );
+    }
+
+    if (
+      readiness
+        .programmeContextResolved !==
+      true
+    ) {
+      missingContext.push(
+        "Programme context"
+      );
+    }
+
+    throw createControllerError(
+      ERROR_CODE
+        .INITIALISATION_FAILED,
+
+      "The Bridge Programme registration page context is not ready.",
+
+      {
+        missingContext:
+          freezeArray(
+            missingContext
+          ),
+
+        readiness
+      }
+    );
+  }
+
+  /* ==========================================================
+     END OF BLOCK 4 OF 10
+
+     Do not close the IIFE here.
+     Block 5 must continue immediately below this section.
+  ========================================================== */
+  
     /* ==========================================================
-     BLOCK 3 OF 6
-     ACADEMIC ELIGIBILITY AND COMMERCIAL OFFER RESOLUTION
+     BLOCK 5 OF 10
+     ELIGIBILITY AND CREDENTIAL RESOLUTION
   ========================================================== */
 
   /* ==========================================================
-     PROGRAM SERVICE ACCESS
+     PROGRAMME AND ELIGIBILITY SERVICE ACCESS
   ========================================================== */
 
   function getRequiredProgramService() {
@@ -1990,43 +2768,85 @@
       .programService;
   }
 
+  function getRequiredEligibilityService() {
+    const dependencies =
+      assertRequiredDependencies({
+        requireEligibilityService:
+          true
+      });
+
+    return dependencies
+      .eligibilityService;
+  }
+
+  function getRequiredBridgeProgramService() {
+    const dependencies =
+      assertRequiredDependencies({
+        requireBridgeProgramService:
+          true
+      });
+
+    return dependencies
+      .bridgeProgramService;
+  }
+
+  /* ==========================================================
+     SERVICE METHOD RESOLUTION
+  ========================================================== */
+
   function findServiceMethod(
     service,
     methodNames
   ) {
     if (
       !service ||
-      typeof service !== "object" ||
-      !Array.isArray(methodNames)
+      typeof service !==
+        "object" ||
+      !Array.isArray(
+        methodNames
+      )
     ) {
       return null;
     }
 
     for (
       let index = 0;
-      index < methodNames.length;
+      index <
+        methodNames.length;
       index += 1
     ) {
       const methodName =
-        methodNames[index];
+        normaliseString(
+          methodNames[index]
+        );
 
       if (
-        isNonEmptyString(
+        !isNonEmptyString(
           methodName
-        ) &&
+        )
+      ) {
+        continue;
+      }
+
+      if (
         typeof service[
           methodName
-        ] === "function"
+        ] !==
+        "function"
       ) {
-        return freezeObject({
-          methodName,
-
-          method:
-            service[
-              methodName
-            ].bind(service)
-        });
+        continue;
       }
+
+      return freezeObject({
+        methodName,
+
+        method:
+          service[
+            methodName
+          ].bind(
+            service
+          )
+      });
     }
 
     return null;
@@ -2051,7 +2871,7 @@
           .DEPENDENCY_UNAVAILABLE,
 
         errorMessage ||
-          "The required ProgramService method is unavailable.",
+          "The required service method is unavailable.",
 
         {
           expectedMethods:
@@ -2065,7 +2885,9 @@
     try {
       const result =
         await resolvedMethod
-          .method(payload);
+          .method(
+            payload
+          );
 
       return freezeObject({
         methodName:
@@ -2073,7 +2895,8 @@
             .methodName,
 
         result:
-          result === undefined
+          result ===
+          undefined
             ? null
             : result
       });
@@ -2092,7 +2915,7 @@
             .INTERNAL_ERROR,
 
         errorMessage ||
-          "A programme service operation failed.",
+          "A Bridge Programme service operation failed.",
 
         {
           methodName:
@@ -2100,7 +2923,8 @@
               .methodName,
 
           originalError:
-            error || null
+            error ||
+            null
         }
       );
     }
@@ -2114,7 +2938,9 @@
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
@@ -2140,7 +2966,8 @@
         learner.learnerUid,
 
       learnerEmail:
-        learner.email || "",
+        learner.email ||
+        "",
 
       emailVerified:
         learner.emailVerified ===
@@ -2165,15 +2992,28 @@
     input
   ) {
     const result =
-      isObject(rawResult)
+      isObject(
+        rawResult
+      )
         ? rawResult
         : {};
 
+    const governedInput =
+      isObject(
+        input
+      )
+        ? input
+        : {};
+
     const eligible =
-      result.eligible === true ||
-      result.isEligible === true ||
-      result.allowed === true ||
-      result.approved === true;
+      result.eligible ===
+        true ||
+      result.isEligible ===
+        true ||
+      result.allowed ===
+        true ||
+      result.approved ===
+        true;
 
     const status =
       normaliseString(
@@ -2198,41 +3038,101 @@
         result.explanation
       );
 
+    const academicEligibility =
+      isObject(
+        result.academicEligibility
+      )
+        ? freezeObject(
+            result
+              .academicEligibility
+          )
+        : (
+            isObject(
+              result.academic
+            )
+              ? freezeObject(
+                  result.academic
+                )
+              : null
+          );
+
+    const commercialEligibility =
+      isObject(
+        result
+          .commercialEligibility
+      )
+        ? freezeObject(
+            result
+              .commercialEligibility
+          )
+        : (
+            isObject(
+              result.commercial
+            )
+              ? freezeObject(
+                  result.commercial
+                )
+              : null
+          );
+
+    const blockingConditions =
+      Array.isArray(
+        result.blockingConditions
+      )
+        ? result
+            .blockingConditions
+            .map(
+              function normaliseBlockingCondition(
+                condition
+              ) {
+                return normaliseString(
+                  condition
+                );
+              }
+            )
+            .filter(
+              isNonEmptyString
+            )
+        : [];
+
     return freezeObject({
       eligible,
 
       status:
         status.toUpperCase(),
 
-      reasonCode,
+      reasonCode:
+        reasonCode.toUpperCase(),
 
       reason,
 
       learnerUid:
-        input.learnerUid,
+        normaliseString(
+          governedInput
+            .learnerUid
+        ),
 
       learnerEmail:
-        input.learnerEmail,
+        normaliseEmail(
+          governedInput
+            .learnerEmail
+        ),
 
       sourceProgrammeCode:
-        input
-          .sourceProgrammeCode,
+        normaliseProgrammeCode(
+          governedInput
+            .sourceProgrammeCode
+        ),
 
       targetProgrammeCode:
-        input
-          .targetProgrammeCode,
+        normaliseProgrammeCode(
+          governedInput
+            .targetProgrammeCode
+        ),
 
-      academicEligibility:
-        result
-          .academicEligibility ||
-        result.academic ||
-        null,
+      academicEligibility,
 
-      commercialEligibility:
-        result
-          .commercialEligibility ||
-        result.commercial ||
-        null,
+      commercialEligibility,
 
       prerequisiteSatisfied:
         result
@@ -2241,12 +3141,7 @@
 
       blockingConditions:
         freezeArray(
-          Array.isArray(
-            result.blockingConditions
-          )
-            ? result
-                .blockingConditions
-            : []
+          blockingConditions
         ),
 
       resolvedAt:
@@ -2260,166 +3155,937 @@
   }
 
   /* ==========================================================
-    ELIGIBILITY RESOLUTION
-    ========================================================== */
+     VISIBLE CREDENTIAL RESOLUTION
+  ========================================================== */
 
-    async function resolveEligibility(
-  options
-) {
-  const safeOptions =
-    isObject(options)
-      ? options
-      : {};
-
-  if (
-    hasResolvedEligibility() &&
-    safeOptions.force !== true
+  function resolveVisibleCredentials(
+    options
   ) {
-    return controllerState
-      .eligibility;
-  }
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
 
-  if (eligibilityResolutionPromise) {
-    return eligibilityResolutionPromise;
-  }
+    /*
+     * Explicit controller input has the highest authority.
+     */
 
-  eligibilityResolutionPromise =
-    (async function performEligibilityResolution() {
-      setState({
-        status:
-          CONTROLLER_STATUS
-            .RESOLVING_ELIGIBILITY,
+    if (
+      Array.isArray(
+        safeOptions.credentials
+      )
+    ) {
+      return freezeArray(
+        safeOptions.credentials
+      );
+    }
 
-        busy:
-          true,
+    /*
+     * Prefer the governed CredentialService when available.
+     */
 
-        eligibility:
-          safeOptions.force === true
-            ? null
-            : controllerState
-                .eligibility,
-
-        offer:
-          safeOptions.force === true
-            ? null
-            : controllerState.offer,
-
-        error:
-          null
-      });
-
+    if (
+      global.CredentialService &&
+      typeof global
+        .CredentialService
+        .getCredentials ===
+        "function"
+    ) {
       try {
-        const programService =
-          getRequiredProgramService();
+        const credentials =
+          global
+            .CredentialService
+            .getCredentials();
 
-        const input =
-          buildEligibilityInput(
-            safeOptions
+        if (
+          Array.isArray(
+            credentials
+          )
+        ) {
+          return freezeArray(
+            credentials
           );
+        }
+      } catch (error) {
+        console.warn(
+          `[${CONTROLLER_NAME}] CredentialService.getCredentials() failed.`,
+          error
+        );
+      }
+    }
 
-        const response =
-          await invokeServiceMethod(
-            programService,
+    /*
+     * Support the existing portal-level credential cache.
+     */
 
-            [
-              "resolveBridgeEligibility",
-              "getBridgeEligibility",
-              "evaluateBridgeEligibility",
-              "resolveEligibility",
-              "checkEligibility"
-            ],
+    if (
+      Array.isArray(
+        global.portalCredentials
+      )
+    ) {
+      return freezeArray(
+        global.portalCredentials
+      );
+    }
 
-            input,
+    /*
+     * Support the entitlement resolver's visible credentials.
+     */
 
-            ERROR_CODE
-              .ELIGIBILITY_RESOLUTION_FAILED,
+    const entitlements =
+      global
+        .__AAIU_ENTITLEMENTS__;
 
-            "Unable to resolve Bridge Programme eligibility."
+    if (
+      isObject(
+        entitlements
+      ) &&
+      Array.isArray(
+        entitlements
+          .visibleCredentials
+      )
+    ) {
+      return freezeArray(
+        entitlements
+          .visibleCredentials
+      );
+    }
+
+    /*
+     * EligibilityService may expose its own governed view.
+     */
+
+    const eligibilityService =
+      getEligibilityService();
+
+    if (
+      eligibilityService &&
+      typeof eligibilityService
+        .getVisibleCredentials ===
+        "function"
+    ) {
+      try {
+        const credentials =
+          eligibilityService
+            .getVisibleCredentials();
+
+        if (
+          Array.isArray(
+            credentials
+          )
+        ) {
+          return freezeArray(
+            credentials
           );
+        }
+      } catch (error) {
+        console.warn(
+          `[${CONTROLLER_NAME}] EligibilityService.getVisibleCredentials() failed.`,
+          error
+        );
+      }
+    }
 
-        const eligibility =
-          normaliseEligibilityResult(
-            response.result,
-            input
+    return freezeArray(
+      []
+    );
+  }
+
+  /* ==========================================================
+     CREDENTIAL PROGRAMME CODE RESOLUTION
+  ========================================================== */
+
+  function resolveCredentialProgrammeCode(
+    credential
+  ) {
+    if (
+      !isObject(
+        credential
+      )
+    ) {
+      return "";
+    }
+
+    return normaliseProgrammeCode(
+      credential
+        .programmeCode ||
+      credential
+        .programCode ||
+      credential
+        .programme_code ||
+      credential
+        .program_code ||
+      credential
+        .credentialProgrammeCode ||
+      credential
+        .credentialProgramCode
+    );
+  }
+
+  function resolveCredentialId(
+    credential
+  ) {
+    if (
+      !isObject(
+        credential
+      )
+    ) {
+      return "";
+    }
+
+    return normaliseString(
+      credential
+        .credentialId ||
+      credential
+        .credential_id ||
+      credential.id
+    ).toUpperCase();
+  }
+
+  function resolveSourceCredential(
+    credentials,
+    sourceProgrammeCode
+  ) {
+    const governedCredentials =
+      Array.isArray(
+        credentials
+      )
+        ? credentials
+        : [];
+
+    const governedSourceProgrammeCode =
+      normaliseProgrammeCode(
+        sourceProgrammeCode
+      );
+
+    if (
+      !isNonEmptyString(
+        governedSourceProgrammeCode
+      )
+    ) {
+      return null;
+    }
+
+    return (
+      governedCredentials
+        .find(
+          function findSourceCredential(
+            credential
+          ) {
+            return (
+              resolveCredentialProgrammeCode(
+                credential
+              ) ===
+              governedSourceProgrammeCode
+            );
+          }
+        ) ||
+      null
+    );
+  }
+
+  /* ==========================================================
+     COMMERCIAL MODEL PROGRAMME RESOLUTION
+  ========================================================== */
+
+  function resolveCommercialSourceProgrammeCode(
+    commercialModel
+  ) {
+    if (
+      !isObject(
+        commercialModel
+      )
+    ) {
+      return "";
+    }
+
+    const currentProgram =
+      isObject(
+        commercialModel
+          .currentProgram
+      )
+        ? commercialModel
+            .currentProgram
+        : {};
+
+    return normaliseProgrammeCode(
+      currentProgram.code ||
+      currentProgram
+        .programmeCode ||
+      currentProgram
+        .programCode ||
+      currentProgram
+        .programme_code ||
+      currentProgram
+        .program_code ||
+      commercialModel
+        .sourceProgrammeCode ||
+      commercialModel
+        .sourceProgramCode
+    );
+  }
+
+  function resolveCommercialTargetProgrammeCode(
+    commercialModel
+  ) {
+    if (
+      !isObject(
+        commercialModel
+      )
+    ) {
+      return "";
+    }
+
+    const nextProgram =
+      commercialModel
+        .nextProgram;
+
+    if (
+      isObject(
+        nextProgram
+      )
+    ) {
+      return normaliseProgrammeCode(
+        nextProgram.code ||
+        nextProgram
+          .programmeCode ||
+        nextProgram
+          .programCode ||
+        nextProgram
+          .programme_code ||
+        nextProgram
+          .program_code
+      );
+    }
+
+    return normaliseProgrammeCode(
+      nextProgram ||
+      commercialModel
+        .targetProgrammeCode ||
+      commercialModel
+        .targetProgramCode ||
+      commercialModel
+        .programmeCode ||
+      commercialModel
+        .programCode
+    );
+  }
+
+  /* ==========================================================
+     BRIDGE RELATIONSHIP DEFINITION
+  ========================================================== */
+
+  function buildBridgeRelationshipDefinition(
+    input,
+    commercialModel
+  ) {
+    const governedInput =
+      isObject(
+        input
+      )
+        ? input
+        : {};
+
+    const governedCommercialModel =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    const sourceProgrammeCode =
+      normaliseProgrammeCode(
+        governedInput
+          .sourceProgrammeCode
+      );
+
+    const targetProgrammeCode =
+      normaliseProgrammeCode(
+        governedInput
+          .targetProgrammeCode
+      );
+
+    return freezeObject({
+      id:
+        [
+          sourceProgrammeCode,
+          targetProgrammeCode
+        ].join(
+          "_TO_"
+        ),
+
+      source:
+        sourceProgrammeCode,
+
+      target:
+        targetProgrammeCode,
+
+      relationship:
+        normaliseString(
+          governedCommercialModel
+            .relationshipType ||
+          governedCommercialModel
+            .relationship ||
+          "CAPABILITY_UPGRADE"
+        ).toUpperCase(),
+
+      title:
+        normaliseString(
+          governedCommercialModel
+            .bridgeProgram ||
+          governedCommercialModel
+            .bridgeProgramme ||
+          governedCommercialModel
+            .title
+        ) ||
+        "Bridge Programme",
+
+      description:
+        normaliseString(
+          governedCommercialModel
+            .description
+        ),
+
+      active:
+        true,
+
+      status:
+        "ACTIVE"
+    });
+  }
+
+  /* ==========================================================
+     ACADEMIC BRIDGE MATCHING
+  ========================================================== */
+
+  function findAcademicBridge(
+    bridgeOpportunities,
+    input
+  ) {
+    const opportunities =
+      Array.isArray(
+        bridgeOpportunities
+      )
+        ? bridgeOpportunities
+        : [];
+
+    const governedInput =
+      isObject(
+        input
+      )
+        ? input
+        : {};
+
+    return (
+      opportunities.find(
+        function findMatchingBridge(
+          opportunity
+        ) {
+          if (
+            !isObject(
+              opportunity
+            )
+          ) {
+            return false;
+          }
+
+          const sourceProgrammeCode =
+            normaliseProgrammeCode(
+              opportunity
+                .sourceProgram ||
+              opportunity
+                .sourceProgramme ||
+              opportunity
+                .sourceProgrammeCode ||
+              opportunity
+                .sourceProgramCode ||
+              opportunity.source
+            );
+
+          const targetProgrammeCode =
+            normaliseProgrammeCode(
+              opportunity
+                .targetProgram ||
+              opportunity
+                .targetProgramme ||
+              opportunity
+                .targetProgrammeCode ||
+              opportunity
+                .targetProgramCode ||
+              opportunity.target
+            );
+
+          return (
+            sourceProgrammeCode ===
+              governedInput
+                .sourceProgrammeCode &&
+            targetProgrammeCode ===
+              governedInput
+                .targetProgrammeCode
           );
+        }
+      ) ||
+      null
+    );
+  }
 
-        const nextStatus =
-          eligibility.eligible
-            ? CONTROLLER_STATUS.READY
-            : CONTROLLER_STATUS
-                .NOT_ELIGIBLE;
+  /* ==========================================================
+     ELIGIBILITY RESOLUTION
+  ========================================================== */
 
-        const nextState =
+  async function resolveEligibility(
+    options
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    if (
+      hasResolvedEligibility() &&
+      safeOptions.force !==
+        true
+    ) {
+      return controllerState
+        .eligibility;
+    }
+
+    if (
+      eligibilityResolutionPromise
+    ) {
+      return eligibilityResolutionPromise;
+    }
+
+    eligibilityResolutionPromise =
+      (
+        async function performEligibilityResolution() {
           setState({
             status:
-              nextStatus,
+              CONTROLLER_STATUS
+                .RESOLVING_ELIGIBILITY,
 
             busy:
-              false,
+              true,
 
-            learner:
-              controllerState.learner,
-
-            sourceProgrammeCode:
-              input
-                .sourceProgrammeCode,
-
-            targetProgrammeCode:
-              input
-                .targetProgrammeCode,
-
-            eligibility,
+            eligibility:
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .eligibility,
 
             offer:
-              eligibility.eligible
-                ? controllerState.offer
-                : null,
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .offer,
+
+            registration:
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .registration,
+
+            payment:
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .payment,
+
+            enrolment:
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .enrolment,
 
             error:
               null
           });
 
-        dispatchControllerEvent(
-          CONTROLLER_EVENT
-            .ELIGIBILITY_RESOLVED,
+          try {
+            assertPageContextReady();
 
-          {
-            eligibility,
+            const eligibilityService =
+              getRequiredEligibilityService();
 
-            serviceMethod:
-              response.methodName,
+            const bridgeProgramService =
+              getRequiredBridgeProgramService();
 
-            state:
-              nextState
+            const input =
+              buildEligibilityInput(
+                safeOptions
+              );
+
+            if (
+              typeof eligibilityService
+                .getUpgradeModel !==
+              "function"
+            ) {
+              throw createControllerError(
+                ERROR_CODE
+                  .DEPENDENCY_UNAVAILABLE,
+
+                "EligibilityService.getUpgradeModel() is unavailable.",
+
+                {
+                  expectedMethod:
+                    "getUpgradeModel"
+                }
+              );
+            }
+
+            if (
+              typeof bridgeProgramService
+                .resolveBridgePrograms !==
+              "function"
+            ) {
+              throw createControllerError(
+                ERROR_CODE
+                  .DEPENDENCY_UNAVAILABLE,
+
+                "BridgeProgramService.resolveBridgePrograms() is unavailable.",
+
+                {
+                  expectedMethod:
+                    "resolveBridgePrograms"
+                }
+              );
+            }
+
+            const upgradeModel =
+              await eligibilityService
+                .getUpgradeModel();
+
+            const safeUpgradeModel =
+              isObject(
+                upgradeModel
+              )
+                ? upgradeModel
+                : {};
+
+            const governedCredentials =
+              resolveVisibleCredentials(
+                safeOptions
+              );
+
+            const sourceCredential =
+              resolveSourceCredential(
+                governedCredentials,
+                input
+                  .sourceProgrammeCode
+              );
+
+            const resolvedSourceProgrammeCode =
+              resolveCommercialSourceProgrammeCode(
+                safeUpgradeModel
+              );
+
+            const resolvedTargetProgrammeCode =
+              resolveCommercialTargetProgrammeCode(
+                safeUpgradeModel
+              );
+
+            const sourceProgrammeMatches =
+              resolvedSourceProgrammeCode ===
+              input
+                .sourceProgrammeCode;
+
+            const targetProgrammeMatches =
+              resolvedTargetProgrammeCode ===
+              input
+                .targetProgrammeCode;
+
+            const commercialEligible =
+              safeUpgradeModel
+                .eligible ===
+              true;
+
+            const relationshipDefinition =
+              buildBridgeRelationshipDefinition(
+                input,
+                safeUpgradeModel
+              );
+
+            const bridgeOpportunitiesResult =
+              await Promise.resolve(
+                bridgeProgramService
+                  .resolveBridgePrograms(
+                    governedCredentials,
+
+                    {
+                      bridgePrograms:
+                        [
+                          relationshipDefinition
+                        ]
+                    }
+                  )
+              );
+
+            const bridgeOpportunities =
+              Array.isArray(
+                bridgeOpportunitiesResult
+              )
+                ? bridgeOpportunitiesResult
+                : [];
+
+            const academicBridge =
+              findAcademicBridge(
+                bridgeOpportunities,
+                input
+              );
+
+            const academicEligible =
+              Boolean(
+                academicBridge
+              );
+
+            const contextMatches =
+              sourceProgrammeMatches &&
+              targetProgrammeMatches;
+
+            const eligible =
+              commercialEligible &&
+              academicEligible &&
+              contextMatches;
+
+            let reason =
+              normaliseString(
+                safeUpgradeModel
+                  .reason
+              );
+
+            let reasonCode =
+              "";
+
+            if (
+              commercialEligible &&
+              !sourceProgrammeMatches
+            ) {
+              reasonCode =
+                "SOURCE_PROGRAMME_MISMATCH";
+
+              reason =
+                "The resolved current programme does not match the requested Bridge Programme source.";
+            } else if (
+              commercialEligible &&
+              !targetProgrammeMatches
+            ) {
+              reasonCode =
+                "TARGET_PROGRAMME_MISMATCH";
+
+              reason =
+                "The resolved upgrade programme does not match the requested Bridge Programme destination.";
+            } else if (
+              commercialEligible &&
+              !academicEligible
+            ) {
+              reasonCode =
+                "ACADEMIC_BRIDGE_UNAVAILABLE";
+
+              reason =
+                "The learner does not currently satisfy the academic requirements for this Bridge Programme.";
+            } else if (
+              !commercialEligible
+            ) {
+              reasonCode =
+                normaliseString(
+                  safeUpgradeModel
+                    .reasonCode
+                ).toUpperCase() ||
+                "COMMERCIAL_ELIGIBILITY_UNAVAILABLE";
+            }
+
+            if (
+              eligible &&
+              !isNonEmptyString(
+                reason
+              )
+            ) {
+              reason =
+                "The learner satisfies the academic and commercial requirements for this Bridge Programme.";
+            }
+
+            const eligibility =
+              normaliseEligibilityResult(
+                {
+                  eligible,
+
+                  status:
+                    eligible
+                      ? "ELIGIBLE"
+                      : "NOT_ELIGIBLE",
+
+                  reasonCode,
+
+                  reason,
+
+                  prerequisiteSatisfied:
+                    academicEligible,
+
+                  academicEligibility:
+                    academicBridge
+                      ? freezeObject({
+                          ...academicBridge,
+
+                          credentialId:
+                            resolveCredentialId(
+                              sourceCredential
+                            ),
+
+                          sourceCredential:
+                            sourceCredential
+                              ? freezeObject(
+                                  sourceCredential
+                                )
+                              : null
+                        })
+                      : null,
+
+                  commercialEligibility:
+                    safeUpgradeModel,
+
+                  blockingConditions:
+                    eligible
+                      ? []
+                      : [
+                          reasonCode ||
+                          "BRIDGE_PROGRAMME_UNAVAILABLE"
+                        ]
+                },
+
+                input
+              );
+
+            const nextStatus =
+              eligibility.eligible
+                ? CONTROLLER_STATUS
+                    .READY
+                : CONTROLLER_STATUS
+                    .NOT_ELIGIBLE;
+
+            const nextState =
+              setState({
+                status:
+                  nextStatus,
+
+                busy:
+                  false,
+
+                learner:
+                  controllerState
+                    .learner,
+
+                sourceProgrammeCode:
+                  input
+                    .sourceProgrammeCode,
+
+                targetProgrammeCode:
+                  input
+                    .targetProgrammeCode,
+
+                eligibility,
+
+                offer:
+                  eligibility.eligible
+                    ? controllerState
+                        .offer
+                    : null,
+
+                registration:
+                  eligibility.eligible
+                    ? controllerState
+                        .registration
+                    : null,
+
+                payment:
+                  eligibility.eligible
+                    ? controllerState
+                        .payment
+                    : null,
+
+                enrolment:
+                  eligibility.eligible
+                    ? controllerState
+                        .enrolment
+                    : null,
+
+                error:
+                  null
+              });
+
+            dispatchControllerEvent(
+              CONTROLLER_EVENT
+                .ELIGIBILITY_RESOLVED,
+
+              {
+                eligibility,
+
+                commercialEligibility:
+                  safeUpgradeModel,
+
+                academicEligibility:
+                  academicBridge,
+
+                credentialCount:
+                  governedCredentials
+                    .length,
+
+                sourceCredential:
+                  sourceCredential
+                    ? freezeObject(
+                        sourceCredential
+                      )
+                    : null,
+
+                serviceMethod:
+                  "EligibilityService.getUpgradeModel + BridgeProgramService.resolveBridgePrograms",
+
+                state:
+                  nextState
+              }
+            );
+
+            return eligibility;
+          } catch (error) {
+            throw handleControllerError(
+              error,
+
+              ERROR_CODE
+                .ELIGIBILITY_RESOLUTION_FAILED,
+
+              "Unable to resolve Bridge Programme eligibility."
+            );
           }
-        );
+        }
+      )();
 
-        return eligibility;
-      } catch (error) {
-        throw handleControllerError(
-          error,
-
-          ERROR_CODE
-            .ELIGIBILITY_RESOLUTION_FAILED,
-
-          "Unable to resolve Bridge Programme eligibility."
-        );
-      }
-    })();
-
-  try {
-    return await eligibilityResolutionPromise;
-  } finally {
-    eligibilityResolutionPromise =
-      null;
+    try {
+      return await eligibilityResolutionPromise;
+    } finally {
+      eligibilityResolutionPromise =
+        null;
+    }
   }
-}
+
+  /* ==========================================================
+     ELIGIBILITY STATE
+  ========================================================== */
+
   function hasResolvedEligibility() {
     return Boolean(
       controllerState
         .eligibility &&
       typeof controllerState
-        .eligibility.eligible ===
+        .eligibility
+        .eligible ===
         "boolean"
     );
   }
@@ -2433,10 +4099,110 @@
     return Boolean(
       hasResolvedEligibility() &&
       controllerState
-        .eligibility.eligible ===
+        .eligibility
+        .eligible ===
         true
     );
   }
+
+  /* ==========================================================
+     ELIGIBILITY READINESS
+  ========================================================== */
+
+  function getEligibilityReadiness() {
+    const pageContextReadiness =
+      getPageContextReadiness();
+
+    const readiness =
+      getReadiness();
+
+    const eligibility =
+      controllerState
+        .eligibility;
+
+    return freezeObject({
+      pageContextReady:
+        pageContextReadiness.ready,
+
+      eligibilityServiceAvailable:
+        readiness
+          .eligibilityServiceAvailable,
+
+      bridgeProgramServiceAvailable:
+        readiness
+          .bridgeProgramServiceAvailable,
+
+      requiredServicesAvailable:
+        readiness
+          .eligibilityServiceAvailable &&
+        readiness
+          .bridgeProgramServiceAvailable,
+
+      credentialsAvailable:
+        resolveVisibleCredentials(
+          {}
+        ).length >
+        0,
+
+      eligibilityResolved:
+        hasResolvedEligibility(),
+
+      learnerEligible:
+        isLearnerEligible(),
+
+      eligibilityStatus:
+        hasResolvedEligibility()
+          ? eligibility.status
+          : null,
+
+      reasonCode:
+        hasResolvedEligibility()
+          ? eligibility
+              .reasonCode ||
+            null
+          : null,
+
+      reason:
+        hasResolvedEligibility()
+          ? eligibility.reason ||
+            null
+          : null,
+
+      academicEligibilityResolved:
+        Boolean(
+          hasResolvedEligibility() &&
+          eligibility
+            .academicEligibility
+        ),
+
+      commercialEligibilityResolved:
+        Boolean(
+          hasResolvedEligibility() &&
+          eligibility
+            .commercialEligibility
+        ),
+
+      readyForOfferResolution:
+        pageContextReadiness.ready &&
+        readiness
+          .eligibilityServiceAvailable &&
+        readiness
+          .bridgeProgramServiceAvailable &&
+        isLearnerEligible()
+    });
+  }
+
+  /* ==========================================================
+     END OF BLOCK 5 OF 10
+
+     Do not close the IIFE here.
+     Block 6 must continue immediately below this section.
+  ========================================================== */
+
+    /* ==========================================================
+     BLOCK 6 OF 10
+     COMMERCIAL OFFER RESOLUTION
+  ========================================================== */
 
   /* ==========================================================
      OFFER INPUT
@@ -2446,7 +4212,9 @@
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
@@ -2473,8 +4241,11 @@
         .eligibility;
 
     if (
-      !isObject(eligibility) ||
-      eligibility.eligible !== true
+      !isObject(
+        eligibility
+      ) ||
+      eligibility.eligible !==
+        true
     ) {
       throw createControllerError(
         ERROR_CODE
@@ -2484,7 +4255,8 @@
 
         {
           eligibility:
-            eligibility || null
+            eligibility ||
+            null
         }
       );
     }
@@ -2494,7 +4266,8 @@
         learner.learnerUid,
 
       learnerEmail:
-        learner.email || "",
+        learner.email ||
+        "",
 
       sourceProgrammeCode:
         programmeContext
@@ -2509,6 +4282,277 @@
   }
 
   /* ==========================================================
+     COMMERCIAL MODEL FIELD RESOLUTION
+  ========================================================== */
+
+  function resolveCommercialOfferCode(
+    commercialModel,
+    input
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    const governedInput =
+      isObject(
+        input
+      )
+        ? input
+        : {};
+
+    const generatedOfferCode =
+      [
+        normaliseProgrammeCode(
+          governedInput
+            .sourceProgrammeCode
+        ),
+
+        normaliseProgrammeCode(
+          governedInput
+            .targetProgrammeCode
+        ),
+
+        "BRIDGE_OFFER"
+      ].join(
+        "_"
+      );
+
+    return normaliseString(
+      model.offerCode ||
+      model.offer_code ||
+      model.campaignCode ||
+      model.campaign_code ||
+      model.code ||
+      generatedOfferCode
+    ).toUpperCase();
+  }
+
+  function resolveCommercialOfferId(
+    commercialModel,
+    offerCode
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    return normaliseString(
+      model.offerId ||
+      model.offer_id ||
+      model.campaignId ||
+      model.campaign_id ||
+      model.id ||
+      offerCode
+    );
+  }
+
+  function resolveCommercialCurrency(
+    commercialModel
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    return normaliseString(
+      model.currency
+    ).toUpperCase() ||
+    "INR";
+  }
+
+  function resolveCommercialBaseAmount(
+    commercialModel
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    return normaliseNumber(
+      model.baseAmount ??
+      model.baseFee ??
+      model.amount ??
+      model.fee,
+      0
+    );
+  }
+
+  function resolveCommercialTaxAmount(
+    commercialModel
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    return normaliseNumber(
+      model.taxAmount ??
+      model.gstAmount ??
+      model.tax,
+      0
+    );
+  }
+
+  function resolveCommercialTaxRate(
+    commercialModel
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    return normaliseNumber(
+      model.taxRate ??
+      model.gstRate,
+      0
+    );
+  }
+
+  function resolveCommercialTotalAmount(
+    commercialModel,
+    baseAmount,
+    taxAmount
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    return normaliseNumber(
+      model.totalAmount ??
+      model.totalPayable ??
+      model.payableAmount,
+      normaliseNumber(
+        baseAmount,
+        0
+      ) +
+      normaliseNumber(
+        taxAmount,
+        0
+      )
+    );
+  }
+
+  function resolveCommercialOfferValidity(
+    commercialModel
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    return freezeObject({
+      validFrom:
+        normaliseString(
+          model.validFrom ||
+          model.startsAt ||
+          model.offerStartsOn
+        ),
+
+      validUntil:
+        normaliseString(
+          model.validUntil ||
+          model.expiresAt ||
+          model.offerEndsOn
+        )
+    });
+  }
+
+  function resolveCommercialOfferTitle(
+    commercialModel,
+    academicBridge
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    const bridge =
+      isObject(
+        academicBridge
+      )
+        ? academicBridge
+        : {};
+
+    return normaliseString(
+      model.bridgeProgram ||
+      model.bridgeProgramme ||
+      model.title ||
+      model.programName ||
+      model.programmeName ||
+      bridge.title
+    ) ||
+    "Bridge Programme";
+  }
+
+  function resolveCommercialOfferDescription(
+    commercialModel,
+    academicBridge
+  ) {
+    const model =
+      isObject(
+        commercialModel
+      )
+        ? commercialModel
+        : {};
+
+    const bridge =
+      isObject(
+        academicBridge
+      )
+        ? academicBridge
+        : {};
+
+    return normaliseString(
+      model.description ||
+      bridge.description
+    );
+  }
+
+  function isCommercialOfferConfirmed(
+    commercialModel
+  ) {
+    if (
+      !isObject(
+        commercialModel
+      )
+    ) {
+      return false;
+    }
+
+    return Boolean(
+      commercialModel.eligible ===
+        true ||
+      commercialModel
+        .offerAvailable ===
+        true ||
+      commercialModel.available ===
+        true ||
+      commercialModel.active ===
+        true
+    );
+  }
+
+  /* ==========================================================
      OFFER RESULT NORMALISATION
   ========================================================== */
 
@@ -2517,16 +4561,28 @@
     input
   ) {
     const result =
-      isObject(rawResult)
+      isObject(
+        rawResult
+      )
         ? rawResult
+        : {};
+
+    const governedInput =
+      isObject(
+        input
+      )
+        ? input
         : {};
 
     const offerAvailable =
       result.offerAvailable ===
         true ||
-      result.available === true ||
-      result.eligible === true ||
-      result.active === true;
+      result.available ===
+        true ||
+      result.eligible ===
+        true ||
+      result.active ===
+        true;
 
     const offerId =
       normaliseString(
@@ -2534,6 +4590,12 @@
         result.id ||
         result.code
       );
+
+    const offerCode =
+      normaliseString(
+        result.offerCode ||
+        result.code
+      ).toUpperCase();
 
     const currency =
       normaliseString(
@@ -2560,9 +4622,17 @@
     const totalAmount =
       normaliseNumber(
         result.totalAmount ??
+        result.totalPayable ??
         result.payableAmount,
         baseAmount +
         taxAmount
+      );
+
+    const taxRate =
+      normaliseNumber(
+        result.taxRate ??
+        result.gstRate,
+        0
       );
 
     return freezeObject({
@@ -2580,11 +4650,7 @@
 
       offerId,
 
-      offerCode:
-        normaliseString(
-          result.offerCode ||
-          result.code
-        ),
+      offerCode,
 
       title:
         normaliseString(
@@ -2605,12 +4671,7 @@
 
       totalAmount,
 
-      taxRate:
-        normaliseNumber(
-          result.taxRate ??
-          result.gstRate,
-          0
-        ),
+      taxRate,
 
       discountAmount:
         normaliseNumber(
@@ -2637,16 +4698,41 @@
           result.expiresAt
         ),
 
+      standardFee:
+        normaliseNumber(
+          result.standardFee,
+          0
+        ),
+
+      fullProgrammeFee:
+        normaliseNumber(
+          result
+            .fullProgrammeFee,
+          0
+        ),
+
+      taxDisclaimer:
+        normaliseString(
+          result.taxDisclaimer
+        ),
+
       sourceProgrammeCode:
-        input
-          .sourceProgrammeCode,
+        normaliseProgrammeCode(
+          governedInput
+            .sourceProgrammeCode
+        ),
 
       targetProgrammeCode:
-        input
-          .targetProgrammeCode,
+        normaliseProgrammeCode(
+          governedInput
+            .targetProgrammeCode
+        ),
 
       learnerUid:
-        input.learnerUid,
+        normaliseString(
+          governedInput
+            .learnerUid
+        ),
 
       resolvedAt:
         nowIsoString(),
@@ -2659,190 +4745,447 @@
   }
 
   /* ==========================================================
-    OFFER RESOLUTION
-    ========================================================== */
+     GOVERNED OFFER CONSTRUCTION
+  ========================================================== */
 
-    async function resolveOffer(
-    options
+  function buildGovernedOfferResult(
+    commercialModel,
+    academicBridge,
+    input
+  ) {
+    if (
+      !isObject(
+        commercialModel
+      )
     ) {
+      throw createControllerError(
+        ERROR_CODE
+          .OFFER_RESOLUTION_FAILED,
+
+        "The governed commercial offer model is unavailable.",
+
+        {
+          field:
+            "eligibility.commercialEligibility"
+        }
+      );
+    }
+
+    const offerCode =
+      resolveCommercialOfferCode(
+        commercialModel,
+        input
+      );
+
+    const offerId =
+      resolveCommercialOfferId(
+        commercialModel,
+        offerCode
+      );
+
+    const baseAmount =
+      resolveCommercialBaseAmount(
+        commercialModel
+      );
+
+    const taxAmount =
+      resolveCommercialTaxAmount(
+        commercialModel
+      );
+
+    const taxRate =
+      resolveCommercialTaxRate(
+        commercialModel
+      );
+
+    const totalAmount =
+      resolveCommercialTotalAmount(
+        commercialModel,
+        baseAmount,
+        taxAmount
+      );
+
+    const validity =
+      resolveCommercialOfferValidity(
+        commercialModel
+      );
+
+    const commercialEligibilityConfirmed =
+      isCommercialOfferConfirmed(
+        commercialModel
+      );
+
+    const eligibility =
+      isObject(
+        input.eligibility
+      )
+        ? input.eligibility
+        : {};
+
+    const offerAvailable =
+      eligibility.eligible ===
+        true &&
+      commercialEligibilityConfirmed &&
+      baseAmount >
+        0 &&
+      totalAmount >
+        0;
+
+    return freezeObject({
+      offerAvailable,
+
+      available:
+        offerAvailable,
+
+      active:
+        offerAvailable,
+
+      eligible:
+        offerAvailable,
+
+      status:
+        offerAvailable
+          ? "AVAILABLE"
+          : "UNAVAILABLE",
+
+      offerId,
+
+      offerCode,
+
+      title:
+        resolveCommercialOfferTitle(
+          commercialModel,
+          academicBridge
+        ),
+
+      description:
+        resolveCommercialOfferDescription(
+          commercialModel,
+          academicBridge
+        ),
+
+      currency:
+        resolveCommercialCurrency(
+          commercialModel
+        ),
+
+      baseAmount,
+
+      taxAmount,
+
+      totalAmount,
+
+      taxRate,
+
+      discountAmount:
+        normaliseNumber(
+          commercialModel
+            .discountAmount,
+          0
+        ),
+
+      discountPercentage:
+        normaliseNumber(
+          commercialModel
+            .discountPercentage,
+          0
+        ),
+
+      validFrom:
+        validity.validFrom,
+
+      validUntil:
+        validity.validUntil,
+
+      standardFee:
+        normaliseNumber(
+          commercialModel
+            .standardFee,
+          0
+        ),
+
+      fullProgrammeFee:
+        normaliseNumber(
+          commercialModel
+            .fullProgrammeFee,
+          0
+        ),
+
+      taxDisclaimer:
+        normaliseString(
+          commercialModel
+            .taxDisclaimer
+        )
+    });
+  }
+
+  /* ==========================================================
+     OFFER RESOLUTION
+  ========================================================== */
+
+  async function resolveOffer(
+    options
+  ) {
     const safeOptions =
-        isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
     if (
-        hasResolvedOffer() &&
-        safeOptions.force !== true
+      hasResolvedOffer() &&
+      safeOptions.force !==
+        true
     ) {
-        return controllerState.offer;
+      return controllerState
+        .offer;
     }
 
-    if (offerResolutionPromise) {
-        return offerResolutionPromise;
+    if (
+      offerResolutionPromise
+    ) {
+      return offerResolutionPromise;
     }
 
     offerResolutionPromise =
-        (async function performOfferResolution() {
-        if (
+      (
+        async function performOfferResolution() {
+          if (
             !hasResolvedEligibility() ||
             safeOptions
-            .forceEligibility === true
-        ) {
+              .forceEligibility ===
+            true
+          ) {
             await resolveEligibility({
-            ...safeOptions,
+              ...safeOptions,
 
-            force:
+              force:
                 safeOptions
-                .forceEligibility ===
+                  .forceEligibility ===
                 true
             });
-        }
+          }
 
-        if (!isLearnerEligible()) {
+          if (
+            !isLearnerEligible()
+          ) {
             setState({
-            status:
+              status:
                 CONTROLLER_STATUS
-                .NOT_ELIGIBLE,
+                  .NOT_ELIGIBLE,
 
-            busy:
+              busy:
                 false,
 
-            offer:
+              offer:
                 null,
 
-            error:
+              registration:
+                null,
+
+              payment:
+                null,
+
+              enrolment:
+                null,
+
+              error:
                 null
             });
 
             return null;
-        }
+          }
 
-        setState({
+          setState({
             status:
-            CONTROLLER_STATUS
+              CONTROLLER_STATUS
                 .RESOLVING_OFFER,
 
             busy:
-            true,
+              true,
 
             offer:
-            safeOptions.force === true
+              safeOptions.force ===
+              true
                 ? null
-                : controllerState.offer,
+                : controllerState
+                    .offer,
+
+            registration:
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .registration,
+
+            payment:
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .payment,
+
+            enrolment:
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .enrolment,
 
             error:
-            null
-        });
+              null
+          });
 
-        try {
-            const programService =
-            getRequiredProgramService();
+          try {
+            assertPageContextReady();
 
             const input =
-            buildOfferInput(
+              buildOfferInput(
                 safeOptions
-            );
+              );
 
-            const response =
-            await invokeServiceMethod(
-                programService,
+            const eligibility =
+              input.eligibility;
 
-                [
-                "resolveBridgeOffer",
-                "getBridgeOffer",
-                "resolveCommercialOffer",
-                "getCommercialOffer",
-                "resolveOffer",
-                "getOffer"
-                ],
+            const commercialModel =
+              isObject(
+                eligibility
+                  .commercialEligibility
+              )
+                ? eligibility
+                    .commercialEligibility
+                : null;
 
-                input,
+            const academicBridge =
+              isObject(
+                eligibility
+                  .academicEligibility
+              )
+                ? eligibility
+                    .academicEligibility
+                : null;
 
-                ERROR_CODE
-                .OFFER_RESOLUTION_FAILED,
-
-                "Unable to resolve the applicable Bridge Programme offer."
-            );
+            const governedOfferInput =
+              buildGovernedOfferResult(
+                commercialModel,
+                academicBridge,
+                input
+              );
 
             const offer =
-            normaliseOfferResult(
-                response.result,
+              normaliseOfferResult(
+                governedOfferInput,
                 input
-            );
+              );
 
             const nextStatus =
-            offer.offerAvailable
-                ? CONTROLLER_STATUS.READY
-                : CONTROLLER_STATUS.BLOCKED;
+              offer.offerAvailable
+                ? CONTROLLER_STATUS
+                    .READY
+                : CONTROLLER_STATUS
+                    .BLOCKED;
 
             const nextState =
-            setState({
+              setState({
                 status:
-                nextStatus,
+                  nextStatus,
 
                 busy:
-                false,
+                  false,
 
                 offer,
+
+                registration:
+                  offer.offerAvailable
+                    ? controllerState
+                        .registration
+                    : null,
+
+                payment:
+                  offer.offerAvailable
+                    ? controllerState
+                        .payment
+                    : null,
+
+                enrolment:
+                  offer.offerAvailable
+                    ? controllerState
+                        .enrolment
+                    : null,
 
                 error:
-                null
-            });
+                  null
+              });
 
             dispatchControllerEvent(
-            CONTROLLER_EVENT
+              CONTROLLER_EVENT
                 .OFFER_RESOLVED,
 
-            {
+              {
                 offer,
 
+                commercialEligibility:
+                  commercialModel,
+
+                academicEligibility:
+                  academicBridge,
+
                 serviceMethod:
-                response.methodName,
+                  "EligibilityService.getUpgradeModel",
 
                 state:
-                nextState
-            }
+                  nextState
+              }
             );
 
             return offer;
-        } catch (error) {
+          } catch (error) {
             throw handleControllerError(
-            error,
+              error,
 
-            ERROR_CODE
+              ERROR_CODE
                 .OFFER_RESOLUTION_FAILED,
 
-            "Unable to resolve the applicable Bridge Programme offer."
+              "Unable to resolve the applicable Bridge Programme offer."
             );
+          }
         }
-        })();
+      )();
 
     try {
-        return await offerResolutionPromise;
+      return await offerResolutionPromise;
     } finally {
-        offerResolutionPromise =
+      offerResolutionPromise =
         null;
     }
   }
+
+  /* ==========================================================
+     OFFER STATE
+  ========================================================== */
 
   function hasResolvedOffer() {
     return Boolean(
       controllerState.offer &&
       typeof controllerState
-        .offer.offerAvailable ===
+        .offer
+        .offerAvailable ===
         "boolean"
     );
   }
 
   function getResolvedOffer() {
-    return controllerState.offer;
+    return controllerState
+      .offer;
   }
 
   function isOfferAvailable() {
     return Boolean(
       hasResolvedOffer() &&
       controllerState
-        .offer.offerAvailable ===
+        .offer
+        .offerAvailable ===
         true
     );
   }
@@ -2855,7 +5198,9 @@
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
@@ -2864,7 +5209,8 @@
         ...safeOptions,
 
         force:
-          safeOptions.force === true ||
+          safeOptions.force ===
+            true ||
           safeOptions
             .forceEligibility ===
             true
@@ -2872,10 +5218,14 @@
 
     if (
       !eligibility ||
-      eligibility.eligible !== true
+      eligibility.eligible !==
+        true
     ) {
       return freezeObject({
         eligible:
+          false,
+
+        offerAvailable:
           false,
 
         eligibility,
@@ -2895,9 +5245,11 @@
         eligibility,
 
         force:
-          safeOptions.force === true ||
+          safeOptions.force ===
+            true ||
           safeOptions
-            .forceOffer === true
+            .forceOffer ===
+            true
       });
 
     return freezeObject({
@@ -2921,7 +5273,7 @@
   }
 
   /* ==========================================================
-     BLOCK 3 READINESS
+     ELIGIBILITY AND OFFER READINESS
   ========================================================== */
 
   function getEligibilityAndOfferReadiness() {
@@ -2931,13 +5283,37 @@
     const readiness =
       getReadiness();
 
+    const requiredServicesAvailable =
+      readiness
+        .eligibilityServiceAvailable &&
+      readiness
+        .bridgeProgramServiceAvailable;
+
+    const eligibility =
+      controllerState
+        .eligibility;
+
+    const offer =
+      controllerState.offer;
+
     return freezeObject({
       pageContextReady:
-        pageContextReadiness.ready,
+        pageContextReadiness
+          .ready,
 
       programServiceAvailable:
         readiness
           .programServiceAvailable,
+
+      eligibilityServiceAvailable:
+        readiness
+          .eligibilityServiceAvailable,
+
+      bridgeProgramServiceAvailable:
+        readiness
+          .bridgeProgramServiceAvailable,
+
+      requiredServicesAvailable,
 
       eligibilityResolved:
         hasResolvedEligibility(),
@@ -2945,33 +5321,58 @@
       learnerEligible:
         isLearnerEligible(),
 
+      eligibilityStatus:
+        hasResolvedEligibility()
+          ? eligibility.status
+          : null,
+
       offerResolved:
         hasResolvedOffer(),
 
       offerAvailable:
         isOfferAvailable(),
 
+      offerStatus:
+        hasResolvedOffer()
+          ? offer.status
+          : null,
+
+      offerCode:
+        hasResolvedOffer()
+          ? offer.offerCode ||
+            null
+          : null,
+
+      currency:
+        hasResolvedOffer()
+          ? offer.currency ||
+            null
+          : null,
+
+      totalAmount:
+        hasResolvedOffer()
+          ? offer.totalAmount
+          : null,
+
       readyForRegistration:
-        pageContextReadiness.ready &&
-        readiness
-          .programServiceAvailable &&
+        pageContextReadiness
+          .ready &&
+        requiredServicesAvailable &&
         isLearnerEligible() &&
         isOfferAvailable()
     });
   }
 
   /* ==========================================================
-     END OF BLOCK 3 OF 6
+     END OF BLOCK 6 OF 10
 
-     Do not add diagnostics, the public API, global registration,
-     or the closing IIFE yet.
-
-     Block 4 must continue immediately below this section.
+     Do not close the IIFE here.
+     Block 7 must continue immediately below this section.
   ========================================================== */
 
     /* ==========================================================
-     BLOCK 4 OF 6
-     REGISTRATION RESOLUTION AND CREATION
+     BLOCK 7 OF 10
+     REGISTRATION INPUT, STATUS AND RESULT NORMALISATION
   ========================================================== */
 
   /* ==========================================================
@@ -3007,9 +5408,9 @@
     value
   ) {
     const status =
-      normaliseString(
+      normaliseStatus(
         value
-      ).toUpperCase();
+      );
 
     const statusAliases =
       Object.freeze({
@@ -3072,7 +5473,9 @@
       });
 
     return (
-      statusAliases[status] ||
+      statusAliases[
+        status
+      ] ||
       status ||
       "UNKNOWN"
     );
@@ -3082,9 +5485,9 @@
     value
   ) {
     const status =
-      normaliseString(
+      normaliseStatus(
         value
-      ).toUpperCase();
+      );
 
     const statusAliases =
       Object.freeze({
@@ -3097,6 +5500,9 @@
         PAYMENT_REQUIRED:
           "PENDING",
 
+        PAYMENT_PENDING:
+          "PENDING",
+
         AWAITING_PAYMENT:
           "PENDING",
 
@@ -3104,6 +5510,9 @@
           "PROCESSING",
 
         IN_PROGRESS:
+          "PROCESSING",
+
+        PAYMENT_PROCESSING:
           "PROCESSING",
 
         SUCCESS:
@@ -3121,6 +5530,9 @@
         VERIFIED:
           "CONFIRMED",
 
+        PAYMENT_CONFIRMED:
+          "CONFIRMED",
+
         CANCELLED:
           "CANCELLED",
 
@@ -3135,7 +5547,9 @@
       });
 
     return (
-      statusAliases[status] ||
+      statusAliases[
+        status
+      ] ||
       status ||
       "UNKNOWN"
     );
@@ -3145,9 +5559,9 @@
     value
   ) {
     const status =
-      normaliseString(
+      normaliseStatus(
         value
-      ).toUpperCase();
+      );
 
     const statusAliases =
       Object.freeze({
@@ -3160,10 +5574,19 @@
         IN_PROGRESS:
           "PENDING",
 
+        ENROLMENT_PENDING:
+          "PENDING",
+
+        ENROLLMENT_PENDING:
+          "PENDING",
+
         ACTIVE:
           "ENROLLED",
 
         COMPLETED:
+          "ENROLLED",
+
+        ENROLLED:
           "ENROLLED",
 
         ENROLMENT_COMPLETED:
@@ -3176,25 +5599,35 @@
           "FAILED",
 
         BLOCKED:
-          "BLOCKED"
+          "BLOCKED",
+
+        CANCELLED:
+          "CANCELLED",
+
+        CANCELED:
+          "CANCELLED"
       });
 
     return (
-      statusAliases[status] ||
+      statusAliases[
+        status
+      ] ||
       status ||
       "UNKNOWN"
     );
   }
 
   /* ==========================================================
-     REGISTRATION INPUT
+     REGISTRATION IDENTITY INPUT
   ========================================================== */
 
   function buildRegistrationIdentityInput(
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
@@ -3220,7 +5653,8 @@
         learner.learnerUid,
 
       learnerEmail:
-        learner.email || "",
+        learner.email ||
+        "",
 
       sourceProgrammeCode:
         programmeContext
@@ -3232,11 +5666,237 @@
     });
   }
 
+  /* ==========================================================
+     REGISTRATION RELATIONSHIP RESOLUTION
+  ========================================================== */
+
+  function resolveRegistrationRelationshipCode(
+    options,
+    eligibility,
+    identityInput
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    const academicEligibility =
+      isObject(
+        eligibility &&
+        eligibility
+          .academicEligibility
+      )
+        ? eligibility
+            .academicEligibility
+        : {};
+
+    const generatedRelationshipCode =
+      [
+        identityInput
+          .sourceProgrammeCode,
+
+        identityInput
+          .targetProgrammeCode
+      ].join(
+        "_TO_"
+      );
+
+    return normaliseString(
+      safeOptions
+        .relationshipCode ||
+      academicEligibility
+        .relationshipId ||
+      academicEligibility
+        .relationshipCode ||
+      academicEligibility.id ||
+      generatedRelationshipCode
+    ).toUpperCase();
+  }
+
+  function resolveRegistrationRelationshipType(
+    options,
+    eligibility
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    const academicEligibility =
+      isObject(
+        eligibility &&
+        eligibility
+          .academicEligibility
+      )
+        ? eligibility
+            .academicEligibility
+        : {};
+
+    return normaliseString(
+      safeOptions
+        .relationshipType ||
+      academicEligibility
+        .relationshipType ||
+      academicEligibility
+        .relationship ||
+      "CAPABILITY_UPGRADE"
+    ).toUpperCase();
+  }
+
+  function resolveRegistrationCredentialId(
+    options,
+    eligibility
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    const academicEligibility =
+      isObject(
+        eligibility &&
+        eligibility
+          .academicEligibility
+      )
+        ? eligibility
+            .academicEligibility
+        : {};
+
+    const commercialEligibility =
+      isObject(
+        eligibility &&
+        eligibility
+          .commercialEligibility
+      )
+        ? eligibility
+            .commercialEligibility
+        : {};
+
+    const sourceCredential =
+      isObject(
+        academicEligibility
+          .sourceCredential
+      )
+        ? academicEligibility
+            .sourceCredential
+        : {};
+
+    return normaliseString(
+      safeOptions
+        .credentialId ||
+      academicEligibility
+        .credentialId ||
+      academicEligibility
+        .credential_id ||
+      sourceCredential
+        .credentialId ||
+      sourceCredential
+        .credential_id ||
+      commercialEligibility
+        .credentialId ||
+      commercialEligibility
+        .credential_id
+    ).toUpperCase();
+  }
+
+  /* ==========================================================
+     REGISTRATION COMMERCIAL VALUES
+  ========================================================== */
+
+  function resolveRegistrationOfferCode(
+    options,
+    offer,
+    commercialEligibility
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    const governedOffer =
+      isObject(
+        offer
+      )
+        ? offer
+        : {};
+
+    const governedCommercialEligibility =
+      isObject(
+        commercialEligibility
+      )
+        ? commercialEligibility
+        : {};
+
+    return normaliseString(
+      safeOptions.offerCode ||
+      governedOffer.offerCode ||
+      governedCommercialEligibility
+        .offerCode ||
+      governedCommercialEligibility
+        .campaignCode
+    ).toUpperCase();
+  }
+
+  function resolveRegistrationOfferExpiry(
+    options,
+    offer,
+    commercialEligibility
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    const governedOffer =
+      isObject(
+        offer
+      )
+        ? offer
+        : {};
+
+    const governedCommercialEligibility =
+      isObject(
+        commercialEligibility
+      )
+        ? commercialEligibility
+        : {};
+
+    return (
+      safeOptions
+        .offerExpiresAt ||
+      governedOffer
+        .validUntil ||
+      governedCommercialEligibility
+        .offerEndsOn ||
+      governedCommercialEligibility
+        .validUntil ||
+      governedCommercialEligibility
+        .expiresAt ||
+      null
+    );
+  }
+
+  /* ==========================================================
+     REGISTRATION CREATION INPUT
+  ========================================================== */
+
   function buildRegistrationCreationInput(
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
@@ -3255,8 +5915,11 @@
       controllerState.offer;
 
     if (
-      !isObject(eligibility) ||
-      eligibility.eligible !== true
+      !isObject(
+        eligibility
+      ) ||
+      eligibility.eligible !==
+        true
     ) {
       throw createControllerError(
         ERROR_CODE
@@ -3266,14 +5929,18 @@
 
         {
           eligibility:
-            eligibility || null
+            eligibility ||
+            null
         }
       );
     }
 
     if (
-      !isObject(offer) ||
-      offer.offerAvailable !== true
+      !isObject(
+        offer
+      ) ||
+      offer.offerAvailable !==
+        true
     ) {
       throw createControllerError(
         ERROR_CODE
@@ -3283,33 +5950,305 @@
 
         {
           offer:
-            offer || null
+            offer ||
+            null
         }
       );
     }
 
+    const acknowledgementAccepted =
+      safeOptions
+        .acknowledgementAccepted ===
+      true;
+
+    if (
+      !acknowledgementAccepted
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .REGISTRATION_CREATION_FAILED,
+
+        "The learner must accept the Bridge Programme acknowledgement before registration.",
+
+        {
+          field:
+            "acknowledgementAccepted",
+
+          receivedValue:
+            safeOptions
+              .acknowledgementAccepted
+        }
+      );
+    }
+
+    const academicEligibility =
+      isObject(
+        eligibility
+          .academicEligibility
+      )
+        ? eligibility
+            .academicEligibility
+        : {};
+
+    const commercialEligibility =
+      isObject(
+        eligibility
+          .commercialEligibility
+      )
+        ? eligibility
+            .commercialEligibility
+        : {};
+
+    const relationshipCode =
+      resolveRegistrationRelationshipCode(
+        safeOptions,
+        eligibility,
+        identityInput
+      );
+
+    const relationshipType =
+      resolveRegistrationRelationshipType(
+        safeOptions,
+        eligibility
+      );
+
+    const credentialId =
+      resolveRegistrationCredentialId(
+        safeOptions,
+        eligibility
+      );
+
+    const offerCode =
+      resolveRegistrationOfferCode(
+        safeOptions,
+        offer,
+        commercialEligibility
+      );
+
+    if (
+      !isNonEmptyString(
+        offerCode
+      )
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .REGISTRATION_CREATION_FAILED,
+
+        "A governed Bridge Programme offer code is required before registration.",
+
+        {
+          field:
+            "offerCode"
+        }
+      );
+    }
+
+    const baseAmount =
+      normaliseNumber(
+        offer.baseAmount ??
+        commercialEligibility
+          .baseAmount ??
+        commercialEligibility
+          .baseFee,
+        0
+      );
+
+    const gstRate =
+      normaliseNumber(
+        offer.taxRate ??
+        commercialEligibility
+          .gstRate ??
+        commercialEligibility
+          .taxRate,
+        0
+      );
+
+    const gstAmount =
+      normaliseNumber(
+        offer.taxAmount ??
+        commercialEligibility
+          .gstAmount ??
+        commercialEligibility
+          .taxAmount,
+        0
+      );
+
+    const totalAmount =
+      normaliseNumber(
+        offer.totalAmount ??
+        commercialEligibility
+          .totalPayable ??
+        commercialEligibility
+          .totalAmount,
+        baseAmount +
+        gstAmount
+      );
+
+    if (
+      baseAmount <=
+        0 ||
+      totalAmount <=
+        0
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .REGISTRATION_CREATION_FAILED,
+
+        "The governed Bridge Programme pricing is invalid.",
+
+        {
+          baseAmount,
+
+          gstAmount,
+
+          totalAmount
+        }
+      );
+    }
+
+    const calculatedTotal =
+      baseAmount +
+      gstAmount;
+
+    if (
+      !valuesApproximatelyEqual(
+        calculatedTotal,
+        totalAmount,
+        2
+      )
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .REGISTRATION_CREATION_FAILED,
+
+        "The Bridge Programme total amount does not match the base amount and GST amount.",
+
+        {
+          baseAmount,
+
+          gstAmount,
+
+          expectedTotalAmount:
+            Number(
+              calculatedTotal
+                .toFixed(
+                  2
+                )
+            ),
+
+          suppliedTotalAmount:
+            Number(
+              totalAmount
+                .toFixed(
+                  2
+                )
+            )
+        }
+      );
+    }
+
+    const currency =
+      normaliseString(
+        offer.currency ||
+        commercialEligibility
+          .currency ||
+        "INR"
+      ).toUpperCase();
+
+    const offerExpiresAt =
+      resolveRegistrationOfferExpiry(
+        safeOptions,
+        offer,
+        commercialEligibility
+      );
+
     return freezeObject({
       ...identityInput,
+
+      credentialId,
+
+      relationshipCode,
+
+      relationshipType,
 
       offerId:
         normaliseString(
           offer.offerId
         ),
 
-      offerCode:
-        normaliseString(
-          offer.offerCode
-        ),
+      offerCode,
 
-      currency:
+      currency,
+
+      baseAmount,
+
+      gstRate,
+
+      gstAmount,
+
+      taxRate:
+        gstRate,
+
+      taxAmount:
+        gstAmount,
+
+      totalAmount,
+
+      payableAmount:
+        totalAmount,
+
+      offerExpiresAt,
+
+      acknowledgementAccepted,
+
+      acknowledgementAcceptedAt:
+        safeOptions
+          .acknowledgementAcceptedAt ||
+        nowIsoString(),
+
+      source:
         normaliseString(
-          offer.currency
-        ).toUpperCase(),
+          safeOptions.source
+        ) ||
+        "STUDENT_PORTAL",
 
       eligibility,
 
-      offer
+      offer,
+
+      academicEligibility,
+
+      commercialEligibility
     });
+  }
+
+  /* ==========================================================
+     REGISTRATION RESULT SOURCE
+  ========================================================== */
+
+  function resolveRegistrationData(
+    rawResult
+  ) {
+    const result =
+      isObject(
+        rawResult
+      )
+        ? rawResult
+        : {};
+
+    const nestedRegistration =
+      isObject(
+        result.registration
+      )
+        ? result.registration
+        : {};
+
+    return Object.keys(
+      nestedRegistration
+    ).length >
+      0
+      ? nestedRegistration
+      : result;
   }
 
   /* ==========================================================
@@ -3321,21 +6260,23 @@
     input
   ) {
     const result =
-      isObject(rawResult)
+      isObject(
+        rawResult
+      )
         ? rawResult
         : {};
 
-    const nestedRegistration =
-      isObject(result.registration)
-        ? result.registration
+    const governedInput =
+      isObject(
+        input
+      )
+        ? input
         : {};
 
     const registrationData =
-      Object.keys(
-        nestedRegistration
-      ).length > 0
-        ? nestedRegistration
-        : result;
+      resolveRegistrationData(
+        result
+      );
 
     const registrationId =
       normaliseString(
@@ -3351,7 +6292,8 @@
     const explicitlyExists =
       registrationData.exists ===
         true ||
-      result.exists === true ||
+      result.exists ===
+        true ||
       registrationData
         .registrationExists ===
         true ||
@@ -3359,12 +6301,14 @@
         true ||
       registrationData.found ===
         true ||
-      result.found === true;
+      result.found ===
+        true;
 
     const explicitlyMissing =
       registrationData.exists ===
         false ||
-      result.exists === false ||
+      result.exists ===
+        false ||
       registrationData
         .registrationExists ===
         false ||
@@ -3372,7 +6316,8 @@
         false ||
       registrationData.found ===
         false ||
-      result.found === false;
+      result.found ===
+        false;
 
     const registrationExists =
       explicitlyMissing
@@ -3393,22 +6338,56 @@
         result.registrationStatus
       );
 
+    const paymentSource =
+      isObject(
+        registrationData.payment
+      )
+        ? registrationData.payment
+        : (
+            isObject(
+              result.payment
+            )
+              ? result.payment
+              : null
+          );
+
+    const enrolmentSource =
+      isObject(
+        registrationData
+          .enrolment
+      )
+        ? registrationData
+            .enrolment
+        : (
+            isObject(
+              registrationData
+                .enrollment
+            )
+              ? registrationData
+                  .enrollment
+              : (
+                  isObject(
+                    result.enrolment
+                  )
+                    ? result.enrolment
+                    : (
+                        isObject(
+                          result.enrollment
+                        )
+                          ? result.enrollment
+                          : null
+                      )
+                )
+          );
+
     const paymentStatus =
       normalisePaymentStatus(
         registrationData
           .paymentStatus ||
         result.paymentStatus ||
         (
-          isObject(
-            registrationData.payment
-          )
-            ? registrationData
-                .payment.status
-            : ""
-        ) ||
-        (
-          isObject(result.payment)
-            ? result.payment.status
+          paymentSource
+            ? paymentSource.status
             : ""
         )
       );
@@ -3422,50 +6401,25 @@
         result.enrolmentStatus ||
         result.enrollmentStatus ||
         (
-          isObject(
-            registrationData.enrolment
-          )
-            ? registrationData
-                .enrolment.status
-            : ""
-        ) ||
-        (
-          isObject(result.enrolment)
-            ? result.enrolment.status
+          enrolmentSource
+            ? enrolmentSource.status
             : ""
         )
       );
 
     const payment =
-      isObject(
-        registrationData.payment
-      )
+      paymentSource
         ? freezeObject(
-            registrationData.payment
+            paymentSource
           )
-        : (
-            isObject(result.payment)
-              ? freezeObject(
-                  result.payment
-                )
-              : null
-          );
+        : null;
 
     const enrolment =
-      isObject(
-        registrationData.enrolment
-      )
+      enrolmentSource
         ? freezeObject(
-            registrationData
-              .enrolment
+            enrolmentSource
           )
-        : (
-            isObject(result.enrolment)
-              ? freezeObject(
-                  result.enrolment
-                )
-              : null
-          );
+        : null;
 
     return freezeObject({
       registrationExists,
@@ -3484,7 +6438,8 @@
           registrationData
             .learnerUid ||
           result.learnerUid ||
-          input.learnerUid
+          governedInput
+            .learnerUid
         ),
 
       learnerEmail:
@@ -3492,7 +6447,8 @@
           registrationData
             .learnerEmail ||
           result.learnerEmail ||
-          input.learnerEmail
+          governedInput
+            .learnerEmail
         ),
 
       sourceProgrammeCode:
@@ -3501,7 +6457,7 @@
             .sourceProgrammeCode ||
           result
             .sourceProgrammeCode ||
-          input
+          governedInput
             .sourceProgrammeCode
         ),
 
@@ -3511,35 +6467,101 @@
             .targetProgrammeCode ||
           result
             .targetProgrammeCode ||
-          input
+          governedInput
             .targetProgrammeCode
         ),
+
+      credentialId:
+        normaliseString(
+          registrationData
+            .credentialId ||
+          result.credentialId ||
+          governedInput
+            .credentialId
+        ).toUpperCase(),
+
+      relationshipCode:
+        normaliseString(
+          registrationData
+            .relationshipCode ||
+          result
+            .relationshipCode ||
+          governedInput
+            .relationshipCode
+        ).toUpperCase(),
+
+      relationshipType:
+        normaliseString(
+          registrationData
+            .relationshipType ||
+          result
+            .relationshipType ||
+          governedInput
+            .relationshipType
+        ).toUpperCase(),
 
       offerId:
         normaliseString(
           registrationData
             .offerId ||
-          result.offerId
+          result.offerId ||
+          governedInput
+            .offerId
         ),
 
       offerCode:
         normaliseString(
           registrationData
             .offerCode ||
-          result.offerCode
-        ),
+          result.offerCode ||
+          governedInput
+            .offerCode
+        ).toUpperCase(),
 
       currency:
         normaliseString(
           registrationData.currency ||
-          result.currency
+          result.currency ||
+          governedInput.currency
         ).toUpperCase(),
 
       baseAmount:
         normaliseNumber(
           registrationData
             .baseAmount ??
-          result.baseAmount,
+          result.baseAmount ??
+          governedInput
+            .baseAmount,
+          0
+        ),
+
+      gstRate:
+        normaliseNumber(
+          registrationData
+            .gstRate ??
+          registrationData
+            .taxRate ??
+          result.gstRate ??
+          result.taxRate ??
+          governedInput
+            .gstRate ??
+          governedInput
+            .taxRate,
+          0
+        ),
+
+      gstAmount:
+        normaliseNumber(
+          registrationData
+            .gstAmount ??
+          registrationData
+            .taxAmount ??
+          result.gstAmount ??
+          result.taxAmount ??
+          governedInput
+            .gstAmount ??
+          governedInput
+            .taxAmount,
           0
         ),
 
@@ -3547,7 +6569,14 @@
         normaliseNumber(
           registrationData
             .taxAmount ??
-          result.taxAmount,
+          registrationData
+            .gstAmount ??
+          result.taxAmount ??
+          result.gstAmount ??
+          governedInput
+            .taxAmount ??
+          governedInput
+            .gstAmount,
           0
         ),
 
@@ -3558,9 +6587,53 @@
           registrationData
             .payableAmount ??
           result.totalAmount ??
-          result.payableAmount,
+          result.payableAmount ??
+          governedInput
+            .totalAmount ??
+          governedInput
+            .payableAmount,
           0
         ),
+
+      offerExpiresAt:
+        registrationData
+          .offerExpiresAt ||
+        result.offerExpiresAt ||
+        governedInput
+          .offerExpiresAt ||
+        null,
+
+      acknowledgementAccepted:
+        registrationData
+          .acknowledgementAccepted ===
+          true ||
+        result
+          .acknowledgementAccepted ===
+          true ||
+        governedInput
+          .acknowledgementAccepted ===
+          true,
+
+      source:
+        normaliseString(
+          registrationData.source ||
+          result.source ||
+          governedInput.source
+        ),
+
+      created:
+        result.created ===
+        true,
+
+      existing:
+        result.existing ===
+          true ||
+        result.idempotent ===
+          true,
+
+      idempotent:
+        result.idempotent ===
+        true,
 
       createdAt:
         normaliseString(
@@ -3598,11 +6671,15 @@
     registration
   ) {
     if (
-      !isObject(registration) ||
+      !isObject(
+        registration
+      ) ||
       registration
-        .registrationExists !== true
+        .registrationExists !==
+      true
     ) {
-      return CONTROLLER_STATUS.READY;
+      return CONTROLLER_STATUS
+        .READY;
     }
 
     const registrationStatus =
@@ -3612,12 +6689,14 @@
 
     const paymentStatus =
       normalisePaymentStatus(
-        registration.paymentStatus
+        registration
+          .paymentStatus
       );
 
     const enrolmentStatus =
       normaliseEnrolmentStatus(
-        registration.enrolmentStatus
+        registration
+          .enrolmentStatus
       );
 
     if (
@@ -3626,7 +6705,8 @@
       enrolmentStatus ===
         "ENROLLED"
     ) {
-      return CONTROLLER_STATUS.ENROLLED;
+      return CONTROLLER_STATUS
+        .ENROLLED;
     }
 
     if (
@@ -3687,208 +6767,252 @@
       enrolmentStatus ===
         "FAILED" ||
       enrolmentStatus ===
-        "BLOCKED"
+        "BLOCKED" ||
+      enrolmentStatus ===
+        "CANCELLED"
     ) {
-      return CONTROLLER_STATUS.BLOCKED;
+      return CONTROLLER_STATUS
+        .BLOCKED;
     }
 
-    return CONTROLLER_STATUS.READY;
+    return CONTROLLER_STATUS
+      .READY;
   }
 
   /* ==========================================================
-   EXISTING REGISTRATION RESOLUTION
-========================================================== */
+     END OF BLOCK 7 OF 10
 
-async function resolveExistingRegistration(
-  options
-) {
-  const safeOptions =
-    isObject(options)
-      ? options
-      : {};
+     Do not close the IIFE here.
+     Block 8 must continue immediately below this section.
+  ========================================================== */
 
-  if (
-    hasResolvedRegistration() &&
-    safeOptions.force !== true
+    /* ==========================================================
+     BLOCK 8 OF 10
+     REGISTRATION RESOLUTION AND CREATION
+  ========================================================== */
+
+  /* ==========================================================
+     EXISTING REGISTRATION RESOLUTION
+  ========================================================== */
+
+  async function resolveExistingRegistration(
+    options
   ) {
-    return controllerState
-      .registration;
-  }
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
 
-  if (registrationResolutionPromise) {
-    return registrationResolutionPromise;
-  }
+    if (
+      hasResolvedRegistration() &&
+      safeOptions.force !==
+        true
+    ) {
+      return controllerState
+        .registration;
+    }
 
-  registrationResolutionPromise =
-    (async function performRegistrationResolution() {
-      setState({
-        status:
-          CONTROLLER_STATUS
-            .RESOLVING_REGISTRATION,
+    if (
+      registrationResolutionPromise
+    ) {
+      return registrationResolutionPromise;
+    }
 
-        busy:
-          true,
-
-        registration:
-          safeOptions.force === true
-            ? null
-            : controllerState
-                .registration,
-
-        payment:
-          safeOptions.force === true
-            ? null
-            : controllerState.payment,
-
-        enrolment:
-          safeOptions.force === true
-            ? null
-            : controllerState.enrolment,
-
-        error:
-          null
-      });
-
-      try {
-        const registrationService =
-          getRequiredRegistrationService();
-
-        const input =
-          buildRegistrationIdentityInput(
-            safeOptions
-          );
-
-        const response =
-          await invokeServiceMethod(
-            registrationService,
-
-            [
-              "resolveExistingRegistration",
-              "getExistingRegistration",
-              "findExistingRegistration",
-              "resolveRegistration",
-              "getRegistration",
-              "findRegistration"
-            ],
-
-            input,
-
-            ERROR_CODE
-              .REGISTRATION_RESOLUTION_FAILED,
-
-            "Unable to resolve an existing Bridge Programme registration."
-          );
-
-        const registration =
-          normaliseRegistrationResult(
-            response.result,
-            input
-          );
-
-        const nextStatus =
-          resolveControllerStatusFromRegistration(
-            registration
-          );
-
-        const nextState =
+    registrationResolutionPromise =
+      (
+        async function performRegistrationResolution() {
           setState({
             status:
-              nextStatus,
+              CONTROLLER_STATUS
+                .RESOLVING_REGISTRATION,
 
             busy:
-              false,
+              true,
 
             registration:
-              registration
-                .registrationExists
-                  ? registration
-                  : null,
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .registration,
 
             payment:
-              registration
-                .registrationExists
-                  ? registration
-                      .payment
-                  : null,
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .payment,
 
             enrolment:
-              registration
-                .registrationExists
-                  ? registration
-                      .enrolment
-                  : null,
+              safeOptions.force ===
+              true
+                ? null
+                : controllerState
+                    .enrolment,
 
             error:
               null
           });
 
-        dispatchControllerEvent(
-          CONTROLLER_EVENT
-            .REGISTRATION_RESOLVED,
+          try {
+            assertPageContextReady();
 
-          {
-            registration:
+            const registrationService =
+              getRequiredRegistrationService();
+
+            const input =
+              buildRegistrationIdentityInput(
+                safeOptions
+              );
+
+            const response =
+              await invokeServiceMethod(
+                registrationService,
+
+                [
+                  "resolveLearnerRegistration",
+                  "getRegistrationByInput",
+                  "resolveExistingRegistration",
+                  "getExistingRegistration",
+                  "findExistingRegistration",
+                  "resolveRegistration",
+                  "findRegistration"
+                ],
+
+                input,
+
+                ERROR_CODE
+                  .REGISTRATION_RESOLUTION_FAILED,
+
+                "Unable to resolve an existing Bridge Programme registration."
+              );
+
+            const registration =
+              normaliseRegistrationResult(
+                response.result,
+                input
+              );
+
+            const registrationExists =
               registration
-                .registrationExists
-                  ? registration
-                  : null,
+                .registrationExists ===
+              true;
 
-            registrationExists:
-              registration
-                .registrationExists,
+            const nextStatus =
+              resolveControllerStatusFromRegistration(
+                registration
+              );
 
-            serviceMethod:
-              response.methodName,
+            const nextState =
+              setState({
+                status:
+                  nextStatus,
 
-            state:
-              nextState
-          }
-        );
+                busy:
+                  false,
 
-        if (
-          nextStatus ===
-          CONTROLLER_STATUS
-            .PAYMENT_REQUIRED
-        ) {
-          dispatchControllerEvent(
-            CONTROLLER_EVENT
-              .PAYMENT_REQUIRED,
+                registration:
+                  registrationExists
+                    ? registration
+                    : null,
 
-            {
-              registration,
+                payment:
+                  registrationExists
+                    ? registration.payment
+                    : null,
 
-              payment:
-                registration.payment,
+                enrolment:
+                  registrationExists
+                    ? registration.enrolment
+                    : null,
 
-              state:
-                nextState
+                error:
+                  null
+              });
+
+            dispatchControllerEvent(
+              CONTROLLER_EVENT
+                .REGISTRATION_RESOLVED,
+
+              {
+                registration:
+                  registrationExists
+                    ? registration
+                    : null,
+
+                registrationExists,
+
+                created:
+                  false,
+
+                restored:
+                  registrationExists,
+
+                serviceMethod:
+                  response.methodName,
+
+                state:
+                  nextState
+              }
+            );
+
+            if (
+              registrationExists &&
+              nextStatus ===
+                CONTROLLER_STATUS
+                  .PAYMENT_REQUIRED
+            ) {
+              dispatchControllerEvent(
+                CONTROLLER_EVENT
+                  .PAYMENT_REQUIRED,
+
+                {
+                  registration,
+
+                  payment:
+                    registration.payment,
+
+                  created:
+                    false,
+
+                  restored:
+                    true,
+
+                  state:
+                    nextState
+                }
+              );
             }
-          );
+
+            return registrationExists
+              ? registration
+              : null;
+          } catch (error) {
+            throw handleControllerError(
+              error,
+
+              ERROR_CODE
+                .REGISTRATION_RESOLUTION_FAILED,
+
+              "Unable to resolve an existing Bridge Programme registration."
+            );
+          }
         }
+      )();
 
-        return registration
-          .registrationExists
-            ? registration
-            : null;
-      } catch (error) {
-        throw handleControllerError(
-          error,
-
-          ERROR_CODE
-            .REGISTRATION_RESOLUTION_FAILED,
-
-          "Unable to resolve an existing Bridge Programme registration."
-        );
-      }
-    })();
-
-  try {
-    return await registrationResolutionPromise;
-  } finally {
-    registrationResolutionPromise =
-      null;
+    try {
+      return await registrationResolutionPromise;
+    } finally {
+      registrationResolutionPromise =
+        null;
+    }
   }
-}
+
+  /* ==========================================================
+     REGISTRATION STATE
+  ========================================================== */
 
   function hasResolvedRegistration() {
     return Boolean(
@@ -3912,289 +7036,394 @@ async function resolveExistingRegistration(
   }
 
   /* ==========================================================
-   REGISTRATION CREATION
-========================================================== */
+     REGISTRATION CREATION
+  ========================================================== */
 
-async function createRegistration(
-  options
-) {
-  const safeOptions =
-    isObject(options)
-      ? options
-      : {};
-
-  if (
-    hasResolvedRegistration() &&
-    safeOptions.force !== true
+  async function createRegistration(
+    options
   ) {
-    return controllerState
-      .registration;
-  }
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
 
-  if (registrationCreationPromise) {
-    return registrationCreationPromise;
-  }
-
-  registrationCreationPromise =
-    (async function performRegistrationCreation() {
-      if (
-        !hasResolvedEligibility() ||
-        !isLearnerEligible() ||
-        !hasResolvedOffer() ||
-        !isOfferAvailable()
-      ) {
-        await resolveEligibilityAndOffer({
-          ...safeOptions,
-
-          forceEligibility:
-            safeOptions
-              .forceEligibility ===
-              true,
-
-          forceOffer:
-            safeOptions
-              .forceOffer ===
-              true
-        });
-      }
-
-      if (!isLearnerEligible()) {
-        setState({
-          status:
-            CONTROLLER_STATUS
-              .NOT_ELIGIBLE,
-
-          busy:
-            false,
-
-          registration:
-            null,
-
-          payment:
-            null,
-
-          enrolment:
-            null,
-
-          error:
-            null
-        });
-
-        throw createControllerError(
-          ERROR_CODE
-            .REGISTRATION_CREATION_FAILED,
-
-          "The learner is not eligible for this Bridge Programme registration."
-        );
-      }
-
-      if (!isOfferAvailable()) {
-        setState({
-          status:
-            CONTROLLER_STATUS.BLOCKED,
-
-          busy:
-            false,
-
-          registration:
-            null,
-
-          payment:
-            null,
-
-          enrolment:
-            null,
-
-          error:
-            null
-        });
-
-        throw createControllerError(
-          ERROR_CODE
-            .REGISTRATION_CREATION_FAILED,
-
-          "An active Bridge Programme offer is unavailable for this learner."
-        );
-      }
-
-      if (
-        safeOptions
-          .skipExistingRegistrationCheck !==
+    if (
+      hasResolvedRegistration() &&
+      safeOptions.force !==
         true
-      ) {
-        const existingRegistration =
-          await resolveExistingRegistration({
-            ...safeOptions,
+    ) {
+      return controllerState
+        .registration;
+    }
 
-            force:
-              true
-          });
+    if (
+      registrationCreationPromise
+    ) {
+      return registrationCreationPromise;
+    }
 
-        if (existingRegistration) {
-          return existingRegistration;
-        }
-      }
+    registrationCreationPromise =
+      (
+        async function performRegistrationCreation() {
+          if (
+            !hasResolvedEligibility() ||
+            !isLearnerEligible() ||
+            !hasResolvedOffer() ||
+            !isOfferAvailable()
+          ) {
+            await resolveEligibilityAndOffer({
+              ...safeOptions,
 
-      setState({
-        status:
-          CONTROLLER_STATUS
-            .CREATING_REGISTRATION,
+              forceEligibility:
+                safeOptions
+                  .forceEligibility ===
+                true,
 
-        busy:
-          true,
+              forceOffer:
+                safeOptions
+                  .forceOffer ===
+                true
+            });
+          }
 
-        registration:
-          null,
+          if (
+            !isLearnerEligible()
+          ) {
+            setState({
+              status:
+                CONTROLLER_STATUS
+                  .NOT_ELIGIBLE,
 
-        payment:
-          null,
+              busy:
+                false,
 
-        enrolment:
-          null,
+              registration:
+                null,
 
-        error:
-          null
-      });
+              payment:
+                null,
 
-      try {
-        const registrationService =
-          getRequiredRegistrationService();
+              enrolment:
+                null,
 
-        const input =
-          buildRegistrationCreationInput(
+              error:
+                null
+            });
+
+            throw createControllerError(
+              ERROR_CODE
+                .REGISTRATION_CREATION_FAILED,
+
+              "The learner is not eligible for this Bridge Programme registration."
+            );
+          }
+
+          if (
+            !isOfferAvailable()
+          ) {
+            setState({
+              status:
+                CONTROLLER_STATUS
+                  .BLOCKED,
+
+              busy:
+                false,
+
+              registration:
+                null,
+
+              payment:
+                null,
+
+              enrolment:
+                null,
+
+              error:
+                null
+            });
+
+            throw createControllerError(
+              ERROR_CODE
+                .REGISTRATION_CREATION_FAILED,
+
+              "An active Bridge Programme offer is unavailable for this learner."
+            );
+          }
+
+          /*
+           * This performs the governed acknowledgement,
+           * relationship, credential, offer and pricing checks
+           * before any registration write is attempted.
+           */
+
+          const input =
+            buildRegistrationCreationInput(
+              safeOptions
+            );
+
+          if (
             safeOptions
-          );
+              .skipExistingRegistrationCheck !==
+            true
+          ) {
+            const existingRegistration =
+              await resolveExistingRegistration({
+                ...safeOptions,
 
-        const response =
-          await invokeServiceMethod(
-            registrationService,
+                force:
+                  true
+              });
 
-            [
-              "createRegistration",
-              "createBridgeRegistration",
-              "registerLearner",
-              "create"
-            ],
-
-            input,
-
-            ERROR_CODE
-              .REGISTRATION_CREATION_FAILED,
-
-            "Unable to create the Bridge Programme registration."
-          );
-
-        const registration =
-          normaliseRegistrationResult(
-            response.result,
-            input
-          );
-
-        if (
-          !registration
-            .registrationExists ||
-          !isNonEmptyString(
-            registration
-              .registrationId
-          )
-        ) {
-          throw createControllerError(
-            ERROR_CODE
-              .REGISTRATION_CREATION_FAILED,
-
-            "BridgeRegistrationService did not return a valid registration.",
-
-            {
-              serviceMethod:
-                response.methodName,
-
-              serviceResult:
-                response.result || null
+            if (
+              existingRegistration
+            ) {
+              return existingRegistration;
             }
-          );
-        }
+          }
 
-        const nextStatus =
-          resolveControllerStatusFromRegistration(
-            registration
-          );
-
-        const nextState =
           setState({
             status:
-              nextStatus,
+              CONTROLLER_STATUS
+                .CREATING_REGISTRATION,
 
             busy:
-              false,
+              true,
 
-            registration,
+            registration:
+              null,
 
             payment:
-              registration.payment,
+              null,
 
             enrolment:
-              registration.enrolment,
+              null,
 
             error:
               null
           });
 
-        dispatchControllerEvent(
-          CONTROLLER_EVENT
-            .REGISTRATION_CREATED,
+          try {
+            const registrationService =
+              getRequiredRegistrationService();
 
-          {
-            registration,
+            const response =
+              await invokeServiceMethod(
+                registrationService,
 
-            serviceMethod:
-              response.methodName,
+                [
+                  "createOrResolveRegistration",
+                  "createRegistration",
+                  "createBridgeRegistration",
+                  "registerLearner",
+                  "create"
+                ],
 
-            state:
-              nextState
-          }
-        );
+                input,
 
-        if (
-          nextStatus ===
-          CONTROLLER_STATUS
-            .PAYMENT_REQUIRED
-        ) {
-          dispatchControllerEvent(
-            CONTROLLER_EVENT
-              .PAYMENT_REQUIRED,
+                ERROR_CODE
+                  .REGISTRATION_CREATION_FAILED,
 
-            {
-              registration,
+                "Unable to create the Bridge Programme registration."
+              );
 
-              payment:
-                registration.payment,
+            const serviceResult =
+              isObject(
+                response.result
+              )
+                ? response.result
+                : {};
 
-              state:
-                nextState
+            const registration =
+              normaliseRegistrationResult(
+                serviceResult,
+                input
+              );
+
+            if (
+              registration
+                .registrationExists !==
+                true ||
+              !isNonEmptyString(
+                registration
+                  .registrationId
+              )
+            ) {
+              throw createControllerError(
+                ERROR_CODE
+                  .REGISTRATION_CREATION_FAILED,
+
+                "BridgeRegistrationService did not return a valid registration.",
+
+                {
+                  serviceMethod:
+                    response.methodName,
+
+                  serviceResult:
+                    response.result ||
+                    null
+                }
+              );
             }
-          );
+
+            const created =
+              registration.created ===
+                true ||
+              serviceResult.created ===
+                true;
+
+            const idempotent =
+              registration.idempotent ===
+                true ||
+              serviceResult.idempotent ===
+                true;
+
+            const existing =
+              registration.existing ===
+                true ||
+              serviceResult.existing ===
+                true ||
+              idempotent ||
+              created !==
+                true;
+
+            const nextStatus =
+              resolveControllerStatusFromRegistration(
+                registration
+              );
+
+            const nextState =
+              setState({
+                status:
+                  nextStatus,
+
+                busy:
+                  false,
+
+                registration,
+
+                payment:
+                  registration.payment,
+
+                enrolment:
+                  registration.enrolment,
+
+                error:
+                  null
+              });
+
+            if (
+              created
+            ) {
+              dispatchControllerEvent(
+                CONTROLLER_EVENT
+                  .REGISTRATION_CREATED,
+
+                {
+                  registration,
+
+                  created:
+                    true,
+
+                  existing:
+                    false,
+
+                  restored:
+                    false,
+
+                  idempotent:
+                    false,
+
+                  serviceMethod:
+                    response.methodName,
+
+                  state:
+                    nextState
+                }
+              );
+            } else {
+              dispatchControllerEvent(
+                CONTROLLER_EVENT
+                  .REGISTRATION_RESOLVED,
+
+                {
+                  registration,
+
+                  registrationExists:
+                    true,
+
+                  created:
+                    false,
+
+                  existing,
+
+                  restored:
+                    true,
+
+                  idempotent,
+
+                  serviceMethod:
+                    response.methodName,
+
+                  state:
+                    nextState
+                }
+              );
+            }
+
+            if (
+              nextStatus ===
+                CONTROLLER_STATUS
+                  .PAYMENT_REQUIRED
+            ) {
+              dispatchControllerEvent(
+                CONTROLLER_EVENT
+                  .PAYMENT_REQUIRED,
+
+                {
+                  registration,
+
+                  payment:
+                    registration.payment,
+
+                  created,
+
+                  existing,
+
+                  restored:
+                    created !==
+                    true,
+
+                  idempotent,
+
+                  state:
+                    nextState
+                }
+              );
+            }
+
+            return registration;
+          } catch (error) {
+            throw handleControllerError(
+              error,
+
+              ERROR_CODE
+                .REGISTRATION_CREATION_FAILED,
+
+              "Unable to create the Bridge Programme registration."
+            );
+          }
         }
+      )();
 
-        return registration;
-      } catch (error) {
-        throw handleControllerError(
-          error,
-
-          ERROR_CODE
-            .REGISTRATION_CREATION_FAILED,
-
-          "Unable to create the Bridge Programme registration."
-        );
-      }
-    })();
-
-  try {
-    return await registrationCreationPromise;
-  } finally {
-    registrationCreationPromise =
-      null;
+    try {
+      return await registrationCreationPromise;
+    } finally {
+      registrationCreationPromise =
+        null;
+    }
   }
-}
 
   /* ==========================================================
      REGISTRATION ORCHESTRATION
@@ -4204,7 +7433,9 @@ async function createRegistration(
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
@@ -4218,7 +7449,7 @@ async function createRegistration(
         force:
           safeOptions
             .forcePageContext ===
-            true
+          true
       });
     }
 
@@ -4233,16 +7464,19 @@ async function createRegistration(
           forceEligibility:
             safeOptions
               .forceEligibility ===
-              true,
+            true,
 
           forceOffer:
             safeOptions
-              .forceOffer === true
+              .forceOffer ===
+            true
         });
 
       if (
-        !eligibilityAndOffer
-          .eligible
+        !eligibilityAndOffer ||
+        eligibilityAndOffer
+          .eligible !==
+        true
       ) {
         return freezeObject({
           registration:
@@ -4254,10 +7488,22 @@ async function createRegistration(
           restored:
             false,
 
+          existing:
+            false,
+
+          idempotent:
+            false,
+
+          creationRequired:
+            false,
+
           eligible:
             false,
 
           offerAvailable:
+            false,
+
+          acknowledgementRequired:
             false,
 
           state:
@@ -4266,8 +7512,9 @@ async function createRegistration(
       }
 
       if (
-        !eligibilityAndOffer
-          .offerAvailable
+        eligibilityAndOffer
+          .offerAvailable !==
+        true
       ) {
         return freezeObject({
           registration:
@@ -4279,10 +7526,22 @@ async function createRegistration(
           restored:
             false,
 
+          existing:
+            false,
+
+          idempotent:
+            false,
+
+          creationRequired:
+            false,
+
           eligible:
             true,
 
           offerAvailable:
+            false,
+
+          acknowledgementRequired:
             false,
 
           state:
@@ -4298,10 +7557,12 @@ async function createRegistration(
         force:
           safeOptions
             .forceRegistrationResolution ===
-            true
+          true
       });
 
-    if (existingRegistration) {
+    if (
+      existingRegistration
+    ) {
       return freezeObject({
         registration:
           existingRegistration,
@@ -4312,33 +7573,168 @@ async function createRegistration(
         restored:
           true,
 
+        existing:
+          true,
+
+        idempotent:
+          existingRegistration
+            .idempotent ===
+          true,
+
+        creationRequired:
+          false,
+
         eligible:
           true,
 
         offerAvailable:
           true,
 
+        acknowledgementRequired:
+          false,
+
         state:
           controllerState
       });
     }
 
-    const createdRegistration =
+    /*
+     * Normal page loading stops here.
+     *
+     * A registration may be created only when the caller
+     * explicitly requests creation after learner acknowledgement.
+     */
+
+    const createIfMissing =
+      safeOptions
+        .createIfMissing ===
+      true;
+
+    if (
+      !createIfMissing
+    ) {
+      const nextState =
+        setState({
+          status:
+            CONTROLLER_STATUS
+              .READY,
+
+          busy:
+            false,
+
+          registration:
+            null,
+
+          payment:
+            null,
+
+          enrolment:
+            null,
+
+          error:
+            null
+        });
+
+      return freezeObject({
+        registration:
+          null,
+
+        created:
+          false,
+
+        restored:
+          false,
+
+        existing:
+          false,
+
+        idempotent:
+          false,
+
+        creationRequired:
+          true,
+
+        eligible:
+          true,
+
+        offerAvailable:
+          true,
+
+        acknowledgementRequired:
+          true,
+
+        state:
+          nextState
+      });
+    }
+
+    if (
+      safeOptions
+        .acknowledgementAccepted !==
+      true
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .REGISTRATION_CREATION_FAILED,
+
+        "The learner must accept the Bridge Programme acknowledgement before registration.",
+
+        {
+          field:
+            "acknowledgementAccepted",
+
+          receivedValue:
+            safeOptions
+              .acknowledgementAccepted
+        }
+      );
+    }
+
+    const registration =
       await createRegistration({
         ...safeOptions,
+
+        acknowledgementAccepted:
+          true,
 
         skipExistingRegistrationCheck:
           true
       });
 
-    return freezeObject({
-      registration:
-        createdRegistration,
+    const created =
+      registration &&
+      registration.created ===
+        true;
 
-      created:
-        true,
+    const idempotent =
+      registration &&
+      registration.idempotent ===
+        true;
+
+    const existing =
+      registration &&
+      (
+        registration.existing ===
+          true ||
+        idempotent ||
+        created !==
+          true
+      );
+
+    return freezeObject({
+      registration,
+
+      created,
 
       restored:
+        created !==
+        true,
+
+      existing,
+
+      idempotent,
+
+      creationRequired:
         false,
 
       eligible:
@@ -4346,6 +7742,9 @@ async function createRegistration(
 
       offerAvailable:
         true,
+
+      acknowledgementRequired:
+        false,
 
       state:
         controllerState
@@ -4364,10 +7763,49 @@ async function createRegistration(
       controllerState
         .registration;
 
+    const registrationResolved =
+      hasResolvedRegistration();
+
+    const registrationStatus =
+      registrationResolved
+        ? registration.status
+        : null;
+
+    const paymentStatus =
+      registrationResolved
+        ? registration
+            .paymentStatus
+        : null;
+
+    const enrolmentStatus =
+      registrationResolved
+        ? registration
+            .enrolmentStatus
+        : null;
+
+    const paymentRequired =
+      controllerState.status ===
+        CONTROLLER_STATUS
+          .PAYMENT_REQUIRED;
+
+    const paymentConfirmed =
+      controllerState.status ===
+        CONTROLLER_STATUS
+          .PAYMENT_CONFIRMED;
+
+    const enrolled =
+      controllerState.status ===
+        CONTROLLER_STATUS
+          .ENROLLED;
+
     return freezeObject({
       pageContextReady:
         eligibilityAndOfferReadiness
           .pageContextReady,
+
+      requiredServicesAvailable:
+        eligibilityAndOfferReadiness
+          .requiredServicesAvailable,
 
       learnerEligible:
         eligibilityAndOfferReadiness
@@ -4377,70 +7815,84 @@ async function createRegistration(
         eligibilityAndOfferReadiness
           .offerAvailable,
 
-      registrationResolved:
-        hasResolvedRegistration(),
+      registrationResolved,
+
+      registrationExists:
+        registrationResolved,
 
       registrationId:
-        hasResolvedRegistration()
+        registrationResolved
           ? registration
               .registrationId
           : null,
 
-      registrationStatus:
-        hasResolvedRegistration()
-          ? registration.status
-          : null,
+      registrationStatus,
 
-      paymentStatus:
-        hasResolvedRegistration()
-          ? registration
-              .paymentStatus
-          : null,
+      paymentStatus,
 
-      enrolmentStatus:
-        hasResolvedRegistration()
-          ? registration
-              .enrolmentStatus
-          : null,
+      enrolmentStatus,
 
-      paymentRequired:
-        controllerState.status ===
-          CONTROLLER_STATUS
-            .PAYMENT_REQUIRED,
+      created:
+        registrationResolved &&
+        registration.created ===
+          true,
 
-      paymentConfirmed:
-        controllerState.status ===
-          CONTROLLER_STATUS
-            .PAYMENT_CONFIRMED,
+      existing:
+        registrationResolved &&
+        registration.existing ===
+          true,
 
-      enrolled:
-        controllerState.status ===
-          CONTROLLER_STATUS.ENROLLED,
+      idempotent:
+        registrationResolved &&
+        registration.idempotent ===
+          true,
+
+      paymentRequired,
+
+      paymentConfirmed,
+
+      enrolled,
+
+      creationRequired:
+        eligibilityAndOfferReadiness
+          .readyForRegistration &&
+        !registrationResolved,
+
+      acknowledgementRequired:
+        eligibilityAndOfferReadiness
+          .readyForRegistration &&
+        !registrationResolved,
+
+      readyForCreation:
+        eligibilityAndOfferReadiness
+          .readyForRegistration &&
+        !registrationResolved,
 
       readyForPayment:
-        hasResolvedRegistration() &&
-        controllerState.status ===
-          CONTROLLER_STATUS
-            .PAYMENT_REQUIRED
+        registrationResolved &&
+        paymentRequired,
+
+      readyForEnrolmentResolution:
+        registrationResolved &&
+        paymentConfirmed &&
+        !enrolled
     });
   }
 
   /* ==========================================================
-     END OF BLOCK 4 OF 6
+     END OF BLOCK 8 OF 10
 
-     Do not add diagnostics, the public API, global registration,
-     or the closing IIFE yet.
-
-     Block 5 must continue immediately below this section.
+     Do not close the IIFE here.
+     Block 9 must continue immediately below this section.
   ========================================================== */
 
     /* ==========================================================
-     BLOCK 5 OF 6
-     PAYMENT ORCHESTRATION AND ENROLMENT RESOLUTION
+     BLOCK 9 OF 10
+     PAYMENT AND ENROLMENT ORCHESTRATION
   ========================================================== */
 
   /* ==========================================================
-     PAYMENT AND ENROLMENT SERVICE ACCESS
+     PAYMENT SERVICE ACCESS
   ========================================================== */
 
   function getRequiredPaymentService() {
@@ -4450,53 +7902,144 @@ async function createRegistration(
           true
       });
 
+    if (
+      !dependencies
+        .paymentServiceAvailable ||
+      !dependencies.paymentService
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .DEPENDENCY_UNAVAILABLE,
+
+        "PaymentService is unavailable."
+      );
+    }
+
     return dependencies
       .paymentService;
   }
 
-  function getRequiredEnrolmentService() {
-    const dependencies =
-      assertRequiredDependencies({
-        requireEnrolmentService:
-          true
-      });
-
-    return dependencies
-      .enrolmentService;
-  }
-
   /* ==========================================================
-     PAYMENT INPUT VALIDATION
+     REGISTRATION VALIDATION FOR PAYMENT
   ========================================================== */
 
   function validateRegistrationForPayment(
     registration
   ) {
     if (
-      !isObject(registration) ||
+      !isObject(
+        registration
+      ) ||
       registration
-        .registrationExists !== true
+        .registrationExists !==
+      true ||
+      !isNonEmptyString(
+        registration
+          .registrationId
+      )
     ) {
       throw createControllerError(
-        ERROR_CODE.PAYMENT_FAILED,
+        ERROR_CODE
+          .PAYMENT_FAILED,
 
-        "A valid Bridge Programme registration is required before payment can begin."
+        "A valid Bridge Programme registration is required before payment can be initiated.",
+
+        {
+          registration:
+            registration ||
+            null
+        }
+      );
+    }
+
+    const registrationStatus =
+      normaliseRegistrationStatus(
+        registration.status
+      );
+
+    const paymentStatus =
+      normalisePaymentStatus(
+        registration
+          .paymentStatus ||
+        (
+          isObject(
+            registration.payment
+          )
+            ? registration
+                .payment
+                .status
+            : ""
+        )
+      );
+
+    const enrolmentStatus =
+      normaliseEnrolmentStatus(
+        registration
+          .enrolmentStatus ||
+        (
+          isObject(
+            registration.enrolment
+          )
+            ? registration
+                .enrolment
+                .status
+            : ""
+        )
+      );
+
+    if (
+      registrationStatus ===
+        "ENROLLED" ||
+      enrolmentStatus ===
+        "ENROLLED"
+    ) {
+      return registration;
+    }
+
+    if (
+      registrationStatus ===
+        "BLOCKED" ||
+      registrationStatus ===
+        "FAILED" ||
+      registrationStatus ===
+        "CANCELLED" ||
+      registrationStatus ===
+        "EXPIRED"
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .PAYMENT_FAILED,
+
+        "Payment cannot be initiated for a blocked, failed, cancelled, or expired registration.",
+
+        {
+          registrationId:
+            registration
+              .registrationId,
+
+          registrationStatus
+        }
       );
     }
 
     if (
-      !isNonEmptyString(
-        registration.registrationId
-      )
+      paymentStatus ===
+        "FAILED" &&
+      registrationStatus ===
+        "FAILED"
     ) {
       throw createControllerError(
-        ERROR_CODE.PAYMENT_FAILED,
+        ERROR_CODE
+          .PAYMENT_FAILED,
 
-        "The Bridge Programme registration ID is unavailable.",
+        "The Bridge Programme registration is not eligible for another payment attempt.",
 
         {
-          field:
-            "registrationId"
+          registrationId:
+            registration
+              .registrationId,
+
+          paymentStatus
         }
       );
     }
@@ -4504,13 +8047,26 @@ async function createRegistration(
     return registration;
   }
 
+  /* ==========================================================
+     PAYMENT INPUT
+  ========================================================== */
+
   function buildPaymentInput(
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
+
+    const registration =
+      validateRegistrationForPayment(
+        safeOptions.registration ||
+        controllerState
+          .registration
+      );
 
     const learner =
       validateLearnerIdentity(
@@ -4518,111 +8074,105 @@ async function createRegistration(
         controllerState.learner
       );
 
-    const registration =
-      validateRegistrationForPayment(
-        safeOptions.registration ||
-        controllerState.registration
-      );
-
-    const offer =
-      safeOptions.offer ||
-      controllerState.offer ||
-      null;
-
     return freezeObject({
       learnerUid:
         learner.learnerUid,
 
       learnerEmail:
-        learner.email || "",
+        learner.email ||
+        registration
+          .learnerEmail ||
+        "",
 
       registrationId:
-        registration.registrationId,
+        registration
+          .registrationId,
 
       sourceProgrammeCode:
         registration
-          .sourceProgrammeCode ||
-        controllerState
           .sourceProgrammeCode,
 
       targetProgrammeCode:
         registration
-          .targetProgrammeCode ||
-        controllerState
           .targetProgrammeCode,
 
+      credentialId:
+        registration
+          .credentialId ||
+        "",
+
+      relationshipCode:
+        registration
+          .relationshipCode ||
+        "",
+
+      relationshipType:
+        registration
+          .relationshipType ||
+        "",
+
       offerId:
-        normaliseString(
-          registration.offerId ||
-          (
-            isObject(offer)
-              ? offer.offerId
-              : ""
-          )
-        ),
+        registration.offerId ||
+        "",
 
       offerCode:
-        normaliseString(
-          registration.offerCode ||
-          (
-            isObject(offer)
-              ? offer.offerCode
-              : ""
-          )
-        ),
+        registration.offerCode ||
+        "",
 
       currency:
         normaliseString(
           registration.currency ||
-          (
-            isObject(offer)
-              ? offer.currency
-              : ""
-          ) ||
           "INR"
         ).toUpperCase(),
 
       baseAmount:
         normaliseNumber(
-          registration.baseAmount ??
-          (
-            isObject(offer)
-              ? offer.baseAmount
-              : 0
-          ),
+          registration.baseAmount,
+          0
+        ),
+
+      gstRate:
+        normaliseNumber(
+          registration.gstRate,
+          0
+        ),
+
+      gstAmount:
+        normaliseNumber(
+          registration
+            .gstAmount ??
+          registration
+            .taxAmount,
           0
         ),
 
       taxAmount:
         normaliseNumber(
-          registration.taxAmount ??
-          (
-            isObject(offer)
-              ? offer.taxAmount
-              : 0
-          ),
+          registration
+            .taxAmount ??
+          registration
+            .gstAmount,
           0
         ),
 
       totalAmount:
         normaliseNumber(
-          registration.totalAmount ??
-          (
-            isObject(offer)
-              ? offer.totalAmount
-              : 0
-          ),
+          registration
+            .totalAmount,
           0
         ),
 
-      successUrl:
-        normaliseString(
-          safeOptions.successUrl
+      payableAmount:
+        normaliseNumber(
+          registration
+            .totalAmount,
+          0
         ),
 
-      cancelUrl:
+      paymentProvider:
         normaliseString(
-          safeOptions.cancelUrl
+          safeOptions
+            .paymentProvider
         ),
 
       returnUrl:
@@ -4630,14 +8180,16 @@ async function createRegistration(
           safeOptions.returnUrl
         ),
 
-      metadata:
-        isObject(
-          safeOptions.metadata
-        )
-          ? freezeObject(
-              safeOptions.metadata
-            )
-          : null
+      cancelUrl:
+        normaliseString(
+          safeOptions.cancelUrl
+        ),
+
+      source:
+        normaliseString(
+          safeOptions.source
+        ) ||
+        "STUDENT_PORTAL"
     });
   }
 
@@ -4650,41 +8202,51 @@ async function createRegistration(
     input
   ) {
     const result =
-      isObject(rawResult)
+      isObject(
+        rawResult
+      )
         ? rawResult
         : {};
 
+    const governedInput =
+      isObject(
+        input
+      )
+        ? input
+        : {};
+
     const nestedPayment =
-      isObject(result.payment)
+      isObject(
+        result.payment
+      )
         ? result.payment
         : {};
 
     const paymentData =
       Object.keys(
         nestedPayment
-      ).length > 0
+      ).length >
+        0
         ? nestedPayment
         : result;
 
-    const paymentId =
-      normaliseString(
-        paymentData.paymentId ||
-        paymentData.id ||
-        paymentData
-          .transactionId ||
-        paymentData.orderId ||
-        result.paymentId ||
-        result.transactionId ||
-        result.orderId
-      );
-
-    const paymentStatus =
+    const status =
       normalisePaymentStatus(
         paymentData.status ||
         paymentData
           .paymentStatus ||
         result.status ||
         result.paymentStatus
+      );
+
+    const paymentId =
+      normaliseString(
+        paymentData.paymentId ||
+        paymentData.id ||
+        paymentData
+          .bridgePaymentId ||
+        result.paymentId ||
+        result.id
       );
 
     const paymentUrl =
@@ -4695,30 +8257,25 @@ async function createRegistration(
         paymentData.url ||
         result.paymentUrl ||
         result.checkoutUrl ||
-        result.redirectUrl
-      );
-
-    const registrationId =
-      normaliseString(
-        paymentData.registrationId ||
-        result.registrationId ||
-        input.registrationId
+        result.redirectUrl ||
+        result.url
       );
 
     return freezeObject({
       paymentId,
 
-      registrationId,
+      status,
 
-      status:
-        paymentStatus,
+      paymentUrl,
 
       provider:
         normaliseString(
           paymentData.provider ||
-          paymentData.gateway ||
+          paymentData
+            .paymentProvider ||
           result.provider ||
-          result.gateway
+          result
+            .paymentProvider
         ),
 
       providerOrderId:
@@ -4726,7 +8283,8 @@ async function createRegistration(
           paymentData
             .providerOrderId ||
           paymentData.orderId ||
-          result.providerOrderId ||
+          result
+            .providerOrderId ||
           result.orderId
         ),
 
@@ -4734,79 +8292,143 @@ async function createRegistration(
         normaliseString(
           paymentData
             .providerPaymentId ||
-          paymentData.transactionId ||
-          result.providerPaymentId ||
-          result.transactionId
+          paymentData
+            .gatewayPaymentId ||
+          result
+            .providerPaymentId ||
+          result
+            .gatewayPaymentId
         ),
 
-      paymentUrl,
+      providerSignature:
+        normaliseString(
+          paymentData
+            .providerSignature ||
+          paymentData.signature ||
+          result
+            .providerSignature ||
+          result.signature
+        ),
+
+      registrationId:
+        normaliseString(
+          paymentData
+            .registrationId ||
+          result.registrationId ||
+          governedInput
+            .registrationId
+        ),
+
+      learnerUid:
+        normaliseString(
+          paymentData
+            .learnerUid ||
+          result.learnerUid ||
+          governedInput
+            .learnerUid
+        ),
 
       currency:
         normaliseString(
           paymentData.currency ||
           result.currency ||
-          input.currency
+          governedInput.currency ||
+          "INR"
         ).toUpperCase(),
 
       baseAmount:
         normaliseNumber(
-          paymentData.baseAmount ??
+          paymentData
+            .baseAmount ??
           result.baseAmount ??
-          input.baseAmount,
+          governedInput
+            .baseAmount,
+          0
+        ),
+
+      gstAmount:
+        normaliseNumber(
+          paymentData
+            .gstAmount ??
+          paymentData
+            .taxAmount ??
+          result.gstAmount ??
+          result.taxAmount ??
+          governedInput
+            .gstAmount ??
+          governedInput
+            .taxAmount,
           0
         ),
 
       taxAmount:
         normaliseNumber(
-          paymentData.taxAmount ??
+          paymentData
+            .taxAmount ??
+          paymentData
+            .gstAmount ??
           result.taxAmount ??
-          input.taxAmount,
+          result.gstAmount ??
+          governedInput
+            .taxAmount ??
+          governedInput
+            .gstAmount,
           0
         ),
 
       totalAmount:
         normaliseNumber(
-          paymentData.totalAmount ??
           paymentData
-            .payableAmount ??
+            .totalAmount ??
+          paymentData
+            .amount ??
           result.totalAmount ??
-          result.payableAmount ??
-          input.totalAmount,
+          result.amount ??
+          governedInput
+            .totalAmount,
           0
         ),
 
-      createdAt:
+      initiatedAt:
         normaliseString(
+          paymentData
+            .initiatedAt ||
           paymentData.createdAt ||
+          result.initiatedAt ||
           result.createdAt
-        ),
-
-      updatedAt:
-        normaliseString(
-          paymentData.updatedAt ||
-          result.updatedAt
         ),
 
       confirmedAt:
         normaliseString(
-          paymentData.confirmedAt ||
+          paymentData
+            .confirmedAt ||
           paymentData.paidAt ||
           result.confirmedAt ||
           result.paidAt
         ),
 
+      failedAt:
+        normaliseString(
+          paymentData.failedAt ||
+          result.failedAt
+        ),
+
       failureCode:
         normaliseString(
-          paymentData.failureCode ||
-          paymentData.errorCode ||
+          paymentData
+            .failureCode ||
+          paymentData
+            .errorCode ||
           result.failureCode ||
           result.errorCode
         ),
 
       failureReason:
         normaliseString(
-          paymentData.failureReason ||
-          paymentData.errorMessage ||
+          paymentData
+            .failureReason ||
+          paymentData
+            .errorMessage ||
           result.failureReason ||
           result.errorMessage
         ),
@@ -4822,13 +8444,17 @@ async function createRegistration(
   }
 
   /* ==========================================================
-     PAYMENT CONTROLLER STATUS
+     CONTROLLER STATUS FROM PAYMENT
   ========================================================== */
 
   function resolveControllerStatusFromPayment(
     payment
   ) {
-    if (!isObject(payment)) {
+    if (
+      !isObject(
+        payment
+      )
+    ) {
       return CONTROLLER_STATUS
         .PAYMENT_REQUIRED;
     }
@@ -4862,7 +8488,8 @@ async function createRegistration(
       paymentStatus ===
         "EXPIRED"
     ) {
-      return CONTROLLER_STATUS.BLOCKED;
+      return CONTROLLER_STATUS
+        .BLOCKED;
     }
 
     return CONTROLLER_STATUS
@@ -4870,510 +8497,664 @@ async function createRegistration(
   }
 
   /* ==========================================================
-    PAYMENT INITIATION
-    ========================================================== */
+     PAYMENT INITIATION
+  ========================================================== */
 
-    async function initiatePayment(
+  async function initiatePayment(
     options
-    ) {
+  ) {
     const safeOptions =
-        isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
-    if (paymentInitiationPromise) {
-        return paymentInitiationPromise;
+    if (
+      paymentInitiationPromise
+    ) {
+      return paymentInitiationPromise;
     }
 
     paymentInitiationPromise =
-        (async function performPaymentInitiation() {
-        if (
+      (
+        async function performPaymentInitiation() {
+          if (
             !hasResolvedRegistration()
-        ) {
-            await resolveOrCreateRegistration({
-            ...safeOptions
-            });
-        }
+          ) {
+            const registrationResult =
+              await resolveOrCreateRegistration({
+                ...safeOptions,
 
-        const registration =
+                createIfMissing:
+                  safeOptions
+                    .createIfMissing ===
+                  true,
+
+                acknowledgementAccepted:
+                  safeOptions
+                    .acknowledgementAccepted ===
+                  true
+              });
+
+            if (
+              !registrationResult ||
+              !registrationResult
+                .registration
+            ) {
+              throw createControllerError(
+                ERROR_CODE
+                  .PAYMENT_FAILED,
+
+                "A Bridge Programme registration must be created before payment can be initiated.",
+
+                {
+                  creationRequired:
+                    Boolean(
+                      registrationResult &&
+                      registrationResult
+                        .creationRequired ===
+                        true
+                    ),
+
+                  acknowledgementRequired:
+                    Boolean(
+                      registrationResult &&
+                      registrationResult
+                        .acknowledgementRequired ===
+                        true
+                    )
+                }
+              );
+            }
+          }
+
+          const registration =
             validateRegistrationForPayment(
-            controllerState.registration
+              controllerState
+                .registration
             );
 
-        const existingPaymentStatus =
-            normalisePaymentStatus(
-            registration.paymentStatus ||
-            (
-                isObject(
-                controllerState.payment
-                )
-                ? controllerState
-                    .payment.status
-                : ""
+          const existingPayment =
+            isObject(
+              controllerState.payment
             )
+              ? controllerState.payment
+              : (
+                  isObject(
+                    registration.payment
+                  )
+                    ? registration.payment
+                    : null
+                );
+
+          const existingPaymentStatus =
+            normalisePaymentStatus(
+              registration
+                .paymentStatus ||
+              (
+                existingPayment
+                  ? existingPayment.status
+                  : ""
+              )
             );
 
-        if (
+          if (
             existingPaymentStatus ===
-            "CONFIRMED"
-        ) {
+              "CONFIRMED"
+          ) {
             setState({
-            status:
+              status:
                 CONTROLLER_STATUS
-                .PAYMENT_CONFIRMED,
+                  .PAYMENT_CONFIRMED,
 
-            busy:
+              busy:
                 false,
 
-            error:
+              payment:
+                existingPayment,
+
+              error:
                 null
             });
 
-            return controllerState.payment;
-        }
+            return existingPayment;
+          }
 
-        if (
+          if (
             existingPaymentStatus ===
-            "PROCESSING" &&
-            safeOptions.force !== true
-        ) {
-            return controllerState.payment;
-        }
+              "PROCESSING" &&
+            safeOptions.force !==
+              true
+          ) {
+            return existingPayment;
+          }
 
-        setState({
+          setState({
             status:
-            CONTROLLER_STATUS
+              CONTROLLER_STATUS
                 .PAYMENT_IN_PROGRESS,
 
             busy:
-            true,
+              true,
 
             error:
-            null
-        });
+              null
+          });
 
-        try {
+          try {
             const paymentService =
-            getRequiredPaymentService();
+              getRequiredPaymentService();
 
             const input =
-            buildPaymentInput(
+              buildPaymentInput(
                 safeOptions
-            );
+              );
 
             const response =
-            await invokeServiceMethod(
+              await invokeServiceMethod(
                 paymentService,
 
                 [
-                "initiateBridgePayment",
-                "createBridgePayment",
-                "initiatePayment",
-                "createPayment",
-                "createCheckoutSession",
-                "createOrder"
+                  "initiateBridgePayment",
+                  "createBridgePayment",
+                  "initiatePayment",
+                  "createPayment",
+                  "createCheckoutSession",
+                  "createOrder"
                 ],
 
                 input,
 
-                ERROR_CODE.PAYMENT_FAILED,
+                ERROR_CODE
+                  .PAYMENT_FAILED,
 
                 "Unable to initiate payment for the Bridge Programme registration."
-            );
+              );
 
             const payment =
-            normalisePaymentResult(
+              normalisePaymentResult(
                 response.result,
                 input
-            );
+              );
 
             if (
-            !isNonEmptyString(
+              !isNonEmptyString(
                 payment.paymentId
-            ) &&
-            !isNonEmptyString(
+              ) &&
+              !isNonEmptyString(
                 payment.paymentUrl
-            )
+              ) &&
+              payment.status !==
+                "CONFIRMED"
             ) {
-            throw createControllerError(
-                ERROR_CODE.PAYMENT_FAILED,
+              throw createControllerError(
+                ERROR_CODE
+                  .PAYMENT_FAILED,
 
                 "The payment service did not return a valid payment reference.",
 
                 {
-                serviceMethod:
+                  serviceMethod:
                     response.methodName,
 
-                serviceResult:
-                    response.result || null
+                  serviceResult:
+                    response.result ||
+                    null
                 }
-            );
+              );
             }
 
             const nextStatus =
-            resolveControllerStatusFromPayment(
+              resolveControllerStatusFromPayment(
                 payment
-            );
+              );
 
             const nextRegistration =
-            freezeObject({
+              freezeObject({
                 ...registration,
 
                 paymentStatus:
-                payment.status,
+                  payment.status,
 
                 payment,
 
+                status:
+                  payment.status ===
+                    "CONFIRMED"
+                    ? "PAYMENT_CONFIRMED"
+                    : registration.status,
+
                 updatedAt:
-                nowIsoString()
-            });
+                  nowIsoString()
+              });
 
             const nextState =
-            setState({
+              setState({
                 status:
-                nextStatus,
+                  nextStatus,
 
                 busy:
-                false,
+                  false,
 
                 registration:
-                nextRegistration,
+                  nextRegistration,
 
                 payment,
 
                 error:
-                null
-            });
+                  null
+              });
 
             dispatchControllerEvent(
-            CONTROLLER_EVENT
+              CONTROLLER_EVENT
                 .PAYMENT_STARTED,
 
-            {
+              {
                 payment,
 
                 registration:
-                nextRegistration,
+                  nextRegistration,
 
                 serviceMethod:
-                response.methodName,
+                  response.methodName,
 
                 state:
-                nextState
-            }
+                  nextState
+              }
             );
 
             if (
-            nextStatus ===
-            CONTROLLER_STATUS
-                .PAYMENT_REQUIRED
+              nextStatus ===
+                CONTROLLER_STATUS
+                  .PAYMENT_REQUIRED
             ) {
-            dispatchControllerEvent(
+              dispatchControllerEvent(
                 CONTROLLER_EVENT
-                .PAYMENT_REQUIRED,
+                  .PAYMENT_REQUIRED,
 
                 {
-                payment,
+                  payment,
 
-                registration:
+                  registration:
                     nextRegistration,
 
-                state:
+                  state:
                     nextState
                 }
-            );
+              );
             }
 
             if (
-            nextStatus ===
-            CONTROLLER_STATUS
-                .PAYMENT_CONFIRMED
+              nextStatus ===
+                CONTROLLER_STATUS
+                  .PAYMENT_CONFIRMED
             ) {
-            dispatchControllerEvent(
+              dispatchControllerEvent(
                 CONTROLLER_EVENT
-                .PAYMENT_CONFIRMED,
+                  .PAYMENT_CONFIRMED,
 
                 {
-                payment,
+                  payment,
 
-                registration:
+                  registration:
                     nextRegistration,
 
-                state:
+                  state:
                     nextState
                 }
-            );
+              );
             }
 
             return payment;
-        } catch (error) {
+          } catch (error) {
             throw handleControllerError(
-            error,
+              error,
 
-            ERROR_CODE.PAYMENT_FAILED,
+              ERROR_CODE
+                .PAYMENT_FAILED,
 
-            "Unable to initiate payment for the Bridge Programme registration."
+              "Unable to initiate payment for the Bridge Programme registration."
             );
+          }
         }
-        })();
+      )();
 
     try {
-        return await paymentInitiationPromise;
+      return await paymentInitiationPromise;
     } finally {
-        paymentInitiationPromise =
+      paymentInitiationPromise =
         null;
     }
   }
 
   /* ==========================================================
-    PAYMENT STATUS RESOLUTION
-    ========================================================== */
+     PAYMENT STATUS RESOLUTION
+  ========================================================== */
 
-    async function resolvePaymentStatus(
+  async function resolvePaymentStatus(
     options
-    ) {
+  ) {
     const safeOptions =
-        isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
 
-    if (paymentStatusResolutionPromise) {
-        return paymentStatusResolutionPromise;
+    if (
+      paymentStatusResolutionPromise
+    ) {
+      return paymentStatusResolutionPromise;
     }
 
     paymentStatusResolutionPromise =
-        (async function performPaymentStatusResolution() {
-        const registration =
+      (
+        async function performPaymentStatusResolution() {
+          const registration =
             validateRegistrationForPayment(
-            safeOptions.registration ||
-            controllerState.registration
+              safeOptions.registration ||
+              controllerState
+                .registration
             );
 
-        setState({
+          setState({
             status:
-            CONTROLLER_STATUS
+              CONTROLLER_STATUS
                 .PAYMENT_IN_PROGRESS,
 
             busy:
-            true,
+              true,
 
             error:
-            null
-        });
+              null
+          });
 
-        try {
+          try {
             const paymentService =
-            getRequiredPaymentService();
+              getRequiredPaymentService();
 
             const currentPayment =
-            safeOptions.payment ||
-            controllerState.payment ||
-            registration.payment ||
-            null;
+              safeOptions.payment ||
+              controllerState.payment ||
+              registration.payment ||
+              null;
 
             const payload =
-            freezeObject({
+              freezeObject({
                 learnerUid:
-                controllerState.learner
+                  controllerState.learner
                     ? controllerState
-                        .learner.learnerUid
+                        .learner
+                        .learnerUid
                     : "",
 
                 registrationId:
-                registration.registrationId,
+                  registration
+                    .registrationId,
 
                 paymentId:
-                isObject(currentPayment)
+                  isObject(
+                    currentPayment
+                  )
                     ? normaliseString(
                         currentPayment
-                        .paymentId
-                    )
+                          .paymentId
+                      )
                     : "",
 
                 providerOrderId:
-                isObject(currentPayment)
+                  isObject(
+                    currentPayment
+                  )
                     ? normaliseString(
                         currentPayment
-                        .providerOrderId
-                    )
+                          .providerOrderId
+                      )
                     : "",
 
                 providerPaymentId:
-                isObject(currentPayment)
+                  isObject(
+                    currentPayment
+                  )
                     ? normaliseString(
                         currentPayment
-                        .providerPaymentId
-                    )
-                    : ""
-            });
+                          .providerPaymentId
+                      )
+                    : "",
+
+                currency:
+                  registration.currency,
+
+                baseAmount:
+                  registration
+                    .baseAmount,
+
+                gstAmount:
+                  registration
+                    .gstAmount,
+
+                taxAmount:
+                  registration
+                    .taxAmount,
+
+                totalAmount:
+                  registration
+                    .totalAmount
+              });
 
             const response =
-            await invokeServiceMethod(
+              await invokeServiceMethod(
                 paymentService,
 
                 [
-                "resolveBridgePaymentStatus",
-                "getBridgePaymentStatus",
-                "resolvePaymentStatus",
-                "getPaymentStatus",
-                "verifyPaymentStatus",
-                "getPayment"
+                  "resolveBridgePaymentStatus",
+                  "getBridgePaymentStatus",
+                  "resolvePaymentStatus",
+                  "getPaymentStatus",
+                  "verifyPaymentStatus",
+                  "getPayment"
                 ],
 
                 payload,
 
-                ERROR_CODE.PAYMENT_FAILED,
+                ERROR_CODE
+                  .PAYMENT_FAILED,
 
                 "Unable to resolve the Bridge Programme payment status."
-            );
+              );
 
             const payment =
-            normalisePaymentResult(
+              normalisePaymentResult(
                 response.result,
+
                 {
-                registrationId:
+                  ...payload,
+
+                  registrationId:
                     registration
-                    .registrationId,
-
-                currency:
-                    registration.currency,
-
-                baseAmount:
-                    registration.baseAmount,
-
-                taxAmount:
-                    registration.taxAmount,
-
-                totalAmount:
-                    registration.totalAmount
+                      .registrationId
                 }
-            );
+              );
 
             const nextStatus =
-            resolveControllerStatusFromPayment(
+              resolveControllerStatusFromPayment(
                 payment
-            );
+              );
 
             const nextRegistration =
-            freezeObject({
+              freezeObject({
                 ...registration,
 
                 paymentStatus:
-                payment.status,
+                  payment.status,
 
                 payment,
 
+                status:
+                  payment.status ===
+                    "CONFIRMED"
+                    ? "PAYMENT_CONFIRMED"
+                    : registration.status,
+
                 updatedAt:
-                nowIsoString()
-            });
+                  nowIsoString()
+              });
 
             const nextState =
-            setState({
+              setState({
                 status:
-                nextStatus,
+                  nextStatus,
 
                 busy:
-                false,
+                  false,
 
                 registration:
-                nextRegistration,
+                  nextRegistration,
 
                 payment,
 
                 error:
-                null
-            });
+                  null
+              });
 
             if (
-            nextStatus ===
-            CONTROLLER_STATUS
-                .PAYMENT_CONFIRMED
+              nextStatus ===
+                CONTROLLER_STATUS
+                  .PAYMENT_CONFIRMED
             ) {
-            dispatchControllerEvent(
+              dispatchControllerEvent(
                 CONTROLLER_EVENT
-                .PAYMENT_CONFIRMED,
+                  .PAYMENT_CONFIRMED,
 
                 {
-                payment,
+                  payment,
 
-                registration:
+                  registration:
                     nextRegistration,
 
-                serviceMethod:
+                  serviceMethod:
                     response.methodName,
 
-                state:
+                  state:
                     nextState
                 }
-            );
+              );
             } else if (
-            nextStatus ===
-            CONTROLLER_STATUS
-                .PAYMENT_REQUIRED
+              nextStatus ===
+                CONTROLLER_STATUS
+                  .PAYMENT_REQUIRED
             ) {
-            dispatchControllerEvent(
+              dispatchControllerEvent(
                 CONTROLLER_EVENT
-                .PAYMENT_REQUIRED,
+                  .PAYMENT_REQUIRED,
 
                 {
-                payment,
+                  payment,
 
-                registration:
+                  registration:
                     nextRegistration,
 
-                serviceMethod:
+                  serviceMethod:
                     response.methodName,
 
-                state:
+                  state:
                     nextState
                 }
-            );
+              );
             }
 
             return payment;
-        } catch (error) {
+          } catch (error) {
             throw handleControllerError(
-            error,
+              error,
 
-            ERROR_CODE.PAYMENT_FAILED,
+              ERROR_CODE
+                .PAYMENT_FAILED,
 
-            "Unable to resolve the Bridge Programme payment status."
+              "Unable to resolve the Bridge Programme payment status."
             );
+          }
         }
-        })();
+      )();
 
     try {
-        return await paymentStatusResolutionPromise;
+      return await paymentStatusResolutionPromise;
     } finally {
-        paymentStatusResolutionPromise =
+      paymentStatusResolutionPromise =
         null;
     }
   }
 
-  function hasConfirmedPayment() {
-    const paymentStatus =
-      normalisePaymentStatus(
-        controllerState.payment
-          ? controllerState
-              .payment.status
-          : (
-              controllerState
-                .registration
-                ? controllerState
-                    .registration
-                    .paymentStatus
-                : ""
-            )
-      );
+  /* ==========================================================
+     PAYMENT STATE
+  ========================================================== */
 
-    return (
-      paymentStatus ===
-      "CONFIRMED"
+  function hasResolvedPayment() {
+    return Boolean(
+      controllerState.payment &&
+      (
+        isNonEmptyString(
+          controllerState
+            .payment
+            .paymentId
+        ) ||
+        isNonEmptyString(
+          controllerState
+            .payment
+            .paymentUrl
+        ) ||
+        isNonEmptyString(
+          controllerState
+            .payment
+            .status
+        )
+      )
     );
   }
 
   function getResolvedPayment() {
     return controllerState.payment;
+  }
+
+  function hasConfirmedPayment() {
+    return Boolean(
+      hasResolvedPayment() &&
+      normalisePaymentStatus(
+        controllerState
+          .payment
+          .status
+      ) ===
+        "CONFIRMED"
+    );
+  }
+
+  /* ==========================================================
+     ENROLMENT SERVICE ACCESS
+  ========================================================== */
+
+  function getRequiredEnrolmentService() {
+    const dependencies =
+      assertRequiredDependencies({
+        requireEnrolmentService:
+          true
+      });
+
+    if (
+      !dependencies
+        .enrolmentServiceAvailable ||
+      !dependencies.enrolmentService
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .DEPENDENCY_UNAVAILABLE,
+
+        "EnrolmentService is unavailable."
+      );
+    }
+
+    return dependencies
+      .enrolmentService;
   }
 
   /* ==========================================================
@@ -5384,15 +9165,11 @@ async function createRegistration(
     options
   ) {
     const safeOptions =
-      isObject(options)
+      isObject(
+        options
+      )
         ? options
         : {};
-
-    const learner =
-      validateLearnerIdentity(
-        safeOptions.learner ||
-        controllerState.learner
-      );
 
     const registration =
       validateRegistrationForPayment(
@@ -5407,49 +9184,59 @@ async function createRegistration(
       null;
 
     if (
-      !hasConfirmedPayment() &&
+      !isObject(
+        payment
+      ) ||
       normalisePaymentStatus(
-        isObject(payment)
-          ? payment.status
-          : registration.paymentStatus
-      ) !== "CONFIRMED"
+        payment.status
+      ) !==
+        "CONFIRMED"
     ) {
       throw createControllerError(
         ERROR_CODE
           .ENROLMENT_RESOLUTION_FAILED,
 
-        "Confirmed payment is required before Bridge Programme enrolment can be resolved.",
+        "Confirmed payment is required before resolving Bridge Programme enrolment.",
 
         {
           registrationId:
             registration
               .registrationId,
 
-          paymentStatus:
-            isObject(payment)
-              ? payment.status
-              : registration
-                  .paymentStatus
+          payment:
+            payment ||
+            null
         }
       );
     }
 
     return freezeObject({
       learnerUid:
-        learner.learnerUid,
+        registration
+          .learnerUid,
 
       learnerEmail:
-        learner.email || "",
+        registration
+          .learnerEmail,
 
       registrationId:
-        registration.registrationId,
+        registration
+          .registrationId,
 
       paymentId:
-        isObject(payment)
-          ? normaliseString(
-              payment.paymentId
-            )
-          : "",
+        normaliseString(
+          payment.paymentId
+        ),
+
+      providerOrderId:
+        normaliseString(
+          payment.providerOrderId
+        ),
+
+      providerPaymentId:
+        normaliseString(
+          payment.providerPaymentId
+        ),
 
       sourceProgrammeCode:
         registration
@@ -5459,11 +9246,41 @@ async function createRegistration(
         registration
           .targetProgrammeCode,
 
+      credentialId:
+        registration
+          .credentialId,
+
+      relationshipCode:
+        registration
+          .relationshipCode,
+
+      relationshipType:
+        registration
+          .relationshipType,
+
       offerId:
         registration.offerId,
 
       offerCode:
-        registration.offerCode
+        registration.offerCode,
+
+      currency:
+        registration.currency,
+
+      totalAmount:
+        registration
+          .totalAmount,
+
+      cohortId:
+        normaliseString(
+          safeOptions.cohortId
+        ),
+
+      source:
+        normaliseString(
+          safeOptions.source
+        ) ||
+        "STUDENT_PORTAL"
     });
   }
 
@@ -5476,15 +9293,28 @@ async function createRegistration(
     input
   ) {
     const result =
-      isObject(rawResult)
+      isObject(
+        rawResult
+      )
         ? rawResult
         : {};
 
+    const governedInput =
+      isObject(
+        input
+      )
+        ? input
+        : {};
+
     const nestedEnrolment =
-      isObject(result.enrolment)
+      isObject(
+        result.enrolment
+      )
         ? result.enrolment
         : (
-            isObject(result.enrollment)
+            isObject(
+              result.enrollment
+            )
               ? result.enrollment
               : {}
           );
@@ -5492,81 +9322,43 @@ async function createRegistration(
     const enrolmentData =
       Object.keys(
         nestedEnrolment
-      ).length > 0
+      ).length >
+        0
         ? nestedEnrolment
         : result;
 
-    const enrolmentId =
-      normaliseString(
-        enrolmentData.enrolmentId ||
-        enrolmentData.enrollmentId ||
-        enrolmentData.id ||
-        result.enrolmentId ||
-        result.enrollmentId ||
-        result.id
-      );
-
-    const status =
-      normaliseEnrolmentStatus(
-        enrolmentData.status ||
-        enrolmentData
-          .enrolmentStatus ||
-        enrolmentData
-          .enrollmentStatus ||
-        result.status ||
-        result.enrolmentStatus ||
-        result.enrollmentStatus
-      );
-
-    const explicitlyExists =
-      enrolmentData.exists ===
-        true ||
-      result.exists === true ||
-      enrolmentData
-        .enrolmentExists === true ||
-      result.enrolmentExists ===
-        true ||
-      enrolmentData
-        .enrollmentExists === true ||
-      result.enrollmentExists ===
-        true;
-
-    const explicitlyMissing =
-      enrolmentData.exists ===
-        false ||
-      result.exists === false ||
-      enrolmentData
-        .enrolmentExists === false ||
-      result.enrolmentExists ===
-        false ||
-      enrolmentData
-        .enrollmentExists === false ||
-      result.enrollmentExists ===
-        false;
-
-    const enrolmentExists =
-      explicitlyMissing
-        ? false
-        : (
-            explicitlyExists ||
-            isNonEmptyString(
-              enrolmentId
-            ) ||
-            status === "ENROLLED"
-          );
-
     return freezeObject({
-      enrolmentExists,
+      enrolmentId:
+        normaliseString(
+          enrolmentData
+            .enrolmentId ||
+          enrolmentData
+            .enrollmentId ||
+          enrolmentData.id ||
+          result.enrolmentId ||
+          result.enrollmentId ||
+          result.id
+        ),
 
-      enrolmentId,
-
-      status,
+      status:
+        normaliseEnrolmentStatus(
+          enrolmentData.status ||
+          enrolmentData
+            .enrolmentStatus ||
+          enrolmentData
+            .enrollmentStatus ||
+          result.status ||
+          result.enrolmentStatus ||
+          result.enrollmentStatus
+        ),
 
       learnerUid:
         normaliseString(
-          enrolmentData.learnerUid ||
+          enrolmentData
+            .learnerUid ||
           result.learnerUid ||
-          input.learnerUid
+          governedInput
+            .learnerUid
         ),
 
       registrationId:
@@ -5574,7 +9366,16 @@ async function createRegistration(
           enrolmentData
             .registrationId ||
           result.registrationId ||
-          input.registrationId
+          governedInput
+            .registrationId
+        ),
+
+      paymentId:
+        normaliseString(
+          enrolmentData
+            .paymentId ||
+          result.paymentId ||
+          governedInput.paymentId
         ),
 
       sourceProgrammeCode:
@@ -5583,7 +9384,7 @@ async function createRegistration(
             .sourceProgrammeCode ||
           result
             .sourceProgrammeCode ||
-          input
+          governedInput
             .sourceProgrammeCode
         ),
 
@@ -5593,14 +9394,15 @@ async function createRegistration(
             .targetProgrammeCode ||
           result
             .targetProgrammeCode ||
-          input
+          governedInput
             .targetProgrammeCode
         ),
 
       cohortId:
         normaliseString(
           enrolmentData.cohortId ||
-          result.cohortId
+          result.cohortId ||
+          governedInput.cohortId
         ),
 
       enrolledAt:
@@ -5628,191 +9430,212 @@ async function createRegistration(
   }
 
   /* ==========================================================
-   ENROLMENT RESOLUTION
-========================================================== */
+     ENROLMENT RESOLUTION
+  ========================================================== */
 
-async function resolveEnrolment(
-  options
-) {
-  const safeOptions =
-    isObject(options)
-      ? options
-      : {};
-
-  if (
-    hasResolvedEnrolment() &&
-    safeOptions.force !== true
+  async function resolveEnrolment(
+    options
   ) {
-    return controllerState.enrolment;
-  }
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
 
-  if (enrolmentResolutionPromise) {
-    return enrolmentResolutionPromise;
-  }
+    if (
+      hasResolvedEnrolment() &&
+      safeOptions.force !==
+        true
+    ) {
+      return controllerState
+        .enrolment;
+    }
 
-  enrolmentResolutionPromise =
-    (async function performEnrolmentResolution() {
-      if (!hasConfirmedPayment()) {
-        await resolvePaymentStatus({
-          ...safeOptions
-        });
-      }
+    if (
+      enrolmentResolutionPromise
+    ) {
+      return enrolmentResolutionPromise;
+    }
 
-      if (!hasConfirmedPayment()) {
-        return null;
-      }
+    enrolmentResolutionPromise =
+      (
+        async function performEnrolmentResolution() {
+          if (
+            !hasConfirmedPayment()
+          ) {
+            await resolvePaymentStatus({
+              ...safeOptions
+            });
+          }
 
-      setState({
-        status:
-          CONTROLLER_STATUS
-            .ENROLMENT_PENDING,
+          if (
+            !hasConfirmedPayment()
+          ) {
+            return null;
+          }
 
-        busy:
-          true,
-
-        error:
-          null
-      });
-
-      try {
-        const enrolmentService =
-          getRequiredEnrolmentService();
-
-        const input =
-          buildEnrolmentInput(
-            safeOptions
-          );
-
-        const response =
-          await invokeServiceMethod(
-            enrolmentService,
-
-            [
-              "resolveBridgeEnrolment",
-              "resolveBridgeEnrollment",
-              "getBridgeEnrolment",
-              "getBridgeEnrollment",
-              "resolveEnrolment",
-              "resolveEnrollment",
-              "getEnrolment",
-              "getEnrollment"
-            ],
-
-            input,
-
-            ERROR_CODE
-              .ENROLMENT_RESOLUTION_FAILED,
-
-            "Unable to resolve the Bridge Programme enrolment."
-          );
-
-        const enrolment =
-          normaliseEnrolmentResult(
-            response.result,
-            input
-          );
-
-        const enrolled =
-          enrolment.status ===
-            "ENROLLED";
-
-        const blocked =
-          enrolment.status ===
-            "FAILED" ||
-          enrolment.status ===
-            "BLOCKED";
-
-        const nextStatus =
-          enrolled
-            ? CONTROLLER_STATUS.ENROLLED
-            : (
-                blocked
-                  ? CONTROLLER_STATUS
-                      .BLOCKED
-                  : CONTROLLER_STATUS
-                      .ENROLMENT_PENDING
-              );
-
-        const registration =
-          controllerState.registration;
-
-        const nextRegistration =
-          registration
-            ? freezeObject({
-                ...registration,
-
-                enrolmentStatus:
-                  enrolment.status,
-
-                enrolment,
-
-                status:
-                  enrolled
-                    ? "ENROLLED"
-                    : registration.status,
-
-                updatedAt:
-                  nowIsoString()
-              })
-            : null;
-
-        const nextState =
           setState({
             status:
-              nextStatus,
+              CONTROLLER_STATUS
+                .ENROLMENT_PENDING,
 
             busy:
-              false,
-
-            registration:
-              nextRegistration,
-
-            enrolment,
+              true,
 
             error:
               null
           });
 
-        dispatchControllerEvent(
-          CONTROLLER_EVENT
-            .ENROLMENT_RESOLVED,
+          try {
+            const enrolmentService =
+              getRequiredEnrolmentService();
 
-          {
-            enrolment,
+            const input =
+              buildEnrolmentInput(
+                safeOptions
+              );
 
-            enrolled,
+            const response =
+              await invokeServiceMethod(
+                enrolmentService,
 
-            registration:
-              nextRegistration,
+                [
+                  "resolveBridgeEnrolment",
+                  "resolveBridgeEnrollment",
+                  "getBridgeEnrolment",
+                  "getBridgeEnrollment",
+                  "resolveEnrolment",
+                  "resolveEnrollment",
+                  "getEnrolment",
+                  "getEnrollment"
+                ],
 
-            serviceMethod:
-              response.methodName,
+                input,
 
-            state:
-              nextState
+                ERROR_CODE
+                  .ENROLMENT_RESOLUTION_FAILED,
+
+                "Unable to resolve the Bridge Programme enrolment."
+              );
+
+            const enrolment =
+              normaliseEnrolmentResult(
+                response.result,
+                input
+              );
+
+            const enrolled =
+              enrolment.status ===
+                "ENROLLED";
+
+            const blocked =
+              enrolment.status ===
+                "FAILED" ||
+              enrolment.status ===
+                "BLOCKED" ||
+              enrolment.status ===
+                "CANCELLED";
+
+            const nextStatus =
+              enrolled
+                ? CONTROLLER_STATUS
+                    .ENROLLED
+                : (
+                    blocked
+                      ? CONTROLLER_STATUS
+                          .BLOCKED
+                      : CONTROLLER_STATUS
+                          .ENROLMENT_PENDING
+                  );
+
+            const registration =
+              controllerState
+                .registration;
+
+            const nextRegistration =
+              registration
+                ? freezeObject({
+                    ...registration,
+
+                    enrolmentStatus:
+                      enrolment.status,
+
+                    enrolment,
+
+                    status:
+                      enrolled
+                        ? "ENROLLED"
+                        : registration
+                            .status,
+
+                    updatedAt:
+                      nowIsoString()
+                  })
+                : null;
+
+            const nextState =
+              setState({
+                status:
+                  nextStatus,
+
+                busy:
+                  false,
+
+                registration:
+                  nextRegistration,
+
+                enrolment,
+
+                error:
+                  null
+              });
+
+            dispatchControllerEvent(
+              CONTROLLER_EVENT
+                .ENROLMENT_RESOLVED,
+
+              {
+                enrolment,
+
+                enrolled,
+
+                registration:
+                  nextRegistration,
+
+                serviceMethod:
+                  response.methodName,
+
+                state:
+                  nextState
+              }
+            );
+
+            return enrolment;
+          } catch (error) {
+            throw handleControllerError(
+              error,
+
+              ERROR_CODE
+                .ENROLMENT_RESOLUTION_FAILED,
+
+              "Unable to resolve the Bridge Programme enrolment."
+            );
           }
-        );
+        }
+      )();
 
-        return enrolment;
-      } catch (error) {
-        throw handleControllerError(
-          error,
-
-          ERROR_CODE
-            .ENROLMENT_RESOLUTION_FAILED,
-
-          "Unable to resolve the Bridge Programme enrolment."
-        );
-      }
-    })();
-
-  try {
-    return await enrolmentResolutionPromise;
-  } finally {
-    enrolmentResolutionPromise =
-      null;
+    try {
+      return await enrolmentResolutionPromise;
+    } finally {
+      enrolmentResolutionPromise =
+        null;
+    }
   }
-}
+
+  /* ==========================================================
+     ENROLMENT STATE
+  ========================================================== */
 
   function hasResolvedEnrolment() {
     return Boolean(
@@ -5823,137 +9646,34 @@ async function resolveEnrolment(
             .enrolment
             .enrolmentId
         ) ||
-        controllerState
-          .enrolment.status ===
-          "ENROLLED"
-      )
-    );
-  }
-
-  function isLearnerEnrolled() {
-    return Boolean(
-      controllerState.status ===
-        CONTROLLER_STATUS.ENROLLED ||
-      (
-        controllerState.enrolment &&
-        normaliseEnrolmentStatus(
+        isNonEmptyString(
           controllerState
-            .enrolment.status
-        ) === "ENROLLED"
+            .enrolment
+            .status
+        )
       )
     );
   }
 
   function getResolvedEnrolment() {
-    return controllerState.enrolment;
+    return controllerState
+      .enrolment;
+  }
+
+  function isLearnerEnrolled() {
+    return Boolean(
+      hasResolvedEnrolment() &&
+      normaliseEnrolmentStatus(
+        controllerState
+          .enrolment
+          .status
+      ) ===
+        "ENROLLED"
+    );
   }
 
   /* ==========================================================
-     COMPLETE REGISTRATION JOURNEY
-  ========================================================== */
-
-  async function resolveRegistrationJourney(
-    options
-  ) {
-    const safeOptions =
-      isObject(options)
-        ? options
-        : {};
-
-    const registrationResult =
-      await resolveOrCreateRegistration({
-        ...safeOptions
-      });
-
-    if (
-      !registrationResult ||
-      !registrationResult
-        .registration
-    ) {
-      return freezeObject({
-        registration:
-          null,
-
-        payment:
-          null,
-
-        enrolment:
-          null,
-
-        state:
-          controllerState
-      });
-    }
-
-    if (
-      controllerState.status ===
-        CONTROLLER_STATUS.ENROLLED
-    ) {
-      return freezeObject({
-        registration:
-          controllerState
-            .registration,
-
-        payment:
-          controllerState.payment,
-
-        enrolment:
-          controllerState.enrolment,
-
-        state:
-          controllerState
-      });
-    }
-
-    if (
-      controllerState.status ===
-        CONTROLLER_STATUS
-          .PAYMENT_CONFIRMED ||
-      hasConfirmedPayment()
-    ) {
-      const enrolment =
-        await resolveEnrolment({
-          ...safeOptions
-        });
-
-      return freezeObject({
-        registration:
-          controllerState
-            .registration,
-
-        payment:
-          controllerState.payment,
-
-        enrolment,
-
-        state:
-          controllerState
-      });
-    }
-
-    return freezeObject({
-      registration:
-        controllerState
-          .registration,
-
-      payment:
-        controllerState.payment,
-
-      enrolment:
-        controllerState.enrolment,
-
-      paymentRequired:
-        controllerState.status ===
-          CONTROLLER_STATUS
-            .PAYMENT_REQUIRED,
-
-      state:
-        controllerState
-    });
-  }
-
-  /* ==========================================================
-     BLOCK 5 READINESS
+     PAYMENT AND ENROLMENT READINESS
   ========================================================== */
 
   function getPaymentAndEnrolmentReadiness() {
@@ -5981,26 +9701,14 @@ async function resolveEnrolment(
           .enrolmentServiceAvailable,
 
       paymentResolved:
-        Boolean(
-          controllerState.payment
-        ),
+        hasResolvedPayment(),
 
       paymentStatus:
-        controllerState.payment
+        hasResolvedPayment()
           ? controllerState
-              .payment.status
-          : registrationReadiness
-              .paymentStatus,
-
-      paymentRequired:
-        controllerState.status ===
-          CONTROLLER_STATUS
-            .PAYMENT_REQUIRED,
-
-      paymentInProgress:
-        controllerState.status ===
-          CONTROLLER_STATUS
-            .PAYMENT_IN_PROGRESS,
+              .payment
+              .status
+          : null,
 
       paymentConfirmed:
         hasConfirmedPayment(),
@@ -6009,53 +9717,734 @@ async function resolveEnrolment(
         hasResolvedEnrolment(),
 
       enrolmentStatus:
-        controllerState.enrolment
+        hasResolvedEnrolment()
           ? controllerState
-              .enrolment.status
-          : registrationReadiness
-              .enrolmentStatus,
+              .enrolment
+              .status
+          : null,
 
       enrolled:
         isLearnerEnrolled(),
 
-      readyToInitiatePayment:
+      readyForPayment:
         registrationReadiness
           .readyForPayment &&
         readiness
           .paymentServiceAvailable,
 
-      readyToResolveEnrolment:
+      readyForPaymentStatusResolution:
+        registrationReadiness
+          .registrationResolved &&
+        readiness
+          .paymentServiceAvailable,
+
+      readyForEnrolmentResolution:
+        registrationReadiness
+          .registrationResolved &&
         hasConfirmedPayment() &&
         readiness
-          .enrolmentServiceAvailable
+          .enrolmentServiceAvailable &&
+        !isLearnerEnrolled()
     });
   }
 
   /* ==========================================================
-     END OF BLOCK 5 OF 6
+     END OF BLOCK 9 OF 10
 
-     Do not add the closing IIFE yet.
-
-     Block 6 must continue immediately below this section and
-     will add diagnostics, the public controller API, global
-     registration, and the final IIFE closing statement.
+     Do not close the IIFE here.
+     Block 10 must continue immediately below this section.
   ========================================================== */
 
     /* ==========================================================
-     BLOCK 6 OF 6
-     DIAGNOSTICS, PUBLIC API, AND GLOBAL REGISTRATION
+     BLOCK 10 OF 10
+     COMPLETE JOURNEY, DIAGNOSTICS AND PUBLIC API
   ========================================================== */
+
+  /* ==========================================================
+     COMPLETE PAGE JOURNEY INITIALISATION
+  ========================================================== */
+
+  async function initialiseRegistrationJourney(
+    options
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    if (
+      registrationJourneyInitialisationPromise
+    ) {
+      return registrationJourneyInitialisationPromise;
+    }
+
+    registrationJourneyInitialisationPromise =
+      (
+        async function performRegistrationJourneyInitialisation() {
+          try {
+            /*
+             * Page initialisation is read-only regarding new
+             * registration creation.
+             *
+             * It may:
+             * - initialise authentication and programme context;
+             * - resolve eligibility and the commercial offer;
+             * - restore an existing registration;
+             * - resolve payment or enrolment state when requested.
+             *
+             * It must never create a new registration merely
+             * because the learner opened the page.
+             */
+
+            const pageContext =
+              await initialisePageContext({
+                ...safeOptions
+              });
+
+            const eligibilityAndOffer =
+              await resolveEligibilityAndOffer({
+                ...safeOptions,
+
+                forceEligibility:
+                  safeOptions
+                    .forceEligibility ===
+                  true,
+
+                forceOffer:
+                  safeOptions
+                    .forceOffer ===
+                  true
+              });
+
+            if (
+              !eligibilityAndOffer ||
+              eligibilityAndOffer
+                .eligible !==
+              true
+            ) {
+              return freezeObject({
+                pageContext,
+
+                eligible:
+                  false,
+
+                offerAvailable:
+                  false,
+
+                registrationExists:
+                  false,
+
+                created:
+                  false,
+
+                restored:
+                  false,
+
+                existing:
+                  false,
+
+                idempotent:
+                  false,
+
+                creationRequired:
+                  false,
+
+                acknowledgementRequired:
+                  false,
+
+                eligibility:
+                  controllerState
+                    .eligibility,
+
+                offer:
+                  null,
+
+                registration:
+                  null,
+
+                payment:
+                  null,
+
+                enrolment:
+                  null,
+
+                status:
+                  controllerState.status,
+
+                state:
+                  controllerState
+              });
+            }
+
+            if (
+              eligibilityAndOffer
+                .offerAvailable !==
+              true
+            ) {
+              return freezeObject({
+                pageContext,
+
+                eligible:
+                  true,
+
+                offerAvailable:
+                  false,
+
+                registrationExists:
+                  false,
+
+                created:
+                  false,
+
+                restored:
+                  false,
+
+                existing:
+                  false,
+
+                idempotent:
+                  false,
+
+                creationRequired:
+                  false,
+
+                acknowledgementRequired:
+                  false,
+
+                eligibility:
+                  controllerState
+                    .eligibility,
+
+                offer:
+                  controllerState
+                    .offer,
+
+                registration:
+                  null,
+
+                payment:
+                  null,
+
+                enrolment:
+                  null,
+
+                status:
+                  controllerState.status,
+
+                state:
+                  controllerState
+              });
+            }
+
+            const registrationResult =
+              await resolveOrCreateRegistration({
+                ...safeOptions,
+
+                /*
+                 * This is the locked production-safety rule:
+                 * page loading never creates a registration.
+                 */
+
+                createIfMissing:
+                  false,
+
+                forceRegistrationResolution:
+                  safeOptions
+                    .forceRegistrationResolution ===
+                  true
+              });
+
+            let registration =
+              registrationResult &&
+              registrationResult
+                .registration
+                ? registrationResult
+                    .registration
+                : controllerState
+                    .registration;
+
+            /*
+             * Resolve trusted payment status only when explicitly
+             * requested and an existing registration is available.
+             */
+
+            if (
+              registration &&
+              safeOptions
+                .resolvePaymentStatus ===
+              true
+            ) {
+              await resolvePaymentStatus({
+                ...safeOptions,
+
+                registration
+              });
+
+              registration =
+                controllerState
+                  .registration;
+            }
+
+            /*
+             * Enrolment resolution is permitted only after trusted
+             * payment confirmation and only when explicitly asked.
+             */
+
+            if (
+              (
+                controllerState.status ===
+                  CONTROLLER_STATUS
+                    .PAYMENT_CONFIRMED ||
+                hasConfirmedPayment()
+              ) &&
+              safeOptions
+                .resolveEnrolmentAfterPayment ===
+              true
+            ) {
+              await resolveEnrolment({
+                ...safeOptions,
+
+                registration:
+                  controllerState
+                    .registration,
+
+                payment:
+                  controllerState
+                    .payment
+              });
+
+              registration =
+                controllerState
+                  .registration;
+            }
+
+            const registrationExists =
+              Boolean(
+                registration &&
+                registration
+                  .registrationExists ===
+                  true &&
+                isNonEmptyString(
+                  registration
+                    .registrationId
+                )
+              );
+
+            return freezeObject({
+              pageContext,
+
+              eligible:
+                true,
+
+              offerAvailable:
+                true,
+
+              registrationExists,
+
+              created:
+                false,
+
+              restored:
+                Boolean(
+                  registrationResult &&
+                  registrationResult
+                    .restored ===
+                    true
+                ),
+
+              existing:
+                Boolean(
+                  registrationResult &&
+                  registrationResult
+                    .existing ===
+                    true
+                ),
+
+              idempotent:
+                Boolean(
+                  registrationResult &&
+                  registrationResult
+                    .idempotent ===
+                    true
+                ),
+
+              creationRequired:
+                Boolean(
+                  registrationResult &&
+                  registrationResult
+                    .creationRequired ===
+                    true
+                ),
+
+              acknowledgementRequired:
+                Boolean(
+                  registrationResult &&
+                  registrationResult
+                    .acknowledgementRequired ===
+                    true
+                ),
+
+              eligibility:
+                controllerState
+                  .eligibility,
+
+              offer:
+                controllerState.offer,
+
+              registration,
+
+              payment:
+                controllerState.payment,
+
+              enrolment:
+                controllerState.enrolment,
+
+              status:
+                controllerState.status,
+
+              state:
+                controllerState
+            });
+          } catch (error) {
+            if (
+              error &&
+              error.name ===
+                "BridgeRegistrationControllerError"
+            ) {
+              throw error;
+            }
+
+            throw handleControllerError(
+              error,
+
+              ERROR_CODE
+                .INITIALISATION_FAILED,
+
+              "Unable to initialise the complete Bridge Programme registration journey."
+            );
+          }
+        }
+      )();
+
+    try {
+      return await registrationJourneyInitialisationPromise;
+    } finally {
+      registrationJourneyInitialisationPromise =
+        null;
+    }
+  }
+
+  /* ==========================================================
+     COMPLETE REGISTRATION JOURNEY
+  ========================================================== */
+
+  async function resolveRegistrationJourney(
+    options
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    /*
+     * Without an explicit creation request this behaves as the
+     * safe page-initialisation journey.
+     */
+
+    if (
+      safeOptions.createIfMissing !==
+      true
+    ) {
+      return initialiseRegistrationJourney({
+        ...safeOptions
+      });
+    }
+
+    /*
+     * An explicit creation journey must include learner
+     * acknowledgement. buildRegistrationCreationInput() performs
+     * the final governed validation as well.
+     */
+
+    if (
+      safeOptions
+        .acknowledgementAccepted !==
+      true
+    ) {
+      throw createControllerError(
+        ERROR_CODE
+          .REGISTRATION_CREATION_FAILED,
+
+        "The learner must accept the Bridge Programme acknowledgement before registration.",
+
+        {
+          field:
+            "acknowledgementAccepted",
+
+          receivedValue:
+            safeOptions
+              .acknowledgementAccepted
+        }
+      );
+    }
+
+    if (
+      !getPageContextReadiness()
+        .ready
+    ) {
+      await initialisePageContext({
+        ...safeOptions
+      });
+    }
+
+    const registrationResult =
+      await resolveOrCreateRegistration({
+        ...safeOptions,
+
+        createIfMissing:
+          true,
+
+        acknowledgementAccepted:
+          true
+      });
+
+    let payment =
+      controllerState.payment;
+
+    let enrolment =
+      controllerState.enrolment;
+
+    if (
+      registrationResult &&
+      registrationResult
+        .registration &&
+      safeOptions
+        .initiatePayment ===
+      true
+    ) {
+      payment =
+        await initiatePayment({
+          ...safeOptions,
+
+          registration:
+            registrationResult
+              .registration
+        });
+    }
+
+    if (
+      safeOptions
+        .resolvePaymentStatus ===
+        true &&
+      registrationResult &&
+      registrationResult
+        .registration
+    ) {
+      payment =
+        await resolvePaymentStatus({
+          ...safeOptions,
+
+          registration:
+            controllerState
+              .registration,
+
+          payment:
+            payment ||
+            controllerState
+              .payment
+        });
+    }
+
+    if (
+      (
+        hasConfirmedPayment() ||
+        controllerState.status ===
+          CONTROLLER_STATUS
+            .PAYMENT_CONFIRMED
+      ) &&
+      safeOptions
+        .resolveEnrolmentAfterPayment ===
+      true
+    ) {
+      enrolment =
+        await resolveEnrolment({
+          ...safeOptions,
+
+          registration:
+            controllerState
+              .registration,
+
+          payment:
+            controllerState
+              .payment
+        });
+    }
+
+    return freezeObject({
+      eligible:
+        isLearnerEligible(),
+
+      offerAvailable:
+        isOfferAvailable(),
+
+      registrationExists:
+        hasResolvedRegistration(),
+
+      created:
+        Boolean(
+          registrationResult &&
+          registrationResult
+            .created ===
+            true
+        ),
+
+      restored:
+        Boolean(
+          registrationResult &&
+          registrationResult
+            .restored ===
+            true
+        ),
+
+      existing:
+        Boolean(
+          registrationResult &&
+          registrationResult
+            .existing ===
+            true
+        ),
+
+      idempotent:
+        Boolean(
+          registrationResult &&
+          registrationResult
+            .idempotent ===
+            true
+        ),
+
+      creationRequired:
+        Boolean(
+          registrationResult &&
+          registrationResult
+            .creationRequired ===
+            true
+        ),
+
+      acknowledgementRequired:
+        Boolean(
+          registrationResult &&
+          registrationResult
+            .acknowledgementRequired ===
+            true
+        ),
+
+      eligibility:
+        controllerState
+          .eligibility,
+
+      offer:
+        controllerState.offer,
+
+      registration:
+        controllerState
+          .registration,
+
+      payment:
+        payment ||
+        controllerState.payment,
+
+      enrolment:
+        enrolment ||
+        controllerState
+          .enrolment,
+
+      status:
+        controllerState.status,
+
+      state:
+        controllerState
+    });
+  }
+
+  /* ==========================================================
+     CONTROLLER STATE HELPERS
+  ========================================================== */
+
+  function isControllerInitialised() {
+    return controllerState
+      .initialised ===
+      true;
+  }
+
+  function isControllerBusy() {
+    return controllerState
+      .busy ===
+      true;
+  }
+
+  function getControllerStatus() {
+    return controllerState
+      .status;
+  }
+
+  function hasControllerError() {
+    return Boolean(
+      controllerState.error
+    );
+  }
+
+  function getControllerError() {
+    return controllerState
+      .error;
+  }
+
+  function isPaymentRequired() {
+    return controllerState.status ===
+      CONTROLLER_STATUS
+        .PAYMENT_REQUIRED;
+  }
+
+  function isPaymentInProgress() {
+    return controllerState.status ===
+      CONTROLLER_STATUS
+        .PAYMENT_IN_PROGRESS;
+  }
+
+  function isPaymentConfirmed() {
+    return Boolean(
+      controllerState.status ===
+        CONTROLLER_STATUS
+          .PAYMENT_CONFIRMED ||
+      hasConfirmedPayment()
+    );
+  }
+
+  function isRegistrationBlocked() {
+    return controllerState.status ===
+      CONTROLLER_STATUS
+        .BLOCKED;
+  }
 
   /* ==========================================================
      COMPLETE CONTROLLER READINESS
   ========================================================== */
 
   function getControllerReadiness() {
-    const dependencyReadiness =
+    const foundationReadiness =
       getReadiness();
+
+    const learnerIdentityReadiness =
+      getLearnerIdentityReadiness();
 
     const pageContextReadiness =
       getPageContextReadiness();
+
+    const eligibilityReadiness =
+      getEligibilityReadiness();
 
     const eligibilityAndOfferReadiness =
       getEligibilityAndOfferReadiness();
@@ -6067,109 +10456,68 @@ async function resolveEnrolment(
       getPaymentAndEnrolmentReadiness();
 
     return freezeObject({
-      controllerName:
-        CONTROLLER_NAME,
+      ready:
+        foundationReadiness.ready,
 
-      controllerVersion:
-        CONTROLLER_VERSION,
+      foundation:
+        foundationReadiness,
 
-      controllerInitialised:
-        controllerState.initialised ===
-        true,
+      learnerIdentity:
+        learnerIdentityReadiness,
 
-      controllerBusy:
-        controllerState.busy ===
-        true,
+      pageContext:
+        pageContextReadiness,
 
-      controllerStatus:
-        controllerState.status,
+      eligibility:
+        eligibilityReadiness,
 
-      foundationReady:
-        dependencyReadiness
-          .foundationReady,
+      eligibilityAndOffer:
+        eligibilityAndOfferReadiness,
 
-      programmeResolutionReady:
-        dependencyReadiness
-          .programmeResolutionReady,
+      registration:
+        registrationReadiness,
 
-      paymentResolutionReady:
-        dependencyReadiness
-          .paymentResolutionReady,
+      paymentAndEnrolment:
+        paymentAndEnrolmentReadiness,
 
-      enrolmentResolutionReady:
-        dependencyReadiness
-          .enrolmentResolutionReady,
+      readyForPageContext:
+        foundationReadiness.ready &&
+        foundationReadiness
+          .authAvailable,
 
-      pageContextReady:
-        pageContextReadiness.ready,
-
-      learnerResolved:
-        pageContextReadiness
-          .learnerResolved,
-
-      programmeContextResolved:
-        pageContextReadiness
-          .programmeContextResolved,
-
-      eligibilityResolved:
-        eligibilityAndOfferReadiness
-          .eligibilityResolved,
-
-      learnerEligible:
-        eligibilityAndOfferReadiness
-          .learnerEligible,
-
-      offerResolved:
-        eligibilityAndOfferReadiness
-          .offerResolved,
-
-      offerAvailable:
-        eligibilityAndOfferReadiness
-          .offerAvailable,
-
-      registrationResolved:
-        registrationReadiness
-          .registrationResolved,
-
-      paymentRequired:
-        paymentAndEnrolmentReadiness
-          .paymentRequired,
-
-      paymentInProgress:
-        paymentAndEnrolmentReadiness
-          .paymentInProgress,
-
-      paymentConfirmed:
-        paymentAndEnrolmentReadiness
-          .paymentConfirmed,
-
-      enrolmentResolved:
-        paymentAndEnrolmentReadiness
-          .enrolmentResolved,
-
-      enrolled:
-        paymentAndEnrolmentReadiness
-          .enrolled,
+      readyForEligibility:
+        pageContextReadiness.ready &&
+        eligibilityReadiness
+          .requiredServicesAvailable,
 
       readyForRegistration:
         eligibilityAndOfferReadiness
           .readyForRegistration,
 
-      readyToInitiatePayment:
+      readyForPayment:
         paymentAndEnrolmentReadiness
-          .readyToInitiatePayment,
+          .readyForPayment,
 
-      readyToResolveEnrolment:
+      readyForPaymentStatusResolution:
         paymentAndEnrolmentReadiness
-          .readyToResolveEnrolment,
+          .readyForPaymentStatusResolution,
 
-      errorPresent:
-        Boolean(
-          controllerState.error
-        ),
+      readyForEnrolmentResolution:
+        paymentAndEnrolmentReadiness
+          .readyForEnrolmentResolution,
 
-      timestamp:
-        nowIsoString()
+      complete:
+        isLearnerEnrolled(),
+
+      status:
+        controllerState.status,
+
+      busy:
+        controllerState.busy ===
+        true,
+
+      error:
+        controllerState.error
     });
   }
 
@@ -6178,96 +10526,154 @@ async function resolveEnrolment(
   ========================================================== */
 
   function getDiagnostics() {
-    const readiness =
-      getReadiness();
-
-    const pageContextReadiness =
-      getPageContextReadiness();
-
-    const eligibilityAndOfferReadiness =
-      getEligibilityAndOfferReadiness();
-
-    const registrationReadiness =
-      getRegistrationReadiness();
-
-    const paymentAndEnrolmentReadiness =
-      getPaymentAndEnrolmentReadiness();
+    const dependencies =
+      resolveDependencies();
 
     return freezeObject({
-      controller:
-        freezeObject({
-          name:
-            CONTROLLER_NAME,
+      controllerName:
+        CONTROLLER_NAME,
 
-          version:
-            CONTROLLER_VERSION,
+      controllerVersion:
+        CONTROLLER_VERSION,
 
-          status:
-            controllerState.status,
+      timestamp:
+        nowIsoString(),
 
-          initialised:
-            controllerState
-              .initialised === true,
+      status:
+        controllerState.status,
 
-          busy:
-            controllerState
-              .busy === true,
+      initialised:
+        controllerState
+          .initialised ===
+        true,
 
-          initialisedAt:
-            controllerState
-              .initialisedAt,
+      busy:
+        controllerState.busy ===
+        true,
 
-          updatedAt:
-            controllerState
-              .updatedAt
-        }),
+      hasError:
+        Boolean(
+          controllerState.error
+        ),
+
+      error:
+        controllerState.error,
 
       dependencies:
         freezeObject({
           firebaseAvailable:
-            readiness
+            dependencies
               .firebaseAvailable,
 
           authAvailable:
-            readiness
+            dependencies
               .authAvailable,
 
           registrationServiceAvailable:
-            readiness
+            dependencies
               .registrationServiceAvailable,
 
           programServiceAvailable:
-            readiness
+            dependencies
               .programServiceAvailable,
 
+          eligibilityServiceAvailable:
+            dependencies
+              .eligibilityServiceAvailable,
+
+          bridgeProgramServiceAvailable:
+            dependencies
+              .bridgeProgramServiceAvailable,
+
           paymentServiceAvailable:
-            readiness
+            dependencies
               .paymentServiceAvailable,
 
           enrolmentServiceAvailable:
-            readiness
+            dependencies
               .enrolmentServiceAvailable
         }),
 
-      authentication:
+      operations:
         freezeObject({
-          authenticated:
-            readiness.authenticated,
+          identityResolutionInProgress:
+            Boolean(
+              identityResolutionPromise
+            ),
 
-          authenticatedLearnerUid:
-            readiness
-              .authenticatedLearnerUid,
+          eligibilityResolutionInProgress:
+            Boolean(
+              eligibilityResolutionPromise
+            ),
 
+          offerResolutionInProgress:
+            Boolean(
+              offerResolutionPromise
+            ),
+
+          registrationResolutionInProgress:
+            Boolean(
+              registrationResolutionPromise
+            ),
+
+          registrationCreationInProgress:
+            Boolean(
+              registrationCreationPromise
+            ),
+
+          paymentInitiationInProgress:
+            Boolean(
+              paymentInitiationPromise
+            ),
+
+          paymentStatusResolutionInProgress:
+            Boolean(
+              paymentStatusResolutionPromise
+            ),
+
+          enrolmentResolutionInProgress:
+            Boolean(
+              enrolmentResolutionPromise
+            ),
+
+          registrationJourneyInitialisationInProgress:
+            Boolean(
+              registrationJourneyInitialisationPromise
+            )
+        }),
+
+      identity:
+        freezeObject({
           learnerResolved:
-            pageContextReadiness
-              .learnerResolved
+            hasResolvedLearner(),
+
+          learnerUid:
+            hasResolvedLearner()
+              ? controllerState
+                  .learner
+                  .learnerUid
+              : null,
+
+          learnerEmail:
+            hasResolvedLearner()
+              ? controllerState
+                  .learner
+                  .email ||
+                null
+              : null,
+
+          emailVerified:
+            hasResolvedLearner() &&
+            controllerState
+              .learner
+              .emailVerified ===
+              true
         }),
 
       programmeContext:
         freezeObject({
           resolved:
-            pageContextReadiness
-              .programmeContextResolved,
+            hasProgrammeContext(),
 
           sourceProgrammeCode:
             controllerState
@@ -6278,357 +10684,43 @@ async function resolveEnrolment(
               .targetProgrammeCode
         }),
 
-      eligibility:
+      journey:
         freezeObject({
-          resolved:
-            eligibilityAndOfferReadiness
-              .eligibilityResolved,
+          eligibilityResolved:
+            hasResolvedEligibility(),
 
           learnerEligible:
-            eligibilityAndOfferReadiness
-              .learnerEligible,
+            isLearnerEligible(),
 
-          value:
-            controllerState
-              .eligibility
-        }),
+          offerResolved:
+            hasResolvedOffer(),
 
-      offer:
-        freezeObject({
-          resolved:
-            eligibilityAndOfferReadiness
-              .offerResolved,
+          offerAvailable:
+            isOfferAvailable(),
 
-          available:
-            eligibilityAndOfferReadiness
-              .offerAvailable,
+          registrationResolved:
+            hasResolvedRegistration(),
 
-          value:
-            controllerState.offer
-        }),
+          paymentResolved:
+            hasResolvedPayment(),
 
-      registration:
-        freezeObject({
-          resolved:
-            registrationReadiness
-              .registrationResolved,
+          paymentConfirmed:
+            hasConfirmedPayment(),
 
-          registrationId:
-            registrationReadiness
-              .registrationId,
-
-          registrationStatus:
-            registrationReadiness
-              .registrationStatus,
-
-          value:
-            controllerState
-              .registration
-        }),
-
-      payment:
-        freezeObject({
-          resolved:
-            paymentAndEnrolmentReadiness
-              .paymentResolved,
-
-          required:
-            paymentAndEnrolmentReadiness
-              .paymentRequired,
-
-          inProgress:
-            paymentAndEnrolmentReadiness
-              .paymentInProgress,
-
-          confirmed:
-            paymentAndEnrolmentReadiness
-              .paymentConfirmed,
-
-          status:
-            paymentAndEnrolmentReadiness
-              .paymentStatus,
-
-          value:
-            controllerState.payment
-        }),
-
-      enrolment:
-        freezeObject({
-          resolved:
-            paymentAndEnrolmentReadiness
-              .enrolmentResolved,
+          enrolmentResolved:
+            hasResolvedEnrolment(),
 
           enrolled:
-            paymentAndEnrolmentReadiness
-              .enrolled,
-
-          status:
-            paymentAndEnrolmentReadiness
-              .enrolmentStatus,
-
-          value:
-            controllerState
-              .enrolment
+            isLearnerEnrolled()
         }),
 
       readiness:
         getControllerReadiness(),
 
-      error:
-        controllerState.error,
-
       state:
-        controllerState,
-
-      timestamp:
-        nowIsoString()
+        controllerState
     });
   }
-
-  /* ==========================================================
-     STATE QUERY HELPERS
-  ========================================================== */
-
-  function isControllerInitialised() {
-    return (
-      controllerState.initialised ===
-      true
-    );
-  }
-
-  function isControllerBusy() {
-    return (
-      controllerState.busy === true
-    );
-  }
-
-  function getControllerStatus() {
-    return controllerState.status;
-  }
-
-  function hasControllerError() {
-    return Boolean(
-      controllerState.error
-    );
-  }
-
-  function getControllerError() {
-    return controllerState.error;
-  }
-
-  function isPaymentRequired() {
-    return (
-      controllerState.status ===
-      CONTROLLER_STATUS
-        .PAYMENT_REQUIRED
-    );
-  }
-
-  function isPaymentInProgress() {
-    return (
-      controllerState.status ===
-      CONTROLLER_STATUS
-        .PAYMENT_IN_PROGRESS
-    );
-  }
-
-  function isPaymentConfirmed() {
-    return hasConfirmedPayment();
-  }
-
-  function isRegistrationBlocked() {
-    return (
-      controllerState.status ===
-        CONTROLLER_STATUS.BLOCKED ||
-      controllerState.status ===
-        CONTROLLER_STATUS
-          .NOT_ELIGIBLE
-    );
-  }
-
-  /* ==========================================================
-   COMPLETE PAGE JOURNEY INITIALISATION
-========================================================== */
-
-async function initialiseRegistrationJourney(
-  options
-) {
-  const safeOptions =
-    isObject(options)
-      ? options
-      : {};
-
-  if (
-    registrationJourneyInitialisationPromise
-  ) {
-    return registrationJourneyInitialisationPromise;
-  }
-
-  registrationJourneyInitialisationPromise =
-    (async function performRegistrationJourneyInitialisation() {
-      try {
-        const pageContext =
-          await initialisePageContext({
-            ...safeOptions
-          });
-
-        const eligibilityAndOffer =
-          await resolveEligibilityAndOffer({
-            ...safeOptions,
-
-            forceEligibility:
-              safeOptions
-                .forceEligibility ===
-              true,
-
-            forceOffer:
-              safeOptions
-                .forceOffer ===
-              true
-          });
-
-        if (
-          !eligibilityAndOffer ||
-          eligibilityAndOffer
-            .eligible !== true
-        ) {
-          return freezeObject({
-            pageContext,
-
-            eligibility:
-              controllerState
-                .eligibility,
-
-            offer:
-              null,
-
-            registration:
-              null,
-
-            payment:
-              null,
-
-            enrolment:
-              null,
-
-            status:
-              controllerState.status,
-
-            state:
-              controllerState
-          });
-        }
-
-        if (
-          eligibilityAndOffer
-            .offerAvailable !== true
-        ) {
-          return freezeObject({
-            pageContext,
-
-            eligibility:
-              controllerState
-                .eligibility,
-
-            offer:
-              controllerState.offer,
-
-            registration:
-              null,
-
-            payment:
-              null,
-
-            enrolment:
-              null,
-
-            status:
-              controllerState.status,
-
-            state:
-              controllerState
-          });
-        }
-
-        const registrationResult =
-          await resolveOrCreateRegistration({
-            ...safeOptions,
-
-            forceRegistrationResolution:
-              safeOptions
-                .forceRegistrationResolution ===
-              true
-          });
-
-        if (
-          controllerState.status ===
-            CONTROLLER_STATUS
-              .PAYMENT_CONFIRMED &&
-          safeOptions
-            .resolveEnrolmentAfterPayment ===
-            true
-        ) {
-          await resolveEnrolment({
-            ...safeOptions
-          });
-        }
-
-        return freezeObject({
-          pageContext,
-
-          eligibility:
-            controllerState
-              .eligibility,
-
-          offer:
-            controllerState.offer,
-
-          registration:
-            registrationResult
-              ? registrationResult
-                  .registration
-              : controllerState
-                  .registration,
-
-          payment:
-            controllerState.payment,
-
-          enrolment:
-            controllerState.enrolment,
-
-          status:
-            controllerState.status,
-
-          state:
-            controllerState
-        });
-      } catch (error) {
-        if (
-          error &&
-          error.name ===
-            "BridgeRegistrationControllerError"
-        ) {
-          throw error;
-        }
-
-        throw handleControllerError(
-          error,
-
-          ERROR_CODE
-            .INITIALISATION_FAILED,
-
-          "Unable to initialise the complete Bridge Programme registration journey."
-        );
-      }
-    })();
-
-  try {
-    return await registrationJourneyInitialisationPromise;
-  } finally {
-    registrationJourneyInitialisationPromise =
-      null;
-  }
-}
 
   /* ==========================================================
      PUBLIC CONTROLLER API
@@ -6652,11 +10744,15 @@ async function initialiseRegistrationJourney(
 
       initialiseRegistrationJourney,
 
+      resolveRegistrationJourney,
+
       resolveAuthenticatedLearner,
 
       getResolvedLearner,
 
       hasResolvedLearner,
+
+      getLearnerIdentityReadiness,
 
       validateProgrammeContext,
 
@@ -6666,6 +10762,10 @@ async function initialiseRegistrationJourney(
 
       hasProgrammeContext,
 
+      assertPageContextReady,
+
+      resolveVisibleCredentials,
+
       resolveEligibility,
 
       getResolvedEligibility,
@@ -6673,6 +10773,8 @@ async function initialiseRegistrationJourney(
       hasResolvedEligibility,
 
       isLearnerEligible,
+
+      getEligibilityReadiness,
 
       resolveOffer,
 
@@ -6700,6 +10802,8 @@ async function initialiseRegistrationJourney(
 
       getResolvedPayment,
 
+      hasResolvedPayment,
+
       hasConfirmedPayment,
 
       resolveEnrolment,
@@ -6709,8 +10813,6 @@ async function initialiseRegistrationJourney(
       hasResolvedEnrolment,
 
       isLearnerEnrolled,
-
-      resolveRegistrationJourney,
 
       getState,
 
@@ -6772,6 +10874,7 @@ async function initialiseRegistrationJourney(
 
   dispatchControllerEvent(
     CONTROLLER_EVENT.READY,
+
     {
       loaded:
         true,
@@ -6789,7 +10892,9 @@ async function initialiseRegistrationJourney(
   );
 
   /* ==========================================================
-     END OF BLOCK 6 OF 6
+     END OF BLOCK 10 OF 10
   ========================================================== */
 
-})(window);
+})(
+  window
+);

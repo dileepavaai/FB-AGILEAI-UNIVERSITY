@@ -74,6 +74,8 @@
         id="portalApp"
         class="portal-app"
         data-page="bridge-programme-registration"
+        data-source-programme-code="AOP"
+        data-target-programme-code="AIPA"
     >
 
         <!-- =================================================
@@ -544,7 +546,7 @@
                                     </dt>
 
                                     <dd id="bridgeBaseFee">
-                                        ₹7,500
+                                        —
                                     </dd>
 
                                 </div>
@@ -554,12 +556,12 @@
                                     <dt>
                                         GST
                                         <span id="bridgeGstRate">
-                                            (18%)
+                                            —
                                         </span>
                                     </dt>
 
                                     <dd id="bridgeGstAmount">
-                                        ₹1,350
+                                        —
                                     </dd>
 
                                 </div>
@@ -574,7 +576,7 @@
                                     </dt>
 
                                     <dd id="bridgeTotalPayable">
-                                        ₹8,850
+                                        —
                                     </dd>
 
                                 </div>
@@ -586,14 +588,14 @@
                                 <p>
                                     Standard Bridge Programme fee:
                                     <strong id="bridgeStandardFee">
-                                        ₹15,000
+                                        —
                                     </strong>
                                 </p>
 
                                 <p>
                                     Full programme fee:
                                     <strong id="bridgeFullProgrammeFee">
-                                        ₹30,000
+                                        —
                                     </strong>
                                 </p>
 
@@ -605,7 +607,8 @@
                             id="bridgeOfferExpiry"
                             class="bridge-offer-expiry"
                         >
-                            Offer available through 5 August 2026.
+                            Offer validity will be confirmed from the approved
+                            commercial offer.
                         </p>
 
                         <p
@@ -651,7 +654,7 @@
                                     id="bridgeTermsConfirmation"
                                     class="bridge-confirmation__checkbox"
                                     type="checkbox"
-                                    disabled
+                                    autocomplete="off"
                                 >
 
                                 <span>
@@ -666,9 +669,8 @@
                                 id="bridgeRegistrationNotice"
                                 class="bridge-confirmation__notice"
                             >
-                                Registration activation will be enabled after
-                                the registration service and secure payment
-                                workflow are connected.
+                                Select the confirmation above to enable
+                                registration.
                             </p>
 
                         </div>
@@ -695,7 +697,7 @@
                             disabled
                             aria-describedby="bridgeRegistrationNotice"
                         >
-                            Registration Coming Soon
+                            Register for Bridge Programme
                         </button>
 
                     </div>
@@ -726,6 +728,14 @@
 
     <!-- =====================================================
          SHARED PORTAL SERVICES
+
+         Script order is governed and must not be changed:
+
+         1. Eligibility authority
+         2. Academic bridge authority
+         3. Registration persistence service
+         4. Registration journey controller
+         5. Page rendering and interaction controller
     ====================================================== -->
 
     <script
@@ -735,6 +745,11 @@
 
     <script
         src="/assets/js/services/learning/bridge-program-service.js"
+        defer
+    ></script>
+
+    <script
+        src="/assets/js/services/programs/bridge-registration-service.js"
         defer
     ></script>
 
@@ -753,7 +768,21 @@
     ></script>
 
     <!-- =====================================================
+         BRIDGE REGISTRATION CONTROLLER
+
+         Must load after all services and before the page script.
+    ====================================================== -->
+
+    <script
+        src="/assets/js/controllers/programs/bridge-registration-controller.js"
+        defer
+    ></script>
+
+    <!-- =====================================================
          PAGE CONTROLLER
+
+         This remains the final script because it consumes all
+         services, controller APIs and page elements.
     ====================================================== -->
 
     <script

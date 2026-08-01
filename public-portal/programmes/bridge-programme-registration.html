@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+    lang="en"
+    data-portal-auth-state="pending"
+>
 
 <head>
 
@@ -28,6 +31,7 @@
         Bridge Programme Registration | Agile AI University
     </title>
 
+
     <!-- =====================================================
          SHARED PORTAL STYLES
     ====================================================== -->
@@ -42,6 +46,12 @@
         href="/assets/css/portal.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="/assets/css/components/toolbar.css?v=1.2.0"
+    >
+
+
     <!-- =====================================================
          PAGE STYLES
     ====================================================== -->
@@ -51,9 +61,31 @@
         href="/assets/css/programmes/bridge-programme-registration.css"
     >
 
+
+    <!-- =====================================================
+         AUTHENTICATED CONTENT PROTECTION
+
+         The page remains hidden until PortalAuth confirms
+         an authenticated Firebase learner.
+    ====================================================== -->
+
+    <style>
+
+        html[data-portal-auth-state="pending"]
+        #portalApp,
+        html[data-portal-auth-state="unauthenticated"]
+        #portalApp {
+
+            visibility: hidden;
+
+        }
+
+    </style>
+
 </head>
 
-<body>
+
+<body data-page="bridge-programme-registration">
 
     <!-- =====================================================
          ACCESSIBILITY
@@ -65,6 +97,7 @@
     >
         Skip to main content
     </a>
+
 
     <!-- =====================================================
          PORTAL APPLICATION
@@ -87,11 +120,14 @@
             class="portal-sidebar-container"
             aria-label="Student Portal navigation"
         >
+
             <div
                 id="sidebarContainer"
                 data-portal-region="sidebar"
             ></div>
+
         </aside>
+
 
         <!-- =================================================
              MAIN PORTAL AREA
@@ -107,11 +143,14 @@
                 id="portalToolbarContainer"
                 class="portal-toolbar-container"
             >
+
                 <div
                     id="toolbarContainer"
                     data-portal-region="toolbar"
                 ></div>
+
             </header>
+
 
             <!-- =============================================
                  PAGE CONTENT
@@ -157,6 +196,7 @@
 
                 </section>
 
+
                 <!-- =========================================
                      PAGE STATUS ANNOUNCER
                 ========================================== -->
@@ -168,6 +208,7 @@
                     aria-live="polite"
                     aria-atomic="true"
                 ></div>
+
 
                 <!-- =========================================
                      LOADING STATE
@@ -201,6 +242,7 @@
                     </div>
 
                 </section>
+
 
                 <!-- =========================================
                      SERVICE ERROR STATE
@@ -240,6 +282,7 @@
                     </div>
 
                 </section>
+
 
                 <!-- =========================================
                      NOT ELIGIBLE STATE
@@ -285,6 +328,7 @@
 
                 </section>
 
+
                 <!-- =========================================
                      ALREADY REGISTERED STATE
                 ========================================== -->
@@ -328,6 +372,7 @@
 
                 </section>
 
+
                 <!-- =========================================
                      ALREADY ENROLLED STATE
                 ========================================== -->
@@ -370,6 +415,7 @@
                     </div>
 
                 </section>
+
 
                 <!-- =========================================
                      ELIGIBLE REGISTRATION WORKSPACE
@@ -423,6 +469,7 @@
                         </p>
 
                     </article>
+
 
                     <!-- =====================================
                          PROGRAMME PATHWAY
@@ -505,6 +552,7 @@
                         </div>
 
                     </article>
+
 
                     <!-- =====================================
                          COMMERCIAL OFFER
@@ -621,6 +669,7 @@
 
                     </article>
 
+
                     <!-- =====================================
                          REGISTRATION ACKNOWLEDGEMENT
                     ====================================== -->
@@ -677,6 +726,7 @@
 
                     </article>
 
+
                     <!-- =====================================
                          PRIMARY ACTION
                     ====================================== -->
@@ -704,6 +754,7 @@
 
                 </section>
 
+
                 <!-- =========================================
                      PAGE FOOTNOTE
                 ========================================== -->
@@ -726,69 +777,174 @@
 
     </div>
 
+
     <!-- =====================================================
-         SHARED PORTAL SERVICES
+         PORTAL CONTEXT
+    ====================================================== -->
 
-         Script order is governed and must not be changed:
+    <script>
 
-         1. Eligibility authority
-         2. Academic bridge authority
-         3. Registration persistence service
-         4. Registration journey controller
-         5. Page rendering and interaction controller
+        window.__AAIU_CONTEXT =
+            "portal";
+
+        window.__AAIU_PAGE =
+            "bridge-programme-registration";
+
+        window.__AAIU_EXPERIENCE =
+            "bridge-programme-registration";
+
+        window.__AAIU_PORTAL_LOGIN_URL__ =
+            "/login.html";
+
+    </script>
+
+
+    <!-- =====================================================
+         FIREBASE COMPATIBILITY FOUNDATION
+
+         BridgeRegistrationController consumes:
+         window.firebase.auth()
     ====================================================== -->
 
     <script
-        src="/assets/js/services/learning/eligibility-service.js"
-        defer
-    ></script>
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
 
     <script
-        src="/assets/js/services/learning/bridge-program-service.js"
-        defer
-    ></script>
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js">
+    </script>
 
     <script
-        src="/assets/js/services/programs/bridge-registration-service.js"
-        defer
-    ></script>
+        src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+    </script>
+
+
+    <!-- =====================================================
+         AUTHENTICATION FOUNDATION
+    ====================================================== -->
+
+    <script
+        src="/assets/js/auth/firebase-init.js?v=1.4.0">
+    </script>
+
+    <script
+        src="/assets/js/auth/portal-auth.js?v=2.0.1">
+    </script>
+
+    <script
+        src="/assets/js/auth/portal-session-service.js?v=1.2.1">
+    </script>
+
+
+    <!-- =====================================================
+         ENTITLEMENT FOUNDATION
+    ====================================================== -->
+
+    <script
+        src="/assets/js/entitlement.js">
+    </script>
+
+    <script
+        src="/assets/js/services/entitlements/resolvePortalEntitlements.js">
+    </script>
+
+
+    <!-- =====================================================
+         AUTHORIZATION FOUNDATION
+    ====================================================== -->
+
+    <script
+        src="/assets/js/services/authorization/portal-authorization.js">
+    </script>
+
+
+    <!-- =====================================================
+         PROGRAMME METADATA SERVICE
+    ====================================================== -->
+
+    <script
+        src="/assets/js/services/programs/program-service.js">
+    </script>
+
+
+    <!-- =====================================================
+         CREDENTIAL DOMAIN FOUNDATION
+    ====================================================== -->
+
+    <script
+        src="/assets/js/services/credentials/credential-validation.js">
+    </script>
+
+    <script
+        src="/assets/js/services/credentials/credential-registry.js">
+    </script>
+
+    <script
+        src="/assets/js/services/credentials/credential-asset-service.js">
+    </script>
+
+    <script
+        src="/assets/js/services/credentials/credential-service.js">
+    </script>
+
+
+    <!-- =====================================================
+         BRIDGE PROGRAMME DOMAIN SERVICES
+
+         Ordered authorities:
+
+         1. Commercial eligibility
+         2. Academic bridge relationship
+         3. Registration persistence
+    ====================================================== -->
+
+    <script
+        src="/assets/js/services/learning/eligibility-service.js?v=1.5.0">
+    </script>
+
+    <script
+        src="/assets/js/services/learning/bridge-program-service.js">
+    </script>
+
+    <script
+        src="/assets/js/services/programs/bridge-registration-service.js">
+    </script>
+
 
     <!-- =====================================================
          SHARED PORTAL COMPONENTS
     ====================================================== -->
 
     <script
-        src="/assets/js/components/sidebar.js"
-        defer
-    ></script>
+        src="/assets/js/components/sidebar.js?v=1.8.1">
+    </script>
 
     <script
-        src="/assets/js/components/toolbar.js"
-        defer
-    ></script>
+        src="/assets/js/components/toolbar.js?v=1.4.0">
+    </script>
+
 
     <!-- =====================================================
-         BRIDGE REGISTRATION CONTROLLER
+         BRIDGE REGISTRATION JOURNEY CONTROLLER
 
-         Must load after all services and before the page script.
+         Must load after Firebase, authentication,
+         entitlement, credential and Bridge services.
     ====================================================== -->
 
     <script
-        src="/assets/js/controllers/programs/bridge-registration-controller.js"
-        defer
-    ></script>
+        src="/assets/js/controllers/programs/bridge-registration-controller.js">
+    </script>
+
 
     <!-- =====================================================
          PAGE CONTROLLER
 
-         This remains the final script because it consumes all
-         services, controller APIs and page elements.
+         Must remain the final page script.
     ====================================================== -->
 
     <script
-        src="/assets/js/programmes/bridge-programme-registration.js"
-        defer
-    ></script>
+        src="/assets/js/programmes/bridge-programme-registration.js">
+    </script>
 
 </body>
 

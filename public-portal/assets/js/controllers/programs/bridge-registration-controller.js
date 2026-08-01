@@ -2748,7 +2748,7 @@
      Block 5 must continue immediately below this section.
   ========================================================== */
   
-    /* ==========================================================
+      /* ==========================================================
      BLOCK 5 OF 10
      ELIGIBILITY AND CREDENTIAL RESOLUTION
   ========================================================== */
@@ -3202,7 +3202,9 @@
         if (
           Array.isArray(
             credentials
-          )
+          ) &&
+          credentials.length >
+            0
         ) {
           return freezeArray(
             credentials
@@ -3223,7 +3225,10 @@
     if (
       Array.isArray(
         global.portalCredentials
-      )
+      ) &&
+      global.portalCredentials
+        .length >
+        0
     ) {
       return freezeArray(
         global.portalCredentials
@@ -3231,7 +3236,34 @@
     }
 
     /*
-     * Support the entitlement resolver's visible credentials.
+     * Support the entitlement resolver's published portal
+     * entitlement data.
+     */
+
+    const portalEntitlementData =
+      global.portalEntitlementData;
+
+    if (
+      isObject(
+        portalEntitlementData
+      ) &&
+      Array.isArray(
+        portalEntitlementData
+          .visibleCredentials
+      ) &&
+      portalEntitlementData
+        .visibleCredentials
+        .length >
+        0
+    ) {
+      return freezeArray(
+        portalEntitlementData
+          .visibleCredentials
+      );
+    }
+
+    /*
+     * Support the alternative entitlement-state contract.
      */
 
     const entitlements =
@@ -3245,7 +3277,11 @@
       Array.isArray(
         entitlements
           .visibleCredentials
-      )
+      ) &&
+      entitlements
+        .visibleCredentials
+        .length >
+        0
     ) {
       return freezeArray(
         entitlements
@@ -3274,7 +3310,9 @@
         if (
           Array.isArray(
             credentials
-          )
+          ) &&
+          credentials.length >
+            0
         ) {
           return freezeArray(
             credentials
@@ -3290,6 +3328,325 @@
 
     return freezeArray(
       []
+    );
+  }
+
+  /* ==========================================================
+     CREDENTIAL SERVICE READINESS
+  ========================================================== */
+
+  function isCredentialServiceInitialised() {
+    if (
+      !global.CredentialService ||
+      typeof global
+        .CredentialService
+        .isInitialized !==
+        "function"
+    ) {
+      return false;
+    }
+
+    try {
+      return global
+        .CredentialService
+        .isInitialized() ===
+        true;
+    } catch (error) {
+      console.warn(
+        `[${CONTROLLER_NAME}] CredentialService.isInitialized() failed.`,
+        error
+      );
+
+      return false;
+    }
+  }
+
+  function resolveCredentialWaitTimeout(
+    options
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    const requestedTimeoutMs =
+      normaliseNumber(
+        safeOptions
+          .credentialTimeoutMs ??
+        safeOptions.timeoutMs,
+        10000
+      );
+
+    if (
+      requestedTimeoutMs <=
+      0
+    ) {
+      return 10000;
+    }
+
+    return Math.min(
+      requestedTimeoutMs,
+      15000
+    );
+  }
+
+  async function waitForVisibleCredentials(
+    options
+  ) {
+    const safeOptions =
+      isObject(
+        options
+      )
+        ? options
+        : {};
+
+    /*
+     * Explicit credentials are authoritative, including an
+     * explicitly supplied empty array.
+     */
+
+    if (
+      Array.isArray(
+        safeOptions.credentials
+      )
+    ) {
+      return freezeArray(
+        safeOptions.credentials
+      );
+    }
+
+    const immediateCredentials =
+      resolveVisibleCredentials(
+        safeOptions
+      );
+
+    if (
+      immediateCredentials.length >
+      0
+    ) {
+      return immediateCredentials;
+    }
+
+    /*
+     * When CredentialService has completed and published an
+     * empty collection, the empty result is authoritative.
+     */
+
+    if (
+      isCredentialServiceInitialised()
+    ) {
+      return freezeArray(
+        []
+      );
+    }
+
+    const documentTarget =
+      global.document;
+
+    if (
+      !documentTarget ||
+      typeof documentTarget
+        .addEventListener !==
+        "function" ||
+      typeof documentTarget
+        .removeEventListener !==
+        "function"
+    ) {
+      return resolveVisibleCredentials(
+        safeOptions
+      );
+    }
+
+    const governedTimeoutMs =
+      resolveCredentialWaitTimeout(
+        safeOptions
+      );
+
+    return new Promise(
+      function waitForCredentialService(
+        resolve
+      ) {
+        let settled =
+          false;
+
+        let timeoutHandle =
+          null;
+
+        const complete =
+          function completeCredentialWait(
+            credentials,
+            reason
+          ) {
+            if (settled) {
+              return;
+            }
+
+            settled =
+              true;
+
+            if (timeoutHandle) {
+              global.clearTimeout(
+                timeoutHandle
+              );
+            }
+
+            documentTarget
+              .removeEventListener(
+                "credentials:service-ready",
+                handleCredentialServiceReady
+              );
+
+            documentTarget
+              .removeEventListener(
+                "credentials:service-error",
+                handleCredentialServiceError
+              );
+
+            const governedCredentials =
+              Array.isArray(
+                credentials
+              )
+                ? credentials
+                : [];
+
+            console.info(
+              `[${CONTROLLER_NAME}] Credential readiness completed.`,
+              {
+                reason:
+                  normaliseString(
+                    reason
+                  ) ||
+                  "UNKNOWN",
+
+                credentialCount:
+                  governedCredentials
+                    .length
+              }
+            );
+
+            resolve(
+              freezeArray(
+                governedCredentials
+              )
+            );
+          };
+
+        const resolveCurrentCredentials =
+          function resolveCurrentCredentials() {
+            return resolveVisibleCredentials(
+              safeOptions
+            );
+          };
+
+        function handleCredentialServiceReady(
+          event
+        ) {
+          const eventDetail =
+            event &&
+            isObject(
+              event.detail
+            )
+              ? event.detail
+              : {};
+
+          const eventCredentials =
+            Array.isArray(
+              eventDetail.credentials
+            )
+              ? eventDetail.credentials
+              : [];
+
+          if (
+            eventCredentials.length >
+            0
+          ) {
+            complete(
+              eventCredentials,
+              "CREDENTIAL_SERVICE_READY_EVENT"
+            );
+
+            return;
+          }
+
+          complete(
+            resolveCurrentCredentials(),
+            "CREDENTIAL_SERVICE_READY_EMPTY"
+          );
+        }
+
+        function handleCredentialServiceError(
+          event
+        ) {
+          console.warn(
+            `[${CONTROLLER_NAME}] CredentialService reported an error while eligibility was waiting.`,
+            event &&
+            event.detail
+              ? event.detail
+              : null
+          );
+
+          complete(
+            resolveCurrentCredentials(),
+            "CREDENTIAL_SERVICE_ERROR"
+          );
+        }
+
+        documentTarget
+          .addEventListener(
+            "credentials:service-ready",
+            handleCredentialServiceReady
+          );
+
+        documentTarget
+          .addEventListener(
+            "credentials:service-error",
+            handleCredentialServiceError
+          );
+
+        /*
+         * Race-safe recheck after listeners are attached.
+         */
+
+        const credentialsAfterBinding =
+          resolveCurrentCredentials();
+
+        if (
+          credentialsAfterBinding.length >
+          0
+        ) {
+          complete(
+            credentialsAfterBinding,
+            "CREDENTIALS_AVAILABLE_AFTER_BINDING"
+          );
+
+          return;
+        }
+
+        if (
+          isCredentialServiceInitialised()
+        ) {
+          complete(
+            [],
+            "CREDENTIAL_SERVICE_ALREADY_INITIALISED_EMPTY"
+          );
+
+          return;
+        }
+
+        timeoutHandle =
+          global.setTimeout(
+            function handleCredentialWaitTimeout() {
+              complete(
+                resolveCurrentCredentials(),
+                "CREDENTIAL_WAIT_TIMEOUT"
+              );
+            },
+
+            governedTimeoutMs
+          );
+      }
     );
   }
 
@@ -3320,7 +3677,15 @@
       credential
         .credentialProgrammeCode ||
       credential
-        .credentialProgramCode
+        .credentialProgramCode ||
+      credential
+        .credentialCode ||
+      credential
+        .credential_code ||
+      credential
+        .credentialType ||
+      credential
+        .credential_type
     );
   }
 
@@ -3340,7 +3705,10 @@
         .credentialId ||
       credential
         .credential_id ||
-      credential.id
+      credential
+        .credentialID ||
+      credential.id ||
+      credential.documentId
     ).toUpperCase();
   }
 
@@ -3760,6 +4128,25 @@
               );
             }
 
+            /*
+             * Credential readiness must be resolved before the
+             * commercial EligibilityService is invoked because
+             * EligibilityService consumes the same governed
+             * credential publication sources.
+             */
+
+            const governedCredentials =
+              await waitForVisibleCredentials(
+                safeOptions
+              );
+
+            const sourceCredential =
+              resolveSourceCredential(
+                governedCredentials,
+                input
+                  .sourceProgrammeCode
+              );
+
             const upgradeModel =
               await eligibilityService
                 .getUpgradeModel();
@@ -3770,18 +4157,6 @@
               )
                 ? upgradeModel
                 : {};
-
-            const governedCredentials =
-              resolveVisibleCredentials(
-                safeOptions
-              );
-
-            const sourceCredential =
-              resolveSourceCredential(
-                governedCredentials,
-                input
-                  .sourceProgrammeCode
-              );
 
             const resolvedSourceProgrammeCode =
               resolveCommercialSourceProgrammeCode(
@@ -3866,6 +4241,23 @@
               "";
 
             if (
+              governedCredentials.length ===
+              0
+            ) {
+              reasonCode =
+                "CREDENTIALS_UNAVAILABLE";
+
+              reason =
+                "The learner credential portfolio was not available for Bridge Programme eligibility resolution.";
+            } else if (
+              !sourceCredential
+            ) {
+              reasonCode =
+                "SOURCE_CREDENTIAL_UNAVAILABLE";
+
+              reason =
+                "The required source credential was not found in the learner's governed credential portfolio.";
+            } else if (
               commercialEligible &&
               !sourceProgrammeMatches
             ) {
@@ -4038,6 +4430,11 @@
                   governedCredentials
                     .length,
 
+                credentialsReady:
+                  governedCredentials
+                    .length >
+                  0,
+
                 sourceCredential:
                   sourceCredential
                     ? freezeObject(
@@ -4046,7 +4443,7 @@
                     : null,
 
                 serviceMethod:
-                  "EligibilityService.getUpgradeModel + BridgeProgramService.resolveBridgePrograms",
+                  "CredentialService readiness + EligibilityService.getUpgradeModel + BridgeProgramService.resolveBridgePrograms",
 
                 state:
                   nextState
@@ -4120,6 +4517,11 @@
       controllerState
         .eligibility;
 
+    const visibleCredentials =
+      resolveVisibleCredentials(
+        {}
+      );
+
     return freezeObject({
       pageContextReady:
         pageContextReadiness.ready,
@@ -4138,11 +4540,20 @@
         readiness
           .bridgeProgramServiceAvailable,
 
+      credentialServiceAvailable:
+        Boolean(
+          global.CredentialService
+        ),
+
+      credentialServiceInitialised:
+        isCredentialServiceInitialised(),
+
       credentialsAvailable:
-        resolveVisibleCredentials(
-          {}
-        ).length >
+        visibleCredentials.length >
         0,
+
+      credentialCount:
+        visibleCredentials.length,
 
       eligibilityResolved:
         hasResolvedEligibility(),

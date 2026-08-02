@@ -3419,51 +3419,129 @@ service cloud.firestore {
 
     }
 
-    /* =====================================================
-       BRIDGE PROGRAMME REGISTRATIONS
+        /* =====================================================
+       BRIDGE PROGRAMME REGISTRATION HELPERS
+       Version: 2.10.1
     ===================================================== */
 
-    match /bridge_programme_registrations/{registrationDocumentId} {
+    function isOwnBridgeRegistrationDocument(
+      registrationDocumentId
+    ) {
 
       /*
-       * The learner may read only the deterministic
-       * registration document owned by their Firebase UID.
+       * Bridge Programme registrations use a deterministic
+       * document ID:
        *
-       * Canonical document ID:
+       * {learner_uid}_{source_programme}_{target_programme}
        *
-       * {learner_uid}_{source_program_code}_{target_program_code}
+       * The permitted pathways are explicitly governed here.
        *
-       * Example:
-       *
-       * abc123_AOP_AIPA
+       * This allows a learner to check whether their own
+       * deterministic registration document exists without
+       * granting collection-list access or access to another
+       * learner's registration.
        */
 
-      allow get:
-        if isBootstrapAdmin() ||
+      return
+        isSignedIn() &&
+
+        registrationDocumentId in [
+          request.auth.uid +
+            "_AOP_AIPA",
+
+          request.auth.uid +
+            "_AAIA_AIPA",
+
+          request.auth.uid +
+            "_AIPA_AAIP",
+
+          request.auth.uid +
+            "_AAIP_AIAL"
+        ];
+
+    }
+
+
+    function canLearnerReadBridgeRegistration(
+      registrationDocumentId
+    ) {
+
+      return
+        isOwnBridgeRegistrationDocument(
+          registrationDocumentId
+        ) &&
 
         (
-          isSignedIn() &&
+          /*
+           * A missing deterministic document must remain
+           * readable so that a direct document get returns
+           * snapshot.exists == false rather than
+           * permission-denied.
+           */
+
+          !exists(
+            /databases/$(database)/documents/bridge_programme_registrations/$(registrationDocumentId)
+          ) ||
+
+          /*
+           * When the registration exists, ownership must
+           * also be confirmed against the canonical stored
+           * learner UID.
+           */
 
           resource.data.learner_uid ==
             request.auth.uid
         );
 
+    }
+
+
+    /* =====================================================
+       BRIDGE PROGRAMME REGISTRATIONS
+       Version: 2.10.1
+       Status: ACTIVE
+    ===================================================== */
+
+    match /bridge_programme_registrations/{registrationDocumentId} {
+
       /*
-       * The current BridgeRegistrationService performs
-       * direct document reads. Learners do not require
-       * collection-list access.
+       * READ GOVERNANCE
+       * --------------------------------------------------
+       * Bootstrap administrators may read registrations.
+       *
+       * An authenticated learner may perform a direct get
+       * only against their own deterministic registration
+       * document.
+       *
+       * A missing owned document is intentionally readable
+       * so the client can safely determine that no previous
+       * registration exists.
+       */
+
+      allow get:
+        if isBootstrapAdmin() ||
+
+        canLearnerReadBridgeRegistration(
+          registrationDocumentId
+        );
+
+      /*
+       * Learners must never list the registration
+       * collection.
        */
 
       allow list:
         if isBootstrapAdmin();
 
       /*
+       * CREATE GOVERNANCE
+       * --------------------------------------------------
        * Learners may create only their own initial
        * PAYMENT_PENDING registration.
        *
        * Trusted payment confirmation, enrolment activation
-       * and later lifecycle changes are not permitted from
-       * the learner client.
+       * and later lifecycle mutations remain admin/backend
+       * responsibilities.
        */
 
       allow create:
@@ -3471,6 +3549,10 @@ service cloud.firestore {
 
         (
           isSignedIn() &&
+
+          isOwnBridgeRegistrationDocument(
+            registrationDocumentId
+          ) &&
 
           request.resource.data.keys().hasOnly([
             "registration_id",
@@ -3644,8 +3726,8 @@ service cloud.firestore {
         );
 
       /*
-       * Registration lifecycle and payment states must not
-       * be changed directly by a learner.
+       * Registration, payment and enrolment lifecycle
+       * mutations remain trusted operations.
        */
 
       allow update:

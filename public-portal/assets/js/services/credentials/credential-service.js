@@ -613,92 +613,76 @@
 
 
     /* ======================================================
-       DEPENDENCY VALIDATION
-    ====================================================== */
+   DEPENDENCY VALIDATION
+====================================================== */
 
-    function validateDependencies() {
+function validateDependencies() {
 
-        const missingDependencies =
-            [];
+    const missingDependencies = [];
 
-        if (
-            typeof window.resolvePortalEntitlements !==
+    if (
+        typeof window.resolvePortalEntitlements !==
+        "function"
+    ) {
+
+        missingDependencies.push(
+            "resolvePortalEntitlements"
+        );
+
+    }
+
+    if (
+        !window.ProgramService ||
+        typeof window.ProgramService.get !==
             "function"
-        ) {
+    ) {
 
-            missingDependencies.push(
-                "resolvePortalEntitlements"
-            );
+        missingDependencies.push(
+            "ProgramService.get"
+        );
 
-        }
+    }
 
-        if (
-            typeof window.renderCredentials !==
+    if (
+        !window.CredentialValidation ||
+        typeof window.CredentialValidation.validate !==
             "function"
-        ) {
+    ) {
 
-            missingDependencies.push(
-                "renderCredentials"
-            );
+        missingDependencies.push(
+            "CredentialValidation.validate"
+        );
 
-        }
+    }
 
-        if (
-            !window.ProgramService ||
-            typeof window.ProgramService.get !==
-                "function"
-        ) {
+    if (
+        missingDependencies.length > 0
+    ) {
 
-            missingDependencies.push(
-                "ProgramService.get"
-            );
-
-        }
-
-        if (
-            !window.CredentialValidation ||
-            typeof window.CredentialValidation.validate !==
-                "function"
-        ) {
-
-            missingDependencies.push(
-                "CredentialValidation.validate"
-            );
-
-        }
-
-        if (
-            missingDependencies.length >
-            0
-        ) {
-
-            console.error(
-                "[Credential Service] Missing dependencies:",
-                missingDependencies
-            );
-
-            return {
-
-                valid:
-                    false,
-
-                missingDependencies
-
-            };
-
-        }
+        console.error(
+            "[Credential Service] Missing dependencies:",
+            missingDependencies
+        );
 
         return {
 
-            valid:
-                true,
+            valid: false,
 
-            missingDependencies:
-                []
+            missingDependencies
 
         };
 
     }
+
+    return {
+
+        valid: true,
+
+        missingDependencies: []
+
+    };
+
+}
 
 
     /* ======================================================
@@ -1153,9 +1137,22 @@
                 false
             );
 
-            window.renderCredentials(
-                enrichedCredentials
-            );
+            if (
+    typeof window.renderCredentials ===
+    "function"
+) {
+
+    window.renderCredentials(
+        enrichedCredentials
+    );
+
+} else {
+
+    console.info(
+        "[Credential Service] Credential renderer not present on this page. Rendering skipped."
+    );
+
+}
 
             lastRenderCompletedAt =
                 new Date();

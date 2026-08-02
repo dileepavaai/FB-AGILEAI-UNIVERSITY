@@ -869,22 +869,37 @@
 
     <!-- =====================================================
          CREDENTIAL DOMAIN FOUNDATION
+
+         Loading order:
+
+         1. Credential validation
+         2. Credential registry
+         3. Credential asset service
+         4. Credential renderer
+         5. Credential service
+
+         Credential Service must load only after all of its
+         declared dependencies are available.
     ====================================================== -->
 
     <script
-        src="/assets/js/services/credentials/credential-validation.js">
+        src="/assets/js/services/credentials/credential-validation.js?v=1.0.0">
     </script>
 
     <script
-        src="/assets/js/services/credentials/credential-registry.js">
+        src="/assets/js/services/credentials/credential-registry.js?v=1.2.0">
     </script>
 
     <script
-        src="/assets/js/services/credentials/credential-asset-service.js">
+        src="/assets/js/services/credentials/credential-asset-service.js?v=1.2.0">
     </script>
 
     <script
-        src="/assets/js/services/credentials/credential-service.js">
+        src="/assets/js/components/credentials/credential-renderer.js?v=1.0.0">
+    </script>
+
+    <script
+        src="/assets/js/services/credentials/credential-service.js?v=1.3.0">
     </script>
 
 

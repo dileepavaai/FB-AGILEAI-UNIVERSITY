@@ -5157,15 +5157,32 @@ function buildPageState(
         candidateNames
     ) {
 
+        const governedProgrammeCode =
+            normaliseProgrammeCode(
+                programmeCode
+            );
+
         const resolvedName =
             resolveFirstString(
                 candidateNames
             );
 
+        /*
+        * Prevent a programme code from being rendered as
+        * the human-readable programme name.
+        *
+        * If an upstream model returns "AOP" as the name,
+        * fall back to the canonical PROGRAMME_NAMES mapping.
+        */
+
         if (
             isNonEmptyString(
                 resolvedName
-            )
+            ) &&
+            normaliseProgrammeCode(
+                resolvedName
+            ) !==
+            governedProgrammeCode
         ) {
 
             return resolvedName;
@@ -5173,7 +5190,7 @@ function buildPageState(
         }
 
         return resolveProgrammeName(
-            programmeCode
+            governedProgrammeCode
         );
 
     }

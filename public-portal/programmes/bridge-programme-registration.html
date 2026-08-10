@@ -875,11 +875,11 @@
          1. Credential validation
          2. Credential registry
          3. Credential asset service
-         4. Credential renderer
-         5. Credential service
+         4. Credential service
 
-         Credential Service must load only after all of its
-         declared dependencies are available.
+         Credential rendering is intentionally not loaded on
+         this page. CredentialService may publish credential
+         data without requiring a page-level credential renderer.
     ====================================================== -->
 
     <script
@@ -892,10 +892,6 @@
 
     <script
         src="/assets/js/services/credentials/credential-asset-service.js?v=1.2.0">
-    </script>
-
-    <script
-        src="/assets/js/components/credentials/credential-renderer.js?v=1.0.0">
     </script>
 
     <script
@@ -914,7 +910,7 @@
     ====================================================== -->
 
     <script
-        src="/assets/js/services/learning/eligibility-service.js?v=1.5.0">
+        src="/assets/js/services/learning/eligibility-service.js?v=1.5.1">
     </script>
 
     <script

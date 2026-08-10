@@ -39,18 +39,27 @@
    • CredentialService
 
    Change History
+   ----------------------------------------------------------
 
    v1.5.0
-
-   • Extended the governed AOP and AAIA to AIPA Bridge
-     Programme offer through 5 August 2026
-   • Preserved India business-time-zone expiry enforcement
-   • Retained the limited-time Bridge Programme fee of
-     INR 7,500 plus applicable GST
-   • Updated the canonical Bridge Programme Registration
-     route to the ADR-025 programme page
-   • Preserved payment gateway authority over the final
-     payable amount
+    - Added governed Bridge Programme eligibility.
+    - Added AOP → AIPA bridge pathway.
+    - Added AAIA → AIPA bridge pathway.
+    - Added introductory Bridge Programme commercial offer.
+    - Bridge Programme introductory fee: ₹7,500.
+    - GST rate: 18%.
+    - Standard Bridge Programme fee: ₹15,000.
+    - Full programme fee: ₹30,000.
+    - Extended the approved introductory Bridge Programme
+    offer validity through 20 August 2026.
+    - Preserved India business-date evaluation for
+    offer validity.
+    - Preserved eligibility derivation from verified
+    credential records.
+    - Preserved resolver-first and governance-first
+    architecture.
+    - No Firestore writes introduced.
+    - No payment execution introduced.
 
    v1.4.0
 
@@ -121,7 +130,7 @@
     ================================================== */
 
     const BRIDGE_OFFER_END_DATE =
-        "2026-08-05";
+        "2026-08-20";
 
     const COMMERCIAL_TIME_ZONE =
         "Asia/Kolkata";

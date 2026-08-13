@@ -1,0 +1,20 @@
+{
+  "name": "aau-bridge-payment-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=20 <21"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.0.0",
+    "firebase-admin": "13.10.0",
+    "razorpay": "^2.9.8"
+  }
+}

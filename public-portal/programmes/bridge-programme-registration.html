@@ -907,6 +907,7 @@
          1. Commercial eligibility
          2. Academic bridge relationship
          3. Registration persistence
+         4. Governed payment API client
     ====================================================== -->
 
     <script
@@ -919,6 +920,26 @@
 
     <script
         src="/assets/js/services/programs/bridge-registration-service.js">
+    </script>
+
+
+    <!-- =====================================================
+         PAYMENT FOUNDATION
+
+         PaymentService must load before the Bridge Registration
+         Controller because that controller resolves the global
+         window.PaymentService dependency.
+
+         Razorpay Checkout is only a browser interaction surface.
+         The signed webhook remains payment authority.
+    ====================================================== -->
+
+    <script
+        src="https://checkout.razorpay.com/v1/checkout.js">
+    </script>
+
+    <script
+        src="/assets/js/services/payments/index.js?v=1.0.0">
     </script>
 
 
@@ -939,22 +960,35 @@
          BRIDGE REGISTRATION JOURNEY CONTROLLER
 
          Must load after Firebase, authentication,
-         entitlement, credential and Bridge services.
+         entitlement, credential, Bridge and payment services.
     ====================================================== -->
 
     <script
-        src="/assets/js/controllers/programs/bridge-registration-controller.js">
+        src="/assets/js/controllers/programs/bridge-registration-controller.js?v=1.1.0">
     </script>
 
 
     <!-- =====================================================
-         PAGE CONTROLLER
+         BRIDGE REGISTRATION PAGE CONTROLLER
 
-         Must remain the final page script.
+         Owns eligibility, offer and registration rendering.
     ====================================================== -->
 
     <script
-        src="/assets/js/programmes/bridge-programme-registration.js">
+        src="/assets/js/programmes/bridge-programme-registration.js?v=2.0.0">
+    </script>
+
+
+    <!-- =====================================================
+         BRIDGE PAYMENT CONTROLLER
+
+         Must load last so it can safely assume authority over
+         the registration action only after registration enters
+         PAYMENT_REQUIRED state.
+    ====================================================== -->
+
+    <script
+        src="/assets/js/controllers/programs/payment-controller.js?v=1.0.0">
     </script>
 
 </body>

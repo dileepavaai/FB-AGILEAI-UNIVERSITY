@@ -329,6 +329,101 @@ function normalizeString(
   ).trim();
 }
 
+function sanitizeDiagnostic(
+  value,
+  maxLength = 300
+) {
+  const normalized =
+    normalizeString(value);
+
+  return normalized
+    ? normalized.slice(
+        0,
+        maxLength
+      )
+    : null;
+}
+
+function extractGatewayError(
+  error
+) {
+  const root =
+    error &&
+    typeof error === "object"
+      ? error
+      : {};
+
+  const responseData =
+    root.response?.data &&
+    typeof root.response.data ===
+      "object"
+      ? root.response.data
+      : {};
+
+  const nested =
+    responseData.error &&
+    typeof responseData.error ===
+      "object"
+      ? responseData.error
+      : root.error &&
+        typeof root.error ===
+          "object"
+        ? root.error
+        : {};
+
+  const parsedStatus =
+    Number(
+      root.statusCode ??
+      root.status ??
+      responseData.statusCode ??
+      responseData.status ??
+      nested.statusCode ??
+      nested.status
+    );
+
+  return {
+    gatewayCode:
+      sanitizeDiagnostic(
+        nested.code ||
+        root.code
+      ) ||
+      "UNKNOWN",
+
+    gatewayDescription:
+      sanitizeDiagnostic(
+        nested.description ||
+        root.description ||
+        root.message
+      ) ||
+      "Payment gateway request failed.",
+
+    gatewaySource:
+      sanitizeDiagnostic(
+        nested.source ||
+        root.source
+      ),
+
+    gatewayStep:
+      sanitizeDiagnostic(
+        nested.step ||
+        root.step
+      ),
+
+    gatewayReason:
+      sanitizeDiagnostic(
+        nested.reason ||
+        root.reason
+      ),
+
+    gatewayStatusCode:
+      Number.isFinite(
+        parsedStatus
+      )
+        ? parsedStatus
+        : null
+  };
+}
+
 function normalizeEmail(
   value
 ) {
@@ -918,6 +1013,9 @@ app.post(
     let reservationToken =
       "";
 
+    let failureStage =
+      "REQUEST_VALIDATION";
+
     try {
       if (
         !registrationId
@@ -940,6 +1038,9 @@ app.post(
           "The introductory Bridge Programme offer has expired."
         );
       }
+
+      failureStage =
+        "REGISTRATION_RESOLUTION";
 
       const governedRegistration =
         await resolveGovernedRegistration(
@@ -972,6 +1073,9 @@ app.post(
       reservationToken =
         crypto
           .randomUUID();
+
+      failureStage =
+        "FIRESTORE_RESERVATION";
 
       const reservationResult =
         await db.runTransaction(
@@ -1218,6 +1322,9 @@ app.post(
           });
       }
 
+      failureStage =
+        "RAZORPAY_ORDER_CREATE";
+
       const razorpay =
         getRazorpayClient();
 
@@ -1273,6 +1380,9 @@ app.post(
 
         throw error;
       }
+
+      failureStage =
+        "FIRESTORE_FINALIZE";
 
       const finalizedPayment =
         await db.runTransaction(
@@ -1428,6 +1538,12 @@ app.post(
         error?.code ||
         "ORDER_CREATION_FAILED";
 
+      const gatewayError =
+        failureStage ===
+        "RAZORPAY_ORDER_CREATE"
+          ? extractGatewayError(error)
+          : {};
+
       log(
         "ERROR",
         "Bridge payment order creation failed.",
@@ -1442,8 +1558,14 @@ app.post(
 
           errorCode,
 
-          error:
-            error.message
+          failureStage,
+
+          errorMessage:
+            sanitizeDiagnostic(
+              error?.message
+            ),
+
+          ...gatewayError
         }
       );
 

@@ -4,7 +4,7 @@
 
    File      : trainer-certificate-generator.js
    Component : Trainer Certificate Generator Controller
-   Version   : 1.4.0
+   Version   : 1.5.0
    Status    : ACTIVE
    Phase     : Credential-First Asset Publication
 
@@ -12,7 +12,7 @@
    ----------------------------------------------------------
    • Search authoritative credential records
    • Populate governed read-only metadata
-   • Resolve trainer and organization context
+   • Resolve trainer, batch and organization context
    • Render Trainer Certificate previews
    • Expose the selected credential to the PDF publisher
    • Preserve AOP as Agile Outcome Practitioner
@@ -23,6 +23,7 @@
    ✓ Search credential records
    ✓ Populate read-only credential metadata
    ✓ Resolve batch, trainer and organization records
+   ✓ Support legacy and current batch identifiers
    ✓ Render visible and hidden PDF surfaces
    ✓ Enforce certificate readiness
    ✓ Expose window.loadedCredential
@@ -36,16 +37,24 @@
    ✗ Modify credentials
    ✗ Assign learner ownership
    ✗ Perform identity reconciliation
-   ✗ Modify trainer or organization records
+   ✗ Modify trainer records
+   ✗ Modify organization records
+   ✗ Modify batch records
 
    Governance
    ----------------------------------------------------------
    • credentials is the credential source of truth
+   • batches is the governed training-delivery context source
+   • trainerRegistry is the governed trainer source
+   • trainingOrganizations is the governed organization source
    • AOP remains Agile Outcome Practitioner
    • AOP must never be substituted with AIPA
    • AIPA is a separate credential
    • Trainer Certificate generation is read-only
    • Historical credentials may not yet have learner_uid
+   • Historical credentials may reference legacy batch metadata
+   • Trainer attribution must be resolved from governed records
+   • Organization attribution must be resolved from governed records
    • PDF publication is owned by trainer-certificate-pdf.js
 
    Data Sources
@@ -61,6 +70,17 @@
 
    Change History
    ----------------------------------------------------------
+   v1.5.0
+   • Strengthened trainer attribution architecture
+   • Added governed Firestore collection constants
+   • Prepared multi-path batch resolution support
+   • Prepared trainer resolution independent of batch-name-only lookup
+   • Preserved legacy AOP credential compatibility
+   • Preserved Credential Registry as credential authority
+   • Preserved read-only certificate-generation governance
+   • No credential mutation introduced
+   • No trainer or organization mutation introduced
+
    v1.4.0
    • Removed legacy AOP → AIPA substitution
    • Exposed selected record as window.loadedCredential
@@ -84,9 +104,11 @@ import {
 
 import {
     collection,
+    doc,
+    getDoc,
+    getDocs,
     query,
-    where,
-    getDocs
+    where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -98,14 +120,14 @@ document.addEventListener(
 
 
         /* ==================================================
-           CONSTANTS
+           MODULE CONSTANTS
         ================================================== */
 
         const MODULE_NAME =
             "TrainerCertificateGenerator";
 
         const MODULE_VERSION =
-            "1.4.0";
+            "1.5.0";
 
         const REGISTRY_API =
             "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
@@ -118,10 +140,84 @@ document.addEventListener(
 
 
         /* ==================================================
+           FIRESTORE AUTHORITY CONSTANTS
+
+           Governance:
+           Collection names are centralized here so that
+           trainer-resolution logic does not depend on
+           duplicated string literals across the controller.
+        ================================================== */
+
+        const COLLECTIONS =
+            Object.freeze({
+
+                BATCHES:
+                    "batches",
+
+                TRAINERS:
+                    "trainerRegistry",
+
+                TRAINING_ORGANIZATIONS:
+                    "trainingOrganizations"
+
+            });
+
+
+        /* ==================================================
+           GOVERNED FIELD ALIASES
+
+           Historical records may use more than one naming
+           convention. These aliases are READ-ONLY resolution
+           aids. They do not rewrite source documents.
+        ================================================== */
+
+        const FIELD_ALIASES =
+            Object.freeze({
+
+                BATCH_ID: Object.freeze([
+                    "batch_id",
+                    "batchId"
+                ]),
+
+                BATCH_NAME: Object.freeze([
+                    "batch_name",
+                    "batchName"
+                ]),
+
+                BATCH_CODE: Object.freeze([
+                    "batch_code",
+                    "batchCode"
+                ]),
+
+                TRAINER_ID: Object.freeze([
+                    "trainerId",
+                    "trainer_id"
+                ]),
+
+                ORGANIZATION_ID: Object.freeze([
+                    "organizationId",
+                    "organization_id"
+                ]),
+
+                TRAINER_NAME: Object.freeze([
+                    "trainerName",
+                    "trainer_name"
+                ]),
+
+                ORGANIZATION_NAME: Object.freeze([
+                    "organizationName",
+                    "organization_name"
+                ])
+
+            });
+
+
+        /* ==================================================
            STATE
         ================================================== */
 
-        let credentialData = [];
+        let credentialData =
+            [];
 
         window.loadedCredential =
             null;
@@ -150,6 +246,7 @@ document.addEventListener(
 
         }
 
+
         function normalizeLowercase(
             value
         ) {
@@ -160,6 +257,7 @@ document.addEventListener(
 
         }
 
+
         function normalizeUppercase(
             value
         ) {
@@ -167,6 +265,58 @@ document.addEventListener(
             return normalizeString(
                 value
             ).toUpperCase();
+
+        }
+
+
+        /* ==================================================
+           FIELD-ALIAS RESOLUTION
+
+           Returns the first non-empty value found from a
+           governed list of possible property names.
+
+           Important:
+           - Read-only
+           - Does not modify the source object
+           - Used to support historical schema variants
+        ================================================== */
+
+        function getFirstAvailableValue(
+            source,
+            fieldNames
+        ) {
+
+            if (
+                !source ||
+                !Array.isArray(
+                    fieldNames
+                )
+            ) {
+
+                return "";
+
+            }
+
+            for (
+                const fieldName of fieldNames
+            ) {
+
+                const value =
+                    normalizeString(
+                        source?.[fieldName]
+                    );
+
+                if (
+                    value
+                ) {
+
+                    return value;
+
+                }
+
+            }
+
+            return "";
 
         }
 
@@ -324,6 +474,7 @@ document.addEventListener(
 
         }
 
+
         function enablePdfButton() {
 
             if (
@@ -342,7 +493,6 @@ document.addEventListener(
             );
 
         }
-
 
         /* ==================================================
            REGISTRY LOADING
@@ -370,7 +520,10 @@ document.addEventListener(
                             headers: {
                                 "Content-Type":
                                     "application/json"
-                            }
+                            },
+
+                            cache:
+                                "no-store"
                         }
                     );
 
@@ -402,13 +555,28 @@ document.addEventListener(
                 }
 
                 credentialData =
-                    data.credentials;
+                    data.credentials.filter(
+                        (
+                            item
+                        ) => {
+
+                            return (
+                                item &&
+                                typeof item ===
+                                    "object"
+                            );
+
+                        }
+                    );
 
                 console.info(
                     `[${MODULE_NAME}] Registry loaded.`,
                     {
                         recordCount:
-                            credentialData.length
+                            credentialData.length,
+
+                        moduleVersion:
+                            MODULE_VERSION
                     }
                 );
 
@@ -444,33 +612,57 @@ document.addEventListener(
             email
         }) {
 
+            const normalizedCredentialId =
+                normalizeLowercase(
+                    credentialId
+                );
+
+            const normalizedLearnerName =
+                normalizeLowercase(
+                    learnerName
+                );
+
+            const normalizedEmail =
+                normalizeLowercase(
+                    email
+                );
+
             return credentialData.find(
                 (
                     item
                 ) => {
 
-                    const credentialMatch =
-                        !credentialId ||
+                    const itemCredentialId =
                         normalizeLowercase(
                             item?.credential_id
-                        ).includes(
-                            credentialId
+                        );
+
+                    const itemLearnerName =
+                        normalizeLowercase(
+                            item?.full_name
+                        );
+
+                    const itemEmail =
+                        normalizeLowercase(
+                            item?.email
+                        );
+
+                    const credentialMatch =
+                        !normalizedCredentialId ||
+                        itemCredentialId.includes(
+                            normalizedCredentialId
                         );
 
                     const nameMatch =
-                        !learnerName ||
-                        normalizeLowercase(
-                            item?.full_name
-                        ).includes(
-                            learnerName
+                        !normalizedLearnerName ||
+                        itemLearnerName.includes(
+                            normalizedLearnerName
                         );
 
                     const emailMatch =
-                        !email ||
-                        normalizeLowercase(
-                            item?.email
-                        ).includes(
-                            email
+                        !normalizedEmail ||
+                        itemEmail.includes(
+                            normalizedEmail
                         );
 
                     return (
@@ -483,6 +675,7 @@ document.addEventListener(
             );
 
         }
+
 
         async function searchCredential() {
 
@@ -515,6 +708,26 @@ document.addEventListener(
 
             }
 
+            if (
+                !Array.isArray(
+                    credentialData
+                ) ||
+                credentialData.length ===
+                    0
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] Search attempted before registry data was available.`
+                );
+
+                alert(
+                    "Credential Registry is not available. Please wait a moment and try again."
+                );
+
+                return;
+
+            }
+
             const record =
                 findCredential({
                     credentialId,
@@ -537,18 +750,90 @@ document.addEventListener(
             }
 
             /*
-             * Shared credential authority for the PDF engine.
+             * Credential authority shared with the PDF engine.
+             *
+             * The object remains read-only from the perspective
+             * of this controller. No Firestore credential mutation
+             * occurs here.
              */
             window.loadedCredential =
                 record;
+
+            console.info(
+                `[${MODULE_NAME}] Credential selected.`,
+                {
+                    credentialId:
+                        normalizeString(
+                            record?.credential_id
+                        ),
+
+                    learnerName:
+                        normalizeString(
+                            record?.full_name
+                        ),
+
+                    email:
+                        normalizeString(
+                            record?.email
+                        ),
+
+                    programCode:
+                        normalizeUppercase(
+                            record?.program_code
+                        ),
+
+                    batchId:
+                        getFirstAvailableValue(
+                            record,
+                            FIELD_ALIASES.BATCH_ID
+                        ),
+
+                    batchName:
+                        getFirstAvailableValue(
+                            record,
+                            FIELD_ALIASES.BATCH_NAME
+                        ),
+
+                    batchCode:
+                        getFirstAvailableValue(
+                            record,
+                            FIELD_ALIASES.BATCH_CODE
+                        )
+                }
+            );
 
             populateFields(
                 record
             );
 
-            await renderTrainerCertificatePreview(
-                record
-            );
+            try {
+
+                await renderTrainerCertificatePreview(
+                    record
+                );
+
+            }
+            catch (
+                error
+            ) {
+
+                console.error(
+                    `[${MODULE_NAME}] Trainer Certificate preview rendering failed.`,
+                    {
+                        credentialId:
+                            normalizeString(
+                                record?.credential_id
+                            ),
+
+                        error
+                    }
+                );
+
+                disablePdfButton();
+
+                throw error;
+
+            }
 
             if (
                 isCertificateReady(
@@ -597,6 +882,30 @@ document.addEventListener(
                             normalizeString(
                                 record?.learner_uid
                             )
+                        ),
+
+                    batchIdPresent:
+                        Boolean(
+                            getFirstAvailableValue(
+                                record,
+                                FIELD_ALIASES.BATCH_ID
+                            )
+                        ),
+
+                    batchNamePresent:
+                        Boolean(
+                            getFirstAvailableValue(
+                                record,
+                                FIELD_ALIASES.BATCH_NAME
+                            )
+                        ),
+
+                    batchCodePresent:
+                        Boolean(
+                            getFirstAvailableValue(
+                                record,
+                                FIELD_ALIASES.BATCH_CODE
+                            )
                         )
                 }
             );
@@ -629,9 +938,22 @@ document.addEventListener(
 
         }
 
+
         function populateFields(
             record
         ) {
+
+            if (
+                !record
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] populateFields called without a credential record.`
+                );
+
+                return;
+
+            }
 
             setText(
                 credentialIdValue,
@@ -719,12 +1041,589 @@ document.addEventListener(
                 )
             );
 
-        }
+            console.info(
+                `[${MODULE_NAME}] Credential metadata populated.`,
+                {
+                    credentialId:
+                        normalizeString(
+                            record?.credential_id
+                        ),
 
+                    programCode:
+                        normalizeUppercase(
+                            record?.program_code
+                        )
+                }
+            );
+
+        }
 
         /* ==================================================
            TRAINER CONTEXT
         ================================================== */
+
+        async function getDocumentById(
+            collectionName,
+            documentId
+        ) {
+
+            const normalizedId =
+                normalizeString(
+                    documentId
+                );
+
+            if (
+                !normalizedId
+            ) {
+
+                return null;
+
+            }
+
+            try {
+
+                const snapshot =
+                    await getDoc(
+                        doc(
+                            db,
+                            collectionName,
+                            normalizedId
+                        )
+                    );
+
+                if (
+                    !snapshot.exists()
+                ) {
+
+                    return null;
+
+                }
+
+                return {
+                    id:
+                        snapshot.id,
+
+                    data:
+                        snapshot.data()
+                };
+
+            }
+            catch (
+                error
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] Direct document lookup failed.`,
+                    {
+                        collection:
+                            collectionName,
+
+                        documentId:
+                            normalizedId,
+
+                        error
+                    }
+                );
+
+                return null;
+
+            }
+
+        }
+
+
+        async function getFirstByField(
+            collectionName,
+            fieldName,
+            value
+        ) {
+
+            const normalizedValue =
+                normalizeString(
+                    value
+                );
+
+            if (
+                !normalizedValue
+            ) {
+
+                return null;
+
+            }
+
+            try {
+
+                const result =
+                    await getDocs(
+                        query(
+                            collection(
+                                db,
+                                collectionName
+                            ),
+                            where(
+                                fieldName,
+                                "==",
+                                normalizedValue
+                            )
+                        )
+                    );
+
+                if (
+                    result.empty
+                ) {
+
+                    return null;
+
+                }
+
+                return {
+                    id:
+                        result.docs[0].id,
+
+                    data:
+                        result.docs[0].data()
+                };
+
+            }
+            catch (
+                error
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] Query lookup failed.`,
+                    {
+                        collection:
+                            collectionName,
+
+                        fieldName,
+
+                        value:
+                            normalizedValue,
+
+                        error
+                    }
+                );
+
+                return null;
+
+            }
+
+        }
+
+
+        async function resolveBatchRecord(
+            record
+        ) {
+
+            const batchId =
+                normalizeString(
+                    record?.batch_id ||
+                    record?.batchId
+                );
+
+            const batchName =
+                normalizeString(
+                    record?.batch_name ||
+                    record?.batchName
+                );
+
+            const batchCode =
+                normalizeString(
+                    record?.batch_code ||
+                    record?.batchCode
+                );
+
+            /*
+             * Resolution order is intentional:
+             *
+             * 1. Exact Firestore document ID from credential.batch_id
+             * 2. batch_name query
+             * 3. batch_code query
+             *
+             * Historical AOP credentials may not be uniform, so a single
+             * lookup path is not sufficient.
+             */
+
+            if (
+                batchId
+            ) {
+
+                const directMatch =
+                    await getDocumentById(
+                        "batches",
+                        batchId
+                    );
+
+                if (
+                    directMatch
+                ) {
+
+                    console.info(
+                        `[${MODULE_NAME}] Batch resolved by batch_id.`,
+                        {
+                            credentialId:
+                                normalizeString(
+                                    record?.credential_id
+                                ),
+
+                            batchId:
+                                directMatch.id
+                        }
+                    );
+
+                    return directMatch;
+
+                }
+
+            }
+
+            if (
+                batchName
+            ) {
+
+                const nameMatch =
+                    await getFirstByField(
+                        "batches",
+                        "batch_name",
+                        batchName
+                    );
+
+                if (
+                    nameMatch
+                ) {
+
+                    console.info(
+                        `[${MODULE_NAME}] Batch resolved by batch_name.`,
+                        {
+                            credentialId:
+                                normalizeString(
+                                    record?.credential_id
+                                ),
+
+                            batchName,
+
+                            batchDocumentId:
+                                nameMatch.id
+                        }
+                    );
+
+                    return nameMatch;
+
+                }
+
+            }
+
+            if (
+                batchCode
+            ) {
+
+                const codeMatch =
+                    await getFirstByField(
+                        "batches",
+                        "batch_code",
+                        batchCode
+                    );
+
+                if (
+                    codeMatch
+                ) {
+
+                    console.info(
+                        `[${MODULE_NAME}] Batch resolved by batch_code.`,
+                        {
+                            credentialId:
+                                normalizeString(
+                                    record?.credential_id
+                                ),
+
+                            batchCode,
+
+                            batchDocumentId:
+                                codeMatch.id
+                        }
+                    );
+
+                    return codeMatch;
+
+                }
+
+            }
+
+            console.warn(
+                `[${MODULE_NAME}] Batch could not be resolved for credential.`,
+                {
+                    credentialId:
+                        normalizeString(
+                            record?.credential_id
+                        ),
+
+                    batchId,
+
+                    batchName,
+
+                    batchCode
+                }
+            );
+
+            return null;
+
+        }
+
+
+        async function resolveTrainerRecord(
+            batchRecord
+        ) {
+
+            const batch =
+                batchRecord?.data ||
+                batchRecord ||
+                {};
+
+            const trainerId =
+                normalizeString(
+                    batch?.trainerId ||
+                    batch?.trainer_id
+                );
+
+            if (
+                !trainerId
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] Resolved batch has no trainer ID.`,
+                    {
+                        batchDocumentId:
+                            normalizeString(
+                                batchRecord?.id
+                            ),
+
+                        batchName:
+                            normalizeString(
+                                batch?.batch_name
+                            )
+                    }
+                );
+
+                return null;
+
+            }
+
+            /*
+             * Some trainerRegistry documents use generated Firestore IDs,
+             * so trainerId is normally a field lookup. A direct-document
+             * lookup is still attempted first for forward compatibility.
+             */
+
+            const directMatch =
+                await getDocumentById(
+                    "trainerRegistry",
+                    trainerId
+                );
+
+            if (
+                directMatch
+            ) {
+
+                console.info(
+                    `[${MODULE_NAME}] Trainer resolved by document ID.`,
+                    {
+                        trainerId,
+
+                        trainerDocumentId:
+                            directMatch.id
+                    }
+                );
+
+                return directMatch;
+
+            }
+
+            const canonicalMatch =
+                await getFirstByField(
+                    "trainerRegistry",
+                    "trainerId",
+                    trainerId
+                );
+
+            if (
+                canonicalMatch
+            ) {
+
+                console.info(
+                    `[${MODULE_NAME}] Trainer resolved by trainerId.`,
+                    {
+                        trainerId,
+
+                        trainerDocumentId:
+                            canonicalMatch.id
+                    }
+                );
+
+                return canonicalMatch;
+
+            }
+
+            const legacyMatch =
+                await getFirstByField(
+                    "trainerRegistry",
+                    "trainer_id",
+                    trainerId
+                );
+
+            if (
+                legacyMatch
+            ) {
+
+                console.info(
+                    `[${MODULE_NAME}] Trainer resolved by legacy trainer_id.`,
+                    {
+                        trainerId,
+
+                        trainerDocumentId:
+                            legacyMatch.id
+                    }
+                );
+
+                return legacyMatch;
+
+            }
+
+            console.warn(
+                `[${MODULE_NAME}] Trainer could not be resolved.`,
+                {
+                    trainerId
+                }
+            );
+
+            return null;
+
+        }
+
+
+        async function resolveOrganizationRecord(
+            trainerRecord
+        ) {
+
+            const trainer =
+                trainerRecord?.data ||
+                trainerRecord ||
+                {};
+
+            const organizationId =
+                normalizeString(
+                    trainer?.organizationId ||
+                    trainer?.organization_id
+                );
+
+            if (
+                !organizationId
+            ) {
+
+                console.warn(
+                    `[${MODULE_NAME}] Resolved trainer has no organization ID.`,
+                    {
+                        trainerId:
+                            normalizeString(
+                                trainer?.trainerId ||
+                                trainer?.trainer_id
+                            )
+                    }
+                );
+
+                return null;
+
+            }
+
+            /*
+             * Current trainingOrganizations records use organizationId as
+             * both the logical ID and, in some records, the document ID.
+             */
+
+            const directMatch =
+                await getDocumentById(
+                    "trainingOrganizations",
+                    organizationId
+                );
+
+            if (
+                directMatch
+            ) {
+
+                console.info(
+                    `[${MODULE_NAME}] Organization resolved by document ID.`,
+                    {
+                        organizationId,
+
+                        organizationDocumentId:
+                            directMatch.id
+                    }
+                );
+
+                return directMatch;
+
+            }
+
+            const canonicalMatch =
+                await getFirstByField(
+                    "trainingOrganizations",
+                    "organizationId",
+                    organizationId
+                );
+
+            if (
+                canonicalMatch
+            ) {
+
+                console.info(
+                    `[${MODULE_NAME}] Organization resolved by organizationId.`,
+                    {
+                        organizationId,
+
+                        organizationDocumentId:
+                            canonicalMatch.id
+                    }
+                );
+
+                return canonicalMatch;
+
+            }
+
+            const legacyMatch =
+                await getFirstByField(
+                    "trainingOrganizations",
+                    "organization_id",
+                    organizationId
+                );
+
+            if (
+                legacyMatch
+            ) {
+
+                console.info(
+                    `[${MODULE_NAME}] Organization resolved by legacy organization_id.`,
+                    {
+                        organizationId,
+
+                        organizationDocumentId:
+                            legacyMatch.id
+                    }
+                );
+
+                return legacyMatch;
+
+            }
+
+            console.warn(
+                `[${MODULE_NAME}] Organization could not be resolved.`,
+                {
+                    organizationId
+                }
+            );
+
+            return null;
+
+        }
+
 
         async function resolveTrainerContext(
             record
@@ -732,164 +1631,105 @@ document.addEventListener(
 
             try {
 
-                const batchName =
-                    normalizeString(
-                        record?.batch_name
+                const batchRecord =
+                    await resolveBatchRecord(
+                        record
                     );
 
                 if (
-                    !batchName
+                    !batchRecord
                 ) {
 
-                    console.warn(
-                        `[${MODULE_NAME}] No batch_name found on credential.`
-                    );
+                    return {
+                        batch:
+                            null,
 
-                    return null;
+                        trainer:
+                            null,
+
+                        organization:
+                            null
+                    };
 
                 }
 
-                const batchResult =
-                    await getDocs(
-                        query(
-                            collection(
-                                db,
-                                "batches"
-                            ),
-                            where(
-                                "batch_name",
-                                "==",
-                                batchName
-                            )
-                        )
+                const trainerRecord =
+                    await resolveTrainerRecord(
+                        batchRecord
                     );
 
                 if (
-                    batchResult.empty
+                    !trainerRecord
                 ) {
 
-                    console.warn(
-                        `[${MODULE_NAME}] Batch not found.`,
-                        {
-                            batchName
-                        }
-                    );
+                    return {
+                        batch:
+                            batchRecord.data,
 
-                    return null;
+                        trainer:
+                            null,
+
+                        organization:
+                            null
+                    };
 
                 }
 
-                const batch =
-                    batchResult.docs[0].data();
-
-                const trainerId =
-                    normalizeString(
-                        batch?.trainerId ||
-                        batch?.trainer_id
+                const organizationRecord =
+                    await resolveOrganizationRecord(
+                        trainerRecord
                     );
 
-                if (
-                    !trainerId
-                ) {
+                const context = {
+                    batch:
+                        batchRecord.data,
 
-                    console.warn(
-                        `[${MODULE_NAME}] Batch has no trainer ID.`
-                    );
+                    trainer:
+                        trainerRecord.data,
 
-                    return null;
-
-                }
-
-                const trainerResult =
-                    await getDocs(
-                        query(
-                            collection(
-                                db,
-                                "trainerRegistry"
-                            ),
-                            where(
-                                "trainerId",
-                                "==",
-                                trainerId
-                            )
-                        )
-                    );
-
-                if (
-                    trainerResult.empty
-                ) {
-
-                    console.warn(
-                        `[${MODULE_NAME}] Trainer not found.`,
-                        {
-                            trainerId
-                        }
-                    );
-
-                    return null;
-
-                }
-
-                const trainer =
-                    trainerResult.docs[0].data();
-
-                let organization =
-                    null;
-
-                const organizationId =
-                    normalizeString(
-                        trainer?.organizationId ||
-                        trainer?.organization_id
-                    );
-
-                if (
-                    organizationId
-                ) {
-
-                    try {
-
-                        const organizationResult =
-                            await getDocs(
-                                query(
-                                    collection(
-                                        db,
-                                        "trainingOrganizations"
-                                    ),
-                                    where(
-                                        "organizationId",
-                                        "==",
-                                        organizationId
-                                    )
-                                )
-                            );
-
-                        if (
-                            !organizationResult.empty
-                        ) {
-
-                            organization =
-                                organizationResult.docs[0].data();
-
-                        }
-
-                    }
-                    catch (
-                        error
-                    ) {
-
-                        console.warn(
-                            `[${MODULE_NAME}] Organization lookup failed.`,
-                            error
-                        );
-
-                    }
-
-                }
-
-                return {
-                    trainer,
-                    organization
+                    organization:
+                        organizationRecord?.data ||
+                        null
                 };
+
+                console.info(
+                    `[${MODULE_NAME}] Trainer context resolved.`,
+                    {
+                        credentialId:
+                            normalizeString(
+                                record?.credential_id
+                            ),
+
+                        batchDocumentId:
+                            batchRecord.id,
+
+                        trainerId:
+                            normalizeString(
+                                context.trainer?.trainerId ||
+                                context.trainer?.trainer_id
+                            ),
+
+                        trainerName:
+                            normalizeString(
+                                context.trainer?.trainerName ||
+                                context.trainer?.trainer_name
+                            ),
+
+                        organizationId:
+                            normalizeString(
+                                context.organization?.organizationId ||
+                                context.organization?.organization_id
+                            ),
+
+                        organizationName:
+                            normalizeString(
+                                context.organization?.organizationName ||
+                                context.organization?.organization_name
+                            )
+                    }
+                );
+
+                return context;
 
             }
             catch (
@@ -901,14 +1741,21 @@ document.addEventListener(
                     error
                 );
 
-                return null;
+                return {
+                    batch:
+                        null,
+
+                    trainer:
+                        null,
+
+                    organization:
+                        null
+                };
 
             }
 
         }
-
-
-        /* ==================================================
+                /* ==================================================
            PREVIEW RENDERING
         ================================================== */
 
@@ -1014,6 +1861,7 @@ document.addEventListener(
             );
 
         }
+
 
         function populateCertificateSurface(
             container,
@@ -1127,6 +1975,7 @@ document.addEventListener(
             }
 
         }
+
 
         function setSurfaceText(
             container,
@@ -1271,9 +2120,7 @@ document.addEventListener(
             return true;
 
         }
-
-
-        /* ==================================================
+                /* ==================================================
            DATE HELPERS
         ================================================== */
 
@@ -1356,6 +2203,7 @@ document.addEventListener(
             return date.toLocaleDateString();
 
         }
+
 
         function formatTrainingPeriod(
             record
@@ -1469,6 +2317,7 @@ document.addEventListener(
 
         }
 
+
         function clearForm() {
 
             if (
@@ -1502,6 +2351,7 @@ document.addEventListener(
 
         }
 
+
         function invalidateLoadedCredentialState() {
 
             if (
@@ -1513,9 +2363,7 @@ document.addEventListener(
             }
 
         }
-
-
-        /* ==================================================
+                /* ==================================================
            EVENTS
         ================================================== */
 
@@ -1533,6 +2381,7 @@ document.addEventListener(
             "input",
             invalidateLoadedCredentialState
         );
+
 
         searchBtn?.addEventListener(
             "click",
@@ -1561,10 +2410,12 @@ document.addEventListener(
             }
         );
 
+
         clearBtn?.addEventListener(
             "click",
             clearForm
         );
+
 
         generatePdfBtn?.addEventListener(
             "click",
@@ -1603,7 +2454,45 @@ document.addEventListener(
 
                 }
 
-                await window.generateTrainerCertificatePdf();
+                try {
+
+                    console.info(
+                        `[${MODULE_NAME}] Trainer Certificate PDF generation requested.`,
+                        {
+                            credentialId:
+                                normalizeString(
+                                    window.loadedCredential?.credential_id
+                                ),
+
+                            learnerName:
+                                normalizeString(
+                                    window.loadedCredential?.full_name
+                                ),
+
+                            programCode:
+                                normalizeUppercase(
+                                    window.loadedCredential?.program_code
+                                )
+                        }
+                    );
+
+                    await window.generateTrainerCertificatePdf();
+
+                }
+                catch (
+                    error
+                ) {
+
+                    console.error(
+                        `[${MODULE_NAME}] Trainer Certificate PDF generation failed:`,
+                        error
+                    );
+
+                    alert(
+                        "Trainer Certificate PDF could not be generated."
+                    );
+
+                }
 
             }
         );
@@ -1615,10 +2504,34 @@ document.addEventListener(
 
         disablePdfButton();
 
-        loadRegistry();
+        loadRegistry()
+            .catch(
+                (
+                    error
+                ) => {
+
+                    console.error(
+                        `[${MODULE_NAME}] Registry initialization failed:`,
+                        error
+                    );
+
+                }
+            );
 
         console.info(
-            `[${MODULE_NAME}] Loaded v${MODULE_VERSION}.`
+            `[${MODULE_NAME}] Loaded v${MODULE_VERSION}.`,
+            {
+                collections: {
+                    batches:
+                        COLLECTIONS.BATCHES,
+
+                    trainers:
+                        COLLECTIONS.TRAINERS,
+
+                    trainingOrganizations:
+                        COLLECTIONS.TRAINING_ORGANIZATIONS
+                }
+            }
         );
 
     }

@@ -8,7 +8,7 @@ service cloud.firestore {
        AGILE AI UNIVERSITY
        FIRESTORE SECURITY RULES
 
-       Version : 2.10.0
+       Version : 2.11.0
        Status  : ACTIVE
 
        Security Model
@@ -39,6 +39,14 @@ service cloud.firestore {
 
        Change History
        -----------------------------------------------------
+       v2.11.0
+       • Added read-only bootstrap-admin authority for batches
+       • Added read-only bootstrap-admin authority for trainerRegistry
+       • Added read-only bootstrap-admin authority for trainingOrganizations
+       • Enabled Trainer Certificate batch → trainer → organization resolution
+       • Preserved learner denial and default-deny governance
+       • Preserved all existing production collection rules
+
        v2.10.0
        • Added dedicated bridge_programme_registrations authority
        • Enabled authenticated learners to read only their own
@@ -3823,6 +3831,69 @@ service cloud.firestore {
             update,
             delete:
         if isBootstrapAdmin();
+
+    }
+
+
+    /* =====================================================
+       BATCHES
+       Trainer Certificate Resolution Authority
+       Version: 1.0.0
+       Status: ACTIVE
+    ===================================================== */
+
+    match /batches/{batchDocumentId} {
+
+      allow get,
+            list:
+        if isBootstrapAdmin();
+
+      allow create,
+            update,
+            delete:
+        if false;
+
+    }
+
+
+    /* =====================================================
+       TRAINER REGISTRY
+       Trainer Certificate Resolution Authority
+       Version: 1.0.0
+       Status: ACTIVE
+    ===================================================== */
+
+    match /trainerRegistry/{trainerDocumentId} {
+
+      allow get,
+            list:
+        if isBootstrapAdmin();
+
+      allow create,
+            update,
+            delete:
+        if false;
+
+    }
+
+
+    /* =====================================================
+       TRAINING ORGANIZATIONS
+       Trainer Certificate Resolution Authority
+       Version: 1.0.0
+       Status: ACTIVE
+    ===================================================== */
+
+    match /trainingOrganizations/{organizationDocumentId} {
+
+      allow get,
+            list:
+        if isBootstrapAdmin();
+
+      allow create,
+            update,
+            delete:
+        if false;
 
     }
 

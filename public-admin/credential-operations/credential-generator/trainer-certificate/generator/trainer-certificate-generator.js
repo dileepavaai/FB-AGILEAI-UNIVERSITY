@@ -1112,7 +1112,7 @@ document.addEventListener(
                 error
             ) {
 
-                console.warn(
+                console.error(
                     `[${MODULE_NAME}] Direct document lookup failed.`,
                     {
                         collection:
@@ -1120,6 +1120,15 @@ document.addEventListener(
 
                         documentId:
                             normalizedId,
+
+                        errorCode:
+                            error?.code || "",
+
+                        errorMessage:
+                            error?.message || "",
+
+                        errorName:
+                            error?.name || "",
 
                         error
                     }

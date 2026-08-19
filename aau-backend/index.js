@@ -4038,8 +4038,19 @@ app.post(
                                 data.issued_by ||
                                 "",
 
+                            batch_id:
+                                data.batch_id ||
+                                data.batchId ||
+                                "",
+
                             batch_name:
                                 data.batch_name ||
+                                data.batchName ||
+                                "",
+
+                            batch_code:
+                                data.batch_code ||
+                                data.batchCode ||
                                 "",
 
                             approval_status:

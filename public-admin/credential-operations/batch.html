@@ -1,6 +1,6 @@
 <!-- ==========================================
 Batch Management
-Version: 1.1.0
+Version: 1.2.0
 Status: ACTIVE
 
 Purpose
@@ -14,12 +14,21 @@ Admin
 Credential Operations
   ↓
 Batch Management
+  ↓
+batch.js
+  ↓
+Firestore
 
 Governance
 ------------------------------------------
 - Program Code immutable after creation
+- Training period belongs to batch authority
+- Trainer assignment governed through trainerRegistry
 - Admin controlled
 - Credential Operations domain
+- HTML owns structure only
+- CSS owns presentation
+- JavaScript owns behaviour and persistence
 ========================================== -->
 
 <!doctype html>
@@ -138,10 +147,238 @@ Governance
              CREATE BATCH
         ================================================== -->
 
-        <div class="batch-form-card">
+        <div class="batch-form-card section">
 
-          ...
-          
+          <div class="batch-form-title">
+            Create Batch
+          </div>
+
+          <form id="batchForm">
+
+            <div class="batch-form-grid">
+
+              <!-- BATCH NAME -->
+
+              <div>
+
+                <label
+                  for="batchName">
+
+                  Batch Name
+
+                </label>
+
+                <input
+                  id="batchName"
+                  name="batchName"
+                  type="text"
+                  autocomplete="off"
+                  required />
+
+              </div>
+
+              <!-- PROGRAM CODE -->
+
+              <div>
+
+                <label
+                  for="programCode">
+
+                  Program Code
+
+                </label>
+
+                <select
+                  id="programCode"
+                  name="programCode"
+                  required>
+
+                  <option value="">
+                    Select Program
+                  </option>
+
+                  <option value="AOP">
+                    AOP
+                  </option>
+
+                  <option value="AIPA">
+                    AIPA
+                  </option>
+
+                  <option value="AAIA">
+                    AAIA
+                  </option>
+
+                  <option value="AAIP">
+                    AAIP
+                  </option>
+
+                  <option value="AIAL">
+                    AIAL
+                  </option>
+
+                  <option value="AISD">
+                    AISD
+                  </option>
+
+                  <option value="AAIM">
+                    AAIM
+                  </option>
+
+                  <option value="AAICC">
+                    AAICC
+                  </option>
+
+                  <option value="AISL">
+                    AISL
+                  </option>
+
+                  <option value="AIOL">
+                    AIOL
+                  </option>
+
+                  <option value="AIPL">
+                    AIPL
+                  </option>
+
+                </select>
+
+              </div>
+
+              <!-- TRAINER -->
+
+              <div>
+
+                <label
+                  for="trainerId">
+
+                  Trainer
+
+                </label>
+
+                <select
+                  id="trainerId"
+                  name="trainerId"
+                  required>
+
+                  <option value="">
+                    Select Trainer
+                  </option>
+
+                </select>
+
+              </div>
+
+              <!-- STATUS -->
+
+              <div>
+
+                <label
+                  for="batchStatus">
+
+                  Status
+
+                </label>
+
+                <select
+                  id="batchStatus"
+                  name="batchStatus"
+                  required>
+
+                  <option value="draft">
+                    Draft
+                  </option>
+
+                  <option value="active">
+                    Active
+                  </option>
+
+                  <option value="completed">
+                    Completed
+                  </option>
+
+                  <option value="locked">
+                    Locked
+                  </option>
+
+                </select>
+
+              </div>
+
+              <!-- TRAINING START DATE -->
+
+              <div>
+
+                <label
+                  for="trainingStartDate">
+
+                  Training Start Date
+
+                </label>
+
+                <input
+                  id="trainingStartDate"
+                  name="trainingStartDate"
+                  type="date"
+                  required />
+
+              </div>
+
+              <!-- TRAINING END DATE -->
+
+              <div>
+
+                <label
+                  for="trainingEndDate">
+
+                  Training End Date
+
+                </label>
+
+                <input
+                  id="trainingEndDate"
+                  name="trainingEndDate"
+                  type="date"
+                  required />
+
+              </div>
+
+            </div>
+
+            <!-- ACTIONS -->
+
+            <div class="batch-actions">
+
+              <button
+                type="submit"
+                class="btn btn-primary">
+
+                Create Batch
+
+              </button>
+
+              <button
+                type="reset"
+                class="btn btn-secondary">
+
+                Clear
+
+              </button>
+
+            </div>
+
+            <!-- GOVERNANCE NOTICE -->
+
+            <div class="batch-warning">
+
+              Training dates are governed at batch level and will be
+              used by downstream credential and trainer certificate
+              generation.
+
+            </div>
+
+          </form>
+
         </div>
 
         <!-- ==================================================
@@ -150,7 +387,63 @@ Governance
 
         <div class="batch-list-card section">
 
-          ...
+          <div class="batch-list-title">
+            Existing Batches
+          </div>
+
+          <div class="table-wrapper">
+
+            <table
+              id="batchTable"
+              class="table batch-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>
+                    Batch Name
+                  </th>
+
+                  <th>
+                    Program
+                  </th>
+
+                  <th>
+                    Trainer
+                  </th>
+
+                  <th>
+                    Training Period
+                  </th>
+
+                  <th>
+                    Status
+                  </th>
+
+                  <th>
+                    Action
+                  </th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                <tr>
+
+                  <td colspan="6">
+                    Loading batches...
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
 
         </div>
 
@@ -168,26 +461,15 @@ Governance
 
   <script type="module">
 
-    import { initAdminApp }
+    import {
+      initAdminApp
+    }
       from "../assets/js/admin-app.js";
 
-    import { loadAdminSidebar }
+    import {
+      loadAdminSidebar
+    }
       from "../shared/design-authority/js/admin-sidebar.js";
-
-    /*
-    ==================================================
-    BATCH MANAGEMENT
-    Version: 1.1.0
-
-    Navigation Authority
-
-    Admin
-      ↓
-    Credential Operations
-      ↓
-    Batch Management
-    ==================================================
-    */
 
     loadAdminSidebar(
       "credential-operations"
@@ -196,19 +478,6 @@ Governance
     initAdminApp(
       "batch.js"
     );
-
-  </script>
-
-  <!-- 🔗 NAVIGATION HELPERS -->
-
-  <script>
-
-    function openBatch(batchId) {
-
-      window.location.href =
-        `batch-view.html?batch_id=${batchId}`;
-
-    }
 
   </script>
 

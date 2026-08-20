@@ -1140,7 +1140,6 @@ document.addEventListener(
 
         }
 
-
         async function getFirstByField(
             collectionName,
             fieldName,
@@ -1962,7 +1961,8 @@ document.addEventListener(
                 container,
                 "#trainercertTrainingPeriod",
                 formatTrainingPeriod(
-                    record
+                    record,
+                    trainerContext?.batch
                 )
             );
 
@@ -2215,35 +2215,66 @@ document.addEventListener(
 
 
         function formatTrainingPeriod(
-            record
+            record,
+            batch
         ) {
 
             const startDate =
-                normalizeString(
-                    record?.training_start_date
-                );
+                batch?.training_start_date ||
+                batch?.trainingStartDate ||
+                batch?.start_date ||
+                batch?.startDate ||
+                record?.training_start_date ||
+                record?.trainingStartDate ||
+                "";
 
             const endDate =
-                normalizeString(
-                    record?.training_end_date
+                batch?.training_end_date ||
+                batch?.trainingEndDate ||
+                batch?.end_date ||
+                batch?.endDate ||
+                record?.training_end_date ||
+                record?.trainingEndDate ||
+                "";
+
+            const formattedStartDate =
+                formatDate(
+                    startDate
+                );
+
+            const formattedEndDate =
+                formatDate(
+                    endDate
                 );
 
             if (
-                startDate &&
-                endDate
+                formattedStartDate !== "-" &&
+                formattedEndDate !== "-"
             ) {
 
                 return (
-                    `${startDate} - ${endDate}`
+                    `${formattedStartDate} - ${formattedEndDate}`
                 );
 
             }
 
-            return (
-                startDate ||
-                endDate ||
-                "-"
-            );
+            if (
+                formattedStartDate !== "-"
+            ) {
+
+                return formattedStartDate;
+
+            }
+
+            if (
+                formattedEndDate !== "-"
+            ) {
+
+                return formattedEndDate;
+
+            }
+
+            return "-";
 
         }
 

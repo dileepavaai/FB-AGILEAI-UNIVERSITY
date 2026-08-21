@@ -1,26 +1,52 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8" />
-  <title>Credential Operations – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    Credential Operations – Admin
+  </title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1" />
 
   <!-- 🔒 CORE SYSTEM -->
-  <link rel="stylesheet" href="../assets/css/site.css" />
+
+  <link
+    rel="stylesheet"
+    href="../assets/css/site.css" />
 
   <!-- 🎨 DESIGN AUTHORITY -->
-  <link rel="stylesheet" href="../shared/design-authority/css/refinement.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/refinement.css" />
 
   <!-- 🧩 COMMON SURFACES -->
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/common.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/tables.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/typography.css" />
-  <link rel="stylesheet" href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/common.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/tables.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/typography.css" />
+
+  <link
+    rel="stylesheet"
+    href="../shared/design-authority/css/surfaces/common/micro-interactions.css" />
 
   <!-- ==========================================
   Credential Operations Gateway
-  Version: 1.0.0
-  Status: LOCKED
+  Version: 1.2.0
+  Status: ACTIVE
 
   Purpose
   ------------------------------------------
@@ -43,6 +69,7 @@
   - CSV Import
   - Credential Generator
   - Credential Registry
+  - Credential Asset Audit
 
   Future Capability
   ------------------------------------------
@@ -54,63 +81,110 @@
   ------------------------------------------
   - No Firebase changes
   - No RBAC changes
-  - No URL changes
+  - Existing operational URLs remain unchanged
   - No file movement
+  - Credential Asset Audit is read-only
+  - Credential Asset Audit does not issue credentials
+  - Credential Asset Audit does not publish assets
   ========================================== -->
 
-  <link rel="stylesheet"
-        href="../assets/css/credential-generator.css" />
+  <link
+    rel="stylesheet"
+    href="../assets/css/credential-generator.css" />
 
-  <link rel="stylesheet"
-        href="./assets/css/credential-operations.css" />
+  <link
+    rel="stylesheet"
+    href="./assets/css/credential-operations.css" />
 
 </head>
+
 
 <body class="app-loading">
 
   <!-- 🔷 HEADER -->
+
   <div id="headerContainer"></div>
+
 
   <div class="layout">
 
     <!-- 🔷 SIDEBAR -->
+
     <div id="adminSidebarContainer"></div>
+
 
     <main class="content">
 
       <!-- 🔐 LOGIN -->
-      <section id="loginView">
-        <h2>Admin Access</h2>
-        <p>Please sign in with your authorized account.</p>
 
-        <button id="loginBtn" class="btn btn-primary">
+      <section id="loginView">
+
+        <h2>
+          Admin Access
+        </h2>
+
+        <p>
+          Please sign in with your authorized account.
+        </p>
+
+        <button
+          id="loginBtn"
+          class="btn btn-primary">
+
           Sign in with Google
+
         </button>
+
       </section>
 
-      <!-- 🔷 APP -->
-      <section id="appView" class="hidden">
 
-        <!-- PAGE HEADER -->
+      <!-- 🔷 APP -->
+
+      <section
+        id="appView"
+        class="hidden">
+
+
+        <!-- ==================================================
+             PAGE HEADER
+        ================================================== -->
+
         <div class="section">
-          <h2>Credential Operations</h2>
+
+          <h2>
+            Credential Operations
+          </h2>
 
           <p class="page-subtitle">
+
             Centralized administration for credential lifecycle management,
             batch operations, issuance workflows, registry administration,
-            and future credential services.
+            asset readiness auditing, and future credential services.
+
           </p>
+
         </div>
 
-        <!-- OPERATIONAL ADMINISTRATION -->
+
+        <!-- ==================================================
+             OPERATIONAL ADMINISTRATION
+        ================================================== -->
+
         <div class="section">
+
           <div class="card">
 
             <div class="card-title">
               Operational Administration
             </div>
 
+
             <div class="co-operations-grid">
+
+
+              <!-- ================================
+                   BATCH MANAGEMENT
+              ================================= -->
 
               <div class="co-operation-card">
 
@@ -125,10 +199,17 @@
                 <a
                   class="co-operation-link"
                   href="./batch.html">
+
                   Launch →
+
                 </a>
 
               </div>
+
+
+              <!-- ================================
+                   CSV IMPORT
+              ================================= -->
 
               <div class="co-operation-card">
 
@@ -143,10 +224,17 @@
                 <a
                   class="co-operation-link"
                   href="./csv.html">
+
                   Launch →
+
                 </a>
 
               </div>
+
+
+              <!-- ================================
+                   CREDENTIAL GENERATOR
+              ================================= -->
 
               <div class="co-operation-card">
 
@@ -161,10 +249,17 @@
                 <a
                   class="co-operation-link"
                   href="./credential-generator/credential-generator.html">
+
                   Launch →
+
                 </a>
 
               </div>
+
+
+              <!-- ================================
+                   CREDENTIAL REGISTRY
+              ================================= -->
 
               <div class="co-operation-card">
 
@@ -179,75 +274,163 @@
                 <a
                   class="co-operation-link"
                   href="./credential-registry/credential-registry.html">
+
                   Launch →
+
                 </a>
 
               </div>
 
+
+              <!-- ================================
+                   CREDENTIAL ASSET AUDIT
+              ================================= -->
+
+              <div class="co-operation-card">
+
+                <div class="co-operation-title">
+                  Credential Asset Audit
+                </div>
+
+                <div class="co-operation-description">
+                  Review credential holders and identify missing,
+                  unpublished, or incomplete credential assets.
+                </div>
+
+                <a
+                  class="co-operation-link"
+                  href="./credential-assets/credential-asset-audit.html">
+
+                  Launch →
+
+                </a>
+
+              </div>
+
+
             </div>
 
           </div>
+
         </div>
 
-        <!-- FUTURE CAPABILITY -->
+
+        <!-- ==================================================
+             FUTURE CAPABILITY
+        ================================================== -->
+
         <div class="section">
+
           <div class="card">
 
             <div class="card-title">
               Future Capability
             </div>
 
+
             <div class="grid-2">
 
-              <div class="data-row">
-                <span class="data-label">Verification Publisher</span>
-                <span>Planned</span>
-              </div>
 
               <div class="data-row">
-                <span class="data-label">Distribution Services</span>
-                <span>Planned</span>
+
+                <span class="data-label">
+                  Verification Publisher
+                </span>
+
+                <span>
+                  Planned
+                </span>
+
               </div>
 
+
               <div class="data-row">
-                <span class="data-label">Wallet Export</span>
-                <span>Planned</span>
+
+                <span class="data-label">
+                  Distribution Services
+                </span>
+
+                <span>
+                  Planned
+                </span>
+
               </div>
+
+
+              <div class="data-row">
+
+                <span class="data-label">
+                  Wallet Export
+                </span>
+
+                <span>
+                  Planned
+                </span>
+
+              </div>
+
 
             </div>
 
           </div>
+
         </div>
 
-        <!-- GOVERNANCE NOTICE -->
+
+        <!-- ==================================================
+             GOVERNANCE NOTICE
+        ================================================== -->
+
         <div class="section">
+
           <div class="card">
 
             <div class="card-title">
               Governance Notice
             </div>
 
+
             <p>
+
               Credential Operations is the authoritative administrative
               gateway for credential lifecycle and operational administration
               activities within Agile AI University.
+
             </p>
 
+
             <p>
+
               Operational surfaces are intentionally accessed through this
               gateway to support governance consistency, auditability,
               navigation simplicity, and future platform scalability.
+
             </p>
 
+
             <p>
+
+              Credential Asset Audit provides a read-only operational view
+              of credential asset readiness. It does not generate,
+              publish, replace, or modify credential artifacts.
+
+            </p>
+
+
+            <p>
+
               Existing operational URLs remain canonical and unchanged.
               This gateway introduces no changes to credential issuance,
               registry records, batch processing, or platform security
               controls.
+
             </p>
 
+
           </div>
+
         </div>
+
 
       </section>
 
@@ -255,39 +438,64 @@
 
   </div>
 
+
   <!-- 🔷 FOOTER -->
+
   <div id="footerContainer"></div>
 
+
   <!-- 🔥 ADMIN APP BOOTSTRAP -->
+
   <script type="module">
 
-    import { initAdminApp }
+    import {
+      initAdminApp
+    }
       from "../assets/js/admin-app.js";
 
-    import { loadAdminSidebar }
+
+    import {
+      loadAdminSidebar
+    }
       from "../shared/design-authority/js/admin-sidebar.js";
 
+
     /*
-      Credential Operations Gateway
-      Version: 1.1.0
+    ==================================================
+    Credential Operations Gateway
+    Version: 1.2.0
+    Status: ACTIVE
 
-      Admin Navigation Authority Pilot
+    Navigation Authority
 
-      Architecture:
-      Admin
-        ↓
-      Credential Operations
-        ↓
-      Operational Surface
+    Admin
+      ↓
+    Credential Operations
+      ↓
+    Operational Surface
+
+    Operational Surfaces
+
+    - Batch Management
+    - CSV Import
+    - Credential Generator
+    - Credential Registry
+    - Credential Asset Audit
+    ==================================================
     */
+
 
     loadAdminSidebar(
       "credential-operations"
     );
 
+
     initAdminApp();
+
 
   </script>
 
+
 </body>
+
 </html>

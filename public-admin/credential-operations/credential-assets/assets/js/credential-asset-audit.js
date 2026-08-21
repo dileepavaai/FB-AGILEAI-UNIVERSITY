@@ -2,7 +2,7 @@
    Agile AI University
    Credential Asset Audit Controller
    ---------------------------------------------------------
-   Version: 1.0.0
+   Version: 1.0.1
    Status: IMPLEMENTATION
 
    PURPOSE
@@ -36,7 +36,7 @@
 
 import {
   db
-} from "../../../assets/js/core.js";
+} from "../../../../assets/js/core.js";
 
 import {
   collection,
@@ -45,11 +45,11 @@ import {
 
 import {
   initAdminApp
-} from "../../../assets/js/admin-app.js";
+} from "../../../../assets/js/admin-app.js";
 
 import {
   loadAdminSidebar
-} from "../../../shared/design-authority/js/admin-sidebar.js";
+} from "../../../../shared/design-authority/js/admin-sidebar.js";
 
 
 /* =========================================================
@@ -838,7 +838,7 @@ function renderSummary() {
     auditState.rows.filter(
       row =>
         row.ownership.status ===
-        "pending"
+          "pending"
     ).length;
 
   if (
@@ -1262,7 +1262,7 @@ function resolveDom() {
       "auditOwnershipPending"
     );
 
-  searchInput =
+    searchInput =
     document.getElementById(
       "auditSearch"
     );
@@ -1282,7 +1282,7 @@ function resolveDom() {
       "auditOwnershipFilter"
     );
 
-    refreshButton =
+  refreshButton =
     document.getElementById(
       "auditRefreshButton"
     );

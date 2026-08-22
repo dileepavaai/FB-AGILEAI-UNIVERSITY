@@ -268,6 +268,939 @@ let refreshButton = null;
 let clearFiltersButton = null;
 
 /* =========================================================
+   AUDIT FOUNDATION + DATA RESOLUTION
+   Version: 1.2.0
+   Status : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Restores the governed Credential Asset Audit foundation
+   responsible for:
+
+   • Data normalization
+   • Credential identity resolution
+   • Credential asset type normalization
+   • Published asset validation
+   • Learner ownership resolution
+   • Required asset resolution
+   • Credential audit-row construction
+   • Firestore read operations
+   • Summary generation
+   • Programme-filter population
+   • Audit-load orchestration
+
+   Architecture
+   ----------------------------------------------------------
+   credentials
+       +
+   credential_assets
+       ↓
+   Asset Resolution
+       ↓
+   Credential Audit Row
+       ↓
+   auditState.rows
+       ↓
+   Filter + Sort
+       ↓
+   Readiness Surface
+
+   Governance
+   ----------------------------------------------------------
+   • Read-only
+   • No Firestore writes
+   • No credential mutation
+   • No credential asset mutation
+   • No ownership mutation
+   • credential_id remains the permanent correlation key
+   • Existing credential and credential_assets authorities
+     remain unchanged
+   • Historical records remain supported
+   • Sorting remains view-only
+   • Filtering remains view-only
+
+   Change History
+   ----------------------------------------------------------
+   v1.2.0
+   • Restored audit foundation removed during sorting upgrade
+   • Restored normalization helpers
+   • Restored published-asset resolution
+   • Restored ownership resolution
+   • Restored credential audit-row construction
+   • Restored credential Firestore loading
+   • Restored credential_assets Firestore loading
+   • Restored summary metrics
+   • Restored programme-filter population
+   • Restored governed audit-load orchestration
+   • Preserved v1.1.0 sorting implementation
+   • Preserved enhanced status rendering
+========================================================= */
+
+
+/* =========================================================
+   NORMALIZATION
+========================================================= */
+
+function normalizeString(
+  value
+) {
+
+  if (
+    value === undefined ||
+    value === null
+  ) {
+
+    return "";
+
+  }
+
+  return String(
+    value
+  ).trim();
+
+}
+
+
+function normalizeLower(
+  value
+) {
+
+  return normalizeString(
+    value
+  ).toLowerCase();
+
+}
+
+
+/* =========================================================
+   HTML ESCAPING
+========================================================= */
+
+function escapeHtml(
+  value
+) {
+
+  return normalizeString(
+    value
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =========================================================
+   ASSET TYPE NORMALIZATION
+
+   Supports canonical governed asset names together with
+   historical aliases that may exist in credential_assets.
+========================================================= */
+
+function normalizeAssetType(
+  rawType
+) {
+
+  const type =
+    normalizeLower(
+      rawType
+    )
+      .replace(
+        /[\s-]+/g,
+        "_"
+      );
+
+
+  const aliases = {
+
+    universitycertificate:
+      "university_certificate",
+
+    university_certificate:
+      "university_certificate",
+
+    certificate:
+      "university_certificate",
+
+    trainercertificate:
+      "trainer_certificate",
+
+    trainer_certificate:
+      "trainer_certificate",
+
+    badge:
+      "digital_badge",
+
+    digitalbadge:
+      "digital_badge",
+
+    digital_badge:
+      "digital_badge"
+
+  };
+
+
+  return aliases[type] ||
+    type;
+
+}
+
+
+/* =========================================================
+   PUBLISHED ASSET RESOLUTION
+========================================================= */
+
+function isPublishedAsset(
+  asset
+) {
+
+  if (
+    !asset
+  ) {
+
+    return false;
+
+  }
+
+
+  const status =
+    normalizeLower(
+      asset.status
+    );
+
+
+  const publishedFlag =
+    asset.published ===
+    true;
+
+
+  const latestFlag =
+    asset.is_latest;
+
+
+  /*
+   * Support both the governed status field and
+   * historical published boolean where present.
+   */
+
+  const published =
+    status ===
+      "published" ||
+    publishedFlag;
+
+
+  /*
+   * Historical asset records may not contain
+   * is_latest. Absence of the field must therefore
+   * not automatically invalidate the asset.
+   */
+
+  const latest =
+    latestFlag ===
+      undefined ||
+    latestFlag ===
+      null ||
+    latestFlag ===
+      true;
+
+
+  return (
+    published &&
+    latest
+  );
+
+}
+
+
+/* =========================================================
+   CREDENTIAL ID RESOLUTION
+========================================================= */
+
+function getCredentialId(
+  credential
+) {
+
+  return normalizeString(
+    credential?.credential_id ||
+    credential?.credentialId ||
+    credential?.id
+  );
+
+}
+
+
+function getAssetCredentialId(
+  asset
+) {
+
+  return normalizeString(
+    asset?.credential_id ||
+    asset?.credentialId
+  );
+
+}
+
+
+/* =========================================================
+   OWNERSHIP RESOLUTION
+========================================================= */
+
+function resolveOwnership(
+  credential,
+  credentialAssets
+) {
+
+  const credentialLearnerUid =
+    normalizeString(
+      credential?.learner_uid ||
+      credential?.learnerUid
+    );
+
+
+  /*
+   * Credential-level learner ownership is authoritative
+   * when available.
+   */
+
+  if (
+    credentialLearnerUid
+  ) {
+
+    return {
+
+      status:
+        "linked",
+
+      label:
+        "Learner Linked"
+
+    };
+
+  }
+
+
+  /*
+   * Historical credential records may not yet contain
+   * learner_uid while a published credential asset does.
+   */
+
+  const assetWithLearner =
+    credentialAssets.find(
+      asset =>
+        normalizeString(
+          asset?.learner_uid ||
+          asset?.learnerUid
+        )
+    );
+
+
+  if (
+    assetWithLearner
+  ) {
+
+    return {
+
+      status:
+        "linked",
+
+      label:
+        "Learner Linked"
+
+    };
+
+  }
+
+
+  return {
+
+    status:
+      "pending",
+
+    label:
+      "Activation Pending"
+
+  };
+
+}
+
+
+/* =========================================================
+   REQUIRED ASSET RESOLUTION
+========================================================= */
+
+function resolveRequiredAsset(
+  credentialAssets,
+  requiredType
+) {
+
+  return credentialAssets.find(
+    asset => {
+
+      const assetType =
+        normalizeAssetType(
+          asset?.asset_type ||
+          asset?.assetType ||
+          asset?.type
+        );
+
+
+      return (
+        assetType ===
+          requiredType &&
+        isPublishedAsset(
+          asset
+        )
+      );
+
+    }
+  ) || null;
+
+}
+
+
+/* =========================================================
+   BUILD AUDIT ROW
+========================================================= */
+
+function buildAuditRow(
+  credential
+) {
+
+  const credentialId =
+    getCredentialId(
+      credential
+    );
+
+
+  const credentialAssets =
+    auditState.assets.filter(
+      asset =>
+        getAssetCredentialId(
+          asset
+        ) ===
+        credentialId
+    );
+
+
+  const universityCertificate =
+    resolveRequiredAsset(
+      credentialAssets,
+      "university_certificate"
+    );
+
+
+  const trainerCertificate =
+    resolveRequiredAsset(
+      credentialAssets,
+      "trainer_certificate"
+    );
+
+
+  const digitalBadge =
+    resolveRequiredAsset(
+      credentialAssets,
+      "digital_badge"
+    );
+
+
+  const ownership =
+    resolveOwnership(
+      credential,
+      credentialAssets
+    );
+
+
+  const requiredAssets = {
+
+    university_certificate:
+      universityCertificate,
+
+    trainer_certificate:
+      trainerCertificate,
+
+    digital_badge:
+      digitalBadge
+
+  };
+
+
+  const missingAssets =
+    REQUIRED_ASSET_TYPES.filter(
+      type =>
+        !requiredAssets[
+          type
+        ]
+    );
+
+
+  const complete =
+    missingAssets.length ===
+    0;
+
+
+  return {
+
+    credentialId,
+
+    learnerName:
+      normalizeString(
+        credential?.full_name ||
+        credential?.learner_name ||
+        credential?.learnerName
+      ),
+
+    email:
+      normalizeString(
+        credential?.email
+      ),
+
+    programCode:
+      normalizeString(
+        credential?.program_code ||
+        credential?.programCode ||
+        credential?.credential_type
+      ),
+
+    credential,
+
+    credentialAssets,
+
+    universityCertificate,
+
+    trainerCertificate,
+
+    digitalBadge,
+
+    ownership,
+
+    missingAssets,
+
+    complete
+
+  };
+
+}
+
+
+/* =========================================================
+   BUILD AUDIT ROWS
+========================================================= */
+
+function buildAuditRows() {
+
+  auditState.rows =
+    auditState.credentials
+      .map(
+        credential =>
+          buildAuditRow(
+            credential
+          )
+      )
+      .filter(
+        row =>
+          row.credentialId
+      );
+
+}
+
+
+/* =========================================================
+   FIRESTORE READ — CREDENTIALS
+========================================================= */
+
+async function loadCredentials() {
+
+  const snapshot =
+    await getDocs(
+      collection(
+        db,
+        "credentials"
+      )
+    );
+
+
+  auditState.credentials =
+    snapshot.docs.map(
+      docSnap => ({
+
+        id:
+          docSnap.id,
+
+        ...docSnap.data()
+
+      })
+    );
+
+}
+
+
+/* =========================================================
+   FIRESTORE READ — CREDENTIAL ASSETS
+========================================================= */
+
+async function loadCredentialAssets() {
+
+  const snapshot =
+    await getDocs(
+      collection(
+        db,
+        "credential_assets"
+      )
+    );
+
+
+  auditState.assets =
+    snapshot.docs.map(
+      docSnap => ({
+
+        id:
+          docSnap.id,
+
+        ...docSnap.data()
+
+      })
+    );
+
+}
+
+
+/* =========================================================
+   STATUS MESSAGE
+========================================================= */
+
+function setStatus(
+  message
+) {
+
+  if (
+    !statusMessage
+  ) {
+
+    return;
+
+  }
+
+
+  statusMessage.textContent =
+    message;
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+function renderSummary() {
+
+  const total =
+    auditState.rows.length;
+
+
+  const complete =
+    auditState.rows.filter(
+      row =>
+        row.complete
+    ).length;
+
+
+  const incomplete =
+    total -
+    complete;
+
+
+  const ownershipPending =
+    auditState.rows.filter(
+      row =>
+        row.ownership?.status ===
+        "pending"
+    ).length;
+
+
+  if (
+    totalCredentialsElement
+  ) {
+
+    totalCredentialsElement.textContent =
+      String(
+        total
+      );
+
+  }
+
+
+  if (
+    completeCredentialsElement
+  ) {
+
+    completeCredentialsElement.textContent =
+      String(
+        complete
+      );
+
+  }
+
+
+  if (
+    incompleteCredentialsElement
+  ) {
+
+    incompleteCredentialsElement.textContent =
+      String(
+        incomplete
+      );
+
+  }
+
+
+  if (
+    ownershipPendingElement
+  ) {
+
+    ownershipPendingElement.textContent =
+      String(
+        ownershipPending
+      );
+
+  }
+
+}
+
+
+/* =========================================================
+   PROGRAM FILTER POPULATION
+========================================================= */
+
+function populateProgramFilter() {
+
+  if (
+    !programFilter
+  ) {
+
+    return;
+
+  }
+
+
+  const currentValue =
+    programFilter.value;
+
+
+  const programs =
+    [
+      ...new Set(
+        auditState.rows
+          .map(
+            row =>
+              row.programCode
+          )
+          .filter(
+            Boolean
+          )
+      )
+    ]
+      .sort(
+        (
+          firstProgram,
+          secondProgram
+        ) =>
+          firstProgram.localeCompare(
+            secondProgram
+          )
+      );
+
+
+  programFilter.innerHTML = `
+    <option value="">
+      All Programs
+    </option>
+  `;
+
+
+  programs.forEach(
+    program => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        program;
+
+
+      option.textContent =
+        program;
+
+
+      programFilter.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  if (
+    programs.includes(
+      currentValue
+    )
+  ) {
+
+    programFilter.value =
+      currentValue;
+
+  }
+
+}
+
+
+/* =========================================================
+   AUDIT LOAD ORCHESTRATION
+   Version: 1.2.0
+
+   Sequence
+   ----------------------------------------------------------
+   1. Load credentials
+   2. Load published credential assets
+   3. Resolve governed audit rows
+   4. Populate programme filter
+   5. Render summary
+   6. Apply active filters and sorting
+========================================================= */
+
+async function loadAudit() {
+
+  setStatus(
+    "Loading credential registry and published assets..."
+  );
+
+
+  if (
+    refreshButton
+  ) {
+
+    refreshButton.disabled =
+      true;
+
+  }
+
+
+  try {
+
+    await Promise.all([
+
+      loadCredentials(),
+
+      loadCredentialAssets()
+
+    ]);
+
+
+    console.log(
+      "[CredentialAssetAudit] Credentials loaded:",
+      auditState.credentials.length
+    );
+
+
+    console.log(
+      "[CredentialAssetAudit] Assets loaded:",
+      auditState.assets.length
+    );
+
+
+    buildAuditRows();
+
+
+    console.log(
+      "[CredentialAssetAudit] Audit rows:",
+      auditState.rows.length
+    );
+
+
+    populateProgramFilter();
+
+
+    renderSummary();
+
+
+    /*
+     * applyFilters() includes the current governed
+     * sorting implementation.
+     */
+
+    applyFilters();
+
+  }
+  catch (
+    error
+  ) {
+
+    console.error(
+      "[CredentialAssetAudit] Audit failed:",
+      error
+    );
+
+
+    setStatus(
+      "Unable to load the credential asset audit. Check the browser console for details."
+    );
+
+
+    if (
+      tableBody
+    ) {
+
+      tableBody.innerHTML = `
+        <tr>
+
+          <td
+            colspan="8">
+
+            Credential asset audit could not be loaded.
+
+          </td>
+
+        </tr>
+      `;
+
+    }
+
+  }
+  finally {
+
+    if (
+      refreshButton
+    ) {
+
+      refreshButton.disabled =
+        false;
+
+    }
+
+  }
+
+}
+
+/* =========================================================
    FILTERING + SORTING
    Version: 1.1.0
 

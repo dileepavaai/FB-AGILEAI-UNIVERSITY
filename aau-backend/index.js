@@ -352,6 +352,29 @@ const activationRequestCounts =
     new Map();
 
 /* ==========================================================
+   Automatic Identity Reconciliation Rate Limiting
+
+   Version : 1.0.0
+   Status  : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Protect authenticated first-login identity reconciliation
+   independently from activation-token operations.
+
+   Governance
+   ----------------------------------------------------------
+   - Rate limiting is defensive only.
+   - Firebase Authentication remains identity authority.
+   - The authenticated UID/email are never accepted from
+     browser request data.
+   - Current MVP uses the existing in-memory limiter model.
+========================================================== */
+
+const identityReconciliationRequestCounts =
+    new Map();
+
+/* ==========================================================
    General Utilities
 ========================================================== */
 

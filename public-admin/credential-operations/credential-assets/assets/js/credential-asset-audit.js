@@ -1440,3 +1440,110 @@ function renderTable() {
   );
 
 }
+
+/* =========================================================
+   APPLICATION INITIALIZATION
+   =========================================================
+   Credential Asset Audit
+   Version: 1.2.0
+
+   Purpose
+   ---------------------------------------------------------
+   Initializes the governed Credential Asset Audit surface
+   after module dependencies and DOM bindings are available.
+
+   Initialization Order
+   ---------------------------------------------------------
+   1. Resolve DOM references
+   2. Initialize shared Admin application/authentication
+   3. Bind audit controls
+   4. Load credential registry and asset data
+   5. Render governed audit state
+
+   Governance
+   ---------------------------------------------------------
+   - Read-only audit surface
+   - No credential mutation
+   - No credential asset mutation
+   - No learner identity mutation
+   - Existing Admin RBAC remains authoritative
+   - Existing Firebase Core remains authoritative
+
+   Change History
+   ---------------------------------------------------------
+   v1.2.0
+   - Restored explicit application bootstrap
+   - Preserves deterministic initialization sequence
+   - Preserves filtering and sorting implementation
+   - Preserves asset readiness rendering
+   - Preserves shared Admin authentication lifecycle
+   ========================================================= */
+
+(async () => {
+
+  console.log(
+    "[CredentialAssetAudit] Initializing..."
+  );
+
+
+  try {
+
+    /* =====================================================
+       1. RESOLVE DOM
+    ===================================================== */
+
+    resolveDom();
+
+
+    /* =====================================================
+       2. INITIALIZE ADMIN APPLICATION
+    ===================================================== */
+
+    await initAdminApp();
+
+
+    /* =====================================================
+       3. BIND AUDIT EVENTS
+    ===================================================== */
+
+    bindEvents();
+
+
+    /* =====================================================
+       4. LOAD AUDIT DATA
+    ===================================================== */
+
+    await loadAudit();
+
+
+    /* =====================================================
+       INITIALIZATION COMPLETE
+    ===================================================== */
+
+    console.log(
+      "[CredentialAssetAudit] Initialized."
+    );
+
+  }
+  catch (
+    error
+  ) {
+
+    console.error(
+      "[CredentialAssetAudit] Initialization failed:",
+      error
+    );
+
+
+    /*
+     * Do not silently leave the page in an indefinite
+     * loading state when initialization fails.
+     */
+
+    document.body.classList.remove(
+      "app-loading"
+    );
+
+  }
+
+})();

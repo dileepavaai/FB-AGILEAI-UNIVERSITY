@@ -1,37 +1,144 @@
 /* =========================================================
    Agile AI University
-   Credential Asset Audit Controller
-   ---------------------------------------------------------
-   Version: 1.0.1
-   Status: IMPLEMENTATION
+   Credential Operations Suite
 
-   PURPOSE
-   ---------------------------------------------------------
-   Read-only operational audit of credential asset readiness.
+   File      : credential-asset-audit.js
+   Component : Credential Asset Audit Controller
+   Version   : 1.1.0
+   Status    : ACTIVE
+   Phase     : Credential Asset Readiness Intelligence
 
-   AUTHORITIES
-   ---------------------------------------------------------
-   credentials
-     → credential metadata authority
+   Purpose
+   ----------------------------------------------------------
+   • Provide a governed read-only audit of credential assets
+   • Compare credential records with published asset records
+   • Identify complete and incomplete credential portfolios
+   • Identify learner ownership and activation readiness
+   • Support operational filtering and sorting
+   • Surface remediation priorities without mutating data
 
-   credential_assets
-     → published credential asset registry
+   Responsibilities
+   ----------------------------------------------------------
+   ✓ Load authoritative credential records
+   ✓ Load published credential asset records
+   ✓ Resolve required credential assets
+   ✓ Resolve learner ownership state
+   ✓ Calculate credential asset completeness
+   ✓ Populate audit summary metrics
+   ✓ Filter audit records
+   ✓ Sort audit records
+   ✓ Render credential asset readiness
+   ✓ Support operational refresh
+   ✓ Support clear-filter reset
 
-   AUDIT COMPLETENESS
-   ---------------------------------------------------------
-   Required:
-   - university_certificate
-   - trainer_certificate
-   - digital_badge
+   Non Responsibilities
+   ----------------------------------------------------------
+   ✗ Generate credential binaries
+   ✗ Upload credential assets
+   ✗ Publish credential assets
+   ✗ Modify credential records
+   ✗ Modify credential_assets records
+   ✗ Assign learner ownership
+   ✗ Perform identity reconciliation
+   ✗ Grant learner entitlements
+   ✗ Modify programme or batch records
 
-   GOVERNANCE
-   ---------------------------------------------------------
-   - READ ONLY
-   - No credential mutation
-   - No asset generation
-   - No asset publication
-   - No learner mutation
-   - No entitlement mutation
+   Governance
+   ----------------------------------------------------------
+   • credentials is the credential metadata authority
+   • credential_assets is the published asset registry
+   • Cloud Storage remains the binary asset authority
+   • credential_id is the permanent asset correlation key
+   • Audit operations are read-only
+   • Audit sorting operates only on the rendered audit view
+   • Sorting must never mutate authoritative Firestore data
+   • Filtering must never mutate authoritative Firestore data
+   • Asset completeness requires all governed required assets
+   • Recognition Asset is not currently required for
+     alumni asset-completeness calculation
+   • Historical credentials may not yet have learner_uid
+   • Ownership readiness is independent of asset completeness
+
+   Required Asset Types
+   ----------------------------------------------------------
+   • university_certificate
+   • trainer_certificate
+   • digital_badge
+
+   Operational Default
+   ----------------------------------------------------------
+   Sort:
+   • Action Required First
+
+   Rationale:
+   • Credential Asset Audit is an operational remediation
+     surface.
+   • Incomplete credential portfolios therefore receive
+     priority in the default view.
+   • Completed portfolios remain available through sorting
+     and filtering without obscuring unresolved work.
+
+   Data Sources
+   ----------------------------------------------------------
+   • credentials
+   • credential_assets
+
+   Architecture
+   ----------------------------------------------------------
+   Admin
+     ↓
+   Credential Operations
+     ↓
+   Credential Asset Audit
+     ↓
+   credentials + credential_assets
+     ↓
+   Audit Resolver
+     ↓
+   Filter + Sort
+     ↓
+   Readiness Surface
+
+   Change History
+   ----------------------------------------------------------
+   v1.1.0
+   • Added governed audit sorting architecture
+   • Added Action Required First operational default
+   • Added Complete First sorting
+   • Added Learner Name A–Z sorting
+   • Added Learner Name Z–A sorting
+   • Added Credential ID A–Z sorting
+   • Added Program A–Z sorting
+   • Added Ownership Pending First sorting
+   • Added dedicated sort-control DOM authority
+   • Prepared sort-control event binding
+   • Preserved existing credential filtering
+   • Preserved credential asset completeness calculation
+   • Preserved learner ownership resolution
+   • Preserved read-only audit governance
+   • No Firestore writes introduced
+   • No credential mutation introduced
+   • No asset publication introduced
+
+   v1.0.1
+   • Corrected Firebase module resolution paths
+   • Restored complete application initialization
+   • Preserved read-only credential asset audit behaviour
+
+   v1.0.0
+   • Introduced Credential Asset Audit
+   • Added credential registry loading
+   • Added credential_assets registry loading
+   • Added required asset resolution
+   • Added credential completeness calculation
+   • Added ownership-state resolution
+   • Added search filtering
+   • Added programme filtering
+   • Added asset-status filtering
+   • Added ownership filtering
+   • Added audit summary metrics
+   • Added credential readiness table
+
 ========================================================= */
 
 import {
@@ -53,14 +160,64 @@ import {
 
 
 /* =========================================================
-   CONFIGURATION
+   MODULE CONSTANTS
 ========================================================= */
 
-const REQUIRED_ASSET_TYPES = Object.freeze([
-  "university_certificate",
-  "trainer_certificate",
-  "digital_badge"
-]);
+const MODULE_NAME =
+  "CredentialAssetAudit";
+
+const MODULE_VERSION =
+  "1.1.0";
+
+
+/* =========================================================
+   REQUIRED ASSET GOVERNANCE
+========================================================= */
+
+const REQUIRED_ASSET_TYPES =
+  Object.freeze([
+
+    "university_certificate",
+
+    "trainer_certificate",
+
+    "digital_badge"
+
+  ]);
+
+
+/* =========================================================
+   SORT GOVERNANCE
+========================================================= */
+
+const DEFAULT_SORT_MODE =
+  "action-first";
+
+const SORT_MODES =
+  Object.freeze({
+
+    ACTION_FIRST:
+      "action-first",
+
+    COMPLETE_FIRST:
+      "complete-first",
+
+    NAME_ASC:
+      "name-asc",
+
+    NAME_DESC:
+      "name-desc",
+
+    CREDENTIAL_ASC:
+      "credential-asc",
+
+    PROGRAM_ASC:
+      "program-asc",
+
+    OWNERSHIP_PENDING_FIRST:
+      "ownership-pending-first"
+
+  });
 
 
 /* =========================================================
@@ -104,871 +261,307 @@ let statusFilter = null;
 
 let ownershipFilter = null;
 
+let sortFilter = null;
+
 let refreshButton = null;
 
 let clearFiltersButton = null;
 
-
 /* =========================================================
-   NORMALIZATION
+   FILTERING + SORTING
+   Version: 1.1.0
+
+   Purpose
+   ----------------------------------------------------------
+   • Apply operational audit filters
+   • Apply governed view-only sorting
+   • Preserve authoritative auditState.rows
+   • Render the resulting operational view
+
+   Governance
+   ----------------------------------------------------------
+   • Filtering operates only on auditState.rows
+   • Sorting operates only on the filtered result
+   • auditState.rows must never be sorted in place
+   • Firestore data is never mutated
+   • Action Required First is the operational default
+   • Alphabetical ordering is used as a deterministic
+     secondary sort where appropriate
 ========================================================= */
 
-function normalizeString(
-  value
-) {
-
-  if (
-    value === null ||
-    value === undefined
-  ) {
-    return "";
-  }
-
-  return String(
-    value
-  ).trim();
-
-}
-
-
-function normalizeLower(
-  value
+function compareText(
+  firstValue,
+  secondValue
 ) {
 
   return normalizeString(
-    value
-  ).toLowerCase();
-
-}
-
-
-/* =========================================================
-   HTML SAFETY
-========================================================= */
-
-function escapeHtml(
-  value
-) {
-
-  const text =
+    firstValue
+  ).localeCompare(
     normalizeString(
-      value
-    );
-
-  return text
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
-}
-
-
-/* =========================================================
-   ASSET TYPE NORMALIZATION
-
-   This allows the audit to tolerate historical naming
-   differences without changing stored records.
-========================================================= */
-
-function normalizeAssetType(
-  value
-) {
-
-  const type =
-    normalizeLower(
-      value
-    )
-      .replaceAll(
-        "-",
-        "_"
-      )
-      .replaceAll(
-        " ",
-        "_"
-      );
-
-  const aliases = {
-
-    certificate:
-      "university_certificate",
-
-    universitycertificate:
-      "university_certificate",
-
-    university_certificate:
-      "university_certificate",
-
-    trainercertificate:
-      "trainer_certificate",
-
-    trainer_certificate:
-      "trainer_certificate",
-
-    badge:
-      "digital_badge",
-
-    digitalbadge:
-      "digital_badge",
-
-    digital_badge:
-      "digital_badge"
-
-  };
-
-  return aliases[type] || type;
-
-}
-
-
-/* =========================================================
-   PUBLISHED ASSET RESOLUTION
-========================================================= */
-
-function isPublishedAsset(
-  asset
-) {
-
-  if (!asset) {
-    return false;
-  }
-
-  const status =
-    normalizeLower(
-      asset.status
-    );
-
-  const publishedFlag =
-    asset.published === true;
-
-  const latestFlag =
-    asset.is_latest;
-
-  /*
-   * Support both the governed status field and
-   * historical published boolean where present.
-   */
-
-  const published =
-    status === "published" ||
-    publishedFlag;
-
-  /*
-   * If is_latest does not exist on a historical record,
-   * do not automatically reject it.
-   */
-
-  const latest =
-    latestFlag === undefined ||
-    latestFlag === null ||
-    latestFlag === true;
-
-  return (
-    published &&
-    latest
-  );
-
-}
-
-
-/* =========================================================
-   CREDENTIAL ID RESOLUTION
-========================================================= */
-
-function getCredentialId(
-  credential
-) {
-
-  return normalizeString(
-    credential?.credential_id ||
-    credential?.credentialId ||
-    credential?.id
-  );
-
-}
-
-
-function getAssetCredentialId(
-  asset
-) {
-
-  return normalizeString(
-    asset?.credential_id ||
-    asset?.credentialId
-  );
-
-}
-
-
-/* =========================================================
-   OWNERSHIP RESOLUTION
-========================================================= */
-
-function resolveOwnership(
-  credential,
-  credentialAssets
-) {
-
-  const credentialLearnerUid =
-    normalizeString(
-      credential?.learner_uid ||
-      credential?.learnerUid
-    );
-
-  if (
-    credentialLearnerUid
-  ) {
-
-    return {
-      status: "linked",
-      label: "Learner Linked"
-    };
-
-  }
-
-  const assetWithLearner =
-    credentialAssets.find(
-      asset =>
-        normalizeString(
-          asset?.learner_uid ||
-          asset?.learnerUid
-        )
-    );
-
-  if (
-    assetWithLearner
-  ) {
-
-    return {
-      status: "linked",
-      label: "Learner Linked"
-    };
-
-  }
-
-  return {
-    status: "pending",
-    label: "Activation Pending"
-  };
-
-}
-
-
-/* =========================================================
-   ASSET PRESENCE RESOLUTION
-========================================================= */
-
-function resolveRequiredAsset(
-  credentialAssets,
-  requiredType
-) {
-
-  return credentialAssets.find(
-    asset => {
-
-      const assetType =
-        normalizeAssetType(
-          asset?.asset_type ||
-          asset?.assetType ||
-          asset?.type
-        );
-
-      return (
-        assetType === requiredType &&
-        isPublishedAsset(
-          asset
-        )
-      );
-
-    }
-  ) || null;
-
-}
-
-
-/* =========================================================
-   BUILD AUDIT ROW
-========================================================= */
-
-function buildAuditRow(
-  credential
-) {
-
-  const credentialId =
-    getCredentialId(
-      credential
-    );
-
-  const credentialAssets =
-    auditState.assets.filter(
-      asset =>
-        getAssetCredentialId(
-          asset
-        ) === credentialId
-    );
-
-  const universityCertificate =
-    resolveRequiredAsset(
-      credentialAssets,
-      "university_certificate"
-    );
-
-  const trainerCertificate =
-    resolveRequiredAsset(
-      credentialAssets,
-      "trainer_certificate"
-    );
-
-  const digitalBadge =
-    resolveRequiredAsset(
-      credentialAssets,
-      "digital_badge"
-    );
-
-  const ownership =
-    resolveOwnership(
-      credential,
-      credentialAssets
-    );
-
-  const requiredAssets = {
-
-    university_certificate:
-      universityCertificate,
-
-    trainer_certificate:
-      trainerCertificate,
-
-    digital_badge:
-      digitalBadge
-
-  };
-
-  const missingAssets =
-    REQUIRED_ASSET_TYPES.filter(
-      type =>
-        !requiredAssets[type]
-    );
-
-  const complete =
-    missingAssets.length === 0;
-
-  return {
-
-    credentialId,
-
-    learnerName:
-      normalizeString(
-        credential?.full_name ||
-        credential?.learner_name ||
-        credential?.learnerName
-      ),
-
-    email:
-      normalizeString(
-        credential?.email
-      ),
-
-    programCode:
-      normalizeString(
-        credential?.program_code ||
-        credential?.programCode ||
-        credential?.credential_type
-      ),
-
-    credential,
-
-    credentialAssets,
-
-    universityCertificate,
-
-    trainerCertificate,
-
-    digitalBadge,
-
-    ownership,
-
-    missingAssets,
-
-    complete
-
-  };
-
-}
-
-
-/* =========================================================
-   BUILD AUDIT
-========================================================= */
-
-function buildAuditRows() {
-
-  auditState.rows =
-    auditState.credentials
-      .map(
-        credential =>
-          buildAuditRow(
-            credential
-          )
-      )
-      .filter(
-        row =>
-          row.credentialId
-      );
-
-}
-
-
-/* =========================================================
-   FIRESTORE READ
-========================================================= */
-
-async function loadCredentials() {
-
-  const snapshot =
-    await getDocs(
-      collection(
-        db,
-        "credentials"
-      )
-    );
-
-  auditState.credentials =
-    snapshot.docs.map(
-      docSnap => ({
-        id:
-          docSnap.id,
-
-        ...docSnap.data()
-      })
-    );
-
-}
-
-
-async function loadCredentialAssets() {
-
-  const snapshot =
-    await getDocs(
-      collection(
-        db,
-        "credential_assets"
-      )
-    );
-
-  auditState.assets =
-    snapshot.docs.map(
-      docSnap => ({
-        id:
-          docSnap.id,
-
-        ...docSnap.data()
-      })
-    );
-
-}
-
-
-/* =========================================================
-   STATUS DISPLAY
-========================================================= */
-
-function setStatus(
-  message
-) {
-
-  if (
-    !statusMessage
-  ) {
-    return;
-  }
-
-  statusMessage.textContent =
-    message;
-
-}
-
-
-/* =========================================================
-   ASSET DISPLAY
-========================================================= */
-
-function renderAssetStatus(
-  asset
-) {
-
-  if (
-    asset
-  ) {
-
-    return `
-      <span
-        title="Published asset available">
-        ✓ Published
-      </span>
-    `;
-
-  }
-
-  return `
-    <span
-      title="Required published asset not found">
-      — Missing
-    </span>
-  `;
-
-}
-
-
-/* =========================================================
-   OWNERSHIP DISPLAY
-========================================================= */
-
-function renderOwnership(
-  ownership
-) {
-
-  if (
-    ownership.status === "linked"
-  ) {
-
-    return `
-      <span>
-        ✓ ${escapeHtml(
-          ownership.label
-        )}
-      </span>
-    `;
-
-  }
-
-  return `
-    <span>
-      — ${escapeHtml(
-        ownership.label
-      )}
-    </span>
-  `;
-
-}
-
-
-/* =========================================================
-   OVERALL DISPLAY
-========================================================= */
-
-function renderOverallStatus(
-  row
-) {
-
-  if (
-    row.complete
-  ) {
-
-    return `
-      <strong>
-        COMPLETE
-      </strong>
-    `;
-
-  }
-
-  return `
-    <strong>
-      ACTION REQUIRED
-    </strong>
-  `;
-
-}
-
-
-/* =========================================================
-   TABLE RENDERING
-========================================================= */
-
-function renderTable() {
-
-  if (
-    !tableBody
-  ) {
-    return;
-  }
-
-  tableBody.innerHTML = "";
-
-  if (
-    auditState.filteredRows.length === 0
-  ) {
-
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="8">
-          No credentials match the current audit filters.
-        </td>
-      </tr>
-    `;
-
-    return;
-
-  }
-
-  const fragment =
-    document.createDocumentFragment();
-
-  auditState.filteredRows.forEach(
-    row => {
-
-      const tr =
-        document.createElement(
-          "tr"
-        );
-
-      tr.innerHTML = `
-
-        <td>
-          ${escapeHtml(
-            row.credentialId
-          )}
-        </td>
-
-        <td>
-
-          <div>
-            ${escapeHtml(
-              row.learnerName || "-"
-            )}
-          </div>
-
-          <div class="card-subtitle">
-            ${escapeHtml(
-              row.email || "-"
-            )}
-          </div>
-
-        </td>
-
-        <td>
-          ${escapeHtml(
-            row.programCode || "-"
-          )}
-        </td>
-
-        <td>
-          ${renderAssetStatus(
-            row.universityCertificate
-          )}
-        </td>
-
-        <td>
-          ${renderAssetStatus(
-            row.trainerCertificate
-          )}
-        </td>
-
-        <td>
-          ${renderAssetStatus(
-            row.digitalBadge
-          )}
-        </td>
-
-        <td>
-          ${renderOwnership(
-            row.ownership
-          )}
-        </td>
-
-        <td>
-          ${renderOverallStatus(
-            row
-          )}
-        </td>
-
-      `;
-
-      fragment.appendChild(
-        tr
-      );
-
+      secondValue
+    ),
+    undefined,
+    {
+      sensitivity:
+        "base"
     }
   );
 
-  tableBody.appendChild(
-    fragment
-  );
-
 }
 
 
 /* =========================================================
-   SUMMARY
+   SORT RESOLVER
+
+   Governance
+   ----------------------------------------------------------
+   Receives the current filtered view and returns a sorted
+   copy. The incoming array is never sorted in place.
 ========================================================= */
 
-function renderSummary() {
+function sortAuditRows(
+  rows,
+  sortMode
+) {
 
-  const total =
-    auditState.rows.length;
+  const normalizedSortMode =
+    normalizeString(
+      sortMode
+    ) ||
+    DEFAULT_SORT_MODE;
 
-  const complete =
-    auditState.rows.filter(
-      row =>
-        row.complete
-    ).length;
-
-  const incomplete =
-    total -
-    complete;
-
-  const ownershipPending =
-    auditState.rows.filter(
-      row =>
-        row.ownership.status ===
-          "pending"
-    ).length;
-
-  if (
-    totalCredentialsElement
-  ) {
-
-    totalCredentialsElement.textContent =
-      String(
-        total
-      );
-
-  }
-
-  if (
-    completeCredentialsElement
-  ) {
-
-    completeCredentialsElement.textContent =
-      String(
-        complete
-      );
-
-  }
-
-  if (
-    incompleteCredentialsElement
-  ) {
-
-    incompleteCredentialsElement.textContent =
-      String(
-        incomplete
-      );
-
-  }
-
-  if (
-    ownershipPendingElement
-  ) {
-
-    ownershipPendingElement.textContent =
-      String(
-        ownershipPending
-      );
-
-  }
-
-}
-
-
-/* =========================================================
-   PROGRAM FILTER
-========================================================= */
-
-function populateProgramFilter() {
-
-  if (
-    !programFilter
-  ) {
-    return;
-  }
-
-  const currentValue =
-    programFilter.value;
-
-  const programs =
+  const sortedRows =
     [
-      ...new Set(
-        auditState.rows
-          .map(
-            row =>
-              row.programCode
-          )
-          .filter(
-            Boolean
-          )
-      )
-    ]
-      .sort(
-        (
-          a,
-          b
-        ) =>
-          a.localeCompare(
-            b
-          )
-      );
+      ...rows
+    ];
 
-  programFilter.innerHTML = `
-    <option value="">
-      All Programs
-    </option>
-  `;
 
-  programs.forEach(
-    program => {
+  sortedRows.sort(
+    (
+      firstRow,
+      secondRow
+    ) => {
 
-      const option =
-        document.createElement(
-          "option"
-        );
+      switch (
+        normalizedSortMode
+      ) {
 
-      option.value =
-        program;
+        /* =================================================
+           ACTION REQUIRED FIRST
+        ================================================= */
 
-      option.textContent =
-        program;
+        case SORT_MODES.ACTION_FIRST: {
 
-      programFilter.appendChild(
-        option
-      );
+          if (
+            firstRow.complete !==
+            secondRow.complete
+          ) {
+
+            return firstRow.complete
+              ? 1
+              : -1;
+
+          }
+
+
+          return compareText(
+            firstRow.learnerName,
+            secondRow.learnerName
+          );
+
+        }
+
+
+        /* =================================================
+           COMPLETE FIRST
+        ================================================= */
+
+        case SORT_MODES.COMPLETE_FIRST: {
+
+          if (
+            firstRow.complete !==
+            secondRow.complete
+          ) {
+
+            return firstRow.complete
+              ? -1
+              : 1;
+
+          }
+
+
+          return compareText(
+            firstRow.learnerName,
+            secondRow.learnerName
+          );
+
+        }
+
+
+        /* =================================================
+           LEARNER NAME A-Z
+        ================================================= */
+
+        case SORT_MODES.NAME_ASC: {
+
+          return compareText(
+            firstRow.learnerName,
+            secondRow.learnerName
+          );
+
+        }
+
+
+        /* =================================================
+           LEARNER NAME Z-A
+        ================================================= */
+
+        case SORT_MODES.NAME_DESC: {
+
+          return compareText(
+            secondRow.learnerName,
+            firstRow.learnerName
+          );
+
+        }
+
+
+        /* =================================================
+           CREDENTIAL ID A-Z
+        ================================================= */
+
+        case SORT_MODES.CREDENTIAL_ASC: {
+
+          return compareText(
+            firstRow.credentialId,
+            secondRow.credentialId
+          );
+
+        }
+
+
+        /* =================================================
+           PROGRAM A-Z
+        ================================================= */
+
+        case SORT_MODES.PROGRAM_ASC: {
+
+          const programComparison =
+            compareText(
+              firstRow.programCode,
+              secondRow.programCode
+            );
+
+
+          if (
+            programComparison !== 0
+          ) {
+
+            return programComparison;
+
+          }
+
+
+          return compareText(
+            firstRow.learnerName,
+            secondRow.learnerName
+          );
+
+        }
+
+
+        /* =================================================
+           OWNERSHIP PENDING FIRST
+        ================================================= */
+
+        case SORT_MODES.OWNERSHIP_PENDING_FIRST: {
+
+          const firstPending =
+            firstRow.ownership?.status ===
+            "pending";
+
+          const secondPending =
+            secondRow.ownership?.status ===
+            "pending";
+
+
+          if (
+            firstPending !==
+            secondPending
+          ) {
+
+            return firstPending
+              ? -1
+              : 1;
+
+          }
+
+
+          return compareText(
+            firstRow.learnerName,
+            secondRow.learnerName
+          );
+
+        }
+
+
+        /* =================================================
+           SAFE GOVERNED FALLBACK
+
+           Unknown or unsupported sort modes fall back to
+           Action Required First.
+        ================================================= */
+
+        default: {
+
+          if (
+            firstRow.complete !==
+            secondRow.complete
+          ) {
+
+            return firstRow.complete
+              ? 1
+              : -1;
+
+          }
+
+
+          return compareText(
+            firstRow.learnerName,
+            secondRow.learnerName
+          );
+
+        }
+
+      }
 
     }
   );
 
-  if (
-    programs.includes(
-      currentValue
-    )
-  ) {
 
-    programFilter.value =
-      currentValue;
-
-  }
+  return sortedRows;
 
 }
 
 
 /* =========================================================
-   FILTERING
+   APPLY FILTERS
+
+   Processing Order
+   ----------------------------------------------------------
+   Authoritative Audit Rows
+        ↓
+   Search Filter
+        ↓
+   Program Filter
+        ↓
+   Asset Status Filter
+        ↓
+   Ownership Filter
+        ↓
+   Governed Sort Resolver
+        ↓
+   Rendered Audit View
 ========================================================= */
 
 function applyFilters() {
@@ -978,22 +571,37 @@ function applyFilters() {
       searchInput?.value
     );
 
+
   const selectedProgram =
     normalizeString(
       programFilter?.value
     );
+
 
   const selectedStatus =
     normalizeString(
       statusFilter?.value
     );
 
+
   const selectedOwnership =
     normalizeString(
       ownershipFilter?.value
     );
 
-  auditState.filteredRows =
+
+  const selectedSort =
+    normalizeString(
+      sortFilter?.value
+    ) ||
+    DEFAULT_SORT_MODE;
+
+
+  /* =======================================================
+     FILTER CURRENT AUDIT VIEW
+  ======================================================= */
+
+  const filteredRows =
     auditState.rows.filter(
       row => {
 
@@ -1009,53 +617,106 @@ function applyFilters() {
             )
           );
 
+
+        /* -------------------------------------------------
+           SEARCH
+        ------------------------------------------------- */
+
         if (
           search &&
           !searchable.includes(
             search
           )
         ) {
+
           return false;
+
         }
+
+
+        /* -------------------------------------------------
+           PROGRAM
+        ------------------------------------------------- */
 
         if (
           selectedProgram &&
           row.programCode !==
             selectedProgram
         ) {
+
           return false;
+
         }
+
+
+        /* -------------------------------------------------
+           ASSET COMPLETENESS
+        ------------------------------------------------- */
 
         if (
           selectedStatus ===
             "complete" &&
           !row.complete
         ) {
+
           return false;
+
         }
+
 
         if (
           selectedStatus ===
             "incomplete" &&
           row.complete
         ) {
+
           return false;
+
         }
+
+
+        /* -------------------------------------------------
+           OWNERSHIP
+        ------------------------------------------------- */
 
         if (
           selectedOwnership &&
-          row.ownership.status !==
+          row.ownership?.status !==
             selectedOwnership
         ) {
+
           return false;
+
         }
+
 
         return true;
 
       }
     );
 
+
+  /* =======================================================
+     SORT FILTERED VIEW
+
+     Important:
+     sortAuditRows returns a copy. The authoritative
+     auditState.rows array remains unchanged.
+  ======================================================= */
+
+  auditState.filteredRows =
+    sortAuditRows(
+      filteredRows,
+      selectedSort
+    );
+
+
+  /* =======================================================
+     RENDER
+  ======================================================= */
+
   renderTable();
+
 
   setStatus(
     `Showing ${auditState.filteredRows.length} of ${auditState.rows.length} credentials.`
@@ -1066,6 +727,18 @@ function applyFilters() {
 
 /* =========================================================
    CLEAR FILTERS
+   Version: 1.1.0
+
+   Governance
+   ----------------------------------------------------------
+   Clear returns the audit surface to its governed
+   operational default:
+
+   Search     → Empty
+   Program    → All
+   Asset      → All
+   Ownership  → All
+   Sort       → Action Required First
 ========================================================= */
 
 function clearFilters() {
@@ -1073,150 +746,147 @@ function clearFilters() {
   if (
     searchInput
   ) {
-    searchInput.value = "";
+
+    searchInput.value =
+      "";
+
   }
+
 
   if (
     programFilter
   ) {
-    programFilter.value = "";
+
+    programFilter.value =
+      "";
+
   }
+
 
   if (
     statusFilter
   ) {
-    statusFilter.value = "";
+
+    statusFilter.value =
+      "";
+
   }
+
 
   if (
     ownershipFilter
   ) {
-    ownershipFilter.value = "";
+
+    ownershipFilter.value =
+      "";
+
   }
+
+
+  if (
+    sortFilter
+  ) {
+
+    sortFilter.value =
+      DEFAULT_SORT_MODE;
+
+  }
+
 
   applyFilters();
 
 }
 
-
-/* =========================================================
-   AUDIT LOAD
-========================================================= */
-
-async function loadAudit() {
-
-  setStatus(
-    "Loading credential registry and published assets..."
-  );
-
-  if (
-    refreshButton
-  ) {
-    refreshButton.disabled =
-      true;
-  }
-
-  try {
-
-    await Promise.all([
-      loadCredentials(),
-      loadCredentialAssets()
-    ]);
-
-    console.log(
-      "[CredentialAssetAudit] Credentials loaded:",
-      auditState.credentials.length
-    );
-
-    console.log(
-      "[CredentialAssetAudit] Assets loaded:",
-      auditState.assets.length
-    );
-
-    buildAuditRows();
-
-    console.log(
-      "[CredentialAssetAudit] Audit rows:",
-      auditState.rows.length
-    );
-
-    populateProgramFilter();
-
-    renderSummary();
-
-    applyFilters();
-
-  } catch (
-    error
-  ) {
-
-    console.error(
-      "[CredentialAssetAudit] Audit failed:",
-      error
-    );
-
-    setStatus(
-      "Unable to load the credential asset audit. Check the browser console for details."
-    );
-
-    if (
-      tableBody
-    ) {
-
-      tableBody.innerHTML = `
-        <tr>
-          <td colspan="8">
-            Credential asset audit could not be loaded.
-          </td>
-        </tr>
-      `;
-
-    }
-
-  } finally {
-
-    if (
-      refreshButton
-    ) {
-      refreshButton.disabled =
-        false;
-    }
-
-  }
-
-}
-
-
 /* =========================================================
    EVENT BINDING
+   Version: 1.1.0
+
+   Purpose
+   ----------------------------------------------------------
+   • Bind governed audit interaction controls
+   • Route all filter changes through applyFilters()
+   • Route sorting changes through applyFilters()
+   • Support controlled audit refresh
+   • Support governed filter reset
+
+   Governance
+   ----------------------------------------------------------
+   • UI events may alter only the rendered audit view
+   • Filter events must not mutate authoritative audit rows
+   • Sort events must not mutate authoritative audit rows
+   • Refresh may reload authoritative read-only data
+   • Clear Filters returns to Action Required First
 ========================================================= */
 
 function bindEvents() {
+
+  /* =======================================================
+     SEARCH
+  ======================================================= */
 
   searchInput?.addEventListener(
     "input",
     applyFilters
   );
 
+
+  /* =======================================================
+     PROGRAM FILTER
+  ======================================================= */
+
   programFilter?.addEventListener(
     "change",
     applyFilters
   );
+
+
+  /* =======================================================
+     ASSET STATUS FILTER
+  ======================================================= */
 
   statusFilter?.addEventListener(
     "change",
     applyFilters
   );
 
+
+  /* =======================================================
+     OWNERSHIP FILTER
+  ======================================================= */
+
   ownershipFilter?.addEventListener(
     "change",
     applyFilters
   );
 
+
+  /* =======================================================
+     SORT CONTROL
+
+     All sorting remains inside applyFilters() →
+     sortAuditRows(). The DOM is never manually reordered
+     by the event handler.
+  ======================================================= */
+
+  sortFilter?.addEventListener(
+    "change",
+    applyFilters
+  );
+
+
+  /* =======================================================
+     REFRESH AUDIT
+  ======================================================= */
+
   refreshButton?.addEventListener(
     "click",
     loadAudit
   );
+
+
+  /* =======================================================
+     CLEAR FILTERS
+  ======================================================= */
 
   clearFiltersButton?.addEventListener(
     "click",
@@ -1228,116 +898,545 @@ function bindEvents() {
 
 /* =========================================================
    DOM INITIALIZATION
+   Version: 1.1.0
+
+   Purpose
+   ----------------------------------------------------------
+   Resolve the governed DOM contract used by the
+   Credential Asset Audit controller.
+
+   DOM Contract
+   ----------------------------------------------------------
+   Summary
+   • auditTotalCredentials
+   • auditCompleteCredentials
+   • auditIncompleteCredentials
+   • auditOwnershipPending
+
+   Filters
+   • auditSearch
+   • auditProgramFilter
+   • auditStatusFilter
+   • auditOwnershipFilter
+   • auditSort
+
+   Actions
+   • auditRefreshBtn
+   • auditClearFiltersBtn
+
+   Audit Surface
+   • credentialAssetAuditTableBody
+   • auditStatusMessage
+
+   Governance
+   ----------------------------------------------------------
+   • JavaScript resolves existing HTML authorities
+   • JavaScript does not create structural controls
+   • Missing optional controls fail safely through
+     optional event binding
+   • DOM IDs must remain aligned with
+     credential-asset-audit.html
 ========================================================= */
 
 function resolveDom() {
+
+  /* =======================================================
+     AUDIT TABLE
+  ======================================================= */
 
   tableBody =
     document.getElementById(
       "credentialAssetAuditTableBody"
     );
 
+
+  /* =======================================================
+     STATUS MESSAGE
+  ======================================================= */
+
   statusMessage =
     document.getElementById(
       "auditStatusMessage"
     );
+
+
+  /* =======================================================
+     SUMMARY METRICS
+  ======================================================= */
 
   totalCredentialsElement =
     document.getElementById(
       "auditTotalCredentials"
     );
 
+
   completeCredentialsElement =
     document.getElementById(
       "auditCompleteCredentials"
     );
+
 
   incompleteCredentialsElement =
     document.getElementById(
       "auditIncompleteCredentials"
     );
 
+
   ownershipPendingElement =
     document.getElementById(
       "auditOwnershipPending"
     );
 
-    searchInput =
+
+  /* =======================================================
+     FILTER CONTROLS
+  ======================================================= */
+
+  searchInput =
     document.getElementById(
       "auditSearch"
     );
+
 
   programFilter =
     document.getElementById(
       "auditProgramFilter"
     );
 
+
   statusFilter =
     document.getElementById(
       "auditStatusFilter"
     );
+
 
   ownershipFilter =
     document.getElementById(
       "auditOwnershipFilter"
     );
 
+
+  /* =======================================================
+     SORT CONTROL
+  ======================================================= */
+
+  sortFilter =
+    document.getElementById(
+      "auditSort"
+    );
+
+
+  /* =======================================================
+     ACTION CONTROLS
+  ======================================================= */
+
   refreshButton =
     document.getElementById(
-      "auditRefreshButton"
+      "auditRefreshBtn"
     );
+
 
   clearFiltersButton =
     document.getElementById(
-      "auditClearFiltersButton"
+      "auditClearFiltersBtn"
     );
+
+}
+
+/* =========================================================
+   ASSET DISPLAY
+   Version: 1.1.0
+
+   Purpose
+   ----------------------------------------------------------
+   Render governed visual state for required credential
+   assets.
+
+   Governance
+   ----------------------------------------------------------
+   • Published assets are rendered as positive state
+   • Missing assets are rendered as remediation state
+   • Rendering does not modify asset records
+   • CSS owns visual presentation
+========================================================= */
+
+function renderAssetStatus(
+  asset
+) {
+
+  if (
+    asset
+  ) {
+
+    return `
+      <span
+        class="audit-status audit-status-published"
+        title="Published asset available">
+
+        ✓ Published
+
+      </span>
+    `;
+
+  }
+
+
+  return `
+    <span
+      class="audit-status audit-status-missing"
+      title="Required published asset not found">
+
+      — Missing
+
+    </span>
+  `;
 
 }
 
 
 /* =========================================================
-   APPLICATION INITIALIZATION
+   OWNERSHIP DISPLAY
+   Version: 1.1.0
+
+   Purpose
+   ----------------------------------------------------------
+   Render learner ownership readiness independently from
+   credential asset completeness.
+
+   Governance
+   ----------------------------------------------------------
+   • Learner Linked is a positive ownership state
+   • Activation Pending is an unresolved ownership state
+   • Ownership state does not determine asset completeness
+   • Rendering does not mutate learner identity
 ========================================================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  async () => {
+function renderOwnership(
+  ownership
+) {
 
-    console.log(
-      "[CredentialAssetAudit] Initializing..."
-    );
+  if (
+    ownership?.status ===
+    "linked"
+  ) {
 
-    /*
-     * Resolve page DOM first.
-     */
-    resolveDom();
+    return `
+      <span
+        class="audit-status audit-status-linked">
 
-    /*
-     * Load governed admin navigation.
-     */
-    loadAdminSidebar(
-      "credential-operations"
-    );
+        ✓ ${escapeHtml(
+          ownership.label
+        )}
 
-    /*
-     * Initialize shared admin authentication,
-     * shell and authorization behaviour.
-     */
-    await initAdminApp();
-
-    /*
-     * Bind audit UI controls.
-     */
-    bindEvents();
-
-    /*
-     * Load audit data.
-     */
-    await loadAudit();
-
-    console.log(
-      "[CredentialAssetAudit] Initialized."
-    );
+      </span>
+    `;
 
   }
-);
+
+
+  return `
+    <span
+      class="audit-status audit-status-pending">
+
+      — ${escapeHtml(
+        ownership?.label ||
+        "Activation Pending"
+      )}
+
+    </span>
+  `;
+
+}
+
+
+/* =========================================================
+   OVERALL DISPLAY
+   Version: 1.1.0
+
+   Purpose
+   ----------------------------------------------------------
+   Render governed credential-asset readiness.
+
+   Governance
+   ----------------------------------------------------------
+   COMPLETE
+   • All required governed assets are published
+
+   ACTION REQUIRED
+   • One or more required governed assets are missing
+
+   Ownership state remains independent of completeness.
+========================================================= */
+
+function renderOverallStatus(
+  row
+) {
+
+  if (
+    row.complete
+  ) {
+
+    return `
+      <span
+        class="
+          audit-status
+          audit-status-complete
+          audit-overall
+        ">
+
+        COMPLETE
+
+      </span>
+    `;
+
+  }
+
+
+  return `
+    <span
+      class="
+        audit-status
+        audit-status-action-required
+        audit-overall
+      ">
+
+      ACTION REQUIRED
+
+    </span>
+  `;
+
+}
+
+
+/* =========================================================
+   TABLE RENDERING
+   Version: 1.1.0
+
+   Purpose
+   ----------------------------------------------------------
+   Render the current filtered and sorted audit view.
+
+   Responsibilities
+   ----------------------------------------------------------
+   ✓ Render credential ID
+   ✓ Render learner identity
+   ✓ Render program
+   ✓ Render required asset states
+   ✓ Render ownership state
+   ✓ Render overall readiness
+   ✓ Apply governed row-state classes
+   ✓ Preserve filtered/sorted order
+
+   Non Responsibilities
+   ----------------------------------------------------------
+   ✗ Filter audit data
+   ✗ Sort audit data
+   ✗ Modify Firestore data
+   ✗ Generate assets
+   ✗ Publish assets
+
+   Governance
+   ----------------------------------------------------------
+   • auditState.filteredRows is the rendering authority
+   • renderTable() must not perform sorting
+   • renderTable() must not perform filtering
+   • Row classes are presentation signals only
+   • HTML values are escaped before rendering
+========================================================= */
+
+function renderTable() {
+
+  if (
+    !tableBody
+  ) {
+
+    return;
+
+  }
+
+
+  tableBody.innerHTML =
+    "";
+
+
+  /* =======================================================
+     EMPTY STATE
+  ======================================================= */
+
+  if (
+    auditState.filteredRows.length ===
+    0
+  ) {
+
+    tableBody.innerHTML = `
+      <tr>
+
+        <td
+          colspan="8"
+          class="audit-empty-state">
+
+          No credentials match the current audit filters.
+
+        </td>
+
+      </tr>
+    `;
+
+
+    return;
+
+  }
+
+
+  /* =======================================================
+     DOCUMENT FRAGMENT
+  ======================================================= */
+
+  const fragment =
+    document.createDocumentFragment();
+
+
+  auditState.filteredRows.forEach(
+    row => {
+
+      const tr =
+        document.createElement(
+          "tr"
+        );
+
+
+      /* ===================================================
+         OVERALL ROW STATE
+      =================================================== */
+
+      tr.classList.add(
+        row.complete
+          ? "audit-row-complete"
+          : "audit-row-action-required"
+      );
+
+
+      /* ===================================================
+         OWNERSHIP ROW STATE
+      =================================================== */
+
+      tr.classList.add(
+        row.ownership?.status ===
+          "linked"
+          ? "audit-row-linked"
+          : "audit-row-ownership-pending"
+      );
+
+
+      /* ===================================================
+         ROW CONTENT
+      =================================================== */
+
+      tr.innerHTML = `
+
+        <td
+          class="audit-credential-id">
+
+          ${escapeHtml(
+            row.credentialId
+          )}
+
+        </td>
+
+
+        <td>
+
+          <div
+            class="audit-learner-name">
+
+            ${escapeHtml(
+              row.learnerName ||
+              "-"
+            )}
+
+          </div>
+
+
+          <div
+            class="audit-learner-email">
+
+            ${escapeHtml(
+              row.email ||
+              "-"
+            )}
+
+          </div>
+
+        </td>
+
+
+        <td>
+
+          ${escapeHtml(
+            row.programCode ||
+            "-"
+          )}
+
+        </td>
+
+
+        <td>
+
+          ${renderAssetStatus(
+            row.universityCertificate
+          )}
+
+        </td>
+
+
+        <td>
+
+          ${renderAssetStatus(
+            row.trainerCertificate
+          )}
+
+        </td>
+
+
+        <td>
+
+          ${renderAssetStatus(
+            row.digitalBadge
+          )}
+
+        </td>
+
+
+        <td>
+
+          ${renderOwnership(
+            row.ownership
+          )}
+
+        </td>
+
+
+        <td>
+
+          ${renderOverallStatus(
+            row
+          )}
+
+        </td>
+
+      `;
+
+
+      fragment.appendChild(
+        tr
+      );
+
+    }
+  );
+
+
+  tableBody.appendChild(
+    fragment
+  );
+
+}

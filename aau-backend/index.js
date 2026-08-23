@@ -2874,6 +2874,197 @@ app.post(
         const correlationId =
             createCorrelationId();
 
+        /*
+         * Keep the verified identity available to the catch
+         * block so reconciliation exceptions can be audited
+         * without trusting browser-supplied identity values.
+         */
+        let authenticatedLearner =
+            null;
+
+
+        /* ==================================================
+           EXCEPTION AUDIT WRITER
+
+           Important:
+           This runs outside the reconciliation transaction.
+
+           Therefore a transaction rollback caused by an
+           ownership conflict or reconciliation failure does
+           not also roll back the operational audit record.
+        ================================================== */
+
+        async function writeReconciliationExceptionAudit({
+
+            result,
+            reason,
+            errorCode = null,
+            httpStatus = null,
+            metadata = {}
+
+        }) {
+
+            /*
+             * Never create identity reconciliation audit
+             * records unless Firebase authentication has
+             * already been independently verified.
+             */
+            if (
+                !authenticatedLearner?.uid ||
+                !authenticatedLearner?.email
+            ) {
+
+                return null;
+
+            }
+
+
+            try {
+
+                const reconciliationEventRef =
+                    db
+                        .collection(
+                            COLLECTIONS
+                                .reconciliationEvents
+                        )
+                        .doc();
+
+
+                await reconciliationEventRef.set({
+
+                    event_type:
+                        "identity_reconciliation_exception",
+
+                    credential_id:
+                        null,
+
+                    credential_document_id:
+                        null,
+
+                    learner_uid:
+                        normalizeString(
+                            authenticatedLearner.uid
+                        ),
+
+                    email_normalized:
+                        normalizeEmail(
+                            authenticatedLearner.email
+                        ),
+
+                    actor_type:
+                        "learner",
+
+                    actor_id:
+                        normalizeString(
+                            authenticatedLearner.uid
+                        ),
+
+                    source:
+                        AUTOMATIC_IDENTITY_RECONCILIATION
+                            .source,
+
+                    result:
+                        normalizeString(
+                            result
+                        ) ||
+                        "failure",
+
+                    reason:
+                        normalizeString(
+                            reason
+                        ) ||
+                        null,
+
+                    error_code:
+                        normalizeString(
+                            errorCode
+                        ) ||
+                        null,
+
+                    http_status:
+                        Number.isFinite(
+                            Number(
+                                httpStatus
+                            )
+                        )
+                            ? Number(
+                                httpStatus
+                            )
+                            : null,
+
+                    created_at:
+                        admin
+                            .firestore
+                            .FieldValue
+                            .serverTimestamp(),
+
+                    correlation_id:
+                        correlationId,
+
+                    request_id:
+                        null,
+
+                    activation_token_id:
+                        null,
+
+                    version:
+                        "1.0",
+
+                    metadata: {
+
+                        reconciliation_mode:
+                            "automatic_verified_email",
+
+                        requires_administrative_attention:
+                            true,
+
+                        ...metadata
+
+                    }
+
+                });
+
+
+                return reconciliationEventRef.id;
+
+            }
+            catch (
+                auditError
+            ) {
+
+                /*
+                 * Audit persistence must never replace the
+                 * original reconciliation response.
+                 *
+                 * Log only diagnostic metadata.
+                 * Never log authentication tokens.
+                 */
+                console.error(
+                    "[IdentityReconciliation] Exception audit failed",
+                    {
+
+                        correlationId,
+
+                        code:
+                            normalizeString(
+                                auditError?.code
+                            ),
+
+                        message:
+                            normalizeString(
+                                auditError?.message
+                            )
+
+                    }
+                );
+
+
+                return null;
+
+            }
+
+        }
+
 
         try {
 
@@ -2914,6 +3105,13 @@ app.post(
                 !rateLimit.allowed
             ) {
 
+                /*
+                 * Rate-limit events are intentionally not
+                 * written to identity_reconciliation_events.
+                 *
+                 * At this point no verified learner identity
+                 * has been established.
+                 */
                 return res
                     .status(
                         429
@@ -2939,10 +3137,11 @@ app.post(
             /* ----------------------------------------------
                AUTHENTICATED IDENTITY
 
-               UID/email are server-derived.
+               UID/email are exclusively server-derived from
+               the verified Firebase authentication token.
             ---------------------------------------------- */
 
-            const authenticatedLearner =
+            authenticatedLearner =
                 await verifyAuthenticatedLearner(
                     req
                 );
@@ -2965,6 +3164,70 @@ app.post(
 
                 });
 
+
+            /* ----------------------------------------------
+               OPERATIONAL EXCEPTION AUDIT
+
+               A matched identity with credentials that are
+               currently ineligible requires operational
+               visibility but does not represent an HTTP
+               failure.
+
+               No matching credential remains a legitimate
+               clean result and is not audited as an
+               exception.
+
+               already_reconciled also remains a clean no-op.
+            ---------------------------------------------- */
+
+            if (
+                normalizeString(
+                    result?.status
+                ) ===
+                "no_eligible_credentials"
+            ) {
+
+                await writeReconciliationExceptionAudit({
+
+                    result:
+                        "ineligible",
+
+                    reason:
+                        "Matching credential records were found but none were eligible for automatic identity reconciliation.",
+
+                    metadata: {
+
+                        matched:
+                            Number(
+                                result?.matched
+                            ) ||
+                            0,
+
+                        eligible:
+                            Number(
+                                result?.eligible
+                            ) ||
+                            0,
+
+                        credential_ids:
+                            Array.isArray(
+                                result?.credentialIds
+                            )
+                                ? result
+                                    .credentialIds
+                                    .slice()
+                                : []
+
+                    }
+
+                });
+
+            }
+
+
+            /* ----------------------------------------------
+               SUCCESS RESPONSE
+            ---------------------------------------------- */
 
             return res
                 .status(
@@ -2999,6 +3262,69 @@ app.post(
                 ) ||
                 "IDENTITY_RECONCILIATION_FAILED";
 
+            const originalMessage =
+                normalizeString(
+                    error?.message
+                );
+
+
+            /* ----------------------------------------------
+               EXCEPTION CLASSIFICATION
+            ---------------------------------------------- */
+
+            let auditResult =
+                "failure";
+
+            if (
+                code ===
+                "IDENTITY_RECONCILIATION_CONFLICT"
+            ) {
+
+                auditResult =
+                    "conflict";
+
+            }
+
+
+            /*
+             * Only authenticated reconciliation failures are
+             * written to the reconciliation audit collection.
+             *
+             * Authentication failures occur before a trusted
+             * learner identity exists and therefore remain in
+             * authentication/security logging only.
+             */
+            if (
+                authenticatedLearner?.uid &&
+                authenticatedLearner?.email
+            ) {
+
+                await writeReconciliationExceptionAudit({
+
+                    result:
+                        auditResult,
+
+                    reason:
+                        originalMessage ||
+                        code,
+
+                    errorCode:
+                        code,
+
+                    httpStatus,
+
+                    metadata: {
+
+                        ownership_conflict:
+                            code ===
+                            "IDENTITY_RECONCILIATION_CONFLICT"
+
+                    }
+
+                });
+
+            }
+
 
             console.error(
                 "[IdentityReconciliation] Failed",
@@ -3009,9 +3335,7 @@ app.post(
                     correlationId,
 
                     message:
-                        normalizeString(
-                            error?.message
-                        )
+                        originalMessage
 
                 }
             );
@@ -3031,9 +3355,7 @@ app.post(
                     message:
                         httpStatus >= 500
                             ? "Learner identity reconciliation could not be completed."
-                            : normalizeString(
-                                error?.message
-                            ),
+                            : originalMessage,
 
                     correlationId
 
@@ -3043,7 +3365,6 @@ app.post(
 
     }
 );
-
 
 /* ==========================================================
    END AUTOMATIC LEARNER IDENTITY RECONCILIATION

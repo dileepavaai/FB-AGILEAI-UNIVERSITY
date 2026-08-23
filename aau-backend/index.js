@@ -1817,6 +1817,1239 @@ async function findCredentialByActivationRecord(
 }
 
 /* ==========================================================
+   AUTOMATIC LEARNER IDENTITY RECONCILIATION
+   Version : 1.0.0
+   Status  : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Automatically bind eligible historical credentials to the
+   authenticated Firebase learner identity during normal
+   portal authentication.
+
+   Endpoint
+   ----------------------------------------------------------
+   POST /api/v1/identity/reconcile
+
+   Identity Authority
+   ----------------------------------------------------------
+   Firebase Authentication
+
+   Credential Authority
+   ----------------------------------------------------------
+   Firestore / credentials
+
+   Reconciliation Authority
+   ----------------------------------------------------------
+   identity_reconciliation_events
+
+   Governance
+   ----------------------------------------------------------
+   • Browser-supplied UID is never trusted.
+   • Browser-supplied email is never trusted.
+   • UID and email are derived only from a verified Firebase
+     ID token.
+   • Authenticated email must be verified.
+   • Only approved + finalized credentials are eligible.
+   • Existing learner_uid belonging to another Firebase UID
+     is never overwritten.
+   • Existing learner_uid belonging to the same Firebase UID
+     is treated as idempotently reconciled.
+   • Multiple eligible credentials belonging to the same
+     verified learner may be reconciled together.
+   • Credential IDs remain immutable.
+   • Credential assets are not modified.
+   • Entitlements are not granted here.
+   • No activation token is required for deterministic,
+     authenticated email reconciliation.
+   • Every new credential binding creates an audit event.
+
+   Compatibility
+   ----------------------------------------------------------
+   Historical credential records may contain:
+
+   • email_normalized
+   • email
+
+   Candidate discovery therefore supports both fields.
+
+   Safety
+   ----------------------------------------------------------
+   If any eligible credential matching the authenticated
+   learner is already bound to a different UID, the complete
+   reconciliation operation is rejected without changing any
+   credential ownership.
+
+   Change History
+   ----------------------------------------------------------
+   v1.0.0
+   • Introduced authenticated first-login reconciliation
+   • Added deterministic verified-email credential discovery
+   • Added multi-credential learner binding
+   • Added conflicting-ownership protection
+   • Added idempotent same-UID handling
+   • Added reconciliation audit events
+========================================================== */
+
+
+/* ==========================================================
+   AUTOMATIC RECONCILIATION CONSTANTS
+========================================================== */
+
+const AUTOMATIC_IDENTITY_RECONCILIATION = Object.freeze({
+
+    rateLimit: Object.freeze({
+
+        windowMs:
+            60 * 1000,
+
+        maxRequests:
+            12
+
+    }),
+
+    maximumCredentialsPerLookup:
+        100,
+
+    source:
+        "automatic_portal_authentication",
+
+    actor:
+        "authenticated_learner"
+
+});
+
+
+/* ==========================================================
+   CREDENTIAL EMAIL RESOLUTION
+========================================================== */
+
+function resolveCredentialNormalizedEmail(
+    credential
+) {
+
+    return normalizeEmail(
+
+        credential?.email_normalized ||
+
+        credential?.email
+
+    );
+
+}
+
+
+/* ==========================================================
+   ELIGIBLE CREDENTIAL LIFECYCLE
+========================================================== */
+
+function isCredentialEligibleForAutomaticReconciliation(
+    credential
+) {
+
+    const approvalStatus =
+        normalizeLower(
+            credential?.approval_status
+        );
+
+    const issuedStatus =
+        normalizeLower(
+            credential?.issued_status
+        );
+
+    return (
+
+        approvalStatus ===
+            normalizeLower(
+                ACTIVATION_CONFIG
+                    .requiredApprovalStatus
+            ) &&
+
+        issuedStatus ===
+            normalizeLower(
+                ACTIVATION_CONFIG
+                    .requiredIssuedStatus
+            )
+
+    );
+
+}
+
+
+/* ==========================================================
+   CREDENTIAL DISCOVERY
+
+   Purpose
+   ----------------------------------------------------------
+   Discover historical credentials whose authoritative email
+   corresponds to the verified Firebase email.
+
+   Notes
+   ----------------------------------------------------------
+   Two compatibility queries are used:
+
+   1. email_normalized
+   2. legacy email
+
+   Results are deduplicated using the Firestore document ID.
+========================================================== */
+
+async function findCredentialsForAuthenticatedEmail(
+    authenticatedEmail
+) {
+
+    const normalizedEmail =
+        normalizeEmail(
+            authenticatedEmail
+        );
+
+    if (
+        !normalizedEmail
+    ) {
+
+        return [];
+
+    }
+
+
+    const credentialsCollection =
+        db.collection(
+            COLLECTIONS.credentials
+        );
+
+
+    const [
+        normalizedEmailSnapshot,
+        legacyEmailSnapshot
+    ] =
+        await Promise.all([
+
+            credentialsCollection
+                .where(
+                    "email_normalized",
+                    "==",
+                    normalizedEmail
+                )
+                .limit(
+                    AUTOMATIC_IDENTITY_RECONCILIATION
+                        .maximumCredentialsPerLookup
+                )
+                .get(),
+
+            credentialsCollection
+                .where(
+                    "email",
+                    "==",
+                    normalizedEmail
+                )
+                .limit(
+                    AUTOMATIC_IDENTITY_RECONCILIATION
+                        .maximumCredentialsPerLookup
+                )
+                .get()
+
+        ]);
+
+
+    const credentialDocuments =
+        new Map();
+
+
+    normalizedEmailSnapshot.docs
+        .forEach(
+            document => {
+
+                credentialDocuments.set(
+                    document.id,
+                    document
+                );
+
+            }
+        );
+
+
+    legacyEmailSnapshot.docs
+        .forEach(
+            document => {
+
+                credentialDocuments.set(
+                    document.id,
+                    document
+                );
+
+            }
+        );
+
+
+    return [
+        ...credentialDocuments.values()
+    ];
+
+}
+
+
+/* ==========================================================
+   AUTOMATIC RECONCILIATION SERVICE
+   Version : 1.1.0
+   Status  : ACTIVE
+
+   Purpose
+   ----------------------------------------------------------
+   Reconcile authenticated Firebase learner identity with
+   eligible historical credential records and any associated
+   pending learner-resource assignments.
+
+   Responsibilities
+   ----------------------------------------------------------
+   ✓ Validate server-derived authenticated identity
+   ✓ Discover credentials by verified authenticated email
+   ✓ Re-read candidates inside a Firestore transaction
+   ✓ Enforce approved + finalized credential lifecycle
+   ✓ Detect ownership conflicts before writes
+   ✓ Bind unclaimed credentials to Firebase learner UID
+   ✓ Preserve already-linked same-UID credentials
+   ✓ Activate matching pending learner-resource access
+   ✓ Write governed identity reconciliation audit events
+   ✓ Support multiple credentials for the same learner
+   ✓ Preserve atomic reconciliation behaviour
+
+   Non Responsibilities
+   ----------------------------------------------------------
+   ✗ Trust browser-supplied learner UID
+   ✗ Trust browser-supplied learner email
+   ✗ Change credential IDs
+   ✗ Generate credential assets
+   ✗ Publish credential assets
+   ✗ Grant programme entitlements
+   ✗ Override conflicting learner ownership
+   ✗ Consume credential activation tokens
+
+   Governance
+   ----------------------------------------------------------
+   • Firebase Authentication remains identity authority.
+   • credentials remains credential metadata authority.
+   • learner_resource_access remains licensed-resource
+     relationship authority.
+   • identity_reconciliation_events remains reconciliation
+     audit authority.
+   • Existing conflicting learner_uid values are immutable
+     through automatic reconciliation.
+   • All authoritative reads occur before transaction writes.
+   • Automatic reconciliation is idempotent.
+   • A learner may legitimately own multiple credentials.
+   • Credential and pending resource identity are reconciled
+     inside the same transaction.
+
+   Change History
+   ----------------------------------------------------------
+   v1.1.0
+   • Added atomic pending learner-resource reconciliation
+   • Aligned audit-event structure with activation workflow
+   • Added resource activation count to result state
+   • Added deterministic reconciliation metadata
+   • Preserved same-UID idempotency
+   • Preserved conflicting-UID protection
+
+   v1.0.0
+   • Introduced authenticated credential reconciliation
+========================================================== */
+
+async function reconcileAuthenticatedLearnerCredentials({
+    authenticatedUid,
+    authenticatedEmail,
+    correlationId
+}) {
+
+    /* ======================================================
+       NORMALIZE AUTHENTICATED IDENTITY
+    ====================================================== */
+
+    const normalizedUid =
+        normalizeString(
+            authenticatedUid
+        );
+
+    const normalizedEmail =
+        normalizeEmail(
+            authenticatedEmail
+        );
+
+
+    /* ======================================================
+       IDENTITY VALIDATION
+    ====================================================== */
+
+    if (
+        !normalizedUid ||
+        !normalizedEmail
+    ) {
+
+        throw createServiceError({
+
+            code:
+                "IDENTITY_RECONCILIATION_IDENTITY_INVALID",
+
+            message:
+                "The authenticated learner identity is incomplete.",
+
+            httpStatus:
+                403
+
+        });
+
+    }
+
+
+    /* ======================================================
+       CANDIDATE DISCOVERY
+    ====================================================== */
+
+    const discoveredCredentials =
+        await findCredentialsForAuthenticatedEmail(
+            normalizedEmail
+        );
+
+
+    if (
+        discoveredCredentials.length ===
+        0
+    ) {
+
+        return Object.freeze({
+
+            status:
+                "no_matching_credentials",
+
+            matched:
+                0,
+
+            eligible:
+                0,
+
+            linked:
+                0,
+
+            alreadyLinked:
+                0,
+
+            learningResourcesActivated:
+                0,
+
+            credentialIds:
+                []
+
+        });
+
+    }
+
+
+    /* ======================================================
+       AUTHORITATIVE TRANSACTION
+
+       Governance
+       ------------------------------------------------------
+       All authoritative reads occur before the first write.
+
+       The transaction reconciles:
+
+       1. credentials.learner_uid
+       2. learner_resource_access identity
+       3. identity_reconciliation_events
+    ====================================================== */
+
+    return db.runTransaction(
+        async transaction => {
+
+            const eligibleCredentials =
+                [];
+
+
+            /* =================================================
+               PHASE 1
+               CREDENTIAL READS
+            ================================================= */
+
+            for (
+                const discoveredCredential
+                of discoveredCredentials
+            ) {
+
+                const credentialSnapshot =
+                    await transaction.get(
+                        discoveredCredential.ref
+                    );
+
+
+                if (
+                    !credentialSnapshot.exists
+                ) {
+
+                    continue;
+
+                }
+
+
+                const credential =
+                    credentialSnapshot.data() ||
+                    {};
+
+
+                const credentialEmail =
+                    resolveCredentialNormalizedEmail(
+                        credential
+                    );
+
+
+                /*
+                 * Revalidate deterministic identity correlation
+                 * inside the authoritative transaction.
+                 */
+
+                if (
+                    credentialEmail !==
+                    normalizedEmail
+                ) {
+
+                    continue;
+
+                }
+
+
+                /*
+                 * Only governed approved + finalized
+                 * credentials may participate.
+                 */
+
+                if (
+                    !isCredentialEligibleForAutomaticReconciliation(
+                        credential
+                    )
+                ) {
+
+                    continue;
+
+                }
+
+
+                eligibleCredentials.push({
+
+                    snapshot:
+                        credentialSnapshot,
+
+                    data:
+                        credential
+
+                });
+
+            }
+
+
+            /* =================================================
+               NO ELIGIBLE CREDENTIALS
+            ================================================= */
+
+            if (
+                eligibleCredentials.length ===
+                0
+            ) {
+
+                return {
+
+                    status:
+                        "no_eligible_credentials",
+
+                    matched:
+                        discoveredCredentials.length,
+
+                    eligible:
+                        0,
+
+                    linked:
+                        0,
+
+                    alreadyLinked:
+                        0,
+
+                    learningResourcesActivated:
+                        0,
+
+                    credentialIds:
+                        []
+
+                };
+
+            }
+
+
+            /* =================================================
+               PHASE 2
+               OWNERSHIP CONFLICT DETECTION
+
+               Important
+               -------------------------------------------------
+               Every ownership conflict is detected before any
+               transaction write occurs.
+
+               A credential already linked to another Firebase
+               learner UID must never be reassigned by this
+               automatic process.
+            ================================================= */
+
+            for (
+                const entry
+                of eligibleCredentials
+            ) {
+
+                const currentLearnerUid =
+                    normalizeString(
+                        entry.data
+                            ?.learner_uid
+                    );
+
+
+                if (
+                    currentLearnerUid &&
+                    currentLearnerUid !==
+                        normalizedUid
+                ) {
+
+                    const credentialId =
+                        normalizeString(
+
+                            entry.data
+                                ?.credential_id ||
+
+                            entry.snapshot.id
+
+                        );
+
+
+                    throw createServiceError({
+
+                        code:
+                            "IDENTITY_RECONCILIATION_CONFLICT",
+
+                        message:
+                            `Credential ${credentialId} is already linked to another learner identity.`,
+
+                        httpStatus:
+                            409
+
+                    });
+
+                }
+
+            }
+
+
+            /* =================================================
+               PHASE 3
+               PENDING LEARNING-RESOURCE ACCESS READ
+
+               Existing pre-staged resource assignments are
+               discovered by the verified Firebase email.
+
+               This read intentionally occurs before the first
+               write to preserve Firestore transaction ordering.
+            ================================================= */
+
+            const pendingResourceAccessQuery =
+                db
+                    .collection(
+                        COLLECTIONS
+                            .learnerResourceAccess
+                    )
+                    .where(
+                        "learner_email_normalized",
+                        "==",
+                        normalizedEmail
+                    )
+                    .limit(
+                        LEARNER_RESOURCE_ASSIGNMENT_CONFIG
+                            .maximumAssignmentsPerCredentialLookup
+                    );
+
+
+            const pendingResourceAccessSnapshot =
+                await transaction.get(
+                    pendingResourceAccessQuery
+                );
+
+
+            /* =================================================
+               PHASE 4
+               RESULT STATE
+            ================================================= */
+
+            const credentialIds =
+                [];
+
+            let linked =
+                0;
+
+            let alreadyLinked =
+                0;
+
+            let learningResourcesActivated =
+                0;
+
+
+            const serverTimestamp =
+                admin.firestore
+                    .FieldValue
+                    .serverTimestamp();
+
+
+            /* =================================================
+               PHASE 5
+               APPLY RECONCILIATION
+            ================================================= */
+
+            for (
+                const entry
+                of eligibleCredentials
+            ) {
+
+                const credential =
+                    entry.data;
+
+                const credentialRef =
+                    entry.snapshot.ref;
+
+
+                const credentialId =
+                    normalizeString(
+
+                        credential
+                            ?.credential_id ||
+
+                        entry.snapshot.id
+
+                    );
+
+
+                const normalizedCredentialId =
+                    normalizeUpper(
+                        credentialId
+                    );
+
+
+                const currentLearnerUid =
+                    normalizeString(
+                        credential
+                            ?.learner_uid
+                    );
+
+
+                credentialIds.push(
+                    credentialId
+                );
+
+
+                /* =============================================
+                   RESOURCE ACCESS CORRELATION
+                ============================================= */
+
+                const matchingResourceAccessDocuments =
+                    pendingResourceAccessSnapshot
+                        .docs
+                        .filter(
+                            document => {
+
+                                const access =
+                                    document.data() ||
+                                    {};
+
+
+                                return (
+
+                                    normalizeUpper(
+                                        access.credential_id
+                                    ) ===
+                                        normalizedCredentialId &&
+
+                                    normalizeLower(
+                                        access.identity_status
+                                    ) ===
+                                        "pending_activation" &&
+
+                                    normalizeLower(
+                                        access.access_status
+                                    ) ===
+                                        "pending_activation" &&
+
+                                    !normalizeString(
+                                        access.learner_uid
+                                    )
+
+                                );
+
+                            }
+                        );
+
+
+                /* =============================================
+                   CREDENTIAL OWNERSHIP
+                ============================================= */
+
+                if (
+                    currentLearnerUid ===
+                    normalizedUid
+                ) {
+
+                    /*
+                     * Already reconciled to the same Firebase
+                     * learner identity.
+                     *
+                     * Preserve the credential exactly as-is.
+                     */
+
+                    alreadyLinked +=
+                        1;
+
+                }
+                else {
+
+                    /*
+                     * Conflict detection has already completed.
+                     *
+                     * Therefore reaching this branch means the
+                     * credential is currently unclaimed.
+                     */
+
+                    transaction.update(
+                        credentialRef,
+                        {
+
+                            learner_uid:
+                                normalizedUid
+
+                        }
+                    );
+
+
+                    linked +=
+                        1;
+
+                }
+
+
+                /* =============================================
+                   PENDING RESOURCE ACTIVATION
+
+                   Pre-staged learner-resource assignments for
+                   this credential become active under the same
+                   authenticated Firebase learner identity.
+                ============================================= */
+
+                matchingResourceAccessDocuments
+                    .forEach(
+                        document => {
+
+                            transaction.update(
+                                document.ref,
+                                {
+
+                                    learner_uid:
+                                        normalizedUid,
+
+                                    identity_status:
+                                        "activated",
+
+                                    access_status:
+                                        "active",
+
+                                    release_policy:
+                                        LEARNER_RESOURCE_ASSIGNMENT_CONFIG
+                                            .defaultReleasePolicyForActiveIdentity,
+
+                                    activated_at:
+                                        serverTimestamp,
+
+                                    activated_by_uid:
+                                        normalizedUid,
+
+                                    updated_at:
+                                        serverTimestamp,
+
+                                    updated_by_uid:
+                                        normalizedUid,
+
+                                    updated_by_email:
+                                        normalizedEmail,
+
+                                    last_mutation_source:
+                                        AUTOMATIC_IDENTITY_RECONCILIATION
+                                            .source
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+                learningResourcesActivated +=
+                    matchingResourceAccessDocuments
+                        .length;
+
+
+                /* =============================================
+                   RECONCILIATION CHANGE DETECTION
+                ============================================= */
+
+                const credentialOwnershipChanged =
+                    !currentLearnerUid;
+
+                const resourceOwnershipChanged =
+                    matchingResourceAccessDocuments
+                        .length >
+                    0;
+
+
+                /* =============================================
+                   RECONCILIATION AUDIT EVENT
+
+                   A new event is written only when governed
+                   state actually changes.
+
+                   Repeated same-UID reconciliation with no
+                   pending resources remains a clean no-op.
+                ============================================= */
+
+                if (
+                    credentialOwnershipChanged ||
+                    resourceOwnershipChanged
+                ) {
+
+                    const reconciliationEventRef =
+                        db
+                            .collection(
+                                COLLECTIONS
+                                    .reconciliationEvents
+                            )
+                            .doc();
+
+
+                    transaction.create(
+                        reconciliationEventRef,
+                        {
+
+                            event_type:
+                                "credential_reconciled",
+
+                            credential_id:
+                                credentialId,
+
+                            credential_document_id:
+                                entry.snapshot.id,
+
+                            learner_uid:
+                                normalizedUid,
+
+                            email_normalized:
+                                normalizedEmail,
+
+                            actor_type:
+                                "learner",
+
+                            actor_id:
+                                normalizedUid,
+
+                            source:
+                                AUTOMATIC_IDENTITY_RECONCILIATION
+                                    .source,
+
+                            result:
+                                "success",
+
+                            reason:
+                                null,
+
+                            created_at:
+                                serverTimestamp,
+
+                            correlation_id:
+                                correlationId,
+
+                            request_id:
+                                null,
+
+                            activation_token_id:
+                                null,
+
+                            version:
+                                "1.0",
+
+                            metadata: {
+
+                                ownership_state_before:
+                                    currentLearnerUid
+                                        ? "same_uid"
+                                        : "unclaimed",
+
+                                ownership_state_after:
+                                    "claimed",
+
+                                learning_resources_activated:
+                                    matchingResourceAccessDocuments
+                                        .length,
+
+                                reconciliation_mode:
+                                    "automatic_verified_email"
+
+                            }
+
+                        }
+                    );
+
+                }
+
+            }
+
+
+            /* =================================================
+               FINAL RESULT
+            ================================================= */
+
+            return {
+
+                status:
+                    linked > 0 ||
+                    learningResourcesActivated > 0
+                        ? "reconciled"
+                        : "already_reconciled",
+
+                matched:
+                    discoveredCredentials.length,
+
+                eligible:
+                    eligibleCredentials.length,
+
+                linked,
+
+                alreadyLinked,
+
+                learningResourcesActivated,
+
+                credentialIds
+
+            };
+
+        }
+    );
+
+}
+
+/* ==========================================================
+   AUTOMATIC IDENTITY RECONCILIATION API
+
+   POST /api/v1/identity/reconcile
+
+   Request
+   ----------------------------------------------------------
+   Authorization: Bearer <Firebase ID Token>
+
+   Body
+   ----------------------------------------------------------
+   No learner identity values are required.
+
+   Response
+   ----------------------------------------------------------
+   Returns reconciliation state only.
+
+   Security
+   ----------------------------------------------------------
+   UID and email are derived exclusively from the verified
+   Firebase authentication token.
+========================================================== */
+
+app.post(
+    "/api/v1/identity/reconcile",
+    async (
+        req,
+        res
+    ) => {
+
+        const correlationId =
+            createCorrelationId();
+
+
+        try {
+
+            /* ----------------------------------------------
+               RATE LIMIT
+            ---------------------------------------------- */
+
+            const rateLimit =
+                applyInMemoryRateLimit({
+
+                    req,
+
+                    store:
+                        identityReconciliationRequestCounts,
+
+                    windowMs:
+                        AUTOMATIC_IDENTITY_RECONCILIATION
+                            .rateLimit
+                            .windowMs,
+
+                    maxRequests:
+                        AUTOMATIC_IDENTITY_RECONCILIATION
+                            .rateLimit
+                            .maxRequests
+
+                });
+
+
+            res.set(
+                "X-RateLimit-Remaining",
+                String(
+                    rateLimit.remaining
+                )
+            );
+
+
+            if (
+                !rateLimit.allowed
+            ) {
+
+                return res
+                    .status(
+                        429
+                    )
+                    .json({
+
+                        ok:
+                            false,
+
+                        code:
+                            "IDENTITY_RECONCILIATION_RATE_LIMITED",
+
+                        message:
+                            "Too many identity reconciliation attempts. Please try again later.",
+
+                        correlationId
+
+                    });
+
+            }
+
+
+            /* ----------------------------------------------
+               AUTHENTICATED IDENTITY
+
+               UID/email are server-derived.
+            ---------------------------------------------- */
+
+            const authenticatedLearner =
+                await verifyAuthenticatedLearner(
+                    req
+                );
+
+
+            /* ----------------------------------------------
+               RECONCILIATION
+            ---------------------------------------------- */
+
+            const result =
+                await reconcileAuthenticatedLearnerCredentials({
+
+                    authenticatedUid:
+                        authenticatedLearner.uid,
+
+                    authenticatedEmail:
+                        authenticatedLearner.email,
+
+                    correlationId
+
+                });
+
+
+            return res
+                .status(
+                    200
+                )
+                .json({
+
+                    ok:
+                        true,
+
+                    reconciliation:
+                        result,
+
+                    correlationId
+
+                });
+
+        }
+        catch (
+            error
+        ) {
+
+            const httpStatus =
+                Number(
+                    error?.httpStatus
+                ) ||
+                500;
+
+            const code =
+                normalizeString(
+                    error?.code
+                ) ||
+                "IDENTITY_RECONCILIATION_FAILED";
+
+
+            console.error(
+                "[IdentityReconciliation] Failed",
+                {
+
+                    code,
+
+                    correlationId,
+
+                    message:
+                        normalizeString(
+                            error?.message
+                        )
+
+                }
+            );
+
+
+            return res
+                .status(
+                    httpStatus
+                )
+                .json({
+
+                    ok:
+                        false,
+
+                    code,
+
+                    message:
+                        httpStatus >= 500
+                            ? "Learner identity reconciliation could not be completed."
+                            : normalizeString(
+                                error?.message
+                            ),
+
+                    correlationId
+
+                });
+
+        }
+
+    }
+);
+
+
+/* ==========================================================
+   END AUTOMATIC LEARNER IDENTITY RECONCILIATION
+========================================================== */
+
+/* ==========================================================
    Public Credential Verification API
 ========================================================== */
 

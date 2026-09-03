@@ -471,7 +471,7 @@ The bound UID must not be replaced through a normal client operation.
   "created_at": "Firestore Timestamp",
   "updated_at": "Firestore Timestamp",
   "created_by_uid": "ADMIN_FIREBASE_UID",
-  "created_by_email": "dileep@agileai.university"
+  "created_by_email": "dileep@laau.university"
 }
 ```
 
@@ -616,7 +616,7 @@ Raw Storage paths must not be displayed to learners.
   },
   "published_at": "Firestore Timestamp",
   "published_by_uid": "ADMIN_FIREBASE_UID",
-  "published_by_email": "dileep@agileai.university",
+  "published_by_email": "dileep@laau.university",
   "created_at": "Firestore Timestamp"
 }
 ```
@@ -734,7 +734,7 @@ revoked
   "created_at": "Firestore Timestamp",
   "expires_at": "Firestore Timestamp",
   "created_by_uid": "ADMIN_FIREBASE_UID",
-  "created_by_email": "dileep@agileai.university",
+  "created_by_email": "dileep@laau.university",
   "used_at": null,
   "used_by_uid": null,
   "revoked_at": null,
@@ -1084,10 +1084,10 @@ Withdrawal does not delete:
   "file_size_bytes": 47185920,
   "uploaded_at": "Firestore Timestamp",
   "uploaded_by_uid": "ADMIN_FIREBASE_UID",
-  "uploaded_by_email": "dileep@agileai.university",
+  "uploaded_by_email": "dileep@laau.university",
   "created_at": "Firestore Timestamp",
   "created_by_uid": "ADMIN_FIREBASE_UID",
-  "created_by_email": "dileep@agileai.university",
+  "created_by_email": "dileep@laau.university",
   "published_at": null,
   "published_by_uid": null,
   "published_by_email": null
@@ -1115,13 +1115,13 @@ Withdrawal does not delete:
   "file_size_bytes": 47185920,
   "uploaded_at": "Firestore Timestamp",
   "uploaded_by_uid": "ADMIN_FIREBASE_UID",
-  "uploaded_by_email": "dileep@agileai.university",
+  "uploaded_by_email": "dileep@laau.university",
   "created_at": "Firestore Timestamp",
   "created_by_uid": "ADMIN_FIREBASE_UID",
-  "created_by_email": "dileep@agileai.university",
+  "created_by_email": "dileep@laau.university",
   "published_at": "Firestore Timestamp",
   "published_by_uid": "ADMIN_FIREBASE_UID",
-  "published_by_email": "dileep@agileai.university"
+  "published_by_email": "dileep@laau.university"
 }
 ```
 

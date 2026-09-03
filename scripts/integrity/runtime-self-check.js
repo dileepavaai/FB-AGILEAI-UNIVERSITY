@@ -12,7 +12,7 @@ async function checkCorsPreflight() {
   const endpoint =
     "https://asia-south1-fb-agileai-university.cloudfunctions.net/resolvePortalEntitlements";
 
-  const origin = "https://portal.agileai.university";
+  const origin = "https://portal.laau.university";
 
   const result = {
     check: "CORS_PREFLIGHT_PORTAL_RESOLVER",

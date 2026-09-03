@@ -149,7 +149,7 @@ Each credential may expose a verification action.
 
 Verification actions must direct users to:
 
-verify.agileai.university
+verify.laau.university
 
 Verification authority remains external to the Student Portal.
 

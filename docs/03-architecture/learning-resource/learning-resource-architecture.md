@@ -1336,7 +1336,7 @@ The Firestore document ID identifies a specific immutable version.
         "ADMIN_UID",
 
     created_by_email:
-        "admin@agileai.university",
+        "admin@laau.university",
 
     created_at:
         timestamp,

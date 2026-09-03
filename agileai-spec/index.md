@@ -2,7 +2,7 @@
 section: Reference
 title: Agile AI Specification
 description: Agile AI Specification defines the academic frameworks, capability models, governance structures, and professional standards used to guide the development of Agile AI systems.
-image: https://spec.agileai.university/assets/images/og-image.png
+image: https://spec.laau.university/assets/images/og-image.png
 ---
 
 # Agile AI Specification

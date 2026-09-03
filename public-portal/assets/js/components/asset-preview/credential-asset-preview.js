@@ -1303,7 +1303,7 @@
             if (credentialId) {
 
                 return (
-                    "https://verify.agileai.university/?credentialId=" +
+                    "https://verify.laau.university/?credentialId=" +
                     encodeURIComponent(
                         credentialId
                     )
@@ -1312,7 +1312,7 @@
             }
 
             return (
-                "https://verify.agileai.university"
+                "https://verify.laau.university"
             );
 
         },

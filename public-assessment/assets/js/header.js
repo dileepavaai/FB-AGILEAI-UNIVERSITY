@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <a href="/academics/">Academics</a>
           <ul class="submenu">
             <li>
-              <a href="https://assessment.agileai.university/" target="_blank" rel="noopener">
+              <a href="https://assessment.laau.university/" target="_blank" rel="noopener">
                 Agile + AI Capability Assessment
               </a>
             </li>
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <ul class="submenu">
             <li><a href="/credentials/framework.html">Credential Framework</a></li>
             <li>
-              <a href="https://verify.agileai.university" target="_blank">
+              <a href="https://verify.laau.university" target="_blank">
                 Credential Verification
               </a>
             </li>

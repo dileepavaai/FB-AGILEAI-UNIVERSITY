@@ -89,15 +89,15 @@ Credentials are issued based on **demonstrated capability**, not participation.
 
 The ecosystem operates as a **multi-surface digital institution**:
 
-agileai.university → Institutional site
-edu.agileai.university → Knowledge surface (canonical)
-learn.agileai.university → Redirect only
+laau.university → Institutional site
+edu.laau.university → Knowledge surface (canonical)
+learn.laau.university → Redirect only
 
-portal.agileai.university → User access layer
+portal.laau.university → User access layer
 admin surface → Internal control system
 
-certs.agileai.university → Credential storage
-verify.agileai.university → Public verification
+certs.laau.university → Credential storage
+verify.laau.university → Public verification
 
 
 ---

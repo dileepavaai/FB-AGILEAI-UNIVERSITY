@@ -22,16 +22,16 @@ document.addEventListener("DOMContentLoaded", () => {
     </p>
 
     <p>
-      <a href="https://agileai.university" target="_blank" rel="noopener noreferrer">
-        agileai.university
+      <a href="https://laau.university" target="_blank" rel="noopener noreferrer">
+        laau.university
       </a>
       ·
-      <a href="https://portal.agileai.university" target="_blank" rel="noopener noreferrer">
-        portal.agileai.university
+      <a href="https://portal.laau.university" target="_blank" rel="noopener noreferrer">
+        portal.laau.university
       </a>
       ·
-      <a href="https://verify.agileai.university" target="_blank" rel="noopener noreferrer">
-        verify.agileai.university
+      <a href="https://verify.laau.university" target="_blank" rel="noopener noreferrer">
+        verify.laau.university
       </a>
     </p>
 

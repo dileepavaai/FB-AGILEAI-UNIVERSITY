@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
             Agile AI Foundation
           </a>
           <span class="brand-separator"> &amp; </span>
-          <a href="https://agileai.university">
+          <a href="https://laau.university">
             Agile AI University
           </a>
         </div>

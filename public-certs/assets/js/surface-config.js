@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="header-inner">
 
           <div class="brand">
-            <a href="https://agileai.university">
+            <a href="https://laau.university">
               Agile AI University
             </a>
           </div>
@@ -73,21 +73,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
               <li role="none">
                 <a role="menuitem"
-                   href="https://agileai.university/credentials/framework.html">
+                   href="https://laau.university/credentials/framework.html">
                    Credential Framework
                 </a>
               </li>
 
               <li role="none">
                 <a role="menuitem"
-                   href="https://agileai.university/governance/">
+                   href="https://laau.university/governance/">
                    Governance
                 </a>
               </li>
 
               <li role="none">
                 <a role="menuitem"
-                   href="https://agileai.university/contact/">
+                   href="https://laau.university/contact/">
                    Contact
                 </a>
               </li>
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
               Agile AI Foundation
             </a>
             <span class="brand-separator"> &amp; </span>
-            <a href="https://agileai.university">
+            <a href="https://laau.university">
               Agile AI University
             </a>
           </div>

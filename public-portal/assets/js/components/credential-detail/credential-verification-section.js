@@ -56,7 +56,7 @@
 
                 credential.verify_url ||
 
-                "https://verify.agileai.university";
+                "https://verify.laau.university";
 
             return `
 

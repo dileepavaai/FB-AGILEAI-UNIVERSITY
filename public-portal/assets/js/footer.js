@@ -173,7 +173,7 @@
                             aria-label="Institutional links">
 
                             <a
-                                href="https://agileai.university/"
+                                href="https://laau.university/"
                                 target="_blank"
                                 rel="noopener noreferrer">
 
@@ -182,7 +182,7 @@
                             </a>
 
                             <a
-                                href="https://verify.agileai.university/"
+                                href="https://verify.laau.university/"
                                 target="_blank"
                                 rel="noopener noreferrer">
 
@@ -190,7 +190,7 @@
 
                             </a>
 
-                            <a href="mailto:support@agileai.university">
+                            <a href="mailto:support@laau.university">
 
                                 Support
 
@@ -203,7 +203,7 @@
                             aria-label="Governance and legal links">
 
                             <a
-                                href="https://agileai.university/governance/terms-and-conditions.html"
+                                href="https://laau.university/governance/terms-and-conditions.html"
                                 target="_blank"
                                 rel="noopener noreferrer">
 
@@ -212,7 +212,7 @@
                             </a>
 
                             <a
-                                href="https://agileai.university/governance/privacy-policy.html"
+                                href="https://laau.university/governance/privacy-policy.html"
                                 target="_blank"
                                 rel="noopener noreferrer">
 
@@ -221,7 +221,7 @@
                             </a>
 
                             <a
-                                href="https://agileai.university/governance/refund-policy.html"
+                                href="https://laau.university/governance/refund-policy.html"
                                 target="_blank"
                                 rel="noopener noreferrer">
 

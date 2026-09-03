@@ -61,7 +61,7 @@ Responsibilities:
 Domain:
 
 ```
-agileai.university
+laau.university
 ```
 
 ---
@@ -74,25 +74,25 @@ Agile AI University operates as a **multi-surface digital institution.**
 Agile AI University
 │
 ├ Institutional Site
-│   agileai.university
+│   laau.university
 │
 ├ Knowledge Surface
-│   edu.agileai.university
+│   edu.laau.university
 │
 ├ Learning Redirect
-│   learn.agileai.university
+│   learn.laau.university
 │
 ├ Capability Assessment
 │   assessment surface
 │
 ├ Credential System
-│   certs.agileai.university
+│   certs.laau.university
 │
 ├ Credential Verification
-│   verify.agileai.university
+│   verify.laau.university
 │
 └ Institutional Portal
-    portal.agileai.university
+    portal.laau.university
 ```
 
 ---
@@ -139,7 +139,7 @@ Credential system includes:
 Credential verification surface:
 
 ```
-verify.agileai.university
+verify.laau.university
 ```
 
 Functions:
@@ -162,7 +162,7 @@ Portal provides institutional interaction for:
 Portal surfaces include:
 
 ```
-portal.agileai.university
+portal.laau.university
 ```
 
 ---
@@ -172,7 +172,7 @@ portal.agileai.university
 The canonical knowledge surface is:
 
 ```
-edu.agileai.university
+edu.laau.university
 ```
 
 Purpose:
@@ -185,7 +185,7 @@ Purpose:
 The following surface exists only for redirection:
 
 ```
-learn.agileai.university
+learn.laau.university
 ```
 
 ---

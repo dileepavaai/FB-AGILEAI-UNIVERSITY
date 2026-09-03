@@ -1237,13 +1237,13 @@ Until then, Google Workspace remains the approved operational delivery mechanism
 Preferred activation route:
 
 ```text
-https://portal.agileai.university/activate
+https://portal.laau.university/activate
 ```
 
 Example:
 
 ```text
-https://portal.agileai.university/activate?token=<activation-token>
+https://portal.laau.university/activate?token=<activation-token>
 ```
 
 The activation URL shall:

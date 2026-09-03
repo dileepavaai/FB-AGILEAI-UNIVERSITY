@@ -74,7 +74,7 @@ Those responsibilities are intentionally separated.
 # 4. Agile AI University
 
 Primary Domain:
-agileai.university
+laau.university
 
 
 Agile AI University operationalizes the standards defined by the Foundation into **structured academic capability systems.**
@@ -109,12 +109,12 @@ Current surfaces include:
 
 | Surface | Purpose |
 |------|------|
-| agileai.university | Institutional website |
-| edu.agileai.university | Knowledge surface |
-| learn.agileai.university | Redirect to knowledge surface |
-| portal.agileai.university | Student / executive portal |
-| certs.agileai.university | Credential system |
-| verify.agileai.university | Credential verification |
+| laau.university | Institutional website |
+| edu.laau.university | Knowledge surface |
+| learn.laau.university | Redirect to knowledge surface |
+| portal.laau.university | Student / executive portal |
+| certs.laau.university | Credential system |
+| verify.laau.university | Credential verification |
 | assessment surface | Capability assessment engine |
 
 Each surface operates as an **independent hosting environment.**

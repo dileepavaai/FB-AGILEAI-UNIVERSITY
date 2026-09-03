@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     '      <ul class="nav-list" id="navList">',
 
     '        <li class="home">',
-    '          <a href="https://agileai.university" class="brand-link">',
+    '          <a href="https://laau.university" class="brand-link">',
     '            <img src="/assets/images/aau-emblem.png" alt="Agile AI University" class="brand-logo" />',
     '            <span>Agile AI University</span>',
     '          </a>',
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     '        <li class="has-submenu">',
     '          <a href="/academics/">Academics</a>',
     '          <ul class="submenu">',
-    '            <li><a href="https://assessment.agileai.university" rel="noopener">Agile + AI Capability Assessment</a></li>',
+    '            <li><a href="https://assessment.laau.university" rel="noopener">Agile + AI Capability Assessment</a></li>',
     '            <li><a href="/academics/frameworks.html">Academic Frameworks</a></li>',
     '            <li><a href="/academics/pathways.html">Professional Pathways</a></li>',
     '          </ul>',
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     '          <a href="/credentials/">Credentials</a>',
     '          <ul class="submenu">',
     '            <li><a href="/credentials/framework.html">Credential Framework</a></li>',
-    '            <li><a href="https://verify.agileai.university">Credential Verification</a></li>',
+    '            <li><a href="https://verify.laau.university">Credential Verification</a></li>',
     '          </ul>',
     '        </li>',
 
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isAssessmentContext) {
     html.push(
       '        <li class="context-link">',
-      '          <a href="https://portal.agileai.university">← Back to Student &amp; Executive Portal</a>',
+      '          <a href="https://portal.laau.university">← Back to Student &amp; Executive Portal</a>',
       '        </li>'
     );
   }

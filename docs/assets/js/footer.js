@@ -23,10 +23,10 @@ document.addEventListener("DOMContentLoaded", function () {
         </p>
 
         <p class="footer-links">
-          <a href="https://agileai.university">agileai.university</a> ·
-          <a href="https://learn.agileai.university">learn.agileai.university</a> ·
-          <a href="https://portal.agileai.university">portal.agileai.university</a> ·
-          <a href="https://verify.agileai.university">verify.agileai.university</a>
+          <a href="https://laau.university">laau.university</a> ·
+          <a href="https://learn.laau.university">learn.laau.university</a> ·
+          <a href="https://portal.laau.university">portal.laau.university</a> ·
+          <a href="https://verify.laau.university">verify.laau.university</a>
         </p>
 
         <p class="footer-links">

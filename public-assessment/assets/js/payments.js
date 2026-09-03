@@ -39,7 +39,7 @@
   // 🔒 Hard gate — prevent invalid entry
   if (!email) {
     window.location.replace(
-      "https://assessment.agileai.university/report.html"
+      "https://assessment.laau.university/report.html"
     );
     return;
   }
@@ -122,7 +122,7 @@
             sessionStorage.setItem("execInsightSource", "portal");
 
             window.location.href =
-              "https://assessment.agileai.university/executive-insight.html?from=portal";
+              "https://assessment.laau.university/executive-insight.html?from=portal";
           } else {
             disablePayButtons(false);
             setStatus(

@@ -24,10 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <!-- Institutional Surfaces (Hardened v1.0) -->
         <p class="footer-links">
-          <a href="https://agileai.university">Institutional Site</a> ·
-          <a href="https://edu.agileai.university">Learning Surface</a> ·
-          <a href="https://portal.agileai.university">Student & Executive Portal</a> ·
-          <a href="https://verify.agileai.university">Credential Verification</a>
+          <a href="https://laau.university">Institutional Site</a> ·
+          <a href="https://edu.laau.university">Learning Surface</a> ·
+          <a href="https://portal.laau.university">Student & Executive Portal</a> ·
+          <a href="https://verify.laau.university">Credential Verification</a>
         </p>
 
         <p class="footer-links">

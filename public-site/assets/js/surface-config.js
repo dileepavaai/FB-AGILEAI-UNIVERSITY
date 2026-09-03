@@ -15,7 +15,7 @@ window.SURFACE_CONFIG = {
 
     {
       label: "Assessment",
-      href: "https://assessment.agileai.university",
+      href: "https://assessment.laau.university",
       external: true
     },
 

@@ -588,13 +588,13 @@ const CredentialAssetPublisher = {
                 1,
 
             generated_by:
-                "admin.agileai.university",
+                "admin.laau.university",
 
             generated_source:
                 "admin_portal",
 
             published_by:
-                "admin.agileai.university",
+                "admin.laau.university",
 
             source:
                 "admin",

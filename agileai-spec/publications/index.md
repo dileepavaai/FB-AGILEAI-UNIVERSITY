@@ -2,7 +2,7 @@
 section: Publications
 title: Publications
 description: Official reference publications of the Agile AI ecosystem providing explanatory material that complements the Agile AI Specification.
-image: https://spec.agileai.university/assets/images/og-image.png
+image: https://spec.laau.university/assets/images/og-image.png
 ---
 
 <div class="spec-orientation-strip">

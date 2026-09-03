@@ -54,4 +54,4 @@ Allow: /
 # --------------------------------------------------
 # Sitemap Declaration
 # --------------------------------------------------
-Sitemap: https://learn.agileai.university/sitemap.xml
+Sitemap: https://learn.laau.university/sitemap.xml

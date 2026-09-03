@@ -353,7 +353,7 @@ Must Never:
 User opens:
 
 ```text
-portal.agileai.university
+portal.laau.university
 ```
 
 ---

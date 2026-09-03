@@ -171,7 +171,7 @@
       const s = await db.collection('faqs').limit(1).get();
       if(!s.empty) return;
       const samples = [
-        { title: 'How to download my certificate', body: 'Go to Certificates → enter your email → click download. If you face issues, contact support@agileai.university.' , answer: 'Open the Certificates page from the portal menu and enter your email to retrieve downloadable certificates.'},
+        { title: 'How to download my certificate', body: 'Go to Certificates → enter your email → click download. If you face issues, contact support@laau.university.' , answer: 'Open the Certificates page from the portal menu and enter your email to retrieve downloadable certificates.'},
         { title: 'How to take the AI + Agile Assessment', body: 'Sign in on the portal and click Assessment. If you cannot sign in, use the fallback Google Form.' , answer: 'Sign in and click the Assessment button, or use the Google Form fallback on the assessment page.'},
         { title: 'Who can issue certificates', body: 'Certificates are issued by Agile AI University after course completion and verification.', answer: 'Certificates are issued after completion and verification; contact the admin if there is a delay.'}
       ];

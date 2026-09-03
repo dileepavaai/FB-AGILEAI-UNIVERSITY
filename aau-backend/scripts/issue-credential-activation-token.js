@@ -92,7 +92,7 @@ const CONFIG = Object.freeze({
     defaultSource: "aop_alumni_pilot",
 
     defaultPortalUrl:
-        "https://portal.agileai.university/activate",
+        "https://portal.laau.university/activate",
 
     tokenBytes: 32, // 256-bit token
     tokenHashAlgorithm: "sha256",

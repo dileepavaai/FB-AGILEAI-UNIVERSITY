@@ -50,27 +50,27 @@ Institutional systems and platforms
 
 | Surface | Purpose |
 |--------|--------|
-| agileai.university | Institutional website |
-| edu.agileai.university | Canonical knowledge interface |
-| learn.agileai.university | Redirect surface |
-| portal.agileai.university | Student & executive portal |
-| admin.agileai.university | Administrative systems and credential issuance |
-| certs.agileai.university | Redirect surface for credential services |
-| verify.agileai.university | Credential verification interface |
-| assessment.agileai.university | Capability assessment system |
+| laau.university | Institutional website |
+| edu.laau.university | Canonical knowledge interface |
+| learn.laau.university | Redirect surface |
+| portal.laau.university | Student & executive portal |
+| admin.laau.university | Administrative systems and credential issuance |
+| certs.laau.university | Redirect surface for credential services |
+| verify.laau.university | Credential verification interface |
+| assessment.laau.university | Capability assessment system |
 
 ---
 
 # 4. Knowledge Surface
 
 **Canonical Knowledge Interface:**  
-edu.agileai.university
+edu.laau.university
 
 **Purpose:**  
 Structured knowledge architecture for Agile AI frameworks and domain concepts.
 
 **Rule:**  
-learn.agileai.university acts **only as a redirect surface**.
+learn.laau.university acts **only as a redirect surface**.
 
 ---
 
@@ -83,7 +83,7 @@ Portal surfaces enable:
 - institutional services  
 
 **Example:**  
-portal.agileai.university
+portal.laau.university
 
 ---
 
@@ -93,9 +93,9 @@ Credential services operate through multiple coordinated surfaces:
 
 | Surface | Role |
 |--------|------|
-| admin.agileai.university | Credential issuance and administrative management |
-| certs.agileai.university | Public redirect entry point for credential services |
-| verify.agileai.university | Credential verification interface |
+| admin.laau.university | Credential issuance and administrative management |
+| certs.laau.university | Public redirect entry point for credential services |
+| verify.laau.university | Credential verification interface |
 
 These systems support:
 
@@ -103,7 +103,7 @@ These systems support:
 - credential verification  
 - institutional recognition  
 
-The **certs.agileai.university** surface exists primarily as a public entry point that redirects users to the appropriate credential services.
+The **certs.laau.university** surface exists primarily as a public entry point that redirects users to the appropriate credential services.
 
 ---
 
@@ -118,7 +118,7 @@ Capability assessment systems provide:
 These systems operate independently from credential issuance and verification infrastructure.
 
 **Example surface:**  
-assessment.agileai.university
+assessment.laau.university
 
 ---
 

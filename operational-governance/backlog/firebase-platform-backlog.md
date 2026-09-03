@@ -4,10 +4,10 @@ This document tracks **deferred infrastructure improvements** related to the Fir
 
 The Firebase platform currently hosts multiple public surfaces including:
 
-- agileai.university (institutional site)
-- portal.agileai.university (interaction portal)
-- certs.agileai.university (credential verification)
-- spec.agileai.university (specification portal)
+- laau.university (institutional site)
+- portal.laau.university (interaction portal)
+- certs.laau.university (credential verification)
+- spec.laau.university (specification portal)
 
 The platform is currently **stable and operational**.  
 Items listed here are improvements that may be implemented later when necessary.

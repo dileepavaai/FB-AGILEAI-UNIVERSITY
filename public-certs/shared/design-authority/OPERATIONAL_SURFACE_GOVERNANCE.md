@@ -3,7 +3,7 @@ Agile AI University
 
 Version: 1.0  
 Status: ACTIVE  
-Applies To: verify.agileai.university, certs.agileai.university  
+Applies To: verify.laau.university, certs.laau.university  
 
 ---
 
@@ -29,7 +29,7 @@ Agile AI University public surfaces are classified into two categories:
 
 ### A) Institutional Presentation Surfaces
 Examples:
-- agileai.university (public-site)
+- laau.university (public-site)
 - academic frameworks
 - research publications
 
@@ -44,8 +44,8 @@ Characteristics:
 ### B) Operational Trust Surfaces (FROZEN)
 
 Examples:
-- verify.agileai.university
-- certs.agileai.university
+- verify.laau.university
+- certs.laau.university
 
 Characteristics:
 - Visually stable

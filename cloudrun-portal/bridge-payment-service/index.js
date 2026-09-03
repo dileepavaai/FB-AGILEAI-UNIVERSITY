@@ -98,7 +98,7 @@ const OFFER_EXPIRES_AT =
 
 const ALLOWED_ORIGINS =
   new Set([
-    "https://portal.agileai.university"
+    "https://portal.laau.university"
   ]);
 
 /* ============================================================

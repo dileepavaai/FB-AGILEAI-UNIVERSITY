@@ -81,7 +81,7 @@ import {
 ===================================================== */
 
 const ADMIN_ACCESS = {
-  "dileep@agileai.university":
+  "dileep@laau.university":
     "super_admin",
 
   "laau.aaiu@gmail.com":

@@ -31,8 +31,8 @@ These may:
 ---
 
 ### Frozen Operational Surfaces
-- verify.agileai.university
-- certs.agileai.university
+- verify.laau.university
+- certs.laau.university
 
 These must:
 - Maintain stable visual identity

@@ -132,7 +132,7 @@
 
 
     const DEFAULT_EMAIL_LINK_RETURN_URL =
-        "https://portal.agileai.university/login.html";
+        "https://portal.laau.university/login.html";
 
 
     const EMAIL_STORAGE_KEY =

@@ -219,7 +219,7 @@ The University operates as an academic and professional body and is not position
 A knowledge surface is a digital interface designed to present structured knowledge resources related to the Agile AI domain.
 
 **Example:**  
-edu.agileai.university
+edu.laau.university
 
 ---
 
@@ -246,7 +246,7 @@ Portals may enable:
 - institutional services  
 
 **Example:**  
-portal.agileai.university
+portal.laau.university
 
 ---
 

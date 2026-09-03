@@ -1342,12 +1342,12 @@
             createElement(
                 "a",
                 "learning-resource-support-link",
-                "support@agileai.university"
+                "support@laau.university"
             );
 
 
         supportLink.href =
-            "mailto:support@agileai.university";
+            "mailto:support@laau.university";
 
 
         support.append(

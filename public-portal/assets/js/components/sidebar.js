@@ -374,7 +374,7 @@
                         "📖",
 
                     url:
-                        "https://spec.agileai.university/",
+                        "https://spec.laau.university/",
 
                     openMode:
                         "new-tab"
@@ -391,7 +391,7 @@
                         "📝",
 
                     url:
-                        "https://assessment.agileai.university/assessment.html",
+                        "https://assessment.laau.university/assessment.html",
 
                     openMode:
                         "new-tab"
@@ -474,7 +474,7 @@
                         "🔍",
 
                     url:
-                        "https://verify.agileai.university/",
+                        "https://verify.laau.university/",
 
                     openMode:
                         "new-tab"

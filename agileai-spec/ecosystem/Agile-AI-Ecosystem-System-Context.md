@@ -59,7 +59,7 @@ These responsibilities belong to the academic layer.
 # 3. Agile AI University
 
 **Primary Domain:**  
-agileai.university
+laau.university
 
 Agile AI University operationalizes Foundation standards into **structured academic capability systems**.
 

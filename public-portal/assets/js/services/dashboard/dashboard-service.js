@@ -324,7 +324,7 @@
                         "Assessment Platform",
 
                     url:
-                        "https://assessment.agileai.university/assessment.html",
+                        "https://assessment.laau.university/assessment.html",
 
                     icon:
                         "📝",

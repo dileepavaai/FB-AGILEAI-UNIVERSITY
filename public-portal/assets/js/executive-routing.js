@@ -137,13 +137,13 @@
          STEP 5 — REDIRECT (CANONICAL · UNCHANGED)
          ===================================================== */
       window.location.href =
-        "https://assessment.agileai.university/executive-insight.html?from=portal";
+        "https://assessment.laau.university/executive-insight.html?from=portal";
     });
   };
 
   function redirectToPayment() {
     window.location.replace(
-      "https://assessment.agileai.university/exec-payment.html"
+      "https://assessment.laau.university/exec-payment.html"
     );
   }
 })();

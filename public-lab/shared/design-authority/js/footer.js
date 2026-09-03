@@ -82,19 +82,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <p class="footer-links">
 
-          <a href="https://agileai.university">
+          <a href="https://laau.university">
             Institutional Site
           </a> ·
 
-          <a href="https://edu.agileai.university">
+          <a href="https://edu.laau.university">
             Knowledge Surface
           </a> ·
 
-          <a href="https://portal.agileai.university">
+          <a href="https://portal.laau.university">
             Student & Executive Portal
           </a> ·
 
-          <a href="https://verify.agileai.university">
+          <a href="https://verify.laau.university">
             Credential Verification
           </a>
 

@@ -120,13 +120,13 @@ Examples
 
 | Domain | Purpose |
 |---------|---------|
-| agileai.university | Public Website |
-| portal.agileai.university | Student Portal |
-| admin.agileai.university | Administration Portal |
-| assessment.agileai.university | Assessment Platform |
-| certs.agileai.university | Certificate Services |
-| learn.agileai.university | Learning Platform |
-| lab.agileai.university | Leadership Lab |
+| laau.university | Public Website |
+| portal.laau.university | Student Portal |
+| admin.laau.university | Administration Portal |
+| assessment.laau.university | Assessment Platform |
+| certs.laau.university | Certificate Services |
+| learn.laau.university | Learning Platform |
+| lab.laau.university | Leadership Lab |
 
 ---
 

@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <nav class="site-nav" id="site-nav">
           <a href="/aipa.html" data-link="aipa">AIPA</a>
           <a href="/aaia.html" data-link="aaia">AAIA</a>
-          <a href="https://spec.agileai.university" data-link="registry">Registry</a>
+          <a href="https://spec.laau.university" data-link="registry">Registry</a>
           <a href="/contact.html" data-link="contact">Apply</a>
         </nav>
 

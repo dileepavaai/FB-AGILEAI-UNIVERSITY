@@ -21,9 +21,9 @@ app.use(express.json());
 ------------------------------------------------- */
 const corsOptions = {
   origin: [
-    "https://portal.agileai.university",
-    "https://assessment.agileai.university",
-    "https://verify.agileai.university"
+    "https://portal.laau.university",
+    "https://assessment.laau.university",
+    "https://verify.laau.university"
   ],
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: [

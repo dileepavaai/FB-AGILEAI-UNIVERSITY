@@ -13,13 +13,13 @@ window.AAIU_CONFIG = {
   /* ------------------------------------------------------------
      Assessment Surfaces
      ------------------------------------------------------------ */
-  ASSESSMENT_BASE_URL: "https://assessment.agileai.university",
+  ASSESSMENT_BASE_URL: "https://assessment.laau.university",
 
   INSIGHT_REPORT_URL:
-    "https://assessment.agileai.university/report.html",
+    "https://assessment.laau.university/report.html",
 
   EXECUTIVE_INSIGHT_URL:
-    "https://assessment.agileai.university/executive-insight.html",
+    "https://assessment.laau.university/executive-insight.html",
 
   /* ------------------------------------------------------------
      Executive Entitlement Check (Cloud Function)
@@ -30,7 +30,7 @@ window.AAIU_CONFIG = {
   /* ------------------------------------------------------------
      Support & Governance
      ------------------------------------------------------------ */
-  SUPPORT_EMAIL: "support@agileai.university",
+  SUPPORT_EMAIL: "support@laau.university",
 
   GOVERNANCE_NOTICE:
     "Executive Insight access is governed and requires entitlement."

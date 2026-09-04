@@ -3,7 +3,7 @@
 
   /**
    * =========================================================
-   * Agile AI University — Executive Insight Payment (Client)
+   * LAAU — Executive Insight Payment (Client)
    * MODE: EXPLICIT CONTINUATION + WEBHOOK AUTHORITATIVE (LOCKED)
    * =========================================================
    * Principles:
@@ -113,7 +113,7 @@
         order_id: order.id,
         amount: order.amount,
         currency: order.currency,
-        name: "Agile AI University",
+        name: "LAAU",
         description: "Executive Insight Report",
         prefill: { email },
         theme: { color: "#111827" },

@@ -1,6 +1,6 @@
 # Portal Authorization Layer
 
-**Agile AI University**
+**LAAU**
 
 ---
 
@@ -13,13 +13,13 @@
 | Version    | 1.0.0                           |
 | Status     | **LOCKED**                      |
 | Governance | Portal Governance v1.0          |
-| Owner      | Agile AI University             |
+| Owner      | LAAU             |
 
 ---
 
 # Purpose
 
-This document defines the Authorization Layer of the Agile AI University Portal.
+This document defines the Authorization Layer of the LAAU Portal.
 
 The Authorization Layer determines whether an authenticated identity is permitted to enter the Portal.
 
@@ -400,7 +400,7 @@ Every authorization implementation should satisfy the following:
 
 # Governance Status
 
-This document is the authoritative governance reference for the Authorization Layer of the Agile AI University Portal.
+This document is the authoritative governance reference for the Authorization Layer of the LAAU Portal.
 
 All authorization implementations shall conform to this architecture unless superseded by an approved governance revision.
 

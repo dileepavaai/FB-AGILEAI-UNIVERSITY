@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Operational Runbooks
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The **10-runbooks** section contains the operational playbooks required to execute recurring operational activities across the Agile AI University ecosystem.
+The **10-runbooks** section contains the operational playbooks required to execute recurring operational activities across the LAAU ecosystem.
 
 Runbooks provide step-by-step procedures for routine operations, incident response, troubleshooting, maintenance, deployment, recovery, and support activities.
 
@@ -252,7 +252,7 @@ This documentation is intended for:
 
 # Summary
 
-The **10-runbooks** documentation provides repeatable operational procedures for managing the Agile AI University ecosystem.
+The **10-runbooks** documentation provides repeatable operational procedures for managing the LAAU ecosystem.
 
 By documenting operational tasks as structured runbooks, the enterprise improves reliability, consistency, recoverability, and operational excellence across all platforms and services.
 

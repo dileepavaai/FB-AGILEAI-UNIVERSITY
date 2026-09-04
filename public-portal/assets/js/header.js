@@ -1,5 +1,5 @@
 /* =====================================================
-   Agile AI University — Institutional Header
+   LAAU — Institutional Header
    GOVERNANCE-GRADE · CONTEXT-SAFE · BRAND-STABLE
    WITH PORTAL THEME TOGGLE (LOCKED)
    Version: 1.2.0
@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     '        <li class="home">',
     '          <a href="https://laau.university" class="brand-link">',
-    '            <img src="/assets/images/aau-emblem.png" alt="Agile AI University" class="brand-logo" />',
-    '            <span>Agile AI University</span>',
+    '            <img src="/assets/images/aau-emblem.png" alt="LAAU" class="brand-logo" />',
+    '            <span>LAAU</span>',
     '          </a>',
     '        </li>',
 

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Runtime Architecture Standard
 
@@ -14,14 +14,14 @@
 | **Status** | **ACTIVE** |
 | **Standard Status** | **LOCKED** |
 | **Classification** | Enterprise Architecture Standard |
-| **Owner** | Agile AI University Enterprise Architecture |
+| **Owner** | LAAU Enterprise Architecture |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This document establishes the Enterprise Runtime Architecture Standard for the Agile AI University Enterprise Platform.
+This document establishes the Enterprise Runtime Architecture Standard for the LAAU Enterprise Platform.
 
 It defines how enterprise platforms, services, domains, registries, and supporting infrastructure behave during execution.
 
@@ -398,7 +398,7 @@ This standard complements:
 - Enterprise Platform Architecture Standard
 - Enterprise Integration Architecture Standard
 - Enterprise Security Architecture Standard
-- Agile AI University Enterprise Architecture & System Context
+- LAAU Enterprise Architecture & System Context
 
 ---
 

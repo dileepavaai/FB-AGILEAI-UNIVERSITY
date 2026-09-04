@@ -1,7 +1,7 @@
-# CSV Issuance Files — Agile AI University
+# CSV Issuance Files — LAAU
 
 This folder contains **CSV files used for credential issuance** via the
-Agile AI University admin import pipeline.
+LAAU admin import pipeline.
 
 These files are **operational artifacts**, not runtime assets.
 

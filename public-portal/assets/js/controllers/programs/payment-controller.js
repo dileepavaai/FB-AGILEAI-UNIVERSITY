@@ -553,7 +553,7 @@
               checkout.currency,
 
             name:
-              "Agile AI University",
+              "LAAU",
 
             description:
               checkout.description,

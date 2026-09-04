@@ -1,5 +1,5 @@
 # ==========================================================
-# Agile AI University
+# LAAU
 #
 # ADR-006
 #
@@ -18,7 +18,7 @@
 
 This Architectural Decision Record defines the lifecycle relationship between
 academic programmes, professional credentials, recognitions and learner
-progression within the Agile AI University ecosystem.
+progression within the LAAU ecosystem.
 
 This decision establishes the Founding Credential Architecture and introduces
 the concept of lifelong learner progression without altering historical
@@ -30,7 +30,7 @@ This ADR is authoritative.
 
 # Background
 
-Agile AI University originally launched the
+LAAU originally launched the
 
 Agile Outcome Practitioner (AOP)
 
@@ -74,16 +74,16 @@ Existing credentials SHALL never be modified or overwritten.
 
 The Agile Outcome Practitioner (AOP) credential is designated as the
 
-Founding Credential of Agile AI University
+Founding Credential of LAAU
 
-of Agile AI University.
+of LAAU.
 
 The programme itself is retired.
 
 The credential remains permanently valid.
 
 This designation recognises the original learners who established the early
-professional community of Agile AI University.
+professional community of LAAU.
 
 ---
 
@@ -263,7 +263,7 @@ The Student Portal SHALL present a lifelong professional journey.
 
 Example
 
-Founding Credential of Agile AI University
+Founding Credential of LAAU
 
 ✓ Agile Outcome Practitioner
 
@@ -331,7 +331,7 @@ Each progression generates
 • LinkedIn Publication
 • Professional Portfolio Update
 
-This creates continuous organic visibility for Agile AI University.
+This creates continuous organic visibility for LAAU.
 
 The university therefore encourages lifelong progression rather than one-time certification.
 
@@ -399,7 +399,7 @@ The Credential Registry is the authoritative source of academic truth.
 
 10.
 
-Agile AI University promotes lifelong professional growth.
+LAAU promotes lifelong professional growth.
 
 ---
 
@@ -487,9 +487,9 @@ Agile Outcome Practitioner (AOP)
 
 is permanently recognised as the
 
-Founding Credential of Agile AI University
+Founding Credential of LAAU
 
-of Agile AI University.
+of LAAU.
 
 The AOP programme is retired.
 
@@ -498,7 +498,7 @@ The AOP credential remains permanently valid.
 Future learner progression SHALL always occur through the issuance of new
 credentials rather than modification of historical records.
 
-This decision is considered foundational to the Agile AI University
+This decision is considered foundational to the LAAU
 Credential Architecture.
 
 ==========================================================

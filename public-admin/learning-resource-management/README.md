@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Admin Learning Resource Management
 

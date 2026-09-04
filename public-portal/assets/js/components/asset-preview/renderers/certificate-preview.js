@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : certificate-preview.js
@@ -23,7 +23,7 @@
 
             return `
                 <div class="asset-preview-certificate">
-                    <p class="asset-preview-kicker">Agile AI University</p>
+                    <p class="asset-preview-kicker">LAAU</p>
                     <h2>Certificate of Achievement</h2>
                     <p>This certifies that</p>
                     <h3>${this.escape(credential.fullName || credential.learnerName || "Learner")}</h3>

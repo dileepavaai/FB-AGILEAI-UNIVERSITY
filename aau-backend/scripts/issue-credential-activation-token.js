@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
 
    File      : issue-credential-activation-token.js
    Version   : 1.0.0

@@ -6,20 +6,20 @@
 
 **Date:** July 2026
 
-**Owner:** Agile AI University Architecture Board
+**Owner:** LAAU Architecture Board
 
 ---
 
 # 1. Context
 
-The Agile AI University Learning Resource Platform delivers licensed academic intellectual property to authenticated learners.
+The LAAU Learning Resource Platform delivers licensed academic intellectual property to authenticated learners.
 
 During the architectural design of the Learning Resource Platform, an important distinction emerged between:
 
 - Licensed Course Material
 - Reference Material
 
-Traditional Learning Management Systems often treat learning content as subscription-based or continuously updated. That model does not align with Agile AI University's academic and commercial governance.
+Traditional Learning Management Systems often treat learning content as subscription-based or continuously updated. That model does not align with LAAU's academic and commercial governance.
 
 Licensed Course Material is not subscription content.
 
@@ -45,7 +45,7 @@ Future programme versions shall be delivered only through an approved commercial
 - Bridge Programme
 - Re-attendance Programme
 
-This decision applies to all current and future Agile AI University programmes.
+This decision applies to all current and future LAAU programmes.
 
 ---
 
@@ -321,8 +321,8 @@ No additional collections or entitlement migration mechanisms are required for t
 
 **ACCEPTED**
 
-This Architecture Decision Record is locked for the MVP and establishes the official Licensed Course Material Entitlement Model for Agile AI University.
+This Architecture Decision Record is locked for the MVP and establishes the official Licensed Course Material Entitlement Model for LAAU.
 
 Future programme versions shall be treated as new commercial offerings rather than automatic entitlement upgrades.
 
-This decision forms a core part of the Agile AI University Enterprise Architecture and shall remain the governing policy for licensed learning resource ownership unless superseded by a formally approved Architecture Decision Record.
+This decision forms a core part of the LAAU Enterprise Architecture and shall remain the governing policy for licensed learning resource ownership unless superseded by a formally approved Architecture Decision Record.

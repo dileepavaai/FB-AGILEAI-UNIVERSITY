@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Iconography
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document establishes the official iconography standards for Agile AI University.
+This document establishes the official iconography standards for LAAU.
 
 Icons improve comprehension, navigation and recognition while maintaining a consistent visual language across every platform product.
 
@@ -359,6 +359,6 @@ Raster images should be avoided for interface icons.
 
 # Governance Status
 
-This document is the authoritative iconography specification for Agile AI University.
+This document is the authoritative iconography specification for LAAU.
 
-All current and future products shall implement icons in accordance with this governance to ensure a consistent, accessible and institutionally aligned visual language across the Agile AI University ecosystem.
+All current and future products shall implement icons in accordance with this governance to ensure a consistent, accessible and institutionally aligned visual language across the LAAU ecosystem.

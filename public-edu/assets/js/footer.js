@@ -7,11 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="footer-inner">
 
         <p class="footer-title">
-          Agile AI University
+          LAAU
         </p>
 
         <p class="footer-disclaimer">
-          Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
+          LAAU defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
           It operates as an independent academic and professional body and is not positioned as a commercial training provider.
         </p>
 
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </p>
 
         <p class="footer-copy">
-          © ${currentYear} Agile AI University
+          © ${currentYear} LAAU
         </p>
 
       </div>

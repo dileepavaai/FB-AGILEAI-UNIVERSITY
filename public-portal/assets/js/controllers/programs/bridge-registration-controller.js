@@ -14,7 +14,7 @@
    Purpose
    ------------------------------------------------------------
    Orchestrates the authenticated learner journey for an
-   Agile AI University Bridge Programme registration.
+   LAAU Bridge Programme registration.
 
    Responsibilities
    ------------------------------------------------------------

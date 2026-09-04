@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Payment Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Payment Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -31,7 +31,7 @@ This document defines the Enterprise Payment Domain Architecture.
 
 The Payment Domain governs all financial transactions associated with learner registrations, programme upgrades, bridge programmes, memberships, subscriptions, and future commercial offerings.
 
-The Payment Domain is the sole authority for financial processing within the Agile AI University Enterprise Platform.
+The Payment Domain is the sole authority for financial processing within the LAAU Enterprise Platform.
 
 ---
 
@@ -512,11 +512,11 @@ The ADR repository remains authoritative.
 
 # 19. Domain Summary
 
-The Payment Domain is the authoritative financial domain of the Agile AI University Enterprise Platform.
+The Payment Domain is the authoritative financial domain of the LAAU Enterprise Platform.
 
 It governs payment processing, taxation, invoicing, receipts, refunds, and financial audit while remaining independent of academic decision-making.
 
-By separating financial authority from programme governance, learner registration, learning delivery, and credential issuance, the Payment Domain establishes a scalable, auditable, and enterprise-grade financial foundation for the Agile AI University ecosystem.
+By separating financial authority from programme governance, learner registration, learning delivery, and credential issuance, the Payment Domain establishes a scalable, auditable, and enterprise-grade financial foundation for the LAAU ecosystem.
 
 ---
 

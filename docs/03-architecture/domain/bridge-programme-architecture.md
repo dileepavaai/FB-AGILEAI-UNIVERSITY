@@ -3,7 +3,7 @@
 **Document Version:** 1.0.0  
 **Status:** ACTIVE  
 **Phase:** Revenue Sprint  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architecture Domain:** Programme Progression and Commercial Registration  
 **Related Decision:** ADR-026 – Bridge Programme Architecture
 
@@ -11,9 +11,9 @@
 
 ## 1. Purpose
 
-This document defines the authoritative architecture for Bridge Programmes within the Agile AI University ecosystem.
+This document defines the authoritative architecture for Bridge Programmes within the LAAU ecosystem.
 
-A Bridge Programme enables an eligible learner to progress from an existing Agile AI University credential or programme into an approved higher-level programme through a governed academic and commercial pathway.
+A Bridge Programme enables an eligible learner to progress from an existing LAAU credential or programme into an approved higher-level programme through a governed academic and commercial pathway.
 
 The architecture covers:
 
@@ -38,7 +38,7 @@ This document is the primary architecture reference for all Bridge Programme imp
 
 ## 2. Business Context
 
-Agile AI University has existing learners and alumni who may already hold recognised credentials.
+LAAU has existing learners and alumni who may already hold recognised credentials.
 
 These learners must not be required to repeat the complete admission and learning journey when an approved progression pathway exists.
 

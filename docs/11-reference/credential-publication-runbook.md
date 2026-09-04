@@ -4,7 +4,7 @@
 **Title:** Credential Publication Runbook
 **Version:** 1.0.0
 **Status:** ACTIVE
-**Owner:** Agile AI University
+**Owner:** LAAU
 **Architect:** Dileep Appupillai
 **Audience:** Platform Administrators
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This runbook defines the standard operating procedure for publishing
-official Agile AI University credential assets.
+official LAAU credential assets.
 
 The workflow governs:
 
@@ -415,7 +415,7 @@ The following rules are permanently enforced.
 # 24. Document Control
 
 This runbook defines the approved operational procedure for publishing
-official Agile AI University credential assets.
+official LAAU credential assets.
 
 Any changes to this workflow require:
 

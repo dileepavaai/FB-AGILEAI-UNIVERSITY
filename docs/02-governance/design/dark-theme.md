@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Dark Theme
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document establishes the official Dark Theme governance for Agile AI University.
+This document establishes the official Dark Theme governance for LAAU.
 
 The Dark Theme provides an alternative visual presentation while preserving the University's institutional identity, accessibility standards and design consistency.
 
@@ -47,7 +47,7 @@ This specification applies to:
 
 # Design Philosophy
 
-The Agile AI University Dark Theme is inspired by professional enterprise software and academic platforms.
+The LAAU Dark Theme is inspired by professional enterprise software and academic platforms.
 
 The objective is to provide:
 
@@ -333,7 +333,7 @@ Only visual tokens should change.
 
 # Governance Status
 
-This document is the authoritative Dark Theme specification for Agile AI University.
+This document is the authoritative Dark Theme specification for LAAU.
 
 All products shall implement Dark Theme using the governed Design Token architecture.
 

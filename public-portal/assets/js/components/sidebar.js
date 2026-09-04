@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : sidebar.js
@@ -160,7 +160,7 @@
    • Added Verify Credential as a first-class portal
      navigation destination.
    • Connected the authenticated portal to the official
-     Agile AI University Verification Platform.
+     LAAU Verification Platform.
    • Configured credential verification to open securely
      in a new browser tab.
    • Preserved the Credential Portfolio positioning above
@@ -2074,7 +2074,7 @@
 
                     <img
                         src="/assets/images/aau-emblem.png"
-                        alt="Agile AI University"
+                        alt="LAAU"
                         class="portal-sidebar-logo"
                         loading="lazy">
 
@@ -2084,7 +2084,7 @@
                         <div
                             class="portal-sidebar-title">
 
-                            Agile AI University
+                            LAAU
 
                         </div>
 

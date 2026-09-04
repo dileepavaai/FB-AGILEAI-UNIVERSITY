@@ -1,11 +1,11 @@
-# Agile AI University Portal
+# LAAU Portal
 
 # Login, Authentication, Authorization & Access Architecture
 
 Version: 1.0.0
 Status: ACTIVE
 Governance: LOCKED
-Owner: Agile AI University
+Owner: LAAU
 
 ---
 

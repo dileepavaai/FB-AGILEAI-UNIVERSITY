@@ -1,8 +1,8 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Documentation Portal
 
-> **The authoritative documentation for the Agile AI University Enterprise Platform.**
+> **The authoritative documentation for the LAAU Enterprise Platform.**
 
 ---
 
@@ -15,14 +15,14 @@
 | **Version** | **1.0.0** |
 | **Status** | **ACTIVE** |
 | **Classification** | Documentation Index |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Welcome
 
-The **docs** directory contains the complete Enterprise Documentation for the Agile AI University ecosystem.
+The **docs** directory contains the complete Enterprise Documentation for the LAAU ecosystem.
 
 It serves as the authoritative knowledge base for:
 
@@ -309,7 +309,7 @@ The documentation will continue to evolve with:
 
 # Summary
 
-The **docs** directory is the authoritative documentation portal for the Agile AI University Enterprise Platform.
+The **docs** directory is the authoritative documentation portal for the LAAU Enterprise Platform.
 
 It provides a structured, governed, and scalable knowledge base supporting the design, implementation, operation, and future evolution of the enterprise.
 

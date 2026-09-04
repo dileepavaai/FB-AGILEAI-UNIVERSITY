@@ -2,7 +2,7 @@
 
 Status: CANONICAL · GOVERNANCE LOCKED  
 Last Updated: 2026-03-29  
-Scope: Agile AI Foundation + Agile AI University + Agile AI Academy Ecosystem
+Scope: Agile AI Foundation + LAAU + Agile AI Academy Ecosystem
 
 ---
 
@@ -29,7 +29,7 @@ The Agile AI ecosystem consists of **three complementary institutional entities*
 | Entity | Role |
 |------|------|
 | Agile AI Foundation | Canonical standards authority |
-| Agile AI University | Academic operationalization authority |
+| LAAU | Academic operationalization authority |
 | Agile AI Academy | Capability enablement and learning layer |
 
 The ecosystem follows a **standards → academic → capability enablement model.**
@@ -37,7 +37,7 @@ The ecosystem follows a **standards → academic → capability enablement model
 Agile AI Foundation  
   ↓ defines standards  
 
-Agile AI University  
+LAAU  
   ↓ operationalizes and evaluates  
 
 Agile AI Academy  
@@ -73,12 +73,12 @@ Those responsibilities are intentionally separated.
 
 ---
 
-# 4. Agile AI University
+# 4. LAAU
 
 Primary Domain:  
 laau.university
 
-Agile AI University operationalizes the standards defined by the Foundation into **structured academic capability systems.**
+LAAU operationalizes the standards defined by the Foundation into **structured academic capability systems.**
 
 The University provides:
 
@@ -98,7 +98,7 @@ The University **is not positioned as:**
 
 Official positioning:
 
-> Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain. It operates as an independent academic and professional body and is not positioned as a commercial training provider.
+> LAAU defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain. It operates as an independent academic and professional body and is not positioned as a commercial training provider.
 
 ---
 
@@ -138,7 +138,7 @@ No layer may override or redefine the responsibilities of another layer.
 
 # 7. Multi-Surface Institutional Architecture
 
-Agile AI University operates as a **multi-surface digital institution.**
+LAAU operates as a **multi-surface digital institution.**
 
 Current surfaces include:
 

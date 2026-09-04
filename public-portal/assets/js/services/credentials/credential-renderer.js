@@ -1,6 +1,6 @@
 /* =====================================================
 
-Agile AI University
+LAAU
 
 Module      : Student & Executive Portal
 Component   : Credential Renderer
@@ -594,7 +594,7 @@ v1.0.0
                 </h3>
 
                 <p>
-                    Your Agile AI University credentials
+                    Your LAAU credentials
                     will appear here when they become
                     available.
                 </p>
@@ -681,7 +681,7 @@ v1.0.0
                 <img
                     class="credential-portfolio-emblem"
                     src="/assets/images/aau-emblem.png"
-                    alt="Agile AI University">
+                    alt="LAAU">
 
                 <div
                     class="credential-portfolio-code">

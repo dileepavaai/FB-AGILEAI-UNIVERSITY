@@ -4,7 +4,7 @@
 **Title:** Identity Activation Runbook  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai  
 **Audience:** Platform Administrators
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This runbook defines the standard operating procedure for activating
-existing learners within the Agile AI University platform.
+existing learners within the LAAU platform.
 
 Identity Activation securely links an authenticated learner account to
 existing academic records while preserving institutional integrity.
@@ -404,7 +404,7 @@ The following rules are mandatory.
 # 26. Document Control
 
 This runbook defines the approved operational procedure for identity
-activation within Agile AI University.
+activation within LAAU.
 
 Any changes to the activation workflow require:
 

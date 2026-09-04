@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Firebase Hosting Architecture
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-This document defines the Firebase Hosting architecture used across the Agile AI University ecosystem.
+This document defines the Firebase Hosting architecture used across the LAAU ecosystem.
 
 It documents:
 
@@ -32,7 +32,7 @@ This document is the authoritative reference for all Firebase Hosting decisions.
 
 # Executive Summary
 
-Agile AI University uses a Firebase Multi-Site Hosting Architecture.
+LAAU uses a Firebase Multi-Site Hosting Architecture.
 
 Every major platform capability is deployed as an independent hosting target while remaining within a single Firebase project.
 
@@ -44,7 +44,7 @@ This architecture provides
 - Improved scalability
 - Lower deployment risk
 
-The architecture supports the long-term evolution of the Agile AI University ecosystem.
+The architecture supports the long-term evolution of the LAAU ecosystem.
 
 ---
 
@@ -313,7 +313,7 @@ Each future capability may become an independent hosting target.
 
 # Long-Term Vision
 
-The Agile AI University ecosystem is designed as a collection of independently deployable web applications that share a common backend platform.
+The LAAU ecosystem is designed as a collection of independently deployable web applications that share a common backend platform.
 
 This architecture enables rapid delivery while maintaining a consistent user experience across the ecosystem.
 
@@ -349,4 +349,4 @@ credential-architecture.md
 
 **Governance:** LOCKED
 
-**Owner:** Agile AI University
+**Owner:** LAAU

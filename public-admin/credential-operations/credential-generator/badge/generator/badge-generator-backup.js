@@ -1,5 +1,5 @@
 /* =====================================================
-Agile AI University
+LAAU
 Credential Operations Suite
 
 Badge Generator Controller

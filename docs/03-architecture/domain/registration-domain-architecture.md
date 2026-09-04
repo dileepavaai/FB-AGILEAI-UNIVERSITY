@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Registration Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Registration Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -41,7 +41,7 @@ It does not own financial transactions or payment execution.
 
 ## Introduction
 
-The Registration Domain is responsible for capturing, validating, and governing learner registration into Agile AI University programmes.
+The Registration Domain is responsible for capturing, validating, and governing learner registration into LAAU programmes.
 
 It represents the formal expression of a learner's intent to participate in an academic offering and acts as the gateway between Programme governance and downstream operational domains.
 
@@ -469,7 +469,7 @@ This domain follows Architecture Decision Records governing:
 
 # 19. Domain Summary
 
-The Registration Domain governs learner registration throughout the Agile AI University Enterprise Platform.
+The Registration Domain governs learner registration throughout the LAAU Enterprise Platform.
 
 By owning learner intent, registration lifecycle, and enrolment initiation—while delegating financial processing to the Payment Domain—it establishes a clear separation of responsibilities that supports scalability, governance, and future growth.
 

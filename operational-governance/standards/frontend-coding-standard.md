@@ -1,16 +1,16 @@
-# Agile AI University Front-End Coding Standard
+# LAAU Front-End Coding Standard
 
 **Document Type:** Standard
 **Version:** 1.0.0
 **Status:** LOCKED
 **Effective Date:** 2026-06-16
-**Authority:** Agile AI University Platform Governance
+**Authority:** LAAU Platform Governance
 
 ---
 
 # Purpose
 
-This standard defines the canonical structure, formatting conventions, documentation requirements, and governance expectations for all Agile AI University administrative user interfaces.
+This standard defines the canonical structure, formatting conventions, documentation requirements, and governance expectations for all LAAU administrative user interfaces.
 
 The objective is to ensure:
 
@@ -426,7 +426,7 @@ javascript
 
 # Documentation Philosophy
 
-Agile AI University prioritizes:
+LAAU prioritizes:
 
 * Readability over brevity
 * Governance visibility over minimalism
@@ -461,7 +461,7 @@ Future administrative modules must align to this standard.
 
 **Decision:**
 
-The Agile AI University Front-End Coding Standard is adopted as the canonical formatting, documentation, and governance standard for all administrative user interface development.
+The LAAU Front-End Coding Standard is adopted as the canonical formatting, documentation, and governance standard for all administrative user interface development.
 
 **Status:** LOCKED
 

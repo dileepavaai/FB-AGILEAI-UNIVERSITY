@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Architecture Decision Record (ADR)
 
@@ -22,7 +22,7 @@
 
 # Executive Summary
 
-This Architecture Decision Record establishes the enterprise governance for releasing learning resources throughout the Agile AI University ecosystem.
+This Architecture Decision Record establishes the enterprise governance for releasing learning resources throughout the LAAU ecosystem.
 
 The platform supports multiple learner journeys, including:
 
@@ -63,7 +63,7 @@ These competing requirements require governed release policies rather than a sin
 
 # Decision
 
-The Agile AI University platform shall adopt a Governed Learning Resource Release Architecture.
+The LAAU platform shall adopt a Governed Learning Resource Release Architecture.
 
 Learning resources shall not become visible simply because a learner is authenticated.
 

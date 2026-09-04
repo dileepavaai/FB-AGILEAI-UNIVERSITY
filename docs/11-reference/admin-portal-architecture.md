@@ -4,7 +4,7 @@
 **Title:** Admin Portal Architecture
 **Version:** 1.0.0
 **Status:** ACTIVE
-**Owner:** Agile AI University
+**Owner:** LAAU
 **Architect:** Dileep Appupillai
 **Last Updated:** 27 July 2026
 
@@ -492,7 +492,7 @@ processes, reporting, or operational governance require:
 4. Production validation
 
 The Admin Portal must remain the governed operational control centre of
-Agile AI University.
+LAAU.
 
 ---
 

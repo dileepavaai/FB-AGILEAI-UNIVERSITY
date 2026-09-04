@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Architecture Decision Records (ADR)
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The **04-decisions** section contains the authoritative Architecture Decision Records (ADRs) for the Agile AI University ecosystem.
+The **04-decisions** section contains the authoritative Architecture Decision Records (ADRs) for the LAAU ecosystem.
 
 Each ADR captures a significant architectural decision that has been formally evaluated, approved, and adopted.
 
@@ -52,7 +52,7 @@ This section exists to:
 
 Foundation Architecture
 
-Defines the initial enterprise architectural principles and establishes the architectural direction for the Agile AI University ecosystem.
+Defines the initial enterprise architectural principles and establishes the architectural direction for the LAAU ecosystem.
 
 ---
 
@@ -261,7 +261,7 @@ This documentation is intended for:
 
 # Summary
 
-The **04-decisions** documentation preserves the architectural reasoning behind the Agile AI University ecosystem.
+The **04-decisions** documentation preserves the architectural reasoning behind the LAAU ecosystem.
 
 By documenting major architectural decisions as immutable Architecture Decision Records, the enterprise maintains traceability, consistency, and institutional knowledge throughout its evolution.
 

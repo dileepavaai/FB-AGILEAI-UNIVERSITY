@@ -1,6 +1,6 @@
-# Agile AI University
+# LAAU
 
-# Agile AI University Enterprise Architecture & System Context
+# LAAU Enterprise Architecture & System Context
 
 ---
 
@@ -8,16 +8,16 @@
 
 | Attribute | Value |
 |------------|-------|
-| **Document** | Agile AI University Enterprise Architecture & System Context |
+| **Document** | LAAU Enterprise Architecture & System Context |
 | **File** | `agileai-platform-system-context.md` |
 | **Version** | **6.0** |
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Master Enterprise Architecture Handbook |
 | **Authority** | Enterprise System Context |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Audience** | Enterprise Architects, Solution Architects, Software Engineers, Product Owners, Project Managers, Contributors, Administrators |
-| **Repository** | Agile AI University Platform |
+| **Repository** | LAAU Platform |
 | **Last Updated** | July 2026 |
 
 ---
@@ -28,7 +28,7 @@
 
 **LOCKED**
 
-This document is the authoritative architectural reference for the Agile AI University Enterprise Platform.
+This document is the authoritative architectural reference for the LAAU Enterprise Platform.
 
 Every enterprise architectural decision shall originate from this document before implementation.
 
@@ -67,7 +67,7 @@ Individual subsystem documents may extend this handbook but shall never contradi
 
 # Purpose
 
-The Agile AI University Enterprise Architecture & System Context is the single authoritative architectural reference for the Agile AI University ecosystem.
+The LAAU Enterprise Architecture & System Context is the single authoritative architectural reference for the LAAU ecosystem.
 
 Rather than documenting a single application, this handbook documents the complete enterprise platform, including:
 
@@ -127,13 +127,13 @@ The following enterprise principles are permanently locked.
 - Service-Oriented Architecture
 - Backward Compatibility
 
-These principles govern every system within the Agile AI University ecosystem.
+These principles govern every system within the LAAU ecosystem.
 
 ---
 
 # Scope
 
-This handbook documents the architecture of the complete Agile AI University enterprise platform.
+This handbook documents the architecture of the complete LAAU enterprise platform.
 
 Current enterprise scope includes:
 
@@ -196,7 +196,7 @@ Every contributor should consider this handbook as the primary architectural ref
 
 # Documentation Hierarchy
 
-The Agile AI University documentation repository follows the hierarchy below.
+The LAAU documentation repository follows the hierarchy below.
 
 ```
 Enterprise System Context
@@ -334,7 +334,7 @@ Subsystem documents should be consulted for implementation-specific guidance aft
 
 # Development Baseline
 
-The Agile AI University platform is now developed using an enterprise-first approach.
+The LAAU platform is now developed using an enterprise-first approach.
 
 Every feature shall be designed as an end-to-end enterprise workflow rather than an isolated application feature.
 
@@ -388,7 +388,7 @@ Verification
 Professional Reputation
 ```
 
-This workflow represents the long-term architectural direction of the Agile AI University ecosystem and is considered a locked enterprise principle.
+This workflow represents the long-term architectural direction of the LAAU ecosystem and is considered a locked enterprise principle.
 
 ---
 
@@ -406,7 +406,7 @@ This workflow represents the long-term architectural direction of the Agile AI U
 
 ## Introduction
 
-Agile AI University is building an enterprise-grade digital academic ecosystem that enables governed professional learning, assessment, credentialing, recognition, executive intelligence, and future AI-enabled educational services.
+LAAU is building an enterprise-grade digital academic ecosystem that enables governed professional learning, assessment, credentialing, recognition, executive intelligence, and future AI-enabled educational services.
 
 Rather than developing independent web applications, the platform has been intentionally architected as an integrated enterprise where every capability contributes to a unified learner journey and shares a common governance framework.
 
@@ -420,7 +420,7 @@ This handbook represents the authoritative architectural reference for that ente
 
 ## Enterprise Context
 
-The Agile AI University platform extends far beyond a traditional Learning Management System (LMS) or certificate generation platform.
+The LAAU platform extends far beyond a traditional Learning Management System (LMS) or certificate generation platform.
 
 The enterprise supports the complete professional lifecycle of a learner, from programme discovery through lifelong credential ownership.
 
@@ -482,10 +482,10 @@ Every stage of this lifecycle is governed by enterprise architecture and support
 
 ## Enterprise Platform
 
-The Agile AI University ecosystem currently consists of multiple integrated platforms.
+The LAAU ecosystem currently consists of multiple integrated platforms.
 
 ```
-                    Agile AI University
+                    LAAU
 
                               │
 
@@ -547,7 +547,7 @@ These principles ensure that the platform continues to evolve without architectu
 
 ## Vision Statement
 
-The vision of Agile AI University is to establish a globally recognised academic and professional institution delivering enterprise-grade learning, trusted credentials, executive capability development, and AI-enabled educational services through a unified digital ecosystem.
+The vision of LAAU is to establish a globally recognised academic and professional institution delivering enterprise-grade learning, trusted credentials, executive capability development, and AI-enabled educational services through a unified digital ecosystem.
 
 The platform is intended to become the digital foundation supporting every learner, trainer, executive, administrator, partner, and future organisational customer throughout their professional development journey.
 
@@ -591,7 +591,7 @@ Continuous Learning
 AI Assisted Growth
 ```
 
-Credentials issued by Agile AI University become permanent digital assets that continue to generate value throughout a learner's professional career.
+Credentials issued by LAAU become permanent digital assets that continue to generate value throughout a learner's professional career.
 
 ---
 
@@ -646,7 +646,7 @@ These characteristics provide a stable foundation for long-term platform evoluti
 
 ## Mission Statement
 
-The mission of the Agile AI University Enterprise Platform is to provide a secure, governed, extensible, and maintainable technology foundation capable of supporting every operational aspect of Agile AI University.
+The mission of the LAAU Enterprise Platform is to provide a secure, governed, extensible, and maintainable technology foundation capable of supporting every operational aspect of LAAU.
 
 The platform exists to enable trusted educational experiences while maintaining architectural consistency, operational excellence, and enterprise governance.
 
@@ -654,7 +654,7 @@ The platform exists to enable trusted educational experiences while maintaining 
 
 ## Enterprise Responsibilities
 
-The platform supports the complete operational lifecycle of Agile AI University.
+The platform supports the complete operational lifecycle of LAAU.
 
 Current enterprise responsibilities include:
 
@@ -706,7 +706,7 @@ Every implementation decision should contribute toward achieving these outcomes.
 
 ## Enterprise Commitment
 
-Agile AI University is committed to evolving the platform through disciplined architecture rather than incremental complexity.
+LAAU is committed to evolving the platform through disciplined architecture rather than incremental complexity.
 
 Every new capability shall:
 
@@ -731,7 +731,7 @@ Part I-B begins with **Enterprise Philosophy** and the **Core Enterprise Princip
 
 ## Introduction
 
-The Agile AI University Enterprise Platform is founded on the belief that sustainable digital ecosystems are created through disciplined architecture, governed decision-making, and long-term thinking rather than through isolated feature development.
+The LAAU Enterprise Platform is founded on the belief that sustainable digital ecosystems are created through disciplined architecture, governed decision-making, and long-term thinking rather than through isolated feature development.
 
 Every capability within the enterprise should contribute to a coherent ecosystem that remains maintainable, scalable, and trustworthy throughout its evolution.
 
@@ -741,7 +741,7 @@ The enterprise therefore values architectural consistency above short-term imple
 
 ## Enterprise-First Thinking
 
-The Agile AI University ecosystem is designed as a single enterprise rather than a collection of independent applications.
+The LAAU ecosystem is designed as a single enterprise rather than a collection of independent applications.
 
 Every platform—including the Public Website, Student Portal, Admin Portal, Assessment Platform, Learning Platform, Credential Platform, Executive Services, and future AI services—exists to support a common enterprise mission.
 
@@ -847,7 +847,7 @@ Consistency reduces operational complexity and simplifies future platform evolut
 
 ## Continuous Evolution
 
-The Agile AI University platform is expected to evolve continuously.
+The LAAU platform is expected to evolve continuously.
 
 Architectural evolution occurs through governed decisions rather than incremental fragmentation.
 
@@ -865,7 +865,7 @@ History should always be preserved.
 
 **LOCKED**
 
-The following principles govern every platform, service, module, document, and future capability within the Agile AI University ecosystem.
+The following principles govern every platform, service, module, document, and future capability within the LAAU ecosystem.
 
 These principles are considered permanent architectural constraints.
 
@@ -1094,7 +1094,7 @@ Part I-C begins with **Strategic Objectives** and **Enterprise Scope**.
 
 ## Introduction
 
-The Agile AI University Enterprise Platform has been designed to support the complete academic, professional, and operational lifecycle of learners, trainers, executives, administrators, and future enterprise partners.
+The LAAU Enterprise Platform has been designed to support the complete academic, professional, and operational lifecycle of learners, trainers, executives, administrators, and future enterprise partners.
 
 Every investment in architecture, governance, and implementation should contribute towards achieving one or more strategic objectives defined within this handbook.
 
@@ -1104,7 +1104,7 @@ These objectives provide the long-term direction for enterprise evolution.
 
 ## Objective 1 — Deliver Trusted Professional Education
 
-The primary objective of Agile AI University is to provide high-quality, governed, and industry-relevant professional education.
+The primary objective of LAAU is to provide high-quality, governed, and industry-relevant professional education.
 
 The enterprise platform shall support:
 
@@ -1303,11 +1303,11 @@ Enterprise integrity shall always take precedence over implementation speed.
 
 ## Current Enterprise Scope
 
-The Agile AI University Enterprise Platform currently comprises the following operational domains.
+The LAAU Enterprise Platform currently comprises the following operational domains.
 
 ### Public Experience
 
-Provides public-facing access to Agile AI University.
+Provides public-facing access to LAAU.
 
 Current capabilities include:
 
@@ -1527,7 +1527,7 @@ Part I-D begins with **Enterprise Maturity**, **Current Enterprise Status**, and
 
 ## Introduction
 
-The Agile AI University Enterprise Platform has evolved through multiple architectural stages.
+The LAAU Enterprise Platform has evolved through multiple architectural stages.
 
 Each stage represents a significant increase in platform capability, governance maturity, and enterprise integration.
 
@@ -1539,7 +1539,7 @@ Rather than building isolated applications, the platform has been intentionally 
 
 ### Phase 1 — Foundation
 
-The initial platform established the technical foundation required to support Agile AI University.
+The initial platform established the technical foundation required to support LAAU.
 
 Primary achievements included:
 
@@ -1679,7 +1679,7 @@ Status:
 
 ## Overall Enterprise Status
 
-The Agile AI University platform has established a stable enterprise architecture.
+The LAAU platform has established a stable enterprise architecture.
 
 The enterprise now operates as an integrated ecosystem rather than a collection of independent web applications.
 
@@ -1822,7 +1822,7 @@ Future platform capabilities should extend this workflow rather than introduce p
 
 # 1.11 Executive Summary
 
-The Agile AI University Enterprise Platform has evolved from a collection of supporting applications into a governed enterprise ecosystem.
+The LAAU Enterprise Platform has evolved from a collection of supporting applications into a governed enterprise ecosystem.
 
 The platform now provides a unified architecture supporting learners, trainers, administrators, executives, and future enterprise partners through shared services, common governance, and enterprise-wide integration.
 
@@ -1836,7 +1836,7 @@ This handbook serves as the authoritative reference for those decisions and prov
 
 **End of Part I – Executive Summary**
 
-**Part II – Enterprise Ecosystem** begins with the introduction to the Agile AI University ecosystem, enterprise domains, stakeholder model, and platform landscape.
+**Part II – Enterprise Ecosystem** begins with the introduction to the LAAU ecosystem, enterprise domains, stakeholder model, and platform landscape.
 
 # Part II
 
@@ -1846,7 +1846,7 @@ This handbook serves as the authoritative reference for those decisions and prov
 
 # 2.1 Introduction
 
-The Agile AI University Enterprise Platform is a governed digital ecosystem designed to support the complete academic, professional, and operational lifecycle of learners, trainers, executives, administrators, enterprise partners, and future AI-enabled educational services.
+The LAAU Enterprise Platform is a governed digital ecosystem designed to support the complete academic, professional, and operational lifecycle of learners, trainers, executives, administrators, enterprise partners, and future AI-enabled educational services.
 
 Rather than being developed as a collection of independent web applications, the platform has been intentionally architected as a unified enterprise where every capability contributes to a common mission, shares a common governance framework, and participates in a common enterprise architecture.
 
@@ -1854,7 +1854,7 @@ Each platform performs a clearly defined business responsibility while integrati
 
 The objective is not simply to deliver software.
 
-The objective is to establish a sustainable digital foundation capable of supporting Agile AI University for many years without requiring fundamental architectural redesign.
+The objective is to establish a sustainable digital foundation capable of supporting LAAU for many years without requiring fundamental architectural redesign.
 
 ---
 
@@ -1863,7 +1863,7 @@ The objective is to establish a sustainable digital foundation capable of suppor
 The enterprise currently consists of multiple specialised platforms operating together as a single governed ecosystem.
 
 ```
-                              Agile AI University
+                              LAAU
 
                                       │
 
@@ -1970,7 +1970,7 @@ Career Development
 Lifelong Learning
 ```
 
-This enterprise workflow represents the long-term operating model of Agile AI University.
+This enterprise workflow represents the long-term operating model of LAAU.
 
 Future capabilities should extend this workflow rather than introduce parallel operating models.
 
@@ -2036,7 +2036,7 @@ Independent feature implementation without enterprise integration is discouraged
 
 ## Enterprise Responsibility
 
-The Agile AI University ecosystem is responsible for supporting the complete operational lifecycle of the university.
+The LAAU ecosystem is responsible for supporting the complete operational lifecycle of the university.
 
 Current enterprise responsibilities include:
 
@@ -2113,7 +2113,7 @@ This architecture promotes consistency, maintainability, scalability, and long-t
 
 ## Introduction Summary
 
-The Agile AI University Enterprise Platform is a governed ecosystem of interoperable business capabilities operating under a common architectural framework.
+The LAAU Enterprise Platform is a governed ecosystem of interoperable business capabilities operating under a common architectural framework.
 
 Every platform contributes to a shared enterprise mission.
 
@@ -2133,7 +2133,7 @@ This enterprise-first approach establishes the architectural foundation for the 
 
 ## Introduction
 
-The Agile AI University Enterprise Platform has been designed as a long-term academic and professional ecosystem rather than as a collection of software products.
+The LAAU Enterprise Platform has been designed as a long-term academic and professional ecosystem rather than as a collection of software products.
 
 The objective is to create a sustainable digital enterprise capable of supporting learners, trainers, executives, administrators, enterprise partners, and future AI-enabled educational services through a common architectural vision.
 
@@ -2145,7 +2145,7 @@ The enterprise philosophy described in this section governs every current and fu
 
 ## Enterprise Before Applications
 
-The Agile AI University ecosystem is considered a single enterprise.
+The LAAU ecosystem is considered a single enterprise.
 
 Individual applications such as:
 
@@ -2348,7 +2348,7 @@ Sustainable growth is preferred over rapid expansion.
 
 ## Enterprise Philosophy Summary
 
-The Agile AI University Enterprise Platform is founded on the belief that enduring digital ecosystems are created through disciplined architecture, governed evolution, and enterprise-wide collaboration.
+The LAAU Enterprise Platform is founded on the belief that enduring digital ecosystems are created through disciplined architecture, governed evolution, and enterprise-wide collaboration.
 
 Applications, services, and future capabilities should continuously strengthen the enterprise rather than operate independently.
 
@@ -2364,7 +2364,7 @@ This philosophy provides the foundation for every architectural decision describ
 
 ## Introduction
 
-The Agile AI University Enterprise Platform consists of a collection of specialised business capabilities operating together under a common governance framework.
+The LAAU Enterprise Platform consists of a collection of specialised business capabilities operating together under a common governance framework.
 
 Each platform has a clearly defined responsibility while participating in a unified enterprise architecture.
 
@@ -2379,7 +2379,7 @@ This architecture enables the enterprise to evolve continuously without introduc
 The current enterprise landscape is illustrated below.
 
 ```
-                               Agile AI University
+                               LAAU
 
                                         │
 
@@ -2493,7 +2493,7 @@ Shared services reduce duplication while improving enterprise consistency.
 
 # Enterprise Integration Model
 
-The Agile AI University ecosystem follows an integration-first architecture.
+The LAAU ecosystem follows an integration-first architecture.
 
 The preferred integration model is:
 
@@ -2658,7 +2658,7 @@ The architecture is intentionally designed for long-term institutional growth.
 
 # Ecosystem Summary
 
-The Agile AI University Enterprise Platform is a governed collection of interoperable business capabilities operating under a unified architectural framework.
+The LAAU Enterprise Platform is a governed collection of interoperable business capabilities operating under a unified architectural framework.
 
 Every platform contributes towards a common enterprise mission.
 
@@ -2678,7 +2678,7 @@ This enterprise landscape establishes the foundation for the business domains de
 
 ## Introduction
 
-The Agile AI University Enterprise Platform is organised into a collection of enterprise business domains.
+The LAAU Enterprise Platform is organised into a collection of enterprise business domains.
 
 Each business domain represents a distinct organisational capability with clearly defined responsibilities, governance, and ownership.
 
@@ -2693,7 +2693,7 @@ Business domains evolve independently while remaining integrated through shared 
 The enterprise currently consists of the following business domains.
 
 ```
-                    Agile AI University Enterprise
+                    LAAU Enterprise
 
                                    │
 
@@ -2724,7 +2724,7 @@ Every business domain contributes to the enterprise operating model while mainta
 
 ## Purpose
 
-The Public Experience domain provides the public-facing presence of Agile AI University.
+The Public Experience domain provides the public-facing presence of LAAU.
 
 It represents the first interaction between prospective learners, organisations, and the university.
 
@@ -3027,7 +3027,7 @@ Shared services minimise duplication while maintaining enterprise consistency.
 
 ## Purpose
 
-The AI Services domain represents the long-term strategic direction of Agile AI University.
+The AI Services domain represents the long-term strategic direction of LAAU.
 
 AI capabilities are intended to augment learning, administration, executive insight, and learner development while operating within the enterprise governance framework.
 
@@ -3105,7 +3105,7 @@ Every business domain contributes to this enterprise operating model.
 
 # Business Domain Summary
 
-The Agile AI University Enterprise Platform is organised around business capabilities rather than software applications.
+The LAAU Enterprise Platform is organised around business capabilities rather than software applications.
 
 Each domain has a clearly defined purpose, ownership, governance model, and enterprise responsibility.
 
@@ -3127,7 +3127,7 @@ The following sections describe the enterprise stakeholders, shared platform ser
 
 ## Introduction
 
-The Agile AI University Enterprise Platform serves multiple stakeholder groups.
+The LAAU Enterprise Platform serves multiple stakeholder groups.
 
 Each stakeholder interacts with the enterprise through a governed set of services, capabilities, and user experiences.
 
@@ -3140,7 +3140,7 @@ Every architectural decision should consider its impact across all stakeholder g
 # Enterprise Stakeholder Model
 
 ```
-                    Agile AI University
+                    LAAU
 
                              │
 
@@ -3175,7 +3175,7 @@ Every stakeholder interacts with the enterprise through governed platform capabi
 
 ## Learners
 
-Learners are the primary beneficiaries of the Agile AI University ecosystem.
+Learners are the primary beneficiaries of the LAAU ecosystem.
 
 The enterprise supports learners throughout their professional lifecycle.
 
@@ -3199,7 +3199,7 @@ The learner experience is centred around simplicity while enterprise complexity 
 
 ## Trainers
 
-Trainers are authorised professionals responsible for delivering Agile AI University programmes.
+Trainers are authorised professionals responsible for delivering LAAU programmes.
 
 ### Responsibilities Supported
 
@@ -3250,7 +3250,7 @@ Administrative capabilities are intentionally separated from learner-facing expe
 
 ## Organisations
 
-Organisations engage with Agile AI University to develop workforce capability.
+Organisations engage with LAAU to develop workforce capability.
 
 Future enterprise services will support organisational learning initiatives.
 
@@ -3282,7 +3282,7 @@ Planned capabilities include:
 
 ## Enterprise Partners
 
-Enterprise partners may integrate with Agile AI University to support learning, verification, recruitment, or capability development.
+Enterprise partners may integrate with LAAU to support learning, verification, recruitment, or capability development.
 
 Future integrations may include:
 
@@ -3327,7 +3327,7 @@ The following principles govern stakeholder experiences.
 
 # Stakeholder Summary
 
-The Agile AI University Enterprise Platform has been designed to support a diverse and expanding community of stakeholders.
+The LAAU Enterprise Platform has been designed to support a diverse and expanding community of stakeholders.
 
 Each stakeholder group has clearly defined responsibilities, governed access, and dedicated enterprise experiences while benefiting from shared enterprise architecture and common platform services.
 
@@ -3343,7 +3343,7 @@ This stakeholder-centric approach ensures that future enterprise growth can occu
 
 ## Introduction
 
-Enterprise Platform Services provide the reusable business capabilities that power the Agile AI University ecosystem.
+Enterprise Platform Services provide the reusable business capabilities that power the LAAU ecosystem.
 
 Rather than allowing each application to independently implement common functionality, the enterprise exposes shared services with clearly defined responsibilities, ownership, and governance.
 
@@ -3691,7 +3691,7 @@ Enterprise services follow the principles below.
 
 # Enterprise Service Summary
 
-Enterprise Platform Services provide the reusable operational capabilities that support every system within the Agile AI University ecosystem.
+Enterprise Platform Services provide the reusable operational capabilities that support every system within the LAAU ecosystem.
 
 By centralising business behaviour within governed services, the enterprise maintains consistency, reduces duplication, and enables future platforms to integrate without architectural redesign.
 
@@ -3707,7 +3707,7 @@ These services form the operational foundation upon which the remaining enterpri
 
 ## Introduction
 
-The Agile AI University Enterprise Platform is built upon a modern cloud-native technology foundation designed to support scalability, governance, security, maintainability, and long-term enterprise evolution.
+The LAAU Enterprise Platform is built upon a modern cloud-native technology foundation designed to support scalability, governance, security, maintainability, and long-term enterprise evolution.
 
 Technology selection is driven by enterprise architecture rather than individual project requirements.
 
@@ -4036,7 +4036,7 @@ The technology foundation follows several guiding principles.
 
 # Technology Summary
 
-The Agile AI University Enterprise Platform is built upon a modern, secure, and scalable cloud-native technology foundation.
+The LAAU Enterprise Platform is built upon a modern, secure, and scalable cloud-native technology foundation.
 
 Technology components are selected and governed to support enterprise architecture rather than individual implementation needs.
 
@@ -4052,7 +4052,7 @@ The separation between technology responsibilities, enterprise services, busines
 
 ## Introduction
 
-The Agile AI University Enterprise Platform has been intentionally designed around a set of architectural characteristics that define how the enterprise behaves rather than how individual software components are implemented.
+The LAAU Enterprise Platform has been intentionally designed around a set of architectural characteristics that define how the enterprise behaves rather than how individual software components are implemented.
 
 These characteristics influence every architectural decision across the platform and provide a consistent model for future evolution.
 
@@ -4062,7 +4062,7 @@ Unlike technology choices, architectural characteristics are expected to remain 
 
 # Enterprise Architecture Characteristics
 
-The Agile AI University Enterprise Platform exhibits the following defining characteristics.
+The LAAU Enterprise Platform exhibits the following defining characteristics.
 
 ---
 
@@ -4329,9 +4329,9 @@ These qualities should be considered when evaluating future architectural decisi
 
 # Characteristics Summary
 
-The Agile AI University Enterprise Platform is defined by its architectural characteristics rather than its implementation technologies.
+The LAAU Enterprise Platform is defined by its architectural characteristics rather than its implementation technologies.
 
-Enterprise-first thinking, governance-led evolution, resolver-first processing, registry-driven information management, modular services, and cloud-native deployment collectively provide a stable foundation for the continued evolution of Agile AI University.
+Enterprise-first thinking, governance-led evolution, resolver-first processing, registry-driven information management, modular services, and cloud-native deployment collectively provide a stable foundation for the continued evolution of LAAU.
 
 These characteristics establish the architectural identity of the enterprise and guide every future implementation.
 
@@ -4345,7 +4345,7 @@ These characteristics establish the architectural identity of the enterprise and
 
 ## Introduction
 
-The Agile AI University Enterprise Platform operates according to a defined set of enterprise operating principles.
+The LAAU Enterprise Platform operates according to a defined set of enterprise operating principles.
 
 These principles govern how enterprise capabilities interact, how information flows throughout the ecosystem, and how future systems integrate into the platform.
 
@@ -4591,9 +4591,9 @@ Responsibilities shall not overlap.
 
 # Enterprise Operating Principles Summary
 
-The Agile AI University Enterprise Platform is governed by a consistent set of enterprise operating principles.
+The LAAU Enterprise Platform is governed by a consistent set of enterprise operating principles.
 
-These principles ensure that every platform, service, business domain, and future capability operates within a common architectural framework while supporting the long-term vision of Agile AI University.
+These principles ensure that every platform, service, business domain, and future capability operates within a common architectural framework while supporting the long-term vision of LAAU.
 
 Together they provide the operational discipline required to sustain enterprise growth without compromising governance, consistency, or maintainability.
 
@@ -4607,7 +4607,7 @@ Together they provide the operational discipline required to sustain enterprise 
 
 ## Introduction
 
-The Agile AI University Enterprise Platform has been intentionally designed for continuous evolution.
+The LAAU Enterprise Platform has been intentionally designed for continuous evolution.
 
 Rather than viewing software development as a sequence of independent projects, the enterprise considers every implementation to be an incremental extension of a long-term architectural vision.
 
@@ -4639,7 +4639,7 @@ Every architectural decision should strengthen the enterprise ecosystem.
 
 # Enterprise Growth Model
 
-The Agile AI University ecosystem is expected to expand in multiple dimensions simultaneously.
+The LAAU ecosystem is expected to expand in multiple dimensions simultaneously.
 
 ```
 Business Growth
@@ -4869,13 +4869,13 @@ Innovation should not compromise enterprise consistency.
 
 # Evolution Strategy Summary
 
-The Agile AI University Enterprise Platform has been intentionally designed for continuous evolution.
+The LAAU Enterprise Platform has been intentionally designed for continuous evolution.
 
 Business capabilities, enterprise services, technology, and AI capabilities are expected to expand over time.
 
 Enterprise architecture provides the stable foundation upon which this evolution occurs.
 
-By separating stable architectural principles from evolving implementation details, Agile AI University can continue to innovate while preserving consistency, governance, and long-term maintainability.
+By separating stable architectural principles from evolving implementation details, LAAU can continue to innovate while preserving consistency, governance, and long-term maintainability.
 
 ---
 
@@ -4887,7 +4887,7 @@ By separating stable architectural principles from evolving implementation detai
 
 ## Introduction
 
-The Agile AI University Enterprise Platform has been intentionally designed as a governed enterprise ecosystem supporting the complete academic, professional, operational, and future AI-enabled lifecycle of the university.
+The LAAU Enterprise Platform has been intentionally designed as a governed enterprise ecosystem supporting the complete academic, professional, operational, and future AI-enabled lifecycle of the university.
 
 Rather than developing isolated applications, the enterprise integrates multiple business domains, shared services, technology platforms, governance frameworks, and user experiences into a single architectural model.
 
@@ -4900,7 +4900,7 @@ Every capability contributes toward a common enterprise mission while maintainin
 The enterprise currently consists of the following major capabilities.
 
 ```
-                         Agile AI University
+                         LAAU
 
                                    │
 
@@ -5049,7 +5049,7 @@ Career Development
 Continuous Learning
 ```
 
-This operating model represents the long-term vision of Agile AI University.
+This operating model represents the long-term vision of LAAU.
 
 Future enterprise capabilities should extend this lifecycle rather than introduce alternative workflows.
 
@@ -5130,7 +5130,7 @@ Every enterprise capability has one authoritative owner.
 
 # Enterprise Maturity
 
-The Agile AI University Enterprise Platform has now established a stable architectural foundation.
+The LAAU Enterprise Platform has now established a stable architectural foundation.
 
 Current maturity includes:
 
@@ -5185,7 +5185,7 @@ These sections collectively define the technical implementation of the enterpris
 
 # Enterprise Ecosystem Summary
 
-The Agile AI University Enterprise Platform is no longer a collection of software applications.
+The LAAU Enterprise Platform is no longer a collection of software applications.
 
 It is a governed enterprise ecosystem that integrates business capabilities, enterprise services, technology platforms, governance frameworks, and user experiences into a single architectural model.
 
@@ -5209,7 +5209,7 @@ This enterprise ecosystem establishes the foundation upon which every future cap
 
 ## Introduction
 
-The Agile AI University Enterprise Architecture defines the implementation model for the entire enterprise ecosystem.
+The LAAU Enterprise Architecture defines the implementation model for the entire enterprise ecosystem.
 
 Where Part I established the enterprise vision and strategic direction, and Part II described the enterprise ecosystem, this part explains how the enterprise is implemented through a governed, layered, and integrated architecture.
 
@@ -5221,7 +5221,7 @@ This separation enables the platform to evolve continuously while maintaining go
 
 # Purpose
 
-The purpose of the Enterprise Architecture is to provide a single implementation model that governs every current and future platform within the Agile AI University ecosystem.
+The purpose of the Enterprise Architecture is to provide a single implementation model that governs every current and future platform within the LAAU ecosystem.
 
 The architecture provides:
 
@@ -5239,7 +5239,7 @@ Every platform shall conform to this enterprise architecture.
 
 # Enterprise Architecture Vision
 
-The Agile AI University Enterprise Architecture is designed to support the complete institutional lifecycle.
+The LAAU Enterprise Architecture is designed to support the complete institutional lifecycle.
 
 This includes:
 
@@ -5306,7 +5306,7 @@ Allow new business capabilities to be introduced without disrupting existing sys
 
 # Enterprise Architecture Model
 
-The Agile AI University Enterprise Platform follows a layered implementation model.
+The LAAU Enterprise Platform follows a layered implementation model.
 
 ```
 Business Architecture
@@ -5547,11 +5547,11 @@ Implementation decisions shall align with these governance artefacts.
 
 # Enterprise Architecture Overview Summary
 
-The Agile AI University Enterprise Architecture provides a stable implementation model for the entire enterprise ecosystem.
+The LAAU Enterprise Architecture provides a stable implementation model for the entire enterprise ecosystem.
 
 By separating business capabilities, enterprise services, enterprise data, technology infrastructure, and presentation into distinct architectural layers, the enterprise achieves consistency, maintainability, scalability, and long-term sustainability.
 
-Every current and future platform shall inherit from this architecture, ensuring that the Agile AI University ecosystem continues to evolve through governed architectural decisions rather than isolated application development.
+Every current and future platform shall inherit from this architecture, ensuring that the LAAU ecosystem continues to evolve through governed architectural decisions rather than isolated application development.
 
 ---
 
@@ -5563,7 +5563,7 @@ Every current and future platform shall inherit from this architecture, ensuring
 
 ## Introduction
 
-The Agile AI University Enterprise Architecture is governed by a structured architectural decision framework.
+The LAAU Enterprise Architecture is governed by a structured architectural decision framework.
 
 The purpose of this framework is to ensure that every architectural decision strengthens the enterprise rather than introducing inconsistency, duplication, or unnecessary complexity.
 
@@ -5827,7 +5827,7 @@ Each ADR should include:
 - Consequences
 - Governance impact
 
-The ADR repository forms part of the permanent institutional knowledge of Agile AI University.
+The ADR repository forms part of the permanent institutional knowledge of LAAU.
 
 ---
 
@@ -5848,7 +5848,7 @@ Minor implementation changes do not require architectural review.
 
 # Decision Framework Summary
 
-The Enterprise Architecture Decision Framework provides a consistent method for evaluating architectural changes throughout the Agile AI University ecosystem.
+The Enterprise Architecture Decision Framework provides a consistent method for evaluating architectural changes throughout the LAAU ecosystem.
 
 By establishing a governed decision hierarchy, architectural evaluation criteria, and standard decision rules, the enterprise ensures that future evolution remains aligned with its long-term vision.
 
@@ -5864,7 +5864,7 @@ This framework supports sustainable enterprise growth while preserving governanc
 
 ## Introduction
 
-The Agile AI University Enterprise Platform is implemented through a governed architectural stack consisting of multiple enterprise layers.
+The LAAU Enterprise Platform is implemented through a governed architectural stack consisting of multiple enterprise layers.
 
 Each layer has a clearly defined responsibility.
 
@@ -6213,7 +6213,7 @@ These benefits enable sustainable enterprise evolution.
 
 # Enterprise Architecture Stack Summary
 
-The Enterprise Architecture Stack defines the permanent implementation model for the Agile AI University ecosystem.
+The Enterprise Architecture Stack defines the permanent implementation model for the LAAU ecosystem.
 
 Every current and future capability shall be positioned within one architectural layer and shall respect the responsibilities and boundaries defined by that layer.
 
@@ -6229,7 +6229,7 @@ By enforcing explicit architectural boundaries, the enterprise preserves governa
 
 ## Introduction
 
-The Agile AI University Enterprise Platform is designed as an integrated enterprise ecosystem rather than a collection of independent software applications.
+The LAAU Enterprise Platform is designed as an integrated enterprise ecosystem rather than a collection of independent software applications.
 
 Enterprise integration enables business domains, enterprise services, data registries, presentation platforms, and external systems to collaborate through governed interactions.
 
@@ -6675,11 +6675,11 @@ Future integrations shall conform to the enterprise interaction model defined in
 
 # Integration Summary
 
-Enterprise Integration & Interaction Architecture defines how information flows throughout the Agile AI University ecosystem.
+Enterprise Integration & Interaction Architecture defines how information flows throughout the LAAU ecosystem.
 
 By routing interactions through governed enterprise services, authoritative registries, and controlled integration layers, the enterprise maintains consistency, scalability, security, and maintainability while enabling continuous growth.
 
-This architecture provides the runtime foundation for every business capability implemented within the Agile AI University ecosystem.
+This architecture provides the runtime foundation for every business capability implemented within the LAAU ecosystem.
 
 ---
 
@@ -6691,7 +6691,7 @@ This architecture provides the runtime foundation for every business capability 
 
 ## Introduction
 
-The Agile AI University Enterprise Platform consists of multiple specialised platforms operating together as a unified enterprise ecosystem.
+The LAAU Enterprise Platform consists of multiple specialised platforms operating together as a unified enterprise ecosystem.
 
 Each platform exists to fulfil a clearly defined enterprise responsibility.
 
@@ -6710,7 +6710,7 @@ Platform boundaries are considered permanent architectural decisions.
 The current enterprise consists of the following platforms.
 
 ```
-                    Agile AI University
+                    LAAU
 
                               │
 
@@ -6809,7 +6809,7 @@ Every responsibility has one authoritative owner.
 
 ## Purpose
 
-The Public Website provides the public digital presence of Agile AI University.
+The Public Website provides the public digital presence of LAAU.
 
 ### Responsibilities
 
@@ -7075,7 +7075,7 @@ before implementation begins.
 
 # Enterprise Platform Architecture Summary
 
-The Enterprise Platform Architecture establishes the permanent responsibility model for every platform within the Agile AI University ecosystem.
+The Enterprise Platform Architecture establishes the permanent responsibility model for every platform within the LAAU ecosystem.
 
 By defining explicit ownership, architectural boundaries, governance rules, and interaction patterns, the enterprise ensures that future platforms integrate consistently while preserving architectural integrity.
 
@@ -7091,7 +7091,7 @@ This responsibility model enables the ecosystem to expand without introducing du
 
 ## Introduction
 
-Enterprise Services represent the reusable business capabilities of the Agile AI University Enterprise Platform.
+Enterprise Services represent the reusable business capabilities of the LAAU Enterprise Platform.
 
 Rather than embedding business logic within presentation platforms or technology components, Enterprise Services provide governed implementations of enterprise behaviour that may be consumed by multiple platforms.
 
@@ -7445,13 +7445,13 @@ The Enterprise Service Architecture provides:
 - Scalable enterprise growth
 - Clear ownership boundaries
 
-These benefits support the long-term evolution of the Agile AI University ecosystem.
+These benefits support the long-term evolution of the LAAU ecosystem.
 
 ---
 
 # Enterprise Service Architecture Summary
 
-Enterprise Services provide the governed implementation of reusable business capabilities throughout the Agile AI University Enterprise Platform.
+Enterprise Services provide the governed implementation of reusable business capabilities throughout the LAAU Enterprise Platform.
 
 By separating business behaviour from presentation platforms and technology infrastructure, Enterprise Services establish a consistent operational model that enables enterprise-wide reuse, maintainability, scalability, and governance.
 
@@ -7467,7 +7467,7 @@ Every future enterprise capability shall be implemented according to this Enterp
 
 ## Introduction
 
-Enterprise Data represents the institutional knowledge of Agile AI University.
+Enterprise Data represents the institutional knowledge of LAAU.
 
 Every learner, programme, credential, assessment, payment, registration, recognition, and enterprise asset ultimately becomes part of the University's permanent information model.
 
@@ -7481,7 +7481,7 @@ Enterprise information remains permanent.
 
 # Enterprise Information Philosophy
 
-The Agile AI University Enterprise Platform treats enterprise information as a strategic institutional asset.
+The LAAU Enterprise Platform treats enterprise information as a strategic institutional asset.
 
 Enterprise information shall be:
 
@@ -7883,7 +7883,7 @@ Future information domains shall inherit this Enterprise Data Architecture.
 
 # Enterprise Data Architecture Summary
 
-Enterprise Data Architecture defines how institutional information is organised, governed, protected, and consumed throughout the Agile AI University ecosystem.
+Enterprise Data Architecture defines how institutional information is organised, governed, protected, and consumed throughout the LAAU ecosystem.
 
 By separating enterprise information from implementation technology and enforcing authoritative ownership through governed registries and Enterprise Services, the enterprise establishes a stable information foundation capable of supporting long-term institutional growth.
 
@@ -7899,7 +7899,7 @@ Every current and future platform shall inherit this Enterprise Data Architectur
 
 ## Introduction
 
-Security is a foundational architectural capability of the Agile AI University Enterprise Platform.
+Security is a foundational architectural capability of the LAAU Enterprise Platform.
 
 Rather than existing as a separate infrastructure concern, security is integrated throughout every business domain, Enterprise Service, Enterprise Registry, presentation platform, and technology component.
 
@@ -8223,7 +8223,7 @@ Future capabilities shall inherit the Enterprise Security Model.
 
 # Enterprise Security Summary
 
-The Enterprise Security Architecture establishes a comprehensive security model spanning every architectural layer of the Agile AI University Enterprise Platform.
+The Enterprise Security Architecture establishes a comprehensive security model spanning every architectural layer of the LAAU Enterprise Platform.
 
 By integrating identity, authorization, entitlement resolution, data protection, administrative isolation, and auditability into the enterprise architecture, the platform preserves institutional trust while enabling long-term growth.
 
@@ -8239,7 +8239,7 @@ Security is therefore considered a permanent architectural capability that gover
 
 ## Introduction
 
-The Agile AI University Enterprise Platform operates as a cloud-native enterprise ecosystem.
+The LAAU Enterprise Platform operates as a cloud-native enterprise ecosystem.
 
 Enterprise Runtime Architecture defines how business capabilities are executed, how enterprise services interact, how information flows between architectural layers, and how platforms are deployed into production.
 
@@ -8591,7 +8591,7 @@ Future runtime implementations shall conform to the Runtime Architecture defined
 
 # Enterprise Runtime & Deployment Architecture Summary
 
-The Enterprise Runtime & Deployment Architecture establishes the operational execution model for the Agile AI University Enterprise Platform.
+The Enterprise Runtime & Deployment Architecture establishes the operational execution model for the LAAU Enterprise Platform.
 
 By separating runtime behaviour from deployment technologies, the enterprise preserves architectural stability while enabling future infrastructure evolution.
 
@@ -8607,7 +8607,7 @@ Every current and future platform shall execute within this governed runtime mod
 
 ## Introduction
 
-The Agile AI University Enterprise Platform follows a strict ownership model.
+The LAAU Enterprise Platform follows a strict ownership model.
 
 Every enterprise capability, business domain, Enterprise Service, Enterprise Registry, platform, and runtime component has one clearly defined authority.
 
@@ -8914,7 +8914,7 @@ The matrix forms the governance foundation for every enterprise implementation.
 
 # Enterprise Authority & Ownership Matrix Summary
 
-The Enterprise Authority & Ownership Matrix establishes the definitive ownership model for the Agile AI University Enterprise Platform.
+The Enterprise Authority & Ownership Matrix establishes the definitive ownership model for the LAAU Enterprise Platform.
 
 By assigning clear authority to every business domain, Enterprise Service, Enterprise Registry, platform, information asset, and security capability, the enterprise preserves governance, consistency, and long-term architectural integrity.
 
@@ -8930,11 +8930,11 @@ Every future enterprise capability shall inherit this ownership model.
 
 ## Introduction
 
-The Enterprise Architecture Blueprint provides a consolidated view of the Agile AI University Enterprise Architecture.
+The Enterprise Architecture Blueprint provides a consolidated view of the LAAU Enterprise Architecture.
 
 It brings together the enterprise vision, governance framework, business architecture, enterprise services, information architecture, security model, platform architecture, and runtime model into a single architectural blueprint.
 
-Every implementation within the Agile AI University ecosystem shall conform to this blueprint.
+Every implementation within the LAAU ecosystem shall conform to this blueprint.
 
 The blueprint represents the authoritative implementation model for the enterprise.
 
@@ -9295,7 +9295,7 @@ No implementation shall begin until these architectural elements have been defin
 
 # Enterprise Blueprint Summary
 
-The Enterprise Architecture Blueprint is the authoritative implementation model for the Agile AI University Enterprise Platform.
+The Enterprise Architecture Blueprint is the authoritative implementation model for the LAAU Enterprise Platform.
 
 It unifies governance, business capabilities, enterprise services, enterprise information, integration, security, runtime behaviour, platform responsibilities, and stakeholder experiences into a single enterprise architecture.
 
@@ -9303,7 +9303,7 @@ Every current and future platform shall inherit this blueprint.
 
 Every future architectural decision shall strengthen this blueprint.
 
-This blueprint establishes the permanent architectural foundation upon which the Agile AI University ecosystem will continue to evolve.
+This blueprint establishes the permanent architectural foundation upon which the LAAU ecosystem will continue to evolve.
 
 ---
 
@@ -9323,7 +9323,7 @@ The Enterprise Architecture has now established:
 - Enterprise Authority & Ownership Matrix
 - Enterprise Architecture Blueprint
 
-These sections collectively define the horizontal architecture of the Agile AI University ecosystem.
+These sections collectively define the horizontal architecture of the LAAU ecosystem.
 
 The handbook now transitions to **Part IV – Enterprise Domain Architectures**, where each business domain is documented as a complete enterprise architecture while inheriting the standards established in Part III.
 
@@ -9343,7 +9343,7 @@ The handbook now transitions to **Part IV – Enterprise Domain Architectures**,
 
 ## Introduction
 
-Enterprise Domain Architectures describe how individual business capabilities are implemented within the Agile AI University Enterprise Platform.
+Enterprise Domain Architectures describe how individual business capabilities are implemented within the LAAU Enterprise Platform.
 
 Where Part III established the horizontal architecture shared by the entire enterprise, this part documents the vertical implementation of each business domain.
 
@@ -9663,7 +9663,7 @@ Enterprise Domains evolve independently while preserving enterprise compatibilit
 
 # Planned Enterprise Domains
 
-The Agile AI University Enterprise Platform currently defines the following domains.
+The LAAU Enterprise Platform currently defines the following domains.
 
 Current Domains
 
@@ -9696,7 +9696,7 @@ Each domain shall be documented using the standard defined in this framework.
 
 # Enterprise Domain Architecture Framework Summary
 
-The Enterprise Domain Architecture Framework establishes a common implementation standard for every business capability within the Agile AI University Enterprise Platform.
+The Enterprise Domain Architecture Framework establishes a common implementation standard for every business capability within the LAAU Enterprise Platform.
 
 By standardising domain ownership, documentation, Enterprise Services, information architecture, security, runtime behaviour, and governance, the enterprise ensures that future domains evolve consistently while preserving the integrity of the Enterprise Architecture.
 
@@ -9712,7 +9712,7 @@ This framework governs every current and future Enterprise Domain Architecture.
 
 ## Introduction
 
-The Programme Domain represents the foundational business domain of the Agile AI University Enterprise Platform.
+The Programme Domain represents the foundational business domain of the LAAU Enterprise Platform.
 
 Every learner journey begins with a programme.
 
@@ -9726,7 +9726,7 @@ It is considered the Master Domain upon which every downstream business capabili
 
 # Purpose
 
-The Programme Domain defines, governs, and publishes all academic and professional programmes offered by Agile AI University.
+The Programme Domain defines, governs, and publishes all academic and professional programmes offered by LAAU.
 
 It provides the authoritative source for programme structure, metadata, eligibility, progression pathways, pricing references, and lifecycle management.
 
@@ -10039,7 +10039,7 @@ These capabilities shall extend the Programme Domain without altering its core r
 
 # Programme Domain Architecture Summary
 
-The Programme Domain is the foundational business domain of the Agile AI University Enterprise Platform.
+The Programme Domain is the foundational business domain of the LAAU Enterprise Platform.
 
 It establishes the authoritative source for all programme definitions and provides governed programme information to every downstream business domain through ProgramService.
 
@@ -10055,7 +10055,7 @@ By separating programme governance from learner operations, commercial processin
 
 ## Introduction
 
-The Registration Domain manages the governed transition of an individual from programme interest to confirmed enrolment within the Agile AI University Enterprise Platform.
+The Registration Domain manages the governed transition of an individual from programme interest to confirmed enrolment within the LAAU Enterprise Platform.
 
 Registration is not merely a form submission.
 
@@ -10135,7 +10135,7 @@ Credential
 
 ## Introduction
 
-The Payment Domain provides the governed financial transaction capability of the Agile AI University Enterprise Platform.
+The Payment Domain provides the governed financial transaction capability of the LAAU Enterprise Platform.
 
 Its primary responsibility is to securely process learner payments, verify financial transactions, maintain payment records, generate receipts, coordinate refunds, and provide auditable financial history.
 
@@ -10691,7 +10691,7 @@ These capabilities extend the Payment Domain without changing its enterprise aut
 
 # Payment Domain Architecture Summary
 
-The Payment Domain provides the governed financial transaction capability of the Agile AI University Enterprise Platform.
+The Payment Domain provides the governed financial transaction capability of the LAAU Enterprise Platform.
 
 It owns payment processing, verification, receipts, refunds, and financial audit while consuming programme pricing and registration context from their authoritative domains.
 
@@ -10707,7 +10707,7 @@ By separating academic pricing from financial execution, the enterprise preserve
 
 ## Introduction
 
-The Learning Domain is responsible for delivering the educational experience of Agile AI University.
+The Learning Domain is responsible for delivering the educational experience of LAAU.
 
 Once a learner has successfully completed registration and payment, the Learning Domain becomes responsible for providing access to learning resources, monitoring learner progression, recording completion, and preparing learners for assessment.
 
@@ -11098,7 +11098,7 @@ These capabilities shall extend the Learning Domain without changing its enterpr
 
 # Learning Domain Architecture Summary
 
-The Learning Domain provides the governed educational experience of the Agile AI University Enterprise Platform.
+The Learning Domain provides the governed educational experience of the LAAU Enterprise Platform.
 
 It owns enrollment, learning delivery, learner progression, completion, and learning history while consuming programme definitions and preparing learners for assessment.
 
@@ -11114,7 +11114,7 @@ By separating learning delivery from programme governance, assessment, and crede
 
 ## Introduction
 
-The Assessment Domain is responsible for evaluating learner competence within the Agile AI University Enterprise Platform.
+The Assessment Domain is responsible for evaluating learner competence within the LAAU Enterprise Platform.
 
 It determines whether a learner has successfully demonstrated the knowledge, skills, competencies, and outcomes required by an academic programme.
 
@@ -11556,7 +11556,7 @@ These capabilities shall extend the Assessment Domain while preserving enterpris
 
 # Assessment Domain Architecture Summary
 
-The Assessment Domain provides the governed academic evaluation capability of the Agile AI University Enterprise Platform.
+The Assessment Domain provides the governed academic evaluation capability of the LAAU Enterprise Platform.
 
 It owns assessment delivery, execution, scoring, competency evaluation, results, and assessment history while consuming programme definitions and learning readiness.
 
@@ -11572,7 +11572,7 @@ By separating academic evaluation from learning delivery and credential issuance
 
 ## Introduction
 
-The Credential Domain represents the academic authority of the Agile AI University Enterprise Platform.
+The Credential Domain represents the academic authority of the LAAU Enterprise Platform.
 
 It is responsible for determining whether a learner has satisfied all governed academic requirements necessary for formal recognition.
 
@@ -11975,7 +11975,7 @@ These capabilities extend the Credential Domain while preserving its enterprise 
 
 # Credential Domain Architecture Summary
 
-The Credential Domain is the academic recognition authority of the Agile AI University Enterprise Platform.
+The Credential Domain is the academic recognition authority of the LAAU Enterprise Platform.
 
 It governs credential eligibility, approval, issuance, lifecycle, and registry management while consuming academic evidence from the Assessment Domain.
 
@@ -12445,7 +12445,7 @@ Future capabilities shall extend this domain while preserving enterprise governa
 
 # Credential Asset Domain Architecture Summary
 
-The Credential Asset Domain provides the trusted digital representation of academic achievement within the Agile AI University Enterprise Platform.
+The Credential Asset Domain provides the trusted digital representation of academic achievement within the LAAU Enterprise Platform.
 
 By separating academic recognition from asset generation, publication, distribution, and presentation, the enterprise establishes a scalable architecture capable of supporting secure certificates, digital badges, professional sharing, public verification, and future digital credential ecosystems.
 
@@ -12461,7 +12461,7 @@ The Credential Asset Domain therefore acts as the enterprise authority for offic
 
 ## Introduction
 
-The Recognition Domain provides the governed framework for acknowledging professional, academic, community, and institutional achievements within the Agile AI University Enterprise Platform.
+The Recognition Domain provides the governed framework for acknowledging professional, academic, community, and institutional achievements within the LAAU Enterprise Platform.
 
 Unlike the Credential Domain, which awards formal academic credentials based on programme completion and assessment outcomes, the Recognition Domain acknowledges broader contributions that advance the University's mission and community.
 
@@ -12901,7 +12901,7 @@ These capabilities shall extend the Recognition Domain while preserving enterpri
 
 # Recognition Domain Architecture Summary
 
-The Recognition Domain governs institutional recognition across the Agile AI University Enterprise Platform.
+The Recognition Domain governs institutional recognition across the LAAU Enterprise Platform.
 
 It provides a structured, auditable, and scalable framework for acknowledging professional, academic, community, and organisational contributions while remaining distinct from academic credentialing.
 
@@ -12917,7 +12917,7 @@ By separating recognition from credentials, the enterprise enables richer engage
 
 ## Introduction
 
-The Verification Domain provides the public trust framework of the Agile AI University Enterprise Platform.
+The Verification Domain provides the public trust framework of the LAAU Enterprise Platform.
 
 Its purpose is to enable learners, employers, universities, partners, and the public to independently verify the authenticity and validity of enterprise credentials, digital assets, and institutional recognitions.
 
@@ -13301,7 +13301,7 @@ These capabilities shall extend the Verification Domain while preserving enterpr
 
 # Verification Domain Architecture Summary
 
-The Verification Domain provides the trusted public validation capability of the Agile AI University Enterprise Platform.
+The Verification Domain provides the trusted public validation capability of the LAAU Enterprise Platform.
 
 By consuming authoritative information from enterprise registries without owning or modifying academic records, the Verification Domain establishes a secure, auditable, and scalable public trust framework.
 
@@ -13317,7 +13317,7 @@ It ensures that credentials, digital assets, and institutional recognitions can 
 
 ## Introduction
 
-The Executive Services Domain provides the strategic intelligence capability of the Agile AI University Enterprise Platform.
+The Executive Services Domain provides the strategic intelligence capability of the LAAU Enterprise Platform.
 
 Unlike operational domains that execute business processes, the Executive Services Domain transforms enterprise information into actionable insights for founders, executives, programme leaders, administrators, and institutional decision makers.
 
@@ -13754,11 +13754,11 @@ These capabilities shall extend the Executive Services Domain while preserving e
 
 # Executive Services Domain Architecture Summary
 
-The Executive Services Domain provides the strategic intelligence capability of the Agile AI University Enterprise Platform.
+The Executive Services Domain provides the strategic intelligence capability of the LAAU Enterprise Platform.
 
 By consuming governed enterprise information from every operational domain, it delivers trusted analytics, dashboards, KPIs, and executive insights without assuming ownership of operational records.
 
-This architecture enables Agile AI University to evolve from an operational education platform into a data-driven, intelligence-enabled enterprise capable of supporting institutional growth, strategic planning, and AI-assisted executive decision making.
+This architecture enables LAAU to evolve from an operational education platform into a data-driven, intelligence-enabled enterprise capable of supporting institutional growth, strategic planning, and AI-assisted executive decision making.
 
 ---
 
@@ -13768,7 +13768,7 @@ This architecture enables Agile AI University to evolve from an operational educ
 
 # Part IV Complete
 
-Part IV has established the complete vertical business architecture of the Agile AI University Enterprise Platform.
+Part IV has established the complete vertical business architecture of the LAAU Enterprise Platform.
 
 The following Enterprise Domains have now been defined:
 
@@ -13801,7 +13801,7 @@ The handbook now transitions to **Part V – Platform Architectures**, where eac
 
 ## Introduction
 
-Enterprise Platforms provide the user-facing implementation of the Agile AI University Enterprise Architecture.
+Enterprise Platforms provide the user-facing implementation of the LAAU Enterprise Architecture.
 
 Where Enterprise Domains define business capabilities, Enterprise Platforms deliver those capabilities to specific stakeholders through governed user experiences.
 
@@ -14020,7 +14020,7 @@ Documents planned platform growth.
 
 # Platform Categories
 
-The Agile AI University ecosystem currently consists of four platform categories.
+The LAAU ecosystem currently consists of four platform categories.
 
 ---
 
@@ -14179,7 +14179,7 @@ Each platform shall inherit this architecture.
 
 # Enterprise Platform Architecture Framework Summary
 
-The Enterprise Platform Architecture Framework establishes the standard implementation model for every platform within the Agile AI University ecosystem.
+The Enterprise Platform Architecture Framework establishes the standard implementation model for every platform within the LAAU ecosystem.
 
 By separating presentation responsibilities from enterprise business capabilities and enforcing common governance, integration, security, and runtime standards, the framework enables each platform to evolve independently while remaining fully aligned with the Enterprise Architecture.
 
@@ -14195,7 +14195,7 @@ This framework governs every current and future Enterprise Platform.
 
 ## Introduction
 
-The Public Website is the official public-facing platform of the Agile AI University Enterprise Platform.
+The Public Website is the official public-facing platform of the LAAU Enterprise Platform.
 
 It serves as the primary point of engagement for prospective learners, organisations, partners, employers, trainers, researchers, and the broader public.
 
@@ -14305,7 +14305,7 @@ Presents:
 - Leadership
 - Research initiatives
 
-The Public Website represents the institutional identity of Agile AI University.
+The Public Website represents the institutional identity of LAAU.
 
 ---
 
@@ -14556,11 +14556,11 @@ Future capabilities shall extend the Public Website while preserving enterprise 
 
 # Public Website Architecture Summary
 
-The Public Website serves as the Enterprise Discovery Platform for Agile AI University.
+The Public Website serves as the Enterprise Discovery Platform for LAAU.
 
 It introduces stakeholders to the institution, publishes trusted information, supports programme discovery, and directs users into governed enterprise journeys while consuming enterprise services rather than implementing enterprise business logic.
 
-By maintaining a clear separation between presentation and operational capabilities, the Public Website provides a scalable, trustworthy, and future-ready entry point into the Agile AI University ecosystem.
+By maintaining a clear separation between presentation and operational capabilities, the Public Website provides a scalable, trustworthy, and future-ready entry point into the LAAU ecosystem.
 
 ---
 
@@ -14572,7 +14572,7 @@ By maintaining a clear separation between presentation and operational capabilit
 
 ## Introduction
 
-The Student & Executive Portal is the primary authenticated experience platform of the Agile AI University Enterprise Platform.
+The Student & Executive Portal is the primary authenticated experience platform of the LAAU Enterprise Platform.
 
 It provides a unified digital experience for learners, alumni, executives, trainers, and authorised members by presenting governed enterprise capabilities through a secure, personalised, and entitlement-aware interface.
 
@@ -15028,7 +15028,7 @@ Future capabilities shall extend the portal while preserving enterprise architec
 
 # Student & Executive Portal Architecture Summary
 
-The Student & Executive Portal is the Enterprise Experience Platform of the Agile AI University ecosystem.
+The Student & Executive Portal is the Enterprise Experience Platform of the LAAU ecosystem.
 
 It delivers a unified, secure, and personalised experience by orchestrating governed Enterprise Services without assuming ownership of enterprise business logic or institutional information.
 

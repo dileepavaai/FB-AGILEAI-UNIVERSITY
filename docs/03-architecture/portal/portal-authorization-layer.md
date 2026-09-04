@@ -3,13 +3,13 @@
 Version: 1.0.0
 Status: ACTIVE
 Governance: LOCKED
-Owner: Agile AI University
+Owner: LAAU
 
 ---
 
 # 1. Purpose
 
-The Authorization Layer is responsible for determining whether an authenticated user may access protected Agile AI University Portal services.
+The Authorization Layer is responsible for determining whether an authenticated user may access protected LAAU Portal services.
 
 Authorization answers one question:
 
@@ -383,7 +383,7 @@ No Active Services
 
 # 15. Current Portal Policy
 
-Current Agile AI University Portal Policy:
+Current LAAU Portal Policy:
 
 ---
 

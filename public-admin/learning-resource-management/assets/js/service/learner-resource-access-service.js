@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Learner Resource Assignment Service
 
    File       : learner-resource-access-service.js

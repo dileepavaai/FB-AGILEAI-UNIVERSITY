@@ -219,7 +219,7 @@ app.post(
         credential_id: doc.credential_id,
         credential_type: doc.credential_type || null,
         program_code: doc.program_code || null,
-        issued_by: doc.issued_by || "Agile AI University",
+        issued_by: doc.issued_by || "LAAU",
         issue_date: doc.issue_date || null
       });
 

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Component Library
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,9 +18,9 @@
 
 # Purpose
 
-This document defines the official reusable UI component library for Agile AI University.
+This document defines the official reusable UI component library for LAAU.
 
-The objective is to ensure every product within the Agile AI University ecosystem presents a consistent, maintainable and governed user experience.
+The objective is to ensure every product within the LAAU ecosystem presents a consistent, maintainable and governed user experience.
 
 Every user interface must be assembled from approved components rather than creating page-specific visual elements.
 
@@ -643,7 +643,7 @@ Expansion shall preserve the principles defined by the UI Design System.
 
 # Governance Status
 
-This document is the authoritative component specification for Agile AI University.
+This document is the authoritative component specification for LAAU.
 
 Every platform product shall consume approved components from this library.
 

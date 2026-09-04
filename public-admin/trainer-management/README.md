@@ -14,7 +14,7 @@ Module Structure:
 - settings
 
 Governance Authority:
-Agile AI University
+LAAU
 
 Status:
 Architecture v1.0 (Locked)

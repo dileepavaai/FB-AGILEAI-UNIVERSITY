@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Capability Progression Framework
 
@@ -12,7 +12,7 @@
 
 # Executive Summary
 
-The Capability Progression Framework defines how academic capabilities evolve within the Agile AI University ecosystem.
+The Capability Progression Framework defines how academic capabilities evolve within the LAAU ecosystem.
 
 It establishes governance for academic progression while preserving the independence of university programs, credentials and learning pathways.
 
@@ -432,4 +432,4 @@ Capability progression is graph-based.
 
 Learning opportunities are personalized.
 
-The framework provides a scalable academic foundation for future bridge programs, executive education, AI-driven recommendations and lifelong professional learning across the Agile AI University ecosystem.
+The framework provides a scalable academic foundation for future bridge programs, executive education, AI-driven recommendations and lifelong professional learning across the LAAU ecosystem.

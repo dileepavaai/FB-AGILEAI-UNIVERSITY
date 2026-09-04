@@ -1,5 +1,5 @@
 /* =====================================================
-Agile AI University
+LAAU
 Certificate Generator Controller
 
 v1.4.3

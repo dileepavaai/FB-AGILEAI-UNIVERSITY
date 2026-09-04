@@ -1,5 +1,5 @@
 /* =========================================================
-   Agile AI University
+   LAAU
    Public Portal
 
    File      : entitlement.js

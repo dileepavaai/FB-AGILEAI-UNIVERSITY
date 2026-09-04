@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : recommendation-service.js

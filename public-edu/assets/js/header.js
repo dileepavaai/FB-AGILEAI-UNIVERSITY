@@ -1,5 +1,5 @@
 /* =========================================================
-   Agile AI University
+   LAAU
    Institutional Navigation Architecture
    Version: 2.0
    Governance State: STABILIZED
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </a>
           <span class="brand-separator"> &amp; </span>
           <a href="https://laau.university">
-            Agile AI University
+            LAAU
           </a>
         </div>
 

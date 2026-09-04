@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Service Specification
 
@@ -17,14 +17,14 @@
 | **Version** | **1.0.0** |
 | **Status** | **ACTIVE** |
 | **Classification** | Enterprise Service Specification |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-ProgramService is the authoritative Enterprise Service responsible for exposing programme information throughout the Agile AI University ecosystem.
+ProgramService is the authoritative Enterprise Service responsible for exposing programme information throughout the LAAU ecosystem.
 
 It provides governed access to programme definitions, progression, eligibility metadata, pricing references, and programme hierarchy while preserving the Programme Domain as the single business authority.
 
@@ -339,7 +339,7 @@ Planned enhancements include:
 
 # Summary
 
-ProgramService is the authoritative Enterprise Service responsible for exposing governed programme information throughout the Agile AI University ecosystem.
+ProgramService is the authoritative Enterprise Service responsible for exposing governed programme information throughout the LAAU ecosystem.
 
 It provides a stable contract between Enterprise Platforms and the Programme Domain while preserving the Programme Registry as the institutional source of truth.
 

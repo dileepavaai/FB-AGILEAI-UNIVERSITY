@@ -1,8 +1,8 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Runtime Architecture
 
-> **The authoritative runtime architecture governing execution, orchestration, service resolution, and platform behaviour across the Agile AI University ecosystem.**
+> **The authoritative runtime architecture governing execution, orchestration, service resolution, and platform behaviour across the LAAU ecosystem.**
 
 ---
 
@@ -16,14 +16,14 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Runtime Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This directory defines the Enterprise Runtime Architecture of the Agile AI University ecosystem.
+This directory defines the Enterprise Runtime Architecture of the LAAU ecosystem.
 
 Runtime Architecture describes how enterprise platforms execute after deployment, how requests are processed, how enterprise services are orchestrated, and how governed business experiences are produced.
 
@@ -35,7 +35,7 @@ It does not redefine enterprise business ownership.
 
 # Runtime Philosophy
 
-The Agile AI University Enterprise Platform follows a **Resolver-First Runtime Architecture**.
+The LAAU Enterprise Platform follows a **Resolver-First Runtime Architecture**.
 
 Every request shall resolve enterprise state before presentation begins.
 
@@ -420,7 +420,7 @@ These capabilities shall extend the Runtime Architecture while preserving the Re
 
 # Summary
 
-The Enterprise Runtime Architecture defines how the Agile AI University ecosystem executes requests, orchestrates enterprise services, prepares business state, and delivers governed user experiences.
+The Enterprise Runtime Architecture defines how the LAAU ecosystem executes requests, orchestrates enterprise services, prepares business state, and delivers governed user experiences.
 
 By adopting a Resolver-First Runtime Architecture, the enterprise ensures that authentication, authorization, entitlement resolution, and business orchestration occur before presentation, creating a consistent, scalable, secure, and maintainable execution model across every enterprise platform.
 

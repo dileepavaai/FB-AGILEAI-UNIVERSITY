@@ -14,7 +14,7 @@
    Purpose
    ------------------------------------------------------------
    Provides the governed client-side registration service for
-   Agile AI University Bridge Programmes.
+   LAAU Bridge Programmes.
 
    Responsibilities
    ------------------------------------------------------------

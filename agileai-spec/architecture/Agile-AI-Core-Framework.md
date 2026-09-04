@@ -162,7 +162,7 @@ Institutional responsibilities are defined as follows:
 **Agile AI Foundation**  
 Responsible for defining conceptual frameworks and domain standards.
 
-**Agile AI University**  
+**LAAU**  
 Responsible for operationalizing the framework through capability models, academic knowledge systems, and professional recognition systems.
 
 This separation ensures both conceptual integrity and practical applicability.

@@ -2,7 +2,7 @@
 
 Status: CANONICAL · GOVERNANCE LOCKED  
 Last Updated: 2026-03-14  
-Scope: Agile AI Foundation + Agile AI University Ecosystem
+Scope: Agile AI Foundation + LAAU Ecosystem
 
 ---
 
@@ -29,14 +29,14 @@ The Agile AI ecosystem consists of **two complementary institutional entities**.
 | Entity | Role |
 |------|------|
 | Agile AI Foundation | Canonical standards authority |
-| Agile AI University | Academic operationalization authority |
+| LAAU | Academic operationalization authority |
 
 The ecosystem follows a **standards → academic implementation model.**
 
 Agile AI Foundation
   ↓ defines standards
 
-Agile AI University
+LAAU
   ↓ operationalizes standards
 
 
@@ -71,13 +71,13 @@ Those responsibilities are intentionally separated.
 
 ---
 
-# 4. Agile AI University
+# 4. LAAU
 
 Primary Domain:
 laau.university
 
 
-Agile AI University operationalizes the standards defined by the Foundation into **structured academic capability systems.**
+LAAU operationalizes the standards defined by the Foundation into **structured academic capability systems.**
 
 The University provides:
 
@@ -97,13 +97,13 @@ The University **is not positioned as:**
 
 Official positioning:
 
-> Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain. It operates as an independent academic and professional body and is not positioned as a commercial training provider.
+> LAAU defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain. It operates as an independent academic and professional body and is not positioned as a commercial training provider.
 
 ---
 
 # 5. Multi-Surface Institutional Architecture
 
-Agile AI University operates as a **multi-surface digital institution.**
+LAAU operates as a **multi-surface digital institution.**
 
 Current surfaces include:
 

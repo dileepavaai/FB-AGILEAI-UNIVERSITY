@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Terminology Standard
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The Enterprise Terminology Standard establishes the approved vocabulary for all Agile AI University documentation, architecture, development, governance, APIs, enterprise services, and operational documentation.
+The Enterprise Terminology Standard establishes the approved vocabulary for all LAAU documentation, architecture, development, governance, APIs, enterprise services, and operational documentation.
 
 It ensures that every platform, document, service, API, and implementation uses a common enterprise language.
 
@@ -40,7 +40,7 @@ This standard exists to:
 
 This document is authoritative.
 
-Every document within the Agile AI University ecosystem shall use the terminology defined in this standard.
+Every document within the LAAU ecosystem shall use the terminology defined in this standard.
 
 New terminology shall be reviewed before adoption.
 
@@ -449,7 +449,7 @@ Approved abbreviations include:
 
 | Abbreviation | Meaning |
 |--------------|---------|
-| AAU | Agile AI University |
+| AAU | LAAU |
 | ADR | Architecture Decision Record |
 | API | Application Programming Interface |
 | AI | Artificial Intelligence |
@@ -487,7 +487,7 @@ Future additions may include:
 
 # Summary
 
-The Enterprise Terminology Standard establishes the official vocabulary of the Agile AI University ecosystem.
+The Enterprise Terminology Standard establishes the official vocabulary of the LAAU ecosystem.
 
 By defining the approved terms for architecture, governance, platforms, services, APIs, operations, and documentation, it ensures consistency, clarity, and long-term maintainability across the enterprise.
 

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Typography
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document establishes the official typography standards for Agile AI University.
+This document establishes the official typography standards for LAAU.
 
 Typography is the primary mechanism for creating hierarchy, readability and institutional identity across all digital products.
 
@@ -515,7 +515,7 @@ Body text remains 1rem whenever practical.
 
 # Governance Status
 
-This document is the authoritative typography specification for Agile AI University.
+This document is the authoritative typography specification for LAAU.
 
 All platform interfaces shall comply with this standard.
 

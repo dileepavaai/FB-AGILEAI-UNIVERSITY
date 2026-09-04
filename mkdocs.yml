@@ -1,6 +1,6 @@
 site_name: Agile AI Specification
 site_description: Agile AI Specification is the canonical framework defining academic structures, capability standards, and professional recognition models for Agile AI systems.
-site_author: Agile AI University
+site_author: LAAU
 site_url: https://spec.laau.university
 
 docs_dir: agileai-spec
@@ -121,5 +121,5 @@ nav:
       - Ecosystem Governance Log: version-log/ecosystem-governance-log.md
 
 copyright: |
-  © Agile AI University
+  © LAAU
   Agile AI Specification v1.0

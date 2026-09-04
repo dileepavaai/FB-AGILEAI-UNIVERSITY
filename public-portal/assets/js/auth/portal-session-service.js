@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : portal-session-service.js
@@ -79,7 +79,7 @@
    • Runtime cleanup improves privacy, memory hygiene and
      consistency but must never be treated as authorization.
 
-   • Only Agile AI University-owned transient storage keys
+   • Only LAAU-owned transient storage keys
      may be removed.
 
    • Theme, accessibility, language and other safe user

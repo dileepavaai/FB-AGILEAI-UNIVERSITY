@@ -1,5 +1,5 @@
 /* =====================================================
-Agile AI University
+LAAU
 Credential Registry Controller
 Version: 1.1.0
 Status: Live Registry Integration

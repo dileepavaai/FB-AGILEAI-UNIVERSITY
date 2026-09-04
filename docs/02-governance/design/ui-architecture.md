@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # UI Architecture
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,11 +18,11 @@
 
 # Purpose
 
-This document defines the architectural structure of the Agile AI University User Interface Governance.
+This document defines the architectural structure of the LAAU User Interface Governance.
 
 It explains how the University's Design Governance documents relate to one another and establishes the authoritative hierarchy for future UI development.
 
-The UI Architecture provides the governance foundation for every user interface within the Agile AI University ecosystem.
+The UI Architecture provides the governance foundation for every user interface within the LAAU ecosystem.
 
 ---
 
@@ -467,8 +467,8 @@ All new UI development shall:
 
 # Governance Status
 
-This document is the authoritative UI Architecture specification for Agile AI University.
+This document is the authoritative UI Architecture specification for LAAU.
 
-It defines the governance hierarchy, ownership boundaries and architectural relationships that underpin every user interface across the Agile AI University ecosystem.
+It defines the governance hierarchy, ownership boundaries and architectural relationships that underpin every user interface across the LAAU ecosystem.
 
 All current and future UI development shall conform to this architecture.

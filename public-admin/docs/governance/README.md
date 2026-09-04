@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Credential Operations Governance Repository
 
@@ -12,7 +12,7 @@ Last Updated: 2026-06-05
 
 # Purpose
 
-This repository contains the governance, architecture, design authority, and institutional operating rules for the Agile AI University Credential Operations ecosystem.
+This repository contains the governance, architecture, design authority, and institutional operating rules for the LAAU Credential Operations ecosystem.
 
 These documents serve as the authoritative source for how credential-related systems are designed, implemented, maintained, and evolved.
 
@@ -45,7 +45,7 @@ The governance repository applies to:
 
 # Governance Philosophy
 
-Agile AI University treats credentials as institutional records rather than software artifacts.
+LAAU treats credentials as institutional records rather than software artifacts.
 
 Systems may evolve.
 
@@ -101,7 +101,7 @@ Additional governance documents may be added in future versions.
 
 # Governance Hierarchy
 
-The Agile AI University credential ecosystem follows the hierarchy below:
+The LAAU credential ecosystem follows the hierarchy below:
 
 Level 1
 
@@ -295,7 +295,7 @@ No implementation may contradict a governance document without formal governance
 
 # Future Evolution
 
-This repository is expected to evolve alongside the Agile AI University credential ecosystem.
+This repository is expected to evolve alongside the LAAU credential ecosystem.
 
 New governance documents may be added as:
 
@@ -310,7 +310,7 @@ All additions must preserve existing governance principles unless explicitly sup
 
 # Enterprise Design Authority Statement
 
-Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
+LAAU defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
 
 Credential Operations systems exist to preserve, render, verify, and communicate those institutional records in a consistent and governance-aligned manner.
 

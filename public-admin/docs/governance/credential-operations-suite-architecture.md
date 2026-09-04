@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Credential Operations Suite Architecture
 
@@ -12,7 +12,7 @@ Date Locked: 2026-06-05
 
 # Purpose
 
-This document defines the canonical architecture of the Agile AI University Credential Operations Suite.
+This document defines the canonical architecture of the LAAU Credential Operations Suite.
 
 The purpose of the architecture is to provide a scalable, governance-driven operational platform for managing credential-related activities while preserving institutional authority, credential integrity, and operational safety.
 
@@ -31,7 +31,7 @@ This document serves as the architectural authority for:
 
 # Architectural Vision
 
-The Credential Operations Suite serves as the operational backbone of the Agile AI University credential ecosystem.
+The Credential Operations Suite serves as the operational backbone of the LAAU credential ecosystem.
 
 Its purpose is to support:
 
@@ -530,7 +530,7 @@ No implementation may skip sequence stages without governance approval.
 
 Status: LOCKED
 
-The Agile AI University credential ecosystem is operated using a controlled administrative model.
+The LAAU credential ecosystem is operated using a controlled administrative model.
 
 Architecture must favor:
 
@@ -565,7 +565,7 @@ Expansion should occur through modular extension rather than architectural repla
 
 # Enterprise Design Authority Statement
 
-The Credential Operations Suite exists to operationalize the institutional credential framework of Agile AI University.
+The Credential Operations Suite exists to operationalize the institutional credential framework of LAAU.
 
 The Credential Registry is the authority.
 
@@ -577,4 +577,4 @@ Modules consume authority.
 
 No module may replace the authority from which it derives its information.
 
-This document is governance-locked and serves as the canonical architecture reference for the Agile AI University Credential Operations ecosystem.
+This document is governance-locked and serves as the canonical architecture reference for the LAAU Credential Operations ecosystem.

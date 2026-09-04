@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Coding Standards
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The Enterprise Coding Standards define the coding practices, conventions, formatting rules, documentation expectations, and implementation guidelines for all software developed within the Agile AI University ecosystem.
+The Enterprise Coding Standards define the coding practices, conventions, formatting rules, documentation expectations, and implementation guidelines for all software developed within the LAAU ecosystem.
 
 These standards ensure that source code remains readable, maintainable, secure, consistent, and scalable across all enterprise platforms and services.
 
@@ -76,7 +76,7 @@ Example:
 ```text
 /* ==========================================================
 
-   Agile AI University
+   LAAU
 
    Module      :
    Component   :
@@ -411,7 +411,7 @@ This standard complements:
 
 # Governance
 
-These Coding Standards apply to all software developed within the Agile AI University ecosystem.
+These Coding Standards apply to all software developed within the LAAU ecosystem.
 
 Exceptions should be rare and require documented architectural justification.
 
@@ -419,7 +419,7 @@ Exceptions should be rare and require documented architectural justification.
 
 # Summary
 
-The Enterprise Coding Standards establish a consistent approach to writing software across the Agile AI University ecosystem.
+The Enterprise Coding Standards establish a consistent approach to writing software across the LAAU ecosystem.
 
 By promoting readability, maintainability, consistency, and architectural alignment, these standards improve software quality and support the long-term evolution of the enterprise.
 

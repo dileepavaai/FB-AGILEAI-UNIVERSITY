@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : footer.js
@@ -142,7 +142,7 @@
                 <footer
                     class="portal-footer"
                     role="contentinfo"
-                    aria-label="Agile AI University portal footer">
+                    aria-label="LAAU portal footer">
 
                     <div class="portal-footer__container">
 
@@ -153,7 +153,7 @@
                             <p class="portal-footer__institution">
 
                                 <strong>
-                                    Agile AI University
+                                    LAAU
                                 </strong>
 
                             </p>
@@ -236,7 +236,7 @@
                             <p>
 
                                 Secure authenticated access governed by
-                                Agile AI University identity and
+                                LAAU identity and
                                 entitlement controls.
 
                             </p>
@@ -247,7 +247,7 @@
 
                             <p>
 
-                                &copy; ${year} Agile AI University.
+                                &copy; ${year} LAAU.
                                 All rights reserved.
 
                             </p>

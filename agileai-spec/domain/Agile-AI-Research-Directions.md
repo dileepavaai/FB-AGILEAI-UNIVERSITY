@@ -173,7 +173,7 @@ Institutional roles include:
 **Agile AI Foundation**  
 Defines conceptual frameworks and research themes.
 
-**Agile AI University**  
+**LAAU**  
 Supports academic exploration, capability development, and practical application.
 
 ---

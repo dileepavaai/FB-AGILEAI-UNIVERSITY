@@ -4,7 +4,7 @@
 **Title:** Production Deployment Runbook
 **Version:** 1.0.0
 **Status:** ACTIVE
-**Owner:** Agile AI University
+**Owner:** LAAU
 **Architect:** Dileep Appupillai
 **Audience:** Platform Administrators
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This runbook defines the approved production deployment procedure for
-Agile AI University.
+LAAU.
 
 The objective is to ensure every production deployment is:
 

@@ -5,7 +5,7 @@
 | Document | Experience Architecture |
 | Version | 2.0 |
 | Status | LOCKED |
-| Owner | Agile AI University |
+| Owner | LAAU |
 | Classification | Portal Architecture |
 | Last Updated | 2026-07-07 |
 
@@ -14,7 +14,7 @@
 # Purpose
 
 Defines the architectural standard governing every learner and executive
-experience inside the Agile AI University Portal.
+experience inside the LAAU Portal.
 
 The platform is experience-driven rather than page-driven.
 
@@ -561,7 +561,7 @@ The following decisions are LOCKED.
 
 LOCKED
 
-This document is governed by Agile AI University Architecture Governance.
+This document is governed by LAAU Architecture Governance.
 
 Any architectural deviation requires a formal Architecture Decision Record
 (ADR).

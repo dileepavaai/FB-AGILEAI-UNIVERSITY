@@ -1,16 +1,16 @@
-# Agile AI University
+# LAAU
 # Documentation Index
 
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai
 
 ---
 
 # Purpose
 
-This document is the master navigation index for the Agile AI University
+This document is the master navigation index for the LAAU
 documentation repository.
 
 Every developer, architect, administrator, AI assistant, or contributor
@@ -494,7 +494,7 @@ Documentation updates are mandatory before closing a work item.
 
 # Production Principles
 
-Agile AI University follows a production-first workflow.
+LAAU follows a production-first workflow.
 
 ```
 Focused Change
@@ -548,7 +548,7 @@ This documentation is intended for:
 
 Owner
 
-Agile AI University
+LAAU
 
 Architect
 

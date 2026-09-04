@@ -3,14 +3,14 @@
 **Document Version:** 1.0  
 **Status:** ACTIVE  
 **Date:** July 2026  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Priority:** Revenue Generation → MVP Production Release  
 
 ---
 
 ## 1. Purpose
 
-This document is the authoritative effort tracker for the Agile AI University Learning Resource Platform.
+This document is the authoritative effort tracker for the LAAU Learning Resource Platform.
 
 It records:
 

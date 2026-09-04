@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : eligibility-service.js
@@ -946,7 +946,7 @@
 
                 description:
                     pricing.offerDescription ||
-                    "Continue your Agile AI University learning journey by upgrading your Agile AI capability.",
+                    "Continue your LAAU learning journey by upgrading your Agile AI capability.",
 
                 buttonText:
                     eligibility.eligible

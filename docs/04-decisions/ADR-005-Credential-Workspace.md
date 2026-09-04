@@ -4,7 +4,7 @@
 |-----------|-------|
 | Status | Accepted |
 | Date | 2026-07-07 |
-| Owner | Agile AI University |
+| Owner | LAAU |
 | Scope | Student Portal, Credential Operations, Credential Registry |
 | Classification | Architecture Decision Record |
 
@@ -12,7 +12,7 @@
 
 # Context
 
-Agile AI University credentials are governed academic and professional assets.
+LAAU credentials are governed academic and professional assets.
 
 During Sprint 2E, the Student Portal introduced a Credential Detail Overlay and Credential Asset Preview capability.
 

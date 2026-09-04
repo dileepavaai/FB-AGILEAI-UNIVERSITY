@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Governance Documentation
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The **02-governance** section defines the policies, standards, principles, and governance rules that guide the design, implementation, operation, and evolution of the Agile AI University ecosystem.
+The **02-governance** section defines the policies, standards, principles, and governance rules that guide the design, implementation, operation, and evolution of the LAAU ecosystem.
 
 Governance establishes consistency across platforms, services, architecture, operations, security, and user experience.
 
@@ -118,7 +118,7 @@ Defines learner and executive experience principles including:
 - AI Learning Recommendations
 - Service Availability
 
-These documents govern how users interact with the Agile AI University ecosystem.
+These documents govern how users interact with the LAAU ecosystem.
 
 ---
 
@@ -209,7 +209,7 @@ Enterprise Services define **how business capabilities are implemented**.
 
 # Governance Principles
 
-The Agile AI University ecosystem is governed by the following principles:
+The LAAU ecosystem is governed by the following principles:
 
 - Governance before implementation
 - Architecture before development
@@ -265,7 +265,7 @@ This documentation is intended for:
 
 # Summary
 
-The **02-governance** documentation establishes the enterprise rules, standards, and principles that ensure every platform, service, and capability within Agile AI University evolves consistently, securely, and in alignment with the overall enterprise architecture.
+The **02-governance** documentation establishes the enterprise rules, standards, and principles that ensure every platform, service, and capability within LAAU evolves consistently, securely, and in alignment with the overall enterprise architecture.
 
 ---
 

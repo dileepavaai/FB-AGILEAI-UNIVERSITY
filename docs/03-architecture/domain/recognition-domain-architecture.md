@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Recognition Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Recognition Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -29,7 +29,7 @@
 
 This document defines the Enterprise Recognition Domain Architecture.
 
-The Recognition Domain governs institutional recognitions awarded by Agile AI University for academic excellence, leadership, contribution, innovation, service, community participation, and other officially approved achievements.
+The Recognition Domain governs institutional recognitions awarded by LAAU for academic excellence, leadership, contribution, innovation, service, community participation, and other officially approved achievements.
 
 The Recognition Domain owns institutional recognition.
 
@@ -41,7 +41,7 @@ It does not own academic credentials.
 
 ## Introduction
 
-The Recognition Domain provides a governed framework for recognising exceptional contributions, achievements, leadership, participation, and impact across the Agile AI University ecosystem.
+The Recognition Domain provides a governed framework for recognising exceptional contributions, achievements, leadership, participation, and impact across the LAAU ecosystem.
 
 Recognition extends institutional appreciation beyond formal academic credentials.
 
@@ -487,11 +487,11 @@ The ADR repository remains authoritative.
 
 # 19. Domain Summary
 
-The Recognition Domain is the authoritative institutional recognition domain of the Agile AI University Enterprise Platform.
+The Recognition Domain is the authoritative institutional recognition domain of the LAAU Enterprise Platform.
 
 It governs nominations, approvals, institutional honours, leadership awards, community recognitions, and recognition lifecycle management while remaining independent of academic credential issuance.
 
-By separating institutional recognition from academic achievement, the Recognition Domain provides a scalable and governed foundation for acknowledging excellence across the Agile AI University ecosystem.
+By separating institutional recognition from academic achievement, the Recognition Domain provides a scalable and governed foundation for acknowledging excellence across the LAAU ecosystem.
 
 ---
 

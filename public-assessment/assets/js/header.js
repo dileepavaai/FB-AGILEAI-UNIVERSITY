@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <li class="has-submenu">
           <a href="/about/">About</a>
           <ul class="submenu">
-            <li><a href="/about/index.html">About Agile AI University</a></li>
+            <li><a href="/about/index.html">About LAAU</a></li>
             <li><a href="/about/mission.html">Mission & Purpose</a></li>
             <li><a href="/about/structure.html">Institutional Structure</a></li>
           </ul>

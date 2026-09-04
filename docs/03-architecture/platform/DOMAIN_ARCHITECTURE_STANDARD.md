@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Domain Architecture Standard
 
@@ -14,14 +14,14 @@
 | **Status** | **ACTIVE** |
 | **Standard Status** | **LOCKED** |
 | **Classification** | Enterprise Architecture Standard |
-| **Owner** | Agile AI University Enterprise Architecture |
+| **Owner** | LAAU Enterprise Architecture |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This document establishes the standard for documenting Enterprise Domain Architectures within the Agile AI University Enterprise Platform.
+This document establishes the standard for documenting Enterprise Domain Architectures within the LAAU Enterprise Platform.
 
 Enterprise Domains define business capabilities, ownership boundaries, enterprise information, lifecycle responsibilities, governance, and integration contracts.
 
@@ -353,17 +353,17 @@ This standard complements:
 - Integration Architecture Standard
 - Runtime Architecture Standard
 - Security Architecture Standard
-- Agile AI University Enterprise Architecture & System Context
+- LAAU Enterprise Architecture & System Context
 
 ---
 
 # Summary
 
-The Enterprise Domain Architecture Standard establishes the documentation framework for every Enterprise Domain within the Agile AI University ecosystem.
+The Enterprise Domain Architecture Standard establishes the documentation framework for every Enterprise Domain within the LAAU ecosystem.
 
 It ensures consistent business ownership, enterprise governance, information authority, lifecycle definition, service boundaries, and integration responsibilities across all current and future domains.
 
-By standardising domain documentation, Agile AI University maintains a scalable, governable, and enterprise-ready architecture repository.
+By standardising domain documentation, LAAU maintains a scalable, governable, and enterprise-ready architecture repository.
 
 ---
 

@@ -1,6 +1,6 @@
 /**
  * ========================================================================
- * Agile AI University
+ * LAAU
  * Bridge Programme Registration Page Controller
  * ------------------------------------------------------------------------
  * File:
@@ -9,7 +9,7 @@
  * Version        : 2.0.0
  * Status         : ACTIVE
  * Phase          : Revenue Sprint
- * Owner          : Agile AI University
+ * Owner          : LAAU
  *
  * Description
  * ------------------------------------------------------------------------
@@ -4493,7 +4493,7 @@ function buildPageState(
                 academicEligibility
                     .description,
 
-                "Upgrade through the approved Agile AI University Bridge Programme."
+                "Upgrade through the approved LAAU Bridge Programme."
 
             ])
 

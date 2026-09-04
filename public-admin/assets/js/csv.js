@@ -480,7 +480,7 @@ statusMsg.innerText =
 
               issued_by:
                 row.issued_by
-                || "Agile AI University",
+                || "LAAU",
 
               issued_status:
                 row.issued_status

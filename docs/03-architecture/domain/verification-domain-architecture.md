@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Verification Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Verification Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -27,7 +27,7 @@
 
 **LOCKED**
 
-This document defines the Enterprise Verification Domain Architecture for the Agile AI University Enterprise Platform.
+This document defines the Enterprise Verification Domain Architecture for the LAAU Enterprise Platform.
 
 The Verification Domain governs verification rules, validation outcomes, verification responses, public disclosure rules, verification history, and trust-related analytics.
 
@@ -41,7 +41,7 @@ It does not own credentials, credential assets, recognitions, or learner identit
 
 ## Introduction
 
-The Verification Domain provides the governed trust capability of the Agile AI University Enterprise Platform.
+The Verification Domain provides the governed trust capability of the LAAU Enterprise Platform.
 
 It enables enterprise records—including credentials, certificates, digital badges, and institutional recognitions—to be independently validated against authoritative enterprise information.
 
@@ -883,7 +883,7 @@ The ADR repository remains authoritative for decision context, alternatives, and
 
 # 24. Related Documentation
 
-- Agile AI University Enterprise Architecture & System Context
+- LAAU Enterprise Architecture & System Context
 - Credential Domain Architecture
 - Credential Asset Domain Architecture
 - Recognition Domain Architecture
@@ -898,7 +898,7 @@ The ADR repository remains authoritative for decision context, alternatives, and
 
 # 25. Domain Summary
 
-The Verification Domain is the authoritative public trust domain of the Agile AI University Enterprise Platform.
+The Verification Domain is the authoritative public trust domain of the LAAU Enterprise Platform.
 
 It governs verification rules, validation outcomes, public disclosure, verification history, and trust analytics while consuming authoritative information from the Credential, Credential Asset, Recognition, and Programme Domains.
 

@@ -1,6 +1,6 @@
 # Portal Coding Standards
 
-**Agile AI University**
+**LAAU**
 
 ---
 
@@ -13,13 +13,13 @@
 | Version    | 1.0.0                        |
 | Status     | **LOCKED**                   |
 | Governance | Portal Governance v1.0       |
-| Owner      | Agile AI University          |
+| Owner      | LAAU          |
 
 ---
 
 # Purpose
 
-This document defines the coding standards for all source code developed within the Agile AI University Portal ecosystem.
+This document defines the coding standards for all source code developed within the LAAU Portal ecosystem.
 
 The objective is to ensure that every HTML, CSS, and JavaScript file is consistent, self-documenting, maintainable, and understandable regardless of when it was created or who maintains it.
 
@@ -526,7 +526,7 @@ Future enhancements should extend these standards without breaking the establish
 
 # Governance Status
 
-This document is the authoritative coding standard for all Agile AI University Portal source code.
+This document is the authoritative coding standard for all LAAU Portal source code.
 
 All Portal HTML, CSS, and JavaScript implementations shall conform to these standards unless superseded by an approved governance revision.
 

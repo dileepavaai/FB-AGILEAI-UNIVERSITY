@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           <div class="brand">
             <a href="https://laau.university">
-              Agile AI University
+              LAAU
             </a>
           </div>
 
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </a>
             <span class="brand-separator"> &amp; </span>
             <a href="https://laau.university">
-              Agile AI University
+              LAAU
             </a>
           </div>
 

@@ -1,10 +1,10 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Firestore Collection Reference
 
 # Learning Resource Platform
 
-> **The authoritative Firestore schema reference for learning-resource registration, publication, ownership, delivery and learner access within Agile AI University.**
+> **The authoritative Firestore schema reference for learning-resource registration, publication, ownership, delivery and learner access within LAAU.**
 
 ---
 
@@ -18,7 +18,7 @@
 | **Architecture Status** | LOCKED |
 | **Domain** | Learning Resource Platform |
 | **Database** | Cloud Firestore |
-| **Owning Platform** | Agile AI University |
+| **Owning Platform** | LAAU |
 | **Related ADR** | ADR-019 — Learning Resource Delivery Architecture |
 | **Last Updated** | July 2026 |
 

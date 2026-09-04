@@ -166,7 +166,7 @@ The Capability Model is maintained as part of the Agile AI domain architecture.
 **Agile AI Foundation**  
 Responsible for conceptual domain frameworks.
 
-**Agile AI University**  
+**LAAU**  
 Responsible for operationalizing the model through assessments, academic systems, and professional recognition models.
 
 This separation ensures conceptual clarity and practical applicability.

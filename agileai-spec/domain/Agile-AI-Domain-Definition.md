@@ -122,7 +122,7 @@ The Agile AI domain is stewarded through two complementary institutional entitie
 **Agile AI Foundation**  
 Responsible for defining canonical standards and conceptual frameworks.
 
-**Agile AI University**  
+**LAAU**  
 Responsible for operationalizing the domain through capability systems, academic knowledge structures, and professional recognition models.
 
 This structure ensures both conceptual integrity and practical applicability.

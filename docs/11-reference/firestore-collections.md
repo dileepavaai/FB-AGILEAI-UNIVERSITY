@@ -4,7 +4,7 @@
 **Title:** Firestore Collections Reference  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai
 
 ---
@@ -12,7 +12,7 @@
 # Purpose
 
 This document is the authoritative reference for every Cloud Firestore
-collection used by the Agile AI University platform.
+collection used by the LAAU platform.
 
 It defines:
 
@@ -166,7 +166,7 @@ These collections become the foundation for all future platform services.
 Master academic credential registry.
 
 This collection represents the authoritative academic record issued by
-Agile AI University.
+LAAU.
 
 ---
 

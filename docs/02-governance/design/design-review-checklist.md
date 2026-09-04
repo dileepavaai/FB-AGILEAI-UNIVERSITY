@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Design Review Checklist
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                     |
 | Status         | LOCKED                  |
 | Classification | Governance              |
-| Owner          | Agile AI University     |
+| Owner          | LAAU     |
 | Applies To     | Entire Platform         |
 | Last Updated   | July 2026               |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document defines the mandatory design review checklist for Agile AI University.
+This document defines the mandatory design review checklist for LAAU.
 
 The checklist provides a consistent governance process for reviewing user interfaces before production deployment.
 
@@ -413,6 +413,6 @@ A release may proceed only when:
 
 # Governance Status
 
-This document is the authoritative Design Review Checklist for Agile AI University.
+This document is the authoritative Design Review Checklist for LAAU.
 
 It serves as the operational quality gate for all current and future user interface implementations, ensuring consistent adherence to the University's Design Governance standards before every production release.

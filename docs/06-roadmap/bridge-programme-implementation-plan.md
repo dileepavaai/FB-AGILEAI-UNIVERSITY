@@ -3,7 +3,7 @@
 **Document Version:** 1.0.0  
 **Status:** ACTIVE  
 **Phase:** Revenue Sprint  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Document Classification:** Implementation Governance  
 **Architecture Domain:** Programme Progression, Registration, Payment and Enrolment  
 **Related Architecture:** Bridge Programme Architecture  
@@ -13,7 +13,7 @@
 
 # 1. Purpose
 
-This document is the authoritative implementation roadmap for the Agile AI University Bridge Programme capability.
+This document is the authoritative implementation roadmap for the LAAU Bridge Programme capability.
 
 It translates the approved Bridge Programme Architecture into executable engineering work and provides complete implementation traceability from design through production deployment.
 
@@ -43,7 +43,7 @@ It complements:
 
 # 2. Business Objective
 
-The objective of the Revenue Sprint is to enable existing Agile AI University learners and alumni to progress into approved higher-level programmes through a governed Bridge Programme.
+The objective of the Revenue Sprint is to enable existing LAAU learners and alumni to progress into approved higher-level programmes through a governed Bridge Programme.
 
 The initial supported progression pathways are:
 
@@ -65,7 +65,7 @@ The implementation must enable an eligible learner to:
 8. Gain access to the learning experience.
 9. Continue future credential progression.
 
-The implementation must remain aligned with the Agile AI University architectural principles:
+The implementation must remain aligned with the LAAU architectural principles:
 
 - Identity before eligibility
 - Eligibility before registration
@@ -370,7 +370,7 @@ Each workstream represents a logical implementation boundary with clearly define
 
 ## Purpose
 
-Establish the Bridge Programme as a governed academic and commercial progression capability within the Agile AI University ecosystem.
+Establish the Bridge Programme as a governed academic and commercial progression capability within the LAAU ecosystem.
 
 This workstream defines the overall business capability, architectural boundaries, lifecycle, governance rules and implementation roadmap.
 
@@ -722,7 +722,7 @@ Future work is limited to supporting additional programme relationships.
 
 ## Purpose
 
-Define and govern approved progression pathways between Agile AI University programmes.
+Define and govern approved progression pathways between LAAU programmes.
 
 This workstream provides the academic progression map used by BridgeProgramService.
 
@@ -1698,7 +1698,7 @@ Student Portal
 
 ## Existing Foundation
 
-The Agile AI University Learning Resource Platform already provides:
+The LAAU Learning Resource Platform already provides:
 
 - licensed resource management
 - learner assignments
@@ -3106,7 +3106,7 @@ Operational
 
 # 21. Final Implementation Statement
 
-The Bridge Programme implementation establishes the commercial progression capability of the Agile AI University ecosystem.
+The Bridge Programme implementation establishes the commercial progression capability of the LAAU ecosystem.
 
 Its implementation lifecycle is:
 
@@ -3151,7 +3151,7 @@ Classification : Implementation Governance
 
 Phase : Revenue Sprint
 
-Owner : Agile AI University
+Owner : LAAU
 
 Implementation State : IN PROGRESS
 ```

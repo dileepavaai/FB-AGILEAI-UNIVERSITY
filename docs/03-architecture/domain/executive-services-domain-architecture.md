@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Executive Services Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Executive Services Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -41,7 +41,7 @@ It does not own operational business records.
 
 ## Introduction
 
-The Executive Services Domain provides strategic visibility across the Agile AI University Enterprise Platform.
+The Executive Services Domain provides strategic visibility across the LAAU Enterprise Platform.
 
 It consumes governed information from operational Enterprise Domains and transforms that information into executive dashboards, institutional reporting, analytics, forecasting, and strategic decision support.
 
@@ -549,7 +549,7 @@ The ADR repository remains the authoritative source for architectural rationale.
 
 # 19. Domain Summary
 
-The Executive Services Domain is the enterprise intelligence domain of the Agile AI University Enterprise Platform.
+The Executive Services Domain is the enterprise intelligence domain of the LAAU Enterprise Platform.
 
 It transforms governed operational information into executive dashboards, institutional reporting, analytics, forecasting, strategic insights, and decision-support capabilities while preserving the authority of operational business domains.
 

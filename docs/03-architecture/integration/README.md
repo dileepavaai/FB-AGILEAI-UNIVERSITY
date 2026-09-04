@@ -1,8 +1,8 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Integration Architecture
 
-> **The authoritative integration architecture governing communication between platforms, services, domains, and external systems within the Agile AI University ecosystem.**
+> **The authoritative integration architecture governing communication between platforms, services, domains, and external systems within the LAAU ecosystem.**
 
 ---
 
@@ -16,14 +16,14 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Integration Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This directory defines the Enterprise Integration Architecture for the Agile AI University ecosystem.
+This directory defines the Enterprise Integration Architecture for the LAAU ecosystem.
 
 Integration Architecture governs how enterprise platforms, enterprise domains, enterprise services, enterprise registries, and approved external systems communicate while preserving architectural boundaries and domain ownership.
 
@@ -35,7 +35,7 @@ It does not transfer business ownership.
 
 # Integration Philosophy
 
-The Agile AI University platform follows a **Service-Oriented Enterprise Integration** model.
+The LAAU platform follows a **Service-Oriented Enterprise Integration** model.
 
 Enterprise Platforms never communicate directly with Enterprise Registries.
 
@@ -355,7 +355,7 @@ These capabilities shall extend, not replace, the Enterprise Service model.
 
 The Enterprise Integration Architecture defines how enterprise capabilities collaborate while preserving domain ownership, governance, and institutional integrity.
 
-By placing Enterprise Services at the centre of every interaction, the architecture provides a scalable, secure, and maintainable integration model for current and future Agile AI University platforms.
+By placing Enterprise Services at the centre of every interaction, the architecture provides a scalable, secure, and maintainable integration model for current and future LAAU platforms.
 
 ---
 

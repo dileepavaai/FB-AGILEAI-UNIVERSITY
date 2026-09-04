@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Development Standards
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The Enterprise Development Standards establish the engineering practices, development principles, workflow standards, and implementation expectations for all software developed within the Agile AI University ecosystem.
+The Enterprise Development Standards establish the engineering practices, development principles, workflow standards, and implementation expectations for all software developed within the LAAU ecosystem.
 
 These standards ensure consistency across every platform, Enterprise Service, API, infrastructure component, and future capability.
 
@@ -402,7 +402,7 @@ Exceptions require architectural review and documented justification.
 
 # Summary
 
-The Enterprise Development Standards establish a consistent engineering approach across the Agile AI University ecosystem.
+The Enterprise Development Standards establish a consistent engineering approach across the LAAU ecosystem.
 
 By aligning development with enterprise architecture, governance, and reusable patterns, these standards support high-quality, maintainable, secure, and scalable software that can evolve with the institution.
 

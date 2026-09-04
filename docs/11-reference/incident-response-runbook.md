@@ -4,7 +4,7 @@
 **Title:** Incident Response Runbook
 **Version:** 1.0.0
 **Status:** ACTIVE
-**Owner:** Agile AI University
+**Owner:** LAAU
 **Architect:** Dileep Appupillai
 **Audience:** Platform Administrators
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This runbook defines the standard operational procedure for responding
-to production incidents within Agile AI University.
+to production incidents within LAAU.
 
 The objectives are to:
 

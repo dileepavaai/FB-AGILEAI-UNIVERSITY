@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Service Specification
 
@@ -20,7 +20,7 @@
 | **Implementation Status** | IN PROGRESS |
 | **Architecture Status** | LOCKED FOR IMPLEMENTATION |
 | **Environment** | Production-only |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Founder / Architect** | Dileep Appupillai |
 | **Last Updated** | July 2026 |
 
@@ -38,7 +38,7 @@ Firebase Authentication remains the authoritative identity provider while the Cr
 
 CredentialActivationService is the only Enterprise Service permitted to convert an unclaimed credential into a learner-owned credential through a governed server-side reconciliation process.
 
-This service forms the foundation of the Agile AI University Alumni Activation Programme and enables historical learners to securely access the Student & Executive Portal, retrieve their credentials, and continue their learning journey.
+This service forms the foundation of the LAAU Alumni Activation Programme and enables historical learners to securely access the Student & Executive Portal, retrieve their credentials, and continue their learning journey.
 
 ---
 
@@ -60,7 +60,7 @@ credential.learner_uid = authenticated Firebase UID
 
 This conversion may occur only after all governance rules have been satisfied.
 
-The service exists because many Agile AI University credentials were issued before the Student & Executive Portal and Firebase Authentication platform were introduced.
+The service exists because many LAAU credentials were issued before the Student & Executive Portal and Firebase Authentication platform were introduced.
 
 Historical credentials therefore legitimately exist without an associated authenticated learner account.
 
@@ -70,7 +70,7 @@ CredentialActivationService enables these learners to securely activate their ac
 
 # 2. Business Context
 
-Agile AI University maintains historical credentials issued through earlier programme deliveries.
+LAAU maintains historical credentials issued through earlier programme deliveries.
 
 Many of these credentials predate the current learner authentication platform.
 
@@ -195,7 +195,7 @@ No alternative credential ownership mechanism shall exist.
 
 # 6. Enterprise Principles
 
-CredentialActivationService follows the Enterprise Principles adopted across Agile AI University.
+CredentialActivationService follows the Enterprise Principles adopted across LAAU.
 
 ## Identity before Access
 
@@ -963,7 +963,7 @@ This separation ensures that business logic remains independent from communicati
 
 # 26. Cost Governance and Invitation Delivery
 
-Agile AI University follows a Cost-First Enterprise Architecture.
+LAAU follows a Cost-First Enterprise Architecture.
 
 The objective is to maximise business value while minimising recurring infrastructure and operational costs.
 
@@ -996,7 +996,7 @@ before introducing:
 
 ## 26.2 Approved Invitation Delivery Model
 
-For the initial AOP Alumni Activation Programme, invitation delivery shall use the official Agile AI University Google Workspace account.
+For the initial AOP Alumni Activation Programme, invitation delivery shall use the official LAAU Google Workspace account.
 
 The governed process is:
 
@@ -1373,7 +1373,7 @@ Operational metrics shall never expose confidential learner information.
 
 # 32. Production-Only Operating Model
 
-CredentialActivationService follows Agile AI University's production-only operating model.
+CredentialActivationService follows LAAU's production-only operating model.
 
 Every production change follows:
 

@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Admin Credential Generator
 
    File      : credential-asset-publisher.js

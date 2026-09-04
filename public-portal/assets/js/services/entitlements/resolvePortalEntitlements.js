@@ -339,7 +339,7 @@ function normalizeVisibleCredentials(credentials, email) {
 
             issued_by:
                 c.issued_by ||
-                "Agile AI University",
+                "LAAU",
 
             validity:
                 c.validity ||

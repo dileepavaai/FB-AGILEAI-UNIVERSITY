@@ -25,7 +25,7 @@ Version: 3.2 (Final Clean — No Toggle Manipulation)
       <div class="spec-banner-meta">
         <span><strong>Version:</strong> 1.0</span>
         <span><strong>Status:</strong> Canonical</span>
-        <span><strong>Maintained by:</strong> Agile AI University</span>
+        <span><strong>Maintained by:</strong> LAAU</span>
       </div>
     `;
 

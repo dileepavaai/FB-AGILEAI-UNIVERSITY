@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 ## Governance Change Log
 

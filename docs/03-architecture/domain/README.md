@@ -1,8 +1,8 @@
-# Agile AI University
+# LAAU
 
 # Platform Architecture
 
-> **The authoritative architecture governing every enterprise platform within the Agile AI University ecosystem.**
+> **The authoritative architecture governing every enterprise platform within the LAAU ecosystem.**
 
 ---
 
@@ -16,14 +16,14 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Platform Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This directory defines the Platform Architecture for the Agile AI University Enterprise Platform.
+This directory defines the Platform Architecture for the LAAU Enterprise Platform.
 
 A platform represents a complete enterprise application that delivers a governed set of capabilities to a specific group of users.
 
@@ -76,7 +76,7 @@ This separation ensures that business rules remain independent of presentation t
 
 # Current Enterprise Platforms
 
-The Agile AI University ecosystem currently consists of the following enterprise platforms.
+The LAAU ecosystem currently consists of the following enterprise platforms.
 
 | Platform | Primary Users | Purpose |
 |----------|---------------|---------|
@@ -270,7 +270,7 @@ All future platforms shall inherit this architecture.
 
 # Summary
 
-The Platform Architecture defines how enterprise applications are structured within the Agile AI University ecosystem.
+The Platform Architecture defines how enterprise applications are structured within the LAAU ecosystem.
 
 It establishes clear platform boundaries, responsibilities, governance, and integration patterns while ensuring that enterprise business logic remains owned by Enterprise Domains and exposed through governed Enterprise Services.
 

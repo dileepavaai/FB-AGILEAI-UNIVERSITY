@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : credential-detail-header.js
@@ -213,7 +213,7 @@
                     credential.issuer_name
 
                 ]) ||
-                "Agile AI University";
+                "LAAU";
 
 
             const issueDate =

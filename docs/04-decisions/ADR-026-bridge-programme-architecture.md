@@ -2,7 +2,7 @@
 
 **Status:** ACCEPTED  
 **Decision Date:** 29 July 2026  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Decision Domain:** Programme Progression, Registration, Payment and Enrolment  
 **Related Architecture:** `docs/03-architecture/domain/bridge-programme-architecture.md`
 
@@ -10,7 +10,7 @@
 
 ## 1. Decision Summary
 
-Agile AI University will implement Bridge Programmes as a governed academic and commercial progression capability.
+LAAU will implement Bridge Programmes as a governed academic and commercial progression capability.
 
 A Bridge Programme will connect:
 

@@ -10,7 +10,7 @@ Effective Date: June 2026
 
 # Purpose
 
-This document establishes the governance model for recognition assets within the Agile AI University Student & Executive Portal.
+This document establishes the governance model for recognition assets within the LAAU Student & Executive Portal.
 
 Recognition assets represent academic and professional artifacts issued as a result of credential achievement.
 
@@ -105,7 +105,7 @@ University Badge
 
 Under this model a user would receive a single certificate, trainer certificate and badge regardless of the number of credentials owned.
 
-This model does not reflect Agile AI University credential operations.
+This model does not reflect LAAU credential operations.
 
 Status: RETIRED
 
@@ -370,6 +370,6 @@ Status: LOCKED
 * Established recognition identity governance
 * Established recognition ownership governance
 * Established recognition deduplication governance
-* Aligned portal architecture with Agile AI University credential issuance model
+* Aligned portal architecture with LAAU credential issuance model
 
 END OF GOVERNANCE

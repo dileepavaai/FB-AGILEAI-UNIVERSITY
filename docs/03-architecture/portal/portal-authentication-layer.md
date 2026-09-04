@@ -3,13 +3,13 @@
 Version: 1.0.0
 Status: ACTIVE
 Governance: LOCKED
-Owner: Agile AI University
+Owner: LAAU
 
 ---
 
 # 1. Purpose
 
-The Authentication Layer is responsible for establishing user identity within the Agile AI University Portal.
+The Authentication Layer is responsible for establishing user identity within the LAAU Portal.
 
 Authentication answers one question:
 
@@ -125,7 +125,7 @@ Authentication does not own:
 
 # 5. Authentication Methods
 
-The Agile AI University Portal currently supports:
+The LAAU Portal currently supports:
 
 ---
 
@@ -477,7 +477,7 @@ john@example.com
 Fallback:
 
 ```text
-Agile AI University User
+LAAU User
 ```
 
 used when display name is unavailable.

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Programme Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Programme Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -27,7 +27,7 @@
 
 **LOCKED**
 
-This document defines the Enterprise Programme Domain Architecture for the Agile AI University Enterprise Platform.
+This document defines the Enterprise Programme Domain Architecture for the LAAU Enterprise Platform.
 
 The Programme Domain defines the academic offerings of the University and acts as the authoritative source for programme definitions, programme hierarchy, programme lifecycle, eligibility metadata, academic pricing references, learning pathways, and prerequisite relationships.
 
@@ -39,7 +39,7 @@ Every Enterprise Platform and Enterprise Domain shall consume Programme informat
 
 ## Introduction
 
-The Programme Domain represents the master academic domain of the Agile AI University Enterprise Platform.
+The Programme Domain represents the master academic domain of the LAAU Enterprise Platform.
 
 It governs the complete lifecycle of academic programmes and defines the structure from which registration, payment, learning, assessment, credentialing, recognition, and executive analytics derive their business context.
 
@@ -558,7 +558,7 @@ The ADR repository remains authoritative for architectural rationale.
 
 # 19. Domain Summary
 
-The Programme Domain is the master academic domain of the Agile AI University Enterprise Platform.
+The Programme Domain is the master academic domain of the LAAU Enterprise Platform.
 
 It governs programme definitions, hierarchy, lifecycle, prerequisites, pricing references, and academic metadata while providing the authoritative business context for every downstream Enterprise Domain.
 

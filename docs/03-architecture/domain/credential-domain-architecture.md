@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Credential Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Credential Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -41,7 +41,7 @@ The Credential Domain does not own certificates, digital badges, credential asse
 
 ## Introduction
 
-The Credential Domain is the authoritative academic recognition domain of the Agile AI University Enterprise Platform.
+The Credential Domain is the authoritative academic recognition domain of the LAAU Enterprise Platform.
 
 It represents the successful completion of institutional academic requirements and records the University's official academic decision to award a credential.
 
@@ -134,7 +134,7 @@ The Credential Domain owns:
 
 Issues official institutional credentials after successful academic completion.
 
-Each credential represents an academic achievement recognised by Agile AI University.
+Each credential represents an academic achievement recognised by LAAU.
 
 ---
 
@@ -510,11 +510,11 @@ The ADR repository remains authoritative.
 
 # 19. Domain Summary
 
-The Credential Domain is the authoritative academic recognition domain of the Agile AI University Enterprise Platform.
+The Credential Domain is the authoritative academic recognition domain of the LAAU Enterprise Platform.
 
 It governs credential issuance, approval, lifecycle management, and the Credential Registry while remaining independent of certificate generation, digital badge production, asset publication, and public verification.
 
-By separating academic authority from digital asset production and public trust, the Credential Domain establishes a scalable, governed, and future-ready foundation for institutional recognition across the Agile AI University ecosystem.
+By separating academic authority from digital asset production and public trust, the Credential Domain establishes a scalable, governed, and future-ready foundation for institutional recognition across the LAAU ecosystem.
 
 ---
 

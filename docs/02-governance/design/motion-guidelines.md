@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Motion Guidelines
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document establishes the official motion and animation standards for Agile AI University.
+This document establishes the official motion and animation standards for LAAU.
 
 Motion should enhance usability by providing visual feedback, reinforcing hierarchy and communicating state changes.
 
@@ -321,6 +321,6 @@ Avoid animating properties that trigger expensive layout or paint operations unl
 
 # Governance Status
 
-This document is the authoritative motion specification for Agile AI University.
+This document is the authoritative motion specification for LAAU.
 
 All products shall implement motion in accordance with this governance to ensure a consistent, accessible and professional user experience.

@@ -13,7 +13,7 @@ title: Agile AI Specification v1.0
 
     **Version:** 1.0  
     **Status:** Canonical  
-    **Maintained By:** Agile AI University  
+    **Maintained By:** LAAU  
     **Scope:** Defines the foundational architecture, principles, and capability model for Agile AI systems.
 
 ---

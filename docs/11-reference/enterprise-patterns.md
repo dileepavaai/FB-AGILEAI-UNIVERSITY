@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Architecture Patterns
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The Enterprise Architecture Patterns define the standard architectural solutions used throughout the Agile AI University ecosystem.
+The Enterprise Architecture Patterns define the standard architectural solutions used throughout the LAAU ecosystem.
 
 Patterns provide proven, reusable approaches for solving recurring architectural problems while ensuring consistency across platforms, enterprise services, domains, APIs, and runtime components.
 
@@ -496,7 +496,7 @@ Pattern evolution shall remain governed.
 
 # Summary
 
-Enterprise Architecture Patterns provide the reusable building blocks used throughout the Agile AI University ecosystem.
+Enterprise Architecture Patterns provide the reusable building blocks used throughout the LAAU ecosystem.
 
 By consistently applying these patterns, every platform, Enterprise Service, API, and runtime component benefits from a common architectural language, reduced complexity, improved maintainability, and long-term scalability.
 

@@ -104,5 +104,5 @@ Otherwise the platform should remain stable and unchanged.
 
 ---
 
-© Agile AI University  
+© LAAU  
 Operational Governance Authority

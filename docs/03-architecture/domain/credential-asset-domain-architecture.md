@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Credential Asset Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Credential Asset Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -484,7 +484,7 @@ The ADR repository remains authoritative.
 
 # 19. Domain Summary
 
-The Credential Asset Domain is the authoritative digital publishing domain of the Agile AI University Enterprise Platform.
+The Credential Asset Domain is the authoritative digital publishing domain of the LAAU Enterprise Platform.
 
 It governs the generation, publication, storage, lifecycle, and distribution of digital representations of institutional credentials while remaining completely independent of academic decision-making.
 

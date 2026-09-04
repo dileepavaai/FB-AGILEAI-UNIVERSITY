@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Credential Consumption Experience
 
@@ -12,7 +12,7 @@
 
 # Executive Summary
 
-The Credential Consumption Experience defines how university members discover, understand, consume, share and progress from their academic credentials within the Agile AI University ecosystem.
+The Credential Consumption Experience defines how university members discover, understand, consume, share and progress from their academic credentials within the LAAU ecosystem.
 
 The experience extends beyond displaying certificates. It provides a professional, learner-centric experience that combines academic achievements with contextual learning opportunities while preserving the integrity of university credentials.
 
@@ -96,7 +96,7 @@ The portal never becomes the source of credential data.
 
 ## Principle 3
 
-Every credential shall be presented consistently across the Agile AI University ecosystem.
+Every credential shall be presented consistently across the LAAU ecosystem.
 
 Consistency applies to
 
@@ -460,7 +460,7 @@ Responsive Experience
 
 # Overall Position
 
-The Credential Consumption Experience establishes a consistent, learner-centric approach to presenting university credentials across the Agile AI University ecosystem.
+The Credential Consumption Experience establishes a consistent, learner-centric approach to presenting university credentials across the LAAU ecosystem.
 
 Credentials remain immutable academic achievements.
 

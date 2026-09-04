@@ -1,6 +1,6 @@
 # Portal Architecture
 
-**Agile AI University**
+**LAAU**
 
 ---
 
@@ -13,13 +13,13 @@
 | Version    | 1.0.0                    |
 | Status     | **LOCKED**               |
 | Governance | Portal Governance v1.0   |
-| Owner      | Agile AI University      |
+| Owner      | LAAU      |
 
 ---
 
 # Purpose
 
-This document defines the logical, architectural, and operational design of the Agile AI University Portal ecosystem.
+This document defines the logical, architectural, and operational design of the LAAU Portal ecosystem.
 
 It establishes how authentication, authorization, entitlement resolution, portal experiences, credential services, recognition services, and user interface components interact while maintaining a strict separation of responsibilities.
 
@@ -29,7 +29,7 @@ This document is the architectural authority for all current and future Portal m
 
 # Architectural Vision
 
-The Agile AI University Portal is designed as a governed, service-oriented presentation platform.
+The LAAU Portal is designed as a governed, service-oriented presentation platform.
 
 Its primary objective is to provide authenticated users with secure access to credentials, recognitions, assessments, executive insight, and future learning experiences while ensuring that business logic remains isolated from presentation.
 
@@ -467,7 +467,7 @@ Every Portal component should satisfy the following:
 
 # Governance Status
 
-This document is the authoritative architectural reference for the Agile AI University Portal.
+This document is the authoritative architectural reference for the LAAU Portal.
 
 All Portal components shall conform to this layered architecture unless superseded by an approved governance revision.
 

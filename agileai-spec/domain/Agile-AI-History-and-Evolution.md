@@ -116,7 +116,7 @@ To support the development of the domain, the Agile AI ecosystem was established
 **Agile AI Foundation**  
 Responsible for defining conceptual frameworks and canonical domain standards.
 
-**Agile AI University**  
+**LAAU**  
 Responsible for operationalizing the domain through academic capability systems, assessments, and professional recognition models.
 
 This structure separates conceptual domain stewardship from academic operationalization.

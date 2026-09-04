@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Batch Governance Rules
 
@@ -12,7 +12,7 @@ Date Locked: 2026-06-05
 
 # Purpose
 
-This document defines the governance framework for batch creation, batch management, and batch-based credential issuance within the Agile AI University credential ecosystem.
+This document defines the governance framework for batch creation, batch management, and batch-based credential issuance within the LAAU credential ecosystem.
 
 The purpose of batch governance is to ensure:
 
@@ -370,7 +370,7 @@ All batch governance must remain program-agnostic.
 
 Status: LOCKED
 
-The Agile AI University credential ecosystem is operated using a controlled, low-risk administrative model.
+The LAAU credential ecosystem is operated using a controlled, low-risk administrative model.
 
 Therefore:
 
@@ -393,4 +393,4 @@ Batches are the administrative container through which credentials are issued.
 
 Program integrity, issuance integrity, and auditability must be preserved at all times.
 
-This document is governance-locked and applies across the entire Agile AI University Credential Operations ecosystem.
+This document is governance-locked and applies across the entire LAAU Credential Operations ecosystem.

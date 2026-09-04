@@ -41,7 +41,7 @@ exports.generateReply = functions.https.onCall(async (data, context) => {
 
     // 🧠 Prompt Engineering (Agile AI tone)
     const prompt = `
-You are an expert in professional communication for Agile AI University.
+You are an expert in professional communication for LAAU.
 
 Context:
 - Lead Name: ${name || "Unknown"}

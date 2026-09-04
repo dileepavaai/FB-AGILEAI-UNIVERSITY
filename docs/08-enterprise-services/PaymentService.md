@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Service Specification
 
@@ -18,7 +18,7 @@
 | **Status** | **ACTIVE** |
 | **Service Status** | **IN PROGRESS** |
 | **Classification** | Enterprise Service Specification |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
@@ -51,7 +51,7 @@ It does not define payment-gateway SDK implementation, UI rendering, infrastruct
 
 ## Introduction
 
-PaymentService is the authoritative Enterprise Service responsible for executing and governing financial transactions across the Agile AI University ecosystem.
+PaymentService is the authoritative Enterprise Service responsible for executing and governing financial transactions across the LAAU ecosystem.
 
 It receives valid payment intent from RegistrationService or another approved enterprise workflow, resolves the authoritative financial context, creates payment orders, coordinates approved payment gateways, verifies payment outcomes, records financial history, generates receipts, and manages approved refunds.
 

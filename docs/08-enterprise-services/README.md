@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Services
 
@@ -16,14 +16,14 @@
 | **Status** | **ACTIVE** |
 | **Service Architecture Status** | **FOUNDATION ACTIVE** |
 | **Classification** | Enterprise Service Catalogue |
-| **Owner** | Agile AI University Enterprise Architecture |
+| **Owner** | LAAU Enterprise Architecture |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This directory contains the authoritative specifications for the Enterprise Services used throughout the Agile AI University ecosystem.
+This directory contains the authoritative specifications for the Enterprise Services used throughout the LAAU ecosystem.
 
 Enterprise Services expose governed business capabilities owned by Enterprise Domains.
 
@@ -43,7 +43,7 @@ They are not presentation components, database wrappers, or platform-specific ut
 
 # Enterprise Service Philosophy
 
-The Agile AI University ecosystem follows a service-oriented enterprise architecture.
+The LAAU ecosystem follows a service-oriented enterprise architecture.
 
 ```text
 Enterprise Platform

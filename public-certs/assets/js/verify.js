@@ -1,5 +1,5 @@
 /* =====================================================
-   Agile AI University — Verification Client v8.0
+   LAAU — Verification Client v8.0
    FINAL STABLE · QR FIX · PRODUCTION SAFE
 ===================================================== */
 
@@ -176,7 +176,7 @@ function renderSuccess(data, signature = null) {
   r_credential_id.textContent = safeText(data.credential_id);
   r_credential_type.textContent = safeText(data.credential_type);
   r_program_code.textContent = safeText(data.program_code);
-  r_issued_by.textContent = safeText(data.issued_by, "Agile AI University");
+  r_issued_by.textContent = safeText(data.issued_by, "LAAU");
   r_issue_date.textContent = formatIssueDate(data);
 
   generateVerificationAssets(data.credential_id, signature);

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # ADR-011 — Backend Service Boundaries
 
@@ -7,7 +7,7 @@
 **Decision Status:** LOCKED  
 **Decision Type:** Enterprise Architecture  
 **Date:** July 2026  
-**Owner:** Agile AI University Architecture Authority  
+**Owner:** LAAU Architecture Authority  
 **Architect:** Dileep Appupillai  
 
 ---
@@ -20,7 +20,7 @@ Separation of Backend Responsibilities Between `aau-backend` and `cloudrun-porta
 
 # 2. Context
 
-The Agile AI University platform currently contains two backend runtime areas:
+The LAAU platform currently contains two backend runtime areas:
 
 ```text
 aau-backend/

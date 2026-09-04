@@ -1,6 +1,6 @@
 # Portal Entitlement Layer
 
-**Agile AI University**
+**LAAU**
 
 ---
 
@@ -13,13 +13,13 @@
 | Version    | 1.0.0                         |
 | Status     | **LOCKED**                    |
 | Governance | Portal Governance v1.0        |
-| Owner      | Agile AI University           |
+| Owner      | LAAU           |
 
 ---
 
 # Purpose
 
-This document defines the Entitlement Layer architecture of the Agile AI University Portal.
+This document defines the Entitlement Layer architecture of the LAAU Portal.
 
 The Entitlement Layer is responsible for retrieving, publishing, and resolving governed entitlement information that determines a user's Portal experiences.
 
@@ -413,7 +413,7 @@ Every entitlement implementation should satisfy the following:
 
 # Governance Status
 
-This document is the authoritative governance reference for the Entitlement Layer of the Agile AI University Portal.
+This document is the authoritative governance reference for the Entitlement Layer of the LAAU Portal.
 
 The Entitlement Retrieval Layer and the Entitlement Resolution Layer collectively form the single source of truth for Portal capability decisions.
 

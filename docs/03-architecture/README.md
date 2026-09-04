@@ -1,8 +1,8 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Domain Architecture
 
-> **The authoritative business architecture governing every enterprise capability within the Agile AI University ecosystem.**
+> **The authoritative business architecture governing every enterprise capability within the LAAU ecosystem.**
 
 ---
 
@@ -16,14 +16,14 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This directory defines the Enterprise Business Domains of the Agile AI University ecosystem.
+This directory defines the Enterprise Business Domains of the LAAU ecosystem.
 
 A Domain represents a business capability with clearly defined ownership, responsibilities, information, lifecycle, governance, and Enterprise Services.
 
@@ -35,7 +35,7 @@ Platforms, services, integrations, APIs, runtime components, and operational pro
 
 # Domain Philosophy
 
-The Agile AI University platform follows a **Domain-Driven Enterprise Architecture**.
+The LAAU platform follows a **Domain-Driven Enterprise Architecture**.
 
 Enterprise Domains own:
 
@@ -80,7 +80,7 @@ Everything else consumes Enterprise Domains.
 
 # Enterprise Business Lifecycle
 
-The Agile AI University ecosystem is organised around a complete institutional lifecycle.
+The LAAU ecosystem is organised around a complete institutional lifecycle.
 
 ```text
 Programme
@@ -469,11 +469,11 @@ The Enterprise Domain Architecture is fully documented.
 
 # Summary
 
-The Enterprise Domain Architecture is the business foundation of the Agile AI University ecosystem.
+The Enterprise Domain Architecture is the business foundation of the LAAU ecosystem.
 
 It defines business ownership, enterprise information, lifecycle, governance, Enterprise Services, and institutional authority for every major business capability.
 
-By separating business capabilities into independently governed Enterprise Domains, the architecture provides a scalable, maintainable, and future-ready foundation for every current and future platform within the Agile AI University ecosystem.
+By separating business capabilities into independently governed Enterprise Domains, the architecture provides a scalable, maintainable, and future-ready foundation for every current and future platform within the LAAU ecosystem.
 
 ---
 

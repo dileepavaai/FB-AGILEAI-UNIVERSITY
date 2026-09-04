@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Branding
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document establishes the official branding standards for Agile AI University.
+This document establishes the official branding standards for LAAU.
 
 Branding ensures every interaction, interface, credential, publication and communication consistently represents the University's institutional identity.
 
@@ -53,7 +53,7 @@ This specification applies to:
 
 # Brand Philosophy
 
-Agile AI University exists to advance professional capability in Agile AI and Agentic AI through rigorous academic governance, practical application and lifelong recognition.
+LAAU exists to advance professional capability in Agile AI and Agentic AI through rigorous academic governance, practical application and lifelong recognition.
 
 The brand should consistently communicate:
 
@@ -68,7 +68,7 @@ The brand should consistently communicate:
 
 # Institutional Positioning
 
-Agile AI University is positioned as an independent Academic & Professional Body.
+LAAU is positioned as an independent Academic & Professional Body.
 
 The institution is not positioned as:
 
@@ -152,7 +152,7 @@ Content should be:
 Official institution name:
 
 ```text
-Agile AI University
+LAAU
 ```
 
 Abbreviation:
@@ -167,7 +167,7 @@ Do not use:
 
 * AgileAI
 * Agile-AI
-* AgileAI University
+* LAAU
 
 ---
 
@@ -341,7 +341,7 @@ Official social media communications shall:
 
 # Product Branding
 
-Every product within the ecosystem shall clearly identify itself as part of Agile AI University.
+Every product within the ecosystem shall clearly identify itself as part of LAAU.
 
 Examples:
 
@@ -388,7 +388,7 @@ Changes to visual identity should be:
 
 1. Every product shall present a unified institutional identity.
 
-2. Branding shall reinforce Agile AI University's positioning as an independent Academic & Professional Body.
+2. Branding shall reinforce LAAU's positioning as an independent Academic & Professional Body.
 
 3. Official terminology shall be used consistently.
 
@@ -423,6 +423,6 @@ Changes to visual identity should be:
 
 # Governance Status
 
-This document is the authoritative branding specification for Agile AI University.
+This document is the authoritative branding specification for LAAU.
 
-All current and future products, services and communications shall comply with this Branding Governance to preserve a consistent, professional and institutionally aligned identity across the Agile AI University ecosystem.
+All current and future products, services and communications shall comply with this Branding Governance to preserve a consistent, professional and institutionally aligned identity across the LAAU ecosystem.

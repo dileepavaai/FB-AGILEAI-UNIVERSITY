@@ -1,6 +1,6 @@
 # Portal Governance
 
-**Agile AI University**
+**LAAU**
 
 ---
 
@@ -14,13 +14,13 @@
 | Status           | **LOCKED**                                                                         |
 | Governance Level | Constitutional                                                                     |
 | Applies To       | Student Portal, Executive Portal, Administrative Portal, Future Portal Experiences |
-| Owner            | Agile AI University                                                                |
+| Owner            | LAAU                                                                |
 
 ---
 
 # Purpose
 
-This document establishes the governing principles, architectural rules, implementation standards, and operational boundaries for the Agile AI University Portal ecosystem.
+This document establishes the governing principles, architectural rules, implementation standards, and operational boundaries for the LAAU Portal ecosystem.
 
 It serves as the constitutional authority for every Portal component, experience, service, and user interface.
 
@@ -30,7 +30,7 @@ All Portal implementations shall conform to this governance unless superseded by
 
 # Vision
 
-The Agile AI University Portal is a governed digital experience platform that provides authenticated users with secure, consistent, and scalable access to professional learning, credentials, recognitions, executive insights, assessments, and future academic services.
+The LAAU Portal is a governed digital experience platform that provides authenticated users with secure, consistent, and scalable access to professional learning, credentials, recognitions, executive insights, assessments, and future academic services.
 
 The Portal is designed to prioritize:
 
@@ -632,7 +632,7 @@ Future capabilities must extend—not replace—the established governance model
 
 # Governance Status
 
-This document is the constitutional governance authority for the Agile AI University Portal.
+This document is the constitutional governance authority for the LAAU Portal.
 
 All Portal architecture, implementation, coding standards, and future experiences derive their authority from this document.
 

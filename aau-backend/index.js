@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
 
    Service Name : aau-credential-verify
    Component    : Credential Verification, Activation and
@@ -3625,7 +3625,7 @@ app.post(
 
                 issued_by:
                     credential.issued_by ||
-                    "Agile AI University",
+                    "LAAU",
 
                 issue_date:
                     issueDate ||
@@ -8797,7 +8797,7 @@ app.post(
 
                         issued_by:
                             data.issued_by ||
-                            "Agile AI University",
+                            "LAAU",
 
                         approval_status:
                             data.approval_status || "",

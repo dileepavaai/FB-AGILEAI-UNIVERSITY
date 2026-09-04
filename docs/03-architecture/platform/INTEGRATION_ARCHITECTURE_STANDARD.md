@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Integration Architecture Standard
 
@@ -14,14 +14,14 @@
 | **Status** | **ACTIVE** |
 | **Standard Status** | **LOCKED** |
 | **Classification** | Enterprise Architecture Standard |
-| **Owner** | Agile AI University Enterprise Architecture |
+| **Owner** | LAAU Enterprise Architecture |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This document establishes the Enterprise Integration Architecture Standard for the Agile AI University Enterprise Platform.
+This document establishes the Enterprise Integration Architecture Standard for the LAAU Enterprise Platform.
 
 It defines how Enterprise Domains, Enterprise Services, Enterprise Platforms, Enterprise Registries, and approved external systems communicate while preserving governance, ownership, security, and architectural consistency.
 
@@ -378,7 +378,7 @@ This standard complements:
 - Enterprise Platform Architecture Standard
 - Enterprise Runtime Architecture Standard
 - Enterprise Security Architecture Standard
-- Agile AI University Enterprise Architecture & System Context
+- LAAU Enterprise Architecture & System Context
 
 ---
 
@@ -386,7 +386,7 @@ This standard complements:
 
 The Enterprise Integration Architecture Standard defines how enterprise components communicate while preserving governance, ownership, security, and architectural consistency.
 
-By standardising integration documentation, Agile AI University ensures that current and future platforms, domains, services, and external systems interact through well-defined, governed, and maintainable integration contracts.
+By standardising integration documentation, LAAU ensures that current and future platforms, domains, services, and external systems interact through well-defined, governed, and maintainable integration contracts.
 
 ---
 

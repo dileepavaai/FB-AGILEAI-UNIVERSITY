@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Service Specification
 
@@ -17,14 +17,14 @@
 | **Version** | **1.0.0** |
 | **Status** | **ACTIVE** |
 | **Classification** | Enterprise Service Specification |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-RegistrationService is the authoritative Enterprise Service responsible for managing learner registration throughout the Agile AI University ecosystem.
+RegistrationService is the authoritative Enterprise Service responsible for managing learner registration throughout the LAAU ecosystem.
 
 It creates, validates, updates, and maintains learner registrations while preserving the Registration Domain as the single authority for registration lifecycle management.
 
@@ -363,7 +363,7 @@ Planned enhancements include:
 
 # Summary
 
-RegistrationService is the authoritative Enterprise Service responsible for managing learner registrations throughout the Agile AI University ecosystem.
+RegistrationService is the authoritative Enterprise Service responsible for managing learner registrations throughout the LAAU ecosystem.
 
 It provides a governed contract between Enterprise Platforms and the Registration Domain while preserving the Registration Registry as the institutional source of truth.
 

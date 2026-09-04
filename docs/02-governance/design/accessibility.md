@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Accessibility
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document establishes the official accessibility standards for Agile AI University.
+This document establishes the official accessibility standards for LAAU.
 
 Accessibility is a foundational quality attribute of the platform.
 
@@ -47,7 +47,7 @@ This specification applies to:
 
 # Accessibility Philosophy
 
-The Agile AI University platform is built upon the following principles.
+The LAAU platform is built upon the following principles.
 
 ## Inclusive by Design
 
@@ -426,7 +426,7 @@ Every page shall define a unique and meaningful title.
 Example:
 
 ```text
-My Credentials | Agile AI University
+My Credentials | LAAU
 ```
 
 ---
@@ -535,6 +535,6 @@ Every release shall verify:
 
 # Governance Status
 
-This document is the authoritative accessibility specification for Agile AI University.
+This document is the authoritative accessibility specification for LAAU.
 
-All current and future products within the Agile AI University ecosystem shall comply with these accessibility standards to ensure an inclusive, professional and institutionally governed user experience.
+All current and future products within the LAAU ecosystem shall comply with these accessibility standards to ensure an inclusive, professional and institutionally governed user experience.

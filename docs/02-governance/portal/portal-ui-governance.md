@@ -1,6 +1,6 @@
 # Portal UI Governance
 
-**Agile AI University**
+**LAAU**
 
 ---
 
@@ -13,13 +13,13 @@
 | Version    | 1.0.0                     |
 | Status     | **LOCKED**                |
 | Governance | Portal Governance v1.0    |
-| Owner      | Agile AI University       |
+| Owner      | LAAU       |
 
 ---
 
 # Purpose
 
-This document establishes the User Interface governance standards for the Agile AI University Portal.
+This document establishes the User Interface governance standards for the LAAU Portal.
 
 It defines the architectural composition, layout standards, design principles, interaction model, component ownership, and implementation conventions for all Portal user interfaces.
 
@@ -42,7 +42,7 @@ This document applies to:
 
 # Vision
 
-The Portal User Interface shall provide a professional, modern, and governed experience that reflects the academic and enterprise positioning of Agile AI University.
+The Portal User Interface shall provide a professional, modern, and governed experience that reflects the academic and enterprise positioning of LAAU.
 
 Every page should appear to belong to the same ecosystem regardless of when it was developed.
 
@@ -456,13 +456,13 @@ This document complements the following Portal governance standards:
 * `portal-entitlement-layer.md` — Capability resolution.
 * `portal-coding-standards.md` — Source code conventions.
 
-Together, these documents form the complete governance framework for the Agile AI University Portal.
+Together, these documents form the complete governance framework for the LAAU Portal.
 
 ---
 
 # Governance Status
 
-This document is the authoritative User Interface governance standard for the Agile AI University Portal.
+This document is the authoritative User Interface governance standard for the LAAU Portal.
 
 All Portal pages, layouts, components, and user experiences shall conform to these standards unless superseded by an approved governance revision.
 

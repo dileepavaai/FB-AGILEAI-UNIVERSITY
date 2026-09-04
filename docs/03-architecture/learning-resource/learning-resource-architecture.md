@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Learning Resource Platform Architecture
 
@@ -14,11 +14,11 @@
 
 **Domain:** Learning Resource Platform
 
-**Platform:** Agile AI University
+**Platform:** LAAU
 
 **Owner:** Enterprise Architecture
 
-**Architecture Authority:** Agile AI University Enterprise Architecture
+**Architecture Authority:** LAAU Enterprise Architecture
 
 **Last Updated:** July 2026
 
@@ -26,7 +26,7 @@
 
 # Purpose
 
-This document defines the authoritative architecture for the Learning Resource Platform used throughout the Agile AI University ecosystem.
+This document defines the authoritative architecture for the Learning Resource Platform used throughout the LAAU ecosystem.
 
 It establishes the enterprise standards governing how learning resources are created, stored, secured, published, delivered, consumed, versioned and governed.
 
@@ -38,7 +38,7 @@ No implementation may contradict the architectural decisions documented here wit
 
 # Scope
 
-This architecture governs all learning resources delivered by Agile AI University including, but not limited to:
+This architecture governs all learning resources delivered by LAAU including, but not limited to:
 
 - Licensed Course Materials
 - Programme Handbooks
@@ -121,9 +121,9 @@ This document is intended for:
 
 # Executive Summary
 
-The Learning Resource Platform is the authoritative enterprise platform responsible for governing every learning asset delivered to learners throughout their journey with Agile AI University.
+The Learning Resource Platform is the authoritative enterprise platform responsible for governing every learning asset delivered to learners throughout their journey with LAAU.
 
-Unlike traditional Learning Management Systems that treat documents as downloadable files, Agile AI University treats learning resources as governed enterprise assets.
+Unlike traditional Learning Management Systems that treat documents as downloadable files, LAAU treats learning resources as governed enterprise assets.
 
 Every learning resource is managed through a controlled lifecycle consisting of creation, validation, publication, entitlement resolution and governed delivery.
 
@@ -193,7 +193,7 @@ Learning resources are therefore an integral part of the learner lifecycle rathe
 
 # Enterprise Vision
 
-The long-term vision is to establish the Learning Resource Platform as the authoritative enterprise repository for every governed educational asset produced by Agile AI University.
+The long-term vision is to establish the Learning Resource Platform as the authoritative enterprise repository for every governed educational asset produced by LAAU.
 
 The platform will ultimately support:
 
@@ -221,7 +221,7 @@ The Learning Resource Platform is therefore positioned as a strategic enterprise
 
 # Enterprise Principles
 
-The Learning Resource Platform follows the enterprise principles adopted throughout Agile AI University.
+The Learning Resource Platform follows the enterprise principles adopted throughout LAAU.
 
 ## Governance Before Convenience
 
@@ -305,7 +305,7 @@ Solutions optimised solely for today's requirements are discouraged.
 
 # Learning Resource Philosophy
 
-Agile AI University does not consider learning resources to be ordinary downloadable files.
+LAAU does not consider learning resources to be ordinary downloadable files.
 
 Instead, every resource represents one of the university's educational assets.
 
@@ -526,7 +526,7 @@ It represents educational intent.
 
 ## 2. Master Resource
 
-Represents the authoritative source owned by Agile AI University.
+Represents the authoritative source owned by LAAU.
 
 Examples
 
@@ -609,7 +609,7 @@ The consumer never performs business decisions.
 
 ## 6. External Learning Resource
 
-Represents educational resources hosted outside Agile AI University.
+Represents educational resources hosted outside LAAU.
 
 Examples
 
@@ -1148,7 +1148,7 @@ Preview, download and embedded playback are controlled by the delivery policy as
 
 ## Decision 8
 
-The Learning Resource Platform is recognised as a first-class enterprise platform within Agile AI University alongside the Identity, Credential, Assessment, Verification and Payment platforms.
+The Learning Resource Platform is recognised as a first-class enterprise platform within LAAU alongside the Identity, Credential, Assessment, Verification and Payment platforms.
 
 ---
 
@@ -2207,7 +2207,7 @@ Only authorized administrators may:
 - suspend deliveries;
 - access master learning resources.
 
-Administrative authorization must be determined through the established Agile AI University RBAC architecture.
+Administrative authorization must be determined through the established LAAU RBAC architecture.
 
 Client-provided role values must never be trusted.
 
@@ -3427,7 +3427,7 @@ External links should:
 - use HTTPS;
 - open safely;
 - use `noopener` and `noreferrer` where appropriate;
-- clearly indicate that the learner is leaving the Agile AI University platform when necessary.
+- clearly indicate that the learner is leaving the LAAU platform when necessary.
 
 ---
 
@@ -4039,7 +4039,7 @@ random filenames
 
 # Programme Code
 
-The Resource ID must use the authoritative Agile AI University programme code.
+The Resource ID must use the authoritative LAAU programme code.
 
 Examples:
 
@@ -5265,7 +5265,7 @@ An unlisted URL can still be forwarded.
 
 Therefore, unlisted YouTube must not be treated as strong access control.
 
-The Agile AI University platform governs discoverability and entitlement inside the portal, but it cannot fully prevent redistribution of an external unlisted URL after it becomes known.
+The LAAU platform governs discoverability and entitlement inside the portal, but it cannot fully prevent redistribution of an external unlisted URL after it becomes known.
 
 ---
 
@@ -5290,7 +5290,7 @@ It must not be implemented by increasing protected-document upload limits or sto
 
 # Video Download Governance
 
-The Agile AI University platform must not present a Download action for externally streamed video.
+The LAAU platform must not present a Download action for externally streamed video.
 
 External-video policy:
 
@@ -5736,7 +5736,7 @@ Personalized and shared downloadable resources should contain appropriate intell
 
 For personalized licensed resources, the notice may include:
 
-- Agile AI University ownership;
+- LAAU ownership;
 - learner Credential ID;
 - licence scope;
 - prohibition on unauthorized redistribution;
@@ -5753,7 +5753,7 @@ The exact legal wording belongs to approved legal and governance content, not to
 
 Operational governance ensures the architecture remains reliable in daily production use.
 
-The Agile AI University operating model is production-focused.
+The LAAU operating model is production-focused.
 
 Changes must therefore be:
 
@@ -6468,7 +6468,7 @@ This document provides the complete architecture implementing that decision.
 
 # Decision 1 — First-Class Platform
 
-The Learning Resource Platform is a first-class enterprise platform within Agile AI University.
+The Learning Resource Platform is a first-class enterprise platform within LAAU.
 
 It is not a collection of page-level download links.
 
@@ -6692,7 +6692,7 @@ They must not bypass it.
 
 # Architecture Completion Statement
 
-This architecture establishes a governed enterprise foundation for delivering learning resources throughout the Agile AI University learner lifecycle.
+This architecture establishes a governed enterprise foundation for delivering learning resources throughout the LAAU learner lifecycle.
 
 It supports the current operational requirements of:
 
@@ -6722,7 +6722,7 @@ Entitlement Decision
 Learner Presentation
 ```
 
-This separation enables Agile AI University to scale its learning experience without sacrificing governance, security, intellectual-property protection or learner trust.
+This separation enables LAAU to scale its learning experience without sacrificing governance, security, intellectual-property protection or learner trust.
 
 ---
 

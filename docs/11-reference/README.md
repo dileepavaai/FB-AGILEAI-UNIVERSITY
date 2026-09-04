@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Reference Library
 
@@ -14,11 +14,11 @@
 
 # Purpose
 
-The **11-reference** section contains the long-term reference material that supports the Agile AI University ecosystem.
+The **11-reference** section contains the long-term reference material that supports the LAAU ecosystem.
 
 Unlike System Context, Governance, Architecture, Enterprise Services, or APIs, this section captures reusable enterprise knowledge, standards, terminology, principles, patterns, conventions, and reference information.
 
-It serves as the institutional knowledge base for the Agile AI University enterprise.
+It serves as the institutional knowledge base for the LAAU enterprise.
 
 ---
 
@@ -315,13 +315,13 @@ Future additions may include:
 - Frequently Asked Questions
 - Reference Tables
 
-This library will become the long-term institutional knowledge repository for the Agile AI University ecosystem.
+This library will become the long-term institutional knowledge repository for the LAAU ecosystem.
 
 ---
 
 # Summary
 
-The **11-reference** documentation provides the reusable knowledge, standards, terminology, principles, patterns, and conventions that support every platform, service, and architectural layer within Agile AI University.
+The **11-reference** documentation provides the reusable knowledge, standards, terminology, principles, patterns, and conventions that support every platform, service, and architectural layer within LAAU.
 
 It serves as the institutional memory of the enterprise, ensuring that knowledge is preserved, shared, and consistently applied as the ecosystem continues to evolve.
 

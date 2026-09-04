@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Naming Conventions
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The Enterprise Naming Conventions establish the approved naming rules for repositories, folders, files, platforms, domains, enterprise services, APIs, source code, data structures, configuration, infrastructure, releases, branches, and operational artefacts across the Agile AI University ecosystem.
+The Enterprise Naming Conventions establish the approved naming rules for repositories, folders, files, platforms, domains, enterprise services, APIs, source code, data structures, configuration, infrastructure, releases, branches, and operational artefacts across the LAAU ecosystem.
 
 Consistent naming improves:
 
@@ -109,7 +109,7 @@ AAU
 for:
 
 ```text
-Agile AI University
+LAAU
 ```
 
 Use abbreviations only where they are already approved and unambiguous.
@@ -1418,7 +1418,7 @@ Before renaming:
 
 # Governance
 
-These naming conventions apply across the Agile AI University ecosystem.
+These naming conventions apply across the LAAU ecosystem.
 
 New naming conventions should not be introduced independently within a single platform.
 
@@ -1460,7 +1460,7 @@ Before introducing a new name, confirm:
 
 # Summary
 
-The Enterprise Naming Conventions establish the official naming rules for the Agile AI University ecosystem.
+The Enterprise Naming Conventions establish the official naming rules for the LAAU ecosystem.
 
 By applying consistent names across repositories, documentation, platforms, Domains, Enterprise Services, APIs, source code, registries, storage, configuration, releases, and operations, the enterprise improves clarity, maintainability, governance, discoverability, and long-term architectural integrity.
 

@@ -15,7 +15,7 @@ This document is part of the official **Agile AI Specification** and represents 
 **DOCUMENT TYPE:** Registry  
 **VERSION:** 1.0  
 **STATUS:** CANONICAL  
-**MAINTAINED BY:** Agile AI University  
+**MAINTAINED BY:** LAAU  
 
 ---
 
@@ -177,7 +177,7 @@ Credentials within the Agile AI ecosystem follow a lifecycle governance model.
 
 | Status         | Meaning                                                              |
 |----------------|----------------------------------------------------------------------|
-| **Active**     | Credential currently issued by Agile AI University                   |
+| **Active**     | Credential currently issued by LAAU                   |
 | **Recognized** | Credential formally defined within the Agile AI framework            |
 | **Retired**    | Credential no longer issued but preserved for historical recognition |
 
@@ -204,4 +204,4 @@ Credentials defined within the Agile AI ecosystem may be issued through:
 - invitation-based cohorts  
 - strategic partnerships  
 
-Professionals interested in participating in Agile AI credential pathways may engage with the Agile AI University ecosystem through its institutional platforms.
+Professionals interested in participating in Agile AI credential pathways may engage with the LAAU ecosystem through its institutional platforms.

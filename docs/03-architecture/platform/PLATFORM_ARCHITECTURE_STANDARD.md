@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Platform Architecture Standard
 
@@ -14,14 +14,14 @@
 | **Status** | **ACTIVE** |
 | **Standard Status** | **LOCKED** |
 | **Classification** | Enterprise Architecture Standard |
-| **Owner** | Agile AI University Enterprise Architecture |
+| **Owner** | LAAU Enterprise Architecture |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This document defines the Enterprise Platform Architecture Standard used throughout the Agile AI University Enterprise Platform.
+This document defines the Enterprise Platform Architecture Standard used throughout the LAAU Enterprise Platform.
 
 It establishes a consistent structure for documenting every enterprise platform.
 
@@ -425,7 +425,7 @@ This standard complements:
 
 # Summary
 
-The Enterprise Platform Architecture Standard establishes the documentation framework for every Enterprise Platform within the Agile AI University ecosystem.
+The Enterprise Platform Architecture Standard establishes the documentation framework for every Enterprise Platform within the LAAU ecosystem.
 
 It ensures that all platform architecture documents follow a consistent structure, clearly define ownership and responsibilities, integrate with Enterprise Domains and Services, and remain aligned with Enterprise Governance.
 

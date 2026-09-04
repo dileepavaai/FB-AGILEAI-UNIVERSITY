@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Roadmap
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The **06-roadmap** section defines the long-term strategic direction of the Agile AI University ecosystem.
+The **06-roadmap** section defines the long-term strategic direction of the LAAU ecosystem.
 
 It documents the planned evolution of enterprise platforms, business domains, enterprise services, artificial intelligence capabilities, governance maturity, and institutional growth.
 
@@ -38,7 +38,7 @@ This section exists to:
 
 # Roadmap Principles
 
-The Agile AI University roadmap follows these principles:
+The LAAU roadmap follows these principles:
 
 - Architecture before implementation
 - Governance before scaling
@@ -348,7 +348,7 @@ This documentation is intended for:
 
 # Summary
 
-The **06-roadmap** documentation defines the strategic evolution of the Agile AI University ecosystem.
+The **06-roadmap** documentation defines the strategic evolution of the LAAU ecosystem.
 
 It provides a long-term view of enterprise growth, platform development, business capability expansion, artificial intelligence adoption, and global scale while ensuring continued alignment with the enterprise architecture and governance framework.
 

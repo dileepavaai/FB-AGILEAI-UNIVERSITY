@@ -27,7 +27,7 @@ This document acts as the **single source of truth** for all system-level decisi
 The Agile AI ecosystem operates on a **three-layer institutional model**:
 
 Agile AI Foundation → Defines
-Agile AI University → Evaluates & Credentials
+LAAU → Evaluates & Credentials
 Agile AI Academy → Enables Learning
 
 
@@ -47,7 +47,7 @@ Characteristics:
 
 ---
 
-## 2.2 Agile AI University
+## 2.2 LAAU
 
 Role:
 - Academic and professional body  

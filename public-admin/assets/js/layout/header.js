@@ -41,7 +41,7 @@ export function loadHeader(user = null, role = null) {
      ===================================================== */
   const header = `
     <header class="topbar">
-      <h1>Agile AI University – Admin</h1>
+      <h1>LAAU – Admin</h1>
 
       <div class="user">
 

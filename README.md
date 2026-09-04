@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Platform Repository
 
@@ -12,7 +12,7 @@
 |------------|-------|
 | **Repository** | FB-AgileAI-University |
 | **Repository Type** | Enterprise Platform & Architecture Repository |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Architect** | Dileep Appupillai |
 | **Version** | 2.0.0 |
 | **Status** | ACTIVE |
@@ -22,9 +22,9 @@
 
 # Welcome
 
-Welcome to the official Agile AI University Enterprise Platform Repository.
+Welcome to the official LAAU Enterprise Platform Repository.
 
-This repository contains the complete enterprise platform powering Agile AI University, including:
+This repository contains the complete enterprise platform powering LAAU, including:
 
 - Enterprise Architecture
 - Platform Architecture
@@ -38,7 +38,7 @@ This repository contains the complete enterprise platform powering Agile AI Univ
 - Operational Documentation
 - Strategic Roadmaps
 
-It serves as the single authoritative repository for designing, building, governing, operating, and evolving the Agile AI University ecosystem.
+It serves as the single authoritative repository for designing, building, governing, operating, and evolving the LAAU ecosystem.
 
 ---
 
@@ -63,7 +63,7 @@ The repository is intentionally architecture-first.
 
 # Enterprise Philosophy
 
-The Agile AI University ecosystem follows permanent enterprise principles.
+The LAAU ecosystem follows permanent enterprise principles.
 
 - Architecture before Implementation
 - Governance before Automation
@@ -383,7 +383,7 @@ This repository is not:
 - A temporary project
 - A runtime-only codebase
 
-It is the enterprise platform repository supporting the complete Agile AI University ecosystem.
+It is the enterprise platform repository supporting the complete LAAU ecosystem.
 
 ---
 
@@ -427,11 +427,11 @@ Every future addition shall inherit the enterprise architecture documented withi
 
 # Summary
 
-The Agile AI University Enterprise Platform Repository is the authoritative repository for the Agile AI University ecosystem.
+The LAAU Enterprise Platform Repository is the authoritative repository for the LAAU ecosystem.
 
 It documents the enterprise from strategic vision through governance, architecture, implementation guidance, platform development, and operational excellence.
 
-It establishes a scalable, governed, and future-ready foundation for every current and future Agile AI University platform.
+It establishes a scalable, governed, and future-ready foundation for every current and future LAAU platform.
 
 ---
 

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # UI Design System
 
@@ -10,7 +10,7 @@
 | Version | 1.0 |
 | Status | LOCKED |
 | Classification | Governance |
-| Owner | Agile AI University |
+| Owner | LAAU |
 | Applies To | Entire Platform |
 | Last Updated | July 2026 |
 
@@ -18,9 +18,9 @@
 
 # Purpose
 
-This document establishes the official User Interface Design System for Agile AI University.
+This document establishes the official User Interface Design System for LAAU.
 
-The objective is to create a consistent, modern, accessible, maintainable and institutionally recognizable experience across every digital product developed under the Agile AI University ecosystem.
+The objective is to create a consistent, modern, accessible, maintainable and institutionally recognizable experience across every digital product developed under the LAAU ecosystem.
 
 The Design System governs:
 
@@ -42,7 +42,7 @@ Implementation details belong in supporting design governance documents.
 
 # Design Philosophy
 
-The Agile AI University Design Language is based on five principles.
+The LAAU Design Language is based on five principles.
 
 ## 1. Professional before Decorative
 
@@ -431,7 +431,7 @@ This design system governs:
 
 - Verification Services
 
-- Future Agile AI University Products
+- Future LAAU Products
 
 ---
 
@@ -454,7 +454,7 @@ The platform should evolve incrementally.
 
 # Governance Status
 
-This document is the authoritative design governance document for Agile AI University.
+This document is the authoritative design governance document for LAAU.
 
 Supporting governance documents derive from this specification.
 

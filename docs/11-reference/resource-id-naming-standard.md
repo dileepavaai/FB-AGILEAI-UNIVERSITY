@@ -4,7 +4,7 @@
 **Title:** Resource ID Naming Standard  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai
 
 ---
@@ -12,7 +12,7 @@
 # 1. Purpose
 
 This document defines the official naming standards for Learning
-Resource identifiers used throughout the Agile AI University platform.
+Resource identifiers used throughout the LAAU platform.
 
 It standardizes:
 

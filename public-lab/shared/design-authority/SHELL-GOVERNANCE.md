@@ -11,7 +11,7 @@
 # PURPOSE
 
 This document defines the canonical governance rules for the
-Agile AI University shared shell architecture.
+LAAU shared shell architecture.
 
 The shared shell provides:
 
@@ -285,7 +285,7 @@ Before deployment validate:
 # DESIGN PHILOSOPHY
 # ==========================================================
 
-The Agile AI University shell architecture prioritizes:
+The LAAU shell architecture prioritizes:
 
 - Institutional clarity
 - Structural stability
@@ -329,7 +329,7 @@ and refinement layers — not shell fragmentation.
 # ==========================================================
 
 This document represents the canonical governance model
-for Agile AI University shared shell architecture.
+for LAAU shared shell architecture.
 
 All future shell evolution must preserve:
 

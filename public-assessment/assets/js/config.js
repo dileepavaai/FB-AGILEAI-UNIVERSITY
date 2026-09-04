@@ -1,5 +1,5 @@
 /* ============================================================
-   Agile AI University — Frontend Runtime Configuration
+   LAAU — Frontend Runtime Configuration
    Scope: Assessment & Executive Insight surfaces
    Governance: LOCKED (read-only, no business logic)
    ============================================================ */
@@ -8,7 +8,7 @@ window.AAIU_CONFIG = {
   /* ------------------------------------------------------------
      Core Identity
      ------------------------------------------------------------ */
-  ORG_NAME: "Agile AI University",
+  ORG_NAME: "LAAU",
 
   /* ------------------------------------------------------------
      Assessment Surfaces

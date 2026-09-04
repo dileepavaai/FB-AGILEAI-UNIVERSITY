@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Architectural Principles
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The Enterprise Architectural Principles define the fundamental principles that govern the design, implementation, operation, and evolution of the Agile AI University ecosystem.
+The Enterprise Architectural Principles define the fundamental principles that govern the design, implementation, operation, and evolution of the LAAU ecosystem.
 
 These principles apply across every platform, domain, enterprise service, API, runtime component, operational process, and future capability.
 
@@ -445,11 +445,11 @@ Any deviation requires documented architectural review.
 
 # Summary
 
-The Enterprise Architectural Principles establish the long-term design philosophy of the Agile AI University ecosystem.
+The Enterprise Architectural Principles establish the long-term design philosophy of the LAAU ecosystem.
 
 They provide the stable foundation upon which governance, architecture, enterprise services, APIs, operational practices, and future innovations are built.
 
-By consistently applying these principles, Agile AI University maintains architectural integrity, scalability, governance, and long-term sustainability across its evolving enterprise ecosystem.
+By consistently applying these principles, LAAU maintains architectural integrity, scalability, governance, and long-term sustainability across its evolving enterprise ecosystem.
 
 ---
 

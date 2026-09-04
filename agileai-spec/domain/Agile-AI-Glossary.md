@@ -197,9 +197,9 @@ The Foundation does not provide training or credentials.
 
 ---
 
-### Agile AI University
+### LAAU
 
-Agile AI University operationalizes Agile AI domain standards through structured academic capability systems.
+LAAU operationalizes Agile AI domain standards through structured academic capability systems.
 
 The University provides:
 

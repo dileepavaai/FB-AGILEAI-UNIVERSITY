@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : credential-service.js
@@ -396,7 +396,7 @@
                 </h3>
 
                 <p>
-                    Your published Agile AI University
+                    Your published LAAU
                     credentials will appear here.
                 </p>
 

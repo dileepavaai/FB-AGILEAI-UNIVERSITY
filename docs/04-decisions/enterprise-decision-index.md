@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Architecture Decision Index
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-The Enterprise Architecture Decision Index provides the authoritative catalogue of Architecture Decision Records maintained within the Agile AI University repository.
+The Enterprise Architecture Decision Index provides the authoritative catalogue of Architecture Decision Records maintained within the LAAU repository.
 
 It enables architects, developers, administrators, product owners, and governance reviewers to locate significant architectural decisions, understand their current status, and identify the systems, domains, platforms, and enterprise services affected by each decision.
 

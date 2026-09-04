@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Admin Learning Resource Management
 
    File      : learning-resource-service.js

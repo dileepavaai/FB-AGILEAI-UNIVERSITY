@@ -1,5 +1,5 @@
 # Operational Surface Governance Policy
-Agile AI University
+LAAU
 
 Version: 1.0  
 Status: ACTIVE  
@@ -25,7 +25,7 @@ They are not institutional branding surfaces.
 
 ## 2. Surface Classification Model
 
-Agile AI University public surfaces are classified into two categories:
+LAAU public surfaces are classified into two categories:
 
 ### A) Institutional Presentation Surfaces
 Examples:
@@ -107,4 +107,4 @@ Safe builds trust.
 ---
 
 Maintained by:
-Agile AI University Design & Governance Authority
+LAAU Design & Governance Authority

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Governance Index
 
@@ -12,7 +12,7 @@ Date Locked: 2026-06-05
 
 # Purpose
 
-This document serves as the master governance index for the Agile AI University Credential Operations ecosystem.
+This document serves as the master governance index for the LAAU Credential Operations ecosystem.
 
 It provides a structured overview of all governance artifacts and defines their relationship within the governance hierarchy.
 
@@ -385,7 +385,7 @@ This sequence establishes governance understanding before implementation review.
 
 # Enterprise Design Authority Statement
 
-The Agile AI University Credential Operations ecosystem is governed through explicit, version-controlled governance artifacts.
+The LAAU Credential Operations ecosystem is governed through explicit, version-controlled governance artifacts.
 
 Governance defines institutional intent.
 

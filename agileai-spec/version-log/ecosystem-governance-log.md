@@ -12,7 +12,7 @@ title: Ecosystem Governance Change Log
 
 **DOCUMENT TYPE:** Governance Log  
 **STATUS:** ACTIVE  
-**MAINTAINED BY:** Agile AI University  
+**MAINTAINED BY:** LAAU  
 
 ---
 

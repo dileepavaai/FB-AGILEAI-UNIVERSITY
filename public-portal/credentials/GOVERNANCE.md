@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Student Portal
 
@@ -24,7 +24,7 @@ Credential authority remains external to this module.
 
 # 2. POSITIONING
 
-The Credentials Module is part of the Agile AI University Student Portal.
+The Credentials Module is part of the LAAU Student Portal.
 
 Its purpose is to provide authenticated access to:
 
@@ -125,7 +125,7 @@ The module provides access to:
 
 ## University Certificate
 
-Represents institutional recognition issued by Agile AI University.
+Represents institutional recognition issued by LAAU.
 
 University Certificate access is read-only.
 

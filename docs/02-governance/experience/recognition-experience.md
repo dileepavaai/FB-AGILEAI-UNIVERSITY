@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Recognition Experience
 
@@ -12,7 +12,7 @@
 
 # Executive Summary
 
-The Recognition Experience defines how university members receive, understand, consume and share academic and professional recognition across the Agile AI University ecosystem.
+The Recognition Experience defines how university members receive, understand, consume and share academic and professional recognition across the LAAU ecosystem.
 
 Recognition extends beyond credentials.
 
@@ -554,8 +554,8 @@ Responsive Experience
 
 # Overall Position
 
-The Recognition Experience establishes a university-wide governance model for presenting academic and professional recognition consistently across the Agile AI University ecosystem.
+The Recognition Experience establishes a university-wide governance model for presenting academic and professional recognition consistently across the LAAU ecosystem.
 
 Recognition celebrates achievement, reinforces professional identity and encourages lifelong learning while preserving the integrity of university credentials and academic records.
 
-Together with the Credential Consumption Experience, Learning Journey Framework and Capability Progression Framework, the Recognition Experience completes the Experience Governance layer of the Agile AI University platform and provides a scalable foundation for future executive recognition, AI-assisted engagement and lifelong professional development.
+Together with the Credential Consumption Experience, Learning Journey Framework and Capability Progression Framework, the Recognition Experience completes the Experience Governance layer of the LAAU platform and provides a scalable foundation for future executive recognition, AI-assisted engagement and lifelong professional development.

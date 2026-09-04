@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise API Specifications
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The **07-api** section contains the authoritative API specifications for the Agile AI University ecosystem.
+The **07-api** section contains the authoritative API specifications for the LAAU ecosystem.
 
 These specifications define how Enterprise Platforms, Enterprise Services, external systems, and future partner applications communicate using governed service contracts.
 
@@ -41,7 +41,7 @@ This section exists to:
 
 # API Philosophy
 
-The Agile AI University ecosystem follows a **Service-First API Architecture**.
+The LAAU ecosystem follows a **Service-First API Architecture**.
 
 Enterprise APIs expose Enterprise Services.
 
@@ -337,7 +337,7 @@ This documentation is intended for:
 
 # Summary
 
-The **07-api** documentation defines the implementation interfaces for the Agile AI University ecosystem.
+The **07-api** documentation defines the implementation interfaces for the LAAU ecosystem.
 
 It provides consistent, secure, versioned, and governed API specifications that expose Enterprise Services while preserving Domain ownership and Enterprise Architecture principles.
 

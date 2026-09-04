@@ -1,5 +1,5 @@
 /* ========================================= 
-   Agile AI University
+   LAAU
    Institutional Analytics Engine
    Version: v1.1 (Hardened)
    Status: LOCKED + SAFE UPGRADE

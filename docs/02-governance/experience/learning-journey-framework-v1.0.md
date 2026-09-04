@@ -1,4 +1,4 @@
-Agile AI University
+LAAU
 Student & Executive Portal
 Learning Journey Framework v1.0
 
@@ -357,4 +357,4 @@ CSS Architecture Compliance	✅ LOCKED
 JavaScript Responsibility Model	✅ LOCKED
 Overall Platform Position
 
-The Learning Journey Framework establishes the Student & Executive Portal as a personalized academic progression platform rather than a static credential viewer. It preserves the integrity of the existing resolver-first architecture while introducing a flexible graph-based model capable of supporting bridge programs, parallel learning paths, executive education, specializations, and future AI-driven recommendations. This governance ensures that future growth of the Agile AI University ecosystem can occur through metadata and services without requiring changes to the core portal architecture.
+The Learning Journey Framework establishes the Student & Executive Portal as a personalized academic progression platform rather than a static credential viewer. It preserves the integrity of the existing resolver-first architecture while introducing a flexible graph-based model capable of supporting bridge programs, parallel learning paths, executive education, specializations, and future AI-driven recommendations. This governance ensures that future growth of the LAAU ecosystem can occur through metadata and services without requiring changes to the core portal architecture.

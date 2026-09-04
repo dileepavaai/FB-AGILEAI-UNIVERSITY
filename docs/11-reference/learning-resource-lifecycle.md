@@ -4,7 +4,7 @@
 **Title:** Learning Resource Lifecycle  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai  
 **Last Updated:** 27 July 2026
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This document defines the official lifecycle of learning resources within
-the Agile AI University Learning Resource Platform.
+the LAAU Learning Resource Platform.
 
 It establishes:
 

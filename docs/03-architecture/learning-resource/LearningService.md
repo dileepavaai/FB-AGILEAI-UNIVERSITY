@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Service Specification
 
@@ -40,7 +40,7 @@ It produces governed learner-facing ViewModels.
 
 # Vision
 
-The LearningService enables Agile AI University to deliver learning resources as governed digital assets rather than static downloadable files.
+The LearningService enables LAAU to deliver learning resources as governed digital assets rather than static downloadable files.
 
 The service supports:
 

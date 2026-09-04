@@ -15,7 +15,7 @@ This document is part of the official **Agile AI Specification** and represents 
 **DOCUMENT TYPE:** Registry  
 **VERSION:** 1.0  
 **STATUS:** CANONICAL  
-**MAINTAINED BY:** Agile AI University  
+**MAINTAINED BY:** LAAU  
 
 ---
 
@@ -136,7 +136,7 @@ Program identifiers remain permanent once assigned.
 
 # 8. Governance Authority
 
-Programs defined in this registry are governed by **Agile AI University**.
+Programs defined in this registry are governed by **LAAU**.
 
 Program identifiers remain stable to ensure consistency across:
 

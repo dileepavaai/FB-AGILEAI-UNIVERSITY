@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : dashboard-service.js
@@ -218,7 +218,7 @@
                         finalizedCredentials.length,
 
                     /*
-                     * Agile AI University currently
+                     * LAAU currently
                      * issues one Certificate and one
                      * Digital Badge for every finalized
                      * credential.

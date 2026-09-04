@@ -8,13 +8,13 @@ Trainer Management
 
 ## Governance Authority
 
-Agile AI University
+LAAU
 
 ---
 
 ## Purpose
 
-The Trainer Management Module serves as the institutional governance layer for trainer accreditation, trainer administration, trainer-led issuance activities, and trainer operational oversight within the Agile AI University ecosystem.
+The Trainer Management Module serves as the institutional governance layer for trainer accreditation, trainer administration, trainer-led issuance activities, and trainer operational oversight within the LAAU ecosystem.
 
 The module exists to ensure that trainer activities remain governed, traceable, auditable, and aligned with institutional standards.
 
@@ -74,7 +74,7 @@ Manages approval workflows related to trainer onboarding, accreditation, renewal
 
 ### Batch Issuance
 
-Supports trainer-led issuance operations for approved Agile AI University programs.
+Supports trainer-led issuance operations for approved LAAU programs.
 
 Batch issuance activities must remain traceable and auditable.
 
@@ -108,7 +108,7 @@ Trainer authority may be granted, renewed, suspended, or revoked through approve
 
 Trainer-issued certificates must:
 
-* Reference approved Agile AI University programs.
+* Reference approved LAAU programs.
 * Remain verifiable through institutional verification services.
 * Maintain audit traceability.
 * Follow approved certificate standards and templates.
@@ -150,14 +150,14 @@ Future additions should extend the existing module structure and should not intr
 
 ## Governance Principle
 
-The Trainer Management Module exists to support institutional governance, operational accountability, and professional recognition activities within Agile AI University.
+The Trainer Management Module exists to support institutional governance, operational accountability, and professional recognition activities within LAAU.
 
-All trainer operations remain subordinate to Agile AI University governance authority.
+All trainer operations remain subordinate to LAAU governance authority.
 
 ---
 
 Status: Architecture v1.0
 
-Owner: Agile AI University
+Owner: LAAU
 
 Classification: Governance Controlled

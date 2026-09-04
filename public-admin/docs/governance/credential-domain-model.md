@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Credential Domain Model
 
@@ -12,7 +12,7 @@ Date Locked: 2026-06-05
 
 # Purpose
 
-This document defines the canonical credential domain model used throughout the Agile AI University credential ecosystem.
+This document defines the canonical credential domain model used throughout the LAAU credential ecosystem.
 
 The domain model serves as the authoritative contract between:
 
@@ -31,7 +31,7 @@ The purpose of this model is to ensure that all credential services operate usin
 
 # Foundational Principle
 
-The Agile AI University ecosystem recognizes three distinct concepts:
+The LAAU ecosystem recognizes three distinct concepts:
 
 1. Credential
 
@@ -505,7 +505,7 @@ Historical records must never be overwritten by recognition updates.
 
 # Future Evolution Governance
 
-The Agile AI University ecosystem assumes that any credential may eventually become:
+The LAAU ecosystem assumes that any credential may eventually become:
 
 * Retired
 * Superseded
@@ -529,7 +529,7 @@ at all times.
 
 # Enterprise Design Authority Statement
 
-Agile AI University recognizes that credential frameworks evolve over time.
+LAAU recognizes that credential frameworks evolve over time.
 
 Therefore:
 
@@ -541,4 +541,4 @@ Recognition reflects current institutional standing.
 
 The Credential Domain Model exists to preserve the integrity of all three.
 
-This document is governance-locked and applies across the entire Agile AI University credential ecosystem.
+This document is governance-locked and applies across the entire LAAU credential ecosystem.

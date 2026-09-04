@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Shared Institutional Header Engine
 
    File:
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const config = window.SURFACE_CONFIG || null;
 
-  let brandLabel = "Agile AI University";
+  let brandLabel = "LAAU";
   let brandHref = "/";
   let navigation = [];
 

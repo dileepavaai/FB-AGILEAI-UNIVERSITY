@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Bridge Program Governance
 
@@ -12,7 +12,7 @@
 
 # Executive Summary
 
-The Bridge Program Governance defines the academic, operational and platform governance for all Bridge Programs offered by Agile AI University.
+The Bridge Program Governance defines the academic, operational and platform governance for all Bridge Programs offered by LAAU.
 
 Bridge Programs enable learners to transition from an existing university capability to a newer or broader capability without invalidating previous academic achievements.
 
@@ -442,7 +442,7 @@ This document complements
 
 # Overall Position
 
-The Bridge Program Governance establishes the university-wide academic framework for capability evolution across the Agile AI University ecosystem.
+The Bridge Program Governance establishes the university-wide academic framework for capability evolution across the LAAU ecosystem.
 
 Bridge Programs preserve historical achievements, recognize prior learning and provide structured pathways to new capabilities without compromising academic integrity.
 

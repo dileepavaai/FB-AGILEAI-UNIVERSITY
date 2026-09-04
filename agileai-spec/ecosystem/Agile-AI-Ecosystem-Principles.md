@@ -114,7 +114,7 @@ The ecosystem separates conceptual standards from academic operationalization.
 **Agile AI Foundation**  
 Defines the domain.
 
-**Agile AI University**  
+**LAAU**  
 Operationalizes the domain academically.
 
 This separation ensures:

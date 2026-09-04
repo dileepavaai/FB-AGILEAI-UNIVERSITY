@@ -1,5 +1,5 @@
 Write-Host ""
-Write-Host "=== AgileAI University Release Manager v2.0 ==="
+Write-Host "=== LAAU Release Manager v2.0 ==="
 Write-Host ""
 
 $ErrorActionPreference = "Stop"

@@ -6,7 +6,7 @@
 
 **Date:** July 2026
 
-**Owner:** Agile AI University Architecture Board
+**Owner:** LAAU Architecture Board
 
 ---
 
@@ -238,6 +238,6 @@ This preserves a complete audit trail while keeping entitlement resolution simpl
 
 **ACCEPTED**
 
-This Architecture Decision Record is locked for the MVP and forms part of the Agile AI University Enterprise Architecture.
+This Architecture Decision Record is locked for the MVP and forms part of the LAAU Enterprise Architecture.
 
 Future enhancements shall preserve the immutability of learner assignments unless superseded by a formally approved Architecture Decision Record.

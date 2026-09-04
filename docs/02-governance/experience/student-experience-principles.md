@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Student Experience Principles
 
@@ -12,7 +12,7 @@
 
 # Executive Summary
 
-The Student Experience Principles define the philosophy, design principles and governance that guide every interaction within the Agile AI University Student & Executive Portal.
+The Student Experience Principles define the philosophy, design principles and governance that guide every interaction within the LAAU Student & Executive Portal.
 
 The objective is to create a professional, trustworthy and engaging university experience that enables lifelong learning while maintaining simplicity, consistency and academic integrity.
 
@@ -24,7 +24,7 @@ These principles govern the experience across all current and future student-fac
 
 Provide every university member with a simple, intelligent and engaging experience that supports continuous professional development throughout their learning journey.
 
-The Student Portal shall become the lifelong digital home for every Agile AI University learner.
+The Student Portal shall become the lifelong digital home for every LAAU learner.
 
 ---
 
@@ -516,7 +516,7 @@ This document complements
 
 # Overall Position
 
-The Student Experience Principles establish the guiding philosophy for every learner interaction across the Agile AI University ecosystem.
+The Student Experience Principles establish the guiding philosophy for every learner interaction across the LAAU ecosystem.
 
 The portal is designed to celebrate achievement, encourage lifelong learning and provide personalized guidance while preserving academic integrity, maintaining consistency and supporting continuous platform evolution.
 

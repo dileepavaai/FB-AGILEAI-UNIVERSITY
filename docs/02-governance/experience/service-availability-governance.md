@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Service Availability Governance Standard
 
@@ -16,7 +16,7 @@
 
 # Purpose
 
-This governance standard defines the official institutional language used throughout Agile AI University to communicate the availability of digital services, platforms, capabilities, and learner experiences.
+This governance standard defines the official institutional language used throughout LAAU to communicate the availability of digital services, platforms, capabilities, and learner experiences.
 
 The objective is to preserve a professional, academic, and enterprise-grade institutional identity while avoiding language commonly associated with unfinished or low-maturity software products.
 
@@ -24,7 +24,7 @@ The objective is to preserve a professional, academic, and enterprise-grade inst
 
 # Scope
 
-This standard applies to every Agile AI University digital experience, including but not limited to:
+This standard applies to every LAAU digital experience, including but not limited to:
 
 * Student & Executive Portal
 * Administration Portal
@@ -42,7 +42,7 @@ This standard applies to every Agile AI University digital experience, including
 
 ## Principle 1
 
-Agile AI University shall present itself as a mature academic and professional institution.
+LAAU shall present itself as a mature academic and professional institution.
 
 User interfaces must reinforce institutional confidence rather than product immaturity.
 
@@ -172,7 +172,7 @@ The following expressions shall not appear in production user interfaces.
 * Work in Progress
 * In Development
 
-These terms reduce institutional credibility and are inconsistent with the Agile AI University brand.
+These terms reduce institutional credibility and are inconsistent with the LAAU brand.
 
 ---
 
@@ -199,7 +199,7 @@ Available in a Future Release
 
 # Institutional Positioning
 
-This governance standard reinforces the positioning of Agile AI University as:
+This governance standard reinforces the positioning of LAAU as:
 
 * an independent academic institution;
 * a professional credentialing authority;

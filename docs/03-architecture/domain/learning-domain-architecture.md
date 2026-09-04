@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Learning Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Learning Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -41,7 +41,7 @@ It does not own programme definitions, financial processing, assessments, or cre
 
 ## Introduction
 
-The Learning Domain delivers the academic learning experience within the Agile AI University Enterprise Platform.
+The Learning Domain delivers the academic learning experience within the LAAU Enterprise Platform.
 
 It provides enrolled learners with governed access to learning resources while tracking participation, progress, completion, and engagement throughout the learning lifecycle.
 
@@ -452,7 +452,7 @@ This domain follows Architecture Decision Records governing:
 
 # 19. Domain Summary
 
-The Learning Domain governs educational participation within the Agile AI University Enterprise Platform.
+The Learning Domain governs educational participation within the LAAU Enterprise Platform.
 
 It owns learner enrolment, learning delivery, progress tracking, attendance, and completion while remaining independent of programme governance, financial processing, assessment, and credential issuance.
 

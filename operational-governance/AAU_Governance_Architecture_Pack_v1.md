@@ -1,5 +1,5 @@
 
-# Agile AI University – Governance Architecture Pack v1.0
+# LAAU – Governance Architecture Pack v1.0
 Date: 25 Feb 2026
 Status: Governance Locked
 
@@ -114,7 +114,7 @@ Reports must be derived only from governed events.
 
 ---
 
-# 4. Digital Governance Map – Agile AI University
+# 4. Digital Governance Map – LAAU
 
 ## Layer 1 – Design Authority
 shared/design-authority/

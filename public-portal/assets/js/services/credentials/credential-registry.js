@@ -1,6 +1,6 @@
 /* =====================================================
 
-Agile AI University
+LAAU
 
 Module      : Student & Executive Portal
 Component   : Credential Registry
@@ -184,7 +184,7 @@ credential_type:
 "Professional Credential",
 
 issuer:
-"Agile AI University",
+"LAAU",
 
 validity:
 "Lifetime",
@@ -195,7 +195,7 @@ description:
 linkedin: {
 
 organization:
-  "Agile AI University",
+  "LAAU",
 
 credential_type:
   "CERTIFICATION"
@@ -239,7 +239,7 @@ credential_type:
 "Professional Credential",
 
 issuer:
-"Agile AI University",
+"LAAU",
 
 validity:
 "Lifetime",
@@ -250,7 +250,7 @@ description:
 linkedin: {
 
 organization:
-  "Agile AI University",
+  "LAAU",
 
 credential_type:
   "CERTIFICATION"
@@ -294,7 +294,7 @@ credential_type:
 "Professional Credential",
 
 issuer:
-"Agile AI University",
+"LAAU",
 
 validity:
 "Lifetime",
@@ -305,7 +305,7 @@ description:
 linkedin: {
 
 organization:
-  "Agile AI University",
+  "LAAU",
 
 credential_type:
   "CERTIFICATION"

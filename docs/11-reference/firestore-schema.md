@@ -4,7 +4,7 @@
 **Title:** Firestore Schema Reference  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai  
 **Last Updated:** 27 July 2026
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This document defines the canonical Cloud Firestore schema for the
-Agile AI University platform.
+LAAU platform.
 
 It documents:
 
@@ -356,7 +356,7 @@ ACTIVE
 
 The authoritative academic credential registry.
 
-Each document represents an Agile AI University credential issued or
+Each document represents an LAAU credential issued or
 prepared for a learner.
 
 The credential record is the academic source of truth.

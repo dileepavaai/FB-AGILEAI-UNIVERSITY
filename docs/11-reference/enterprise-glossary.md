@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Glossary
 
@@ -14,11 +14,11 @@
 
 # Purpose
 
-The Enterprise Glossary defines the official business, architectural, governance, operational, and technical terminology used throughout the Agile AI University ecosystem.
+The Enterprise Glossary defines the official business, architectural, governance, operational, and technical terminology used throughout the LAAU ecosystem.
 
 It establishes a common vocabulary across documentation, architecture, development, governance, enterprise services, APIs, platforms, and operational procedures.
 
-Every document within the Agile AI University repository should use the terminology defined in this glossary.
+Every document within the LAAU repository should use the terminology defined in this glossary.
 
 ---
 
@@ -60,7 +60,7 @@ The discipline that integrates Agile ways of working with Artificial Intelligenc
 
 ---
 
-## Agile AI University
+## LAAU
 
 The enterprise responsible for developing, delivering, governing, assessing, and credentialing Agile AI capabilities.
 
@@ -68,7 +68,7 @@ The enterprise responsible for developing, delivering, governing, assessing, and
 
 ## Enterprise
 
-The complete Agile AI University ecosystem including all platforms, services, domains, governance, architecture, infrastructure, and operational capabilities.
+The complete LAAU ecosystem including all platforms, services, domains, governance, architecture, infrastructure, and operational capabilities.
 
 ---
 
@@ -144,7 +144,7 @@ The execution layer responsible for orchestrating enterprise services during req
 
 ## Enterprise Architecture
 
-The overall structural design governing the Agile AI University ecosystem.
+The overall structural design governing the LAAU ecosystem.
 
 It defines platforms, domains, services, governance, runtime, integrations, and enterprise evolution.
 
@@ -156,7 +156,7 @@ It defines platforms, domains, services, governance, runtime, integrations, and 
 
 ## Programme
 
-An approved academic offering delivered by Agile AI University.
+An approved academic offering delivered by LAAU.
 
 Programmes may include learning, assessments, credentials, and recognitions.
 
@@ -171,7 +171,7 @@ Examples include:
 
 ## Learner
 
-An individual participating in one or more Agile AI University programmes.
+An individual participating in one or more LAAU programmes.
 
 ---
 
@@ -474,7 +474,7 @@ Enterprise analytics and intelligence supporting strategic decision making.
 
 | Abbreviation | Meaning |
 |--------------|---------|
-| AAU | Agile AI University |
+| AAU | LAAU |
 | ADR | Architecture Decision Record |
 | API | Application Programming Interface |
 | AI | Artificial Intelligence |
@@ -513,7 +513,7 @@ Where conflicts exist, this glossary takes precedence over individual project do
 
 # Summary
 
-The Enterprise Glossary establishes the official vocabulary of the Agile AI University ecosystem.
+The Enterprise Glossary establishes the official vocabulary of the LAAU ecosystem.
 
 By defining a common language for architecture, governance, platforms, services, operations, and enterprise capabilities, it improves communication, consistency, documentation quality, and long-term maintainability across the enterprise.
 

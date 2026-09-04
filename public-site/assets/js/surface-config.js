@@ -1,7 +1,7 @@
 window.SURFACE_CONFIG = {
 
   brand: {
-    label: "Agile AI University",
+    label: "LAAU",
     href: "/"
   },
 

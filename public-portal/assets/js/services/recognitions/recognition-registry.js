@@ -1,6 +1,6 @@
 /* =====================================================
 
-Agile AI University
+LAAU
 
 Module      : Student & Executive Portal
 Component   : Recognition Registry
@@ -115,7 +115,7 @@ v1.0.0
                 "Trainer Certificate",
 
             description:
-                "Official trainer-issued certificate recognizing participation in a licensed Agile AI University learning experience."
+                "Official trainer-issued certificate recognizing participation in a licensed LAAU learning experience."
 
         }),
 

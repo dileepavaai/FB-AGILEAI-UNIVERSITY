@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : credential-recognition-section.js
@@ -67,7 +67,7 @@
             const recognizingBody =
                 recognition.organization ||
                 credential.recognition_body ||
-                "Agile AI University";
+                "LAAU";
 
             const recognitionLevel =
                 recognition.level ||

@@ -3,7 +3,7 @@
 
   /**
    * =========================================================
-   * Agile AI University — Executive Insight Payment (Client)
+   * LAAU — Executive Insight Payment (Client)
    * SAFE CANONICAL VERSION — FINAL (REDIRECT FIXED)
    * =========================================================
    * Rules:
@@ -106,7 +106,7 @@
         order_id: order.id,
         amount: order.amount,
         currency: order.currency,
-        name: "Agile AI University",
+        name: "LAAU",
         description: "Executive Insight Report",
         prefill: { email, name },
         theme: { color: "#111827" },

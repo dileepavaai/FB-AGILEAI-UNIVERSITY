@@ -168,7 +168,7 @@ Agile AI Foundation defines canonical frameworks and operates as a neutral, non-
 
 University:
 
-Agile AI University defines structured academic frameworks, capability standards, and professional recognition models.
+LAAU defines structured academic frameworks, capability standards, and professional recognition models.
 
 Academy:
 

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Credential Lifecycle Governance Framework
 
@@ -12,7 +12,7 @@ Date Locked: 2026-06-05
 
 # Purpose
 
-This document defines the governance framework governing credential evolution throughout the Agile AI University ecosystem.
+This document defines the governance framework governing credential evolution throughout the LAAU ecosystem.
 
 The framework establishes how credentials may evolve while preserving historical accuracy and institutional integrity.
 
@@ -31,7 +31,7 @@ This governance applies to:
 
 # Foundational Principle
 
-The Agile AI University ecosystem recognizes that credentials are long-lived institutional records.
+The LAAU ecosystem recognizes that credentials are long-lived institutional records.
 
 Programs may evolve.
 
@@ -406,7 +406,7 @@ Architecture must therefore be designed for continuous evolution.
 
 # Enterprise Design Authority Statement
 
-Agile AI University recognizes that professional capability frameworks evolve over time.
+LAAU recognizes that professional capability frameworks evolve over time.
 
 Therefore:
 
@@ -422,4 +422,4 @@ Recognition may evolve.
 
 Lifecycle governance exists to connect the two without compromising either.
 
-This document is governance-locked and applies across the entire Agile AI University credential ecosystem.
+This document is governance-locked and applies across the entire LAAU credential ecosystem.

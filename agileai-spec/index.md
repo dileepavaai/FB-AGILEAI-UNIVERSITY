@@ -7,7 +7,7 @@ image: https://spec.laau.university/assets/images/og-image.png
 
 # Agile AI Specification
 
-*This specification is part of the Agile AI University Knowledge Framework.*
+*This specification is part of the LAAU Knowledge Framework.*
 
 ---
 
@@ -28,7 +28,7 @@ This page serves as the **institutional entry point** into the Agile AI specific
 
 # 2. Institutional Framework
 
-The Agile AI Specification operates as part of the institutional design authority of Agile AI University.
+The Agile AI Specification operates as part of the institutional design authority of LAAU.
 
 It defines:
 
@@ -77,7 +77,7 @@ Recommended flow:
 
 # 5. Governance
 
-This specification system is maintained under the authority of **Agile AI University**.
+This specification system is maintained under the authority of **LAAU**.
 
 All components must:
 

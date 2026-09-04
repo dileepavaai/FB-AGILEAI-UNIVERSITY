@@ -1,7 +1,7 @@
 {
   "name": "aau-backend",
   "version": "1.0.0",
-  "description": "Agile AI University Credential Verification Backend",
+  "description": "LAAU Credential Verification Backend",
   "main": "index.js",
   "engines": {
     "node": "22"
@@ -10,7 +10,7 @@
     "start": "node index.js"
   },
   "keywords": [],
-  "author": "Agile AI University",
+  "author": "LAAU",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.6",

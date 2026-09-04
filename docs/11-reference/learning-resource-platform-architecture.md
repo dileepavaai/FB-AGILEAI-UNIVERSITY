@@ -4,7 +4,7 @@
 **Title:** Learning Resource Platform Architecture  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai
 
 ---

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Credential Governance
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-This document defines the governance framework for all credentials issued by Agile AI University.
+This document defines the governance framework for all credentials issued by LAAU.
 
 It establishes the principles, lifecycle, ownership, publication rules, verification standards, programme evolution policies, and historical preservation strategy governing every credential issued by the university.
 
@@ -43,7 +43,7 @@ This governance applies to
 
 # Governance Principles
 
-The Agile AI University credential ecosystem follows five principles.
+The LAAU credential ecosystem follows five principles.
 
 ## 1. Credentials are Permanent
 
@@ -214,7 +214,7 @@ Historical credentials are never rewritten to newer programme names.
 
 Founding programmes are preserved permanently.
 
-They represent the evolution of Agile AI University.
+They represent the evolution of LAAU.
 
 Examples include
 
@@ -523,7 +523,7 @@ Verification remains available for life.
 
 ## Decision 010
 
-Founding credentials are preserved as part of Agile AI University's institutional history.
+Founding credentials are preserved as part of LAAU's institutional history.
 
 ---
 
@@ -548,6 +548,6 @@ Architectural Decisions
 
 **ACTIVE**
 
-This document is the governing authority for all credential-related decisions across the Agile AI University ecosystem.
+This document is the governing authority for all credential-related decisions across the LAAU ecosystem.
 
 Any future architecture, implementation, or operational change affecting credentials must comply with this governance.

@@ -1,6 +1,6 @@
 /* ==========================================================
 
-Agile AI University
+LAAU
 
 Module      : Student & Executive Portal
 Component   : Credential Validation

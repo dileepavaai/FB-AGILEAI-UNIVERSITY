@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise API Catalog
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The Enterprise API Catalog provides the authoritative inventory of all APIs within the Agile AI University ecosystem.
+The Enterprise API Catalog provides the authoritative inventory of all APIs within the LAAU ecosystem.
 
 It serves as the central navigation document for Enterprise API Specifications and establishes the relationship between Enterprise Platforms, Enterprise Services, Enterprise Domains, and implementation interfaces.
 
@@ -24,7 +24,7 @@ This catalog is intended to help architects, developers, integrators, and platfo
 
 # API Architecture
 
-The Agile AI University ecosystem follows a **Service-First Enterprise Architecture**.
+The LAAU ecosystem follows a **Service-First Enterprise Architecture**.
 
 ```
 Enterprise Platform
@@ -326,7 +326,7 @@ Every new API shall expose an Enterprise Service and conform to the Enterprise A
 
 # Summary
 
-The Enterprise API Catalog is the authoritative inventory of APIs within the Agile AI University ecosystem.
+The Enterprise API Catalog is the authoritative inventory of APIs within the LAAU ecosystem.
 
 It provides a centralized view of API ownership, responsibilities, implementation status, and architectural relationships while ensuring consistent governance across all enterprise integrations.
 

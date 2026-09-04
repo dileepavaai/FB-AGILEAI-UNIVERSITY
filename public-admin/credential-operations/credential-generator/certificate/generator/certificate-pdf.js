@@ -1,6 +1,6 @@
 /*
 
-Agile AI University
+LAAU
 Credential Operations Suite
 
 Certificate Generator

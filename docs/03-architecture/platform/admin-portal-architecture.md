@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Admin Portal Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Platform Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Administrative Operations Platform |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -27,9 +27,9 @@
 
 **LOCKED**
 
-This document defines the permanent architecture of the Agile AI University Admin Portal.
+This document defines the permanent architecture of the LAAU Admin Portal.
 
-The Admin Portal inherits all enterprise principles, ownership boundaries, security requirements, runtime rules, service standards, and governance decisions defined by the Agile AI University Enterprise Architecture & System Context.
+The Admin Portal inherits all enterprise principles, ownership boundaries, security requirements, runtime rules, service standards, and governance decisions defined by the LAAU Enterprise Architecture & System Context.
 
 This document defines platform architecture.
 
@@ -41,7 +41,7 @@ It does not replace domain architecture, subsystem governance, implementation do
 
 ## Introduction
 
-The Admin Portal is the authorised administrative operations platform of the Agile AI University Enterprise Platform.
+The Admin Portal is the authorised administrative operations platform of the LAAU Enterprise Platform.
 
 It provides governed operational capabilities for administrators responsible for programme administration, credential operations, credential asset generation, publication, registry management, audit, and future enterprise administration.
 

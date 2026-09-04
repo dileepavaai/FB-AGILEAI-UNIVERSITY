@@ -4,7 +4,7 @@
 **Title:** Identity Platform Architecture
 **Version:** 1.0.0
 **Status:** ACTIVE
-**Owner:** Agile AI University
+**Owner:** LAAU
 **Architect:** Dileep Appupillai
 
 ---
@@ -354,7 +354,7 @@ These enhancements must preserve the canonical learner identity model.
 # 20. Document Control
 
 This document defines the authoritative architecture for identity
-management within Agile AI University.
+management within LAAU.
 
 Changes require:
 

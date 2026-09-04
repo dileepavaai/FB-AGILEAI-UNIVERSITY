@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Program Code Governance
 
@@ -12,7 +12,7 @@ Date Locked: 2026-06-05
 
 # Purpose
 
-This document defines the governance framework for Program Codes within the Agile AI University credential ecosystem.
+This document defines the governance framework for Program Codes within the LAAU credential ecosystem.
 
 Program Codes serve as the canonical institutional identifiers for credential programs.
 
@@ -78,7 +78,7 @@ Program Codes exist to provide stability regardless of future program evolution.
 
 Status: LOCKED
 
-Program Codes are governed exclusively by Agile AI University.
+Program Codes are governed exclusively by LAAU.
 
 Program Codes are institutional assets.
 
@@ -447,7 +447,7 @@ Program Code governance must remain scalable regardless of ecosystem growth.
 
 # Enterprise Design Authority Statement
 
-Program Codes are the canonical identifiers of the Agile AI University credential ecosystem.
+Program Codes are the canonical identifiers of the LAAU credential ecosystem.
 
 Program Names communicate meaning.
 
@@ -459,4 +459,4 @@ Recognition frameworks may evolve.
 
 Program Codes preserve continuity across that evolution.
 
-This document is governance-locked and applies across the entire Agile AI University credential ecosystem.
+This document is governance-locked and applies across the entire LAAU credential ecosystem.

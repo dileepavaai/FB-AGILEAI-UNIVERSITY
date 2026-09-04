@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Release Estimates & Planning
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The **05-estimates** section contains the authoritative release plans, delivery estimates, implementation schedules, sprint planning, and effort tracking for the Agile AI University ecosystem.
+The **05-estimates** section contains the authoritative release plans, delivery estimates, implementation schedules, sprint planning, and effort tracking for the LAAU ecosystem.
 
 These documents provide visibility into project scope, implementation progress, release planning, resource allocation, and delivery governance.
 
@@ -138,7 +138,7 @@ Defines short-term implementation planning including:
 
 # Estimation Principles
 
-Agile AI University follows these estimation principles:
+LAAU follows these estimation principles:
 
 - Architecture before implementation
 - Governance before development
@@ -238,7 +238,7 @@ This documentation is intended for:
 
 # Summary
 
-The **05-estimates** documentation provides the authoritative planning and delivery view for Agile AI University.
+The **05-estimates** documentation provides the authoritative planning and delivery view for LAAU.
 
 It enables transparent tracking of release scope, implementation progress, effort, delivery milestones, and enterprise execution while ensuring alignment with the overall architecture and governance.
 

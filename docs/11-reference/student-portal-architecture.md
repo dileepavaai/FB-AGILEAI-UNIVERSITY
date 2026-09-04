@@ -4,7 +4,7 @@
 **Title:** Student Portal Architecture  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai  
 **Last Updated:** 27 July 2026
 
@@ -1122,7 +1122,7 @@ The portal must:
 
 # 46. Production-First Operating Model
 
-Agile AI University currently follows a focused production-first
+LAAU currently follows a focused production-first
 operating model:
 
 ```text
@@ -1360,7 +1360,7 @@ learner navigation require:
 6. Live validation
 
 The Student Portal must remain a secure, governed, learner-focused
-consumption surface across the entire Agile AI University ecosystem.
+consumption surface across the entire LAAU ecosystem.
 
 ---
 

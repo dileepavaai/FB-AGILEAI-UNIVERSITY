@@ -10,7 +10,7 @@ title: Agile AI Capability Registry
 # Agile AI Capability Registry
 
 **Status:** Canonical  
-**Maintained By:** Agile AI University
+**Maintained By:** LAAU
 
 ---
 

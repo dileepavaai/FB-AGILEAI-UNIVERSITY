@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : login.js
@@ -367,7 +367,7 @@
 
             case "auth/user-disabled":
 
-                return "This account is currently unavailable. Please contact Agile AI University support.";
+                return "This account is currently unavailable. Please contact LAAU support.";
 
 
             case "auth/unauthorized-domain":

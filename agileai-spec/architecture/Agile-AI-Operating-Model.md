@@ -12,7 +12,7 @@ title: Agile AI Operating Model
 !!! info "Architecture Reference"
 
     **Status:** Canonical  
-    **Maintained By:** Agile AI Foundation & Agile AI University  
+    **Maintained By:** Agile AI Foundation & LAAU  
     **Scope:** Defines the structural architecture for designing and operating Agile AI systems.
 
 ---
@@ -180,7 +180,7 @@ Examples include:
 - human–AI collaboration  
 - governance and accountability mechanisms  
 
-Capability development is primarily operationalized by **Agile AI University**.
+Capability development is primarily operationalized by **LAAU**.
 
 ---
 
@@ -206,7 +206,7 @@ Programs may include associated credentials, assessments, and institutional reco
 
 The credential layer provides formal recognition of professional capability within the Agile AI ecosystem.
 
-Credentials are issued by **Agile AI University** and represent demonstrated capability in applying Agile AI principles in practice.
+Credentials are issued by **LAAU** and represent demonstrated capability in applying Agile AI principles in practice.
 
 Examples include:
 
@@ -238,9 +238,9 @@ The Foundation does **not provide training, certification, or credential issuanc
 
 ---
 
-### Agile AI University
+### LAAU
 
-Agile AI University operationalizes the Agile AI domain into structured academic and professional capability systems.
+LAAU operationalizes the Agile AI domain into structured academic and professional capability systems.
 
 Responsibilities include:
 
@@ -261,7 +261,7 @@ The interaction model between the Foundation and the University follows a standa
 **Agile AI Foundation**  
 Defines the conceptual and governance architecture of the domain.
 
-**Agile AI University**  
+**LAAU**  
 Operationalizes these standards through capability development and professional recognition systems.
 
 This model is similar to relationships seen in established ecosystems such as standards bodies and academic institutions.

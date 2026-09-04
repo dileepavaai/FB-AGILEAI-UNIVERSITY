@@ -1,6 +1,6 @@
 /**
  * ========================================================================
- * Agile AI University
+ * LAAU
  * Bridge Program Service
  * ------------------------------------------------------------------------
  * File:
@@ -9,12 +9,12 @@
  * Version        : 1.1.0
  * Status         : ACTIVE
  * Phase          : Revenue Sprint
- * Owner          : Agile AI University
+ * Owner          : LAAU
  *
  * Description
  * ------------------------------------------------------------------------
  * Central service responsible for resolving governed Bridge Programme
- * opportunities within the Agile AI University ecosystem.
+ * opportunities within the LAAU ecosystem.
  *
  * Responsibilities
  * ------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /**
- * Agile AI University — Site JS (v1.0)
+ * LAAU — Site JS (v1.0)
  * Phase 2 — Main Website
  *
  * Intentionally minimal.

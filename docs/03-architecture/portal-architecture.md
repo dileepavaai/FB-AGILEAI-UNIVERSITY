@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Student & Executive Portal
 
@@ -16,11 +16,11 @@
 
 # Executive Summary
 
-The Student & Executive Portal is the unified digital experience platform for learners, executives, trainers, assessors and future AI-enabled services within the Agile AI University ecosystem.
+The Student & Executive Portal is the unified digital experience platform for learners, executives, trainers, assessors and future AI-enabled services within the LAAU ecosystem.
 
 The portal has evolved from a traditional dashboard-centric application into a modular Experience-Driven Platform designed for long-term scalability, maintainability and independent evolution of learner capabilities.
 
-The portal serves as the primary authenticated entry point into the Agile AI University ecosystem.
+The portal serves as the primary authenticated entry point into the LAAU ecosystem.
 
 ---
 
@@ -336,10 +336,10 @@ Never
 
 # Ecosystem Integration
 
-The Student & Executive Portal is one subsystem within the Agile AI University platform.
+The Student & Executive Portal is one subsystem within the LAAU platform.
 
 ```
-Agile AI University
+LAAU
 
 ├── Public Website
 
@@ -472,6 +472,6 @@ Credential Architecture
 
 **Governance:** LOCKED
 
-**Architecture Owner:** Agile AI University
+**Architecture Owner:** LAAU
 
 This document is the authoritative architectural reference for the Student & Executive Portal.

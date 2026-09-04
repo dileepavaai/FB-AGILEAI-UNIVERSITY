@@ -1,6 +1,6 @@
 /**
  * ========================================================================
- * Agile AI University
+ * LAAU
  * Capability Progression Service
  * ------------------------------------------------------------------------
  * File:
@@ -8,12 +8,12 @@
  *
  * Version        : 1.0.0
  * Status         : Foundation
- * Owner          : Agile AI University
+ * Owner          : LAAU
  *
  * Description
  * ------------------------------------------------------------------------
  * Central service responsible for evaluating learner capability
- * progression across the Agile AI University ecosystem.
+ * progression across the LAAU ecosystem.
  *
  * This service determines:
  *
@@ -197,7 +197,7 @@ export function getCompletedCapabilityCodes(
  * Returns the learner's highest completed capability.
  *
  * NOTE:
- * Capability progression in Agile AI University is graph-based.
+ * Capability progression in LAAU is graph-based.
  * There is no mandatory linear hierarchy.
  *
  * This helper returns the most recently completed capability

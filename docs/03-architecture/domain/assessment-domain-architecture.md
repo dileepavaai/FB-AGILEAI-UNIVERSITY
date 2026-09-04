@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Assessment Domain Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Domain Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Enterprise Assessment Domain |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -41,7 +41,7 @@ It does not own programme definitions, learning delivery, financial processing, 
 
 ## Introduction
 
-The Assessment Domain evaluates learner competency throughout the Agile AI University Enterprise Platform.
+The Assessment Domain evaluates learner competency throughout the LAAU Enterprise Platform.
 
 It provides governed assessment experiences that determine whether learners have successfully demonstrated the knowledge, skills, and competencies required by an academic programme.
 
@@ -489,7 +489,7 @@ The ADR repository remains authoritative.
 
 # 19. Domain Summary
 
-The Assessment Domain governs academic evaluation throughout the Agile AI University Enterprise Platform.
+The Assessment Domain governs academic evaluation throughout the LAAU Enterprise Platform.
 
 It owns assessment delivery, competency evaluation, scoring, and academic outcomes while remaining independent of learning delivery, financial processing, and credential production.
 

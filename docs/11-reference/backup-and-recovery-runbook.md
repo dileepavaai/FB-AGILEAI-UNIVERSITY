@@ -4,7 +4,7 @@
 **Title:** Backup and Recovery Runbook  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai  
 **Audience:** Platform Administrators
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This runbook defines the approved backup and recovery procedures for
-Agile AI University.
+LAAU.
 
 The objectives are to:
 
@@ -531,7 +531,7 @@ These metrics should be reviewed after each recovery exercise.
 # 28. Document Control
 
 This runbook defines the approved backup and recovery procedures for
-Agile AI University.
+LAAU.
 
 Changes to backup schedules, recovery workflows, restoration procedures,
 or governance require:

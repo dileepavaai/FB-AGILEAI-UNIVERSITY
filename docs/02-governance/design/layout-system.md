@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Layout System
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document establishes the official layout system for Agile AI University.
+This document establishes the official layout system for LAAU.
 
 The Layout System defines how pages, sections and reusable components are arranged to produce a consistent, readable and scalable user experience.
 
@@ -49,7 +49,7 @@ This specification governs layout across:
 
 # Layout Philosophy
 
-The Agile AI University layout system is founded on five principles.
+The LAAU layout system is founded on five principles.
 
 ## Content First
 
@@ -513,8 +513,8 @@ Visual order must match DOM order whenever possible.
 
 # Governance Status
 
-This document is the authoritative layout specification for Agile AI University.
+This document is the authoritative layout specification for LAAU.
 
-All products within the Agile AI University ecosystem shall adopt this Layout System to ensure a consistent, maintainable and institutionally aligned user experience.
+All products within the LAAU ecosystem shall adopt this Layout System to ensure a consistent, maintainable and institutionally aligned user experience.
 
 Changes to the Layout System require formal governance review and approval.

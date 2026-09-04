@@ -6,7 +6,7 @@
 | Title | Student Portal Navigation Architecture |
 | Status | Accepted |
 | Decision Date | 2026-07-28 |
-| Owners | Agile AI University Architecture Board |
+| Owners | LAAU Architecture Board |
 | Decision Authority | Founder & Chief Architect |
 | Version | 1.0 |
 | Priority | High |
@@ -16,7 +16,7 @@
 
 # 1. Executive Summary
 
-This Architecture Decision Record establishes the official navigation architecture for the Agile AI University Student & Executive Portal.
+This Architecture Decision Record establishes the official navigation architecture for the LAAU Student & Executive Portal.
 
 The Student Portal serves as the primary digital academic workspace for every learner and executive participant.
 
@@ -338,7 +338,7 @@ The architecture provides:
 
 # 11. Architectural Decision
 
-The Agile AI University Architecture Board formally adopts this navigation architecture as the official sidebar structure for the Student & Executive Portal.
+The LAAU Architecture Board formally adopts this navigation architecture as the official sidebar structure for the Student & Executive Portal.
 
 Future navigation changes shall preserve the established information architecture unless superseded by a subsequent Architecture Decision Record.
 

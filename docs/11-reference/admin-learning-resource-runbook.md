@@ -4,7 +4,7 @@
 **Title:** Admin Learning Resource Runbook  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai  
 **Audience:** Platform Administrators
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This runbook defines the standard operating procedure (SOP) for
-managing learning resources within the Agile AI University Admin Portal.
+managing learning resources within the LAAU Admin Portal.
 
 It provides a step-by-step operational guide for administrators to:
 
@@ -698,7 +698,7 @@ Escalate issues that involve:
 # 29. Document Control
 
 This runbook defines the approved operational procedure for managing
-learning resources in the Agile AI University Admin Portal.
+learning resources in the LAAU Admin Portal.
 
 Changes to this workflow require:
 

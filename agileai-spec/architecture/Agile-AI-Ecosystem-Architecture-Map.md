@@ -23,7 +23,7 @@ The Agile AI ecosystem follows a three-layer institutional model:
 **Agile AI Foundation**
 
 ### Layer 2 — Academic Authority  
-**Agile AI University**
+**LAAU**
 
 ### Layer 3 — Digital Infrastructure  
 Institutional systems and platforms
@@ -37,7 +37,7 @@ Institutional systems and platforms
 
 ↓  
 
-**Agile AI University**  
+**LAAU**  
 *(Academic Operationalization)*
 
 ↓  

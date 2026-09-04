@@ -1,5 +1,5 @@
 # ==================================================
-# Agile AI University – Robots.txt
+# LAAU – Robots.txt
 # Public Learning Surface Governance v2.1
 # Last Updated: 2026-02-11
 # ==================================================

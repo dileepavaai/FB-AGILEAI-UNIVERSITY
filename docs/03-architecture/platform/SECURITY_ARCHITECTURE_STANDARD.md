@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Security Architecture Standard
 
@@ -14,14 +14,14 @@
 | **Status** | **ACTIVE** |
 | **Standard Status** | **LOCKED** |
 | **Classification** | Enterprise Architecture Standard |
-| **Owner** | Agile AI University Enterprise Architecture |
+| **Owner** | LAAU Enterprise Architecture |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This document establishes the Enterprise Security Architecture Standard for the Agile AI University Enterprise Platform.
+This document establishes the Enterprise Security Architecture Standard for the LAAU Enterprise Platform.
 
 It defines how Enterprise Security shall be documented across Enterprise Domains, Enterprise Platforms, Enterprise Services, Enterprise Registries, Enterprise Integrations, and Enterprise Runtime Architecture.
 
@@ -477,13 +477,13 @@ This standard complements:
 - Enterprise Platform Architecture Standard
 - Enterprise Integration Architecture Standard
 - Enterprise Runtime Architecture Standard
-- Agile AI University Enterprise Architecture & System Context
+- LAAU Enterprise Architecture & System Context
 
 ---
 
 # Summary
 
-The Enterprise Security Architecture Standard establishes the documentation framework for Enterprise Security across the Agile AI University ecosystem.
+The Enterprise Security Architecture Standard establishes the documentation framework for Enterprise Security across the LAAU ecosystem.
 
 It ensures that all security documentation follows a consistent structure, clearly defines trust boundaries, ownership, authentication, authorization, entitlement, auditability, and registry protection while remaining aligned with Enterprise Governance and the overall Enterprise Architecture.
 

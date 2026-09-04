@@ -1,6 +1,6 @@
 /* ========================================================= 
    Applied Agile AI Orchestration Capability Assessment
-   Agile AI University
+   LAAU
 
    v3.2 — 25 Question Framework (5×5)
    Institutional Authority Language Precision Pass

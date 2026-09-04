@@ -5,7 +5,7 @@
 **Status:** ACCEPTED  
 **Version:** 1.0.0  
 **Date:** 27 July 2026  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai
 
 ---

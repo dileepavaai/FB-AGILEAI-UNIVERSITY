@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Student & Executive Portal
 
@@ -24,7 +24,7 @@ The portal follows a Resolver-First Architecture where authentication, authoriza
 
 # Executive Summary
 
-The portal serves as the primary consumption experience for the Agile AI University ecosystem.
+The portal serves as the primary consumption experience for the LAAU ecosystem.
 
 The portal provides access to
 
@@ -536,4 +536,4 @@ Consumption First
 
 ACTIVE
 
-The Student & Executive Portal is the official consumption experience for the Agile AI University ecosystem and operates under the governance defined by the Credential Governance Standard and the Founding Credential Architecture decision.
+The Student & Executive Portal is the official consumption experience for the LAAU ecosystem and operates under the governance defined by the Credential Governance Standard and the Founding Credential Architecture decision.

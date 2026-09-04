@@ -2,7 +2,7 @@
 
 ## Governance Rule: Assessment vs Executive Surfaces (LOCKED)
 
-Agile AI University deliberately separates **assessment insight surfaces** from **executive decision instruments**.  
+LAAU deliberately separates **assessment insight surfaces** from **executive decision instruments**.  
 This separation is **architectural and non-negotiable**.
 
 ---

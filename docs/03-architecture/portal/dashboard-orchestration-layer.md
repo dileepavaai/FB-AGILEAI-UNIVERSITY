@@ -3,13 +3,13 @@
 **Version:** 3.0.0  
 **Status:** ACTIVE  
 **Governance:** LOCKED  
-**Owner:** Agile AI University
+**Owner:** LAAU
 
 ---
 
 # 1. Purpose
 
-The Dashboard Orchestration Layer is the Presentation Coordination Layer of the Agile AI University Student & Executive Portal.
+The Dashboard Orchestration Layer is the Presentation Coordination Layer of the LAAU Student & Executive Portal.
 
 Its responsibility is to orchestrate the complete learner dashboard after Authentication, Authorization, Entitlement Resolution and Resolver execution have completed.
 

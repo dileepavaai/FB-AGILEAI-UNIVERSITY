@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Verification Platform Architecture
 
@@ -14,9 +14,9 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Platform Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Authority** | Public Trust Platform |
-| **Parent Architecture** | Agile AI University Enterprise Architecture & System Context |
+| **Parent Architecture** | LAAU Enterprise Architecture & System Context |
 | **Last Updated** | July 2026 |
 
 ---
@@ -27,7 +27,7 @@
 
 **LOCKED**
 
-This document defines the permanent architecture of the Agile AI University Verification Platform.
+This document defines the permanent architecture of the LAAU Verification Platform.
 
 The Verification Platform inherits all enterprise principles, governance rules, security standards, runtime standards, integration standards, and Architecture Decision Records established by the Enterprise Architecture.
 
@@ -37,7 +37,7 @@ The Verification Platform inherits all enterprise principles, governance rules, 
 
 ## Introduction
 
-The Verification Platform is the official public trust platform of the Agile AI University Enterprise Platform.
+The Verification Platform is the official public trust platform of the LAAU Enterprise Platform.
 
 It enables employers, universities, organisations, learners, partners, and the public to independently verify the authenticity and validity of enterprise credentials, credential assets, and institutional recognitions.
 
@@ -570,7 +570,7 @@ The ADR repository remains the authoritative source for architectural rationale.
 
 # 27. Verification Platform Architecture Summary
 
-The Verification Platform is the official Public Trust Platform of the Agile AI University Enterprise Platform.
+The Verification Platform is the official Public Trust Platform of the LAAU Enterprise Platform.
 
 It provides independent verification of credentials, digital assets, and institutional recognitions while consuming authoritative enterprise information through governed Enterprise Services.
 

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Certificate Template Governance
 
@@ -12,7 +12,7 @@ Date Locked: 2026-06-05
 
 # Purpose
 
-This document defines the governance framework for certificate templates used throughout the Agile AI University credential ecosystem.
+This document defines the governance framework for certificate templates used throughout the LAAU credential ecosystem.
 
 The purpose of this governance is to ensure:
 
@@ -54,7 +54,7 @@ Certificate templates must therefore be governed as institutional assets.
 
 Status: LOCKED
 
-Only Agile AI University approved certificate templates may be used within the credential ecosystem.
+Only LAAU approved certificate templates may be used within the credential ecosystem.
 
 No unofficial templates are permitted.
 
@@ -68,7 +68,7 @@ No learner-created templates are permitted.
 
 Status: LOCKED
 
-Certificate templates are owned by Agile AI University.
+Certificate templates are owned by LAAU.
 
 Template ownership resides with the institutional design authority.
 
@@ -405,10 +405,10 @@ Certificate templates are institutional assets.
 
 Templates communicate credential authenticity, institutional credibility, and professional recognition.
 
-Template governance exists to preserve consistency, trust, and long-term integrity across the Agile AI University credential ecosystem.
+Template governance exists to preserve consistency, trust, and long-term integrity across the LAAU credential ecosystem.
 
 Operational systems render certificates.
 
 Governance defines certificates.
 
-This document is governance-locked and applies across the entire Agile AI University credential ecosystem.
+This document is governance-locked and applies across the entire LAAU credential ecosystem.

@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Backend Integration Architecture
 
@@ -6,14 +6,14 @@
 **Status:** ACTIVE  
 **Architecture Status:** GOVERNED  
 **Last Updated:** July 2026  
-**Owner:** Agile AI University Architecture Authority  
+**Owner:** LAAU Architecture Authority  
 **Architect:** Dileep Appupillai  
 
 ---
 
 # 1. Purpose
 
-This document defines how the Agile AI University backend runtimes, web applications, Firebase services, and domain registries integrate.
+This document defines how the LAAU backend runtimes, web applications, Firebase services, and domain registries integrate.
 
 It is the authoritative technical reference for the integration between:
 

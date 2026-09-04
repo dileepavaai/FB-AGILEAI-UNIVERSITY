@@ -35,7 +35,7 @@ Related Documents
 
 # Executive Summary
 
-This Architecture Decision Record establishes the Enterprise Payment Architecture for the Agile AI University ecosystem.
+This Architecture Decision Record establishes the Enterprise Payment Architecture for the LAAU ecosystem.
 
 It defines:
 

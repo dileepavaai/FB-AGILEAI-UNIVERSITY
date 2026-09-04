@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # System Context Documentation
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The **01-system** section contains the highest-level architectural context for the entire Agile AI University ecosystem.
+The **01-system** section contains the highest-level architectural context for the entire LAAU ecosystem.
 
 These documents establish the strategic, architectural, and governance foundations upon which every platform, service, and implementation is built.
 
@@ -48,7 +48,7 @@ This section currently contains the following System Context documents.
 
 `agileai-enterprise-architecture-system-context.md`
 
-Defines the complete Agile AI University ecosystem including:
+Defines the complete LAAU ecosystem including:
 
 - Enterprise Architecture
 - Platform Landscape
@@ -267,7 +267,7 @@ This documentation is intended for:
 
 # Summary
 
-The **01-system** documentation provides the authoritative architectural foundation for the Agile AI University ecosystem.
+The **01-system** documentation provides the authoritative architectural foundation for the LAAU ecosystem.
 
 It establishes the enterprise context, platform responsibilities, governance principles, and long-term strategic direction upon which all subsequent documentation and implementation are based.
 

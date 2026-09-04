@@ -1,8 +1,8 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Security Architecture
 
-> **The authoritative security architecture governing identity, access, protection, trust, privacy, and governance across the Agile AI University Enterprise Platform.**
+> **The authoritative security architecture governing identity, access, protection, trust, privacy, and governance across the LAAU Enterprise Platform.**
 
 ---
 
@@ -16,14 +16,14 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Security Architecture |
-| **Owner** | Agile AI University |
+| **Owner** | LAAU |
 | **Last Updated** | July 2026 |
 
 ---
 
 # Purpose
 
-This directory defines the Enterprise Security Architecture of the Agile AI University ecosystem.
+This directory defines the Enterprise Security Architecture of the LAAU ecosystem.
 
 The Security Architecture establishes the enterprise-wide principles, controls, and governance required to protect institutional information, enterprise services, platforms, users, and infrastructure.
 
@@ -35,7 +35,7 @@ It applies consistently across every enterprise platform and domain.
 
 # Security Philosophy
 
-The Agile AI University platform follows a **Security by Design** approach.
+The LAAU platform follows a **Security by Design** approach.
 
 Security is incorporated into architecture from the beginning rather than added during implementation.
 
@@ -428,11 +428,11 @@ These capabilities shall extend the Security Architecture while preserving enter
 
 # Summary
 
-The Enterprise Security Architecture defines the security foundation of the Agile AI University ecosystem.
+The Enterprise Security Architecture defines the security foundation of the LAAU ecosystem.
 
 It establishes consistent principles for identity, authentication, authorization, entitlements, data protection, audit, monitoring, and governance while protecting enterprise platforms, services, domains, registries, and infrastructure.
 
-By treating security as an enterprise-wide architectural concern rather than a platform feature, the architecture provides a scalable, governed, and resilient foundation for current and future Agile AI University platforms.
+By treating security as an enterprise-wide architectural concern rather than a platform feature, the architecture provides a scalable, governed, and resilient foundation for current and future LAAU platforms.
 
 ---
 

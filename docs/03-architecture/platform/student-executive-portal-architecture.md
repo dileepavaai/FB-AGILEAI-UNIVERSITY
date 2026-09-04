@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Enterprise Shared Services Platform Architecture
 
@@ -14,7 +14,7 @@
 | **Status** | **ACTIVE** |
 | **Architecture Status** | **LOCKED** |
 | **Classification** | Enterprise Platform Architecture |
-| **Owner** | Agile AI University Enterprise Architecture |
+| **Owner** | LAAU Enterprise Architecture |
 | **Authority** | Shared Enterprise Platform |
 | **Last Updated** | July 2026 |
 
@@ -38,7 +38,7 @@ It is not directly accessed by end users.
 
 ## Introduction
 
-The Enterprise Shared Services Platform provides the common enterprise capabilities required by all Agile AI University platforms.
+The Enterprise Shared Services Platform provides the common enterprise capabilities required by all LAAU platforms.
 
 Rather than implementing business experiences, the Shared Services Platform supplies foundational services that enable secure, governed, scalable, and reusable enterprise execution.
 
@@ -401,7 +401,7 @@ This platform follows:
 
 # 18. Platform Summary
 
-The Enterprise Shared Services Platform provides the reusable operational foundation for every platform within the Agile AI University ecosystem.
+The Enterprise Shared Services Platform provides the reusable operational foundation for every platform within the LAAU ecosystem.
 
 By centralising identity, security, runtime, infrastructure, observability, and common enterprise capabilities, it enables each platform to remain lightweight, independent, and focused on its specific responsibilities while sharing a consistent enterprise execution model.
 

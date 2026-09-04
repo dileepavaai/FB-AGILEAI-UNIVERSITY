@@ -22,7 +22,7 @@ The Agile AI ecosystem consists of two complementary but independent institution
 | Entity | Role |
 |--------|------|
 | Agile AI Foundation | Canonical standards authority |
-| Agile AI University | Academic operationalization authority |
+| LAAU | Academic operationalization authority |
 
 These two entities operate in a **standards → academic implementation model**.
 
@@ -56,12 +56,12 @@ These responsibilities belong to the academic layer.
 
 ---
 
-# 3. Agile AI University
+# 3. LAAU
 
 **Primary Domain:**  
 laau.university
 
-Agile AI University operationalizes Foundation standards into **structured academic capability systems**.
+LAAU operationalizes Foundation standards into **structured academic capability systems**.
 
 The University provides:
 
@@ -83,7 +83,7 @@ The University does **NOT position itself as**:
 
 # 4. Institutional Positioning Statement
 
-Agile AI University defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
+LAAU defines structured academic frameworks, capability standards, and professional recognition models for the Agile AI domain.
 
 It operates as an **independent academic and professional body** and is **not positioned as a commercial training provider**.
 
@@ -97,7 +97,7 @@ Agile AI Foundation
 ↓  
 Defines canonical standards  
 
-Agile AI University  
+LAAU  
 ↓  
 Operationalizes standards academically  
 
@@ -122,4 +122,4 @@ This layer includes:
 - credential infrastructure  
 - capability assessment systems  
 
-These systems operate under the academic authority of Agile AI University.
+These systems operate under the academic authority of LAAU.

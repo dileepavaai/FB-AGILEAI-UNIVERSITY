@@ -14,7 +14,7 @@ Agile AI Foundation
         │
         │ defines canonical standards
         ▼
-Agile AI University
+LAAU
         │
         ├ Institutional Site
         ├ Knowledge Surface
@@ -49,7 +49,7 @@ agileai.foundation
 
 ## Layer 2 — Academic Institution
 
-Agile AI University
+LAAU
 
 Responsibilities:
 
@@ -68,10 +68,10 @@ laau.university
 
 # 3. Digital Surface Architecture
 
-Agile AI University operates as a **multi-surface digital institution.**
+LAAU operates as a **multi-surface digital institution.**
 
 ```
-Agile AI University
+LAAU
 │
 ├ Institutional Site
 │   laau.university

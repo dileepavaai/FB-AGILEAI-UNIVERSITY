@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Architecture Decision Record
 
@@ -17,7 +17,7 @@
 | **Decision Status** | LOCKED |
 | **Decision Type** | Enterprise Architecture |
 | **Domain** | Learning Resource Platform |
-| **Owning Platform** | Agile AI University |
+| **Owning Platform** | LAAU |
 | **Decision Authority** | Founder and Enterprise Architect |
 | **Date** | July 2026 |
 | **Supersedes** | None |
@@ -27,7 +27,7 @@
 
 # Decision Summary
 
-Agile AI University will implement learning resources as a first-class enterprise platform based on a registry-driven, resolver-first and entitlement-aware delivery architecture.
+LAAU will implement learning resources as a first-class enterprise platform based on a registry-driven, resolver-first and entitlement-aware delivery architecture.
 
 The architecture separates:
 
@@ -63,7 +63,7 @@ Protected resources will be delivered only after authentication, authorization, 
 
 # Context
 
-Agile AI University delivers multiple types of educational resources throughout the learner lifecycle.
+LAAU delivers multiple types of educational resources throughout the learner lifecycle.
 
 These include:
 
@@ -170,7 +170,7 @@ The decision is driven by the following requirements:
 
 ## Decision 1 — Learning Resource Platform
 
-Learning resources will be implemented as a dedicated enterprise platform within Agile AI University.
+Learning resources will be implemented as a dedicated enterprise platform within LAAU.
 
 The platform is not a collection of static download links.
 
@@ -1404,7 +1404,7 @@ Personalized Material Generation Runbook
 
 # Decision Outcome
 
-Agile AI University will proceed with a governed Learning Resource Platform that:
+LAAU will proceed with a governed Learning Resource Platform that:
 
 - treats resources as enterprise assets;
 - separates educational content from learner delivery;

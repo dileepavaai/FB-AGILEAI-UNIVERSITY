@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Operational Documentation
 
@@ -14,7 +14,7 @@
 
 # Purpose
 
-The **09-operational** section contains the operational documentation required to deploy, manage, monitor, support, and continuously operate the Agile AI University ecosystem.
+The **09-operational** section contains the operational documentation required to deploy, manage, monitor, support, and continuously operate the LAAU ecosystem.
 
 Operational documentation defines how enterprise platforms transition from implementation into reliable production services.
 
@@ -98,7 +98,7 @@ Typical operational documents include:
 
 # Operational Principles
 
-The Agile AI University ecosystem follows these operational principles.
+The LAAU ecosystem follows these operational principles.
 
 - Reliability before speed
 - Automation where appropriate
@@ -281,7 +281,7 @@ This documentation is intended for:
 
 # Summary
 
-The **09-operational** documentation defines the operational practices required to reliably operate the Agile AI University ecosystem.
+The **09-operational** documentation defines the operational practices required to reliably operate the LAAU ecosystem.
 
 It establishes consistent procedures for deployment, monitoring, maintenance, security, support, and business continuity while ensuring alignment with the Enterprise Architecture and Governance Framework.
 

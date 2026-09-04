@@ -6,7 +6,7 @@
 | Title | Learning Resource Publication vs Assignment Architecture |
 | Status | Accepted (Deferred to Post-MVP) |
 | Decision Date | 2026-07-28 |
-| Owners | Agile AI University Architecture Board |
+| Owners | LAAU Architecture Board |
 | Decision Authority | Founder & Chief Architect |
 | Priority | Post-MVP Architectural Improvement |
 | Related ADRs | ADR-019, ADR-020, ADR-021, ADR-022, ADR-023 |
@@ -27,7 +27,7 @@ Accordingly, the architectural improvement is officially deferred.
 
 # 2. Background
 
-The Agile AI University Learning Resource Platform delivers licensed programme materials to authenticated learners.
+The LAAU Learning Resource Platform delivers licensed programme materials to authenticated learners.
 
 Each licensed learning resource is:
 
@@ -325,7 +325,7 @@ No learner-facing behavioural changes are expected.
 
 # 14. Architectural Decision
 
-The Agile AI University Architecture Board formally accepts the current Learning Resource publication model for MVP.
+The LAAU Architecture Board formally accepts the current Learning Resource publication model for MVP.
 
 Publication-versus-assignment optimisation is intentionally deferred until after production release.
 

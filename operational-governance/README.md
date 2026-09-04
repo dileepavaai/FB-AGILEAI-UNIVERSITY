@@ -1,4 +1,4 @@
-# Agile AI University — Operational Governance
+# LAAU — Operational Governance
 
 This directory contains the **governance artifacts** that define and preserve the architectural integrity of the Agile AI ecosystem.
 
@@ -154,7 +154,7 @@ Some documents may also be referenced publicly where appropriate.
 
 # Governance Authority
 
-The Agile AI ecosystem architecture and governance framework are maintained under the **Agile AI University Design Authority**.
+The Agile AI ecosystem architecture and governance framework are maintained under the **LAAU Design Authority**.
 
 The Design Authority is responsible for:
 
@@ -165,5 +165,5 @@ The Design Authority is responsible for:
 
 ---
 
-© Agile AI University  
+© LAAU  
 Operational Governance Authority

@@ -2,7 +2,7 @@
 
 /**
  * ============================================================
- * Agile AI University
+ * LAAU
  *
  * Script:
  * migrate-aop-alumni-learner-uids.js
@@ -387,7 +387,7 @@ function printHeader() {
 
     console.log("");
     console.log("============================================================");
-    console.log("Agile AI University");
+    console.log("LAAU");
     console.log("AOP Alumni learner_uid Reconciliation");
     console.log("============================================================");
     console.log(`Project: ${CONFIG.projectId}`);

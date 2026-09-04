@@ -4,7 +4,7 @@
 **Title:** Storage Layout Reference  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai
 
 ---
@@ -12,7 +12,7 @@
 # Purpose
 
 This document defines the official Cloud Storage architecture for the
-Agile AI University platform.
+LAAU platform.
 
 It establishes:
 

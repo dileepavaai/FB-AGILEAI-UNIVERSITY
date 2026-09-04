@@ -4,7 +4,7 @@
 **Title:** Authorization and Entitlement Architecture  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai  
 **Last Updated:** 27 July 2026
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This document defines the authoritative authorization and entitlement
-architecture for the Agile AI University platform.
+architecture for the LAAU platform.
 
 Authorization determines whether an authenticated identity is permitted
 to perform an action.
@@ -698,7 +698,7 @@ An administrator may access the Admin Portal only when:
 - required permissions are present
 
 The Admin Portal administrator identity currently includes the approved
-Agile AI University administrator account.
+LAAU administrator account.
 
 Administrative authority must not be inferred only from email text in
 the UI.
@@ -1649,7 +1649,7 @@ The following are prohibited:
 # 62. Document Control
 
 This document defines the authoritative authorization and entitlement
-architecture for the Agile AI University ecosystem.
+architecture for the LAAU ecosystem.
 
 Changes to identity authorization, roles, permissions, entitlement
 sources, resolver logic, ownership validation, payment-driven access,

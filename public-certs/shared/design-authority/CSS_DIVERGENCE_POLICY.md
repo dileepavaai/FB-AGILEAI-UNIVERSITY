@@ -1,5 +1,5 @@
 # Cross-Surface CSS Divergence Policy
-Agile AI University
+LAAU
 
 Version: 1.0  
 Status: ACTIVE
@@ -87,4 +87,4 @@ Trust-critical infrastructure
 ---
 
 Approved by:
-Agile AI University Design Authority
+LAAU Design Authority

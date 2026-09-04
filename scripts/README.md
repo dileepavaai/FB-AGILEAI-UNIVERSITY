@@ -1,4 +1,4 @@
-# Agile AI University — Operational Scripts
+# LAAU — Operational Scripts
 
 This directory contains operational, governance, integrity, registry, and migration scripts
 used to support the institutional credential system and related infrastructure.
@@ -161,4 +161,4 @@ They are not developer utilities.
 They are governance tools.
 
 Their structure reflects the maturity and independence
-of Agile AI University as an academic and professional body.
+of LAAU as an academic and professional body.

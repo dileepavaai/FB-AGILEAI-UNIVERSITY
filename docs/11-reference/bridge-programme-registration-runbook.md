@@ -4,7 +4,7 @@
 **Title:** Bridge Programme Registration Runbook  
 **Version:** 1.0.0  
 **Status:** ACTIVE  
-**Owner:** Agile AI University  
+**Owner:** LAAU  
 **Architect:** Dileep Appupillai  
 **Audience:** Platform Administrators
 
@@ -13,7 +13,7 @@
 # 1. Purpose
 
 This runbook defines the operational procedure for registering learners
-into Bridge Programmes within Agile AI University.
+into Bridge Programmes within LAAU.
 
 The workflow governs:
 
@@ -57,7 +57,7 @@ Bridge Programme registration enables learners to:
 - Access new licensed learning resources
 - Receive new credentials upon successful completion
 
-For Agile AI University this workflow is the primary revenue generation
+For LAAU this workflow is the primary revenue generation
 mechanism for alumni.
 
 ---

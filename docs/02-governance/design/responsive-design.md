@@ -1,4 +1,4 @@
-# Agile AI University
+# LAAU
 
 # Responsive Design
 
@@ -10,7 +10,7 @@
 | Version        | 1.0                 |
 | Status         | LOCKED              |
 | Classification | Governance          |
-| Owner          | Agile AI University |
+| Owner          | LAAU |
 | Applies To     | Entire Platform     |
 | Last Updated   | July 2026           |
 
@@ -18,7 +18,7 @@
 
 # Purpose
 
-This document establishes the official responsive design standards for Agile AI University.
+This document establishes the official responsive design standards for LAAU.
 
 Responsive design ensures every product delivers a consistent, accessible and high-quality experience across desktop, tablet and mobile devices while preserving the platform's institutional identity.
 
@@ -332,7 +332,7 @@ Avoid loading device-specific assets unless necessary.
 
 # Governance Status
 
-This document is the authoritative responsive design specification for Agile AI University.
+This document is the authoritative responsive design specification for LAAU.
 
 All products shall implement responsive behavior in accordance with this governance document.
 

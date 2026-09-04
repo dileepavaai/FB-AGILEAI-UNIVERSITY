@@ -1,7 +1,7 @@
-# Agile AI University — Governance Index
+# LAAU — Governance Index
 
 This document is the **authoritative index** of all governance, architecture, and
-institutional decision records for the Agile AI University platform.
+institutional decision records for the LAAU platform.
 
 It defines:
 - Which governance phases exist
@@ -207,5 +207,5 @@ If a conflict arises between:
 
 ---
 
-© Agile AI University  
+© LAAU  
 Governance Framework — Institutional Record

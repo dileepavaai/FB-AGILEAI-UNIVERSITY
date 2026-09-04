@@ -1,5 +1,5 @@
 /* =====================================================
-   Agile AI University — Canonical Footer
+   LAAU — Canonical Footer
    CENTRALIZED — LOCKED
    ===================================================== */
 
@@ -12,13 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
   <div class="container">
 
     <p>
-      <strong>Agile AI University</strong><br />
+      <strong>LAAU</strong><br />
       An independent Academic &amp; Professional Body for Agile AI
       and Agentic AI.
     </p>
 
     <p>
-      © 2025 Agile AI University. All rights reserved.
+      © 2025 LAAU. All rights reserved.
     </p>
 
     <p>

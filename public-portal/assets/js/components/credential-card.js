@@ -1,5 +1,5 @@
 /* ==========================================================
-   Agile AI University
+   LAAU
    Student & Executive Portal
 
    File      : credential-card.js
@@ -167,7 +167,7 @@
                             <div
                                 class="dashboard-card-empty-text">
 
-                                Your Agile AI University
+                                Your LAAU
                                 credentials will appear
                                 here after successful
                                 completion.

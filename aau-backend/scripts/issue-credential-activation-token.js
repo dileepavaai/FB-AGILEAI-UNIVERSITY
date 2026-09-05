@@ -42,12 +42,12 @@
    ----------------------------------------------------------
    node scripts/issue-credential-activation-token.js `
      --dry-run `
-     --credential-id AAU-XXXXXXXX `
+     --credential-id LAAU-XXXXXXXX `
      --confirm-project fb-agileai-university
 
    node scripts/issue-credential-activation-token.js `
      --apply `
-     --credential-id AAU-XXXXXXXX `
+     --credential-id LAAU-XXXXXXXX `
      --confirm-project fb-agileai-university
 ========================================================== */
 
@@ -359,12 +359,12 @@ Usage:
 
   node scripts/issue-credential-activation-token.js \\
     --dry-run \\
-    --credential-id AAU-XXXXXXXX \\
+    --credential-id LAAU-XXXXXXXX \\
     --confirm-project fb-agileai-university
 
   node scripts/issue-credential-activation-token.js \\
     --apply \\
-    --credential-id AAU-XXXXXXXX \\
+    --credential-id LAAU-XXXXXXXX \\
     --confirm-project fb-agileai-university
 
 Required:

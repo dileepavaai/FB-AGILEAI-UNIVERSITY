@@ -393,10 +393,10 @@ const SAFE_FILE_NAME_PATTERN =
     /^[A-Za-z0-9][A-Za-z0-9._-]{0,149}$/;
 
 const DELIVERY_ID_PATTERN =
-    /^AAU-MAT-[A-Z0-9]{8,32}$/;
+    /^(?:AAU|LAAU)-MAT-[A-Z0-9]{8,32}$/;
 
 const CREDENTIAL_ID_PATTERN =
-    /^AAU-[A-Z0-9]{8}$/;
+    /^(?:AAU|LAAU)-[A-Z0-9]{8}$/;
 
 const SHA256_PATTERN =
     /^[A-Fa-f0-9]{64}$/;

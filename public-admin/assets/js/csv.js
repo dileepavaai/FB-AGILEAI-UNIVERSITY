@@ -55,7 +55,7 @@ function generateCredentialId() {
 
   }
 
-  return `AAU-${result}`;
+  return `LAAU-${result}`;
 
 }
 

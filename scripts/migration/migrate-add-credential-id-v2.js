@@ -2,7 +2,7 @@
  * AAU Credential ID v2.0 Migration Script
  * ----------------------------------------
  * Adds:
- *  - credential_id (AAU-[SECURE TOKEN])
+ *  - credential_id (LAAU-[SECURE TOKEN])
  *  - approval_status (mapped from issued_status)
  *
  * Node 18 Compatible
@@ -49,7 +49,7 @@ async function generateUniqueCredentialId() {
 
   while (!unique) {
     const token = generateToken(8);
-    credentialId = `AAU-${token}`;
+    credentialId = `LAAU-${token}`;
 
     const snapshot = await db
       .collection("credentials")

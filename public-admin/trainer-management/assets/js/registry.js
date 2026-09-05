@@ -21,7 +21,7 @@
 
    Trainer ID Format
    -----------------------------------------------------
-   TRN-AAU-XXXX
+   TRN-LAAU-XXXX
 
    Governance
    -----------------------------------------------------
@@ -76,7 +76,7 @@ function generateTrainerId() {
 
   }
 
-  return `TRN-AAU-${suffix}`;
+  return `TRN-LAAU-${suffix}`;
 }
 
 /* =====================================================

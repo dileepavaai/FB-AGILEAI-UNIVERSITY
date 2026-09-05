@@ -33,7 +33,7 @@ const copyBtn = document.getElementById("copyLinkBtn");
 ===================================================== */
 
 function isValidCredentialId(id) {
-  return /^AAU-[A-Z0-9]{8}$/.test(id);
+  return /^(?:AAU|LAAU)-[A-Z0-9]{8}$/.test(id);
 }
 
 function safeText(value, fallback = "—") {
@@ -263,7 +263,7 @@ verifyBtn.addEventListener("click", async () => {
   }
 
   if (!isValidCredentialId(credentialId)) {
-    renderError("Invalid Credential ID format. Expected: AAU-XXXXXXXX");
+    renderError("Invalid Credential ID format. Expected: LAAU-XXXXXXXX. Legacy AAU IDs are also supported.");
     return;
   }
 

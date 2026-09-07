@@ -65,13 +65,20 @@ function toLAAUId(id) {
   return `LAAU-${id.substring(4)}`;
 }
 
-function assertLegacyField(data, oldId, location) {
-  if (
-    data.legacy_credential_id &&
-    normalize(data.legacy_credential_id) !== oldId
-  ) {
+function assertMigrationFieldsAbsent(data, location) {
+  const migrationFields = [
+    "legacy_credential_id",
+    "credential_id_migration",
+    "credential_id_migrated_at"
+  ];
+
+  const existingFields = migrationFields.filter(field =>
+    Object.prototype.hasOwnProperty.call(data, field)
+  );
+
+  if (existingFields.length > 0) {
     throw new Error(
-      `Conflicting legacy_credential_id at ${location}`
+      `Migration metadata already exists at ${location}: ${existingFields.join(", ")}`
     );
   }
 }
@@ -130,17 +137,15 @@ async function buildPlan() {
       throw new Error(`Target credential ID already exists: ${newId}`);
     }
 
-    assertLegacyField(
+    assertMigrationFieldsAbsent(
       data,
-      oldId,
       `credentials/${credentialDoc.id}`
     );
 
     const accessDoc = accessDocs[0];
 
-    assertLegacyField(
+    assertMigrationFieldsAbsent(
       accessDoc.data(),
-      oldId,
       `learner_resource_access/${accessDoc.id}`
     );
 

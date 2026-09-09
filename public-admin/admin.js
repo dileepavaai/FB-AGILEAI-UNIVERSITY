@@ -28,6 +28,7 @@ import {
    🔐 ADMIN ACCESS CONTROL
    ===================================================== */
 const ADMIN_ACCESS = {
+  "dileep@agileai.university": "super_admin",
   "dileep@laau.university": "super_admin",
   "laau.aaiu@gmail.com": "admin"
 };

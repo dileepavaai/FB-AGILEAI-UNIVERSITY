@@ -1199,8 +1199,8 @@ async function verifyRecaptcha(
     }
 
     const secret =
-        process.env
-            .RECAPTCHA_SECRET_KEY;
+        process.env.RECAPTCHA_SECRET_KEY ||
+        process.env.RECAPTCHA_SECRET;
 
     if (!secret) {
 

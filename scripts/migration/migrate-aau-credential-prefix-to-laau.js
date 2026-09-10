@@ -2,10 +2,10 @@
  * Controlled AAU -> LAAU Credential ID Migration
  *
  * Scope:
- * - Migrates exactly 41 valid, unpublished, non-test credentials.
- * - Updates credentials and learner_resource_access atomically.
+ * - Migrates exactly 45 valid, non-test credentials.
+ * - Updates credentials, learner_resource_access and credential_assets atomically.
  * - Preserves the previous ID in legacy_credential_id.
- * - Leaves published credential assets and Storage paths unchanged.
+ * - Leaves existing published files, Storage paths and document IDs unchanged.
  *
  * Usage:
  *   node scripts/migration/migrate-aau-credential-prefix-to-laau.js --dry
@@ -22,7 +22,7 @@ const fs = require("fs");
 const path = require("path");
 
 const PROJECT_ID = "fb-agileai-university";
-const EXPECTED_CANDIDATES = 41;
+const EXPECTED_CANDIDATES = 45;
 const MIGRATION_ID = "AAU_TO_LAAU_2026_09";
 
 const DRY_RUN = process.argv.includes("--dry");
@@ -91,11 +91,20 @@ async function buildPlan() {
       db.collection("learner_resource_access").get()
     ]);
 
-  const assetCredentialIds = new Set(
-    assetsSnapshot.docs
-      .map(doc => normalize(doc.get("credential_id")))
-      .filter(Boolean)
-  );
+  const assetsByCredentialId = new Map();
+
+  for (const doc of assetsSnapshot.docs) {
+    const credentialId =
+      normalize(doc.get("credential_id"));
+
+    if (!credentialId) continue;
+
+    if (!assetsByCredentialId.has(credentialId)) {
+      assetsByCredentialId.set(credentialId, []);
+    }
+
+    assetsByCredentialId.get(credentialId).push(doc);
+  }
 
   const allCredentialIds = new Set(
     credentialsSnapshot.docs
@@ -122,10 +131,10 @@ async function buildPlan() {
     const oldId = normalize(data.credential_id);
 
     if (!isEligibleAAUId(oldId)) continue;
-    if (assetCredentialIds.has(oldId)) continue;
 
     const newId = toLAAUId(oldId);
     const accessDocs = accessByCredentialId.get(oldId) || [];
+    const assetDocs = assetsByCredentialId.get(oldId) || [];
 
     if (accessDocs.length !== 1) {
       throw new Error(
@@ -149,11 +158,28 @@ async function buildPlan() {
       `learner_resource_access/${accessDoc.id}`
     );
 
+    if (
+      assetDocs.length !== 0 &&
+      assetDocs.length !== 3
+    ) {
+      throw new Error(
+        `${oldId} has ${assetDocs.length} asset records; expected 0 or 3`
+      );
+    }
+
+    for (const assetDoc of assetDocs) {
+      assertMigrationFieldsAbsent(
+        assetDoc.data(),
+        `credential_assets/${assetDoc.id}`
+      );
+    }
+
     candidates.push({
       oldId,
       newId,
       credentialDoc,
-      accessDoc
+      accessDoc,
+      assetDocs
     });
   }
 
@@ -224,6 +250,10 @@ function writeBackup(plan) {
         `credentials/${item.credentialDoc.id}`,
       accessDocument:
         `learner_resource_access/${item.accessDoc.id}`,
+      assetDocuments:
+        item.assetDocs.map(assetDoc =>
+          `credential_assets/${assetDoc.id}`
+        ),
       oldCredentialId: item.oldId,
       newCredentialId: item.newId
     }))
@@ -270,10 +300,26 @@ async function applyPlan(plan) {
         lastUpdateTime: item.accessDoc.updateTime
       }
     );
+
+    for (const assetDoc of item.assetDocs) {
+      batch.update(
+        assetDoc.ref,
+        commonUpdates,
+        {
+          lastUpdateTime: assetDoc.updateTime
+        }
+      );
+    }
   }
 
+  const writeCount = plan.reduce(
+    (total, item) =>
+      total + 2 + item.assetDocs.length,
+    0
+  );
+
   console.log("Backup written:", backupPath);
-  console.log("Atomic writes prepared:", plan.length * 2);
+  console.log("Atomic writes prepared:", writeCount);
 
   await batch.commit();
 
@@ -284,13 +330,19 @@ async function verify(plan) {
   let verified = 0;
 
   for (const item of plan) {
-    const [credentialDoc, accessDoc] =
-      await Promise.all([
-        item.credentialDoc.ref.get(),
-        item.accessDoc.ref.get()
-      ]);
+    const [
+      credentialDoc,
+      accessDoc,
+      ...assetDocs
+    ] = await Promise.all([
+      item.credentialDoc.ref.get(),
+      item.accessDoc.ref.get(),
+      ...item.assetDocs.map(assetDoc =>
+        assetDoc.ref.get()
+      )
+    ]);
 
-    if (
+    const primaryDocumentsValid =
       normalize(credentialDoc.get("credential_id")) ===
         item.newId &&
       normalize(accessDoc.get("credential_id")) ===
@@ -300,7 +352,20 @@ async function verify(plan) {
       ) === item.oldId &&
       normalize(
         accessDoc.get("legacy_credential_id")
-      ) === item.oldId
+      ) === item.oldId;
+
+    const assetDocumentsValid =
+      assetDocs.every(assetDoc =>
+        normalize(assetDoc.get("credential_id")) ===
+          item.newId &&
+        normalize(
+          assetDoc.get("legacy_credential_id")
+        ) === item.oldId
+      );
+
+    if (
+      primaryDocumentsValid &&
+      assetDocumentsValid
     ) {
       verified++;
     }

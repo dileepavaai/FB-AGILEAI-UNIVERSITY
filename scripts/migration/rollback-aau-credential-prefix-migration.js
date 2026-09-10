@@ -2,7 +2,7 @@
  * Rollback for AAU -> LAAU Credential ID Migration
  *
  * Restores credential_id from the external migration backup and removes
- * migration metadata from credentials and learner_resource_access.
+ * migration metadata from credentials, learner_resource_access and credential_assets.
  *
  * Dry run:
  *   node scripts/migration/rollback-aau-credential-prefix-migration.js `
@@ -23,7 +23,7 @@ const path = require("path");
 
 const PROJECT_ID = "fb-agileai-university";
 const MIGRATION_ID = "AAU_TO_LAAU_2026_09";
-const EXPECTED_MAPPINGS = 41;
+const EXPECTED_MAPPINGS = 45;
 
 const DRY_RUN = process.argv.includes("--dry");
 const APPLY = process.argv.includes("--apply");
@@ -117,6 +117,30 @@ function validateMapping(mapping) {
   }
 
   if (
+    !Array.isArray(mapping.assetDocuments) ||
+    (
+      mapping.assetDocuments.length !== 0 &&
+      mapping.assetDocuments.length !== 3
+    )
+  ) {
+    throw new Error(
+      `Invalid asset-document count for ${mapping.oldCredentialId}`
+    );
+  }
+
+  for (const assetDocument of mapping.assetDocuments) {
+    if (
+      !/^credential_assets\/[^/]+$/.test(
+        assetDocument
+      )
+    ) {
+      throw new Error(
+        `Invalid asset document path: ${assetDocument}`
+      );
+    }
+  }
+
+  if (
     !/^AAU-[A-Z0-9]{8}$/.test(
       mapping.oldCredentialId
     ) ||
@@ -147,14 +171,26 @@ async function buildRollbackPlan() {
       db.doc(mapping.credentialDocument);
     const accessRef =
       db.doc(mapping.accessDocument);
+    const assetRefs =
+      mapping.assetDocuments.map(documentPath =>
+        db.doc(documentPath)
+      );
 
-    const [credentialDoc, accessDoc] =
-      await Promise.all([
-        credentialRef.get(),
-        accessRef.get()
-      ]);
+    const [
+      credentialDoc,
+      accessDoc,
+      ...assetDocs
+    ] = await Promise.all([
+      credentialRef.get(),
+      accessRef.get(),
+      ...assetRefs.map(assetRef => assetRef.get())
+    ]);
 
-    if (!credentialDoc.exists || !accessDoc.exists) {
+    if (
+      !credentialDoc.exists ||
+      !accessDoc.exists ||
+      assetDocs.some(assetDoc => !assetDoc.exists)
+    ) {
       throw new Error(
         `Required document missing for ${mapping.newCredentialId}`
       );
@@ -162,7 +198,11 @@ async function buildRollbackPlan() {
 
     for (const [label, snapshot] of [
       ["credential", credentialDoc],
-      ["access", accessDoc]
+      ["access", accessDoc],
+      ...assetDocs.map((assetDoc, index) => [
+        `asset ${index + 1}`,
+        assetDoc
+      ])
     ]) {
       if (
         normalize(snapshot.get("credential_id")) !==
@@ -183,7 +223,8 @@ async function buildRollbackPlan() {
     plan.push({
       ...mapping,
       credentialDoc,
-      accessDoc
+      accessDoc,
+      assetDocs
     });
   }
 
@@ -218,6 +259,16 @@ async function applyRollback(plan) {
         lastUpdateTime: item.accessDoc.updateTime
       }
     );
+
+    for (const assetDoc of item.assetDocs) {
+      batch.update(
+        assetDoc.ref,
+        updates,
+        {
+          lastUpdateTime: assetDoc.updateTime
+        }
+      );
+    }
   }
 
   await batch.commit();
@@ -227,37 +278,47 @@ async function verifyRollback(plan) {
   let verified = 0;
 
   for (const item of plan) {
-    const [credentialDoc, accessDoc] =
-      await Promise.all([
-        item.credentialDoc.ref.get(),
-        item.accessDoc.ref.get()
-      ]);
-
-    const credentialData = credentialDoc.data();
-    const accessData = accessDoc.data();
-
-    if (
-      normalize(credentialData.credential_id) ===
-        item.oldCredentialId &&
-      normalize(accessData.credential_id) ===
-        item.oldCredentialId &&
-      !Object.prototype.hasOwnProperty.call(
-        credentialData,
-        "legacy_credential_id"
-      ) &&
-      !Object.prototype.hasOwnProperty.call(
-        accessData,
-        "legacy_credential_id"
-      ) &&
-      !Object.prototype.hasOwnProperty.call(
-        credentialData,
-        "credential_id_migration"
-      ) &&
-      !Object.prototype.hasOwnProperty.call(
-        accessData,
-        "credential_id_migration"
+    const [
+      credentialDoc,
+      accessDoc,
+      ...assetDocs
+    ] = await Promise.all([
+      item.credentialDoc.ref.get(),
+      item.accessDoc.ref.get(),
+      ...item.assetDocs.map(assetDoc =>
+        assetDoc.ref.get()
       )
-    ) {
+    ]);
+
+    const documents = [
+      credentialDoc,
+      accessDoc,
+      ...assetDocs
+    ];
+
+    const documentsValid =
+      documents.every(document => {
+        const data = document.data() || {};
+
+        return (
+          normalize(data.credential_id) ===
+            item.oldCredentialId &&
+          !Object.prototype.hasOwnProperty.call(
+            data,
+            "legacy_credential_id"
+          ) &&
+          !Object.prototype.hasOwnProperty.call(
+            data,
+            "credential_id_migration"
+          ) &&
+          !Object.prototype.hasOwnProperty.call(
+            data,
+            "credential_id_migrated_at"
+          )
+        );
+      });
+
+    if (documentsValid) {
       verified++;
     }
   }

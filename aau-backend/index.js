@@ -3518,8 +3518,11 @@ app.post(
                Firestore Query
             ------------------------------------------ */
 
-            const snapshot =
-                await db
+            const [
+                canonicalSnapshot,
+                legacySnapshot
+            ] = await Promise.all([
+                db
                     .collection(
                         COLLECTIONS.credentials
                     )
@@ -3529,12 +3532,44 @@ app.post(
                         credentialId
                     )
                     .limit(
-                        1
+                        2
                     )
-                    .get();
+                    .get(),
+
+                db
+                    .collection(
+                        COLLECTIONS.credentials
+                    )
+                    .where(
+                        "legacy_credential_id",
+                        "==",
+                        credentialId
+                    )
+                    .limit(
+                        2
+                    )
+                    .get()
+            ]);
+
+            const matchingDocuments =
+                new Map();
+
+            for (
+                const document of [
+                    ...canonicalSnapshot.docs,
+                    ...legacySnapshot.docs
+                ]
+            ) {
+
+                matchingDocuments.set(
+                    document.id,
+                    document
+                );
+
+            }
 
             if (
-                snapshot.empty
+                matchingDocuments.size === 0
             ) {
 
                 return res.json({
@@ -3546,8 +3581,33 @@ app.post(
 
             }
 
+            if (
+                matchingDocuments.size !== 1
+            ) {
+
+                console.error(
+                    `[${SERVICE_NAME}] Ambiguous credential ID:`,
+                    credentialId
+                );
+
+                return res
+                    .status(
+                        409
+                    )
+                    .json({
+
+                        status:
+                            "error",
+
+                        message:
+                            "Credential identifier conflict"
+
+                    });
+
+            }
+
             const credentialSnapshot =
-                snapshot.docs[0];
+                [...matchingDocuments.values()][0];
 
             const credential =
                 credentialSnapshot.data() || {};

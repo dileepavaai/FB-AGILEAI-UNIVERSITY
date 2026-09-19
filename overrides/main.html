@@ -1,89 +1,98 @@
 {% extends "base.html" %}
 
-{% block header %}
+{% block header -%}
 
-  <!-- Institutional Header (Spec Layer) -->
-  <div class="spec-institutional-header">
-    <div class="spec-header-container">
+<!-- Institutional Header -->
+<div class="spec-institutional-header">
+  <div class="spec-header-container">
 
-      <!-- Left: Institutional Identity -->
-      <div class="spec-header-left">
-        <a href="https://laau.university"
-           class="spec-brand external-link"
-           target="_blank"
-           rel="noopener">
-          LAAU
-        </a>
+    <div class="spec-header-left">
+      <a href="https://laau.university"
+         class="spec-brand external-link"
+         target="_blank"
+         rel="noopener"
+         aria-label="Lean Agile AI University (LAAU) — opens in a new tab">
 
-        <span class="spec-divider">|</span>
+        <img src="{{ 'assets/images/LAAU-Logo.png' | url }}"
+             class="spec-brand-logo"
+             alt="Lean Agile AI University (LAAU)"
+             width="112"
+             height="56">
 
-        <span class="spec-surface">Specification v1.0</span>
-      </div>
+      </a>
 
-      <!-- Right: Cross-Surface Navigation -->
-      <div class="spec-header-nav">
-
-        <a href="https://assessment.laau.university"
-           class="external-link"
-           target="_blank"
-           rel="noopener">
-          Assessment
-        </a>
-
-        <a href="https://edu.laau.university"
-           class="external-link"
-           target="_blank"
-           rel="noopener">
-          Knowledge
-        </a>
-
-        <a href="https://laau.university/credentials/"
-           class="external-link"
-           target="_blank"
-           rel="noopener">
-          Credentials
-        </a>
-
-        <a href="https://laau.university/governance"
-           class="external-link"
-           target="_blank"
-           rel="noopener">
-          Governance
-        </a>
-
-      </div>
-
+      <span class="spec-divider" aria-hidden="true">|</span>
+      <span class="spec-surface">Specification v1.0</span>
     </div>
+
+    <nav class="spec-header-nav" aria-label="Institutional services">
+
+      <a href="https://assessment.laau.university"
+         class="external-link"
+         target="_blank"
+         rel="noopener">
+        Assessment
+      </a>
+
+      <a href="https://edu.laau.university"
+         class="external-link"
+         target="_blank"
+         rel="noopener">
+        Knowledge
+      </a>
+
+      <a href="https://laau.university/credentials/"
+         class="external-link"
+         target="_blank"
+         rel="noopener">
+        Credentials
+      </a>
+
+      <a href="https://laau.university/governance"
+         class="external-link"
+         target="_blank"
+         rel="noopener">
+        Governance
+      </a>
+
+    </nav>
+
   </div>
+</div>
 
-  <!-- Context Bar -->
-  <div class="spec-context-bar">
-    <div class="spec-context-container">
+<!-- Context Bar -->
+<div class="spec-context-bar">
+  <div class="spec-context-container">
 
-      <span class="spec-context-label">Section</span>
+    <span class="spec-context-label">Section</span>
 
-      <span class="spec-context-value">
-        {% if page and page.meta and page.meta.section %}
-          {{ page.meta.section }}
-        {% else %}
-          Specification
-        {% endif %}
-      </span>
+    <span class="spec-context-value">
+{% if page and page.meta and page.meta.section %}
+      {{ page.meta.section }}
+{% else %}
+      Specification
+{% endif %}
+    </span>
 
-      <span class="spec-context-separator">→</span>
+    <span class="spec-context-separator" aria-hidden="true">→</span>
 
-      <span class="spec-context-page">
-        {% if page %}
-          {{ page.title | default("Overview") }}
-        {% else %}
-          Overview
-        {% endif %}
-      </span>
+    <span class="spec-context-page">
+{% if page %}
+      {{ page.title | default("Overview") }}
+{% else %}
+      Overview
+{% endif %}
+    </span>
 
-    </div>
   </div>
+</div>
 
-  <!-- Material Header (DO NOT REMOVE) -->
-  {{ super() }}
+<!-- Retain Material navigation, search and theme controls. -->
+{{ super() }}
 
 {% endblock %}
+
+{% block extrahead -%}
+{{ super() -}}
+<link rel="stylesheet" href="{{ 'assets/stylesheets/laau-brand.css?v=20260919-spec-brand-1' | url }}">
+{%- endblock %}

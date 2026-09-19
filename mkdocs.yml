@@ -72,12 +72,12 @@ extra:
       content: "630"
 
 extra_css:
-  - assets/css/site.css
-  - assets/stylesheets/extra.css
+  - assets/css/site.css?v=20260919-spec-brand-1
+  - assets/stylesheets/extra.css?v=20260919-spec-brand-1
 
 extra_javascript:
-  - assets/js/site.js
-  - assets/js/scroll-progress.js
+  - assets/js/site.js?v=20260919-spec-brand-1
+  - assets/js/scroll-progress.js?v=20260919-spec-brand-1
 
 nav:
 

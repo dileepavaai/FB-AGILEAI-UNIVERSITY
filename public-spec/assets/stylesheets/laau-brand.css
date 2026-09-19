@@ -1,0 +1,86 @@
+/*
+ * LAAU specification header branding
+ * Version: 1.0.0
+ * Loaded after the existing specification styles.
+ */
+
+.spec-institutional-header .spec-header-container {
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+.spec-institutional-header .spec-header-left {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.spec-institutional-header .spec-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: #ffffff;
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.spec-institutional-header .spec-brand-logo {
+  display: block;
+  width: 112px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.spec-institutional-header .spec-header-nav {
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.spec-institutional-header .spec-header-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 0;
+  box-sizing: border-box;
+}
+
+.spec-institutional-header a:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+[data-md-color-scheme="slate"] .spec-institutional-header a:focus-visible {
+  outline-color: #fbbf24;
+}
+
+.spec-context-bar .spec-context-container {
+  flex-wrap: wrap;
+}
+
+.spec-context-bar .spec-context-page {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media screen and (max-width: 768px) {
+  .spec-institutional-header .spec-header-container {
+    padding: 8px 16px;
+    gap: 8px;
+  }
+
+  .spec-institutional-header .spec-header-nav {
+    flex-basis: 100%;
+    justify-content: flex-start;
+    gap: 4px 16px;
+  }
+
+  .spec-context-bar .spec-context-container {
+    padding: 6px 16px;
+  }
+}

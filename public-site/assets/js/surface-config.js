@@ -2,7 +2,11 @@ window.SURFACE_CONFIG = {
 
   brand: {
     label: "LAAU",
-    href: "/"
+    href: "/",
+    logo: {
+      src: "/assets/images/LAAU-Logo.png",
+      alt: "Lean Agile AI University (LAAU)"
+    }
   },
 
   navigation: [

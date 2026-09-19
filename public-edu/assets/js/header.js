@@ -1,7 +1,7 @@
 /* =========================================================
    LAAU
    Institutional Navigation Architecture
-   Version: 2.0
+   Version: 2.1
    Governance State: STABILIZED
    Surface: public-edu
 ========================================================= */
@@ -13,12 +13,20 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="header-inner">
 
         <div class="brand">
-          <a href="https://agileai.foundation" target="_blank" rel="noopener">
-            Agile AI Foundation
+          <a class="university-link" href="https://laau.university">
+            <img
+              class="university-logo"
+              src="/assets/images/LAAU-Logo.png"
+              alt="Lean Agile AI University (LAAU)"
+              width="112"
+              height="56">
           </a>
-          <span class="brand-separator"> &amp; </span>
-          <a href="https://laau.university">
-            LAAU
+          <a class="foundation-link"
+             href="https://agileai.foundation"
+             target="_blank"
+             rel="noopener"
+             aria-label="Agile AI Foundation (opens in a new tab)">
+            Agile AI Foundation
           </a>
         </div>
 
@@ -259,6 +267,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const nav = document.querySelector(".main-nav");
   const toggles = document.querySelectorAll(".nav-toggle");
 
+  nav.setAttribute("aria-hidden", String(window.innerWidth < 769));
+
   /* =========================================================
      MOBILE NAVIGATION CONTROL
   ========================================================= */
@@ -266,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function closeMobileNav() {
     body.classList.remove("nav-open");
     hamburger.setAttribute("aria-expanded", "false");
-    nav.setAttribute("aria-hidden", "true");
+    nav.setAttribute("aria-hidden", String(window.innerWidth < 769));
   }
 
   function openMobileNav() {
@@ -334,6 +344,9 @@ document.addEventListener("DOMContentLoaded", function () {
   ========================================================= */
 
   window.addEventListener("resize", function () {
+
+    nav.setAttribute("aria-hidden",
+      String(window.innerWidth < 769 && !body.classList.contains("nav-open")));
 
     if (window.innerWidth >= 769) {
 

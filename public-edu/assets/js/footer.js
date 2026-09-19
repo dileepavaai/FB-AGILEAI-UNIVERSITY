@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="footer-inner">
 
         <p class="footer-title">
-          LAAU
+          Lean Agile AI University (LAAU)
         </p>
 
         <p class="footer-disclaimer">
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </p>
 
         <p class="footer-governance">
-          The institution operates under the broader governance framework of 
+          The institution operates under the broader governance framework of
           <a href="https://agileai.foundation" target="_blank" rel="noopener">
             AgileAI Foundation
           </a>.
@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
   `;
 
   const footerContainer = document.getElementById("footer");
+
   if (footerContainer) {
     footerContainer.innerHTML = footerHTML;
   }

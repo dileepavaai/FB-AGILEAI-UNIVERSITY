@@ -1,11 +1,12 @@
 /* ==========================================================
-   AgileAI Shared Header Engine
-   Version: v4.0 (Config-Driven Architecture)
+   LAAU Shared Header Engine
+   Version: v4.1 (Optional Configured Brand Logo)
    Scope: Structural Controller Only
    Navigation defined per-surface via window.SURFACE_CONFIG
 
    Safety Model:
-   - If SURFACE_CONFIG missing → safe minimal fallback
+   - Missing SURFACE_CONFIG uses a minimal fallback
+   - Optional brand logo has a text fallback on load failure
    - No analytics logic
    - No surface branching
    - No hardcoded navigation
@@ -14,6 +15,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   const body = document.body;
+
   const currentPath = window.location.pathname
     .replace(/\/+$/, "")
     .replace(/\/index\.html$/, "") || "/";
@@ -22,14 +24,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let brandLabel = "LAAU";
   let brandHref = "/";
+  let brandLogo = null;
   let navigation = [];
 
-  // Safe Fallback (Option B)
   if (config && typeof config === "object") {
     if (config.brand) {
       brandLabel = config.brand.label || brandLabel;
       brandHref = config.brand.href || brandHref;
+      brandLogo = config.brand.logo || null;
     }
+
     if (Array.isArray(config.navigation)) {
       navigation = config.navigation;
     }
@@ -38,8 +42,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function buildNavHTML(navItems) {
     return navItems.map(item => {
       const isExternal = item.external === true;
-      const target = isExternal ? `target="_blank" rel="noopener"` : "";
-      const dataPath = item.dataPath ? `data-path="${item.dataPath}"` : "";
+      const target = isExternal
+        ? `target="_blank" rel="noopener"`
+        : "";
+
+      const dataPath = item.dataPath
+        ? `data-path="${item.dataPath}"`
+        : "";
 
       return `
         <li role="none">
@@ -100,10 +109,48 @@ document.addEventListener("DOMContentLoaded", function () {
   headerContainer.innerHTML = headerHTML;
 
   /* =====================================================
+     OPTIONAL BRAND LOGO
+  ===================================================== */
+
+  const brandLink = headerContainer.querySelector(".brand > a");
+
+  if (
+    brandLink &&
+    brandLogo &&
+    typeof brandLogo.src === "string" &&
+    brandLogo.src.trim()
+  ) {
+    const logo = document.createElement("img");
+
+    logo.className = "site-brand-logo";
+    logo.alt =
+      typeof brandLogo.alt === "string" && brandLogo.alt.trim()
+        ? brandLogo.alt
+        : brandLabel;
+
+    logo.width = 128;
+    logo.height = 64;
+    logo.decoding = "async";
+
+    logo.addEventListener("error", function () {
+      brandLink.textContent = brandLabel;
+      brandLink.classList.remove("has-brand-logo");
+    }, { once: true });
+
+    logo.src = brandLogo.src;
+
+    brandLink.textContent = "";
+    brandLink.classList.add("has-brand-logo");
+    brandLink.appendChild(logo);
+  }
+
+  /* =====================================================
      ACTIVE STATE
   ===================================================== */
 
-  const navLinks = headerContainer.querySelectorAll(".main-nav a[data-path]");
+  const navLinks = headerContainer.querySelectorAll(
+    ".main-nav a[data-path]"
+  );
 
   navLinks.forEach(link => {
     const linkPath = link.getAttribute("data-path");
@@ -126,14 +173,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function closeMobileNav() {
     body.classList.remove("nav-open");
-    if (hamburger) hamburger.setAttribute("aria-expanded", "false");
-    if (nav) nav.setAttribute("aria-hidden", "true");
+
+    if (hamburger) {
+      hamburger.setAttribute("aria-expanded", "false");
+    }
+
+    if (nav) {
+      nav.setAttribute("aria-hidden", "true");
+    }
   }
 
   function openMobileNav() {
     body.classList.add("nav-open");
-    if (hamburger) hamburger.setAttribute("aria-expanded", "true");
-    if (nav) nav.setAttribute("aria-hidden", "false");
+
+    if (hamburger) {
+      hamburger.setAttribute("aria-expanded", "true");
+    }
+
+    if (nav) {
+      nav.setAttribute("aria-hidden", "false");
+    }
   }
 
   if (hamburger) {
@@ -145,6 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.addEventListener("click", function (e) {
     if (!body.classList.contains("nav-open")) return;
+
     if (!e.target.closest(".site-header")) {
       closeMobileNav();
     }

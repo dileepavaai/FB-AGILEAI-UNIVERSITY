@@ -6,7 +6,7 @@ Module      : Student & Executive Portal
 Component   : Credential Renderer
 
 File        : credential-renderer.js
-Version     : 2.2.0
+Version     : 2.2.1
 Status      : ACTIVE
 
 Governance  : Portal Governance v1.0
@@ -131,7 +131,7 @@ v1.0.0
         "Credential Renderer";
 
     const MODULE_VERSION =
-        "2.2.0";
+        "2.2.1";
 
 
     console.log(
@@ -680,8 +680,8 @@ v1.0.0
 
                 <img
                     class="credential-portfolio-emblem"
-                    src="/assets/images/aau-emblem.png"
-                    alt="LAAU">
+                    src="/assets/images/LAAU-Seal.png?v=20260920-portal-brand-1"
+                    alt="Lean Agile AI University academic seal">
 
                 <div
                     class="credential-portfolio-code">

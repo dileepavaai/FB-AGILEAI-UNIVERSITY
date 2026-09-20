@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : sidebar.js
-   Version   : 1.8.1
+   Version   : 1.8.2
    Status    : ACTIVE
    Phase     : Portal Navigation and Identity Stabilization
 
@@ -279,7 +279,7 @@
         "Sidebar";
 
     const MODULE_VERSION =
-        "1.8.1";
+        "1.8.2";
 
 
     /* ======================================================
@@ -2070,11 +2070,11 @@
                 class="portal-sidebar-inner">
 
                 <div
-                    class="portal-sidebar-brand">
+                    class="portal-sidebar-brand portal-sidebar-brand--laau">
 
                     <img
-                        src="/assets/images/aau-emblem.png"
-                        alt="LAAU"
+                        src="/assets/images/LAAU-Logo.png?v=20260920-portal-brand-1"
+                        alt="Lean Agile AI University (LAAU)"
                         class="portal-sidebar-logo"
                         loading="lazy">
 

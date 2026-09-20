@@ -1,0 +1,17 @@
+/* LAAU portal branding — v1.0 */
+.portal-sidebar-brand.portal-sidebar-brand--laau {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.portal-sidebar-brand--laau .portal-sidebar-logo {
+  display: block;
+  width: 160px;
+  max-width: 100%;
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 4px;
+}

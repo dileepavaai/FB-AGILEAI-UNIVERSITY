@@ -1,80 +1,187 @@
 <!doctype html>
+<!-- LAAU privacy policy replacement: 20260921-privacy-1 -->
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How LAAU handles account information, Google sign-in, learning and credential records, payments, website analytics and privacy requests.">
   <title>Privacy Policy | LAAU</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Canonical Site Styles -->
-  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="canonical" href="https://laau.university/governance/privacy-policy.html">
+  <style>
+    :root { color-scheme: light; --ink: #16324d; --muted: #465c6e; --line: #dbe4ec; --accent: #176859; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f4f7fa; color: var(--ink); font: 17px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: #125a8e; text-underline-offset: .2em; overflow-wrap: anywhere; }
+    a:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+    .wrap { width: min(100% - 40px, 960px); margin-inline: auto; }
+    .skip { position: absolute; left: 20px; top: -100px; padding: 12px; background: white; z-index: 5; }
+    .skip:focus { top: 12px; }
+    .site-header { background: white; border-bottom: 1px solid var(--line); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; padding-block: 18px; }
+    .logo { display: block; width: 190px; max-width: 100%; height: auto; }
+    .site-nav { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+    main { padding-block: 46px; }
+    .eyebrow { margin: 0 0 10px; color: var(--accent); font-size: .82rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0 0 12px; font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.1; letter-spacing: -.035em; }
+    h2 { margin: 0 0 14px; font-size: 1.4rem; line-height: 1.35; }
+    p { margin: 0 0 16px; }
+    .updated { color: var(--muted); font-size: .94rem; }
+    .intro { max-width: 800px; font-size: 1.1rem; }
+    .contents, .policy-section { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 25px; margin-top: 22px; }
+    .contents ol { columns: 2; column-gap: 34px; margin: 0; padding-left: 23px; }
+    li { margin-block: 8px; }
+    li::marker { color: var(--accent); }
+    .policy-section > :last-child { margin-bottom: 0; }
+    dt { margin-top: 15px; font-weight: 700; }
+    dd { margin: 4px 0 0; }
+    dl { margin: 0; }
+    .site-footer { padding-block: 25px; border-top: 1px solid var(--line); color: var(--muted); font-size: .93rem; }
+    .site-footer p { margin: 10px 0 0; }
+    @media (max-width: 640px) { .wrap { width: min(100% - 28px, 960px); } main { padding-block: 30px; } .contents ol { columns: 1; } .policy-section, .contents { padding: 20px; } }
+    @media print { body { background: white; font-size: 11pt; } .site-nav, .skip, .contents { display: none; } .wrap { width: 100%; } .policy-section { border: 0; padding: 0; } h2 { break-after: avoid; } a { color: inherit; } }
+  </style>
 </head>
-
 <body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="https://laau.university/" aria-label="LAAU institutional website">
+        <img class="logo" src="/assets/images/LAAU-Logo.png" alt="Lean Agile AI University (LAAU)">
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="https://laau.university/portal.html">About LAAU Portal</a>
+        <a href="https://portal.laau.university/login.html">Portal sign in</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+    <p class="eyebrow">Lean Agile AI University</p>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: <time datetime="2026-09-21">21 September 2026</time></p>
+    <p class="intro">This policy explains how LAAU (Lean Agile AI University, “we”, “our”) handles information when you use our institutional website, Academy applications, assessments, credential services and LAAU Student &amp; Executive Portal (“LAAU Portal”).</p>
+    <p>For privacy questions or requests, contact <a href="mailto:support@laau.university">support@laau.university</a>.</p>
 
-  <!-- ===== Site Header (Injected) ===== -->
-  <div id="site-header"></div>
+    <nav class="contents" aria-label="Policy contents">
+      <h2>In this policy</h2>
+      <ol>
+        <li><a href="#account">Account access and Google sign-in</a></li>
+        <li><a href="#services">Applications, learning and credentials</a></li>
+        <li><a href="#payments">Payments</a></li>
+        <li><a href="#analytics">Website analytics and browser storage</a></li>
+        <li><a href="#use">How information is used</a></li>
+        <li><a href="#sharing">Storage and sharing</a></li>
+        <li><a href="#retention">Retention</a></li>
+        <li><a href="#requests">Your choices and deletion requests</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#updates">Policy changes and contact</a></li>
+      </ol>
+    </nav>
 
-  <!-- ===== Page Content ===== -->
-  <main class="container page-content">
-
-    <header class="page-header">
-      <h1>Privacy Policy</h1>
-    </header>
-
-    <section class="content-section">
-      <p>
-        LAAU (“AAIU”, “we”, “our”) respects your privacy and is
-        committed to protecting personal information shared with us.
-      </p>
+    <section id="account" class="policy-section" aria-labelledby="account-heading">
+      <h2 id="account-heading">1. Account access and Google sign-in</h2>
+      <p>LAAU Portal uses Firebase Authentication for Google sign-in and passwordless email-link sign-in. If you choose Google sign-in, Google and Firebase provide account identity information such as your email address, display name, Google account identifier and profile image when available. Firebase also assigns an identifier to your LAAU account.</p>
+      <p>We use this identity information to authenticate you, associate your account with assigned services, display account information and respond to account-support requests. Account identity is processed and stored through Firebase Authentication and associated with the LAAU service records needed to provide your access.</p>
+      <p>Google handles the Google-account authentication step. For passwordless access, your email address is used to send and complete the sign-in link. Signing in is separate from choosing to receive promotional communications.</p>
     </section>
 
-    <section class="content-section">
-      <h2>Information We Collect</h2>
+    <section id="services" class="policy-section" aria-labelledby="services-heading">
+      <h2 id="services-heading">2. Applications, learning and credentials</h2>
+      <p>Information you provide through applications, assessments and support requests can include your name, email address, professional background, assessment responses and the details included in your message or submission. Academy capability-review applications use an embedded Google Form; information submitted there is processed through Google Forms and made available to LAAU for reviewing and responding to the application.</p>
+      <p>Portal services use records associated with your account, including programme participation, assigned learning resources, assessments, recognition and credentials. These records support access to the services assigned to you and the delivery of results, resources and support.</p>
+      <p>Credential verification is intended to let a recipient check an issued credential. When a credential is available through the verification service, someone with its verification details may be able to see the holder’s name, award details, identifier, dates and validity status shown by that service. Contact us if you have a concern about the information displayed for your credential.</p>
+    </section>
+
+    <section id="payments" class="policy-section" aria-labelledby="payments-heading">
+      <h2 id="payments-heading">3. Payments</h2>
+      <p>Razorpay processes payments made through its checkout services. Information you enter directly into those payment interfaces is handled by Razorpay under its own privacy information.</p>
+      <p>LAAU uses transaction information needed to confirm payments and administer the associated service, such as order or payment references, payment status, amount and information necessary for receipts, reconciliation, refunds and support. Payment transaction records are distinct from the financial credentials entered into the payment interface.</p>
+      <p>See <a href="https://razorpay.com/privacy/">Razorpay’s privacy policy</a>.</p>
+    </section>
+
+    <section id="analytics" class="policy-section" aria-labelledby="analytics-heading">
+      <h2 id="analytics-heading">4. Website analytics and browser storage</h2>
+      <p>We use Google Analytics on our institutional website and Academy website to understand page visits and interactions, including application and programme-information links, and to improve the website experience. Analytics information can include page addresses, referring pages, interaction events, approximate location, browser and device information, and cookies or similar online identifiers. Google processes this information as the analytics service provider.</p>
+      <p>Our sign-in and website features also use browser storage for authentication state and preferences such as the selected visual theme. Restricting browser storage can affect sign-in or other website features.</p>
+      <p>You can manage cookies and site storage through your browser. Where supported, Google’s <a href="https://support.google.com/analytics/answer/181881?hl=en">Analytics opt-out browser add-on</a> provides an additional control over website activity sent through Google Analytics. This control does not delete information already collected or stop information needed to deliver the website itself.</p>
+      <p>More information is available in <a href="https://support.google.com/analytics/answer/11593727?hl=en">Google’s description of Analytics data collection</a> and <a href="https://policies.google.com/technologies/partner-sites">how Google uses information from sites that use its services</a>.</p>
+    </section>
+
+    <section id="use" class="policy-section" aria-labelledby="use-heading">
+      <h2 id="use-heading">5. How information is used</h2>
       <ul>
-        <li>
-          Name, email address, and professional details submitted during
-          assessments
-        </li>
-        <li>
-          Payment-related metadata (handled securely by Razorpay)
-        </li>
+        <li>Authenticate users and provide access to assigned portal services.</li>
+        <li>Review applications and administer programmes, assessments, learning resources and credentials.</li>
+        <li>Provide assessment insights, credential verification and service-related communication.</li>
+        <li>Confirm payments, handle payment queries and maintain necessary transaction records.</li>
+        <li>Respond to support and privacy requests, investigate problems and protect service integrity.</li>
+        <li>Understand website usage and improve the user experience.</li>
+        <li>Meet applicable legal obligations and address disputes.</li>
       </ul>
+      <p>If you receive optional promotional communications from LAAU, you can ask us to stop them by contacting the support address below. Messages necessary to address an existing service, payment or privacy request are handled separately.</p>
     </section>
 
-    <section class="content-section">
-      <h2>Use of Information</h2>
-      <p>
-        Information is used solely for assessment delivery, insight reporting,
-        governance validation, and support communication.
-      </p>
+    <section id="sharing" class="policy-section" aria-labelledby="sharing-heading">
+      <h2 id="sharing-heading">6. Storage and sharing</h2>
+      <p>Information is handled within LAAU’s service infrastructure and by providers supporting the functions described in this policy:</p>
+      <ul>
+        <li><strong>Google/Firebase:</strong> hosting, authentication and the application services used to operate LAAU Portal.</li>
+        <li><strong>Google Forms:</strong> Academy capability-review submissions.</li>
+        <li><strong>Google Analytics:</strong> website usage measurement.</li>
+        <li><strong>Razorpay:</strong> payment processing and associated transaction services.</li>
+      </ul>
+      <p>People responsible for LAAU administration and support use relevant information to perform those functions. Credential information may also be disclosed through the verification service described above. We may disclose information where required by applicable law or to address a legal claim.</p>
+      <p>Service providers may process information in locations outside your country, depending on the service and its configuration. Their own privacy information explains their handling of information; see <a href="https://policies.google.com/privacy">Google’s privacy policy</a> and <a href="https://firebase.google.com/support/privacy">Firebase privacy and security information</a>.</p>
     </section>
 
-    <section class="content-section">
-      <h2>Data Security</h2>
-      <p>
-        We implement reasonable safeguards. Payment data is never stored on our
-        servers.
-      </p>
+    <section id="retention" class="policy-section" aria-labelledby="retention-heading">
+      <h2 id="retention-heading">7. Retention</h2>
+      <p>Retention depends on the purpose of the record, the service provided, outstanding requests or disputes, and applicable legal obligations. We use the following criteria when assessing whether information still needs to be kept:</p>
+      <dl>
+        <dt>Account and profile information</dt>
+        <dd>Whether it is needed to provide access, administer an existing service, handle an account request or satisfy a legal obligation.</dd>
+        <dt>Assessment and programme records</dt>
+        <dd>Whether they are needed for delivery, results, a review or appeal, support, or a required record of the service.</dd>
+        <dt>Credential records</dt>
+        <dd>Whether a limited award record is still necessary and lawfully retained to verify an issued credential or address a validity dispute. Closing a portal account does not by itself determine the retention of that separate record.</dd>
+        <dt>Payment and accounting records</dt>
+        <dd>The applicable accounting, tax and other legal retention requirements, together with any unresolved payment or refund issue.</dd>
+        <dt>Support records, technical logs and backups</dt>
+        <dd>The need to resolve requests, maintain security and recover services, together with applicable retention requirements. Backup removal can follow a separate rotation from active-system deletion.</dd>
+        <dt>Analytics information</dt>
+        <dd>The applicable Google Analytics retention settings and deletion controls. Those settings apply differently to user-level information, event information and aggregated reports.</dd>
+      </dl>
+      <p>When handling a deletion request, we assess which information can be removed and which records need to remain. We will explain any applicable retention reason in our response. We delete or anonymise information when it is no longer needed for these purposes or applicable retention obligations.</p>
     </section>
 
-    <section class="content-section">
-      <h2>Contact</h2>
-      <p>
-        Email:
-        <a href="mailto:support@laau.university">
-          support@laau.university
-        </a>
-      </p>
+    <section id="requests" class="policy-section" aria-labelledby="requests-heading">
+      <h2 id="requests-heading">8. Your choices and deletion requests</h2>
+      <p>You can request access to, correction of, or deletion of information associated with your LAAU account by emailing <a href="mailto:support@laau.university">support@laau.university</a>. You can use the same address for privacy concerns or to withdraw permission for optional communications.</p>
+      <p>Include the account email address and describe your request. We may ask for information reasonably needed to verify your identity and locate the relevant records. Do not send a password, one-time code or full payment-card details.</p>
+      <p>We review requests under applicable law and will explain the outcome, including any information that must remain and the reason. Account deletion can remove access to portal services. Requests concerning credential retention or public verification are considered separately from closing the sign-in account.</p>
+      <p>You can also manage LAAU’s connection through your Google Account settings. Removing that connection or signing out does not, on its own, delete information already held in LAAU’s service records. Contact us to request that deletion.</p>
     </section>
 
+    <section id="security" class="policy-section" aria-labelledby="security-heading">
+      <h2 id="security-heading">9. Security</h2>
+      <p>LAAU uses Firebase Authentication for portal sign-in and account permissions to govern access to assigned services. We take reasonable measures to protect information, while recognising that no internet service can guarantee absolute security.</p>
+      <p>Keep your email and Google account secure and avoid sharing sign-in links. Report suspected unauthorised access or a privacy concern to <a href="mailto:support@laau.university">support@laau.university</a>.</p>
+    </section>
+
+    <section id="updates" class="policy-section" aria-labelledby="updates-heading">
+      <h2 id="updates-heading">10. Policy changes and contact</h2>
+      <p>Updates to this policy will be posted on this page with a revised date. Where a change requires additional notice or consent, we will provide that before applying the change.</p>
+      <p>Privacy contact: <strong>LAAU support</strong><br><a href="mailto:support@laau.university">support@laau.university</a></p>
+    </section>
   </main>
-
-  <!-- ===== Site Footer (Injected) ===== -->
-  <div id="site-footer"></div>
-
-  <!-- ===== Canonical Header/Footer Scripts ===== -->
-  <script src="/assets/js/header.js"></script>
-  <script src="/assets/js/footer.js"></script>
-
+  <footer class="site-footer">
+    <div class="wrap">
+      <nav class="site-nav" aria-label="Institutional links">
+        <a href="https://laau.university/">LAAU website</a>
+        <a href="https://laau.university/portal.html">About LAAU Portal</a>
+        <a href="https://laau.university/governance/terms-and-conditions.html">Terms &amp; Conditions</a>
+      </nav>
+      <p>© 2026 LAAU. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="LAAU Portal gives students and executives access to their assigned credentials, licensed learning resources, recognitions and professional services.">
+  <title>LAAU Portal | Lean Agile AI University</title>
+  <link rel="canonical" href="https://laau.university/portal.html">
+  <!-- LAAU public portal overview: 20260921-portal-review-1 -->
+  <style>
+    :root { color-scheme: light; --ink: #16324d; --muted: #465c6e; --line: #dbe4ec; --accent: #176859; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f4f7fa; color: var(--ink); font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: #125a8e; text-underline-offset: .2em; }
+    a:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+    .wrap { width: min(100% - 40px, 1060px); margin-inline: auto; }
+    .skip { position: absolute; left: 20px; top: -100px; padding: 12px; background: white; z-index: 5; }
+    .skip:focus { top: 12px; }
+    .site-header { background: white; border-bottom: 1px solid var(--line); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; padding-block: 18px; }
+    .logo { display: block; width: 190px; max-width: 100%; height: auto; }
+    nav { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+    main { padding-block: 54px; }
+    .eyebrow { margin: 0 0 10px; color: var(--accent); font-size: .82rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0 0 18px; font-size: clamp(2.35rem, 6vw, 3.8rem); line-height: 1.08; letter-spacing: -.045em; }
+    h2 { margin: 0 0 12px; font-size: 1.45rem; line-height: 1.3; }
+    h3 { margin: 0 0 9px; font-size: 1.08rem; }
+    p { margin: 0 0 16px; }
+    .intro { max-width: 750px; font-size: 1.16rem; color: var(--muted); }
+    .actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 26px 0 38px; }
+    .button { display: inline-block; padding: 12px 22px; border-radius: 7px; background: var(--ink); color: white; text-decoration: none; font-weight: 650; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 20px 0 34px; }
+    .card, .panel { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
+    .card p { color: var(--muted); margin: 0; }
+    .panel { margin-top: 22px; }
+    .panel p:last-child { margin-bottom: 0; }
+    .policy-links { display: flex; flex-wrap: wrap; gap: 12px 26px; margin-top: 18px; }
+    .site-footer { padding-block: 25px; border-top: 1px solid var(--line); color: var(--muted); font-size: .93rem; }
+    .site-footer p { margin: 0; }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } main { padding-block: 34px; } .wrap { width: min(100% - 32px, 1060px); } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="https://laau.university/" aria-label="LAAU institutional website">
+        <img class="logo" src="/assets/images/LAAU-Logo.png" alt="Lean Agile AI University (LAAU)">
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="https://laau.university/">LAAU website</a>
+        <a href="https://portal.laau.university/login.html">Portal sign in</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+    <p class="eyebrow">Lean Agile AI University</p>
+    <h1>LAAU Portal</h1>
+    <p class="intro">The Student &amp; Executive Portal brings your assigned credentials, licensed learning resources, recognitions and professional services together in one place.</p>
+    <div class="actions">
+      <a class="button" href="https://portal.laau.university/login.html">Sign in to LAAU Portal</a>
+      <a href="mailto:support@laau.university">Contact portal support</a>
+    </div>
+    <section aria-labelledby="services-heading">
+      <h2 id="services-heading">What you can access</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Credential portfolio</h3>
+          <p>View credentials associated with your account, including available university certificates, trainer certificates and digital badges.</p>
+        </article>
+        <article class="card">
+          <h3>Licensed learning resources</h3>
+          <p>Access official resources assigned to you through your eligible programmes and services.</p>
+        </article>
+        <article class="card">
+          <h3>Professional services</h3>
+          <p>Find the assessments, recognitions and executive services available through your portal account.</p>
+        </article>
+      </div>
+      <p>Availability depends on your account permissions, enrolments and assigned services. Signing in does not automatically grant a credential or access to every resource.</p>
+    </section>
+    <section class="panel" aria-labelledby="signin-heading">
+      <h2 id="signin-heading">How sign-in works</h2>
+      <p>Use your registered Google account or request a passwordless sign-in link at your registered email address. LAAU Portal uses Firebase Authentication to manage sign-in.</p>
+      <p>If your expected services are missing, contact <a href="mailto:support@laau.university">support@laau.university</a>.</p>
+    </section>
+    <section class="panel" aria-labelledby="privacy-heading">
+      <h2 id="privacy-heading">Privacy and terms</h2>
+      <p>Read the privacy policy and terms before using the portal. For questions about your information, contact <a href="mailto:support@laau.university">support@laau.university</a>.</p>
+      <nav class="policy-links" aria-label="Portal policies">
+        <a href="https://laau.university/governance/privacy-policy.html">Privacy Policy</a>
+        <a href="https://laau.university/governance/terms-and-conditions.html">Terms &amp; Conditions</a>
+      </nav>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="wrap"><p>&copy; 2026 LAAU. Lean Agile AI University.</p></div></footer>
+</body>
+</html>

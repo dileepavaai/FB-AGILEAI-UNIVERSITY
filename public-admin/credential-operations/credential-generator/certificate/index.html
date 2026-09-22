@@ -52,6 +52,10 @@
     rel="stylesheet"
     href="../assets/css/certificate-generator.css"
   />
+  <link
+    rel="stylesheet"
+    href="../assets/css/certificate-signature.css?v=20260922-signature-1"
+  />
 </head>
 
 <body class="app-loading">
@@ -434,11 +438,11 @@
     );
 
     await import(
-      "./generator/certificate-pdf.js?v=20260922-seal-1"
+      "./generator/certificate-pdf.js?v=20260922-signature-1"
     );
 
     await import(
-      "./generator/certificate-generator.js?v=20260922-certificate-layout-1"
+      "./generator/certificate-generator.js?v=20260922-signature-1"
     );
 
     console.info(
@@ -448,7 +452,7 @@
           "20260922-seal-1",
 
         pdfEngine:
-          "20260922-seal-1",
+          "20260922-signature-1",
 
         controller:
           "v1.4.3"

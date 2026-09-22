@@ -1,0 +1,155 @@
+/* LAAU issuer signature — 20260922-signature-1
+   Shared by university and trainer certificates. The approved issuer
+   signature is independent of the trainer and licensed provider block.
+   Keep the existing fixed 1100 × 778 landscape capture canvas. */
+
+.certificate-template,
+.trainer-certificate-template {
+    flex-shrink: 0;
+    color: #111827;
+}
+
+.certificate-template .certificate-footer,
+.trainer-certificate-template .trainer-certificate-footer {
+    position: absolute;
+    left: 56px;
+    right: 56px;
+    bottom: 40px;
+    margin: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-rows: auto auto;
+    column-gap: 40px;
+    row-gap: 10px;
+    min-height: 126px;
+    text-align: left;
+}
+
+.certificate-template .certificate-metadata,
+.trainer-certificate-template .trainer-certificate-metadata {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+}
+
+.certificate-template .certificate-metadata p,
+.trainer-certificate-template .trainer-certificate-metadata p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #4b5563;
+}
+
+.certificate-template .verification-line {
+    margin-top: 5px;
+}
+
+.certificate-template .issuer-section,
+.trainer-certificate-template .issuer-section {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+}
+
+.certificate-template .issuer-line,
+.trainer-certificate-template .issuer-line {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.certificate-template .issuer-role,
+.trainer-certificate-template .issuer-role {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #6b7280;
+}
+
+.certificate-template .certificate-signatory,
+.trainer-certificate-template .certificate-signatory {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: end;
+    text-align: center;
+}
+
+.certificate-template .certificate-signature-image,
+.trainer-certificate-template .certificate-signature-image {
+    display: block;
+    width: 156px;
+    height: auto;
+    margin: 0 auto 4px;
+}
+
+.certificate-template .certificate-signatory-name,
+.trainer-certificate-template .certificate-signatory-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #111827;
+}
+
+.certificate-template .certificate-signatory-title,
+.trainer-certificate-template .certificate-signatory-title {
+    margin: 2px 0 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #4b5563;
+}
+
+/* Reserve the footer without changing the training attribution data. */
+.trainer-certificate-template .trainer-certificate-header {
+    margin-bottom: 18px;
+}
+
+.trainer-certificate-template .trainer-certificate-emblem {
+    width: 100px;
+    margin-bottom: 12px;
+}
+
+.trainer-certificate-template .trainer-certificate-body {
+    margin-top: 18px;
+}
+
+.trainer-certificate-template #trainercertLearnerName,
+.trainer-certificate-template #trainercertCredentialType {
+    margin: 12px 0;
+}
+
+.trainer-certificate-template .trainer-attribution-grid {
+    margin-top: 18px;
+    margin-bottom: 0;
+}
+
+.trainer-certificate-template .trainer-column,
+.trainer-certificate-template .organization-column {
+    gap: 6px;
+    min-height: 0;
+}
+
+.trainer-certificate-template .trainer-heading,
+.trainer-certificate-template .organization-heading {
+    margin-bottom: 4px;
+}
+
+.trainer-certificate-template .trainer-name {
+    margin-bottom: 0;
+}
+
+.trainer-certificate-template .organization-emblem {
+    width: 88px;
+    height: 72px;
+    margin: 4px auto;
+}
+
+.trainer-certificate-template .training-program-label {
+    margin-top: 8px;
+}
+
+.trainer-certificate-template .training-program-name {
+    margin-bottom: 4px;
+}

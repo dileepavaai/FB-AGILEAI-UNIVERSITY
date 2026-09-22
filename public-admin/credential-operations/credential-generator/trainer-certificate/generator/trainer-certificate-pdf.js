@@ -124,7 +124,7 @@
 import {
     prepareCredentialRender,
     buildVersionedAssetPath
-} from "../../shared/credential-render-assets.js?v=20260922-seal-1";
+} from "../../shared/credential-render-assets.js?v=20260922-signature-1";
 
 import { assertProviderRender } from "../../shared/training-provider-branding.js?v=20260922-academy-brand-2";
 
@@ -683,6 +683,7 @@ window.generateTrainerCertificatePdf =
 
             const assertCurrentRender = await prepareCredentialRender({
                 element: certificateElement,
+                requireIssuerSignature: true,
                 credentialId,
                 credentialIdSelector: "#trainercertCredentialId",
                 getCurrentCredentialId: () => resolveCredentialId(resolveLoadedCredential()),

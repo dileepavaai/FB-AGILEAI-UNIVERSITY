@@ -1,5 +1,5 @@
 /*
- * LAAU credential export prerequisites — 20260922-seal-1.
+ * LAAU credential export prerequisites — 20260922-signature-1.
  * Fail before upload when a render is stale or a required image is unavailable.
  * Each export uses a new Storage object; existing published files stay intact.
  */
@@ -7,6 +7,9 @@
 const SEAL_PATH =
     "/credential-operations/credential-generator/assets/images/LAAU-Seal.png";
 const SEAL_VERSION = "?v=20260922-seal-1";
+const SIGNATURE_PATH =
+    "/credential-operations/credential-generator/assets/images/Dileep-Appupillai-Signature.png";
+const SIGNATURE_VERSION = "?v=20260922-signature-1";
 const RENDER_TIMEOUT_MS = 15000;
 
 function withTimeout(promise, message) {
@@ -26,6 +29,21 @@ function isNotRendered(element) {
         if (current.hidden || window.getComputedStyle(current).display === "none") {
             return true;
         }
+    }
+    return false;
+}
+
+// The off-screen capture container may intentionally have opacity: 0.
+// Inspect the signature and its ancestors only inside the certificate canvas.
+function signatureNotVisible(image, certificate) {
+    for (let current = image; current; current = current.parentElement) {
+        const style = window.getComputedStyle(current);
+        if (
+            current.hidden || style.display === "none" ||
+            style.visibility === "hidden" || style.visibility === "collapse" ||
+            style.opacity === "0"
+        ) return true;
+        if (current === certificate) return false;
     }
     return false;
 }
@@ -80,7 +98,8 @@ export async function prepareCredentialRender({
     credentialId,
     credentialIdSelector,
     getCurrentCredentialId,
-    getCurrentElement
+    getCurrentElement,
+    requireIssuerSignature = false
 }) {
     const images = renderedImages(element);
     const imageSources = images.map(image => image.src);
@@ -98,6 +117,24 @@ export async function prepareCredentialRender({
         throw new Error("The preview does not use the approved LAAU seal.");
     }
 
+    // Only the two certificate exporters require the issuer signature.
+    // Badge exports keep their existing seal-only contract.
+    const signatures = images.filter(image => image.hasAttribute("data-laau-signature"));
+    if (requireIssuerSignature) {
+        if (signatures.length !== 1 || signatureNotVisible(signatures[0], element)) {
+            throw new Error("The approved issuer signature is missing from the preview.");
+        }
+        const signatureUrl = new URL(signatures[0].src, window.location.href);
+        if (
+            signatureUrl.origin !== window.location.origin ||
+            signatureUrl.pathname !== SIGNATURE_PATH ||
+            signatureUrl.search !== SIGNATURE_VERSION ||
+            signatureUrl.hash
+        ) {
+            throw new Error("The preview does not use the approved issuer signature.");
+        }
+    }
+
     const assertCurrent = (requireLoaded = true) => {
         const renderedId = String(
             element.querySelector(credentialIdSelector)?.textContent || ""
@@ -112,6 +149,7 @@ export async function prepareCredentialRender({
         const currentImages = renderedImages(element);
         if (
             currentImages.length !== images.length || isNotRendered(seals[0]) ||
+            (requireIssuerSignature && signatureNotVisible(signatures[0], element)) ||
             images.some((image, index) =>
                 currentImages[index] !== image || image.src !== imageSources[index] ||
                 (requireLoaded && (!image.complete || image.naturalWidth <= 0 || image.naturalHeight <= 0))

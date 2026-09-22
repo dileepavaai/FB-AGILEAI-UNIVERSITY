@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-detail-header.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Phase     : Credential Workspace Stabilization
 
@@ -101,7 +101,7 @@
         "CredentialDetailHeader";
 
     const MODULE_VERSION =
-        "1.2.0";
+        "1.3.0";
 
 
     const CredentialDetailHeader = {
@@ -216,22 +216,8 @@
                 "LAAU";
 
 
-            const issueDate =
-                this.firstValue([
-
-                    credential.issueDate,
-
-                    credential.issue_date,
-
-                    credential.issuedOn,
-
-                    credential.issued_on,
-
-                    credential.issuedAt,
-
-                    credential.issued_at
-
-                ]);
+            // Preserve typed timestamps until formatting; firstValue() is for text.
+            const issueDate = this.resolveIssueDate(credential);
 
 
             const validity =
@@ -288,9 +274,7 @@
                             <span>
 
                                 ${this.escape(
-                                    this.formatDate(
-                                        issueDate
-                                    )
+                                    issueDate
                                 )}
 
                             </span>
@@ -499,65 +483,78 @@
            DATE FORMAT
         ================================================== */
 
-        formatDate(
-            value
-        ) {
-
-            try {
-
-                const resolvedDate =
-                    typeof value?.toDate ===
-                        "function"
-
-                        ? value.toDate()
-
-                        : value instanceof Date
-
-                            ? value
-
-                            : new Date(
-                                value
-                            );
-
-
-                if (
-                    !(resolvedDate instanceof Date) ||
-                    Number.isNaN(
-                        resolvedDate.getTime()
-                    )
-                ) {
-
-                    return String(
-                        value
-                    );
-
-                }
-
-
-                return resolvedDate
-                    .toLocaleDateString(
-                        "en-GB",
-                        {
-                            day:
-                                "2-digit",
-
-                            month:
-                                "short",
-
-                            year:
-                                "numeric"
-                        }
-                    );
-
-            } catch {
-
-                return String(
-                    value ||
-                    ""
-                );
-
+        // LAAU issue-date repair: 20260922-issue-date-1
+        resolveIssueDate(credential) {
+            for (const value of [
+                credential.issueDate, credential.issue_date,
+                credential.issuedOn, credential.issued_on,
+                credential.issuedAt, credential.issued_at
+            ]) {
+                const label = this.formatDate(value);
+                if (label) return label;
             }
+            return "";
+        },
 
+        formatDate(value) {
+            try {
+                let date;
+                let dateOnly = false;
+                const validCalendar = (year, month, day) => {
+                    if (year < 1 || year > 9999 || month < 1 || month > 12 || day < 1 || day > 31) return false;
+                    const calendar = new Date(0);
+                    calendar.setUTCFullYear(year, month - 1, day);
+                    calendar.setUTCHours(0, 0, 0, 0);
+                    return calendar.getUTCFullYear() === year &&
+                        calendar.getUTCMonth() === month - 1 && calendar.getUTCDate() === day;
+                };
+                if (value === null || value === undefined || value === "") return "";
+                if (typeof value === "string") {
+                    const text = value.trim();
+                    const plain = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+                    if (plain) {
+                        const [year, month, day] = plain.slice(1).map(Number);
+                        if (!validCalendar(year, month, day)) return "";
+                        date = new Date(0);
+                        date.setUTCFullYear(year, month - 1, day);
+                        date.setUTCHours(0, 0, 0, 0);
+                        dateOnly = true;
+                    } else {
+                        // Accept an explicit timestamp, not an ambiguous locale date.
+                        const iso = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?(?:Z|[+-]\d{2}:\d{2})$/.exec(text);
+                        if (!iso || !validCalendar(Number(iso[1]), Number(iso[2]), Number(iso[3])) ||
+                            Number(iso[4]) > 23 || Number(iso[5]) > 59 || Number(iso[6] || 0) > 59) return "";
+                        date = new Date(text);
+                    }
+                } else if (typeof value === "object") {
+                    if (typeof value.toDate === "function") {
+                        date = value.toDate();
+                    } else {
+                        // Date.prototype accepts real Dates across JavaScript realms.
+                        try { date = new Date(Date.prototype.getTime.call(value)); }
+                        catch {
+                            const seconds = value.seconds ?? value._seconds;
+                            const nanoseconds = value.nanoseconds ?? value._nanoseconds ?? 0;
+                            if (!Number.isSafeInteger(seconds) || !Number.isInteger(nanoseconds) ||
+                                seconds < -62135596800 || seconds > 253402300799 ||
+                                nanoseconds < 0 || nanoseconds > 999999999 ||
+                                (value.seconds !== undefined && value._seconds !== undefined && value.seconds !== value._seconds) ||
+                                (value.nanoseconds !== undefined && value._nanoseconds !== undefined && value.nanoseconds !== value._nanoseconds)) return "";
+                            date = new Date(seconds * 1000 + Math.floor(nanoseconds / 1000000));
+                        }
+                    }
+                } else {
+                    return "";
+                }
+                const milliseconds = Date.prototype.getTime.call(date);
+                if (!Number.isFinite(milliseconds)) return "";
+                return new Date(milliseconds).toLocaleDateString("en-GB", {
+                    day: "2-digit", month: "short", year: "numeric",
+                    ...(dateOnly ? { timeZone: "UTC" } : {})
+                });
+            } catch {
+                return "";
+            }
         },
 
 

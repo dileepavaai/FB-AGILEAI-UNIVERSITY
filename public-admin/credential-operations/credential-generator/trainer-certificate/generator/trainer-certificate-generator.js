@@ -149,7 +149,7 @@ document.addEventListener(
             "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
         const TEMPLATE_URL =
-            "./template/trainer-certificate-template.html?v=20260922-academy-brand-2";
+            "./template/trainer-certificate-template.html?v=20260922-certificate-layout-1";
 
         let previewRequestVersion = 0;
 

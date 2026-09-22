@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" data-portal-auth-state="pending">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Programmes associated with your recorded credentials.">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <title>Learning History | LAAU</title>
+
+    <link rel="stylesheet" href="/assets/css/site.css">
+    <link rel="stylesheet" href="/assets/css/portal.css">
+    <link rel="stylesheet" href="/assets/css/components/toolbar.css?v=1.2.0">
+    <link rel="stylesheet" href="/assets/css/components/footer.css?v=2.0.0">
+    <link rel="stylesheet" href="/assets/css/laau-brand.css?v=20260920-portal-brand-1">
+    <link rel="stylesheet" href="/assets/css/programmes/learning-history.css?v=20260922-learning-history-1">
+</head>
+<body data-page="learning-history">
+    <a class="history-skip-link" href="#main-content">Skip to learning history</a>
+
+    <div class="portal-shell">
+        <aside id="portal-sidebar" class="portal-sidebar"></aside>
+
+        <section class="portal-content-shell">
+            <header id="portal-toolbar" class="portal-toolbar"></header>
+
+            <main id="main-content" class="portal-home learning-history-page" tabindex="-1">
+                <div class="portal-page">
+                    <header class="history-page-header">
+                        <div>
+                            <p class="history-eyebrow">Programmes</p>
+                            <h1>Learning History</h1>
+                            <p class="history-description">Programmes associated with your recorded credentials.</p>
+                        </div>
+                        <a class="history-button history-button-secondary" href="/credentials/my-credentials.html">
+                            My Credentials <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    </header>
+
+                    <p id="history-status" class="history-status" role="status" aria-live="polite" aria-atomic="true">Checking your session…</p>
+
+                    <div id="history-error" class="history-state history-error" hidden>
+                        <div>
+                            <p class="history-state-label">Unable to load</p>
+                            <h3>We couldn’t load your learning history</h3>
+                            <p id="history-error-message">Please try again.</p>
+                            <button id="history-retry" class="history-button history-button-primary" type="button">Try again</button>
+                        </div>
+                    </div>
+
+                    <!-- PortalAuth reveals this region only after authentication. -->
+                    <section id="signedInUI" hidden aria-hidden="true">
+                        <section class="history-section" aria-labelledby="history-heading">
+                            <div class="history-section-heading">
+                                <h2 id="history-heading">Credential records</h2>
+                                <span id="history-count" class="history-count" hidden></span>
+                            </div>
+
+                            <div id="history-loading" class="history-state history-loading">
+                                <span class="history-loading-indicator" aria-hidden="true"></span>
+                                <div>
+                                    <h3>Loading your learning history</h3>
+                                    <p>Retrieving your recorded credentials and programme details.</p>
+                                </div>
+                            </div>
+
+                            <div id="history-empty" class="history-state history-empty" hidden>
+                                <div>
+                                    <p class="history-state-label">Your records</p>
+                                    <h3>No learning history yet</h3>
+                                    <p>No credential records are currently available for your account. You can view your portfolio in My Credentials.</p>
+                                    <a class="history-text-link" href="/credentials/my-credentials.html">Go to My Credentials <span aria-hidden="true">&rarr;</span></a>
+                                </div>
+                            </div>
+
+                            <!-- Controller renders one item per resolver-visible credential. -->
+                            <ul id="history-records" class="history-records" aria-label="Recorded credentials and programmes" hidden></ul>
+                        </section>
+                    </section>
+
+                    <section id="signedOutUI" hidden aria-hidden="true"></section>
+
+                    <noscript>
+                        <div class="history-state">
+                            <div>
+                                <h2>JavaScript is required</h2>
+                                <p>Enable JavaScript in your browser and reload this page to access your learning history.</p>
+                            </div>
+                        </div>
+                    </noscript>
+                </div>
+            </main>
+
+            <div id="site-footer"></div>
+        </section>
+    </div>
+
+    <script>
+        window.__AAIU_CONTEXT = "portal";
+        window.__AAIU_PAGE = "learning-history";
+        window.__AAIU_EXPERIENCE = "learning-history";
+        window.__AAIU_PORTAL_LOGIN_URL__ = "/login.html";
+    </script>
+
+    <!-- Existing authentication and shared portal shell. -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="/assets/js/auth/firebase-init.js?v=1.4.0"></script>
+    <script src="/assets/js/auth/portal-auth.js?v=2.0.1"></script>
+    <script src="/assets/js/auth/portal-session-service.js?v=1.2.1"></script>
+    <script src="/assets/js/services/entitlements/resolvePortalEntitlements.js"></script>
+    <script src="/assets/js/components/sidebar.js?v=20260920-portal-brand-1"></script>
+    <script src="/assets/js/components/toolbar.js?v=1.4.0"></script>
+    <script src="/assets/js/footer.js?v=2.0.0"></script>
+    <script src="/assets/js/services/programs/program-service.js"></script>
+    <script src="/assets/js/programmes/learning-history.js?v=20260922-learning-history-1"></script>
+</body>
+</html>

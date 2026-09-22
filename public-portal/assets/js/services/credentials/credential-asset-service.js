@@ -3,7 +3,7 @@
    Student & Executive Portal
 
    File      : credential-asset-service.js
-   Version   : 1.2.0
+   Version   : 1.3.0
    Status    : ACTIVE
    Phase     : Credential Asset Consumption
 
@@ -29,6 +29,11 @@
 
    Change History
    ----------------------------------------------------------
+   v1.3.0
+   • Resolves assets by credential metadata and learner ownership
+   • Supports migrated credential IDs with unchanged document IDs
+   • Rejects ambiguous published/latest assets
+
    v1.2.0
    • Waits for Firebase authentication readiness
    • Uses learner_uid in all collection queries
@@ -550,29 +555,75 @@
             const db =
                 this.getDb();
 
-            const documentId =
-                this.buildDocumentId(
-                    normalizedCredentialId,
-                    assetType
-                );
-
             try {
+
+                /*
+                 * Credential ID migrations preserve existing document IDs.
+                 * Query the record fields instead of deriving a document
+                 * path from the current credential ID. Keep every learner
+                 * access constraint in the query for Firestore rules.
+                 */
 
                 const snapshot =
                     await db
                         .collection(
                             COLLECTION_NAME
                         )
-                        .doc(
-                            documentId
+                        .where(
+                            "learner_uid",
+                            "==",
+                            learnerUid
                         )
+                        .where(
+                            "credential_id",
+                            "==",
+                            normalizedCredentialId
+                        )
+                        .where(
+                            "asset_type",
+                            "==",
+                            assetType
+                        )
+                        .where(
+                            "status",
+                            "==",
+                            "published"
+                        )
+                        .where(
+                            "is_latest",
+                            "==",
+                            true
+                        )
+                        .limit(2)
                         .get();
+
+                if (snapshot.docs.length > 1) {
+
+                    throw new Error(
+                        "[CredentialAssetService] Multiple published/latest assets match this credential and asset type."
+                    );
+
+                }
 
                 const asset =
                     this.normalizeAsset(
-                        snapshot,
+                        snapshot.docs[0],
                         learnerUid
                     );
+
+                if (
+                    asset &&
+                    (
+                        asset.credentialId !== normalizedCredentialId ||
+                        asset.assetType !== assetType
+                    )
+                ) {
+
+                    throw new Error(
+                        "[CredentialAssetService] Asset metadata does not match the requested credential and asset type."
+                    );
+
+                }
 
                 console.info(
                     "[CredentialAssetService] Asset read completed:",
@@ -582,7 +633,8 @@
 
                         assetType,
 
-                        documentId,
+                        documentId:
+                            asset?.id || null,
 
                         learnerUid,
 
@@ -603,8 +655,6 @@
                             normalizedCredentialId,
 
                         assetType,
-
-                        documentId,
 
                         learnerUid,
 
@@ -870,7 +920,7 @@
         CredentialAssetService;
 
     console.info(
-        "[CredentialAssetService] Loaded v1.2.0"
+        "[CredentialAssetService] Loaded v1.3.0"
     );
 
 })(window);

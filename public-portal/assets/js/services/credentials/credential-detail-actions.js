@@ -108,31 +108,18 @@
 
         },
 
+        // LAAU action repair: 20260922-badge-actions-1
         download(assetType) {
-
-            const credential =
-                this.getActiveCredential();
-
-            if (
-                !credential ||
-                !assetType ||
-                !window.CredentialAssetPreview ||
-                typeof window.CredentialAssetPreview.download !== "function"
-            ) {
-
-                console.warn(
-                    "[CredentialDetailActions] Download unavailable."
-                );
-
-                return;
-
+            const credential = this.getActiveCredential();
+            const overlay = window.CredentialDetailOverlay;
+            const preview = window.CredentialAssetPreview;
+            if (!credential || !overlay?.isOpen || overlay.activeCredential !== credential ||
+                !overlay.activeAsset || typeof overlay.downloadActiveAsset !== "function" ||
+                !preview || preview.normalizeAssetType(assetType) !==
+                    preview.normalizeAssetType(overlay.activeAssetType)) {
+                return false;
             }
-
-            window.CredentialAssetPreview.download(
-                credential,
-                assetType
-            );
-
+            return overlay.downloadActiveAsset(assetType);
         },
 
         shareLinkedIn() {

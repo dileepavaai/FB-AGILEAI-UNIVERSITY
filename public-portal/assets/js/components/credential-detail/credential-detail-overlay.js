@@ -1,3 +1,4 @@
+// LAAU action repair: 20260922-badge-actions-1
 /* ==========================================================
    LAAU
    Student & Executive Portal
@@ -612,6 +613,9 @@
 
             if (linkedInButton) {
 
+                // A real link retains browser navigation, keyboard and popup controls.
+                if (linkedInButton.tagName === "A") return;
+
                 event.preventDefault();
 
                 event.stopPropagation();
@@ -631,6 +635,8 @@
             credential,
             options = {}
         ) {
+
+            window.CredentialAssetPreview?.cancelDownload?.();
 
             this.initialize();
 
@@ -711,6 +717,8 @@
 
         showDetails() {
 
+            window.CredentialAssetPreview?.cancelDownload?.();
+
             if (
                 !this.isOpen ||
                 !this.activeCredential
@@ -765,6 +773,8 @@
         async showAssetPreview(
             assetType
         ) {
+
+            window.CredentialAssetPreview?.cancelDownload?.();
 
             if (
                 !this.isOpen ||
@@ -1302,7 +1312,7 @@
 
             }
 
-            window.CredentialAssetPreview
+            return window.CredentialAssetPreview
                 .download(
                     this.activeCredential,
                     assetType ||
@@ -1419,6 +1429,8 @@
         ================================================== */
 
         close() {
+
+            window.CredentialAssetPreview?.cancelDownload?.();
 
             if (!this.overlay) {
 

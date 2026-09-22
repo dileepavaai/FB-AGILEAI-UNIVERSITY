@@ -145,7 +145,7 @@
         "CredentialAssetPreview";
 
     const MODULE_VERSION =
-        "2.3.0";
+        "2.4.0";
 
     const ASSET_TYPES =
         Object.freeze({
@@ -271,6 +271,19 @@
        PUBLIC COMPONENT
     ====================================================== */
 
+    // LAAU action repair: 20260922-badge-actions-1
+    const MAX_DOWNLOAD_BYTES = 50 * 1024 * 1024;
+    const DOWNLOAD_TIMEOUT_MS = 20000;
+    let downloadOperation = null;
+
+    function signedInUid() {
+        try {
+            return normalizeString(window.firebase?.auth?.()?.currentUser?.uid);
+        } catch {
+            return "";
+        }
+    }
+
     const CredentialAssetPreview = {
 
 
@@ -318,10 +331,11 @@
                     asset
                 );
 
-            const hasDownload =
-                Boolean(
-                    downloadUrl
-                );
+            const hasDownload = Boolean(downloadUrl && new URL(downloadUrl).protocol === "https:");
+            const verificationUrl = this.resolveVerificationUrl(credential);
+            const linkedInUrl = verificationUrl ?
+                "https://www.linkedin.com/sharing/share-offsite/?url=" +
+                encodeURIComponent(verificationUrl) : "";
 
             return `
 
@@ -395,16 +409,33 @@
 
                         </button>
 
-                        <button
-                            type="button"
-                            class="credential-asset-preview-button primary js-share-credential-linkedin"
-                            data-credential-asset-type="${this.escapeAttribute(
-                                normalizedAssetType
-                            )}">
-
+                        ${linkedInUrl ? `
+                        <a class="credential-asset-preview-button primary js-share-credential-linkedin"
+                            href="${this.escapeAttribute(linkedInUrl)}"
+                            target="_blank" rel="noopener noreferrer">
                             Share on LinkedIn
+                        </a>` : ""}
 
-                        </button>
+                        <p class="credential-asset-action-status" role="status"
+                            aria-live="polite" aria-atomic="true"></p>
+                        <p class="credential-asset-download-fallback" hidden>
+                            The automatic download could not finish.
+                            <a class="js-open-published-credential-asset"
+                                href="${this.escapeAttribute(downloadUrl)}"
+                                target="_blank" rel="noopener noreferrer">Open published file</a>
+                            and use the browser's download control, or right-click
+                            the badge and choose “Save image as…”.
+                        </p>
+                        ${verificationUrl ? `
+                        <p class="credential-share-instructions">
+                            LinkedIn shares your public verification link.
+                            ${normalizedAssetType === ASSET_TYPES.DIGITAL_BADGE ?
+                                "To include the badge image, attach the downloaded PNG to your LinkedIn post." :
+                                "You can attach the downloaded certificate to your LinkedIn post."}
+                            You can also copy this
+                            <a href="${this.escapeAttribute(verificationUrl)}" target="_blank"
+                                rel="noopener noreferrer">verification link</a> into your post.
+                        </p>` : ""}
 
                     </footer>
 
@@ -755,119 +786,158 @@
            DOWNLOAD
         ================================================== */
 
-        download(
-            credential,
-            assetType,
-            asset
-        ) {
-
-            if (
-                !credential ||
-                !assetType ||
-                !asset
-            ) {
-
-                window.alert(
-                    "Download is not available for this asset yet."
-                );
-
-                return;
-
-            }
-
-            const url =
-                this.resolvePublishedDownloadUrl(
-                    asset
-                );
-
-            if (!url) {
-
-                window.alert(
-                    "Download is not available because the published URL is missing or invalid."
-                );
-
-                return;
-
-            }
-
-            const anchor =
-                document.createElement(
-                    "a"
-                );
-
-            anchor.href =
-                url;
-
-            anchor.target =
-                "_blank";
-
-            anchor.rel =
-                "noopener noreferrer";
-
-            const fileName =
-                normalizeString(
-                    asset?.fileName
-                );
-
-            anchor.download =
-                fileName || "";
-
-            document.body.appendChild(
-                anchor
+        async download(credential, assetType, asset) {
+            const overlay = window.CredentialDetailOverlay;
+            const workspace = overlay?.body?.querySelector(".credential-asset-preview-workspace");
+            const status = workspace?.querySelector(".credential-asset-action-status");
+            const button = workspace?.querySelector(".js-download-credential-asset");
+            const fallback = workspace?.querySelector(".credential-asset-download-fallback");
+            const uid = signedInUid();
+            const normalizedType = this.normalizeAssetType(assetType);
+            const credentialId = normalizeString(credential?.credentialId || credential?.credential_id || credential?.id);
+            const matches = () => Boolean(
+                uid && signedInUid() === uid && button && status && workspace?.isConnected &&
+                overlay?.isOpen && overlay.activeCredential === credential &&
+                overlay.activeAsset === asset &&
+                this.normalizeAssetType(overlay.activeAssetType) === normalizedType
             );
-
-            anchor.click();
-
-            anchor.remove();
-
+            if (downloadOperation) return false;
+            if (!credential || !asset || !matches() || asset.status !== "published" ||
+                asset.isLatest !== true || asset.learnerUid !== uid ||
+                normalizeString(asset.credentialId) !== credentialId ||
+                this.normalizeAssetType(asset.assetType) !== normalizedType) {
+                if (status) status.textContent = "Download unavailable. Reopen your credential and try again.";
+                return false;
+            }
+            const url = this.resolvePublishedDownloadUrl(asset);
+            if (!url || new URL(url).protocol !== "https:") {
+                if (status) status.textContent = "The published download URL is missing or invalid.";
+                return false;
+            }
+            const controller = new window.AbortController();
+            const operation = { controller, button, status, fallback, cancelled: false };
+            downloadOperation = operation;
+            const current = () => downloadOperation === operation && !operation.cancelled && matches();
+            button.disabled = true;
+            button.setAttribute("aria-disabled", "true");
+            button.setAttribute("aria-busy", "true");
+            if (fallback) fallback.hidden = true;
+            if (status) status.textContent = "Preparing your download…";
+            const timer = window.setTimeout(() => controller.abort(), DOWNLOAD_TIMEOUT_MS);
+            try {
+                // This is the published URL already approved by CredentialAssetService.
+                // Never attach a Firebase ID token or ambient browser credentials.
+                const response = await window.fetch(url, {
+                    method: "GET", credentials: "omit", redirect: "error",
+                    referrerPolicy: "no-referrer", signal: controller.signal
+                });
+                if (!response.ok || response.type === "opaque") throw new Error("download-response");
+                const mime = normalizeLowercase(response.headers.get("Content-Type")).split(";")[0];
+                const formats = {
+                    "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp",
+                    "image/gif": "gif", "application/pdf": "pdf"
+                };
+                const extension = formats[mime];
+                const format = this.resolveAssetFormat(asset, normalizedType);
+                if (!extension || (format === "pdf" && extension !== "pdf") ||
+                    (format === "image" && extension === "pdf")) throw new Error("download-format");
+                const reportedSize = Number(response.headers.get("Content-Length") || 0);
+                if (reportedSize > MAX_DOWNLOAD_BYTES) throw new Error("download-size");
+                const chunks = [];
+                let size = 0;
+                if (!response.body?.getReader) throw new Error("download-stream");
+                const reader = response.body.getReader();
+                while (true) {
+                    if (!current()) throw new Error("download-stale");
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    size += value.byteLength;
+                    if (size > MAX_DOWNLOAD_BYTES) {
+                        await reader.cancel();
+                        throw new Error("download-size");
+                    }
+                    chunks.push(value);
+                }
+                if (!size || !current()) throw new Error("download-empty-or-stale");
+                const blob = new window.Blob(chunks, { type: mime });
+                const bytes = new Uint8Array(await blob.slice(0, 12).arrayBuffer());
+                const text = String.fromCharCode(...bytes);
+                const correctSignature =
+                    (extension === "png" && [137,80,78,71,13,10,26,10].every((v,i) => bytes[i] === v)) ||
+                    (extension === "jpg" && bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255) ||
+                    (extension === "pdf" && text.startsWith("%PDF-")) ||
+                    (extension === "gif" && /^(GIF87a|GIF89a)/.test(text)) ||
+                    (extension === "webp" && text.startsWith("RIFF") && text.slice(8,12) === "WEBP");
+                if (!correctSignature) throw new Error("download-content");
+                if (!current()) return false;
+                const objectUrl = window.URL.createObjectURL(blob);
+                const anchor = document.createElement("a");
+                anchor.href = objectUrl;
+                anchor.download = this.resolveDownloadFileName(asset, credentialId, normalizedType, extension);
+                document.body.appendChild(anchor);
+                try { anchor.click(); } finally {
+                    anchor.remove();
+                    window.setTimeout(() => window.URL.revokeObjectURL(objectUrl), 60000);
+                }
+                if (status) status.textContent = "Download started. Check your browser's Downloads.";
+                return true;
+            } catch (error) {
+                if (current()) {
+                    if (status) status.textContent = "Download could not finish. Use “Open published file” below to save a copy.";
+                    if (fallback) fallback.hidden = false;
+                }
+                return false;
+            } finally {
+                window.clearTimeout(timer);
+                controller.abort();
+                if (downloadOperation === operation) downloadOperation = null;
+                if (button?.isConnected) {
+                    button.disabled = false;
+                    button.setAttribute("aria-disabled", "false");
+                    button.removeAttribute("aria-busy");
+                }
+            }
         },
 
-
-        /* ==================================================
-           LINKEDIN SHARE
-        ================================================== */
-
-        shareOnLinkedIn(
-            credential
-        ) {
-
-            if (!credential) {
-
-                window.alert(
-                    "LinkedIn sharing is not available for this credential yet."
-                );
-
-                return;
-
+        cancelDownload() {
+            if (!downloadOperation) return;
+            const operation = downloadOperation;
+            downloadOperation = null;
+            operation.cancelled = true;
+            operation.controller.abort();
+            if (operation.button?.isConnected) {
+                operation.button.disabled = false;
+                operation.button.setAttribute("aria-disabled", "false");
+                operation.button.removeAttribute("aria-busy");
             }
+            if (operation.status?.isConnected) operation.status.textContent = "";
+            if (operation.fallback?.isConnected) operation.fallback.hidden = true;
+        },
 
-            const verificationUrl =
-                this.resolveVerificationUrl(
-                    credential
-                );
-
-            if (!verificationUrl) {
-
-                window.alert(
-                    "LinkedIn sharing is not available for this credential yet."
-                );
-
-                return;
-
+        resolveDownloadFileName(asset, credentialId, assetType, extension) {
+            let name = normalizeString(asset?.fileName)
+                .replace(/[<>:"/\\|?*\x00-\x1f\x7f\u202a-\u202e\u2066-\u2069]/g, "_")
+                .replace(/^[. ]+|[. ]+$/g, "");
+            if (!name || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(name)) {
+                name = `${credentialId}_${assetType}`.replace(/[^a-zA-Z0-9_-]/g, "_");
             }
+            name = name.replace(/\.[a-zA-Z0-9]{1,10}$/, "").slice(0, 150);
+            return `${name || "credential-asset"}.${extension}`;
+        },
 
-            const linkedInUrl =
-                "https://www.linkedin.com/sharing/share-offsite/?url=" +
-                encodeURIComponent(
-                    verificationUrl
-                );
-
-            window.open(
-                linkedInUrl,
-                "_blank",
-                "noopener,noreferrer"
-            );
-
+        /* Native links in render() do not depend on popup JavaScript. */
+        shareOnLinkedIn(credential) {
+            const verificationUrl = this.resolveVerificationUrl(credential);
+            if (!verificationUrl) return false;
+            const anchor = document.createElement("a");
+            anchor.href = "https://www.linkedin.com/sharing/share-offsite/?url=" +
+                encodeURIComponent(verificationUrl);
+            anchor.target = "_blank";
+            anchor.rel = "noopener noreferrer";
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            return true;
         },
 
 
@@ -1262,59 +1332,16 @@
            VERIFICATION URL
         ================================================== */
 
-        resolveVerificationUrl(
-            credential
-        ) {
-
-            if (!credential) {
-
-                return "";
-
-            }
-
-            const credentialId =
-                normalizeString(
-                    credential.credentialId ||
-                    credential.credential_id ||
-                    credential.id
-                );
-
-            const explicitUrl =
-                normalizeString(
-                    credential.verificationUrl ||
-                    credential.verification_url ||
-                    credential.verifyUrl ||
-                    credential.verify_url ||
-                    credential.registryUrl ||
-                    credential.registry_url
-                );
-
-            if (
-                explicitUrl &&
-                this.isUsablePublishedUrl(
-                    explicitUrl
-                )
-            ) {
-
-                return explicitUrl;
-
-            }
-
-            if (credentialId) {
-
-                return (
-                    "https://verify.laau.university/?credentialId=" +
-                    encodeURIComponent(
-                        credentialId
-                    )
-                );
-
-            }
-
-            return (
-                "https://verify.laau.university"
-            );
-
+        resolveVerificationUrl(credential) {
+            if (!credential) return "";
+            const credentialId = normalizeString(
+                credential.credentialId || credential.credential_id || credential.id
+            ).toUpperCase();
+            // Share only the public verifier for this credential. Stored asset URLs
+            // may contain private download tokens and must never be shared here.
+            if (!/^(?:LAAU|AAU)-[A-Z0-9]{8}$/.test(credentialId)) return "";
+            return "https://verify.laau.university/?credentialId=" +
+                encodeURIComponent(credentialId);
         },
 
 
@@ -1454,6 +1481,16 @@
 
     window.CredentialAssetPreview =
         CredentialAssetPreview;
+
+    for (const name of [
+        "portal:session-cleanup-started", "portal:session-cleared",
+        "portal:signout-started", "portal:auth-redirecting"
+    ]) {
+        window.addEventListener(name, () => CredentialAssetPreview.cancelDownload());
+        document.addEventListener(name, () => CredentialAssetPreview.cancelDownload());
+    }
+
+    window.addEventListener("pagehide", () => CredentialAssetPreview.cancelDownload());
 
     console.info(
         `[${MODULE_NAME}] Loaded v${MODULE_VERSION}`

@@ -1,8 +1,8 @@
 /* =====================================================
    🔷 CENTRALIZED HEADER (ROLE + THEME — FINAL STABLE)
    -----------------------------------------------------
-   Version: v2.2.0
-   Date: 2026-03-29
+   Version: 20260922-admin-logo-1
+   Date: 2026-09-22
 
    CHANGE TYPE:
    - Safe full replacement
@@ -19,6 +19,15 @@
 ===================================================== */
 
 export function loadHeader(user = null, role = null) {
+
+  // Shared branding styles load once, including after auth re-renders the header.
+  if (!document.getElementById("laauAdminHeaderBranding")) {
+    const stylesheet = document.createElement("link");
+    stylesheet.id = "laauAdminHeaderBranding";
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = "/assets/css/admin-header-branding.css?v=20260922-admin-logo-1";
+    document.head.appendChild(stylesheet);
+  }
 
   const email = user?.email || "Checking authentication...";
 
@@ -40,8 +49,15 @@ export function loadHeader(user = null, role = null) {
      🔷 HEADER TEMPLATE
      ===================================================== */
   const header = `
-    <header class="topbar">
-      <h1>LAAU – Admin</h1>
+    <header class="topbar laau-admin-header">
+      <h1 class="laau-admin-brand">
+        <a class="laau-admin-brand-link" href="/index.html" aria-label="LAAU Admin">
+          <img class="laau-admin-brand-logo"
+               src="/assets/images/LAAU-Logo.png?v=20260922-admin-logo-1"
+               alt="LAAU" width="140" height="70" />
+          <span class="laau-admin-brand-label" aria-hidden="true">Admin</span>
+        </a>
+      </h1>
 
       <div class="user">
 

@@ -14,7 +14,7 @@
 ===================================================== */
 
 import { auth, login, logout, getUserRole } from "./core.js";
-import { loadHeader } from "./layout/header.js";
+import { loadHeader } from "./layout/header.js?v=20260922-admin-logo-1";
 import { loadFooter } from "./layout/footer.js";
 import { highlightActiveSidebar } from "./layout/sidebar.js";
 

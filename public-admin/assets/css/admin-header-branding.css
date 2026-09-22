@@ -1,0 +1,124 @@
+/* LAAU Admin header branding — 20260922-admin-logo-1.
+   Scoped to the shared header; the approved logo keeps its original colors. */
+
+.topbar.laau-admin-header {
+  box-sizing: border-box;
+  height: auto;
+  min-height: 88px;
+  padding: 8px 20px;
+  gap: 16px 24px;
+  background: var(--bg-card, #fff);
+  color: var(--text-main, #111827);
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.laau-admin-header .laau-admin-brand {
+  flex: 0 0 auto;
+  margin: 0;
+  line-height: 1;
+}
+
+.laau-admin-header .laau-admin-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.laau-admin-header .laau-admin-brand-link:focus-visible {
+  outline: 2px solid var(--primary, #2563eb);
+  outline-offset: 4px;
+}
+
+.laau-admin-header .laau-admin-brand-logo {
+  display: block;
+  flex: 0 0 auto;
+  width: 140px;
+  height: 70px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 6px;
+}
+
+.laau-admin-header .laau-admin-brand-label {
+  padding-left: 12px;
+  border-left: 1px solid var(--border-strong, #d1d5db);
+  color: var(--text-muted, #6b7280);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.laau-admin-header .user {
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.laau-admin-header #status {
+  min-width: 0;
+  max-width: min(40vw, 32rem);
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.laau-admin-header #themeToggle,
+.laau-admin-header #logoutBtn,
+.laau-admin-header .role-badge {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.laau-admin-header #themeToggle,
+.laau-admin-header #logoutBtn {
+  min-height: 40px;
+}
+
+.laau-admin-header #themeToggle {
+  min-width: 44px;
+}
+
+@media (max-width: 640px) {
+  .topbar.laau-admin-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 8px 12px 12px;
+  }
+
+  .laau-admin-header .laau-admin-brand {
+    align-self: flex-start;
+  }
+
+  .laau-admin-header .user {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px 10px;
+  }
+
+  .laau-admin-header #themeToggle {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .laau-admin-header #status {
+    grid-column: 2 / -1;
+    grid-row: 1;
+    max-width: none;
+  }
+
+  .laau-admin-header .role-badge {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+  }
+
+  .laau-admin-header #logoutBtn {
+    grid-column: 3;
+    grid-row: 2;
+  }
+}

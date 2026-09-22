@@ -152,7 +152,7 @@ import {
 
 import {
   initAdminApp
-} from "../../../../assets/js/admin-app.js";
+} from "../../../../assets/js/admin-app.js?v=20260922-admin-logo-1";
 
 import {
   loadAdminSidebar

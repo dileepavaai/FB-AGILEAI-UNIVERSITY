@@ -1,3 +1,5 @@
+import { fitCredentialPreview } from "../../shared/credential-preview-fit.js?v=20260922-signature-2";
+
 /* ==========================================================
    LAAU
    Credential Operations Suite
@@ -149,7 +151,7 @@ document.addEventListener(
             "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
         const TEMPLATE_URL =
-            "./template/trainer-certificate-template.html?v=20260922-signature-1";
+            "./template/trainer-certificate-template.html?v=20260922-signature-2";
 
         let previewRequestVersion = 0;
 
@@ -379,6 +381,8 @@ document.addEventListener(
             document.getElementById(
                 "renderTrainerCertificatePreview"
             );
+
+        fitCredentialPreview(trainerCertificatePreview);
 
 
         /* ==================================================

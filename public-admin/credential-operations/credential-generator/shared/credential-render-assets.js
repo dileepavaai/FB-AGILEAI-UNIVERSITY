@@ -1,5 +1,5 @@
 /*
- * LAAU credential export prerequisites — 20260922-signature-1.
+ * LAAU credential export prerequisites — 20260922-signature-2.
  * Fail before upload when a render is stale or a required image is unavailable.
  * Each export uses a new Storage object; existing published files stay intact.
  */
@@ -9,7 +9,7 @@ const SEAL_PATH =
 const SEAL_VERSION = "?v=20260922-seal-1";
 const SIGNATURE_PATH =
     "/credential-operations/credential-generator/assets/images/Dileep-Appupillai-Signature.png";
-const SIGNATURE_VERSION = "?v=20260922-signature-1";
+const SIGNATURE_VERSION = "?v=20260922-signature-2";
 const RENDER_TIMEOUT_MS = 15000;
 
 function withTimeout(promise, message) {

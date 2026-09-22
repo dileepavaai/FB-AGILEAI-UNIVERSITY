@@ -1,3 +1,5 @@
+import { fitCredentialPreview } from "../../shared/credential-preview-fit.js?v=20260922-signature-2";
+
 /* =====================================================
 LAAU
 Certificate Generator Controller
@@ -114,6 +116,8 @@ v1.4.1
       document.getElementById(
         "certificatePreview"
       );
+
+    fitCredentialPreview(certificatePreview);
 
     const credentialIdValue =
       document.getElementById(
@@ -798,7 +802,7 @@ v1.4.1
 
         const response =
           await fetch(
-            "./template/certificate-template.html?v=20260922-signature-1",
+            "./template/certificate-template.html?v=20260922-signature-2",
             {
               cache: "no-store"
             }

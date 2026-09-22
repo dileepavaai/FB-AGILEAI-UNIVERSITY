@@ -54,11 +54,11 @@
   />
   <link
     rel="stylesheet"
-    href="../assets/css/certificate-signature.css?v=20260922-signature-1"
+    href="../assets/css/certificate-signature.css?v=20260922-signature-2"
   />
 </head>
 
-<body class="app-loading">
+<body class="app-loading laau-certificate-generator">
 
   <div id="headerContainer"></div>
 
@@ -438,11 +438,11 @@
     );
 
     await import(
-      "./generator/certificate-pdf.js?v=20260922-signature-1"
+      "./generator/certificate-pdf.js?v=20260922-signature-2"
     );
 
     await import(
-      "./generator/certificate-generator.js?v=20260922-signature-1"
+      "./generator/certificate-generator.js?v=20260922-signature-2"
     );
 
     console.info(
@@ -452,7 +452,7 @@
           "20260922-seal-1",
 
         pdfEngine:
-          "20260922-signature-1",
+          "20260922-signature-2",
 
         controller:
           "v1.4.3"

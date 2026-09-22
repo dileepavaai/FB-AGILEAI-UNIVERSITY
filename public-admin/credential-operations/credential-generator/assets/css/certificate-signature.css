@@ -1,7 +1,81 @@
-/* LAAU issuer signature — 20260922-signature-1
+/* LAAU issuer signature and preview layout — 20260922-signature-2
    Shared by university and trainer certificates. The approved issuer
    signature is independent of the trainer and licensed provider block.
    Keep the existing fixed 1100 × 778 landscape capture canvas. */
+
+/* Only these two generator pages carry this class. Shrink their flex/grid
+   ancestors to the available content width instead of the canvas width. */
+.laau-certificate-generator .content {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+}
+
+.laau-certificate-generator .cg-container,
+.laau-certificate-generator .tcg-container,
+.laau-certificate-generator .cg-card,
+.laau-certificate-generator .tcg-card,
+.laau-certificate-generator .cg-preview,
+.laau-certificate-generator .tcg-preview {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.laau-certificate-generator .cg-search-grid,
+.laau-certificate-generator .tcg-search-grid,
+.laau-certificate-generator .cg-grid,
+.laau-certificate-generator .tcg-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+}
+
+.laau-certificate-generator #certificatePreview,
+.laau-certificate-generator #renderTrainerCertificatePreview {
+    display: block;
+    overflow: hidden;
+    padding: 16px;
+}
+
+.laau-certificate-generator #certificatePreview.laau-responsive-preview,
+.laau-certificate-generator #renderTrainerCertificatePreview.laau-responsive-preview {
+    min-height: 0;
+}
+
+.laau-responsive-preview > .laau-preview-frame {
+    position: relative;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.laau-responsive-preview > .laau-preview-frame > .certificate-template,
+.laau-responsive-preview > .laau-preview-frame > .trainer-certificate-template {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    transform-origin: top left;
+}
+
+@media (max-width: 768px) {
+    .laau-certificate-generator .content {
+        padding: 12px;
+    }
+
+    .laau-certificate-generator .cg-container,
+    .laau-certificate-generator .tcg-container {
+        padding: 0;
+    }
+
+    .laau-certificate-generator .cg-card,
+    .laau-certificate-generator .tcg-card {
+        padding: 12px;
+    }
+
+    .laau-certificate-generator #certificatePreview,
+    .laau-certificate-generator #renderTrainerCertificatePreview {
+        padding: 8px;
+    }
+}
 
 .certificate-template,
 .trainer-certificate-template {

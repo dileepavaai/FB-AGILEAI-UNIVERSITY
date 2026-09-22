@@ -70,7 +70,7 @@ v1.3.1
 import {
     prepareCredentialRender,
     buildVersionedAssetPath
-} from "../../shared/credential-render-assets.js?v=20260922-signature-1";
+} from "../../shared/credential-render-assets.js?v=20260922-signature-2";
 
 import {
     storage

@@ -1,0 +1,12 @@
+{
+  "service": "cloud-run-portal",
+  "project": "fb-agileai-university",
+  "region": "asia-south1",
+  "baselineRevision": "cloud-run-portal-00006-tjt",
+  "baseImage": "asia-south1-docker.pkg.dev/fb-agileai-university/cloud-run-source-deploy/cloud-run-portal@sha256:83a36228c8773ae022a1aec12803bf0a387e033c1f4997ed7d0b13beb777a7fb",
+  "sourceBuildId": "666012ad-260d-42b0-89ad-bff113d2424e",
+  "sourceGeneration": "1783167074615185",
+  "originalNormalizedSha256": "e3ebd988e01c7289d15b44d3c7e094dec43ba8e54866bdf9262d57e57b4d9f5c",
+  "patchedNormalizedSha256": "92aa04e546d30f8c496170160aa49a7cd1e386ba1bca4ac606b1e911f1b30580",
+  "change": "Add https://portal.laau.university to existing CORS origin array; preserve original code otherwise."
+}

@@ -1,0 +1,6 @@
+*
+!Dockerfile
+!index.js
+!smoke-test.mjs
+!.gcloudignore
+!.dockerignore

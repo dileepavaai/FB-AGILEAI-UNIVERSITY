@@ -1,0 +1,4 @@
+*
+!Dockerfile
+!index.js
+!smoke-test.mjs

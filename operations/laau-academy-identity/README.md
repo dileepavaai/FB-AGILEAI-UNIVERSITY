@@ -9,3 +9,5 @@ The script is scoped to project `fb-agileai-university` and trainer document `rQ
 On retry, an already migrated state is verified without rewriting it. If an error or uncertain commit result occurs, retain the reported backup folder and inspect the actual state before recovery. Do not deploy old code as an automatic rollback after a database migration.
 
 The new document receives new server-managed creation/update timestamps; original metadata is backed up. Subcollection enumeration is not transactional. Both organisation paths are checked before commit, and descendants are never recursively deleted. Avoid concurrent organisation or subcollection edits while the operation runs.
+
+The live compatibility check uses the trainer-certificate directory URL for its index page and verifies the original index.html content hash. This avoids a query-only index.html redirect in PowerShell; the branding version and database write plan are unchanged.

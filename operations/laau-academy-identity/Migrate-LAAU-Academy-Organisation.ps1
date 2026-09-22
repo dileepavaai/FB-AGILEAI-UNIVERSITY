@@ -137,7 +137,13 @@ function Assert-LiveCompatibility {
                 $binary -isnot [bool] -or $binary -ne $path.EndsWith('.png')) {
                 throw "Invalid compatibility manifest entry: $path"
             }
-            $url = 'https://admin.laau.university/' + $path.Substring('public-admin/'.Length) + '?v=' + $version
+            # Firebase serves directory index files at the directory URL. Request
+            # that canonical path directly to avoid query-only index redirects.
+            $urlPath = '/' + $path.Substring('public-admin/'.Length)
+            if ($urlPath.EndsWith('/index.html', [StringComparison]::Ordinal)) {
+                $urlPath = $urlPath.Substring(0, $urlPath.Length - 'index.html'.Length)
+            }
+            $url = 'https://admin.laau.university' + $urlPath + '?v=' + $version
             $file = Join-Path $folder ([guid]::NewGuid().ToString('N') + '.asset')
             Invoke-WebRequest -UseBasicParsing -Uri $url -Headers @{ 'Cache-Control' = 'no-cache' } `
                 -OutFile $file -TimeoutSec 60 | Out-Null

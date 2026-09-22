@@ -133,7 +133,7 @@ document.addEventListener(
             "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
         const TEMPLATE_URL =
-            "./template/trainer-certificate-template.html";
+            "./template/trainer-certificate-template.html?v=20260922-seal-1";
 
         const ORGANIZATION_EMBLEM_PATH =
             "/credential-operations/credential-generator/assets/images/organizations/agile-ai-academy.png";

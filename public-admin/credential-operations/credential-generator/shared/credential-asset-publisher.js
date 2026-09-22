@@ -3,7 +3,7 @@
    Admin Credential Generator
 
    File      : credential-asset-publisher.js
-   Version   : 1.4.0
+   Version   : 1.5.0
    Status    : ACTIVE
    Phase     : Credential-First Asset Publication
 
@@ -62,6 +62,13 @@
 
    Change History
    ----------------------------------------------------------
+   v1.5.0
+   • Resolves migrated assets by published metadata
+   • Preserves the existing registry document during republication
+   • Uses transactions to preserve ownership and publication versions
+   • Retains up to 50 previous publications and their Storage URLs
+   • Requires a new Storage object for every replacement
+
    v1.4.0
    • Adopted credential-first asset publication
    • Made learner_uid optional for historical credentials
@@ -99,7 +106,12 @@ import {
 import {
     doc,
     getDoc,
-    setDoc,
+    collection,
+    query,
+    where,
+    limit,
+    getDocs,
+    runTransaction,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -112,10 +124,13 @@ const MODULE_NAME =
     "CredentialAssetPublisher";
 
 const MODULE_VERSION =
-    "1.4.0";
+    "1.5.0";
 
 const COLLECTION_NAME =
     "credential_assets";
+
+const MAX_PUBLICATION_HISTORY =
+    50;
 
 const VALID_ASSET_TYPES =
     Object.freeze([
@@ -615,154 +630,239 @@ const CredentialAssetPublisher = {
 
 
     /* ======================================================
+       EXISTING PUBLICATION VALIDATION
+    ====================================================== */
+
+    validateExistingPublication(data, payload) {
+
+        if (
+            !data ||
+            typeof data !== "object" ||
+            Array.isArray(data) ||
+            data.credential_id !== payload.credential_id ||
+            data.asset_type !== payload.asset_type ||
+            data.status !== "published" ||
+            data.is_latest !== true ||
+            typeof data.storage_path !== "string" ||
+            !data.storage_path.trim()
+        ) {
+            throw new Error(
+                `[${MODULE_NAME}] Existing publication metadata is inconsistent.`
+            );
+        }
+
+        for (const field of ["learner_uid", "learnerUid"]) {
+            if (
+                data[field] !== undefined &&
+                data[field] !== null &&
+                typeof data[field] !== "string"
+            ) {
+                throw new Error(
+                    `[${MODULE_NAME}] Existing learner ownership is malformed.`
+                );
+            }
+        }
+
+        if (typeof data.download_url !== "string" || !data.download_url) {
+            throw new Error(`[${MODULE_NAME}] Existing download_url is missing.`);
+        }
+
+        this.validatePublishedUrl(data.download_url, "existing download_url");
+        if (data.preview_url) {
+            this.validatePublishedUrl(data.preview_url, "existing preview_url");
+        }
+
+        const version = data.version === undefined ? 1 : data.version;
+        if (!Number.isSafeInteger(version) || version < 1) {
+            throw new Error(`[${MODULE_NAME}] Existing asset version is invalid.`);
+        }
+
+        return version;
+    },
+
+    resolvePublicationOwner(payload, publications) {
+
+        const owners = new Set();
+        const incomingUid = this.normalizeString(payload.learner_uid);
+        if (incomingUid) owners.add(incomingUid);
+
+        for (const data of publications) {
+            for (const field of ["learner_uid", "learnerUid"]) {
+                const uid = this.normalizeString(data[field]);
+                if (uid) owners.add(uid);
+            }
+        }
+
+        if (owners.size > 1) {
+            throw new Error(
+                `[${MODULE_NAME}] Republication cannot transfer learner ownership.`
+            );
+        }
+
+        return owners.values().next().value || "";
+    },
+
+    /* ======================================================
        GENERAL PUBLICATION
     ====================================================== */
 
-    async publish(
-        payload
-    ) {
+    async publish(payload) {
 
-        const normalizedPayload =
-            this.normalizeInputPayload(
-                payload
-            );
+        const normalizedPayload = this.normalizeInputPayload(payload);
+        this.validatePayload(normalizedPayload);
 
-        this.validatePayload(
-            normalizedPayload
+        const canonicalId = this.buildDocumentId(
+            normalizedPayload.credential_id,
+            normalizedPayload.asset_type
         );
-
-        const documentId =
-            this.buildDocumentId(
-                normalizedPayload.credential_id,
-                normalizedPayload.asset_type
-            );
-
-        if (
-            !documentId
-        ) {
-
-            throw new Error(
-                `[${MODULE_NAME}] Unable to create asset document ID.`
-            );
-
+        if (!canonicalId || canonicalId.includes("/")) {
+            throw new Error(`[${MODULE_NAME}] Unable to create asset document ID.`);
         }
 
-        const reference =
-            doc(
-                db,
-                COLLECTION_NAME,
-                documentId
-            );
-
-        /*
-         * Preserve established learner ownership.
-         *
-         * If a credential asset already contains learner_uid,
-         * republication without learner_uid must not clear it.
-         */
-        const existingLearnerUid =
-            await this.resolveExistingLearnerUid(
-                reference
-            );
-
-        const incomingLearnerUid =
-            normalizedPayload.learner_uid;
-
-        /*
-         * Existing ownership wins when the incoming payload
-         * does not contain ownership.
-         *
-         * This publisher does not perform ownership transfer.
-         */
-        const effectiveLearnerUid =
-            incomingLearnerUid ||
-            existingLearnerUid ||
-            "";
-
-        const data =
-            this.normalizePayload(
-                normalizedPayload,
-                effectiveLearnerUid
-            );
+        const canonicalReference = doc(db, COLLECTION_NAME, canonicalId);
 
         try {
+            // Metadata is authoritative after migration: a published asset can
+            // retain its original AAU-prefixed registry document ID.
+            const candidates = await getDocs(query(
+                collection(db, COLLECTION_NAME),
+                where("credential_id", "==", normalizedPayload.credential_id),
+                where("asset_type", "==", normalizedPayload.asset_type),
+                where("status", "==", "published"),
+                where("is_latest", "==", true),
+                limit(2)
+            ));
 
-            await setDoc(
-                reference,
-                data,
-                {
-                    merge:
-                        true
+            if (candidates.docs.length > 1) {
+                throw new Error(
+                    `[${MODULE_NAME}] Multiple published/latest assets match this credential and asset type.`
+                );
+            }
+
+            const discoveredReference = candidates.docs[0]?.ref;
+            const reference = discoveredReference || canonicalReference;
+
+            const result = await runTransaction(db, async transaction => {
+                // Always read the canonical slot. It serializes new issuance
+                // and detects a collision with a discovered legacy pointer.
+                const canonicalSnapshot = await transaction.get(canonicalReference);
+                const existingSnapshot = reference.id === canonicalId
+                    ? canonicalSnapshot
+                    : await transaction.get(reference);
+
+                if (
+                    reference.id !== canonicalId &&
+                    canonicalSnapshot.exists()
+                ) {
+                    throw new Error(
+                        `[${MODULE_NAME}] Canonical asset document collides with the existing publication.`
+                    );
                 }
-            );
 
-            console.info(
-                `[${MODULE_NAME}] Asset published:`,
-                {
-                    moduleVersion:
-                        MODULE_VERSION,
-
-                    documentId,
-
-                    credentialId:
-                        normalizedPayload.credential_id,
-
-                    learnerUidPresent:
-                        Boolean(
-                            effectiveLearnerUid
-                        ),
-
-                    ownershipState:
-                        data.ownership_state,
-
-                    assetType:
-                        normalizedPayload.asset_type,
-
-                    storagePath:
-                        normalizedPayload.storage_path
+                if (discoveredReference && !existingSnapshot.exists()) {
+                    throw new Error(
+                        `[${MODULE_NAME}] Existing publication changed; reload before publishing.`
+                    );
                 }
-            );
 
-            return {
-                documentId,
-                data
-            };
+                let previous = null;
+                let history = [];
+                let version = normalizedPayload.version;
+                let effectiveLearnerUid = normalizedPayload.learner_uid;
 
+                if (existingSnapshot.exists()) {
+                    previous = existingSnapshot.data();
+                    const previousVersion = this.validateExistingPublication(
+                        previous, normalizedPayload
+                    );
+
+                    const storedHistory = previous.publication_history;
+                    if (storedHistory !== undefined && !Array.isArray(storedHistory)) {
+                        throw new Error(`[${MODULE_NAME}] Publication history is malformed.`);
+                    }
+                    history = storedHistory ? [...storedHistory] : [];
+                    if (history.length >= MAX_PUBLICATION_HISTORY) {
+                        throw new Error(
+                            `[${MODULE_NAME}] Publication history limit reached; no history was discarded.`
+                        );
+                    }
+                    let lastHistoryVersion = 0;
+                    for (const entry of history) {
+                        const historyVersion = this.validateExistingPublication(
+                            entry, normalizedPayload
+                        );
+                        if (
+                            Object.prototype.hasOwnProperty.call(entry, "publication_history") ||
+                            historyVersion <= lastHistoryVersion ||
+                            historyVersion >= previousVersion
+                        ) {
+                            throw new Error(`[${MODULE_NAME}] Publication history is inconsistent.`);
+                        }
+                        lastHistoryVersion = historyVersion;
+                    }
+
+                    effectiveLearnerUid = this.resolvePublicationOwner(
+                        normalizedPayload, [...history, previous]
+                    );
+
+                    // The export engine must upload a unique object before
+                    // calling this publisher; previous files remain usable.
+                    if (
+                        [previous, ...history].some(entry =>
+                            entry.storage_path.trim() === normalizedPayload.storage_path
+                        )
+                    ) {
+                        throw new Error(
+                            `[${MODULE_NAME}] Republication requires a new Storage path.`
+                        );
+                    }
+                    version = previousVersion + 1;
+                    if (!Number.isSafeInteger(version)) {
+                        throw new Error(`[${MODULE_NAME}] Asset version limit reached.`);
+                    }
+
+                    // Preserve the complete previous metadata, excluding its
+                    // own history so snapshots never recursively nest.
+                    const { publication_history: ignoredHistory, ...snapshot } = previous;
+                    history.push(snapshot);
+                }
+
+                const data = this.normalizePayload(
+                    { ...normalizedPayload, version }, effectiveLearnerUid
+                );
+                if (previous) {
+                    data.publication_history = history;
+                    if (previous.created_at) data.created_at = previous.created_at;
+                }
+
+                // Firestore rules require this pointer to stay published and
+                // latest. Keeping its document ID avoids creating a duplicate
+                // after an AAU -> LAAU credential metadata migration.
+                transaction.set(reference, data, { merge: true });
+                return { documentId: reference.id, data };
+            });
+
+            console.info(`[${MODULE_NAME}] Asset published:`, {
+                moduleVersion: MODULE_VERSION,
+                documentId: result.documentId,
+                credentialId: normalizedPayload.credential_id,
+                learnerUidPresent: Boolean(result.data.learner_uid),
+                ownershipState: result.data.ownership_state,
+                assetType: normalizedPayload.asset_type,
+                storagePath: normalizedPayload.storage_path,
+                version: result.data.version
+            });
+            return result;
         }
-        catch (
-            error
-        ) {
-
-            console.error(
-                `[${MODULE_NAME}] Asset publication failed:`,
-                {
-                    moduleVersion:
-                        MODULE_VERSION,
-
-                    documentId,
-
-                    credentialId:
-                        normalizedPayload.credential_id,
-
-                    learnerUidPresent:
-                        Boolean(
-                            effectiveLearnerUid
-                        ),
-
-                    assetType:
-                        normalizedPayload.asset_type,
-
-                    storagePath:
-                        normalizedPayload.storage_path,
-
-                    error
-                }
-            );
-
+        catch (error) {
+            console.error(`[${MODULE_NAME}] Asset publication failed:`, {
+                moduleVersion: MODULE_VERSION,
+                credentialId: normalizedPayload.credential_id,
+                assetType: normalizedPayload.asset_type,
+                error
+            });
             throw error;
-
         }
-
     },
 
 

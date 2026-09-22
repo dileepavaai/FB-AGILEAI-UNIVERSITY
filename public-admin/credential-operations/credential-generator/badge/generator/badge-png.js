@@ -6,7 +6,7 @@
    PNG Export and Publication Engine
 
    File      : badge-png.js
-   Version   : 1.1.0
+   Version   : 1.1.1
    Status    : ACTIVE
    Phase     : Credential-First Asset Publication
 
@@ -55,6 +55,11 @@
 ========================================================== */
 
 import {
+    prepareCredentialRender,
+    buildVersionedAssetPath
+} from "../../shared/credential-render-assets.js?v=20260922-seal-1";
+
+import {
     storage
 } from "../../../../assets/js/core.js?v=3.0.2";
 
@@ -73,7 +78,7 @@ const MODULE_NAME =
     "BadgePng";
 
 const MODULE_VERSION =
-    "1.1.0";
+    "1.1.1";
 
 const ASSET_TYPE =
     "digital_badge";
@@ -450,8 +455,13 @@ function downloadBadge(
    GENERATE, UPLOAD, PUBLISH AND DOWNLOAD
 ========================================================== */
 
+let exportInProgress = false;
+
 window.generateBadgePng =
     async function generateBadgePng() {
+
+        if (exportInProgress) return;
+        exportInProgress = true;
 
         try {
 
@@ -530,6 +540,14 @@ window.generateBadgePng =
                 }
             );
 
+            const assertCurrentRender = await prepareCredentialRender({
+                element: badgeElement,
+                credentialId,
+                credentialIdSelector: "#badgeCredentialId",
+                getCurrentCredentialId: () => resolveCredentialId(resolveLoadedCredential()),
+                getCurrentElement: resolveBadgeElement
+            });
+
             const canvas =
                 await window.html2canvas(
                     badgeElement,
@@ -562,11 +580,13 @@ window.generateBadgePng =
                 }
             );
 
+            assertCurrentRender();
+
             const fileName =
                 `${credentialId}_digital_badge.png`;
 
             const storagePath =
-                `credential-assets/${credentialId}/digital-badge/${fileName}`;
+                buildVersionedAssetPath(credentialId, "digital-badge", fileName);
 
             const storageRef =
                 ref(
@@ -730,6 +750,9 @@ window.generateBadgePng =
                 "Badge generation or publishing failed."
             );
 
+        }
+        finally {
+            exportInProgress = false;
         }
 
     };

@@ -103,7 +103,7 @@ document.addEventListener(
             "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
         const BADGE_TEMPLATE_URL =
-            "./template/badge-template.html";
+            "./template/badge-template.html?v=20260922-seal-1";
 
 
         /* ==================================================

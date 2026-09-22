@@ -4,7 +4,7 @@
 
    File      : trainer-certificate-pdf.js
    Component : Trainer Certificate PDF Publication Engine
-   Version   : 1.4.0
+   Version   : 1.4.1
    Status    : ACTIVE
    Phase     : Credential-First Asset Publication
 
@@ -114,6 +114,11 @@
 ========================================================== */
 
 import {
+    prepareCredentialRender,
+    buildVersionedAssetPath
+} from "../../shared/credential-render-assets.js?v=20260922-seal-1";
+
+import {
     storage
 } from "../../../../assets/js/core.js?v=3.0.2";
 
@@ -132,7 +137,7 @@ const MODULE_NAME =
     "TrainerCertificatePdf";
 
 const MODULE_VERSION =
-    "1.4.0";
+    "1.4.1";
 
 const ASSET_TYPE =
     "trainer_certificate";
@@ -148,9 +153,6 @@ const PDF_HEIGHT_MM =
 
 const RENDER_SCALE =
     3;
-
-const RENDER_STABILIZATION_DELAY_MS =
-    500;
 
 
 /* ==========================================================
@@ -354,102 +356,12 @@ function resolveCertificateElement() {
 
 
 /* ==========================================================
-   IMAGE SYNCHRONIZATION
-========================================================== */
-
-async function waitForImage(
-    imageElement
-) {
-
-    if (
-        !imageElement ||
-        !normalizeString(
-            imageElement.src
-        )
-    ) {
-
-        return;
-
-    }
-
-    console.info(
-        `[${MODULE_NAME}] Waiting for organization emblem.`
-    );
-
-    await new Promise(
-        (
-            resolve
-        ) => {
-
-            if (
-                imageElement.complete &&
-                imageElement.naturalWidth > 0
-            ) {
-
-                resolve();
-
-                return;
-
-            }
-
-            const complete =
-                () => {
-
-                    imageElement.onload =
-                        null;
-
-                    imageElement.onerror =
-                        null;
-
-                    resolve();
-
-                };
-
-            imageElement.onload =
-                complete;
-
-            imageElement.onerror =
-                complete;
-
-        }
-    );
-
-    /*
-     * Allows image decoding and browser layout calculation
-     * to stabilize before html2canvas captures the surface.
-     */
-    await new Promise(
-        (
-            resolve
-        ) => {
-
-            window.setTimeout(
-                resolve,
-                RENDER_STABILIZATION_DELAY_MS
-            );
-
-        }
-    );
-
-}
-
-
-/* ==========================================================
    PDF CREATION
 ========================================================== */
 
 async function createTrainerCertificatePdf(
     certificateElement
 ) {
-
-    const organizationLogo =
-        certificateElement.querySelector(
-            "#trainercertOrganizationEmblem"
-        );
-
-    await waitForImage(
-        organizationLogo
-    );
 
     const canvas =
         await window.html2canvas(
@@ -623,8 +535,13 @@ function buildPublicationPayload({
    GENERATE, UPLOAD, PUBLISH AND DOWNLOAD
 ========================================================== */
 
+let exportInProgress = false;
+
 window.generateTrainerCertificatePdf =
     async function generateTrainerCertificatePdf() {
+
+        if (exportInProgress) return;
+        exportInProgress = true;
 
         try {
 
@@ -752,6 +669,14 @@ window.generateTrainerCertificatePdf =
                 }
             );
 
+            const assertCurrentRender = await prepareCredentialRender({
+                element: certificateElement,
+                credentialId,
+                credentialIdSelector: "#trainercertCredentialId",
+                getCurrentCredentialId: () => resolveCredentialId(resolveLoadedCredential()),
+                getCurrentElement: resolveCertificateElement
+            });
+
             const pdf =
                 await createTrainerCertificatePdf(
                     certificateElement
@@ -764,11 +689,13 @@ window.generateTrainerCertificatePdf =
                 }
             );
 
+            assertCurrentRender();
+
             const fileName =
                 `${credentialId}_trainer_certificate.pdf`;
 
             const storagePath =
-                `credential-assets/${credentialId}/trainer-certificate/${fileName}`;
+                buildVersionedAssetPath(credentialId, "trainer-certificate", fileName);
 
             const pdfBlob =
                 pdf.output(
@@ -951,6 +878,9 @@ window.generateTrainerCertificatePdf =
                 "Trainer Certificate generation or publishing failed."
             );
 
+        }
+        finally {
+            exportInProgress = false;
         }
 
     };

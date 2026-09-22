@@ -6,7 +6,7 @@ Credential Operations Suite
 Certificate Generator
 PDF Export Engine
 
-Version: 1.3.4
+Version: 1.3.5
 
 Purpose:
 - Generate PDF from Certificate Template
@@ -68,6 +68,11 @@ v1.3.1
 */
 
 import {
+    prepareCredentialRender,
+    buildVersionedAssetPath
+} from "../../shared/credential-render-assets.js?v=20260922-seal-1";
+
+import {
     storage
 } from "../../../../assets/js/core.js?v=3.0.2";
 
@@ -86,7 +91,7 @@ const MODULE_NAME =
     "CertificatePdf";
 
 const MODULE_VERSION =
-    "1.3.4";
+    "1.3.5";
 
 const ASSET_TYPE =
     "university_certificate";
@@ -506,8 +511,13 @@ function buildPublicationPayload({
    GENERATE AND PUBLISH
 ===================================================== */
 
+let exportInProgress = false;
+
 window.generateCertificatePdf =
     async function generateCertificatePdf() {
+
+        if (exportInProgress) return;
+        exportInProgress = true;
 
         try {
 
@@ -604,6 +614,14 @@ window.generateCertificatePdf =
                 }
             );
 
+            const assertCurrentRender = await prepareCredentialRender({
+                element: certificateElement,
+                credentialId,
+                credentialIdSelector: "#certCredentialId",
+                getCurrentCredentialId: () => resolveCredentialId(resolveLoadedCredential()),
+                getCurrentElement: resolveCertificateElement
+            });
+
             const pdf =
                 await createCertificatePdf(
                     certificateElement
@@ -616,11 +634,13 @@ window.generateCertificatePdf =
                 }
             );
 
+            assertCurrentRender();
+
             const fileName =
                 `${credentialId}_university_certificate.pdf`;
 
             const storagePath =
-                `credential-assets/${credentialId}/university-certificate/${fileName}`;
+                buildVersionedAssetPath(credentialId, "university-certificate", fileName);
 
             const pdfBlob =
                 pdf.output(
@@ -790,6 +810,9 @@ window.generateCertificatePdf =
                 "PDF generation or publishing failed."
             );
 
+        }
+        finally {
+            exportInProgress = false;
         }
 
     };

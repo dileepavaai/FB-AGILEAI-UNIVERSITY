@@ -798,7 +798,7 @@ v1.4.1
 
         const response =
           await fetch(
-            "./template/certificate-template.html",
+            "./template/certificate-template.html?v=20260922-seal-1",
             {
               cache: "no-store"
             }

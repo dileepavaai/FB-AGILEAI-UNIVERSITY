@@ -1,0 +1,47 @@
+{
+  "version": "20260922-academy-brand-2",
+  "files": [
+    {
+      "path": "public-admin/credential-operations/credential-generator/assets/images/organizations/LAAU-Academy-Logo.png",
+      "binary": true,
+      "beforeSha256": null,
+      "previousSha256": "9471963109c3f05c5a9d59ba5f9fe827fabb054981476c9eb01f010cde3084cb",
+      "afterSha256": "9471963109c3f05c5a9d59ba5f9fe827fabb054981476c9eb01f010cde3084cb"
+    },
+    {
+      "path": "public-admin/credential-operations/credential-generator/shared/training-provider-branding.js",
+      "binary": false,
+      "beforeSha256": null,
+      "previousSha256": "bfb788e7164f01a5b91496bfaa8d17ca8c11c7ebc1f9a69414c617039e2c109b",
+      "afterSha256": "3f9ac78d8852b7695ef8af5351adbe6a3c48e73118699edbe4eaf2cf1763fb52"
+    },
+    {
+      "path": "public-admin/credential-operations/credential-generator/trainer-certificate/generator/trainer-certificate-generator.js",
+      "binary": false,
+      "beforeSha256": "49240689522bdf48f39c13554c811e9795c5e52d7859e132656871617928b8a6",
+      "previousSha256": "2ee355b958c8c54e0274b662b911cc9636d077f62c894f977b12e41b76f0de97",
+      "afterSha256": "7d30914c6e53955262b42bd5e53fe7516bd1edd0ecd4cd04291f63c965349b33"
+    },
+    {
+      "path": "public-admin/credential-operations/credential-generator/trainer-certificate/generator/trainer-certificate-pdf.js",
+      "binary": false,
+      "beforeSha256": "77fa3be253b7e035de6e15480afb4bc5908355b8cadcb0bf221d17179186a1a5",
+      "previousSha256": "f96cc17cc411508c765d4b246d5edef490d6072671b9038de941fe0349eabbd3",
+      "afterSha256": "509513416266bc3eea1cab14c959157c53ca0629eb1f3527d9d5a3e5bfb09cbb"
+    },
+    {
+      "path": "public-admin/credential-operations/credential-generator/trainer-certificate/index.html",
+      "binary": false,
+      "beforeSha256": "10c4718f8c5c3c5a5952e43d22e19ea7e3ca785a89e144b47dc0a7a583aea223",
+      "previousSha256": "df8d8276f03311f7dfe52f7ddd3bba1fa40545920c89a2f31240f7744e71018a",
+      "afterSha256": "3fb12be1a26d1de1587dcd1c01e0758ac0357f79d52fa5df5d6480e2c67d30dd"
+    },
+    {
+      "path": "public-admin/credential-operations/credential-generator/trainer-certificate/template/trainer-certificate-template.html",
+      "binary": false,
+      "beforeSha256": "ebda3ecfc5e46ecc70346cd1c991f1fa184c1e536b805d768e8fa773db3498e6",
+      "previousSha256": "1c6fe007a708bd535ec05e636a1a93f9ee5b72c075f96f3bf5a044552f1ab3aa",
+      "afterSha256": "1c6fe007a708bd535ec05e636a1a93f9ee5b72c075f96f3bf5a044552f1ab3aa"
+    }
+  ]
+}

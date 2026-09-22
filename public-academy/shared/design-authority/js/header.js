@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
       <!-- LEFT: BRAND + SYSTEM -->
       <div class="nav-left">
         <div class="brand">
-          <a href="/" class="brand-link">Agile AI Academy</a>
-          <span class="brand-sub">Capability System</span>
+          <a href="/" class="brand-link">LAAU Academy</a>
+          <span class="brand-sub">Learning and Development</span>
         </div>
       </div>
 

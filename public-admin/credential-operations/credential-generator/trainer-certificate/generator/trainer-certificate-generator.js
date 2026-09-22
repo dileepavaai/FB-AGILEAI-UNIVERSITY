@@ -4,7 +4,7 @@
 
    File      : trainer-certificate-generator.js
    Component : Trainer Certificate Generator Controller
-   Version   : 1.5.0
+   Version   : 1.6.1
    Status    : ACTIVE
    Phase     : Credential-First Asset Publication
 
@@ -70,6 +70,15 @@
 
    Change History
    ----------------------------------------------------------
+   v1.6.1
+   • Resolve the exact old and new Academy organisation IDs
+   • Preserve provider conflict checks across the organisation migration
+
+   v1.6.0
+   • Resolve the actual provider with exact-ID Academy branding
+   • Reject ambiguous provider records and stale preview results
+   • Preserve read-only registries and issuer seal
+
    v1.5.0
    • Strengthened trainer attribution architecture
    • Added governed Firestore collection constants
@@ -108,9 +117,16 @@ import {
     getDoc,
     getDocs,
     query,
-    where
+    where,
+    limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
+import {
+    resolveTrainingProviderContext,
+    registerProviderRender,
+    assertProviderRender
+} from "../../shared/training-provider-branding.js?v=20260922-academy-brand-2";
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -127,16 +143,15 @@ document.addEventListener(
             "TrainerCertificateGenerator";
 
         const MODULE_VERSION =
-            "1.5.0";
+            "1.6.1";
 
         const REGISTRY_API =
             "https://aau-credential-verify-458881040066.asia-south1.run.app/admin/credential-registry";
 
         const TEMPLATE_URL =
-            "./template/trainer-certificate-template.html?v=20260922-seal-1";
+            "./template/trainer-certificate-template.html?v=20260922-academy-brand-2";
 
-        const ORGANIZATION_EMBLEM_PATH =
-            "/credential-operations/credential-generator/assets/images/organizations/agile-ai-academy.png";
+        let previewRequestVersion = 0;
 
 
         /* ==================================================
@@ -808,9 +823,8 @@ document.addEventListener(
 
             try {
 
-                await renderTrainerCertificatePreview(
-                    record
-                );
+                const rendered = await renderTrainerCertificatePreview(record);
+                if (!rendered) return;
 
             }
             catch (
@@ -1062,814 +1076,50 @@ document.addEventListener(
            TRAINER CONTEXT
         ================================================== */
 
-        async function getDocumentById(
-            collectionName,
-            documentId
-        ) {
+        async function resolveTrainerContext(record) {
+            // Preserve the existing credential → batch → trainer → organisation
+            // relationship. Branding does not mutate any registry record.
+            return resolveTrainingProviderContext({
+                credential: record,
+                origin: window.location.origin,
+                getDocument: async (collectionName, documentId) => {
+                    const snapshot = await getDoc(doc(db, collectionName, documentId));
+                    return snapshot.exists() ? { id: snapshot.id, data: snapshot.data() } : null;
+                },
+                findRecords: async (collectionName, fieldName, value) => {
+                    const result = await getDocs(query(
+                        collection(db, collectionName), where(fieldName, "==", value), limit(2)
+                    ));
+                    return result.docs.map(snapshot => ({ id: snapshot.id, data: snapshot.data() }));
+                }
+            });
+        }
 
-            const normalizedId =
-                normalizeString(
-                    documentId
-                );
-
-            if (
-                !normalizedId
-            ) {
-
-                return null;
-
-            }
-
+        async function renderTrainerCertificatePreview(record) {
+            const requestVersion = ++previewRequestVersion;
+            disablePdfButton();
+            const isCurrent = () => requestVersion === previewRequestVersion && window.loadedCredential === record;
             try {
-
-                const snapshot =
-                    await getDoc(
-                        doc(
-                            db,
-                            collectionName,
-                            normalizedId
-                        )
-                    );
-
-                if (
-                    !snapshot.exists()
-                ) {
-
-                    return null;
-
+                if (!trainerCertificatePreview) {
+                    throw new Error("Trainer Certificate preview container is unavailable.");
                 }
-
-                return {
-                    id:
-                        snapshot.id,
-
-                    data:
-                        snapshot.data()
-                };
-
+                const response = await fetch(TEMPLATE_URL, { cache: "no-store" });
+                if (!response.ok) throw new Error(`Trainer Certificate template failed with HTTP ${response.status}.`);
+                const template = await response.text();
+                const trainerContext = await resolveTrainerContext(record);
+                if (!isCurrent()) return false;
+                const pdfRenderContainer = document.getElementById("pdfRenderContainer");
+                if (!pdfRenderContainer) throw new Error("Trainer Certificate export container is unavailable.");
+                trainerCertificatePreview.innerHTML = template;
+                pdfRenderContainer.innerHTML = template;
+                populateCertificateSurface(trainerCertificatePreview, record, trainerContext);
+                populateCertificateSurface(pdfRenderContainer, record, trainerContext);
+                return true;
+            } catch (error) {
+                if (!isCurrent()) return false;
+                throw error;
             }
-            catch (
-                error
-            ) {
-
-                console.error(
-                    `[${MODULE_NAME}] Direct document lookup failed.`,
-                    {
-                        collection:
-                            collectionName,
-
-                        documentId:
-                            normalizedId,
-
-                        errorCode:
-                            error?.code || "",
-
-                        errorMessage:
-                            error?.message || "",
-
-                        errorName:
-                            error?.name || "",
-
-                        error
-                    }
-                );
-
-                return null;
-
-            }
-
         }
-
-        async function getFirstByField(
-            collectionName,
-            fieldName,
-            value
-        ) {
-
-            const normalizedValue =
-                normalizeString(
-                    value
-                );
-
-            if (
-                !normalizedValue
-            ) {
-
-                return null;
-
-            }
-
-            try {
-
-                const result =
-                    await getDocs(
-                        query(
-                            collection(
-                                db,
-                                collectionName
-                            ),
-                            where(
-                                fieldName,
-                                "==",
-                                normalizedValue
-                            )
-                        )
-                    );
-
-                if (
-                    result.empty
-                ) {
-
-                    return null;
-
-                }
-
-                return {
-                    id:
-                        result.docs[0].id,
-
-                    data:
-                        result.docs[0].data()
-                };
-
-            }
-            catch (
-                error
-            ) {
-
-                console.warn(
-                    `[${MODULE_NAME}] Query lookup failed.`,
-                    {
-                        collection:
-                            collectionName,
-
-                        fieldName,
-
-                        value:
-                            normalizedValue,
-
-                        error
-                    }
-                );
-
-                return null;
-
-            }
-
-        }
-
-
-        async function resolveBatchRecord(
-            record
-        ) {
-
-            const batchId =
-                normalizeString(
-                    record?.batch_id ||
-                    record?.batchId
-                );
-
-            const batchName =
-                normalizeString(
-                    record?.batch_name ||
-                    record?.batchName
-                );
-
-            const batchCode =
-                normalizeString(
-                    record?.batch_code ||
-                    record?.batchCode
-                );
-
-            /*
-             * Resolution order is intentional:
-             *
-             * 1. Exact Firestore document ID from credential.batch_id
-             * 2. batch_name query
-             * 3. batch_code query
-             *
-             * Historical AOP credentials may not be uniform, so a single
-             * lookup path is not sufficient.
-             */
-
-            if (
-                batchId
-            ) {
-
-                const directMatch =
-                    await getDocumentById(
-                        "batches",
-                        batchId
-                    );
-
-                if (
-                    directMatch
-                ) {
-
-                    console.info(
-                        `[${MODULE_NAME}] Batch resolved by batch_id.`,
-                        {
-                            credentialId:
-                                normalizeString(
-                                    record?.credential_id
-                                ),
-
-                            batchId:
-                                directMatch.id
-                        }
-                    );
-
-                    return directMatch;
-
-                }
-
-            }
-
-            if (
-                batchName
-            ) {
-
-                const nameMatch =
-                    await getFirstByField(
-                        "batches",
-                        "batch_name",
-                        batchName
-                    );
-
-                if (
-                    nameMatch
-                ) {
-
-                    console.info(
-                        `[${MODULE_NAME}] Batch resolved by batch_name.`,
-                        {
-                            credentialId:
-                                normalizeString(
-                                    record?.credential_id
-                                ),
-
-                            batchName,
-
-                            batchDocumentId:
-                                nameMatch.id
-                        }
-                    );
-
-                    return nameMatch;
-
-                }
-
-            }
-
-            if (
-                batchCode
-            ) {
-
-                const codeMatch =
-                    await getFirstByField(
-                        "batches",
-                        "batch_code",
-                        batchCode
-                    );
-
-                if (
-                    codeMatch
-                ) {
-
-                    console.info(
-                        `[${MODULE_NAME}] Batch resolved by batch_code.`,
-                        {
-                            credentialId:
-                                normalizeString(
-                                    record?.credential_id
-                                ),
-
-                            batchCode,
-
-                            batchDocumentId:
-                                codeMatch.id
-                        }
-                    );
-
-                    return codeMatch;
-
-                }
-
-            }
-
-            console.warn(
-                `[${MODULE_NAME}] Batch could not be resolved for credential.`,
-                {
-                    credentialId:
-                        normalizeString(
-                            record?.credential_id
-                        ),
-
-                    batchId,
-
-                    batchName,
-
-                    batchCode
-                }
-            );
-
-            return null;
-
-        }
-
-
-        async function resolveTrainerRecord(
-            batchRecord
-        ) {
-
-            const batch =
-                batchRecord?.data ||
-                batchRecord ||
-                {};
-
-            const trainerId =
-                normalizeString(
-                    batch?.trainerId ||
-                    batch?.trainer_id
-                );
-
-            if (
-                !trainerId
-            ) {
-
-                console.warn(
-                    `[${MODULE_NAME}] Resolved batch has no trainer ID.`,
-                    {
-                        batchDocumentId:
-                            normalizeString(
-                                batchRecord?.id
-                            ),
-
-                        batchName:
-                            normalizeString(
-                                batch?.batch_name
-                            )
-                    }
-                );
-
-                return null;
-
-            }
-
-            /*
-             * Some trainerRegistry documents use generated Firestore IDs,
-             * so trainerId is normally a field lookup. A direct-document
-             * lookup is still attempted first for forward compatibility.
-             */
-
-            const directMatch =
-                await getDocumentById(
-                    "trainerRegistry",
-                    trainerId
-                );
-
-            if (
-                directMatch
-            ) {
-
-                console.info(
-                    `[${MODULE_NAME}] Trainer resolved by document ID.`,
-                    {
-                        trainerId,
-
-                        trainerDocumentId:
-                            directMatch.id
-                    }
-                );
-
-                return directMatch;
-
-            }
-
-            const canonicalMatch =
-                await getFirstByField(
-                    "trainerRegistry",
-                    "trainerId",
-                    trainerId
-                );
-
-            if (
-                canonicalMatch
-            ) {
-
-                console.info(
-                    `[${MODULE_NAME}] Trainer resolved by trainerId.`,
-                    {
-                        trainerId,
-
-                        trainerDocumentId:
-                            canonicalMatch.id
-                    }
-                );
-
-                return canonicalMatch;
-
-            }
-
-            const legacyMatch =
-                await getFirstByField(
-                    "trainerRegistry",
-                    "trainer_id",
-                    trainerId
-                );
-
-            if (
-                legacyMatch
-            ) {
-
-                console.info(
-                    `[${MODULE_NAME}] Trainer resolved by legacy trainer_id.`,
-                    {
-                        trainerId,
-
-                        trainerDocumentId:
-                            legacyMatch.id
-                    }
-                );
-
-                return legacyMatch;
-
-            }
-
-            console.warn(
-                `[${MODULE_NAME}] Trainer could not be resolved.`,
-                {
-                    trainerId
-                }
-            );
-
-            return null;
-
-        }
-
-
-        async function resolveOrganizationRecord(
-            trainerRecord
-        ) {
-
-            const trainer =
-                trainerRecord?.data ||
-                trainerRecord ||
-                {};
-
-            const organizationId =
-                normalizeString(
-                    trainer?.organizationId ||
-                    trainer?.organization_id
-                );
-
-            if (
-                !organizationId
-            ) {
-
-                console.warn(
-                    `[${MODULE_NAME}] Resolved trainer has no organization ID.`,
-                    {
-                        trainerId:
-                            normalizeString(
-                                trainer?.trainerId ||
-                                trainer?.trainer_id
-                            )
-                    }
-                );
-
-                return null;
-
-            }
-
-            /*
-             * Current trainingOrganizations records use organizationId as
-             * both the logical ID and, in some records, the document ID.
-             */
-
-            const directMatch =
-                await getDocumentById(
-                    "trainingOrganizations",
-                    organizationId
-                );
-
-            if (
-                directMatch
-            ) {
-
-                console.info(
-                    `[${MODULE_NAME}] Organization resolved by document ID.`,
-                    {
-                        organizationId,
-
-                        organizationDocumentId:
-                            directMatch.id
-                    }
-                );
-
-                return directMatch;
-
-            }
-
-            const canonicalMatch =
-                await getFirstByField(
-                    "trainingOrganizations",
-                    "organizationId",
-                    organizationId
-                );
-
-            if (
-                canonicalMatch
-            ) {
-
-                console.info(
-                    `[${MODULE_NAME}] Organization resolved by organizationId.`,
-                    {
-                        organizationId,
-
-                        organizationDocumentId:
-                            canonicalMatch.id
-                    }
-                );
-
-                return canonicalMatch;
-
-            }
-
-            const legacyMatch =
-                await getFirstByField(
-                    "trainingOrganizations",
-                    "organization_id",
-                    organizationId
-                );
-
-            if (
-                legacyMatch
-            ) {
-
-                console.info(
-                    `[${MODULE_NAME}] Organization resolved by legacy organization_id.`,
-                    {
-                        organizationId,
-
-                        organizationDocumentId:
-                            legacyMatch.id
-                    }
-                );
-
-                return legacyMatch;
-
-            }
-
-            console.warn(
-                `[${MODULE_NAME}] Organization could not be resolved.`,
-                {
-                    organizationId
-                }
-            );
-
-            return null;
-
-        }
-
-
-        async function resolveTrainerContext(
-            record
-        ) {
-
-            try {
-
-                const batchRecord =
-                    await resolveBatchRecord(
-                        record
-                    );
-
-                if (
-                    !batchRecord
-                ) {
-
-                    return {
-                        batch:
-                            null,
-
-                        trainer:
-                            null,
-
-                        organization:
-                            null
-                    };
-
-                }
-
-                const trainerRecord =
-                    await resolveTrainerRecord(
-                        batchRecord
-                    );
-
-                if (
-                    !trainerRecord
-                ) {
-
-                    return {
-                        batch:
-                            batchRecord.data,
-
-                        trainer:
-                            null,
-
-                        organization:
-                            null
-                    };
-
-                }
-
-                const organizationRecord =
-                    await resolveOrganizationRecord(
-                        trainerRecord
-                    );
-
-                const context = {
-                    batch:
-                        batchRecord.data,
-
-                    trainer:
-                        trainerRecord.data,
-
-                    organization:
-                        organizationRecord?.data ||
-                        null
-                };
-
-                console.info(
-                    `[${MODULE_NAME}] Trainer context resolved.`,
-                    {
-                        credentialId:
-                            normalizeString(
-                                record?.credential_id
-                            ),
-
-                        batchDocumentId:
-                            batchRecord.id,
-
-                        trainerId:
-                            normalizeString(
-                                context.trainer?.trainerId ||
-                                context.trainer?.trainer_id
-                            ),
-
-                        trainerName:
-                            normalizeString(
-                                context.trainer?.trainerName ||
-                                context.trainer?.trainer_name
-                            ),
-
-                        organizationId:
-                            normalizeString(
-                                context.organization?.organizationId ||
-                                context.organization?.organization_id
-                            ),
-
-                        organizationName:
-                            normalizeString(
-                                context.organization?.organizationName ||
-                                context.organization?.organization_name
-                            )
-                    }
-                );
-
-                return context;
-
-            }
-            catch (
-                error
-            ) {
-
-                console.error(
-                    `[${MODULE_NAME}] Trainer context resolution failed:`,
-                    error
-                );
-
-                return {
-                    batch:
-                        null,
-
-                    trainer:
-                        null,
-
-                    organization:
-                        null
-                };
-
-            }
-
-        }
-                /* ==================================================
-           PREVIEW RENDERING
-        ================================================== */
-
-        async function renderTrainerCertificatePreview(
-            record
-        ) {
-
-            if (
-                !trainerCertificatePreview
-            ) {
-
-                throw new Error(
-                    "Trainer Certificate preview container is unavailable."
-                );
-
-            }
-
-            const response =
-                await fetch(
-                    TEMPLATE_URL,
-                    {
-                        cache:
-                            "no-store"
-                    }
-                );
-
-            if (
-                !response.ok
-            ) {
-
-                throw new Error(
-                    `Trainer Certificate template failed with HTTP ${response.status}.`
-                );
-
-            }
-
-            const template =
-                await response.text();
-
-            trainerCertificatePreview.innerHTML =
-                template;
-
-            const pdfRenderContainer =
-                document.getElementById(
-                    "pdfRenderContainer"
-                );
-
-            if (
-                pdfRenderContainer
-            ) {
-
-                pdfRenderContainer.innerHTML =
-                    template;
-
-            }
-
-            const trainerContext =
-                await resolveTrainerContext(
-                    record
-                );
-
-            populateCertificateSurface(
-                trainerCertificatePreview,
-                record,
-                trainerContext
-            );
-
-            if (
-                pdfRenderContainer
-            ) {
-
-                populateCertificateSurface(
-                    pdfRenderContainer,
-                    record,
-                    trainerContext
-                );
-
-            }
-
-            console.info(
-                `[${MODULE_NAME}] Trainer Certificate preview rendered.`,
-                {
-                    credentialId:
-                        normalizeString(
-                            record?.credential_id
-                        ),
-
-                    programCode:
-                        normalizeUppercase(
-                            record?.program_code
-                        ),
-
-                    trainerResolved:
-                        Boolean(
-                            trainerContext?.trainer
-                        ),
-
-                    organizationResolved:
-                        Boolean(
-                            trainerContext?.organization
-                        )
-                }
-            );
-
-        }
-
 
         function populateCertificateSurface(
             container,
@@ -1887,10 +1137,6 @@ document.addEventListener(
 
             const trainer =
                 trainerContext?.trainer ||
-                {};
-
-            const organization =
-                trainerContext?.organization ||
                 {};
 
             setSurfaceText(
@@ -1946,8 +1192,7 @@ document.addEventListener(
             setSurfaceText(
                 container,
                 "#trainercertOrganizationName",
-                organization?.organizationName ||
-                organization?.organization_name
+                trainerContext.provider.name
             );
 
             setSurfaceText(
@@ -1975,13 +1220,19 @@ document.addEventListener(
                 emblem
             ) {
 
-                emblem.src =
-                    ORGANIZATION_EMBLEM_PATH;
-
-                emblem.style.display =
-                    "block";
+                emblem.removeAttribute("src");
+                emblem.alt = `${trainerContext.provider.name} logo`;
+                emblem.hidden = !trainerContext.provider.logoUrl;
+                emblem.style.display = trainerContext.provider.logoUrl ? "block" : "none";
+                if (trainerContext.provider.logoUrl) emblem.src = trainerContext.provider.logoUrl;
 
             }
+
+            registerProviderRender(
+                container.querySelector(".trainer-certificate-template"),
+                normalizeString(record?.credential_id),
+                trainerContext.provider
+            );
 
         }
 
@@ -2285,6 +1536,8 @@ document.addEventListener(
 
         function resetLoadedCredentialState() {
 
+            ++previewRequestVersion;
+
             window.loadedCredential =
                 null;
 
@@ -2441,7 +1694,7 @@ document.addEventListener(
                             resetLoadedCredentialState();
 
                             alert(
-                                "Trainer Certificate preview could not be prepared."
+                                `Trainer Certificate preview could not be prepared. ${error.message || ""}`
                             );
 
                         }
@@ -2516,6 +1769,10 @@ document.addEventListener(
                         }
                     );
 
+                    assertProviderRender(
+                        document.querySelector("#pdfRenderContainer .trainer-certificate-template"),
+                        normalizeString(window.loadedCredential?.credential_id)
+                    );
                     await window.generateTrainerCertificatePdf();
 
                 }

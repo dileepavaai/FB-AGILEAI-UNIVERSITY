@@ -4,7 +4,7 @@
 
    File      : trainer-certificate-pdf.js
    Component : Trainer Certificate PDF Publication Engine
-   Version   : 1.4.1
+   Version   : 1.4.3
    Status    : ACTIVE
    Phase     : Credential-First Asset Publication
 
@@ -22,7 +22,7 @@
    ----------------------------------------------------------
    ✓ Resolve the selected credential
    ✓ Resolve the governed certificate rendering surface
-   ✓ Wait for organization-emblem rendering
+   ✓ Verify the resolved provider identity and wait for configured logo rendering
    ✓ Render the certificate with html2canvas
    ✓ Generate an ISO A4 landscape PDF
    ✓ Upload the PDF to Firebase Storage
@@ -73,7 +73,7 @@
    • Accredited Trainer Name
    • Trainer ID
    • Licensed Training Organization Name
-   • Licensed Training Organization Emblem
+   • Licensed Training Organization Logo, when configured
 
    Must Not Render:
 
@@ -91,6 +91,14 @@
 
    Change History
    ----------------------------------------------------------
+   v1.4.3
+   • Load the Academy migration-compatible provider guard
+
+   v1.4.2
+   • Require a resolved provider preview before publishing
+   • Reject provider changes during capture
+   • Permit a registered provider name without a configured logo
+
    v1.4.0
    • Added Firebase Storage upload
    • Added published download URL resolution
@@ -118,6 +126,8 @@ import {
     buildVersionedAssetPath
 } from "../../shared/credential-render-assets.js?v=20260922-seal-1";
 
+import { assertProviderRender } from "../../shared/training-provider-branding.js?v=20260922-academy-brand-2";
+
 import {
     storage
 } from "../../../../assets/js/core.js?v=3.0.2";
@@ -137,7 +147,7 @@ const MODULE_NAME =
     "TrainerCertificatePdf";
 
 const MODULE_VERSION =
-    "1.4.1";
+    "1.4.3";
 
 const ASSET_TYPE =
     "trainer_certificate";
@@ -669,6 +679,8 @@ window.generateTrainerCertificatePdf =
                 }
             );
 
+            const assertCurrentProvider = assertProviderRender(certificateElement, credentialId);
+
             const assertCurrentRender = await prepareCredentialRender({
                 element: certificateElement,
                 credentialId,
@@ -690,6 +702,7 @@ window.generateTrainerCertificatePdf =
             );
 
             assertCurrentRender();
+            assertCurrentProvider();
 
             const fileName =
                 `${credentialId}_trainer_certificate.pdf`;

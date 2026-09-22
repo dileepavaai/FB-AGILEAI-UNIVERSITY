@@ -145,6 +145,16 @@ ul {
   padding-top: 120px;
 }
 
+.academy-logo {
+  display: block;
+  width: 176px;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 8px;
+}
+
 /* =========================================
    PATHWAY
 ========================================= */

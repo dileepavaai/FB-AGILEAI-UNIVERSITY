@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "assets/css/lab.css",
+      "sha256": "4f6c5473d9f8a480ce162d9a023d845eba93c443c6a6a311c505d9fb03b0299b",
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "path": "del-storage.js",
+      "sha256": "faba03f066ece32ee7bd05771f4674099b3bb804b11e39d968507f0d181c36d7",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "environments/agile-ai/index.html",
+      "sha256": "beb2722789d8e848a631f471e6244e3a81402156a9eb3ae5f70134460df7bb74",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/actions/index.html",
+      "sha256": "25537b97bfec6e71849d9480213f307bc1775bfb8313d397e6b8040ba26f00f5",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/assets/css/environment.css",
+      "sha256": "4ce204823e2f7f91015e86770ed94c77baaa4ac7862222240478d6a17a1b17d2",
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/assets/js/environment-core.js",
+      "sha256": "1d2309236dc226aca52016d4f44e33253491dc11800750c043e7263b02369d50",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/assets/js/environment-diagnosis.js",
+      "sha256": "ca941bdc7e1c7db947acf831aa3316f3ac2cbac3a23c359af9d70893d38a7195",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/assets/js/environment-metrics.js",
+      "sha256": "08414c771757b1e571b8a9c4fae3befc385d2b62ca95ce0af70ebcf60cfc0ae2",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/assets/js/environment-recovery.js",
+      "sha256": "8d61c35d0da5a7ef397834d08d66481bab6ca34490b5a5ee3d1f34819bfb2257",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/assets/js/environment-streams.js",
+      "sha256": "db0239d513130b9ed0f53998a1c051a339d8604bda39d81bed92db3d49467990",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/assets/js/environment-ui.js",
+      "sha256": "680f896b4d665ba9fcd6b9fe9506e9c687f013ec897701aa0310d745435da363",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/evidence/index.html",
+      "sha256": "b6ebc5c9999397f78f7b742cd50396d47d8e7396a68df11790ad51d4b01d77e7",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/index.html",
+      "sha256": "08e4fee191bc2a0d452ab359347c87fef2e9615e02920072332312c700fdc693",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/outcomes/index.html",
+      "sha256": "ac274d13ea4d2f0b4369242e999d69ddc02df8ff2ded20bf744ddccb66017588",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "environments/classic-agile/teams/index.html",
+      "sha256": "926342134035edb593239907938959f3e5f305b492eacaee89ad257877029b2a",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "environments/foundations/index.html",
+      "sha256": "70a05e63e9185fd1e26d6a280f31a3fd54bde833907202bc27a7a28166ebe9de",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "pilot/index.html",
+      "sha256": "eb9deba6839ebe987d494353e0a6ba6d46b6df9ec268bb94d94f545815fa07c5",
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "path": "shared/design-authority/css/environment-navigation.css",
+      "sha256": "778a7b66dfe7dff002da15791f4a8daad9311ece7226b74d3859fd499e5f5355",
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "path": "shared/design-authority/css/environment.css",
+      "sha256": "4fe9d271541a38d694f89a51524ff33d8167e7db91064d0e1438a4dccd760a08",
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "path": "shared/design-authority/css/refinement.css",
+      "sha256": "7b2911f25f3bf893a4dfc6750e76cbb4dd085c4b41ff153f85d10d50c93bdb34",
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "path": "shared/design-authority/css/site.css",
+      "sha256": "00febb5380b6eefe0d7dd93d1e6ae44e9f56358700152977c94699e7c4a38978",
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "path": "shared/design-authority/js/environment-navigation.js",
+      "sha256": "9feb304be54de7a0f2d48900b133034ab2b776ef17f0e5395ed94f0f3b13518b",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "shared/design-authority/js/footer.js",
+      "sha256": "c28917b39723a2ea4d68f8bfe985eab75987d8b62ca7b4b900458c375cefd715",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "shared/design-authority/js/header.js",
+      "sha256": "3398905e10820f8aef60ace1eca65ba54fc2d5c092916f963620b8901410444b",
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "path": "shared/design-authority/js/theme.js",
+      "sha256": "49e3e257dccc3066358272cd5658a3c0b9876a7a6f860f86877a866f850ebf97",
+      "contentType": "text/javascript; charset=utf-8"
+    }
+  ]
+}

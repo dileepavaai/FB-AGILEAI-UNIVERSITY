@@ -1,0 +1,91 @@
+/* LAAU Lab entry: 20260923-del-1 */
+:root{color-scheme:light;--ink:#142b44;--muted:#56677b;--teal:#146e67;--line:#dbe3e8;--surface:#f5f7f8;--white:#fff;--error:#8e3030}
+*{box-sizing:border-box}
+html{background:var(--surface)}
+body{margin:0;color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+[hidden]{display:none!important}
+a{color:var(--teal);text-underline-offset:4px}
+a:hover{text-decoration-thickness:2px}
+button,input{font:inherit}
+button,a,input{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid #5caaa1;outline-offset:4px}
+button:disabled{cursor:wait;opacity:.65}
+.shell{width:min(1180px,calc(100% - 64px));margin-inline:auto}
+.skip-link{position:absolute;left:20px;top:-80px;z-index:10;padding:10px 16px;background:white}
+.skip-link:focus{top:14px}
+.site-header{background:var(--white);border-bottom:1px solid var(--line)}
+.header-inner{min-height:108px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.identity{display:flex;align-items:center;gap:23px;text-decoration:none;color:var(--ink)}
+.identity img{display:block;width:156px;height:78px;object-fit:contain}
+.identity-divider{height:31px;width:1px;background:#cbd6df}
+.identity-label{font-size:23px;font-weight:600;letter-spacing:-.6px}
+.site-header nav a{font-size:13px;color:var(--muted);text-decoration:none}
+.site-header nav a span{margin-left:8px;color:var(--teal)}
+.main-content{flex:1;padding-block:70px 82px}
+.initial-state{padding:70px 0;color:var(--muted);text-align:center}
+.sign-in-layout{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(340px,.85fr);align-items:center;gap:76px}
+.eyebrow,.card-eyebrow{font-size:11px;letter-spacing:1.8px;line-height:1.5;font-weight:700;margin:0 0 22px;color:var(--teal)}
+.eyebrow{display:flex;align-items:center;gap:9px}
+.status-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--teal)}
+h1{font-size:clamp(34px,4.3vw,55px);font-weight:600;line-height:1.12;letter-spacing:-2px;margin:0 0 22px}
+.lead{font-size:20px;line-height:1.5;font-weight:500;margin:0 0 16px;color:var(--teal)}
+.intro-copy{font-size:17px;line-height:1.8;max-width:490px;color:var(--muted);margin:0}
+.access-note{display:flex;gap:17px;border-top:1px solid #d5e0e2;padding-top:25px;margin-top:38px;max-width:500px}
+.access-mark{font-size:25px;line-height:1.15;color:var(--teal)}
+.access-note h2{font-size:14px;line-height:1.5;margin:0 0 6px;font-weight:650}
+.access-note p{font-size:13px;color:var(--muted);line-height:1.8;margin:0;max-width:435px}
+.support-link{display:inline-block;font-size:12px;margin-top:28px;text-decoration:none}
+.support-link span{padding-left:7px}
+.sign-in-card{background:white;border:1px solid #dce5e9;border-radius:18px;padding:38px 36px 30px;box-shadow:0 10px 38px #17344708}
+.card-eyebrow{color:var(--muted);font-size:10px;letter-spacing:1.6px;margin-bottom:13px}
+.sign-in-card h2{font-size:26px;font-weight:600;line-height:1.25;letter-spacing:-.8px;margin:0 0 10px}
+.card-description{font-size:14px;color:var(--muted);margin:0 0 27px}
+.button{border:1px solid transparent;border-radius:7px;min-height:48px;padding:11px 17px;width:100%;display:flex;justify-content:center;align-items:center;gap:12px;text-decoration:none;font-size:14px;font-weight:600;cursor:pointer;transition:background .12s ease}
+.button-primary{background:var(--ink);color:white}
+.button-primary:hover:not(:disabled){background:#244966}
+.button-secondary{background:white;border-color:#bacbd4;color:var(--ink)}
+.button-secondary:hover:not(:disabled){background:#f3f7f8}
+.google-mark{font-size:19px;line-height:1;font-weight:700;font-family:Arial,sans-serif;background:white;color:#295086;border-radius:50%;width:25px;height:25px;display:inline-flex;align-items:center;justify-content:center}
+.divider{display:flex;align-items:center;gap:12px;color:#69798b;font-size:11px;margin:24px 0}
+.divider:before,.divider:after{content:"";height:1px;background:#e2e8ec;flex:1}
+label{display:block;font-size:12px;font-weight:600;margin-bottom:8px}
+input{width:100%;border:1px solid #bdcbd6;border-radius:6px;background:white;min-height:47px;font-size:14px;color:var(--ink);padding:10px 12px}
+input::placeholder{color:#7b8996}
+.field-help{font-size:11px;color:var(--muted);margin:7px 0 18px}
+.sign-in-footnote{color:var(--muted);font-size:11px;line-height:1.8;margin:24px 0 0;padding-top:19px;border-top:1px solid #e2e8ec}
+.message{font-size:13px;padding:13px 15px;border-radius:6px;background:#edf7f3;color:#235347;border:1px solid #cae4da;margin:20px 0 0;overflow-wrap:anywhere}
+.message[data-error="true"]{background:#fff5f2;color:var(--error);border-color:#ecd4cb}
+.confirmation-copy{font-size:14px;color:var(--muted)}
+#complete-email-button{margin-top:18px}
+.text-button{padding:4px 0;border:0;background:none;color:var(--teal);font-size:13px;text-decoration:underline;text-underline-offset:4px;cursor:pointer;min-height:32px}
+#cancel-email-button{display:block;margin:14px auto 0}
+.workspace-header{display:flex;justify-content:space-between;align-items:center;gap:30px;padding-bottom:37px;border-bottom:1px solid var(--line);margin-bottom:36px}
+.workspace-header h1{font-size:42px;letter-spacing:-1.4px;margin-bottom:14px}
+.workspace-header .eyebrow{margin-bottom:18px}
+.workspace-subtitle{font-size:16px;color:var(--muted);margin:0}
+.account-block{display:flex;flex-direction:column;align-items:flex-end;min-width:170px}
+.account-caption{font-size:10px;color:var(--muted);letter-spacing:1.4px}
+.account-email{font-size:13px;overflow-wrap:anywhere;margin:5px 0 4px;max-width:290px;text-align:right}
+.course-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.course-card{padding:29px;border:1px solid var(--line);border-radius:12px;background:white;display:flex;flex-direction:column;align-items:flex-start}
+.course-label{font-size:10px;font-weight:650;letter-spacing:1.2px;color:var(--teal);background:#edf5f3;border-radius:4px;padding:5px 8px;margin:0 0 19px}
+.course-card h2{font-size:25px;line-height:1.25;letter-spacing:-.5px;margin:0 0 14px;font-weight:600}
+.course-description{font-size:14px;color:var(--muted);line-height:1.8;margin:0 0 20px;flex:1}
+.course-expiry{font-size:12px;color:var(--muted);margin:0 0 17px}
+.button-inline{width:auto;display:inline-flex;padding-inline:22px}
+.workspace-help{font-size:13px;color:var(--muted);margin:30px 0 0}
+.empty-state{text-align:center;border:1px solid var(--line);border-radius:12px;background:white;padding:48px 30px;max-width:800px;margin:0 auto}
+.empty-symbol{font-size:35px;color:var(--teal);line-height:1.2;margin-bottom:18px}
+.empty-state h2{font-size:24px;line-height:1.4;letter-spacing:-.4px;font-weight:600;margin:0 0 16px}
+.empty-state p{max-width:550px;margin:0 auto 13px;color:var(--muted);font-size:14px}
+.empty-state .button{margin-top:12px}
+.site-footer{border-top:1px solid var(--line);background:white}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-block:23px;color:var(--muted);font-size:11px}
+.footer-inner p{margin:0}
+.footer-inner nav{display:flex;flex-wrap:wrap;gap:22px}
+.footer-inner a{color:var(--muted);text-decoration:none}
+.no-script{background:white;padding:30px;border:1px solid var(--line);border-radius:12px}
+.no-script h1{font-size:30px}
+@media(max-width:1000px){.shell{width:calc(100% - 48px)}.sign-in-layout{gap:40px;grid-template-columns:minmax(0,1fr) minmax(320px,.9fr)}.sign-in-card{padding:30px 27px}.main-content{padding-block:54px 62px}h1{font-size:42px;letter-spacing:-1.5px}.lead{font-size:18px}.intro-copy{font-size:15px}}
+@media(max-width:760px){.shell{width:calc(100% - 36px)}.header-inner{min-height:88px;gap:15px}.identity{gap:13px}.identity img{width:121px;height:61px}.identity-label{font-size:20px}.identity-divider{height:26px}.site-header nav{max-width:145px;text-align:right}.site-header nav a{font-size:11px}.site-header nav a span{margin-left:2px}.main-content{padding-block:36px 45px}.sign-in-layout{grid-template-columns:1fr;gap:32px;max-width:540px;margin:auto}.eyebrow{font-size:10px;margin-bottom:17px}h1{font-size:41px}.introduction h1 br{display:none}.lead{margin-bottom:10px}.intro-copy{max-width:none;font-size:15px}.access-note{margin-top:25px;padding-top:20px}.support-link{margin-top:17px;font-size:11px}.sign-in-card{padding:29px 25px}.footer-inner{align-items:flex-start;flex-direction:column;gap:11px}.footer-inner nav{gap:17px}.workspace-header{align-items:flex-start;flex-direction:column;gap:24px;padding-bottom:26px}.workspace-header h1{font-size:35px}.account-block{align-items:flex-start}.account-email{text-align:left;max-width:100%}.course-grid{grid-template-columns:1fr}.course-card{padding:25px}.empty-state{padding:35px 22px}.empty-state h2{font-size:22px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sign in to LAAU Lab to access your assigned Dynamic Experiential Learning workspaces.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#142b44">
+  <title>LAAU Lab | Dynamic Experiential Learning</title>
+  <!-- LAAU Lab protected entry: 20260923-del-1 -->
+  <link rel="stylesheet" href="/assets/lab-entry.css?v=20260923-del-1">
+  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script defer src="/assets/lab-entry.js?v=20260923-del-1"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="identity" href="/" aria-label="LAAU Lab home">
+        <img src="/assets/LAAU-Logo.png" alt="Lean Agile AI University" width="176" height="88">
+        <span class="identity-divider" aria-hidden="true"></span>
+        <span class="identity-label">Lab</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="https://portal.laau.university/login.html">Student &amp; Executive Portal <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="shell main-content">
+    <div id="initial-state" class="initial-state" role="status">Checking your Lab session…</div>
+
+    <section id="sign-in-view" class="sign-in-layout" aria-label="LAAU Lab sign in" hidden>
+      <div class="introduction">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> LAAU LAB</p>
+        <h1>From understanding<br>to experience.</h1>
+        <p class="lead">Dynamic Experiential Learning</p>
+        <p class="intro-copy">A dedicated space for your assigned learning experiences, connecting theory, leadership language and simulations.</p>
+        <div class="access-note">
+          <span class="access-mark" aria-hidden="true">↳</span>
+          <div>
+            <h2>Learning with purpose. Access by assignment.</h2>
+            <p>Use the same registered account as your LAAU Portal. Your Lab access depends on the learning workspaces assigned to you.</p>
+          </div>
+        </div>
+        <a class="support-link" href="mailto:support@laau.university">Need help with your access? Contact LAAU support <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <section class="sign-in-card" aria-labelledby="sign-in-title">
+        <p class="card-eyebrow">YOUR LEARNING SPACE</p>
+        <h2 id="sign-in-title">Sign in to LAAU Lab</h2>
+        <p class="card-description">Continue with your registered account.</p>
+        <div id="normal-sign-in">
+          <button id="google-button" class="button button-primary" type="button">
+            <span class="google-mark" aria-hidden="true">G</span>
+            <span id="google-label">Sign in with Google</span>
+          </button>
+          <div class="divider"><span>or use an email link</span></div>
+          <form id="email-form">
+            <label for="email-input">Registered email address</label>
+            <input id="email-input" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required maxlength="254" aria-describedby="email-help">
+            <p id="email-help" class="field-help">We’ll email you a secure sign-in link.</p>
+            <button id="email-button" class="button button-secondary" type="submit">Send sign-in link</button>
+          </form>
+        </div>
+
+        <form id="complete-email-form" hidden>
+          <p class="confirmation-copy">Confirm the email address that received this sign-in link.</p>
+          <label for="complete-email-input">Registered email address</label>
+          <input id="complete-email-input" type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" required maxlength="254">
+          <button id="complete-email-button" class="button button-primary" type="submit">Complete sign in</button>
+          <button id="cancel-email-button" class="text-button" type="button">Use another sign-in method</button>
+        </form>
+        <p id="sign-in-status" class="message" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden></p>
+        <p class="sign-in-footnote">Signing in does not automatically give access to every course.</p>
+      </section>
+    </section>
+
+    <section id="workspace-view" aria-labelledby="workspace-title" hidden>
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> DYNAMIC EXPERIENTIAL LEARNING</p>
+          <h1 id="workspace-title" tabindex="-1">Your Lab access</h1>
+          <p class="workspace-subtitle">Your assigned learning workspaces, in one place.</p>
+        </div>
+        <div class="account-block">
+          <span class="account-caption">SIGNED IN AS</span>
+          <span id="account-email" class="account-email"></span>
+          <button id="sign-out-button" class="text-button" type="button">Sign out</button>
+        </div>
+      </div>
+      <p id="workspace-status" class="message" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+      <div id="course-list" class="course-grid"></div>
+      <section id="no-access" class="empty-state" aria-labelledby="no-access-title" hidden>
+        <div class="empty-symbol" aria-hidden="true">↳</div>
+        <h2 id="no-access-title">No Lab workspace is assigned yet</h2>
+        <p>You are signed in. An active Lab assignment is needed to open a learning workspace.</p>
+        <p>If you expected access, check that you used your registered email address or contact LAAU support.</p>
+        <a class="button button-primary button-inline" href="mailto:support@laau.university">Contact support</a>
+      </section>
+      <p class="workspace-help">Need help with an assignment? <a href="mailto:support@laau.university">support@laau.university</a></p>
+    </section>
+    <noscript><section class="no-script"><h1>JavaScript is required</h1><p>Enable JavaScript to sign in and access your assigned LAAU Lab workspaces.</p><a href="mailto:support@laau.university">Contact support</a></section></noscript>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <p>© 2026 LAAU. All rights reserved.</p>
+      <nav aria-label="Policies and support">
+        <a href="https://laau.university/governance/privacy-policy.html">Privacy policy</a>
+        <a href="https://laau.university/governance/terms-and-conditions.html">Terms &amp; conditions</a>
+        <a href="mailto:support@laau.university">Support</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

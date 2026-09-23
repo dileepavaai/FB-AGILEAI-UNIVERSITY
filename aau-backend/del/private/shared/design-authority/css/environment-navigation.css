@@ -1,0 +1,208 @@
+/* ========================================================= */
+/* Agile AI Leadership Lab */
+/* Environment Navigation Continuity Layer */
+/* Version: v1.0 */
+/* ========================================================= */
+
+/* ========================================================= */
+/* Environment Navigation Shell */
+/* ========================================================= */
+
+.environment-navigation-shell {
+
+    width: 100%;
+
+    margin-top: 48px;
+    margin-bottom: 72px;
+
+}
+
+/* ========================================================= */
+/* Navigation Card */
+/* ========================================================= */
+
+.environment-navigation-card {
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 28px 32px;
+
+    border: 1px solid #d8d8d8;
+    border-radius: 24px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.03);
+
+}
+
+/* ========================================================= */
+/* Return Link */
+/* ========================================================= */
+
+.environment-return-link {
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 24px;
+
+    font-size: 0.95rem;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    color: #1f1f1f;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+.environment-return-link:hover {
+
+    opacity: 0.72;
+
+    transform: translateX(-2px);
+
+}
+
+/* ========================================================= */
+/* Environment Navigation Row */
+/* ========================================================= */
+
+.environment-navigation-row {
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 16px;
+
+}
+
+/* ========================================================= */
+/* Environment Navigation Item */
+/* ========================================================= */
+
+.environment-navigation-item {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 220px;
+
+    padding: 16px 22px;
+
+    border: 1px solid #d8d8d8;
+    border-radius: 18px;
+
+    background: #fafafa;
+
+    text-decoration: none;
+
+    color: #1f1f1f;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+/* ========================================================= */
+/* Hover */
+/* ========================================================= */
+
+.environment-navigation-item:hover {
+
+    background: #f3f3f3;
+
+    border-color: #bdbdbd;
+
+    transform: translateY(-1px);
+
+}
+
+/* ========================================================= */
+/* Current Environment */
+/* ========================================================= */
+
+.environment-navigation-item.current-environment {
+
+    background: #f7f7f7;
+
+    border-color: #1f1f1f;
+
+    cursor: default;
+
+}
+
+/* ========================================================= */
+/* Navigation Labels */
+/* ========================================================= */
+
+.environment-navigation-label {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 0.72rem;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    color: #6b6b6b;
+
+}
+
+.environment-navigation-title {
+
+    display: block;
+
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.45;
+
+    color: #1f1f1f;
+
+}
+
+/* ========================================================= */
+/* Responsive */
+/* ========================================================= */
+
+@media (max-width: 768px) {
+
+    .environment-navigation-card {
+
+        padding: 22px 20px;
+
+        border-radius: 20px;
+
+    }
+
+    .environment-navigation-row {
+
+        flex-direction: column;
+
+    }
+
+    .environment-navigation-item {
+
+        width: 100%;
+
+        min-width: unset;
+
+        justify-content: flex-start;
+
+    }
+
+}

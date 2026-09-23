@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "courses": [
+    {
+      "id": "DEL-PILOT",
+      "title": "DEL pilot workspace",
+      "description": "Existing leadership simulation previews for explicitly assigned pilot users.",
+      "published": true,
+      "prefixes": [
+        "pilot/",
+        "del-storage.js",
+        "environments/classic-agile/",
+        "environments/agile-ai/",
+        "environments/foundations/",
+        "shared/design-authority/css/",
+        "shared/design-authority/js/",
+        "assets/css/"
+      ],
+      "entry": "pilot/index.html"
+    }
+  ]
+}

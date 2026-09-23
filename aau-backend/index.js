@@ -82,6 +82,16 @@ const app = express();
 
 app.disable("x-powered-by");
 
+// LAAU DEL access boundary: 20260923-del-1.
+// Existing verification/resource routes keep their original middleware below.
+if (admin.apps.length === 0) {
+    admin.initializeApp();
+}
+app.use("/del", require("./del/router").createDelRouter({
+    admin,
+    db: admin.firestore()
+}));
+
 app.use(cors());
 
 app.use(

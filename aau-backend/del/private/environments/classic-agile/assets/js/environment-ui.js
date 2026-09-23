@@ -1,0 +1,1156 @@
+/* =========================================================
+   Environment UI Engine
+   Agile AI Leadership Lab
+
+   File:
+   environment-ui.js
+
+   Version:
+   3.0
+
+   Governance State:
+   Stable
+
+   Architecture Role:
+   UI Interaction Layer
+
+   Purpose:
+   Manage:
+   - workspace navigation
+   - panel visibility
+   - evidence workspace routing
+   - operational insight expansion
+   - institutional preview governance
+   - guided interaction continuity
+   - learning credit interaction gating
+   - protected interaction governance
+   - unlock-aware orchestration routing
+
+   =========================================================
+   ARCHITECTURE BOUNDARY
+   =========================================================
+
+   THIS FILE OWNS:
+   - UI interaction
+   - navigation state
+   - visibility rendering
+   - preview governance messaging
+   - interaction continuity
+   - session-based interaction routing
+   - protected orchestration access gating
+
+   THIS FILE DOES NOT OWN:
+   - environment bootstrapping
+   - runtime lifecycle
+   - recovery orchestration
+   - metric mutation
+   - stream intelligence
+   - environment initialization
+
+   Bootstrap Ownership:
+   environment-core.js
+
+   Recovery Ownership:
+   environment-recovery.js
+
+========================================================= */
+
+/* =========================================================
+   Runtime Governance State
+========================================================= */
+
+const userHasLearningCredits =
+
+    window.LAAUDelStorage.session.getItem(
+        "learningCreditsUnlocked"
+    ) === "true";
+
+/* =========================================================
+   Institutional Preview State
+========================================================= */
+
+const previewMode =
+    !userHasLearningCredits;
+
+/* =========================================================
+   Global Governance Body State
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =================================================
+           Preview Governance State
+        ================================================= */
+
+        if (previewMode) {
+
+            document.body.classList.add(
+                "preview-mode"
+            );
+
+            console.log(
+                "[Environment UI] Preview mode active"
+            );
+
+        }
+
+        /* =================================================
+           Unlock Governance State
+        ================================================= */
+
+        if (userHasLearningCredits) {
+
+            document.body.classList.add(
+                "learning-credits-unlocked"
+            );
+
+            console.log(
+                "[Environment UI] Learning credits unlocked"
+            );
+
+        }
+
+    }
+);
+
+/* =========================================================
+   Main Operational Workspace Navigation
+========================================================= */
+
+function toggleSection(
+    sectionId,
+    buttonElement
+)
+
+{
+
+    /* =====================================================
+       Workspace Panels
+    ===================================================== */
+
+    const allPanels =
+        document.querySelectorAll(
+            ".horizontal-tab-content"
+        );
+
+    /* =====================================================
+       Navigation Tabs
+    ===================================================== */
+
+    const allTabs =
+        document.querySelectorAll(
+            ".horizontal-tab"
+        );
+
+    /* =====================================================
+       Requested Panel
+    ===================================================== */
+
+    const selectedPanel =
+        document.getElementById(
+            sectionId
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!selectedPanel) {
+
+        console.warn(
+            "[Environment UI] Invalid section:",
+            sectionId
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
+       Hide Existing Panels
+    ===================================================== */
+
+    allPanels.forEach((panel) => {
+
+        panel.style.display =
+            "none";
+
+    });
+
+    /* =====================================================
+       Reset Existing Tabs
+    ===================================================== */
+
+    allTabs.forEach((tab) => {
+
+        tab.classList.remove(
+            "active-horizontal-tab"
+        );
+
+    });
+
+    /* =====================================================
+       Activate Requested Panel
+    ===================================================== */
+
+    selectedPanel.style.display =
+    "block";
+
+    /* =====================================================
+    Outcomes Diagnosis Rendering
+    ===================================================== */
+
+    if (
+        sectionId ===
+        "outcomes-tab"
+    ) {
+
+        renderOutcomeDiagnosis();
+
+    }
+
+    updateLearningStage(
+        sectionId
+    );
+
+    /* =====================================================
+       Activate Requested Tab
+    ===================================================== */
+
+    if (buttonElement) {
+
+        buttonElement.classList.add(
+            "active-horizontal-tab"
+        );
+
+    }
+
+    /* =====================================================
+       Guided Scroll Continuity
+    ===================================================== */
+
+    setTimeout(function () {
+
+        selectedPanel.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+    }, 80);
+
+}
+
+/* =========================================================
+   Learning Stage Progression
+   Governance State:
+   Review-Based Completion Tracking
+========================================================= */
+
+function updateLearningStage(
+    sectionId
+) {
+
+    const stageHeader =
+        document.querySelector(
+            ".learning-stage-header"
+        );
+
+    const stageFocus =
+        document.querySelector(
+            ".learning-stage-focus"
+        );
+
+    const stageProgress =
+        document.getElementById(
+            "learning-stage-progress-fill"
+        );
+
+    if (
+        !stageHeader ||
+        !stageFocus ||
+        !stageProgress
+    ) {
+
+        return;
+
+    }
+
+    const stageMap = {
+
+        scenario: {
+            stage: "STAGE 1 OF 5",
+            focus: "Context Awareness"
+        },
+
+        evidence: {
+            stage: "STAGE 2 OF 5",
+            focus: "Situation Diagnosis"
+        },
+
+        teams: {
+            stage: "STAGE 3 OF 5",
+            focus: "Leadership Ownership"
+        },
+
+        actions: {
+            stage: "STAGE 4 OF 5",
+            focus: "Recovery Decision Making"
+        },
+
+        outcomes: {
+            stage: "STAGE 5 OF 5",
+            focus: "Outcome Evaluation"
+        }
+
+    };
+
+    const normalizedSectionId =
+        sectionId
+            .replace("-tab", "")
+            .replace("-panel", "");
+
+    const selectedStage =
+        stageMap[
+            normalizedSectionId
+        ];
+
+    if (!selectedStage) {
+
+        console.warn(
+            "[Environment UI] Unknown learning stage:",
+            sectionId
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
+       Review Tracking Governance
+    ===================================================== */
+
+    window.reviewedLearningStages =
+        window.reviewedLearningStages ||
+        new Set();
+
+    window.reviewedLearningStages.add(
+        normalizedSectionId
+    );
+
+    /* =====================================================
+       Stage Header
+    ===================================================== */
+
+    stageHeader.textContent =
+        selectedStage.stage;
+
+    stageFocus.textContent =
+        selectedStage.focus;
+
+    /* =====================================================
+       Review-Based Progress
+    ===================================================== */
+
+    const totalStages = 5;
+
+    const reviewedCount =
+        window
+            .reviewedLearningStages
+            .size;
+
+    const progressPercentage =
+        (
+            reviewedCount /
+            totalStages
+        ) * 100;
+
+    stageProgress.style.width =
+        `${progressPercentage}%`;
+
+    /* =====================================================
+       Diagnostics
+    ===================================================== */
+
+    console.log(
+        "[Learning Review]",
+        {
+            reviewed:
+                Array.from(
+                    window.reviewedLearningStages
+                ),
+            reviewedCount,
+            progressPercentage
+        }
+    );
+
+}
+
+/* =========================================================
+   Evidence Workspace Navigation
+========================================================= */
+
+function openEvidenceWorkspaceTab(
+    panelId,
+    buttonElement
+) {
+
+    /* =====================================================
+       Activate Evidence Workspace Panels
+    ===================================================== */
+
+    const allPanels =
+        document.querySelectorAll(
+            ".evidence-workspace-panel"
+        );
+
+    /* =====================================================
+       Activate Evidence Workspace Tabs
+    ===================================================== */
+
+    const allTabs =
+        document.querySelectorAll(
+            ".evidence-workspace-tab"
+        );
+
+    /* =====================================================
+       Requested Panel
+    ===================================================== */
+
+    const selectedPanel =
+        document.getElementById(
+            panelId
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!selectedPanel) {
+
+        console.warn(
+            "[Environment UI] Invalid workspace panel:",
+            panelId
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
+       Reset Existing Panels
+    ===================================================== */
+
+    allPanels.forEach((panel) => {
+
+        panel.classList.remove(
+            "active-evidence-workspace-panel"
+        );
+
+    });
+
+    /* =====================================================
+       Reset Existing Tabs
+    ===================================================== */
+
+    allTabs.forEach((tab) => {
+
+        tab.classList.remove(
+            "active-evidence-workspace-tab"
+        );
+
+    });
+
+    /* =====================================================
+       Activate Requested Panel
+    ===================================================== */
+
+    selectedPanel.classList.add(
+        "active-evidence-workspace-panel"
+    );
+
+    /* =====================================================
+       Activate Requested Tab
+    ===================================================== */
+
+    if (buttonElement) {
+
+        buttonElement.classList.add(
+            "active-evidence-workspace-tab"
+        );
+
+    }
+
+    /* =====================================================
+        Workspace Investigation Progress
+    ===================================================== */
+
+    /* =====================================================
+        Workspace Investigation Progress
+        Governance State:
+        Evidence-Based Investigation Tracking
+    ===================================================== */
+
+    window.visitedEvidenceWorkspaces =
+        window.visitedEvidenceWorkspaces ||
+        new Set();
+
+    window.visitedEvidenceWorkspaces.add(
+        panelId
+    );
+
+    const workspaceFocusMap = {
+
+    "customer-escalations-workspace":
+        "Review Customer Escalations",
+
+    "team-coordination-workspace":
+        "Assess Team Coordination",
+
+    "delivery-status-workspace":
+        "Evaluate Delivery Status",
+
+    "operational-incidents-workspace":
+        "Assess Operational Incidents",
+
+    "release-readiness-workspace":
+        "Evaluate Release Readiness",
+
+    "support-operations-workspace":
+        "Assess Support Operations",
+
+    "executive-escalations-workspace":
+        "Review Executive Escalations",
+
+    "dependency-analysis-workspace":
+        "Analyze Dependencies"
+
+};
+
+    const workspaceLabels = {
+
+    "customer-escalations-workspace":
+        "Customer Escalations",
+
+    "team-coordination-workspace":
+        "Team Coordination",
+
+    "delivery-status-workspace":
+        "Delivery Status",
+
+    "operational-incidents-workspace":
+        "Operational Incidents",
+
+    "release-readiness-workspace":
+        "Release Readiness",
+
+    "support-operations-workspace":
+        "Support Operations",
+
+    "executive-escalations-workspace":
+        "Executive Escalations",
+
+    "dependency-analysis-workspace":
+        "Dependency Analysis"
+
+};
+
+    const totalWorkspaces = 8;
+
+    const reviewedCount =
+        window
+            .visitedEvidenceWorkspaces
+            .size;
+
+    const progressPercentage =
+        (
+            reviewedCount /
+            totalWorkspaces
+        ) * 100;
+
+    const focusElement =
+        document.getElementById(
+            "workspace-focus-text"
+        );
+
+    const counterElement =
+        document.querySelector(
+            ".workspace-progress-counter"
+        );
+
+    const progressFill =
+        document.querySelector(
+            ".workspace-progress-fill"
+        );
+
+    const pendingReviewElement =
+        document.getElementById(
+            "workspace-pending-review"
+        );
+
+    const readinessElement =
+        document.getElementById(
+            "workspace-readiness-status"
+        );
+
+    /* =====================================================
+    Current Focus
+    ===================================================== */
+
+    if (
+        focusElement &&
+        workspaceFocusMap[panelId]
+    ) {
+
+        focusElement.textContent =
+            workspaceFocusMap[
+                panelId
+            ];
+
+    }
+
+    /* =====================================================
+    Progress Counter
+    ===================================================== */
+
+    if (counterElement) {
+
+        counterElement.textContent =
+            `${reviewedCount} OF ${totalWorkspaces} REVIEWED`;
+
+    }
+
+    /* =====================================================
+    Progress Bar
+    ===================================================== */
+
+    if (progressFill) {
+
+        progressFill.style.width =
+            `${progressPercentage}%`;
+
+    }
+
+    /* =====================================================
+    Review Status Visibility
+    ===================================================== */
+
+    const reviewSummary =
+        document.getElementById(
+            "learning-review-summary"
+        );
+
+    const reviewPending =
+        document.getElementById(
+            "learning-review-pending"
+        );
+
+    const stageLabels = {
+
+        scenario: "Scenario",
+        evidence: "Evidence",
+        teams: "Teams",
+        actions: "Actions",
+        outcomes: "Outcomes"
+
+    };
+
+    const pendingStages =
+        Object.keys(stageLabels)
+            .filter(
+                stage =>
+                    !window
+                        .reviewedLearningStages
+                        .has(stage)
+            );
+
+    if (reviewSummary) {
+
+        reviewSummary.textContent =
+            `${reviewedCount} OF ${totalStages} REVIEWED`;
+
+    }
+
+    if (reviewPending) {
+
+        if (
+            pendingStages.length === 0
+        ) {
+
+            reviewPending.innerHTML =
+                `
+                All sections reviewed.
+                Leadership experience complete.
+                `;
+
+        } else {
+
+            reviewPending.innerHTML =
+                `
+                <strong>
+                    PENDING REVIEW
+                </strong>
+
+                <ul>
+                    ${
+                        pendingStages
+                            .map(
+                                stage =>
+                                    `<li>${stageLabels[stage]}</li>`
+                            )
+                            .join("")
+                    }
+                </ul>
+                `;
+
+        }
+
+    }
+
+    /* =====================================================
+    Pending Review
+    ===================================================== */
+
+    if (pendingReviewElement) {
+
+        const pendingWorkspaces =
+            Object.keys(
+                workspaceLabels
+            ).filter(
+                (workspaceId) =>
+                    !window
+                        .visitedEvidenceWorkspaces
+                        .has(
+                            workspaceId
+                        )
+            );
+
+        if (
+            pendingWorkspaces.length === 0
+        ) {
+
+            pendingReviewElement.innerHTML =
+                `
+                <strong>
+                    PENDING REVIEW
+                </strong>
+                All investigation sources reviewed.
+                `;
+
+        } else {
+
+            pendingReviewElement.innerHTML =
+                `
+                <strong>
+                    PENDING REVIEW
+                </strong>
+                <ul>
+                    ${
+                        pendingWorkspaces
+                            .map(
+                                (
+                                    workspaceId
+                                ) =>
+                                    `<li>${workspaceLabels[workspaceId]}</li>`
+                            )
+                            .join("")
+                    }
+                </ul>
+                `;
+
+        }
+
+    }
+
+    /* =====================================================
+        Decision Readiness
+    ===================================================== */
+
+    if (readinessElement) {
+
+        if (
+            reviewedCount ===
+            totalWorkspaces
+        ) {
+            renderDiagnosisSection();
+            readinessElement.className =
+                "readiness-complete";
+
+            readinessElement.innerHTML =
+                `
+                DECISION READINESS<br>
+                Investigation complete.<br>
+                Ready to proceed.
+                `;
+
+        } else {
+
+            readinessElement.className =
+                "readiness-pending";
+
+            readinessElement.innerHTML =
+                `
+                DECISION READINESS<br>
+                Additional evidence review recommended.
+                `;
+
+        }
+
+    }
+}
+
+/* =========================================================
+   Expandable Operational Metric Insights
+========================================================= */
+
+function toggleMetricInsight(
+    panelId
+) {
+
+    /* =====================================================
+       Insight Panels
+    ===================================================== */
+
+    const allPanels =
+        document.querySelectorAll(
+            ".metric-insight-panel"
+        );
+
+    /* =====================================================
+       Requested Panel
+    ===================================================== */
+
+    const selectedPanel =
+        document.getElementById(
+            panelId
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!selectedPanel) {
+
+        console.warn(
+            "[Environment UI] Invalid metric insight:",
+            panelId
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
+       Current Visibility State
+    ===================================================== */
+
+    const isVisible =
+        selectedPanel.style.display ===
+        "block";
+
+    /* =====================================================
+       Close Existing Panels
+    ===================================================== */
+
+    allPanels.forEach((panel) => {
+
+        panel.style.display =
+            "none";
+
+    });
+
+    /* =====================================================
+       Reopen Requested Panel
+    ===================================================== */
+
+    if (!isVisible) {
+
+        selectedPanel.style.display =
+            "block";
+
+    }
+
+}
+
+/* =========================================================
+   Institutional Preview Governance Layer
+========================================================= */
+
+/* =========================================================
+   Preview Governance Message Toggle
+========================================================= */
+
+function showPreviewMessage() {
+
+    const message =
+        document.getElementById(
+            "preview-governance-message"
+        );
+
+    /* =====================================================
+       Safety Validation
+    ===================================================== */
+
+    if (!message) {
+
+        console.warn(
+            "[Environment UI] Preview governance message missing"
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
+       Visibility Toggle
+    ===================================================== */
+
+    if (
+        message.style.display === "none"
+    ) {
+
+        message.style.display =
+            "block";
+
+    } else {
+
+        message.style.display =
+            "none";
+
+    }
+
+}
+
+/* =========================================================
+   Protected Interaction Governance Router
+
+   Purpose:
+   Centralized governance validation for
+   protected orchestration interactions.
+
+========================================================= */
+
+function handleProtectedInteraction(
+    protectedAction
+) {
+
+    /* =====================================================
+       Institutional Preview Governance
+    ===================================================== */
+
+    if (previewMode) {
+
+        showPreviewMessage();
+
+        console.warn(
+            "[Environment UI] Preview access restricted"
+        );
+
+        return;
+
+    }
+
+    /* =====================================================
+       Execute Protected Action
+    ===================================================== */
+
+    if (
+        typeof protectedAction ===
+        "function"
+    ) {
+
+        protectedAction();
+
+    } else {
+
+        console.error(
+            "[Environment UI] Invalid protected action"
+        );
+
+    }
+
+}
+
+/* =========================================================
+   Governance Access Router
+========================================================= */
+
+function handleWarRoomAccess() {
+
+    handleProtectedInteraction(
+        function () {
+
+            /* =============================================
+               Recovery Orchestration Activation
+
+               Ownership:
+               environment-recovery.js
+            ============================================= */
+
+            if (
+                typeof LaunchRecoveryCoordination ===
+                "function"
+            ) {
+
+                LaunchRecoveryCoordination();
+
+            } else {
+
+                console.error(
+                    "[Environment UI] LaunchRecoveryCoordination() unavailable"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+/* =========================================================
+   War Room Interaction Binding
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const activateButton =
+            document.getElementById(
+                "launch-recovery-coordination-btn"
+            );
+
+        /* =================================================
+           Safety Validation
+        ================================================= */
+
+        if (!activateButton) {
+
+            console.log(
+                "[Environment UI] War room not configured"
+            );
+
+            return;
+
+        }
+
+        /* =================================================
+           Governance Interaction Binding
+        ================================================= */
+
+        activateButton.addEventListener(
+            "click",
+            handleWarRoomAccess
+        );
+
+    }
+);
+
+/* =========================================================
+   Runtime Diagnostics
+========================================================= */
+
+/* =========================================================
+   Premium Content Loader
+========================================================= */
+
+async function loadPremiumContent(
+    sectionName
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                `./premium-content/${sectionName}/index.html`
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Unable to load ${sectionName}`
+            );
+
+        }
+
+        const html =
+            await response.text();
+
+        const container =
+            document.getElementById(
+                "premium-content-container"
+            );
+
+        if (!container) {
+
+            console.error(
+                "[Premium Loader] Container missing"
+            );
+
+            return;
+
+        }
+
+        container.innerHTML =
+            html;
+        /* =====================================================
+        Dynamic Panel Activation
+
+        Governance State:
+        Premium Content Navigation Handoff
+
+        Purpose:
+        Transfer visibility control from the
+        environment shell to dynamically loaded
+        premium-content modules.
+        ===================================================== */
+
+        const loadedSection =
+        document.getElementById(
+            `${sectionName}-tab`
+        );
+
+    const correspondingButton =
+        document.querySelector(
+            `[data-environment-tab="${sectionName}"]`
+        );
+
+    if (loadedSection) {
+
+        toggleSection(
+            `${sectionName}-tab`,
+            correspondingButton
+        );
+
+    }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "[Premium Loader]",
+            error
+        );
+
+    }
+
+}
+
+console.log(
+    "[Environment UI] Engine v3.0 initialized"
+);
+
+console.log(
+    "[Environment UI] Preview Mode:",
+    previewMode
+);
+
+console.log(
+    "[Environment UI] Learning Credits:",
+    userHasLearningCredits
+);

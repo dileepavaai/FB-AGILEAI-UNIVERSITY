@@ -1,0 +1,6 @@
+**
+!Dockerfile
+!aau-backend/
+!aau-backend/index.js
+!aau-backend/del/
+!aau-backend/del/**

@@ -127,7 +127,19 @@ function Invoke-DelRequest([string]$Method, [string]$Uri, $Body, [switch]$AllowN
         }
         if ($AllowNotFound -and $status -eq 404) { return $null }
         # Do not print the HTTP request, OAuth token, or arbitrary response body.
-        if ($status -gt 0) { throw "Google API request failed (HTTP $status)." }
+        if ($status -gt 0) {
+            $details = @("HTTP $status", "API $(([uri]$Uri).DnsSafeHost)")
+            try {
+                $apiError = ($_.ErrorDetails.Message | ConvertFrom-Json).error
+                $labels = @($apiError.status) + @($apiError.details | ForEach-Object { $_.reason })
+                foreach ($label in $labels) {
+                    if ($label -is [string] -and $label -cmatch '^[A-Z][A-Z0-9_]{0,79}$') {
+                        $details += $label
+                    }
+                }
+            } catch {}
+            throw ('Google API request failed: ' + ($details -join '; ') + '.')
+        }
         throw 'Google API request failed before a usable response was received.'
     }
     # Preserve Firestore nanosecond updateTime exactly for the write precondition.
@@ -241,6 +253,7 @@ try {
         throw 'Unable to use the existing gcloud sign-in.'
     }
     $headers.Authorization = 'Bearer ' + ([string]$tokenLines[0]).Trim()
+    $headers['x-goog-user-project'] = $project
     $tokenLines = $null
     $resourceRoot = "projects/$project/databases/(default)/documents"
     $documentsRoot = "https://firestore.googleapis.com/v1/$resourceRoot"

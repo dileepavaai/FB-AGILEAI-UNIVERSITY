@@ -4,3 +4,7 @@
 !aau-backend/index.js
 !aau-backend/del/
 !aau-backend/del/**
+!operations/
+!operations/laau-del/
+!operations/laau-del/release/
+!operations/laau-del/release/verify-private-content.cjs
